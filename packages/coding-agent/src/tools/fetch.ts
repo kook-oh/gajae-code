@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { htmlToMarkdown as htmlToMarkdownFn } from "@bworx-io/worx-code-natives";
 import type { AgentToolResult } from "@gajae-code/agent-core";
 import type { ImageContent, TextContent } from "@gajae-code/ai/core";
-import type { htmlToMarkdown as htmlToMarkdownFn } from "@gajae-code/natives";
 import { type Component, Text } from "@gajae-code/tui";
 import { ptree, truncate } from "@gajae-code/utils";
 import type { Settings } from "../config/settings";
@@ -37,7 +37,7 @@ let nativeHtmlBindings: NativeHtmlBindings | undefined;
  * for the process.
  */
 function nativeHtml(): NativeHtmlBindings {
-	nativeHtmlBindings ??= require("@gajae-code/natives") as NativeHtmlBindings;
+	nativeHtmlBindings ??= require("@bworx-io/worx-code-natives") as NativeHtmlBindings;
 	return nativeHtmlBindings;
 }
 

@@ -1,5 +1,5 @@
+import type { PtySession as NativePtySession, PtyRunResult } from "@bworx-io/worx-code-natives";
 import type { AgentToolContext } from "@gajae-code/agent-core";
-import type { PtySession as NativePtySession, PtyRunResult } from "@gajae-code/natives";
 import {
 	type Component,
 	extractPrintableText,
@@ -21,11 +21,15 @@ import { resolveBashOutputSinkHeadBytes, resolveBashOutputSinkTailBytes, resolve
 import { formatStatusIcon, replaceTabs } from "./render-utils";
 
 type PtySession = NativePtySession;
-let ptySessionLoad: Promise<typeof import("@gajae-code/natives")["PtySession"]> | undefined;
+let ptySessionLoad: Promise<typeof import("@bworx-io/worx-code-natives")["PtySession"]> | undefined;
 
-async function ptySessionNative(): Promise<typeof import("@gajae-code/natives")["PtySession"]> {
+async function ptySessionNative(): Promise<typeof import("@bworx-io/worx-code-natives")["PtySession"]> {
 	ptySessionLoad ??= Promise.resolve(
-		(require("@gajae-code/natives") as { PtySession: typeof import("@gajae-code/natives")["PtySession"] }).PtySession,
+		(
+			require("@bworx-io/worx-code-natives") as {
+				PtySession: typeof import("@bworx-io/worx-code-natives")["PtySession"];
+			}
+		).PtySession,
 	);
 	return await ptySessionLoad;
 }

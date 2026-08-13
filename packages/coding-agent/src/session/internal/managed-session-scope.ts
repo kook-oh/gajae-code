@@ -3,10 +3,10 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import type { RecoveryFsRoot } from "@gajae-code/natives";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 
 type NativeManagedScope = Pick<
-	typeof import("@gajae-code/natives"),
+	typeof import("@bworx-io/worx-code-natives"),
 	| "applyOwnerOnlyPathSecurity"
 	| "canonicalExistingDirectoryIdentity"
 	| "exactRestore"
@@ -17,7 +17,7 @@ type NativeManagedScope = Pick<
 >;
 
 function nativeScope(): NativeManagedScope {
-	return require("@gajae-code/natives") as NativeManagedScope;
+	return require("@bworx-io/worx-code-natives") as NativeManagedScope;
 }
 
 import { hasFsCode, logger, pathIsWithin } from "@gajae-code/utils";

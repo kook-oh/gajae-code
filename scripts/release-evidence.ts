@@ -24,16 +24,13 @@ export interface PublicPackageDefinition {
 
 /** The complete, ordered-by-name public package contract. */
 export const PUBLIC_PACKAGE_DEFINITIONS: readonly PublicPackageDefinition[] = [
+	{ dir: "packages/natives", name: "@bworx-io/worx-code-natives" },
+	{ dir: "packages/natives-darwin-arm64", name: "@bworx-io/worx-code-natives-darwin-arm64" },
+	{ dir: "packages/natives-linux-x64", name: "@bworx-io/worx-code-natives-linux-x64" },
 	{ dir: "packages/agent", name: "@gajae-code/agent-core" },
 	{ dir: "packages/ai", name: "@gajae-code/ai" },
 	{ dir: "packages/bridge-client", name: "@gajae-code/bridge-client" },
 	{ dir: "packages/coding-agent", name: "@gajae-code/coding-agent" },
-	{ dir: "packages/natives", name: "@gajae-code/natives" },
-	{ dir: "packages/natives-darwin-arm64", name: "@gajae-code/natives-darwin-arm64" },
-	{ dir: "packages/natives-darwin-x64", name: "@gajae-code/natives-darwin-x64" },
-	{ dir: "packages/natives-linux-arm64", name: "@gajae-code/natives-linux-arm64" },
-	{ dir: "packages/natives-linux-x64", name: "@gajae-code/natives-linux-x64" },
-	{ dir: "packages/natives-win32-x64", name: "@gajae-code/natives-win32-x64" },
 	{ dir: "packages/stats", name: "@gajae-code/stats" },
 	{ dir: "packages/tui", name: "@gajae-code/tui" },
 	{ dir: "packages/utils", name: "@gajae-code/utils" },
@@ -48,7 +45,7 @@ const releaseVersionPattern = new RegExp(`(?:${stableVersionPattern.source})|(?:
 const sha256Pattern = /^[0-9a-f]{64}$/u;
 const sha512Pattern = /^[0-9a-f]{128}$/u;
 const sourceCommitPattern = /^[0-9a-f]{40}$/u;
-const ownedInternalPackagePrefixes = ["@gajae-code/", "@gajae-code-sync-sandbox/"] as const;
+const ownedInternalPackagePrefixes = ["@bworx-io/", "@gajae-code/", "@gajae-code-sync-sandbox/"] as const;
 
 
 interface JsonObject {
@@ -114,6 +111,17 @@ export interface PackageEvidenceRecord {
 	unpacked_size: number;
 	file_count: number;
 	internal_dependencies: Record<string, string>;
+	native_build: NativeBuildEvidenceRecord | null;
+}
+
+export interface NativeBuildEvidenceRecord {
+	schema_version: 1;
+	source_commit: string;
+	rust_toolchain: string;
+	build_profile: "dist";
+	target: "darwin-arm64" | "linux-x64-modern";
+	node_filename: string;
+	node_sha256: string;
 }
 
 export interface ExpectedReleaseEvidence {
@@ -550,6 +558,7 @@ export function inspectPackageTarball(tarball: Uint8Array, limits: TarballLimits
 	manifest: PackedManifest;
 	unpackedSize: number;
 	fileCount: number;
+	entries: TarEntry[];
 } {
 	const entries = parseTarEntries(tarball, limits);
 	const manifestEntry = entries.find(entry => entry.path === "package/package.json" && entry.type === "file");
@@ -560,6 +569,66 @@ export function inspectPackageTarball(tarball: Uint8Array, limits: TarballLimits
 		manifest: parsePackedManifest(manifestEntry.data),
 		unpackedSize: files.reduce((total, entry) => total + entry.data.length, 0),
 		fileCount: files.length,
+		entries,
+	};
+}
+
+function nativeBuildEvidence(
+	definition: PublicPackageDefinition,
+	entries: readonly TarEntry[],
+): NativeBuildEvidenceRecord | undefined {
+	if (!definition.name.startsWith("@bworx-io/worx-code-natives-")) return undefined;
+	const nodeEntries = entries.filter(entry => entry.type === "file" && entry.path.endsWith(".node"));
+	if (nodeEntries.length !== 1) fail(`${definition.name} tarball must contain exactly one native .node file`);
+	const nodeEntry = nodeEntries[0]!;
+	const receiptEntry = entries.find(
+		entry => entry.type === "file" && entry.path === `${nodeEntry.path}.build.json`,
+	);
+	if (!receiptEntry) fail(`${definition.name} tarball is missing ${nodeEntry.path}.build.json`);
+	let value: unknown;
+	try {
+		value = JSON.parse(receiptEntry.data.toString("utf8"));
+	} catch {
+		fail(`${definition.name} native build receipt is not valid JSON`);
+	}
+	const receipt = object(value, `${definition.name} native build receipt`);
+	keys(
+		receipt,
+		[
+			"schema_version",
+			"source_commit",
+			"rust_toolchain",
+			"build_profile",
+			"target",
+			"node_filename",
+			"node_sha256",
+		],
+		`${definition.name} native build receipt`,
+	);
+	if (receipt.schema_version !== 1) fail(`${definition.name} native build receipt schema_version is invalid`);
+	const sourceCommit = string(receipt.source_commit, `${definition.name} native build source_commit`);
+	if (!sourceCommitPattern.test(sourceCommit)) fail(`${definition.name} native build source_commit is invalid`);
+	const rustToolchain = string(receipt.rust_toolchain, `${definition.name} native build rust_toolchain`);
+	if (rustToolchain.trim() === "") fail(`${definition.name} native build rust_toolchain is empty`);
+	if (receipt.build_profile !== "dist") fail(`${definition.name} native build profile must be dist`);
+	const expectedTarget = definition.name.endsWith("darwin-arm64") ? "darwin-arm64" : "linux-x64-modern";
+	if (receipt.target !== expectedTarget) fail(`${definition.name} native build target must be ${expectedTarget}`);
+	const nodeFilename = string(receipt.node_filename, `${definition.name} native build node_filename`);
+	if (nodeFilename !== nodeEntry.path.slice("package/native/".length)) {
+		fail(`${definition.name} native build node_filename does not match tarball`);
+	}
+	const nodeSha256 = string(receipt.node_sha256, `${definition.name} native build node_sha256`);
+	if (!sha256Pattern.test(nodeSha256) || nodeSha256 !== sha256(nodeEntry.data)) {
+		fail(`${definition.name} native build node_sha256 does not match tarball`);
+	}
+	return {
+		schema_version: 1,
+		source_commit: sourceCommit,
+		rust_toolchain: rustToolchain,
+		build_profile: "dist",
+		target: expectedTarget,
+		node_filename: nodeFilename,
+		node_sha256: nodeSha256,
 	};
 }
 
@@ -581,6 +650,46 @@ export function packageEvidenceFromTarball(definition: PublicPackageDefinition, 
 		unpacked_size: inspection.unpackedSize,
 		file_count: inspection.fileCount,
 		internal_dependencies: inspection.manifest.internalDependencies,
+		native_build: nativeBuildEvidence(definition, inspection.entries) ?? null,
+	};
+}
+
+function validateNativeBuildRecord(value: unknown, label: string): NativeBuildEvidenceRecord {
+	const record = object(value, label);
+	keys(
+		record,
+		[
+			"schema_version",
+			"source_commit",
+			"rust_toolchain",
+			"build_profile",
+			"target",
+			"node_filename",
+			"node_sha256",
+		],
+		label,
+	);
+	if (record.schema_version !== 1) fail(`${label}.schema_version is invalid`);
+	const sourceCommit = string(record.source_commit, `${label}.source_commit`);
+	if (!sourceCommitPattern.test(sourceCommit)) fail(`${label}.source_commit must be a lowercase commit SHA`);
+	const rustToolchain = string(record.rust_toolchain, `${label}.rust_toolchain`);
+	if (rustToolchain.trim() === "") fail(`${label}.rust_toolchain is empty`);
+	if (record.build_profile !== "dist") fail(`${label}.build_profile must be dist`);
+	if (record.target !== "darwin-arm64" && record.target !== "linux-x64-modern") {
+		fail(`${label}.target is invalid`);
+	}
+	const nodeFilename = string(record.node_filename, `${label}.node_filename`);
+	if (!nodeFilename.endsWith(".node")) fail(`${label}.node_filename must name a .node file`);
+	const nodeSha256 = string(record.node_sha256, `${label}.node_sha256`);
+	if (!sha256Pattern.test(nodeSha256)) fail(`${label}.node_sha256 must be lowercase SHA-256`);
+	return {
+		schema_version: 1,
+		source_commit: sourceCommit,
+		rust_toolchain: rustToolchain,
+		build_profile: "dist",
+		target: record.target,
+		node_filename: nodeFilename,
+		node_sha256: nodeSha256,
 	};
 }
 
@@ -598,6 +707,7 @@ function validatePackageRecord(value: unknown, label: string): PackageEvidenceRe
 			"unpacked_size",
 			"file_count",
 			"internal_dependencies",
+			"native_build",
 		],
 		label,
 	);
@@ -617,6 +727,9 @@ function validatePackageRecord(value: unknown, label: string): PackageEvidenceRe
 	if (!sha256Pattern.test(manifestSha256)) fail(`${label}.manifest_sha256 must be lowercase SHA-256`);
 	const internalDependencies = stringRecord(record.internal_dependencies, `${label}.internal_dependencies`);
 	assertExactInternalReleaseDependencies(internalDependencies, version, label);
+	const nativeBuild = record.native_build === null
+		? null
+		: validateNativeBuildRecord(record.native_build, `${label}.native_build`);
 	return {
 		dir,
 		name,
@@ -627,6 +740,7 @@ function validatePackageRecord(value: unknown, label: string): PackageEvidenceRe
 		unpacked_size: nonNegativeInteger(record.unpacked_size, `${label}.unpacked_size`),
 		file_count: nonNegativeInteger(record.file_count, `${label}.file_count`),
 		internal_dependencies: internalDependencies,
+		native_build: nativeBuild,
 	};
 }
 
@@ -642,6 +756,14 @@ export function validateExpectedEvidence(value: unknown): ExpectedReleaseEvidenc
 	const packages = evidence.packages.map((record, index) => validatePackageRecord(record, `expected evidence.packages[${index}]`));
 	assertSortedPackageRecords(packages, "expected evidence.packages");
 	if (packages.some(record => record.version !== releaseVersion)) fail("expected evidence package versions must match release_version");
+	for (const record of packages) {
+		if (
+			record.name.startsWith("@bworx-io/worx-code-natives-") &&
+			record.native_build?.source_commit !== sourceCommit
+		) {
+			fail(`${record.name} native build source_commit must match expected evidence.source_commit`);
+		}
+	}
 	return { schema_version: 1, source_commit: sourceCommit, release_version: releaseVersion, packages };
 }
 
@@ -702,6 +824,7 @@ function validateFinalPackageRecord(value: unknown, label: string): FinalPackage
 			"unpacked_size",
 			"file_count",
 			"internal_dependencies",
+			"native_build",
 			"registry_sri",
 			"registry_tarball_sha512",
 			"registry_manifest_sha256",
@@ -721,6 +844,7 @@ function validateFinalPackageRecord(value: unknown, label: string): FinalPackage
 			unpacked_size: record.unpacked_size,
 			file_count: record.file_count,
 			internal_dependencies: record.internal_dependencies,
+			native_build: record.native_build,
 		},
 		label,
 	);
@@ -832,6 +956,7 @@ export function verifyFinalEvidence(expected: ExpectedReleaseEvidence, final: Fi
 			unpacked_size: finalRecord.unpacked_size,
 			file_count: finalRecord.file_count,
 			internal_dependencies: finalRecord.internal_dependencies,
+			native_build: finalRecord.native_build,
 		}))) {
 			fail(`final evidence changed expected record ${expectedRecord.name}`);
 		}
@@ -931,6 +1056,33 @@ function createSelfTestTarball(manifest: string): Buffer {
 	]);
 }
 
+function createSelfTestNativeTarball(definition: PublicPackageDefinition, manifest: string): Buffer {
+	const nodeFilename = definition.name.endsWith("darwin-arm64")
+		? "pi_natives.darwin-arm64.node"
+		: "pi_natives.linux-x64-modern.node";
+	const target = definition.name.endsWith("darwin-arm64") ? "darwin-arm64" : "linux-x64-modern";
+	const node = Buffer.from(`native:${target}`);
+	const receipt: NativeBuildEvidenceRecord = {
+		schema_version: 1,
+		source_commit: "0".repeat(40),
+		rust_toolchain: "nightly-2026-04-29",
+		build_profile: "dist",
+		target,
+		node_filename: nodeFilename,
+		node_sha256: sha256(node),
+	};
+	return createCanonicalTarball([
+		{ path: `package/native/${nodeFilename}`, mode: 0o644, type: "file", data: node },
+		{
+			path: `package/native/${nodeFilename}.build.json`,
+			mode: 0o644,
+			type: "file",
+			data: canonicalJsonBytes(receipt),
+		},
+		{ path: "package/package.json", mode: 0o644, type: "file", data: Buffer.from(manifest, "utf8") },
+	]);
+}
+
 export function selfTest(): void {
 	const rawManifest = "{\r\n  \"name\": \"@gajae-code/ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
 	const tarball = createSelfTestTarball(rawManifest);
@@ -938,7 +1090,8 @@ export function selfTest(): void {
 	if (!inspection.manifestBytes.equals(Buffer.from(rawManifest))) fail("self-test lost raw manifest bytes");
 	const canonical = canonicalizePackageTarball(tarball);
 	if (!canonical.equals(tarball)) fail("self-test canonical tarball was unstable");
-	const record = packageEvidenceFromTarball(PUBLIC_PACKAGE_DEFINITIONS[1]!, tarball);
+	const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/ai")!;
+	const record = packageEvidenceFromTarball(definition, tarball);
 	validateExpectedTarball(record, tarball);
 	if (classifyRegistryObservation(record, undefined) !== "publish") fail("self-test missing registry classification failed");
 	const observed: RegistryPackageObservation = {
@@ -973,7 +1126,10 @@ export function createGoldenReleaseEvidence(): GoldenReleaseEvidence {
 				? { devDependencies: { "@gajae-code/ai": releaseVersion } }
 				: {}),
 		});
-		return packageEvidenceFromTarball(definition, createSelfTestTarball(manifest));
+		const tarball = definition.name.startsWith("@bworx-io/worx-code-natives-")
+			? createSelfTestNativeTarball(definition, manifest)
+			: createSelfTestTarball(manifest);
+		return packageEvidenceFromTarball(definition, tarball);
 	});
 	const expected = createExpectedEvidence({
 		sourceCommit: "0".repeat(40),

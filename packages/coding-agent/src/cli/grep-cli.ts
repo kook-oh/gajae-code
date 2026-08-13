@@ -4,7 +4,7 @@
  * Handles `gjc grep` subcommand for testing grep tool on Windows.
  */
 import * as path from "node:path";
-import { GrepOutputMode, grep } from "@gajae-code/natives";
+import { GrepOutputMode, grep } from "@bworx-io/worx-code-natives";
 import { APP_NAME } from "@gajae-code/utils";
 import chalk from "chalk";
 

@@ -33,7 +33,7 @@
 	},
 	"dependencies": {
 		"@gajae-code/ai": "catalog:",
-		"@gajae-code/natives": "catalog:",
+		"@bworx-io/worx-code-natives": "catalog:",
 		"@gajae-code/utils": "catalog:",
 		"@opentelemetry/api": "catalog:"
 	},

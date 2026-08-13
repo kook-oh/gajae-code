@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@gajae-code/natives";
+import * as native from "@bworx-io/worx-code-natives";
 import { resolveManagedSessionScope } from "../src/sdk/session-directory";
 import {
 	ManagedSessionDescendantStore,

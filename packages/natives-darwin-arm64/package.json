@@ -1,5 +1,5 @@
 {
-	"name": "@gajae-code/natives-darwin-arm64",
+	"name": "@bworx-io/worx-code-natives-darwin-arm64",
 	"version": "0.13.1",
 	"description": "Darwin arm64 native addon for @gajae-code/natives",
 	"type": "module",

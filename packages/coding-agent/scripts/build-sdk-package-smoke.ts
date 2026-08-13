@@ -11,8 +11,13 @@ const aiPackageDir = path.resolve(packageDir, "../ai");
 const bridgeClientPackageDir = path.resolve(packageDir, "../bridge-client");
 const tuiPackageDir = path.resolve(packageDir, "../tui");
 const nativesPackageDir = path.resolve(packageDir, "../natives");
-const linuxX64PackageDir = path.resolve(packageDir, "../natives-linux-x64");
 const utilsPackageDir = path.resolve(packageDir, "../utils");
+const platformTag = `${process.platform}-${process.arch}`;
+if (platformTag !== "darwin-arm64" && platformTag !== "linux-x64") {
+	throw new Error(`SDK package smoke requires an approved native platform, got ${platformTag}`);
+}
+const platformPackageDir = path.resolve(packageDir, `../natives-${platformTag}`);
+const platformPackageName = `@bworx-io/worx-code-natives-${platformTag}`;
 const manifestsDir = path.join(packageDir, "test/manifests");
 // v2 intentionally removes eager concrete-tool exports to preserve the SDK cold boundary.
 const baselineVersion = 2;
@@ -36,12 +41,15 @@ function assertExport(module: Record<string, unknown>, name: string, subpath: st
 async function runSmoke(): Promise<Surface> {
 	const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-package-smoke-"));
 	try {
-		const stagedLinuxX64Dir = path.join(tempDir, "natives-linux-x64");
-		await fs.cp(linuxX64PackageDir, stagedLinuxX64Dir, { recursive: true });
-		const stagedNativeDir = path.join(stagedLinuxX64Dir, "native");
+		const stagedPlatformDir = path.join(tempDir, `natives-${platformTag}`);
+		await fs.cp(platformPackageDir, stagedPlatformDir, { recursive: true });
+		const stagedNativeDir = path.join(stagedPlatformDir, "native");
 		await fs.mkdir(stagedNativeDir, { recursive: true });
 		for (const entry of await fs.readdir(path.join(nativesPackageDir, "native"))) {
-			if (entry.startsWith("pi_natives.linux-x64") && entry.endsWith(".node")) {
+			if (
+				entry.startsWith(`pi_natives.${platformTag}`) &&
+				(entry.endsWith(".node") || entry.endsWith(".node.build.json"))
+			) {
 				await fs.copyFile(path.join(nativesPackageDir, "native", entry), path.join(stagedNativeDir, entry));
 			}
 		}
@@ -53,7 +61,7 @@ async function runSmoke(): Promise<Surface> {
 		);
 		const tuiTarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], tuiPackageDir);
 		const nativesTarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], nativesPackageDir);
-		const linuxX64Tarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], stagedLinuxX64Dir);
+		const platformTarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], stagedPlatformDir);
 		const utilsTarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], utilsPackageDir);
 		const codingAgentTarball = run(["bun", "pm", "pack", "--destination", tempDir, "--quiet"], packageDir);
 		const agentTarballPath = path.isAbsolute(agentTarball) ? agentTarball : path.join(agentPackageDir, agentTarball);
@@ -65,9 +73,9 @@ async function runSmoke(): Promise<Surface> {
 		const nativesTarballPath = path.isAbsolute(nativesTarball)
 			? nativesTarball
 			: path.join(nativesPackageDir, nativesTarball);
-		const linuxX64TarballPath = path.isAbsolute(linuxX64Tarball)
-			? linuxX64Tarball
-			: path.join(stagedLinuxX64Dir, linuxX64Tarball);
+		const platformTarballPath = path.isAbsolute(platformTarball)
+			? platformTarball
+			: path.join(stagedPlatformDir, platformTarball);
 		const utilsTarballPath = path.isAbsolute(utilsTarball) ? utilsTarball : path.join(utilsPackageDir, utilsTarball);
 		const codingAgentTarballPath = path.isAbsolute(codingAgentTarball)
 			? codingAgentTarball
@@ -84,8 +92,8 @@ async function runSmoke(): Promise<Surface> {
 						"@gajae-code/bridge-client": `file:${bridgeClientTarballPath}`,
 						[packageName]: `file:${codingAgentTarballPath}`,
 						"@gajae-code/tui": `file:${tuiTarballPath}`,
-						"@gajae-code/natives": `file:${nativesTarballPath}`,
-						"@gajae-code/natives-linux-x64": `file:${linuxX64TarballPath}`,
+						"@bworx-io/worx-code-natives": `file:${nativesTarballPath}`,
+						[platformPackageName]: `file:${platformTarballPath}`,
 						"@gajae-code/utils": `file:${utilsTarballPath}`,
 					},
 					overrides: {
@@ -93,8 +101,8 @@ async function runSmoke(): Promise<Surface> {
 						"@gajae-code/ai": `file:${aiTarballPath}`,
 						"@gajae-code/bridge-client": `file:${bridgeClientTarballPath}`,
 						"@gajae-code/tui": `file:${tuiTarballPath}`,
-						"@gajae-code/natives": `file:${nativesTarballPath}`,
-						"@gajae-code/natives-linux-x64": `file:${linuxX64TarballPath}`,
+						"@bworx-io/worx-code-natives": `file:${nativesTarballPath}`,
+						[platformPackageName]: `file:${platformTarballPath}`,
 						"@gajae-code/utils": `file:${utilsTarballPath}`,
 					},
 				},

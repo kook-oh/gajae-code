@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import * as natives from "@bworx-io/worx-code-natives";
 import { type SettingPath, Settings } from "@gajae-code/coding-agent/config/settings";
 import type { ToolSession } from "@gajae-code/coding-agent/tools";
 import { escapeUntrustedContent, loadReadUrlCacheEntry, WRAP_PREFIX_CHARS } from "@gajae-code/coding-agent/tools/fetch";
@@ -11,7 +12,6 @@ import * as toolsManager from "@gajae-code/coding-agent/utils/tools-manager";
 import { specialHandlers } from "@gajae-code/coding-agent/web/scrapers";
 import * as scrapers from "@gajae-code/coding-agent/web/scrapers/types";
 import * as scraperUtils from "@gajae-code/coding-agent/web/scrapers/utils";
-import * as natives from "@gajae-code/natives";
 import { hookFetch, ptree, Snowflake } from "@gajae-code/utils";
 
 const withMissingSystemPython = () => {

@@ -175,7 +175,7 @@ export interface ForkContextSeedOptions {
 	signal?: AbortSignal;
 }
 
-import type { MacOSPowerAssertion } from "@gajae-code/natives";
+import type { MacOSPowerAssertion } from "@bworx-io/worx-code-natives";
 import {
 	extractRetryHint,
 	hasFsCode,
@@ -2326,8 +2326,8 @@ export class AgentSession {
 		if (!idle && !system && !user && !display) return;
 		this.#powerAssertionLoad = Promise.resolve()
 			.then(() => {
-				const { MacOSPowerAssertion } = require("@gajae-code/natives") as Pick<
-					typeof import("@gajae-code/natives"),
+				const { MacOSPowerAssertion } = require("@bworx-io/worx-code-natives") as Pick<
+					typeof import("@bworx-io/worx-code-natives"),
 					"MacOSPowerAssertion"
 				>;
 				if (this.#powerAssertion) return;

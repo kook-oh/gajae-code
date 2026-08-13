@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import * as native from "@bworx-io/worx-code-natives";
 import { deleteSessionPickerCandidate } from "@gajae-code/coding-agent/cli/session-picker";
 import {
 	createReadonlySessionManager,
@@ -19,7 +20,6 @@ import {
 	type SessionStorageStat,
 	type SessionStorageWriter,
 } from "@gajae-code/coding-agent/session/session-storage";
-import * as native from "@gajae-code/natives";
 import {
 	getAgentDir,
 	getResidentCacheRootDir,

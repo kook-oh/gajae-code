@@ -3,7 +3,7 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@gajae-code/natives";
+import * as native from "@bworx-io/worx-code-natives";
 import { ArtifactManager } from "../src/session/artifacts";
 import { ManagedSessionDescendantStore, managedDirectoryRoot } from "../src/session/internal/managed-session-storage";
 import { createManagedTaskPersistence } from "../src/task/executor";

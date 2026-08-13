@@ -4,13 +4,13 @@
  * Note: command execution is async to avoid blocking the TUI.
  */
 
-import type { executeShell as executeShellFn } from "@gajae-code/natives";
+import type { executeShell as executeShellFn } from "@bworx-io/worx-code-natives";
 
 let executeShellLoad: Promise<typeof executeShellFn> | undefined;
 
 async function executeShellNative(): Promise<typeof executeShellFn> {
 	executeShellLoad ??= Promise.resolve(
-		(require("@gajae-code/natives") as { executeShell: typeof executeShellFn }).executeShell,
+		(require("@bworx-io/worx-code-natives") as { executeShell: typeof executeShellFn }).executeShell,
 	);
 	return await executeShellLoad;
 }

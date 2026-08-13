@@ -10,10 +10,10 @@ export class NativeRuntimeCompatibilityError extends Error {
 		readonly workflowArbitrationAvailable: boolean,
 	) {
 		super(
-			`Incompatible @gajae-code/natives for @gajae-code/coding-agent@${runtimeVersion}: ` +
+			`Incompatible @bworx-io/worx-code-natives for @gajae-code/coding-agent@${runtimeVersion}: ` +
 				`loaded native version is ${nativeVersion}, and required workflow arbitration methods are ` +
 				`${workflowArbitrationAvailable ? "available" : "missing"}. ` +
-				`Reinstall matching @gajae-code/coding-agent and @gajae-code/natives packages.`,
+				`Reinstall matching @gajae-code/coding-agent and @bworx-io/worx-code-natives packages.`,
 		);
 		this.name = "NativeRuntimeCompatibilityError";
 	}

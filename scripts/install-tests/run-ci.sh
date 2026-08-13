@@ -68,6 +68,7 @@ stage_linux_x64_optional_package() {
 	rm -rf "$target_dir"
 	mkdir -p "$target_dir"
 	cp packages/natives/native/pi_natives.linux-x64*.node "$target_dir"/
+	cp packages/natives/native/pi_natives.linux-x64*.node.build.json "$target_dir"/
 }
 
 section "Tarball install smoke"
@@ -83,8 +84,8 @@ done
 
 utils_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-utils-*.tgz)"
 bridge_client_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-bridge-client-*.tgz)"
-natives_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-natives-[0-9]*.tgz)"
-natives_linux_x64_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-natives-linux-x64-*.tgz)"
+natives_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-natives-[0-9]*.tgz)"
+natives_linux_x64_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-natives-linux-x64-*.tgz)"
 ai_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-ai-*.tgz)"
 agent_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-agent-core-*.tgz)"
 tui_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-tui-*.tgz)"
@@ -104,8 +105,8 @@ mkdir -p "$TARBALL_APP_DIR"
 		const pkg = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
 		pkg.overrides = {
 			'@gajae-code/utils': '$utils_tgz',
-			'@gajae-code/natives': '$natives_tgz',
-			'@gajae-code/natives-linux-x64': '$natives_linux_x64_tgz',
+			'@bworx-io/worx-code-natives': '$natives_tgz',
+			'@bworx-io/worx-code-natives-linux-x64': '$natives_linux_x64_tgz',
 			'@gajae-code/ai': '$ai_tgz',
 			'@gajae-code/agent-core': '$agent_tgz',
 			'@gajae-code/bridge-client': '$bridge_client_tgz',

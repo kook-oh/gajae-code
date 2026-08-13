@@ -3,13 +3,14 @@ import { createHash, randomUUID } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import type * as native from "@gajae-code/natives";
+import type * as native from "@bworx-io/worx-code-natives";
 
-let nativeSessionStorageBindings: typeof import("@gajae-code/natives") | undefined;
+let nativeSessionStorageBindings: typeof import("@bworx-io/worx-code-natives") | undefined;
 
-function nativeSessionStorage(): typeof import("@gajae-code/natives") {
+function nativeSessionStorage(): typeof import("@bworx-io/worx-code-natives") {
 	if (!nativeSessionStorageBindings) {
-		nativeSessionStorageBindings = require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+		nativeSessionStorageBindings =
+			require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 	}
 	return nativeSessionStorageBindings;
 }

@@ -131,8 +131,8 @@ function safeChildToken(value: string): boolean {
 async function readExactJsons(root: string, files: readonly string[]): Promise<unknown[] | null> {
 	if (process.platform !== "linux") return null;
 	try {
-		const { openRecoveryFsRoot } = require("@gajae-code/natives") as Pick<
-			typeof import("@gajae-code/natives"),
+		const { openRecoveryFsRoot } = require("@bworx-io/worx-code-natives") as Pick<
+			typeof import("@bworx-io/worx-code-natives"),
 			"openRecoveryFsRoot"
 		>;
 		const authority = openRecoveryFsRoot(root);

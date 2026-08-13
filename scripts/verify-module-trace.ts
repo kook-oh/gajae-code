@@ -50,7 +50,7 @@ const EXPECTED_TOOL_LOADER_SPECIFIERS = new Set([
 ]);
 const TRACE_MILESTONE_DENY_RULES: Record<string, string[]> = {
 	W1c: ["src/sdk/bus/adapters/**", "src/memories/**", "src/hindsight/**", "src/stt/**", "src/secrets/**"],
-	W5b: ["@gajae-code/natives", "bun:sqlite", "packages/ai/src/providers/**"],
+	W5b: ["@bworx-io/worx-code-natives", "bun:sqlite", "packages/ai/src/providers/**"],
 };
 
 const TRACE_ROOT_SENTINEL = "__GJC_TRACE_ROOT__";
@@ -389,7 +389,7 @@ function isNativeImport(entry: TraceRecord): boolean {
 	return values.some(
 		value =>
 			value === "bun:sqlite" ||
-			value.startsWith("@gajae-code/natives") ||
+			value.startsWith("@bworx-io/worx-code-natives") ||
 			value.includes("/node_modules/@gajae-code/natives") ||
 			value.includes("/node_modules/@gajae-code/natives-") ||
 			value.endsWith(".node") ||

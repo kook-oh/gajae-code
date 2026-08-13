@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { fuzzyFind as fuzzyFindFn } from "@gajae-code/natives";
+import type { fuzzyFind as fuzzyFindFn } from "@bworx-io/worx-code-natives";
 import { getProjectDir } from "@gajae-code/utils";
 
 type NativeFuzzyFind = typeof fuzzyFindFn;
@@ -11,7 +11,7 @@ let nativeFuzzyFindLoad: Promise<NativeFuzzyFind> | undefined;
 async function fuzzyFindNative(): Promise<NativeFuzzyFind> {
 	if (nativeFuzzyFind) return nativeFuzzyFind;
 	nativeFuzzyFindLoad ??= Promise.resolve(
-		(require("@gajae-code/natives") as { fuzzyFind: NativeFuzzyFind }).fuzzyFind,
+		(require("@bworx-io/worx-code-natives") as { fuzzyFind: NativeFuzzyFind }).fuzzyFind,
 	);
 	return await nativeFuzzyFindLoad;
 }

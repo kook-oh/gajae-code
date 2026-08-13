@@ -3,6 +3,7 @@ import { describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import * as native from "@bworx-io/worx-code-natives";
 import { parseLaunchWorktreeMode } from "@gajae-code/coding-agent/gjc-runtime/launch-worktree";
 import type { SessionCloseFrame, SessionCreateFrame } from "@gajae-code/coding-agent/sdk/bus/index";
 import {
@@ -21,7 +22,6 @@ import {
 } from "@gajae-code/coding-agent/sdk/bus/lifecycle-control-runtime";
 import type { LedgerEntry, OrchestratorDeps } from "@gajae-code/coding-agent/sdk/bus/lifecycle-orchestrator";
 import { startDaemonLifecycleControl } from "@gajae-code/coding-agent/sdk/bus/telegram-daemon";
-import * as native from "@gajae-code/natives";
 import { getConfigRootDir, logger } from "@gajae-code/utils";
 import { Settings } from "../src/config/settings";
 import { tokenFingerprint } from "../src/sdk/bus/config";

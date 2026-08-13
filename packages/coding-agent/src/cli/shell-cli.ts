@@ -5,7 +5,7 @@
  */
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import { Shell } from "@gajae-code/natives";
+import { Shell } from "@bworx-io/worx-code-natives";
 import { APP_NAME, getProjectDir } from "@gajae-code/utils";
 import chalk from "chalk";
 import { Settings } from "../config/settings";

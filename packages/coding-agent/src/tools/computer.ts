@@ -211,7 +211,7 @@ const NATIVE_ERROR_CODES = new Set([
 ]);
 
 function createNativeComputerController(): NativeController {
-	const natives = require("@gajae-code/natives") as { ComputerController?: new () => NativeController };
+	const natives = require("@bworx-io/worx-code-natives") as { ComputerController?: new () => NativeController };
 	if (!natives.ComputerController) {
 		throw new ToolError("ComputerController is unavailable in @gajae-code/natives.", {
 			code: "COMPUTER_UNAVAILABLE",

@@ -1,12 +1,12 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { WindowsJobMemoryProbeResult } from "@gajae-code/natives";
+import type { WindowsJobMemoryProbeResult } from "@bworx-io/worx-code-natives";
 
 function safeProbeWindowsJobMemory(): WindowsJobMemoryProbeResult {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const natives = require("@gajae-code/natives") as { probeWindowsJobMemory?: () => unknown };
+		const natives = require("@bworx-io/worx-code-natives") as { probeWindowsJobMemory?: () => unknown };
 		if (typeof natives.probeWindowsJobMemory === "function") {
 			return natives.probeWindowsJobMemory() as WindowsJobMemoryProbeResult;
 		}

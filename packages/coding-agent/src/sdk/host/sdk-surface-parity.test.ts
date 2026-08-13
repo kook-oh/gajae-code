@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { NotificationServer } from "@gajae-code/natives";
+import { NotificationServer } from "@bworx-io/worx-code-natives";
 import { createNotificationsExtension } from "../bus";
 import { SessionSdkSessionRuntime, type SessionSdkTransport } from "./session-runtime";
 import { createSdkCapabilities, createSdkSurfacePolicy } from "./surface-policy";

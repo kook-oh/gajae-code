@@ -1,4 +1,4 @@
-import { parseKey as nativeParseKey } from "@gajae-code/natives";
+import { parseKey as nativeParseKey } from "@bworx-io/worx-code-natives";
 import * as native from "../src/keys";
 import * as js from "./_jskey";
 

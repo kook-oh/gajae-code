@@ -38,7 +38,7 @@ let nativeThemeBindingsUnavailable = false;
 function loadNativeThemeBindings(): NativeThemeBindings | undefined {
 	if (nativeThemeBindings || nativeThemeBindingsUnavailable) return nativeThemeBindings;
 	try {
-		nativeThemeBindings = require("@gajae-code/natives") as unknown as NativeThemeBindings;
+		nativeThemeBindings = require("@bworx-io/worx-code-natives") as unknown as NativeThemeBindings;
 	} catch (error) {
 		nativeThemeBindingsUnavailable = true;
 		logger.warn("Native theme bindings unavailable", { error: String(error) });

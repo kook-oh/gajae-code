@@ -1,9 +1,9 @@
-import type { ExtractSegmentsResult, SliceResult } from "@gajae-code/natives";
+import type { ExtractSegmentsResult, SliceResult } from "@bworx-io/worx-code-natives";
 import { getDefaultTabWidth, getIndentation, onDefaultTabWidthChange } from "@gajae-code/utils";
 import { renderMetrics } from "./metrics";
 
 type NativeTuiUtils = Pick<
-	typeof import("@gajae-code/natives"),
+	typeof import("@bworx-io/worx-code-natives"),
 	| "extractSegments"
 	| "sliceWithWidth"
 	| "truncateLinesToWidth"
@@ -17,7 +17,7 @@ let nativeTuiUtilsBindings: NativeTuiUtils | undefined;
 
 function nativeTuiUtils(): NativeTuiUtils {
 	if (!nativeTuiUtilsBindings) {
-		nativeTuiUtilsBindings = require("@gajae-code/natives") as NativeTuiUtils;
+		nativeTuiUtilsBindings = require("@bworx-io/worx-code-natives") as NativeTuiUtils;
 	}
 	return nativeTuiUtilsBindings;
 }

@@ -34,7 +34,7 @@ interface NativePackageJson {
 
 async function loadNativeIdentity(): Promise<{ packageVersion: string; versionSentinelExport: string }> {
 	const nativePackage = await Bun.file(path.join(repoRoot, "packages/natives/package.json")).json() as NativePackageJson;
-	if (nativePackage.name !== "@gajae-code/natives" || !isString(nativePackage.version) || nativePackage.version.trim().length === 0) {
+	if (nativePackage.name !== "@bworx-io/worx-code-natives" || !isString(nativePackage.version) || nativePackage.version.trim().length === 0) {
 		throw new Error("darwin-receipt-invalid: @gajae-code/natives package version is unavailable");
 	}
 	const versionSentinelExport = `__piNativesV${nativePackage.version.replace(/[^A-Za-z0-9]/g, "_")}`;

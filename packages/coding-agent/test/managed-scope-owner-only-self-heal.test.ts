@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { NativeOwnerOnlySecurityResult } from "@gajae-code/natives";
-import * as native from "@gajae-code/natives";
+import type { NativeOwnerOnlySecurityResult } from "@bworx-io/worx-code-natives";
+import * as native from "@bworx-io/worx-code-natives";
 import {
 	prepareManagedSessionScopeForWriteSync,
 	resolveManagedScope,

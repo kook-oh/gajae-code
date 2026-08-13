@@ -3,8 +3,8 @@ import * as syncFs from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { NativeDirectoryTreeSnapshot } from "@gajae-code/natives";
-import * as native from "@gajae-code/natives";
+import type { NativeDirectoryTreeSnapshot } from "@bworx-io/worx-code-natives";
+import * as native from "@bworx-io/worx-code-natives";
 import {
 	canonicalBindingOpenFlags,
 	cleanupAuthorityMatches,

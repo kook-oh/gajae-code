@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import type { verifyOwnerOnlyPathSecurity as verifyOwnerOnlyPathSecurityFn } from "@gajae-code/natives";
+import type { verifyOwnerOnlyPathSecurity as verifyOwnerOnlyPathSecurityFn } from "@bworx-io/worx-code-natives";
 
 let nativeVerifyOwnerOnlyPathSecurity: typeof verifyOwnerOnlyPathSecurityFn | undefined;
 
@@ -18,7 +18,7 @@ function verifyOwnerOnlyPathSecurityNative(
 	...args: Parameters<typeof verifyOwnerOnlyPathSecurityFn>
 ): ReturnType<typeof verifyOwnerOnlyPathSecurityFn> {
 	nativeVerifyOwnerOnlyPathSecurity ??= (
-		require("@gajae-code/natives") as { verifyOwnerOnlyPathSecurity: typeof verifyOwnerOnlyPathSecurityFn }
+		require("@bworx-io/worx-code-natives") as { verifyOwnerOnlyPathSecurity: typeof verifyOwnerOnlyPathSecurityFn }
 	).verifyOwnerOnlyPathSecurity;
 	return nativeVerifyOwnerOnlyPathSecurity(...args);
 }

@@ -3,10 +3,10 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import * as native from "@bworx-io/worx-code-natives";
 import { exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
 import { sweepResidentCacheRoot } from "@gajae-code/coding-agent/session/blob-store";
 import { SessionManager, SessionManagerTestHooks } from "@gajae-code/coding-agent/session/session-manager";
-import * as native from "@gajae-code/natives";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const MiB = 1024 * 1024;

@@ -1,12 +1,14 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type * as natives from "@bworx-io/worx-code-natives";
 import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type * as natives from "@gajae-code/natives";
 
-let findNativesLoad: Promise<typeof import("@gajae-code/natives")> | undefined;
+let findNativesLoad: Promise<typeof import("@bworx-io/worx-code-natives")> | undefined;
 
-async function findNatives(): Promise<typeof import("@gajae-code/natives")> {
-	findNativesLoad ??= Promise.resolve(require("@gajae-code/natives") as typeof import("@gajae-code/natives"));
+async function findNatives(): Promise<typeof import("@bworx-io/worx-code-natives")> {
+	findNativesLoad ??= Promise.resolve(
+		require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives"),
+	);
 	return await findNativesLoad;
 }
 

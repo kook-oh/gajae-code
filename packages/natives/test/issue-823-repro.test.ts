@@ -196,21 +196,43 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 
 	it("resolves only the current host optional package directory when installed", () => {
 		const packageNames = getOptionalPackageNames("darwin-arm64");
-		expect(packageNames).toEqual(["@gajae-code/natives-darwin-arm64"]);
+		expect(packageNames).toEqual(["@bworx-io/worx-code-natives-darwin-arm64"]);
 
 		const dirs = resolveOptionalPackageNativeDirs({
 			packageNames,
 			requireResolve: id => {
-				if (id === "@gajae-code/natives-darwin-arm64/package.json") {
-					return "/repo/node_modules/@gajae-code/natives-darwin-arm64/package.json";
+				if (id === "@bworx-io/worx-code-natives-darwin-arm64/package.json") {
+					return "/repo/node_modules/@bworx-io/worx-code-natives-darwin-arm64/package.json";
 				}
 				throw new Error(`missing ${id}`);
 			},
 		});
 
-		expect(dirs).toEqual(["/repo/node_modules/@gajae-code/natives-darwin-arm64/native"]);
+		expect(dirs).toEqual(["/repo/node_modules/@bworx-io/worx-code-natives-darwin-arm64/native"]);
 		expect(getOptionalPackageNames("freebsd-x64")).toEqual([]);
 	});
+
+	it("rejects unsupported platforms before loading legacy candidates", () => {
+		let loadAttempts = 0;
+		expect(() =>
+			loadNative({
+				context: {
+					isCompiledBinary: false,
+					platformTag: "win32-x64",
+					candidates: ["/legacy/pi_natives.win32-x64.node"],
+				},
+				extractEmbeddedAddons: () => [],
+				stageNodeModulesAddon: () => null,
+				requireCandidate: () => {
+					loadAttempts++;
+					return { __piNativesVCurrent: () => undefined };
+				},
+				validateCandidate: () => undefined,
+			}),
+		).toThrow("Unsupported platform: win32-x64");
+		expect(loadAttempts).toBe(0);
+	});
+
 	it("prefers the current workspace addon over a stale optional package addon", () => {
 		const localDir = "/repo/packages/natives/native";
 		const optionalDir = "/repo/node_modules/@gajae-code/natives-linux-x64/native";

@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "bun:test";
 import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import * as native from "@bworx-io/worx-code-natives";
 import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import * as native from "@gajae-code/natives";
 import { TempDir } from "@gajae-code/utils";
 import {
 	injectManagedFileRename,

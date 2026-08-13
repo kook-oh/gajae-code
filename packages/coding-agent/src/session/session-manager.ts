@@ -4,6 +4,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as util from "node:util";
+import type * as native from "@bworx-io/worx-code-natives";
 import { type AgentMessage, canContinuePersistedHistory } from "@gajae-code/agent-core";
 import type { ConfiguredModelChainEntry as SharedConfiguredModelChainEntry } from "@gajae-code/agent-core/compaction";
 import type {
@@ -15,10 +16,9 @@ import type {
 	TextContent,
 	Usage,
 } from "@gajae-code/ai/core";
-import type * as native from "@gajae-code/natives";
 
-function nativeSessionManager(): typeof import("@gajae-code/natives") {
-	return require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+function nativeSessionManager(): typeof import("@bworx-io/worx-code-natives") {
+	return require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 }
 
 import { getTerminalId } from "@gajae-code/tui";

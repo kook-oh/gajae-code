@@ -4,7 +4,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import type { NativeDirectoryTreeSnapshot } from "@gajae-code/natives";
+import type { NativeDirectoryTreeSnapshot } from "@bworx-io/worx-code-natives";
 import { isEnoent } from "@gajae-code/utils";
 import { AgentRegistry } from "../registry/agent-registry";
 import { parseInternalUrl } from "./parse";
@@ -12,7 +12,7 @@ import { validateRelativePath } from "./skill-protocol";
 import type { InternalResource, InternalUrl, ProtocolHandler } from "./types";
 
 type NativeLocalBindings = Pick<
-	typeof import("@gajae-code/natives"),
+	typeof import("@bworx-io/worx-code-natives"),
 	"exactRemoveDirectoryTree" | "snapshotDirectoryTree"
 >;
 
@@ -20,7 +20,7 @@ let nativeLocalBindings: NativeLocalBindings | undefined;
 
 function nativeLocal(): NativeLocalBindings {
 	if (!nativeLocalBindings) {
-		nativeLocalBindings = require("@gajae-code/natives") as NativeLocalBindings;
+		nativeLocalBindings = require("@bworx-io/worx-code-natives") as NativeLocalBindings;
 	}
 	return nativeLocalBindings;
 }

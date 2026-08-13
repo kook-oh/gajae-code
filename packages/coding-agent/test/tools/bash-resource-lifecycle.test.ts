@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { Shell } from "@bworx-io/worx-code-natives";
+import * as piNatives from "@bworx-io/worx-code-natives";
 import { AsyncJobManager } from "@gajae-code/coding-agent/async";
 import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
 import {
@@ -13,8 +15,6 @@ import { ArtifactManager } from "@gajae-code/coding-agent/session/artifacts";
 import { DEFAULT_ARTIFACT_MAX_BYTES, OutputSink } from "@gajae-code/coding-agent/session/streaming-output";
 import type { ToolSession } from "@gajae-code/coding-agent/tools";
 import { BashTool } from "@gajae-code/coding-agent/tools/implementations";
-import type { Shell } from "@gajae-code/natives";
-import * as piNatives from "@gajae-code/natives";
 
 function makeTempDir(): string {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gjc-bash-lifecycle-"));

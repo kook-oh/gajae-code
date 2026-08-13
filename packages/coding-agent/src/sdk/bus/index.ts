@@ -28,11 +28,14 @@ import * as fsPromises from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
+import type { NotificationServer as NativeNotificationServer } from "@bworx-io/worx-code-natives";
 import { type RunSettlementProof, ThinkingLevel } from "@gajae-code/agent-core";
 import type { ImageContent, TextContent, Tool } from "@gajae-code/ai/core";
-import type { NotificationServer as NativeNotificationServer } from "@gajae-code/natives";
 
-type NativeSdkBusBindings = Pick<typeof import("@gajae-code/natives"), "NotificationServer" | "nativeBuildInfo">;
+type NativeSdkBusBindings = Pick<
+	typeof import("@bworx-io/worx-code-natives"),
+	"NotificationServer" | "nativeBuildInfo"
+>;
 let nativeSdkBusBindings: NativeSdkBusBindings | undefined;
 
 /**
@@ -42,7 +45,7 @@ let nativeSdkBusBindings: NativeSdkBusBindings | undefined;
  * calls) each build a runtime and the loser observes a foreign registration.
  */
 function sdkBusNatives(): NativeSdkBusBindings {
-	nativeSdkBusBindings ??= require("@gajae-code/natives") as NativeSdkBusBindings;
+	nativeSdkBusBindings ??= require("@bworx-io/worx-code-natives") as NativeSdkBusBindings;
 	return nativeSdkBusBindings;
 }
 

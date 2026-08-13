@@ -176,7 +176,7 @@ describe("SessionSdkSessionRuntime", () => {
 	test("has no notification adapter or native notification import edge", async () => {
 		const source = await readFile(new URL("./session-runtime.ts", import.meta.url), "utf8");
 		expect(source).not.toContain("../bus");
-		expect(source).not.toContain("@gajae-code/natives");
+		expect(source).not.toContain("@bworx-io/worx-code-natives");
 		expect(source).not.toContain("NotificationServer");
 	});
 

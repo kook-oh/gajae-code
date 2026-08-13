@@ -8,14 +8,15 @@
  * - Collapsible/expandable views
  */
 
+import type { HighlightColors } from "@bworx-io/worx-code-natives";
 import type { RenderResultOptions } from "@gajae-code/agent-core";
-import type { HighlightColors } from "@gajae-code/natives";
 
-type NativeLspRenderBindings = Pick<typeof import("@gajae-code/natives"), "highlightCode" | "supportsLanguage">;
+type NativeLspRenderBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "highlightCode" | "supportsLanguage">;
 let nativeLspRenderBindings: NativeLspRenderBindings | undefined;
 
 function nativeLspRender(): NativeLspRenderBindings {
-	if (!nativeLspRenderBindings) nativeLspRenderBindings = require("@gajae-code/natives") as NativeLspRenderBindings;
+	if (!nativeLspRenderBindings)
+		nativeLspRenderBindings = require("@bworx-io/worx-code-natives") as NativeLspRenderBindings;
 	return nativeLspRenderBindings;
 }
 

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Process, ProcessStatus } from "@gajae-code/natives";
+import { Process, ProcessStatus } from "@bworx-io/worx-code-natives";
 import type { Browser } from "puppeteer-core";
 import type { ToolSession } from "../../src/sdk";
 import { type BrowserParams, resolveBrowserKindForTest } from "../../src/tools/browser";

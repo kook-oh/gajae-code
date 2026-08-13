@@ -6,12 +6,12 @@
 
 import * as fs from "node:fs/promises";
 import * as url from "node:url";
-import type { getWorkProfile as getWorkProfileFn } from "@gajae-code/natives";
+import type { getWorkProfile as getWorkProfileFn } from "@bworx-io/worx-code-natives";
 
 let nativeGetWorkProfile: typeof getWorkProfileFn | undefined;
 
 function getWorkProfileNative(...args: Parameters<typeof getWorkProfileFn>): ReturnType<typeof getWorkProfileFn> {
-	nativeGetWorkProfile ??= (require("@gajae-code/natives") as { getWorkProfile: typeof getWorkProfileFn })
+	nativeGetWorkProfile ??= (require("@bworx-io/worx-code-natives") as { getWorkProfile: typeof getWorkProfileFn })
 		.getWorkProfile;
 	return nativeGetWorkProfile(...args);
 }

@@ -2,14 +2,14 @@ import { randomBytes } from "node:crypto";
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import type { NativeRetainedBrokerPublication } from "@gajae-code/natives";
+import type { NativeRetainedBrokerPublication } from "@bworx-io/worx-code-natives";
 
-type NativeBrokerDiscoveryBindings = Pick<typeof import("@gajae-code/natives"), "retainBrokerPublication">;
+type NativeBrokerDiscoveryBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "retainBrokerPublication">;
 let nativeBrokerDiscoveryBindings: NativeBrokerDiscoveryBindings | undefined;
 
 function nativeBrokerDiscovery(): NativeBrokerDiscoveryBindings {
 	if (!nativeBrokerDiscoveryBindings)
-		nativeBrokerDiscoveryBindings = require("@gajae-code/natives") as NativeBrokerDiscoveryBindings;
+		nativeBrokerDiscoveryBindings = require("@bworx-io/worx-code-natives") as NativeBrokerDiscoveryBindings;
 	return nativeBrokerDiscoveryBindings;
 }
 

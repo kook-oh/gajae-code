@@ -2,9 +2,9 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import { AgentBusyError, type AgentTelemetryConfig, type Tracer } from "@gajae-code/agent-core";
 import { type AssistantMessage, type AssistantMessageEvent, Effort, type Model } from "@gajae-code/ai";
-import type { RecoveryFsRoot } from "@gajae-code/natives";
 import { kNoAuth } from "../../src/config/model-registry";
 
 import { Settings } from "../../src/config/settings";

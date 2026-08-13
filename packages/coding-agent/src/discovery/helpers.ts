@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { FileType as FileTypeEnum, glob as globFn } from "@bworx-io/worx-code-natives";
 import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { FileType as FileTypeEnum, glob as globFn } from "@gajae-code/natives";
 import {
 	CONFIG_DIR_NAME,
 	getConfigDirName,
@@ -31,7 +31,7 @@ let discoveryNativeLoad: Promise<DiscoveryNativeModule> | undefined;
 async function discoveryNatives(): Promise<DiscoveryNativeModule> {
 	if (discoveryNativeModule) return discoveryNativeModule;
 	discoveryNativeLoad ??= Promise.resolve(
-		require("@gajae-code/natives") as { FileType: typeof FileTypeEnum; glob: typeof globFn },
+		require("@bworx-io/worx-code-natives") as { FileType: typeof FileTypeEnum; glob: typeof globFn },
 	).then(mod => {
 		discoveryNativeModule = { FileType: mod.FileType, glob: mod.glob };
 		return discoveryNativeModule;

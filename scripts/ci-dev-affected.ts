@@ -1332,7 +1332,7 @@ function assertInventory(inventory: BuildInventory): void {
 
 async function assertTypeScriptInventoryLive(inventory: BuildInventory): Promise<void> {
 	const workspaces = await getWorkspacePackages();
-	const buildable = workspaces.filter(workspacePackage => workspacePackage.name !== "@gajae-code/natives" && workspacePackage.manifest.scripts?.build);
+	const buildable = workspaces.filter(workspacePackage => workspacePackage.name !== "@bworx-io/worx-code-natives" && workspacePackage.manifest.scripts?.build);
 	const classified = inventory.typescript.filter(unit => !unit.nativeProducer);
 	const buildableNames = new Set(buildable.map(workspacePackage => workspacePackage.name));
 	const classifiedNames = new Set(classified.map(unit => unit.name));

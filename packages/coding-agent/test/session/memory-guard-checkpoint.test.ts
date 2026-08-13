@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { openRecoveryFsRoot, type RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import { Agent } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
 import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
@@ -18,7 +19,6 @@ import type {
 } from "@gajae-code/coding-agent/session/memory-guard-checkpoint-participant";
 import { memoryGuardCanonicalJson } from "@gajae-code/coding-agent/session/memory-guard-checkpoint-participant";
 import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { openRecoveryFsRoot, type RecoveryFsRoot } from "@gajae-code/natives";
 
 const tempRoots: string[] = [];
 const authStores: AuthStorage[] = [];

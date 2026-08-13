@@ -3,7 +3,7 @@ import * as crypto from "node:crypto";
 import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { Process } from "@gajae-code/natives";
+import type { Process } from "@bworx-io/worx-code-natives";
 import { nativeProcessBindings } from "@gajae-code/utils/native-process";
 import { managedSecurityFailureClassification } from "../session/internal/managed-session-storage";
 import { readLinuxProcStartTime, readLinuxProcStartTimeSync } from "./linux-proc";

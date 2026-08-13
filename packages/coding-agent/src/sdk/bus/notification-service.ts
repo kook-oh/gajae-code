@@ -16,11 +16,12 @@ import * as fsSync from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
 
-let nativeNotificationBindings: typeof import("@gajae-code/natives") | undefined;
+let nativeNotificationBindings: typeof import("@bworx-io/worx-code-natives") | undefined;
 
-function nativeNotification(): typeof import("@gajae-code/natives") {
+function nativeNotification(): typeof import("@bworx-io/worx-code-natives") {
 	if (!nativeNotificationBindings)
-		nativeNotificationBindings = require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+		nativeNotificationBindings =
+			require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 	return nativeNotificationBindings;
 }
 

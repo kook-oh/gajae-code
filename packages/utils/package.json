@@ -31,7 +31,7 @@
 		"fmt": "biome format --write ."
 	},
 	"dependencies": {
-		"@gajae-code/natives": "catalog:",
+		"@bworx-io/worx-code-natives": "catalog:",
 		"beautiful-mermaid": "catalog:",
 		"handlebars": "catalog:",
 		"winston": "catalog:",

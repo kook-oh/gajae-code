@@ -30,13 +30,10 @@ import { embeddedAddon } from "./embedded-addon.js";
  * post-build `--reset` stub) is the authoritative compiled-mode signal.
  */
 
-const SUPPORTED_PLATFORMS = ["linux-x64", "linux-arm64", "darwin-x64", "darwin-arm64", "win32-x64"];
+const SUPPORTED_PLATFORMS = ["darwin-arm64", "linux-x64"];
 const OPTIONAL_PACKAGE_BY_PLATFORM_TAG = {
-	"darwin-arm64": "@gajae-code/natives-darwin-arm64",
-	"darwin-x64": "@gajae-code/natives-darwin-x64",
-	"linux-arm64": "@gajae-code/natives-linux-arm64",
-	"linux-x64": "@gajae-code/natives-linux-x64",
-	"win32-x64": "@gajae-code/natives-win32-x64",
+	"darwin-arm64": "@bworx-io/worx-code-natives-darwin-arm64",
+	"linux-x64": "@bworx-io/worx-code-natives-linux-x64",
 };
 
 
@@ -531,6 +528,13 @@ export function embeddedAddonIsAuthoritative(ctx, addon = embeddedAddon) {
 export function loadNative(options = {}) {
 	const require_ = options.requireCandidate ? null : createRequire(import.meta.url);
 	const ctx = options.context ?? initLoaderContext(require_);
+	if (!SUPPORTED_PLATFORMS.includes(ctx.platformTag)) {
+		throw new Error(
+			`Unsupported platform: ${ctx.platformTag}\n` +
+				`Supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}\n` +
+				"If you need support for this platform, please open an issue.",
+		);
+	}
 
 	const errors = [];
 	const embeddedCandidates = (options.extractEmbeddedAddons ?? maybeExtractEmbeddedAddons)(ctx, errors);
@@ -550,13 +554,6 @@ export function loadNative(options = {}) {
 	if (loaded.bindings) return loaded.bindings;
 	errors.push(...loaded.errors);
 
-	if (!SUPPORTED_PLATFORMS.includes(ctx.platformTag)) {
-		throw new Error(
-			`Unsupported platform: ${ctx.platformTag}\n` +
-				`Supported platforms: ${SUPPORTED_PLATFORMS.join(", ")}\n` +
-				"If you need support for this platform, please open an issue.",
-		);
-	}
 	const details = errors.map(error => `- ${error}`).join("\n");
 	throw new Error(
 		`Failed to load pi_natives native addon for ${ctx.addonLabel}.\n\nTried:\n${details}\n\n${buildHelpMessage(ctx)}`,

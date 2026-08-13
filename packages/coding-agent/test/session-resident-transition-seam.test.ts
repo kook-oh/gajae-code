@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
+import * as native from "@bworx-io/worx-code-natives";
 import type { AssistantMessage } from "@gajae-code/ai";
 import { EphemeralBlobStore, MemoryBlobStore } from "@gajae-code/coding-agent/session/blob-store";
 import type {
@@ -15,9 +17,6 @@ import {
 	SessionManagerTestHooks,
 } from "@gajae-code/coding-agent/session/session-manager";
 import { MemorySessionStorage } from "@gajae-code/coding-agent/session/session-storage";
-
-import type { RecoveryFsRoot } from "@gajae-code/natives";
-import * as native from "@gajae-code/natives";
 import { getAgentDir, getResidentCacheRootDir, getTerminalSessionsDir, setAgentDir } from "@gajae-code/utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 

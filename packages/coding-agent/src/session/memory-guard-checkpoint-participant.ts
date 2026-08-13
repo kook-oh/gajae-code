@@ -1,6 +1,6 @@
 import * as crypto from "node:crypto";
 import * as path from "node:path";
-import type { RecoveryFsRoot } from "@gajae-code/natives";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import type {
 	RecoveryHydrationContext,
 	ResumeSessionIdentity,

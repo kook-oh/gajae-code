@@ -1,10 +1,10 @@
 import { execSync } from "node:child_process";
-import type { ClipboardImage } from "@gajae-code/natives";
+import type { ClipboardImage } from "@bworx-io/worx-code-natives";
 
-let nativeClipboardModule: typeof import("@gajae-code/natives") | undefined;
+let nativeClipboardModule: typeof import("@bworx-io/worx-code-natives") | undefined;
 
-function nativeClipboard(): typeof import("@gajae-code/natives") {
-	nativeClipboardModule ??= require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+function nativeClipboard(): typeof import("@bworx-io/worx-code-natives") {
+	nativeClipboardModule ??= require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 	return nativeClipboardModule;
 }
 

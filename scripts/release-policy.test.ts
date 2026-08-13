@@ -48,6 +48,22 @@ describe("stable release policy", () => {
 		expect(publish).toContain("draft: false");
 	});
 
+	test("native release matrix contains only the two approved platform targets", async () => {
+		const native = jobSection(await workflow(), "native");
+		const publish = jobSection(await workflow(), "publish");
+
+		expect(native).toContain("{ os: ubuntu-22.04, platform: linux, arch: x64, variant: modern");
+		expect(native).toContain("{ os: macos-14, platform: darwin, arch: arm64 }");
+		expect(native).not.toContain("platform: linux, arch: x64, variant: baseline");
+		expect(native).not.toContain("platform: linux, arch: arm64");
+		expect(native).not.toContain("platform: darwin, arch: x64");
+		expect(native).not.toContain("platform: win32");
+		expect(publish).toContain('"gjc-linux-x64", "gjc-darwin-arm64"');
+		expect(publish).not.toContain('"gjc-linux-arm64"');
+		expect(publish).not.toContain('"gjc-darwin-x64"');
+		expect(publish).not.toContain('"gjc-windows-x64.exe"');
+	});
+
 	test("stable tags and nightly publication lanes are non-cancelling", async () => {
 		const ci = await workflow();
 		const concurrency = ci.slice(ci.indexOf("concurrency:\n"), ci.indexOf("\njobs:"));

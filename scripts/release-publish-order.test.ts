@@ -53,6 +53,7 @@ function evidenceRecord(definition: (typeof PUBLIC_PACKAGE_DEFINITIONS)[number])
 		unpacked_size: 0,
 		file_count: 0,
 		internal_dependencies: {},
+		native_build: null,
 	};
 }
 
@@ -113,22 +114,53 @@ describe("unscoped gajae-code package publication", () => {
 		expect(bridgeClientIndex).toBeLessThan(codingAgentIndex);
 	});
 
-	test("native platform packages publish before the stable loader package", () => {
+	test("publishes only the two approved native platform packages before the stable loader", async () => {
 		const publishDirs = publishPackages.map((pkg) => pkg.dir);
 		const nativesIndex = publishDirs.indexOf("packages/natives");
 		const platformDirs = [
 			"packages/natives-darwin-arm64",
-			"packages/natives-darwin-x64",
-			"packages/natives-linux-arm64",
 			"packages/natives-linux-x64",
-			"packages/natives-win32-x64",
 		];
+		const publishedPlatformDirs = publishPackages
+			.filter(pkg => pkg.kind === "native-platform")
+			.map(pkg => pkg.dir);
+		const evidencedNativeDirs = PUBLIC_PACKAGE_DEFINITIONS
+			.filter(definition => definition.dir.startsWith("packages/natives"))
+			.map(definition => definition.dir);
+		const nativeManifest = await readManifest("packages/natives");
 
 		expect(nativesIndex).toBeGreaterThan(-1);
+		expect(publishedPlatformDirs).toEqual(platformDirs);
+		expect(evidencedNativeDirs).toEqual(["packages/natives", ...platformDirs]);
+		expect(Object.keys(nativeManifest.optionalDependencies ?? {})).toEqual([
+			"@bworx-io/worx-code-natives-darwin-arm64",
+			"@bworx-io/worx-code-natives-linux-x64",
+		]);
 		for (const dir of platformDirs) {
 			const platformIndex = publishDirs.indexOf(dir);
 			expect(platformIndex).toBeGreaterThan(-1);
 			expect(platformIndex).toBeLessThan(nativesIndex);
+		}
+	});
+
+	test("uses the frozen own-scope names for every published native package", async () => {
+		const nativeDefinitions = PUBLIC_PACKAGE_DEFINITIONS.filter(definition =>
+			definition.dir.startsWith("packages/natives"),
+		);
+
+		expect(nativeDefinitions).toEqual([
+			{ dir: "packages/natives", name: "@bworx-io/worx-code-natives" },
+			{
+				dir: "packages/natives-darwin-arm64",
+				name: "@bworx-io/worx-code-natives-darwin-arm64",
+			},
+			{
+				dir: "packages/natives-linux-x64",
+				name: "@bworx-io/worx-code-natives-linux-x64",
+			},
+		]);
+		for (const definition of nativeDefinitions) {
+			expect((await readManifest(definition.dir)).name).toBe(definition.name);
 		}
 	});
 
@@ -172,13 +204,10 @@ describe("unscoped gajae-code package publication", () => {
 		});
 		const executedNames: string[] = [];
 		const platformNames = [
-			"@gajae-code/natives-darwin-arm64",
-			"@gajae-code/natives-darwin-x64",
-			"@gajae-code/natives-linux-arm64",
-			"@gajae-code/natives-linux-x64",
-			"@gajae-code/natives-win32-x64",
+			"@bworx-io/worx-code-natives-darwin-arm64",
+			"@bworx-io/worx-code-natives-linux-x64",
 		];
-		const nativesName = "@gajae-code/natives";
+		const nativesName = "@bworx-io/worx-code-natives";
 
 		expect(serializedNames).toEqual([...serializedNames].sort());
 		for (const platformName of platformNames) {
@@ -225,21 +254,15 @@ describe("unscoped gajae-code package publication", () => {
 		]);
 		expect(manifest.files?.some((entry) => entry === "native" || entry.endsWith(".node"))).toBe(false);
 		expect(manifest.optionalDependencies).toEqual({
-			"@gajae-code/natives-darwin-arm64": "workspace:*",
-			"@gajae-code/natives-darwin-x64": "workspace:*",
-			"@gajae-code/natives-linux-arm64": "workspace:*",
-			"@gajae-code/natives-linux-x64": "workspace:*",
-			"@gajae-code/natives-win32-x64": "workspace:*",
+			"@bworx-io/worx-code-natives-darwin-arm64": "workspace:*",
+			"@bworx-io/worx-code-natives-linux-x64": "workspace:*",
 		});
 	});
 
 	test("native platform package manifests constrain host os and cpu", async () => {
 		const cases: Array<[string, string, string]> = [
 			["packages/natives-darwin-arm64", "darwin", "arm64"],
-			["packages/natives-darwin-x64", "darwin", "x64"],
-			["packages/natives-linux-arm64", "linux", "arm64"],
 			["packages/natives-linux-x64", "linux", "x64"],
-			["packages/natives-win32-x64", "win32", "x64"],
 		];
 
 		for (const [dir, os, cpu] of cases) {
@@ -247,6 +270,16 @@ describe("unscoped gajae-code package publication", () => {
 			expect(manifest.os).toEqual([os]);
 			expect(manifest.cpu).toEqual([cpu]);
 			expect(manifest.files).toEqual(["native", "README.md"]);
+		}
+	});
+
+	test("unsupported inherited native packages remain private", async () => {
+		for (const dir of [
+			"packages/natives-darwin-x64",
+			"packages/natives-linux-arm64",
+			"packages/natives-win32-x64",
+		]) {
+			expect((await readManifest(dir)).private).toBe(true);
 		}
 	});
 
@@ -300,12 +333,12 @@ describe("release bump set equals publish set", () => {
 	});
 });
 describe("immutable stable release contracts", () => {
-	test("publisher configuration equals the closed 14-package evidence definition", () => {
+	test("publisher configuration equals the closed 11-package evidence definition", () => {
 		const publishedDirs = publishPackages.map(pkg => pkg.dir).sort();
 		const evidencedDirs = PUBLIC_PACKAGE_DEFINITIONS.map(definition => definition.dir).sort();
 
-		expect(PUBLIC_PACKAGE_DEFINITIONS).toHaveLength(14);
-		expect(publishPackages).toHaveLength(14);
+		expect(PUBLIC_PACKAGE_DEFINITIONS).toHaveLength(11);
+		expect(publishPackages).toHaveLength(11);
 		expect(publishedDirs).toEqual(evidencedDirs);
 	});
 
@@ -444,17 +477,15 @@ describe("immutable stable release contracts", () => {
 
 
 describe("native release binary coverage", () => {
-	test("release workflow builds Intel macOS (darwin-x64) binaries again", async () => {
+	test("release workflow builds binaries only for the two approved platforms", async () => {
 		const workflow = await Bun.file(path.join(repoRoot, ".github/workflows/ci.yml")).text();
 
-		// The deprecated macos-13 runner pool stays retired; Intel coverage now
-		// rides the supported macos-15-intel runner.
-		expect(workflow).not.toContain("{ os: macos-13, platform: darwin, arch: x64 }");
-		expect(workflow).toContain("{ os: macos-15-intel, platform: darwin, arch: x64, variant: baseline }");
-		expect(workflow).toContain("target_id: darwin-x64");
-		expect(workflow).toContain("binary_path: packages/coding-agent/binaries/gjc-darwin-x64");
-		expect(workflow).toContain("{ os: macos-14, platform: darwin, arch: arm64 }");
+		expect(workflow).toContain("{ os: ubuntu-22.04, platform: linux, arch: x64, target_id: linux-x64");
+		expect(workflow).toContain("{ os: macos-14, platform: darwin, arch: arm64");
 		expect(workflow).toContain("target_id: darwin-arm64");
+		expect(workflow).not.toContain("target_id: linux-arm64");
+		expect(workflow).not.toContain("target_id: darwin-x64");
+		expect(workflow).not.toContain("target_id: win32-x64");
 		expect(workflow).toContain("pattern: pi-natives-${{ matrix.platform }}-${{ matrix.arch }}*");
 	});
 
@@ -537,8 +568,9 @@ describe("native release binary coverage", () => {
 		expect(installer).toContain(
 			"for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats coding-agent gajae-code",
 		);
-		expect(installer).toContain("@gajae-code/natives-linux-x64");
-		expect(installer).toContain("gajae-code-natives-[0-9]*.tgz");
+		expect(installer).toContain("@bworx-io/worx-code-natives-linux-x64");
+		expect(installer).toContain("bworx-io-worx-code-natives-[0-9]*.tgz");
+		expect(installer).toContain("pi_natives.linux-x64*.node.build.json");
 	});
 });
 

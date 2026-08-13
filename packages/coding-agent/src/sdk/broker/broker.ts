@@ -3,7 +3,7 @@ import type { BigIntStats } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
-import type { NativeDirectoryTreeSnapshot } from "@gajae-code/natives";
+import type { NativeDirectoryTreeSnapshot } from "@bworx-io/worx-code-natives";
 import { logger } from "@gajae-code/utils";
 import type { ModelProfileErrorDetails } from "../../config/model-profile-contract";
 import { SdkClient, SdkClientError } from "../client";

@@ -4,7 +4,7 @@
  * Uses brush-core via native bindings for shell execution.
  */
 import * as fs from "node:fs/promises";
-import type { MinimizerOptions, Shell as NativeShell } from "@gajae-code/natives";
+import type { MinimizerOptions, Shell as NativeShell } from "@bworx-io/worx-code-natives";
 import { postmortem } from "@gajae-code/utils";
 import { Settings, type ShellMinimizerSettings } from "../config/settings";
 import { formatCrashDiagnosticNotice, writeCrashReport } from "../debug/crash-diagnostics";
@@ -19,11 +19,11 @@ import { formatArtifactReference, resolveOutputMaxColumns, resolveOutputSinkHead
 import { getOrCreateSnapshot } from "../utils/shell-snapshot";
 import { NON_INTERACTIVE_ENV } from "./non-interactive-env";
 
-type NativeShellBindings = Pick<typeof import("@gajae-code/natives"), "Shell">;
+type NativeShellBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "Shell">;
 let nativeShellBindingsLoad: Promise<NativeShellBindings> | undefined;
 
 async function shellNatives(): Promise<NativeShellBindings> {
-	nativeShellBindingsLoad ??= Promise.resolve(require("@gajae-code/natives") as NativeShellBindings);
+	nativeShellBindingsLoad ??= Promise.resolve(require("@bworx-io/worx-code-natives") as NativeShellBindings);
 	return await nativeShellBindingsLoad;
 }
 

@@ -4,7 +4,11 @@ import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { exactReplacePath, type NativeExactFileIdentity, type NativeExactUnlinkResult } from "@gajae-code/natives";
+import {
+	exactReplacePath,
+	type NativeExactFileIdentity,
+	type NativeExactUnlinkResult,
+} from "@bworx-io/worx-code-natives";
 import { logger } from "@gajae-code/utils";
 import { withFileLock } from "../../config/file-lock";
 import type { Settings } from "../../config/settings";

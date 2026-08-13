@@ -1,6 +1,6 @@
 import * as path from "node:path";
+import type { AstReplaceChange, AstReplaceFileChange, astEdit as astEditFn } from "@bworx-io/worx-code-natives";
 import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type { AstReplaceChange, AstReplaceFileChange, astEdit as astEditFn } from "@gajae-code/natives";
 import type { Component } from "@gajae-code/tui";
 import { Text } from "@gajae-code/tui";
 import { $pickenvpos, prompt, untilAborted } from "@gajae-code/utils";
@@ -37,7 +37,7 @@ import { toolResult } from "./tool-result";
 let astEditLoad: Promise<typeof astEditFn> | undefined;
 
 async function astEditNative(): Promise<typeof astEditFn> {
-	astEditLoad ??= Promise.resolve((require("@gajae-code/natives") as { astEdit: typeof astEditFn }).astEdit);
+	astEditLoad ??= Promise.resolve((require("@bworx-io/worx-code-natives") as { astEdit: typeof astEditFn }).astEdit);
 	return await astEditLoad;
 }
 const astEditOpSchema = z.object({

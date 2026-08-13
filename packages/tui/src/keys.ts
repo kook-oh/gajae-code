@@ -18,13 +18,16 @@
  * - isKittyProtocolActive() - Query global Kitty protocol state
  */
 
-import type { KeyEventType } from "@gajae-code/natives";
+import type { KeyEventType } from "@bworx-io/worx-code-natives";
 
-type NativeKeyBindings = Pick<typeof import("@gajae-code/natives"), "matchesKey" | "parseKey" | "parseKittySequence">;
+type NativeKeyBindings = Pick<
+	typeof import("@bworx-io/worx-code-natives"),
+	"matchesKey" | "parseKey" | "parseKittySequence"
+>;
 let nativeKeyBindings: NativeKeyBindings | undefined;
 
 function nativeKeys(): NativeKeyBindings {
-	if (!nativeKeyBindings) nativeKeyBindings = require("@gajae-code/natives") as NativeKeyBindings;
+	if (!nativeKeyBindings) nativeKeyBindings = require("@bworx-io/worx-code-natives") as NativeKeyBindings;
 	return nativeKeyBindings;
 }
 

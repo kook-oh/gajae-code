@@ -3,16 +3,16 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import type * as natives from "@gajae-code/natives";
+import type * as natives from "@bworx-io/worx-code-natives";
 
 import { getWorktreeDir, hashPath, logger, Snowflake } from "@gajae-code/utils";
 import * as git from "../utils/git";
 
-let nativeWorktreeBindings: typeof import("@gajae-code/natives") | undefined;
+let nativeWorktreeBindings: typeof import("@bworx-io/worx-code-natives") | undefined;
 
-function nativeWorktree(): typeof import("@gajae-code/natives") {
+function nativeWorktree(): typeof import("@bworx-io/worx-code-natives") {
 	if (!nativeWorktreeBindings)
-		nativeWorktreeBindings = require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+		nativeWorktreeBindings = require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 	return nativeWorktreeBindings;
 }
 

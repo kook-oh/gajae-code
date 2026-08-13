@@ -3,13 +3,13 @@ import { createHash, randomUUID } from "node:crypto";
 import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import path from "node:path";
-import type { NativeExactUnlinkResult } from "@gajae-code/natives";
+import type { NativeExactUnlinkResult } from "@bworx-io/worx-code-natives";
 
-let nativeLifecycleBindings: typeof import("@gajae-code/natives") | undefined;
+let nativeLifecycleBindings: typeof import("@bworx-io/worx-code-natives") | undefined;
 
-function nativeLifecycle(): typeof import("@gajae-code/natives") {
+function nativeLifecycle(): typeof import("@bworx-io/worx-code-natives") {
 	if (!nativeLifecycleBindings)
-		nativeLifecycleBindings = require("@gajae-code/natives") as typeof import("@gajae-code/natives");
+		nativeLifecycleBindings = require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 	return nativeLifecycleBindings;
 }
 

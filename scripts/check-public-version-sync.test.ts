@@ -4,7 +4,14 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { $ } from "bun";
 import { buildDocsIndexOutput, checkLivePublicVersionSync, checkPublicVersionSync } from "./check-public-version-sync";
-import { canonicalJsonBytes, createExpectedEvidence, createFinalEvidence, expectedEvidenceSha256, PUBLIC_PACKAGE_DEFINITIONS } from "./release-evidence";
+import {
+	canonicalJsonBytes,
+	createExpectedEvidence,
+	createFinalEvidence,
+	expectedEvidenceSha256,
+	type NativeBuildEvidenceRecord,
+	PUBLIC_PACKAGE_DEFINITIONS,
+} from "./release-evidence";
 
 const tempRoots: string[] = [];
 
@@ -103,8 +110,32 @@ function releaseState(version = "1.2.3", changelogPath = "packages/coding-agent/
 }
 
 function productionEvidence(sourceCommit = SOURCE_SHA): { expected: string; final: string } {
-
 	const tarballSha512 = "c".repeat(128);
+	const nativeBuild = (name: string): NativeBuildEvidenceRecord | null => {
+		if (name === "@bworx-io/worx-code-natives-darwin-arm64") {
+			return {
+				schema_version: 1,
+				source_commit: sourceCommit,
+				rust_toolchain: "rustc 1.89.0",
+				build_profile: "dist",
+				target: "darwin-arm64",
+				node_filename: "pi_natives.darwin-arm64.node",
+				node_sha256: "e".repeat(64),
+			};
+		}
+		if (name === "@bworx-io/worx-code-natives-linux-x64") {
+			return {
+				schema_version: 1,
+				source_commit: sourceCommit,
+				rust_toolchain: "rustc 1.89.0",
+				build_profile: "dist",
+				target: "linux-x64-modern",
+				node_filename: "pi_natives.linux-x64-modern.node",
+				node_sha256: "f".repeat(64),
+			};
+		}
+		return null;
+	};
 	const expected = createExpectedEvidence({
 		sourceCommit,
 		releaseVersion: "1.2.3",
@@ -118,6 +149,7 @@ function productionEvidence(sourceCommit = SOURCE_SHA): { expected: string; fina
 			unpacked_size: 0,
 			file_count: 0,
 			internal_dependencies: {},
+			native_build: nativeBuild(definition.name),
 		})),
 	});
 	const final = createFinalEvidence(

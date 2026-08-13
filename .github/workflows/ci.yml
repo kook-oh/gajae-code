@@ -366,12 +366,8 @@ jobs:
          fail-fast: false
          matrix:
             include:
-               - { os: ubuntu-22.04, platform: linux, arch: x64, variant: baseline, rust_checks: true }
-               - { os: ubuntu-22.04, platform: linux, arch: x64, variant: modern }
-               - { os: ubuntu-22.04, platform: linux, arch: arm64, target: aarch64-unknown-linux-gnu }
+               - { os: ubuntu-22.04, platform: linux, arch: x64, variant: modern, rust_checks: true }
                - { os: macos-14, platform: darwin, arch: arm64 }
-               - { os: macos-15-intel, platform: darwin, arch: x64, variant: baseline }
-               - { os: windows-latest, platform: win32, arch: x64, variant: baseline }
       steps:
          - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
          - uses: ./.github/actions/build-native
@@ -395,10 +391,7 @@ jobs:
          matrix:
             include:
                - { os: ubuntu-22.04, platform: linux, arch: x64, target_id: linux-x64, binary_path: packages/coding-agent/binaries/gjc-linux-x64 }
-               - { os: ubuntu-24.04-arm, platform: linux, arch: arm64, target_id: linux-arm64, binary_path: packages/coding-agent/binaries/gjc-linux-arm64 }
                - { os: macos-14, platform: darwin, arch: arm64, target_id: darwin-arm64, binary_path: packages/coding-agent/binaries/gjc-darwin-arm64 }
-               - { os: macos-15-intel, platform: darwin, arch: x64, target_id: darwin-x64, binary_path: packages/coding-agent/binaries/gjc-darwin-x64 }
-               - { os: windows-latest, platform: win32, arch: x64, target_id: win32-x64, binary_path: packages/coding-agent/binaries/gjc-windows-x64.exe }
       steps:
          - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
          - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
@@ -611,7 +604,7 @@ jobs:
                     throw new Error("GitHub Release identity/state does not match the requested release");
                  }
                  const expectedAssets = [
-                    "gjc-linux-x64", "gjc-linux-arm64", "gjc-darwin-arm64", "gjc-darwin-x64", "gjc-windows-x64.exe",
+                    "gjc-linux-x64", "gjc-darwin-arm64",
                     "gajae-release-packages-expected-v1.json", "gajae-release-packages-v1.json", "gajae-release-channel-v1.json",
                  ];
                  const assets = new Set(release.assets.map(asset => asset.name));

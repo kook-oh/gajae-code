@@ -5,13 +5,13 @@ import type { ManagedOwnerSigabrtReceipt } from "./managed-owner-supervisor";
 import { sessionStateDir, sessionUltragoalDir } from "./session-layout";
 import { appendJsonlIdempotent, writeJsonAtomic } from "./state-writer";
 
-let recoveryFsRootLoad: Promise<typeof import("@gajae-code/natives")["openRecoveryFsRoot"]> | undefined;
+let recoveryFsRootLoad: Promise<typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"]> | undefined;
 
-async function openRecoveryFsRootNative(): Promise<typeof import("@gajae-code/natives")["openRecoveryFsRoot"]> {
+async function openRecoveryFsRootNative(): Promise<typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"]> {
 	recoveryFsRootLoad ??= Promise.resolve(
 		(
-			require("@gajae-code/natives") as {
-				openRecoveryFsRoot: typeof import("@gajae-code/natives")["openRecoveryFsRoot"];
+			require("@bworx-io/worx-code-natives") as {
+				openRecoveryFsRoot: typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"];
 			}
 		).openRecoveryFsRoot,
 	);

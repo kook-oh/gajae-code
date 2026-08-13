@@ -99,11 +99,45 @@ function fixtureTarball(manifest: string): Buffer {
 	]);
 }
 
+function fixtureNativeTarball(
+	definition: (typeof PUBLIC_PACKAGE_DEFINITIONS)[number],
+	sourceCommit = "a".repeat(40),
+): Buffer {
+	const nodeFilename = definition.name.endsWith("darwin-arm64")
+		? "pi_natives.darwin-arm64.node"
+		: "pi_natives.linux-x64-modern.node";
+	const target = definition.name.endsWith("darwin-arm64") ? "darwin-arm64" : "linux-x64-modern";
+	const node = Buffer.from(`native:${target}`);
+	const receipt = {
+		schema_version: 1,
+		source_commit: sourceCommit,
+		rust_toolchain: "nightly-2026-04-29",
+		build_profile: "dist",
+		target,
+		node_filename: nodeFilename,
+		node_sha256: sha256(node),
+	};
+	return fixtureTarballEntries([
+		{ path: `package/native/${nodeFilename}`, data: node },
+		{
+			path: `package/native/${nodeFilename}.build.json`,
+			data: Buffer.from(`${JSON.stringify(receipt)}\n`),
+		},
+		{
+			path: "package/package.json",
+			data: Buffer.from(JSON.stringify({ name: definition.name, version: "1.2.3" })),
+		},
+	]);
+}
+
 function tarballLimits(overrides: Partial<TarballLimits>): TarballLimits {
 	return { ...RELEASE_TARBALL_LIMITS, ...overrides };
 }
 
 function expectedRecord(definition: (typeof PUBLIC_PACKAGE_DEFINITIONS)[number], dependencies: Record<string, string> = {}): PackageEvidenceRecord {
+	if (definition.name.startsWith("@bworx-io/worx-code-natives-")) {
+		return packageEvidenceFromTarball(definition, fixtureNativeTarball(definition));
+	}
 	const manifest = `{"name":"${definition.name}","version":"1.2.3","dependencies":${JSON.stringify(dependencies)}}\n`;
 	const tarball = canonicalizePackageTarball(fixtureTarball(manifest));
 	return packageEvidenceFromTarball(definition, tarball);
@@ -135,11 +169,38 @@ function observation(record: PackageEvidenceRecord): RegistryPackageObservation 
 }
 
 describe("release package evidence", () => {
+	test("binds native node bytes to source, toolchain, profile, target, and tarball evidence", () => {
+		const nativeDefinitions = PUBLIC_PACKAGE_DEFINITIONS.filter(definition =>
+			definition.name.startsWith("@bworx-io/worx-code-natives-"),
+		);
+		const records = nativeDefinitions.map(definition =>
+			packageEvidenceFromTarball(definition, fixtureNativeTarball(definition)),
+		);
+
+		expect(records.map(record => record.native_build?.source_commit)).toEqual([
+			"a".repeat(40),
+			"a".repeat(40),
+		]);
+		expect(records.map(record => record.native_build?.build_profile)).toEqual(["dist", "dist"]);
+		expect(records.every(record => record.native_build?.rust_toolchain === "nightly-2026-04-29")).toBe(true);
+		expect(() =>
+			createExpectedEvidence({
+				sourceCommit: "b".repeat(40),
+				releaseVersion: "1.2.3",
+				packages: [
+					...expectedFixture().records.filter(record => record.native_build === null),
+					...records,
+				].sort((left, right) => left.name.localeCompare(right.name)),
+			}),
+		).toThrow("native build source_commit");
+	});
+
 	test("hashes the raw package/package.json bytes without parsing or normalizing them", () => {
 		const rawManifest = "{\r\n  \"name\": \"@gajae-code/ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
 		const tarball = canonicalizePackageTarball(fixtureTarball(rawManifest));
 		const inspection = inspectPackageTarball(tarball);
-		const record = packageEvidenceFromTarball(PUBLIC_PACKAGE_DEFINITIONS[1]!, tarball);
+		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/ai")!;
+		const record = packageEvidenceFromTarball(definition, tarball);
 
 		expect(inspection.manifestBytes.equals(Buffer.from(rawManifest))).toBe(true);
 		expect(record.manifest_sha256).toBe(createHash("sha256").update(Buffer.from(rawManifest)).digest("hex"));
@@ -147,17 +208,17 @@ describe("release package evidence", () => {
 		validateExpectedTarball(record, tarball);
 	});
 	test("accepts exact nightly versions and exact same-version internal dependencies", () => {
-		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/natives")!;
+		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-code-natives")!;
 		const version = "1.2.4-nightly.20260805032109.123456.gabcdef012345";
 		const manifest = JSON.stringify({
 			name: definition.name,
 			version,
-			optionalDependencies: { "@gajae-code/natives-linux-x64": version },
+			optionalDependencies: { "@bworx-io/worx-code-natives-linux-x64": version },
 		});
 
 		const record = packageEvidenceFromTarball(definition, fixtureTarball(manifest));
 		expect(record.version).toBe(version);
-		expect(record.internal_dependencies).toEqual({ "@gajae-code/natives-linux-x64": version });
+		expect(record.internal_dependencies).toEqual({ "@bworx-io/worx-code-natives-linux-x64": version });
 		const nightlyRecords = expectedFixture().records.map(candidate => ({
 			...candidate,
 			version,
@@ -171,8 +232,8 @@ describe("release package evidence", () => {
 	});
 
 	test("rejects workspace, file, ranged, and stale internal dependency forms in every packed field", () => {
-		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/natives")!;
-		const dependencyName = "@gajae-code/natives-linux-x64";
+		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-code-natives")!;
+		const dependencyName = "@bworx-io/worx-code-natives-linux-x64";
 		const cases = [
 			["dependencies", "workspace:*"],
 			["devDependencies", "file:../natives-linux-x64"],
@@ -191,8 +252,12 @@ describe("release package evidence", () => {
 		})))).toThrow("exact release version");
 	});
 	test("rejects unknown owned internal names before registry or publish callbacks", async () => {
-		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/natives")!;
-		for (const dependencyName of ["@gajae-code/unknown-owned", "@gajae-code-sync-sandbox/unknown-owned"]) {
+		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-code-natives")!;
+		for (const dependencyName of [
+			"@bworx-io/worx-code-natives-win32-x64",
+			"@gajae-code/unknown-owned",
+			"@gajae-code-sync-sandbox/unknown-owned",
+		]) {
 			const manifest = JSON.stringify({
 				name: definition.name,
 				version: "1.2.3",
@@ -287,12 +352,12 @@ describe("release package evidence", () => {
 		)).rejects.toThrow("redirect destination");
 		expect(() => validateNpmRegistryTarballUrl("https://evil.invalid/ai.tgz", "test tarball")).toThrow("must remain");
 	});
-	test("requires exactly the complete sorted 14-package set and closed expected schema", () => {
+	test("requires exactly the complete sorted 11-package set and closed expected schema", () => {
 		const { expected } = expectedFixture();
-		expect(expected.packages).toHaveLength(14);
+		expect(expected.packages).toHaveLength(11);
 		expect(validateExpectedEvidence(expected)).toEqual(expected);
 		expect(() => validateExpectedEvidence({ ...expected, unexpected: true })).toThrow("unknown or missing");
-		expect(() => validateExpectedEvidence({ ...expected, packages: expected.packages.slice(1) })).toThrow("exactly 14 packages");
+		expect(() => validateExpectedEvidence({ ...expected, packages: expected.packages.slice(1) })).toThrow("exactly 11 packages");
 		expect(() => validateExpectedEvidence({ ...expected, packages: [...expected.packages].reverse() })).toThrow("complete public package set");
 	});
 
@@ -330,7 +395,9 @@ describe("release package evidence", () => {
 			observedNames.push(candidate.name);
 			return observation(candidate);
 		});
-		expect([...observedNames].sort()).toEqual(PUBLIC_PACKAGE_DEFINITIONS.map(definition => definition.name));
+		expect([...observedNames].sort()).toEqual(
+			PUBLIC_PACKAGE_DEFINITIONS.map(definition => definition.name).sort(),
+		);
 		expect(Object.keys(observations)).toHaveLength(PUBLIC_PACKAGE_DEFINITIONS.length);
 		await expect(reobserveExpectedEvidencePackages(records, async (candidate) =>
 			candidate.name === record.name

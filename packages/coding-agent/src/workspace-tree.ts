@@ -1,5 +1,9 @@
 import * as path from "node:path";
-import type { FileType as FileTypeEnum, GlobMatch, listWorkspace as listWorkspaceFn } from "@gajae-code/natives";
+import type {
+	FileType as FileTypeEnum,
+	GlobMatch,
+	listWorkspace as listWorkspaceFn,
+} from "@bworx-io/worx-code-natives";
 import { formatAge, formatBytes } from "@gajae-code/utils";
 
 /** Defaults for the workspace tree shown in the system prompt. */
@@ -21,7 +25,7 @@ export const AGENTS_MD_LIMIT = 200;
 let nativeWorkspaceBindings: { FileType: typeof FileTypeEnum; listWorkspace: typeof listWorkspaceFn } | undefined;
 async function workspaceNatives(): Promise<{ FileType: typeof FileTypeEnum; listWorkspace: typeof listWorkspaceFn }> {
 	if (!nativeWorkspaceBindings) {
-		const mod = require("@gajae-code/natives") as {
+		const mod = require("@bworx-io/worx-code-natives") as {
 			FileType: typeof FileTypeEnum;
 			listWorkspace: typeof listWorkspaceFn;
 		};

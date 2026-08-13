@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@gajae-code/natives";
+import * as native from "@bworx-io/worx-code-natives";
 
 import { Settings } from "../src/config/settings";
 import { TELEGRAM_PARSE_MODE } from "../src/sdk/bus/html-format";

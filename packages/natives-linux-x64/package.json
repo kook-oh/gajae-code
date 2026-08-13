@@ -1,5 +1,5 @@
 {
-	"name": "@gajae-code/natives-linux-x64",
+	"name": "@bworx-io/worx-code-natives-linux-x64",
 	"version": "0.13.1",
 	"description": "Linux x64 native addons for @gajae-code/natives",
 	"type": "module",

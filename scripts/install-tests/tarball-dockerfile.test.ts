@@ -12,15 +12,9 @@ describe("tarball Verdaccio smoke publish list", () => {
 	test("publishes native platform packages before the stable natives loader", async () => {
 		const dockerfile = await Bun.file(dockerfilePath).text();
 		const packages = readPublishPackages(dockerfile);
-		const platformPackages = [
-			"natives-darwin-arm64",
-			"natives-darwin-x64",
-			"natives-linux-arm64",
-			"natives-linux-x64",
-			"natives-win32-x64",
-		];
+		const platformPackages = ["natives-darwin-arm64", "natives-linux-x64"];
 
-		expect(packages).toEqual(expect.arrayContaining(platformPackages));
+		expect(packages.filter(pkg => pkg.startsWith("natives-"))).toEqual(platformPackages);
 		const nativesIndex = packages.indexOf("natives");
 		expect(nativesIndex).toBeGreaterThan(-1);
 		for (const platformPackage of platformPackages) {
@@ -34,5 +28,6 @@ describe("tarball Verdaccio smoke publish list", () => {
 		expect(dockerfile).toContain("stage_native_platform_artifacts \"$pkg\"");
 		expect(dockerfile).toContain("natives-linux-x64) prefix=\"pi_natives.linux-x64\" ;;");
 		expect(dockerfile).toContain("Expected linux-x64 native artifact matching ${prefix}*.node");
+		expect(dockerfile).toContain('cp "${artifact}.build.json" native/');
 	});
 });

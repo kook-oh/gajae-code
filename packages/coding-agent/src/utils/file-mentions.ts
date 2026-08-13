@@ -7,9 +7,9 @@
  */
 import * as fs from "node:fs/promises";
 import path from "node:path";
+import type { glob as globFn } from "@bworx-io/worx-code-natives";
 import type { AgentMessage } from "@gajae-code/agent-core";
 import type { ImageContent } from "@gajae-code/ai/core";
-import type { glob as globFn } from "@gajae-code/natives";
 import { fuzzyMatch } from "@gajae-code/tui";
 import { formatAge, formatBytes, readImageMetadata } from "@gajae-code/utils";
 import { formatHashLines } from "../hashline/hash";
@@ -26,7 +26,7 @@ import { formatDimensionNote, resizeImage } from "./image-resize";
 let fileMentionGlobLoad: Promise<typeof globFn> | undefined;
 
 async function fileMentionGlob(): Promise<typeof globFn> {
-	fileMentionGlobLoad ??= Promise.resolve((require("@gajae-code/natives") as { glob: typeof globFn }).glob);
+	fileMentionGlobLoad ??= Promise.resolve((require("@bworx-io/worx-code-natives") as { glob: typeof globFn }).glob);
 	return await fileMentionGlobLoad;
 }
 

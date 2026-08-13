@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { $ } from "bun";
@@ -10,6 +11,7 @@ const repoRoot = path.join(import.meta.dir, "../../..");
 const rustDir = path.join(repoRoot, "crates/pi-natives");
 const nativeDir = path.join(import.meta.dir, "../native");
 const packageJsonPath = path.join(import.meta.dir, "../package.json");
+const rustToolchainPath = path.join(repoRoot, "rust-toolchain.toml");
 
 const crossTarget = Bun.env.CROSS_TARGET;
 const targetPlatform = Bun.env.TARGET_PLATFORM || process.platform;
@@ -293,9 +295,28 @@ try {
 
 	await installGeneratedBindings(buildOutputDir);
 
+	const sourceCommit = Bun.env.GITHUB_SHA ?? (await $`git rev-parse HEAD`.cwd(repoRoot).text()).trim();
+	if (!/^[0-9a-f]{40}$/u.test(sourceCommit)) throw new Error(`Native build source commit is invalid: ${sourceCommit}`);
+	const rustToolchain = (await Bun.file(rustToolchainPath).text()).match(/channel\s*=\s*"([^"]+)"/u)?.[1];
+	if (!rustToolchain) throw new Error(`Cannot resolve Rust toolchain from ${rustToolchainPath}`);
+	const target = `${targetPlatform}-${targetArch}${variantSuffix}`;
+	const nodeBytes = new Uint8Array(await Bun.file(canonicalAddonPath).arrayBuffer());
+	const nodeSha256 = createHash("sha256").update(nodeBytes).digest("hex");
 	await Bun.write(
 		`${canonicalAddonPath}.build.json`,
-		`${JSON.stringify({ languageSet, profile: profileLabel, builtAt: new Date().toISOString() }, null, 2)}\n`,
+		`${JSON.stringify(
+			{
+				schema_version: 1,
+				source_commit: sourceCommit,
+				rust_toolchain: rustToolchain,
+				build_profile: profileLabel,
+				target,
+				node_filename: canonicalAddonFilename,
+				node_sha256: nodeSha256,
+			},
+			null,
+			2,
+		)}\n`,
 	);
 
 	await generateEnumExports();

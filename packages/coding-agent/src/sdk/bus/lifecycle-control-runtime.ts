@@ -10,7 +10,7 @@ import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
-import type { NotificationControlServer as NativeNotificationControlServer } from "@gajae-code/natives";
+import type { NotificationControlServer as NativeNotificationControlServer } from "@bworx-io/worx-code-natives";
 import { logger } from "@gajae-code/utils";
 import { readLinuxProcStartTime } from "../../gjc-runtime/linux-proc";
 import {
@@ -1728,6 +1728,6 @@ export function buildOrchestratorDeps(input: {
 export const createNativeControlServer: LifecycleControlServerFactory = ({ token, ownerId, agentDir }) => {
 	// Lazy require so loading this module (for the orchestrator / wiring / tests)
 	// never eagerly resolves the native addon — only a real production start does.
-	const { NotificationControlServer } = require("@gajae-code/natives") as NativeControlServerModule;
+	const { NotificationControlServer } = require("@bworx-io/worx-code-natives") as NativeControlServerModule;
 	return new NotificationControlServer(token, ownerId, agentDir);
 };

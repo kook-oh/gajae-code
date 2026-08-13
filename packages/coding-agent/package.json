@@ -58,7 +58,7 @@
 		"@gajae-code/agent-core": "catalog:",
 		"@gajae-code/ai": "catalog:",
 		"@gajae-code/bridge-client": "catalog:",
-		"@gajae-code/natives": "catalog:",
+		"@bworx-io/worx-code-natives": "catalog:",
 		"@gajae-code/tui": "catalog:",
 		"@gajae-code/utils": "catalog:",
 		"@puppeteer/browsers": "catalog:",

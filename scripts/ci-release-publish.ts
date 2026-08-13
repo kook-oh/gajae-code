@@ -186,10 +186,7 @@ export function parseReleasePublishCli(argv: readonly string[]): ReleasePublishC
 }
 const nativePlatformPackages: readonly PublishPackage[] = [
 	{ dir: "packages/natives-darwin-arm64", kind: "native-platform", nativePrefixes: ["pi_natives.darwin-arm64"] },
-	{ dir: "packages/natives-darwin-x64", kind: "native-platform", nativePrefixes: ["pi_natives.darwin-x64"] },
-	{ dir: "packages/natives-linux-arm64", kind: "native-platform", nativePrefixes: ["pi_natives.linux-arm64"] },
 	{ dir: "packages/natives-linux-x64", kind: "native-platform", nativePrefixes: ["pi_natives.linux-x64"] },
-	{ dir: "packages/natives-win32-x64", kind: "native-platform", nativePrefixes: ["pi_natives.win32-x64"] },
 ];
 
 export const packages: PublishPackage[] = [
@@ -425,6 +422,10 @@ async function stageNativePlatformArtifacts(pkg: PublishPackage): Promise<void> 
 	await fs.mkdir(targetDir, { recursive: true });
 	for (const entry of matching) {
 		await fs.copyFile(path.join(sourceDir, entry), path.join(targetDir, entry));
+		await fs.copyFile(
+			path.join(sourceDir, `${entry}.build.json`),
+			path.join(targetDir, `${entry}.build.json`),
+		);
 	}
 }
 

@@ -3,7 +3,7 @@
  *
  * Run: bun packages/tui/bench/visible-width.ts
  */
-import { visibleWidth as nativeVisibleWidth } from "@gajae-code/natives";
+import { visibleWidth as nativeVisibleWidth } from "@bworx-io/worx-code-natives";
 import { getDefaultTabWidth } from "@gajae-code/utils";
 import { visibleWidthRaw as hybridVisibleWidth, replaceTabs } from "../src/utils";
 

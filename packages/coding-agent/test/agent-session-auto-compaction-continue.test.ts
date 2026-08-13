@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { scheduler } from "node:timers/promises";
+import * as native from "@bworx-io/worx-code-natives";
 import { Agent, AgentBusyError } from "@gajae-code/agent-core";
 import type { AssistantMessage } from "@gajae-code/ai";
 import { getBundledModel } from "@gajae-code/ai/models";
@@ -13,7 +14,6 @@ import { AgentSession, type AgentSessionEvent } from "@gajae-code/coding-agent/s
 import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
 import { FallbackChainController } from "@gajae-code/coding-agent/session/fallback-chain-controller";
 import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import * as native from "@gajae-code/natives";
 import { getProjectAgentDir, logger, TempDir, withTimeout } from "@gajae-code/utils";
 
 const runtimeSignalStoreKey = "__gjcAutoContinueSignals";

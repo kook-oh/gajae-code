@@ -8,7 +8,7 @@ import type {
 	NativeOwnerOnlySecurityResult,
 	RecoveryFsIdentity,
 	RecoveryFsRoot,
-} from "@gajae-code/natives";
+} from "@bworx-io/worx-code-natives";
 import type { SessionStorageRangeSnapshot, SessionStorageStat } from "../session-storage";
 import {
 	classifyNativePublishOutcome,
@@ -18,7 +18,7 @@ import {
 } from "./native-publish-outcome";
 
 type NativeManagedSessionStorage = Pick<
-	typeof import("@gajae-code/natives"),
+	typeof import("@bworx-io/worx-code-natives"),
 	| "applyOwnerOnlyFdSecurity"
 	| "applyOwnerOnlyPathSecurity"
 	| "exactRemoveDirectoryTree"
@@ -35,7 +35,7 @@ type NativeManagedSessionStorage = Pick<
 >;
 
 function nativeSessionStorage(): NativeManagedSessionStorage {
-	return require("@gajae-code/natives") as NativeManagedSessionStorage;
+	return require("@bworx-io/worx-code-natives") as NativeManagedSessionStorage;
 }
 
 export const MANAGED_ARTIFACT_MAX_DEPTH = 32;

@@ -17,7 +17,7 @@ import type { BigIntStats, Dirent, Stats } from "node:fs";
 import * as fsp from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { exactRemoveDirectoryTree, exactUnlink, snapshotDirectoryTree } from "@gajae-code/natives";
+import { exactRemoveDirectoryTree, exactUnlink, snapshotDirectoryTree } from "@bworx-io/worx-code-natives";
 import { getAgentDir, getBlobsDir, getSessionsDir, isEnoent, VERSION } from "@gajae-code/utils";
 import { getDefault } from "../config/settings-schema";
 import { listHarnessRootRegistriesForGc } from "../harness-control-plane/storage";

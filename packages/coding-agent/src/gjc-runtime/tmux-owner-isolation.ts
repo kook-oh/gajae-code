@@ -12,14 +12,14 @@ import * as fs from "node:fs/promises";
 
 import * as path from "node:path";
 
-import type { RecoveryFsRoot } from "@gajae-code/natives";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 
-let nativeRecoveryFsRoot: typeof import("@gajae-code/natives")["openRecoveryFsRoot"] | undefined;
+let nativeRecoveryFsRoot: typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"] | undefined;
 
-function openRecoveryFsRootNative(): typeof import("@gajae-code/natives")["openRecoveryFsRoot"] {
+function openRecoveryFsRootNative(): typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"] {
 	nativeRecoveryFsRoot ??= (
-		require("@gajae-code/natives") as {
-			openRecoveryFsRoot: typeof import("@gajae-code/natives")["openRecoveryFsRoot"];
+		require("@bworx-io/worx-code-natives") as {
+			openRecoveryFsRoot: typeof import("@bworx-io/worx-code-natives")["openRecoveryFsRoot"];
 		}
 	).openRecoveryFsRoot;
 	return nativeRecoveryFsRoot;

@@ -6,11 +6,12 @@ import * as path from "node:path";
 
 import { nativeProcessBindings } from "@gajae-code/utils/native-process";
 
-type NativeChatDaemonBindings = Pick<typeof import("@gajae-code/natives"), "exactUnlink">;
+type NativeChatDaemonBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "exactUnlink">;
 let nativeChatDaemonBindings: NativeChatDaemonBindings | undefined;
 
 function nativeChatDaemon(): NativeChatDaemonBindings {
-	if (!nativeChatDaemonBindings) nativeChatDaemonBindings = require("@gajae-code/natives") as NativeChatDaemonBindings;
+	if (!nativeChatDaemonBindings)
+		nativeChatDaemonBindings = require("@bworx-io/worx-code-natives") as NativeChatDaemonBindings;
 	return nativeChatDaemonBindings;
 }
 

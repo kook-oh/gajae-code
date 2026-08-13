@@ -1,9 +1,9 @@
 import { Database } from "bun:sqlite";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { SummaryResult } from "@bworx-io/worx-code-natives";
 import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
 import type { ImageContent, TextContent } from "@gajae-code/ai/core";
-import type { SummaryResult } from "@gajae-code/natives";
 import type { Component } from "@gajae-code/tui";
 import { Text } from "@gajae-code/tui";
 import { getRemoteDir, logger, prompt, readImageMetadata, untilAborted } from "@gajae-code/utils";
@@ -96,11 +96,11 @@ import {
 import { ToolAbortError, ToolError, throwIfAborted } from "./tool-errors";
 import { toolResult } from "./tool-result";
 
-type NativeReadBindings = Pick<typeof import("@gajae-code/natives"), "glob" | "summarizeCode">;
+type NativeReadBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "glob" | "summarizeCode">;
 let nativeReadBindingsLoad: Promise<NativeReadBindings> | undefined;
 
 async function nativeRead(): Promise<NativeReadBindings> {
-	nativeReadBindingsLoad ??= Promise.resolve(require("@gajae-code/natives") as NativeReadBindings);
+	nativeReadBindingsLoad ??= Promise.resolve(require("@bworx-io/worx-code-natives") as NativeReadBindings);
 	return await nativeReadBindingsLoad;
 }
 

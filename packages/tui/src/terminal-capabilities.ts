@@ -1,11 +1,11 @@
-import type { encodeSixel as encodeSixelFn } from "@gajae-code/natives";
+import type { encodeSixel as encodeSixelFn } from "@bworx-io/worx-code-natives";
 import { $env, $pickenv } from "@gajae-code/utils";
 
 type NativeEncodeSixel = typeof encodeSixelFn;
 let nativeEncodeSixel: NativeEncodeSixel | undefined;
 
 function encodeSixelNative(bytes: Uint8Array, targetWidthPx: number, targetHeightPx: number): string {
-	nativeEncodeSixel ??= (require("@gajae-code/natives") as { encodeSixel: NativeEncodeSixel }).encodeSixel;
+	nativeEncodeSixel ??= (require("@bworx-io/worx-code-natives") as { encodeSixel: NativeEncodeSixel }).encodeSixel;
 	return nativeEncodeSixel(bytes, targetWidthPx, targetHeightPx);
 }
 

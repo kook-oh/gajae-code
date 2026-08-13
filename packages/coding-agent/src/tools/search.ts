@@ -1,8 +1,8 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
+import type { GrepMatch, GrepResult, grep as grepFn } from "@bworx-io/worx-code-natives";
 import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type { GrepMatch, GrepResult, grep as grepFn } from "@gajae-code/natives";
 import type { Component } from "@gajae-code/tui";
 import { Text } from "@gajae-code/tui";
 import { prompt, untilAborted } from "@gajae-code/utils";
@@ -39,16 +39,16 @@ import { ToolError } from "./tool-errors";
 import { toolResult } from "./tool-result";
 
 let searchNativesLoad:
-	| Promise<{ GrepOutputMode: typeof import("@gajae-code/natives")["GrepOutputMode"]; grep: typeof grepFn }>
+	| Promise<{ GrepOutputMode: typeof import("@bworx-io/worx-code-natives")["GrepOutputMode"]; grep: typeof grepFn }>
 	| undefined;
 
 async function searchNatives(): Promise<{
-	GrepOutputMode: typeof import("@gajae-code/natives")["GrepOutputMode"];
+	GrepOutputMode: typeof import("@bworx-io/worx-code-natives")["GrepOutputMode"];
 	grep: typeof grepFn;
 }> {
 	searchNativesLoad ??= Promise.resolve(
-		require("@gajae-code/natives") as {
-			GrepOutputMode: typeof import("@gajae-code/natives")["GrepOutputMode"];
+		require("@bworx-io/worx-code-natives") as {
+			GrepOutputMode: typeof import("@bworx-io/worx-code-natives")["GrepOutputMode"];
 			grep: typeof grepFn;
 		},
 	);

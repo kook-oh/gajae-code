@@ -1,5 +1,5 @@
 {
-	"name": "@gajae-code/natives",
+	"name": "@bworx-io/worx-code-natives",
 	"version": "0.13.1",
 	"description": "Native Rust bindings for grep, clipboard, image processing, syntax highlighting, PTY, and shell operations via N-API",
 	"type": "module",
@@ -61,11 +61,8 @@
 		"README.md"
 	],
 	"optionalDependencies": {
-		"@gajae-code/natives-darwin-arm64": "workspace:*",
-		"@gajae-code/natives-darwin-x64": "workspace:*",
-		"@gajae-code/natives-linux-arm64": "workspace:*",
-		"@gajae-code/natives-linux-x64": "workspace:*",
-		"@gajae-code/natives-win32-x64": "workspace:*"
+		"@bworx-io/worx-code-natives-darwin-arm64": "workspace:*",
+		"@bworx-io/worx-code-natives-linux-x64": "workspace:*"
 	},
 	"exports": {
 		".": {

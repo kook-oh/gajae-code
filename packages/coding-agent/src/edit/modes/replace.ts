@@ -54,7 +54,7 @@ function warmNativeFuzzy(): void {
 	nativeFuzzyWarmupStarted = true;
 	void Promise.resolve()
 		.then(() => {
-			const mod = require("@gajae-code/natives") as {
+			const mod = require("@bworx-io/worx-code-natives") as {
 				h02ScoreSequenceFuzzy?: typeof scoreSequenceFuzzyNative;
 				h01FindBestFuzzyMatch?: typeof findBestFuzzyMatchNative;
 			};

@@ -1,10 +1,10 @@
-import type { invalidateFsScanCache as invalidateFsScanCacheFn } from "@gajae-code/natives";
+import type { invalidateFsScanCache as invalidateFsScanCacheFn } from "@bworx-io/worx-code-natives";
 
 let nativeInvalidateFsScanCache: typeof invalidateFsScanCacheFn | undefined;
 
 function invalidateFsScanCacheNative(path: string): void {
 	nativeInvalidateFsScanCache ??= (
-		require("@gajae-code/natives") as { invalidateFsScanCache: typeof invalidateFsScanCacheFn }
+		require("@bworx-io/worx-code-natives") as { invalidateFsScanCache: typeof invalidateFsScanCacheFn }
 	).invalidateFsScanCache;
 	nativeInvalidateFsScanCache(path);
 }

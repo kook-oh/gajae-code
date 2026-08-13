@@ -36,7 +36,7 @@
 		"fmt": "biome format --write ."
 	},
 	"dependencies": {
-		"@gajae-code/natives": "catalog:",
+		"@bworx-io/worx-code-natives": "catalog:",
 		"@gajae-code/utils": "catalog:",
 		"lru-cache": "catalog:",
 		"marked": "catalog:"
