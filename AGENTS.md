@@ -187,3 +187,10 @@ Avoid placeholder tests, tautologies, broad `not.toThrow()` assertions, duplicat
 
 - Package changelogs live at `packages/*/CHANGELOG.md`; add entries under `## [Unreleased]`, never edit released sections.
 - Release flow: `bun run release` (scripts/release.ts) after changelogs and verification are complete.
+
+## byteWORX 프로그램 정본 (필독)
+
+이 레포는 byteWORX own-engine 피벗의 제품 레포다. **계획·아키텍처·설계에 대한 모든 질문은
+`docs/PROGRAM.md`(프로그램 마스터)에서 시작하라.** 엔진 피벗 실행 계획 승인본은
+`docs/plans/ENGINE-PIVOT-PLAN.md`, AX 플랫폼 정본은 `bworx-io/worx-ax` 레포 `docs/`에 있다.
+계획·설계에 영향을 주는 변경은 같은 커밋에 해당 정본 문서 갱신을 포함해야 한다.
