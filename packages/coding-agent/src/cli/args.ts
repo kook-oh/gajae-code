@@ -31,7 +31,7 @@ function isKnownRootFlagToken(arg: string): boolean {
 	return ROOT_FLAG_TOKENS.has(arg) || INTERNAL_ROOT_FLAG_TOKENS.has(arg) || isExternallyParsedRootFlagToken(arg);
 }
 
-export type Mode = "text" | "json" | "acp";
+export type Mode = "text" | "json" | "rpc" | "acp";
 
 export type ParseArgsAuthority = "local" | "acp" | "deferred";
 
@@ -180,14 +180,14 @@ export function parseArgs(args: string[], authority: ParseArgsAuthority = "local
 		} else if (arg === "--mode") {
 			const mode = takeFlagValue(args, i, "--mode");
 			i++;
-			if (mode === "text" || mode === "json" || mode === "acp") {
+			if (mode === "text" || mode === "json" || mode === "rpc" || mode === "acp") {
 				result.mode = mode;
 			} else {
-				const removed = mode === "rpc" || mode === "rpc-ui" || mode === "bridge";
+				const removed = mode === "rpc-ui" || mode === "bridge";
 				throw new CliParseError(
 					removed
-						? `--mode ${mode} was removed; external control now uses the Gajae-Code SDK (docs/sdk.md)`
-						: `invalid --mode value: ${mode} (expected text, json, or acp)`,
+						? `--mode ${mode} was removed; external control now uses the WORX Code SDK (docs/sdk.md)`
+						: `invalid --mode value: ${mode} (expected text, json, rpc, or acp)`,
 				);
 			}
 		} else if (arg === "--continue" || arg === "-c") {

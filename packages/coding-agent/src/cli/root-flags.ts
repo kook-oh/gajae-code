@@ -28,8 +28,8 @@ export const ROOT_LAUNCH_FLAGS = {
 	}),
 	"allow-home": Flags.boolean({ description: "Allow starting in ~ without auto-switching to a temp dir" }),
 	mode: Flags.string({
-		description: "Output mode: text (default), json, or acp",
-		options: ["text", "json", "acp"],
+		description: "Output mode: text (default), json, rpc, or acp",
+		options: ["text", "json", "rpc", "acp"],
 	}),
 	print: Flags.boolean({ char: "p", description: "Non-interactive mode: process prompt and exit" }),
 	continue: Flags.boolean({ char: "c", description: "Continue previous session" }),

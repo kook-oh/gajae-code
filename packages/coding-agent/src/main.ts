@@ -43,6 +43,7 @@ import type { AcpStartupOptions } from "./modes/acp/startup-options";
 import type { SessionSelectionResult } from "./modes/components/session-selector";
 import type { InteractiveMode } from "./modes/interactive-mode";
 import type { PrintModeOptions } from "./modes/print-mode";
+import { runRpcMode } from "./modes/rpc-mode";
 import { initTheme, stopThemeWatcher } from "./modes/theme/theme";
 import type { SubmittedUserInput } from "./modes/types";
 import { applyCliRuntimeApiKeyOverride } from "./runtime-api-key";
@@ -1255,6 +1256,7 @@ export interface RunRootCommandDependencies {
 	getChangelogForDisplay?: typeof getChangelogForDisplay;
 	createInteractiveMode?: CreateInteractiveMode;
 	runPrintMode?: RunPrintMode;
+	runRpcMode?: typeof runRpcMode;
 	isResumePickerTerminal?: ResumePickerTerminalCheck;
 	listForResumePickerReadOnly?: ListForResumePickerReadOnly;
 	listManagedForResumePickerReadOnly?: ListManagedForResumePickerReadOnly;
@@ -1456,7 +1458,7 @@ export async function runRootCommand(
 	const hasPreparedInput = parsedArgs.messages.length > 0 || parsedArgs.fileArgs.length > 0;
 	const { pipedInput, fileText, fileImages } = await logger.time("prepareInitialMessage", async () => {
 		const pipedInput =
-			parsedArgs.mode === "acp"
+			parsedArgs.mode === "acp" || parsedArgs.mode === "rpc"
 				? undefined
 				: deps.readPipedInput
 					? await deps.readPipedInput()
@@ -1661,7 +1663,7 @@ export async function runRootCommand(
 	};
 	sessionOptions.authStorage = authStorage;
 	sessionOptions.modelRegistry = modelRegistry;
-	sessionOptions.hasUI = isInteractive;
+	sessionOptions.hasUI = isInteractive || mode === "rpc";
 	sessionOptions.notificationHostModeSupported = isInteractive;
 	sessionOptions.sdkHostModeSupported = isInteractive;
 	sessionOptions.settings = settingsInstance;
@@ -1714,6 +1716,7 @@ export async function runRootCommand(
 		parsedArgs.fork === undefined &&
 		!isInteractive &&
 		mode !== "acp" &&
+		mode !== "rpc" &&
 		!hasRootStartupProfile &&
 		!sessionOptions.model &&
 		!sessionOptions.modelPattern &&
@@ -1867,7 +1870,7 @@ export async function runRootCommand(
 
 		applyExtensionFlagValues(session, rawArgs);
 
-		if (!isInteractive && !session.model) {
+		if (!isInteractive && mode !== "rpc" && !session.model) {
 			process.stderr.write(
 				`${chalk.red(modelFallbackMessage ?? `No models available. ${formatModelOnboardingGuidance()}`)}\n`,
 			);
@@ -1942,6 +1945,17 @@ export async function runRootCommand(
 			if (exitForTiming) {
 				await session.dispose();
 				process.exit(0);
+			}
+		} else if (mode === "rpc") {
+			try {
+				await (deps.runRpcMode ?? runRpcMode)(session, setToolUIContext);
+				if ($pickenv("GJC_TIMING", "PI_TIMING")) {
+					logger.printTimings();
+				}
+			} finally {
+				stopThemeWatcher();
+				authStorage.close();
+				if (!deps.suppressProcessExit) await postmortem.cleanup();
 			}
 		} else {
 			const runPrint = deps.runPrintMode ?? (await import("./modes/print-mode")).runPrintMode;

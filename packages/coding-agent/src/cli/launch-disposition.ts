@@ -1,4 +1,4 @@
-export type LaunchMode = "text" | "json" | "acp";
+export type LaunchMode = "text" | "json" | "rpc" | "acp";
 
 export interface LaunchDisposition {
 	autoPrint: boolean;
