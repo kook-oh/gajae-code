@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it, vi } from "bun:test";
-import { OAuthManualInputManager } from "@gajae-code/coding-agent/modes/oauth-manual-input";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { executeBuiltinSlashCommand } from "@gajae-code/coding-agent/slash-commands/builtin-registry";
+import { OAuthManualInputManager } from "@bworx-io/worx-code/modes/oauth-manual-input";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { executeBuiltinSlashCommand } from "@bworx-io/worx-code/slash-commands/builtin-registry";
 
 beforeAll(async () => {
 	await initTheme(false, undefined, undefined, "red-claw", "blue-crab");

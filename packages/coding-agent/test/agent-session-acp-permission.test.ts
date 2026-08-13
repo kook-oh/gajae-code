@@ -10,17 +10,17 @@ import { Agent, type AgentTool } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
 import { createMockModel, type MockModelOptions } from "@gajae-code/ai/providers/mock";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { EditTool } from "@gajae-code/coding-agent/edit";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { EditTool } from "@bworx-io/worx-code/edit";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import type {
 	ClientBridge,
 	ClientBridgePermissionOutcome,
 	ClientBridgePermissionToolCall,
-} from "@gajae-code/coding-agent/session/client-bridge";
-import { convertToLlm } from "@gajae-code/coding-agent/session/messages";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/session/client-bridge";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { TempDir } from "@gajae-code/utils";
 import * as z from "zod/v4";
 import { callSessionTool } from "../src/eval/js/tool-bridge";

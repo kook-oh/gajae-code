@@ -215,7 +215,7 @@ test("v1 SDK state transforms to a rollback directory and is executable by the p
 		"packages/coding-agent/src/cli.ts",
 		"packages/coding-agent/src/notifications/telegram-daemon-cli.ts",
 	]);
-	expect(manifest.artifactPath).toBe("packages/coding-agent/dist/gjc-rollback");
+	expect(manifest.artifactPath).toBe("packages/coding-agent/dist/worx-rollback");
 	expect(manifest.artifactSha256Scope).toContain("executable bytes");
 	expect(manifest.supportedPlatforms).toContain(process.platform);
 	expect(manifest.artifactPathByPlatform).toEqual({

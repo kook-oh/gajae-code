@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { type ContextFile, contextFileCapability } from "@gajae-code/coding-agent/capability/context-file";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { initializeWithSettings, loadCapability } from "@gajae-code/coding-agent/discovery";
+import { type ContextFile, contextFileCapability } from "@bworx-io/worx-code/capability/context-file";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { initializeWithSettings, loadCapability } from "@bworx-io/worx-code/discovery";
 
 describe("disabledExtensions runtime filtering", () => {
 	let tempDir = "";

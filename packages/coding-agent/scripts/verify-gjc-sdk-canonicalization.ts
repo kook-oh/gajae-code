@@ -2652,7 +2652,7 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/bridge-client/src/client.ts":
-				'import { SdkClient } from "@gajae-code/coding-agent";\nvoid SdkClient;\n',
+				'import { SdkClient } from "@bworx-io/worx-code";\nvoid SdkClient;\n',
 		},
 		1,
 		"bridge-client imports coding-agent or AgentSession authority",

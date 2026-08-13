@@ -2,14 +2,14 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { collectFileLocksForGc, fileLocksGcAdapter } from "@gajae-code/coding-agent/config/file-lock-gc";
-import type { GcContext, GcPidProbe } from "@gajae-code/coding-agent/gjc-runtime/gc-runtime";
-import { collectGcReport, computeExitCode } from "@gajae-code/coding-agent/gjc-runtime/gc-runtime";
-import { teamWorkersGcAdapter } from "@gajae-code/coding-agent/gjc-runtime/team-gc";
+import { collectFileLocksForGc, fileLocksGcAdapter } from "@bworx-io/worx-code/config/file-lock-gc";
+import type { GcContext, GcPidProbe } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
+import { collectGcReport, computeExitCode } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
+import { teamWorkersGcAdapter } from "@bworx-io/worx-code/gjc-runtime/team-gc";
 import {
 	harnessLeasesGcAdapter,
 	registryEntriesGcAdapter,
-} from "@gajae-code/coding-agent/harness-control-plane/gc-adapter";
+} from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
 
 const DEAD_PID = 4242;
 const ALIVE_PID = 4243;

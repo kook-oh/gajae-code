@@ -2,9 +2,9 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { BUILTIN_CAPABILITY_CATALOG, createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
-import { summarizeComputerDetails } from "@gajae-code/coding-agent/tools/computer/render";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { BUILTIN_CAPABILITY_CATALOG, createTools, type ToolSession } from "@bworx-io/worx-code/tools";
+import { summarizeComputerDetails } from "@bworx-io/worx-code/tools/computer/render";
 import {
 	ComputerTool,
 	computerSchema,
@@ -13,8 +13,8 @@ import {
 	setComputerArchForTests,
 	setComputerControllerFactoryForTests,
 	setComputerPlatformForTests,
-} from "@gajae-code/coding-agent/tools/implementations";
-import { toolRenderers } from "@gajae-code/coding-agent/tools/renderers";
+} from "@bworx-io/worx-code/tools/implementations";
+import { toolRenderers } from "@bworx-io/worx-code/tools/renderers";
 import { zlibSync } from "fflate";
 
 function createSession(settings = Settings.isolated(), sessionFile: string | null = null): ToolSession {

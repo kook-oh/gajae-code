@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { resolveProfileBindings } from "@gajae-code/coding-agent/config/model-profiles";
-import { ModelsConfigSchema } from "@gajae-code/coding-agent/config/models-config-schema";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { resolveProfileBindings } from "@bworx-io/worx-code/config/model-profiles";
+import { ModelsConfigSchema } from "@bworx-io/worx-code/config/models-config-schema";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 
 function issuePaths(error: { issues: Array<{ path: PropertyKey[] }> }): string[] {
 	return error.issues.map(issue => issue.path.join("."));

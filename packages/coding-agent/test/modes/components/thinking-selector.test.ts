@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, it, vi } from "bun:test";
 import { ThinkingLevel } from "@gajae-code/agent-core";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { ThinkingSelectorComponent } from "@gajae-code/coding-agent/modes/components/thinking-selector";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { ThinkingSelectorComponent } from "@bworx-io/worx-code/modes/components/thinking-selector";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 
 function stripAnsi(text: string): string {
 	return text.replace(/\x1b\[[0-9;]*m/g, "");

@@ -4,14 +4,14 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { Model } from "@gajae-code/ai";
 import * as ai from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	buildMemoryToolDeveloperInstructions,
 	getMemoryRoot,
 	startMemoryStartupTask,
-} from "@gajae-code/coding-agent/memories";
-import * as memoryStorage from "@gajae-code/coding-agent/memories/storage";
-import { localBackend } from "@gajae-code/coding-agent/memory-backend";
+} from "@bworx-io/worx-code/memories";
+import * as memoryStorage from "@bworx-io/worx-code/memories/storage";
+import { localBackend } from "@bworx-io/worx-code/memory-backend";
 import { getAgentDbPath, Snowflake } from "@gajae-code/utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

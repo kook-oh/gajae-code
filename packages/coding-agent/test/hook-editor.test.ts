@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
-import { KeybindingsManager } from "@gajae-code/coding-agent/config/keybindings";
-import { HookEditorComponent } from "@gajae-code/coding-agent/modes/components/hook-editor";
-import { ExtensionUiController } from "@gajae-code/coding-agent/modes/controllers/extension-ui-controller";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
+import { HookEditorComponent } from "@bworx-io/worx-code/modes/components/hook-editor";
+import { ExtensionUiController } from "@bworx-io/worx-code/modes/controllers/extension-ui-controller";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { setKeybindings, type TUI } from "@gajae-code/tui";
 
 beforeAll(async () => {

@@ -10,13 +10,13 @@ import {
 	type NotificationsSaveInactiveResult,
 	NotificationsSettingsEditorComponent,
 	type PreparedNotificationProviderConfiguration,
-} from "@gajae-code/coding-agent/modes/components/notifications-settings-editor";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { NotificationProvider } from "@gajae-code/coding-agent/sdk/bus/config";
+} from "@bworx-io/worx-code/modes/components/notifications-settings-editor";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { NotificationProvider } from "@bworx-io/worx-code/sdk/bus/config";
 import type {
 	NotificationHealthReport,
 	NotificationStatusReport,
-} from "@gajae-code/coding-agent/sdk/bus/notification-service";
+} from "@bworx-io/worx-code/sdk/bus/notification-service";
 
 beforeAll(async () => {
 	await initTheme();

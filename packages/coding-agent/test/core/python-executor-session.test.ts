@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { disposeAllKernelSessions, executePython } from "@gajae-code/coding-agent/eval/py/executor";
-import * as pythonKernel from "@gajae-code/coding-agent/eval/py/kernel";
-import { disposePyToolBridge } from "@gajae-code/coding-agent/eval/py/tool-bridge";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+import { disposeAllKernelSessions, executePython } from "@bworx-io/worx-code/eval/py/executor";
+import * as pythonKernel from "@bworx-io/worx-code/eval/py/kernel";
+import { disposePyToolBridge } from "@bworx-io/worx-code/eval/py/tool-bridge";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 
 class FakeKernel {
 	#onExecute?: () => Promise<void>;

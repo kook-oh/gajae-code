@@ -3,12 +3,12 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
-import { exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
+import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import {
 	SessionManager,
 	SessionManagerTestHooks,
 	type SessionMessageEntry,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 
 const tempDirs: string[] = [];
 afterEach(async () => {

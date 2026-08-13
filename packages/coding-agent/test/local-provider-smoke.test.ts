@@ -8,7 +8,7 @@ import {
 	runLocalProviderDiscoverCommand,
 	runLocalProviderSmoke,
 	runLocalProviderStatus,
-} from "@gajae-code/coding-agent/cli/local-provider-smoke";
+} from "@bworx-io/worx-code/cli/local-provider-smoke";
 import { hookFetch } from "@gajae-code/utils/hook-fetch";
 import { LOCAL_PROVIDER_ACTIONS, LOCAL_PROVIDER_DEFAULT_ACTION } from "../src/commands/local-provider";
 

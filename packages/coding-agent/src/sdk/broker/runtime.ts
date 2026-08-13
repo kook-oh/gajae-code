@@ -78,7 +78,7 @@ function expectedPackageName(packageDirectory: string): void {
 		const manifest = JSON.parse(fs.readFileSync(path.join(packageDirectory, "package.json"), "utf8")) as {
 			name?: unknown;
 		};
-		if (manifest.name !== "@gajae-code/coding-agent") throw new Error("unexpected package name");
+		if (manifest.name !== "@bworx-io/worx-code") throw new Error("unexpected package name");
 	} catch {
 		throw new Error("SDK internal launch refused: product package identity is invalid.");
 	}

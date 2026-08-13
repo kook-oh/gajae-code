@@ -3,7 +3,7 @@ import type { BigIntStats } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { loadCapability } from "@gajae-code/coding-agent/discovery";
+import { loadCapability } from "@bworx-io/worx-code/discovery";
 import { type MCPServer, mcpCapability } from "../../src/capability/mcp";
 import { loadMCPJsonFile } from "../../src/discovery/mcp-json";
 import { loadAllMCPConfigs } from "../../src/runtime-mcp/config";

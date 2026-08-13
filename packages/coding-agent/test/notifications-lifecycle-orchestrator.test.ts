@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import * as crypto from "node:crypto";
 
-import type { SessionCloseFrame, SessionCreateFrame, SessionResumeFrame } from "@gajae-code/coding-agent/sdk/bus/index";
+import type { SessionCloseFrame, SessionCreateFrame, SessionResumeFrame } from "@bworx-io/worx-code/sdk/bus/index";
 import {
 	type AuditEvent,
 	auditRedactionRef,
@@ -15,7 +15,7 @@ import {
 	type OrchestratorDeps,
 	requestHash,
 	summarizeTarget,
-} from "@gajae-code/coding-agent/sdk/bus/lifecycle-orchestrator";
+} from "@bworx-io/worx-code/sdk/bus/lifecycle-orchestrator";
 
 const PAIRED = "42";
 

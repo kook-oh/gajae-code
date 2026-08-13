@@ -1,5 +1,5 @@
 import { describe, expect, spyOn, test } from "bun:test";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async/job-manager";
+import { AsyncJobManager } from "@bworx-io/worx-code/async/job-manager";
 
 describe("AsyncJobManager", () => {
 	test("forwards progress updates and delivers completion", async () => {

@@ -11,6 +11,7 @@ import * as url from "node:url";
 // module registry, single tool registry, etc.) regardless of which historical
 // scope name they happened to declare in their peerDependencies.
 const CANONICAL_PI_SCOPE = "@gajae-code";
+const CANONICAL_CODING_AGENT_SPECIFIER = "@bworx-io/worx-code";
 
 // Scopes that have historically been used to publish (or alias) the same set
 // of internal pi-* packages. `@gajae-code` is intentionally included so that
@@ -93,6 +94,10 @@ function remapLegacyPiSpecifier(specifier: string): string | null {
 	}
 	const canonicalRest = [canonicalPackageName, ...subpathParts].join("/");
 	const remappedSubpath = PI_SUBPATH_REMAPS.get(rest) ?? PI_SUBPATH_REMAPS.get(canonicalRest) ?? canonicalRest;
+	if (canonicalPackageName === "coding-agent") {
+		const [, ...canonicalSubpath] = remappedSubpath.split("/");
+		return [CANONICAL_CODING_AGENT_SPECIFIER, ...canonicalSubpath].join("/");
+	}
 	return `${CANONICAL_PI_SCOPE}/${remappedSubpath}`;
 }
 

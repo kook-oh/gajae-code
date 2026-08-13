@@ -13,9 +13,9 @@ import {
 	type RequestPermissionResponse,
 	type SessionNotification,
 } from "@agentclientprotocol/sdk";
-import { AcpAgent, acpRequestFailure } from "@gajae-code/coding-agent/modes/acp/acp-agent";
-import { createAcpConnection } from "@gajae-code/coding-agent/modes/acp/acp-mode";
-import { writeBrokerDiscovery } from "@gajae-code/coding-agent/sdk/broker/discovery";
+import { AcpAgent, acpRequestFailure } from "@bworx-io/worx-code/modes/acp/acp-agent";
+import { createAcpConnection } from "@bworx-io/worx-code/modes/acp/acp-mode";
+import { writeBrokerDiscovery } from "@bworx-io/worx-code/sdk/broker/discovery";
 import { TempDir } from "@gajae-code/utils";
 import { AcpSdkAdapterError } from "../../src/sdk/acp";
 

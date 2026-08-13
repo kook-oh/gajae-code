@@ -1,8 +1,8 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { LocalProtocolHandler } from "@gajae-code/coding-agent/internal-urls";
-import { AgentRegistry } from "@gajae-code/coding-agent/registry/agent-registry";
-import { fileHyperlink, isHyperlinkEnabled, tryResolveInternalUrlSync } from "@gajae-code/coding-agent/tui/hyperlink";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { LocalProtocolHandler } from "@bworx-io/worx-code/internal-urls";
+import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
+import { fileHyperlink, isHyperlinkEnabled, tryResolveInternalUrlSync } from "@bworx-io/worx-code/tui/hyperlink";
 import * as terminalCaps from "@gajae-code/tui";
 
 // OSC 8 sequence markers

@@ -390,8 +390,8 @@ jobs:
          fail-fast: false
          matrix:
             include:
-               - { os: ubuntu-22.04, platform: linux, arch: x64, target_id: linux-x64, binary_path: packages/coding-agent/binaries/gjc-linux-x64 }
-               - { os: macos-14, platform: darwin, arch: arm64, target_id: darwin-arm64, binary_path: packages/coding-agent/binaries/gjc-darwin-arm64 }
+               - { os: ubuntu-22.04, platform: linux, arch: x64, target_id: linux-x64, binary_path: packages/coding-agent/binaries/worx-linux-x64 }
+               - { os: macos-14, platform: darwin, arch: arm64, target_id: darwin-arm64, binary_path: packages/coding-agent/binaries/worx-darwin-arm64 }
       steps:
          - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
          - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
@@ -450,7 +450,7 @@ jobs:
            if: runner.os == 'Windows'
            shell: pwsh
            run: |
-              $runtimeDir = Join-Path $env:TEMP ("gjc-runtime-" + [System.Guid]::NewGuid().ToString("N"))
+              $runtimeDir = Join-Path $env:TEMP ("worx-runtime-" + [System.Guid]::NewGuid().ToString("N"))
               New-Item -ItemType Directory -Force -Path $runtimeDir | Out-Null
               $env:HOME = Join-Path $runtimeDir "home"
               $env:XDG_DATA_HOME = Join-Path $runtimeDir "xdg"
@@ -459,7 +459,7 @@ jobs:
          - name: Upload release binary artifact
            uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
            with:
-              name: gjc-binary-${{ matrix.target_id }}
+              name: worx-binary-${{ matrix.target_id }}
               path: ${{ matrix.binary_path }}
 
    publish:
@@ -552,9 +552,9 @@ jobs:
               trap 'rm -f "$npm_config"' EXIT
               printf "//registry.npmjs.org/:_authToken=%s\n" "$NPM_TOKEN" > "$npm_config"
               if [ "$RELEASE_CHANNEL" = nightly ]; then
-                 serialization_key=gajae-nightly-release
+                 serialization_key=worx-nightly-release
               else
-                 serialization_key=gajae-production-release
+                 serialization_key=worx-production-release
               fi
               NPM_CONFIG_USERCONFIG="$npm_config" NODE_AUTH_TOKEN="$NPM_TOKEN" \
                  bun scripts/ci-release-publish.ts --publish-from-evidence \
@@ -564,7 +564,7 @@ jobs:
          - name: Download release binaries
            uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4
            with:
-              pattern: gjc-binary-*
+              pattern: worx-binary-*
               path: release-binaries
               merge-multiple: true
          - name: Create GitHub Release
@@ -572,17 +572,17 @@ jobs:
            with:
               tag_name: ${{ needs.release_metadata.outputs.tag_name }}
               target_commitish: ${{ github.sha }}
-              name: ${{ needs.release_metadata.outputs.channel == 'nightly' && format('GJC Nightly {0}', needs.release_metadata.outputs.version) || format('GJC {0}', needs.release_metadata.outputs.version) }}
+              name: ${{ needs.release_metadata.outputs.channel == 'nightly' && format('WORX Nightly {0}', needs.release_metadata.outputs.version) || format('WORX {0}', needs.release_metadata.outputs.version) }}
               draft: false
               prerelease: ${{ needs.release_metadata.outputs.channel == 'nightly' }}
               make_latest: ${{ needs.release_metadata.outputs.channel != 'nightly' }}
               generate_release_notes: true
               fail_on_unmatched_files: true
               files: |
-                 release-binaries/gjc-*
-                 ${{ runner.temp }}/release-evidence/gajae-release-packages-expected-v1.json
-                 ${{ runner.temp }}/release-evidence/gajae-release-packages-v1.json
-                 ${{ runner.temp }}/release-evidence/gajae-release-channel-v1.json
+                 release-binaries/worx-*
+                 ${{ runner.temp }}/release-evidence/worx-release-packages-expected-v1.json
+                 ${{ runner.temp }}/release-evidence/worx-release-packages-v1.json
+                 ${{ runner.temp }}/release-evidence/worx-release-channel-v1.json
          - name: Verify immutable GitHub Release
            env:
               GH_TOKEN: ${{ github.token }}
@@ -604,8 +604,8 @@ jobs:
                     throw new Error("GitHub Release identity/state does not match the requested release");
                  }
                  const expectedAssets = [
-                    "gjc-linux-x64", "gjc-darwin-arm64",
-                    "gajae-release-packages-expected-v1.json", "gajae-release-packages-v1.json", "gajae-release-channel-v1.json",
+                    "worx-linux-x64", "worx-darwin-arm64",
+                    "worx-release-packages-expected-v1.json", "worx-release-packages-v1.json", "worx-release-channel-v1.json",
                  ];
                  const assets = new Set(release.assets.map(asset => asset.name));
                  const missing = expectedAssets.filter(name => !assets.has(name));

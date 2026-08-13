@@ -5,19 +5,19 @@ import * as path from "node:path";
 import { Agent, type AgentTool, ThinkingLevel } from "@gajae-code/agent-core";
 import { Effort, type Model } from "@gajae-code/ai";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import type { CustomTool } from "@gajae-code/coding-agent/extensibility/custom-tools/types";
-import { AgentSession, DefaultModelSelectionRecoveryError } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
+import { AgentSession, DefaultModelSelectionRecoveryError } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
 	MemorySessionStorage,
 	type SessionStorageWriter,
 	type SessionStorageWriterCloseState,
 	type SessionStorageWriterOpenOptions,
 	SessionStorageWriterRetryableCloseError,
-} from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-storage";
 import { logger } from "@gajae-code/utils";
 import { z } from "zod";
 import {

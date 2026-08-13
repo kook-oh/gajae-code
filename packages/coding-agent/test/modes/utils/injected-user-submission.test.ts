@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "bun:test";
 import type { ImageContent, TextContent } from "@gajae-code/ai";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import {
 	applyInjectedUserSubmission,
 	consumeInjectedOptimisticSignature,
 	incrementInjectedOptimisticSignature,
 	normalizeInjectedUserContent,
-} from "@gajae-code/coding-agent/modes/utils/injected-user-submission";
+} from "@bworx-io/worx-code/modes/utils/injected-user-submission";
 
 function createContext() {
 	const addToHistory = vi.fn();

@@ -7,9 +7,9 @@
 /// <reference types="./bun-imports.d.ts" />
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { computeLineHash, formatSessionDumpText } from "@bworx-io/worx-code";
 import type { AgentMessage, ResolvedThinkingLevel, ThinkingLevel } from "@gajae-code/agent-core";
 import type { Model } from "@gajae-code/ai";
-import { computeLineHash, formatSessionDumpText } from "@gajae-code/coding-agent";
 import { prompt } from "@gajae-code/utils";
 import { diffLines } from "diff";
 import { formatDirectory } from "./formatter";

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { SessionManager, SessionManagerTestHooks } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager, SessionManagerTestHooks } from "@bworx-io/worx-code/session/session-manager";
 
 const originalMaterializedCacheMaxBytesOverride = SessionManagerTestHooks.materializedCacheMaxBytesOverride;
 

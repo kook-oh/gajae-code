@@ -244,11 +244,11 @@ describe("release package evidence", () => {
 			const manifest = JSON.stringify({ name: definition.name, version: "1.2.3", [field]: { [dependencyName]: spec } });
 			expect(() => packageEvidenceFromTarball(definition, fixtureTarball(manifest))).toThrow("exact release version");
 		}
-		const wrapper = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "gajae-code")!;
-		expect(() => packageEvidenceFromTarball(wrapper, fixtureTarball(JSON.stringify({
-			name: wrapper.name,
+		const engine = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-code")!;
+		expect(() => packageEvidenceFromTarball(engine, fixtureTarball(JSON.stringify({
+			name: engine.name,
 			version: "1.2.3",
-			dependencies: { "@gajae-code/coding-agent": "catalog:" },
+			dependencies: { "@gajae-code/utils": "catalog:" },
 		})))).toThrow("exact release version");
 	});
 	test("rejects unknown owned internal names before registry or publish callbacks", async () => {
@@ -352,12 +352,12 @@ describe("release package evidence", () => {
 		)).rejects.toThrow("redirect destination");
 		expect(() => validateNpmRegistryTarballUrl("https://evil.invalid/ai.tgz", "test tarball")).toThrow("must remain");
 	});
-	test("requires exactly the complete sorted 11-package set and closed expected schema", () => {
+	test("requires exactly the complete sorted 10-package set and closed expected schema", () => {
 		const { expected } = expectedFixture();
-		expect(expected.packages).toHaveLength(11);
+		expect(expected.packages).toHaveLength(10);
 		expect(validateExpectedEvidence(expected)).toEqual(expected);
 		expect(() => validateExpectedEvidence({ ...expected, unexpected: true })).toThrow("unknown or missing");
-		expect(() => validateExpectedEvidence({ ...expected, packages: expected.packages.slice(1) })).toThrow("exactly 11 packages");
+		expect(() => validateExpectedEvidence({ ...expected, packages: expected.packages.slice(1) })).toThrow("exactly 10 packages");
 		expect(() => validateExpectedEvidence({ ...expected, packages: [...expected.packages].reverse() })).toThrow("complete public package set");
 	});
 
@@ -622,7 +622,7 @@ describe("release package evidence", () => {
 		const unchanged = before.map(record => ({ ...record }));
 		const advanced = before.map(record => ({ ...record, version: "1.2.4" }));
 
-		expect(RELEASE_CHANNEL_EVIDENCE_FILE).toBe("gajae-release-channel-v1.json");
+		expect(RELEASE_CHANNEL_EVIDENCE_FILE).toBe("worx-release-channel-v1.json");
 		expect(() => assertReleaseSourceBinding(nightlyVersion, "nightly", source, source)).not.toThrow();
 		expect(() => assertReleaseSourceBinding(nightlyVersion, "nightly", source, "b".repeat(40))).toThrow("does not match checked-out source");
 		expect(createReleaseChannelEvidence({
@@ -658,7 +658,7 @@ describe("release package evidence", () => {
 		expect(golden.final_evidence_sha256).toBe(sha256(finalBytes));
 		expect(goldenReleaseEvidenceSha256()).toBe(sha256(bytes));
 		expect(golden.expected_evidence.packages).toHaveLength(PUBLIC_PACKAGE_DEFINITIONS.length);
-		expect(golden.expected_evidence.packages.find(record => record.name === "@gajae-code/coding-agent")!.internal_dependencies)
+		expect(golden.expected_evidence.packages.find(record => record.name === "@bworx-io/worx-code")!.internal_dependencies)
 			.toEqual({ "@gajae-code/ai": "1.2.3" });
 		expect(golden.final_evidence.packages.every(record => record.registry_sri === record.expected_sri)).toBe(true);
 		verifyFinalEvidence(golden.expected_evidence, golden.final_evidence, golden.expected_evidence_sha256);

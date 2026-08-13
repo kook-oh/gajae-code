@@ -7,13 +7,13 @@ import * as path from "node:path";
 import {
 	captureOwnerGenerationBaselineSync,
 	replaceOwnerGenerationSync,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
 	bindGjcTmuxProviderAuthority,
 	persistGjcTmuxProviderAuthoritySync,
 	resolveGjcTmuxProviderContext,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-provider-context";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-provider-context";
 import { isEnoent } from "@gajae-code/utils";
 import { getWorktreesDir } from "@gajae-code/utils/dirs";
 import {

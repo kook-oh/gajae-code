@@ -1,20 +1,20 @@
 #!/usr/bin/env bun
 
 /**
- * Canonical dev linker for the `gjc` CLI.
+ * Canonical dev linker for the `worx` CLI.
  *
- * Makes the global `gjc` command run THIS checkout's TypeScript source
+ * Makes the global `worx` command run THIS checkout's TypeScript source
  * (`packages/coding-agent/src/cli.ts`) instead of a compiled binary or a
  * published npm install. Running from source is the only mode that can
  * dynamically load `@gajae-code/natives` for skills — a `bun build --compile`
  * standalone binary cannot. If you don't need that, `--binary` links this
- * checkout's compiled `dist/gjc` instead (build it first with
+ * checkout's compiled `dist/worx` instead (build it first with
  * `bun run --cwd=packages/coding-agent build`).
  *
  * Usage:
- *   bun scripts/dev-link.ts            # link `gjc` -> src/cli.ts on PATH
- *   bun scripts/dev-link.ts --binary   # link `gjc` -> dist/gjc compiled binary
- *   bun scripts/dev-link.ts --check    # doctor: fail if `gjc` has drifted
+ *   bun scripts/dev-link.ts            # link `worx` -> src/cli.ts on PATH
+ *   bun scripts/dev-link.ts --binary   # link `worx` -> dist/worx compiled binary
+ *   bun scripts/dev-link.ts --check    # doctor: fail if `worx` has drifted
  *
  * Env:
  *   GJC_DEV_LINK_DIR   override the target bin dir (default ~/.local/bin)
@@ -27,13 +27,13 @@ import * as path from "node:path";
 const repoRoot = path.join(import.meta.dir, "..");
 const cliSource = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");
 const cliSourceReal = realpath(cliSource) ?? cliSource;
-const binarySource = path.join(repoRoot, "packages", "coding-agent", "dist", "gjc");
+const binarySource = path.join(repoRoot, "packages", "coding-agent", "dist", "worx");
 const HOME = os.homedir();
 const targetDir = process.env.GJC_DEV_LINK_DIR ?? path.join(HOME, ".local", "bin");
 const BUN_SHIM_VERSION = 5478;
 const MAX_BUN_SHIM_METADATA_BYTES = 64 * 1024;
 const MAX_BUN_SHIM_EXECUTABLE_BYTES = 1024 * 1024;
-const EXPECTED_WORKSPACE_WRAPPER = '#!/usr/bin/env bun\nimport { runCli } from "@gajae-code/coding-agent/cli";\n\nawait runCli(process.argv.slice(2));\n';
+const EXPECTED_WORKSPACE_WRAPPER = '#!/usr/bin/env bun\nimport { runCli } from "@bworx-io/worx-code/cli";\n\nawait runCli(process.argv.slice(2));\n';
 
 function realpath(p: string): string | null {
 	try {
@@ -85,7 +85,7 @@ export interface GjcHit {
 	real: string | null;
 }
 
-/** All `gjc` entries on PATH, in shell resolution order (first wins). */
+/** All `worx` entries on PATH, in shell resolution order (first wins). */
 export function findGjcOnPath(
 	envPath = process.env.PATH ?? "",
 	platform = process.platform,
@@ -95,7 +95,7 @@ export function findGjcOnPath(
 	const seen = new Set<string>();
 	for (const dir of pathDirs(envPath, platform)) {
 		for (const extension of commandExtensions(platform, pathext)) {
-			const file = path.join(dir, `gjc${extension}`);
+			const file = path.join(dir, `worx${extension}`);
 			const key = platform === "win32" ? file.toLowerCase() : file;
 			if (seen.has(key) || !lexists(file)) continue;
 			seen.add(key);
@@ -222,7 +222,7 @@ function isBunEmbeddedWindowsShim(file: string, bunExecutable: string): boolean 
  * below, never merely a successful command invocation.
  */
 export function isLocalWindowsBunShim(file: string, root = repoRoot, bunExecutable = process.execPath): boolean {
-	const expectedShim = path.join(root, "node_modules", ".bin", "gjc.exe");
+	const expectedShim = path.join(root, "node_modules", ".bin", "worx.exe");
 	if (!sameWindowsPath(file, expectedShim)) return false;
 	if (!isBunEmbeddedWindowsShim(expectedShim, bunExecutable)) return false;
 	const metadata = readBoundedFile(`${expectedShim.slice(0, -4)}.bunx`, MAX_BUN_SHIM_METADATA_BYTES);
@@ -231,7 +231,7 @@ export function isLocalWindowsBunShim(file: string, root = repoRoot, bunExecutab
 
 	const packageRoot = path.join(root, "packages", "coding-agent");
 	const packageManifest = path.join(packageRoot, "package.json");
-	const wrapper = path.join(packageRoot, "bin", "gjc.js");
+	const wrapper = path.join(packageRoot, "bin", "worx.js");
 	let resolvedCli: string;
 	let encodedTarget: string;
 	try {
@@ -242,12 +242,12 @@ export function isLocalWindowsBunShim(file: string, root = repoRoot, bunExecutab
 			!("bin" in manifest) ||
 			typeof manifest.bin !== "object" ||
 			manifest.bin === null ||
-			!("gjc" in manifest.bin) ||
-			manifest.bin.gjc !== "bin/gjc.js"
+			!("worx" in manifest.bin) ||
+			manifest.bin.worx !== "bin/worx.js"
 		) {
 			return false;
 		}
-		resolvedCli = Bun.resolveSync("@gajae-code/coding-agent/cli", root);
+		resolvedCli = Bun.resolveSync("@bworx-io/worx-code/cli", root);
 		encodedTarget = path.join(root, "node_modules", ...decoded.target.split(/[\\/]+/));
 	} catch {
 		return false;
@@ -262,15 +262,15 @@ export function isLocalWindowsBunShim(file: string, root = repoRoot, bunExecutab
 function describe(real: string | null): string {
 	if (!real) return "broken symlink / unresolved";
 	if (real === cliSourceReal) return "workspace source (cli.ts) — OK";
-	if (real === realpath(binarySource)) return "workspace compiled binary (dist/gjc) — OK";
+	if (real === realpath(binarySource)) return "workspace compiled binary (dist/worx) — OK";
 	if (/[/\\]dist[/\\]/.test(real)) return `compiled binary: ${real}`;
 	if (real.includes("$bunfs")) return `compiled binary (bunfs): ${real}`;
-	if (real.includes(`${path.sep}node_modules${path.sep}gajae-code${path.sep}`)) return `published wrapper: ${real}`;
+	if (real.includes(`${path.sep}node_modules${path.sep}@bworx-io${path.sep}worx-code${path.sep}`)) return `published wrapper: ${real}`;
 	return real;
 }
 
-export function smokeTest(gjcPath: string): { ok: boolean; output: string } {
-	const res = Bun.spawnSync([gjcPath, "--smoke-test"], { stdout: "pipe", stderr: "pipe" });
+export function smokeTest(worxPath: string): { ok: boolean; output: string } {
+	const res = Bun.spawnSync([worxPath, "--smoke-test"], { stdout: "pipe", stderr: "pipe" });
 	const output = `${res.stdout.toString()}${res.stderr.toString()}`.trim();
 	return { ok: res.exitCode === 0 && output.includes("smoke-test: ok"), output };
 }
@@ -283,7 +283,7 @@ export function isApprovedWorkspaceSource(
 	bunExecutable = process.execPath,
 ): boolean {
 	const source = path.join(root, "packages", "coding-agent", "src", "cli.ts");
-	const binary = realpath(path.join(root, "packages", "coding-agent", "dist", "gjc"));
+	const binary = realpath(path.join(root, "packages", "coding-agent", "dist", "worx"));
 	return (
 		real === (realpath(source) ?? source) ||
 		(real !== null && real === binary) ||
@@ -292,11 +292,11 @@ export function isApprovedWorkspaceSource(
 }
 
 export function isRemovableWorkspaceShadow(hit: GjcHit, root = repoRoot): boolean {
-	const repoBinShadow = path.join(root, "node_modules", ".bin", "gjc");
+	const repoBinShadow = path.join(root, "node_modules", ".bin", "worx");
 	if (hit.file === repoBinShadow) return true;
 	if (!hit.real) return false;
 	const repoBinShadowReal = realpath(repoBinShadow);
-	const workspaceWrapperReal = realpath(path.join(root, "packages", "coding-agent", "bin", "gjc.js"));
+	const workspaceWrapperReal = realpath(path.join(root, "packages", "coding-agent", "bin", "worx.js"));
 	return hit.real === repoBinShadowReal || hit.real === workspaceWrapperReal;
 }
 
@@ -307,11 +307,11 @@ function isApprovedSource(winner: GjcHit): boolean {
 function assertResolvedGjcMatchesTarget(winner: GjcHit | undefined, expectedReal: string): void {
 	if (!winner || winner.real === expectedReal) return;
 	console.error("");
-	console.error("✗ Linked, but `gjc` still resolves to a different command earlier on PATH.");
+	console.error("✗ Linked, but `worx` still resolves to a different command earlier on PATH.");
 	console.error(`  Resolved: ${winner.file}`);
 	console.error(`       -> ${describe(winner.real)}`);
 	console.error(`  Expected target: ${expectedReal}`);
-	console.error(`  The managed link was created at: ${path.join(targetDir, "gjc")}`);
+	console.error(`  The managed link was created at: ${path.join(targetDir, "worx")}`);
 	console.error("  Move the managed link directory earlier on PATH or remove the shadowing command.");
 	process.exit(1);
 }
@@ -349,7 +349,7 @@ function assertWorkspaceLinksLocal(): void {
 function assertSourceExists(): void {
 	if (fs.existsSync(cliSource)) return;
 	console.error(`✗ Cannot find CLI source at ${cliSource}`);
-	console.error("  Run this from the gajae-code checkout.");
+	console.error("  Run this from the worx-code checkout.");
 	process.exit(1);
 }
 
@@ -358,16 +358,16 @@ function check(): never {
 	assertWorkspaceLinksLocal();
 	const hits = findGjcOnPath();
 	if (hits.length === 0) {
-		console.error("✗ `gjc` is not on PATH.");
+		console.error("✗ `worx` is not on PATH.");
 		console.error("  Fix: bun run dev:link");
 		process.exit(1);
 	}
 	const winner = hits[0];
-	console.log(`gjc resolves to: ${winner.file}`);
+	console.log(`worx resolves to: ${winner.file}`);
 	console.log(`            -> ${describe(winner.real)}`);
 	if (!isApprovedSource(winner)) {
 		console.error("");
-		console.error("✗ `gjc` is NOT this checkout's source or dist binary — it has drifted.");
+		console.error("✗ `worx` is NOT this checkout's source or dist binary — it has drifted.");
 		console.error(`  Expected: ${cliSourceReal}`);
 		console.error("  Fix: bun run dev:link");
 		process.exit(1);
@@ -375,12 +375,12 @@ function check(): never {
 	const smoke = smokeTest(winner.file);
 	if (!smoke.ok) {
 		console.error("");
-		console.error("✗ `gjc --smoke-test` failed (natives/worker did not load):");
+		console.error("✗ `worx --smoke-test` failed (natives/worker did not load):");
 		console.error(smoke.output.replace(/^/gm, "  "));
 		console.error("  Fix: bun run dev:link  (and rebuild natives if needed: bun run build:native)");
 		process.exit(1);
 	}
-	console.log("✓ gjc runs this checkout and natives load (smoke-test: ok).");
+	console.log("✓ worx runs this checkout and natives load (smoke-test: ok).");
 	process.exit(0);
 }
 
@@ -401,12 +401,12 @@ function link(binary: boolean): never {
 	const linkSource = binary ? binarySource : cliSource;
 	const linkSourceReal = realpath(linkSource) ?? linkSource;
 	fs.mkdirSync(targetDir, { recursive: true });
-	const target = path.join(targetDir, "gjc");
+	const target = path.join(targetDir, "worx");
 	if (lexists(target)) fs.rmSync(target, { force: true });
 	fs.symlinkSync(linkSource, target);
 	console.log(`✓ Linked ${target} -> ${linkSource}`);
 	if (!isOnPath(targetDir)) {
-		console.warn(`! ${targetDir} is not on your PATH — add it so \`gjc\` resolves:`);
+		console.warn(`! ${targetDir} is not on your PATH — add it so \`worx\` resolves:`);
 		console.warn(`    export PATH="${targetDir}:$PATH"`);
 	}
 	for (const hit of findGjcOnPath()) {
@@ -418,7 +418,7 @@ function link(binary: boolean): never {
 			continue;
 		}
 		console.warn("");
-		console.warn(`! A different \`gjc\` shadows the dev link (earlier on PATH): ${hit.file}`);
+		console.warn(`! A different \`worx\` shadows the dev link (earlier on PATH): ${hit.file}`);
 		console.warn(`    -> ${describe(hit.real)}`);
 		console.warn(`    Remove it: rm "${hit.file}"`);
 	}
@@ -427,13 +427,13 @@ function link(binary: boolean): never {
 	const smoke = smokeTest(winner?.file ?? target);
 	if (!smoke.ok) {
 		console.error("");
-		console.error("✗ Linked, but `gjc --smoke-test` failed (natives/worker did not load):");
+		console.error("✗ Linked, but `worx --smoke-test` failed (natives/worker did not load):");
 		console.error(smoke.output.replace(/^/gm, "  "));
 		console.error("  Try rebuilding natives: bun run build:native");
 		process.exit(1);
 	}
 	console.log(
-		`✓ smoke-test: ok — \`gjc\` runs this checkout's ${binary ? "compiled binary" : "source"} with natives loaded.`,
+		`✓ smoke-test: ok — \`worx\` runs this checkout's ${binary ? "compiled binary" : "source"} with natives loaded.`,
 	);
 	process.exit(0);
 }

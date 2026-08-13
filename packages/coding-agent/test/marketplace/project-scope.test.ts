@@ -12,13 +12,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { InstalledPluginEntry } from "@gajae-code/coding-agent/extensibility/plugins/marketplace";
+import type { InstalledPluginEntry } from "@bworx-io/worx-code/extensibility/plugins/marketplace";
 import {
 	addInstalledPlugin,
 	buildPluginId,
 	readInstalledPluginsRegistry,
 	writeInstalledPluginsRegistry,
-} from "@gajae-code/coding-agent/extensibility/plugins/marketplace";
+} from "@bworx-io/worx-code/extensibility/plugins/marketplace";
 import {
 	clearClaudePluginRootsCache,
 	listClaudePluginRoots,

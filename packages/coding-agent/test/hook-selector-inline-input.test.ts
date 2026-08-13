@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import { HookSelectorComponent } from "@gajae-code/coding-agent/modes/components/hook-selector";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+import { HookSelectorComponent } from "@bworx-io/worx-code/modes/components/hook-selector";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { CURSOR_MARKER, type TUI } from "@gajae-code/tui";
 import type { AutocompleteItem, AutocompleteProvider } from "@gajae-code/tui/autocomplete";
 

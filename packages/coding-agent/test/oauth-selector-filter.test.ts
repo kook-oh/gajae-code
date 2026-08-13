@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
-import { OAuthSelectorComponent } from "@gajae-code/coding-agent/modes/components/oauth-selector";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { OAuthSelectorComponent } from "@bworx-io/worx-code/modes/components/oauth-selector";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 
 let testTheme = await getThemeByName("red-claw");
 

@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { AgentProgress, TaskResultReceipt, TaskToolDetails } from "@gajae-code/coding-agent/task";
-import { taskToolRenderer } from "@gajae-code/coding-agent/task/render";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import type { AgentProgress, TaskResultReceipt, TaskToolDetails } from "@bworx-io/worx-code/task";
+import { taskToolRenderer } from "@bworx-io/worx-code/task/render";
 import { collectProviderDegradationGroups } from "../../src/task/provider-retry-status";
 
 // Defends the live-rendering contract for the `task` tool: while a Level-1

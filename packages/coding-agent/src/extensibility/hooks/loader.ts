@@ -138,7 +138,7 @@ async function createHookAPI(
 		logger,
 		typebox,
 		zod,
-		pi: await import("@gajae-code/coding-agent"),
+		pi: await import("@bworx-io/worx-code"),
 	} as HookAPI;
 
 	return {

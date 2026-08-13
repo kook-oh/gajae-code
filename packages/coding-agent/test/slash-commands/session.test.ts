@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "bun:test";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import {
 	executeBuiltinSlashCommand,
 	lookupBuiltinSlashCommand,
-} from "@gajae-code/coding-agent/slash-commands/builtin-registry";
+} from "@bworx-io/worx-code/slash-commands/builtin-registry";
 
 function createRuntimeHarness(options?: {
 	handleSessionCommand?: InteractiveModeContext["handleSessionCommand"];

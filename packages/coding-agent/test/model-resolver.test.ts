@@ -15,8 +15,8 @@ import {
 	resolveModelScope,
 	resolveSelector,
 	restoreModelFromSession,
-} from "@gajae-code/coding-agent/config/model-resolver";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+} from "@bworx-io/worx-code/config/model-resolver";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 
 test("rejects Cursor transports from retryable managed fallback chains at resolution", () => {
 	const cursor = { ...mockModels[0], api: "cursor-agent", provider: "cursor" } as Model;

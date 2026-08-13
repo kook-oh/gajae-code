@@ -3,11 +3,11 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { AuthStorage, getBundledModel } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { localBackend } from "@gajae-code/coding-agent/memory-backend/local-backend";
-import { createAgentSession } from "@gajae-code/coding-agent/sdk";
-import { SessionContextTooLargeError, SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { localBackend } from "@bworx-io/worx-code/memory-backend/local-backend";
+import { createAgentSession } from "@bworx-io/worx-code/sdk";
+import { SessionContextTooLargeError, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 const createdDirs = new Set<string>();
 

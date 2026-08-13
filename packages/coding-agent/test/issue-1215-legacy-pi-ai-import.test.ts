@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { loadExtensions } from "@gajae-code/coding-agent/extensibility/extensions/loader";
+import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
 import { TempDir } from "@gajae-code/utils";
 
 // Tool name registered by the synthetic extension below.

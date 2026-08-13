@@ -51,8 +51,8 @@ bun --cwd=packages/coding-agent run build
 
 BINARY_DIR="$WORK_DIR/binary-bin"
 mkdir -p "$BINARY_DIR"
-cp packages/coding-agent/dist/gjc "$BINARY_DIR/gjc"
-smoke_cli "$BINARY_DIR/gjc"
+cp packages/coding-agent/dist/worx "$BINARY_DIR/worx"
+smoke_cli "$BINARY_DIR/worx"
 
 section "Source install smoke"
 SOURCE_BUN_HOME="$WORK_DIR/bun-source"
@@ -60,7 +60,7 @@ SOURCE_BUN_HOME="$WORK_DIR/bun-source"
 	export BUN_INSTALL="$SOURCE_BUN_HOME"
 	export PATH="$BUN_INSTALL/bin:$PATH"
 	bun --cwd="$ROOT_DIR/packages/coding-agent" link
-	smoke_cli "$BUN_INSTALL/bin/gjc"
+	smoke_cli "$BUN_INSTALL/bin/worx"
 )
 
 stage_linux_x64_optional_package() {
@@ -75,7 +75,7 @@ section "Tarball install smoke"
 TARBALL_DIR="$WORK_DIR/tarballs"
 mkdir -p "$TARBALL_DIR"
 stage_linux_x64_optional_package
-for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats coding-agent gajae-code; do
+for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats coding-agent; do
 	(
 		cd "$ROOT_DIR/packages/$pkg"
 		bun pm pack --destination "$TARBALL_DIR" --quiet >/dev/null
@@ -90,8 +90,7 @@ ai_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-ai-*.tgz)"
 agent_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-agent-core-*.tgz)"
 tui_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-tui-*.tgz)"
 stats_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-stats-*.tgz)"
-coding_agent_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-coding-agent-*.tgz)"
-wrapper_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-[0-9]*.tgz)"
+coding_agent_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-[0-9]*.tgz)"
 
 TARBALL_APP_DIR="$WORK_DIR/tarball-install"
 mkdir -p "$TARBALL_APP_DIR"
@@ -112,13 +111,13 @@ mkdir -p "$TARBALL_APP_DIR"
 			'@gajae-code/bridge-client': '$bridge_client_tgz',
 			'@gajae-code/tui': '$tui_tgz',
 			'@gajae-code/stats': '$stats_tgz',
-			'@gajae-code/coding-agent': '$coding_agent_tgz'
+			'@bworx-io/worx-code': '$coding_agent_tgz'
 		};
 		require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));
 	"
 
-	bun add "$utils_tgz" "$natives_linux_x64_tgz" "$natives_tgz" "$ai_tgz" "$agent_tgz" "$tui_tgz" "$stats_tgz" "$coding_agent_tgz" "$wrapper_tgz"
-	smoke_cli ./node_modules/.bin/gjc
+	bun add "$utils_tgz" "$natives_linux_x64_tgz" "$natives_tgz" "$ai_tgz" "$agent_tgz" "$tui_tgz" "$stats_tgz" "$coding_agent_tgz"
+	smoke_cli ./node_modules/.bin/worx
 )
 
 echo ""

@@ -16,9 +16,9 @@ import type {
 	TurnPromptInput,
 	TurnPromptReconciliation,
 	TurnPromptStatusSelector,
-} from "@gajae-code/coding-agent/sdk";
-import * as publicSdk from "@gajae-code/coding-agent/sdk";
-import * as bus from "@gajae-code/coding-agent/sdk/bus";
+} from "@bworx-io/worx-code/sdk";
+import * as publicSdk from "@bworx-io/worx-code/sdk";
+import * as bus from "@bworx-io/worx-code/sdk/bus";
 import packageJson from "../package.json";
 import * as root from "../src/index";
 import * as sdk from "../src/sdk";
@@ -54,7 +54,7 @@ describe("SDK package exports", () => {
 	});
 
 	it("keeps concrete tool classes behind the opt-in implementation barrel", async () => {
-		const implementations = await import("@gajae-code/coding-agent/tools/implementations");
+		const implementations = await import("@bworx-io/worx-code/tools/implementations");
 		expect(implementations.BashTool).toBeFunction();
 		expect(implementations.ReadTool).toBeFunction();
 		expect(implementations.WebSearchTool).toBeFunction();
@@ -68,14 +68,14 @@ describe("SDK package exports", () => {
 	});
 
 	it.each([
-		"@gajae-code/coding-agent/sdk/models",
-		"@gajae-code/coding-agent/sdk/models.js",
-		"@gajae-code/coding-agent/sdk/lifecycle-session",
-		"@gajae-code/coding-agent/sdk/lifecycle-session.js",
-		"@gajae-code/coding-agent/sdk/startup-capability",
-		"@gajae-code/coding-agent/sdk/startup-capability.js",
-		"@gajae-code/coding-agent/sdk/providers",
-		"@gajae-code/coding-agent/sdk/providers.js",
+		"@bworx-io/worx-code/sdk/models",
+		"@bworx-io/worx-code/sdk/models.js",
+		"@bworx-io/worx-code/sdk/lifecycle-session",
+		"@bworx-io/worx-code/sdk/lifecycle-session.js",
+		"@bworx-io/worx-code/sdk/startup-capability",
+		"@bworx-io/worx-code/sdk/startup-capability.js",
+		"@bworx-io/worx-code/sdk/providers",
+		"@bworx-io/worx-code/sdk/providers.js",
 	])("rejects resolution of the private %s subpath", async subpath => {
 		const child = Bun.spawn([process.execPath, "-e", `await import(${JSON.stringify(subpath)})`], {
 			cwd: import.meta.dir,

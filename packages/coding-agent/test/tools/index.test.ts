@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 
-import { type SettingPath, Settings } from "@gajae-code/coding-agent/config/settings";
+import { type SettingPath, Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	BUILTIN_TOOLS,
 	createTools,
@@ -9,12 +9,12 @@ import {
 	resolveEvalBackends,
 	resolveEvalBackendsFromEnv,
 	type ToolSession,
-} from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/tools";
 import {
 	resolvePythonIntegrationGate,
 	resolvePythonIpcTrace,
 	resolvePythonSkipCheck,
-} from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code/tools/implementations";
 
 const PY_ENV_KEYS = [
 	"GJC_PY",
@@ -174,7 +174,7 @@ describe("createTools", () => {
 	it("still exposes eval when python kernel is unavailable (dispatches to js)", async () => {
 		const session = createTestSession();
 		vi.spyOn(
-			await import("@gajae-code/coding-agent/eval/py/kernel"),
+			await import("@bworx-io/worx-code/eval/py/kernel"),
 			"checkPythonKernelAvailability",
 		).mockResolvedValue({
 			ok: false,

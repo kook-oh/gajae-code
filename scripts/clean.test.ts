@@ -7,7 +7,7 @@ import { parseArgs } from "./clean";
 
 async function fixture(): Promise<string> {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-clean-"));
-	await Bun.write(path.join(root, "packages/coding-agent/dist/gjc"), "binary");
+	await Bun.write(path.join(root, "packages/coding-agent/dist/worx"), "binary");
 	await Bun.write(path.join(root, "packages/coding-agent/.18c92f9fde7e85f6-00000000.bun-build"), "stray");
 	await Bun.write(path.join(root, "packages/coding-agent/src/cli.ts"), "source");
 	await Bun.write(path.join(root, "packages/natives/native/pi_natives.darwin-arm64.node"), "addon");

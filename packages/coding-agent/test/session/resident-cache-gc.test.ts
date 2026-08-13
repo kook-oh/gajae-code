@@ -9,7 +9,7 @@ import {
 	openVerifiedSidecarCacheInstanceDir,
 	ResidentCacheTrustError,
 	sweepResidentCacheRoot,
-} from "@gajae-code/coding-agent/session/blob-store";
+} from "@bworx-io/worx-code/session/blob-store";
 
 const temporaryDirectories: string[] = [];
 const DEAD_PID = 2_147_483_647;

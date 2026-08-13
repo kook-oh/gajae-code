@@ -14,13 +14,13 @@ import { afterEach, beforeEach, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getCapability } from "@gajae-code/coding-agent/capability";
-import { clearCache } from "@gajae-code/coding-agent/capability/fs";
-import { type Rule, ruleCapability } from "@gajae-code/coding-agent/capability/rule";
-import type { LoadContext } from "@gajae-code/coding-agent/capability/types";
-import { buildSystemPrompt } from "@gajae-code/coding-agent/system-prompt";
+import { getCapability } from "@bworx-io/worx-code/capability";
+import { clearCache } from "@bworx-io/worx-code/capability/fs";
+import { type Rule, ruleCapability } from "@bworx-io/worx-code/capability/rule";
+import type { LoadContext } from "@bworx-io/worx-code/capability/types";
+import { buildSystemPrompt } from "@bworx-io/worx-code/system-prompt";
 // Register all discovery providers as a side effect.
-import "@gajae-code/coding-agent/discovery";
+import "@bworx-io/worx-code/discovery";
 
 let tempDir: string;
 let home: string;

@@ -1,7 +1,7 @@
 import { describe, expect, it, setSystemTime } from "bun:test";
-import type { BuildSystemPromptResult } from "@gajae-code/coding-agent/system-prompt";
-import { buildSystemPrompt, buildVolatileProjectContext } from "@gajae-code/coding-agent/system-prompt";
-import type { WorkspaceTree } from "@gajae-code/coding-agent/workspace-tree";
+import type { BuildSystemPromptResult } from "@bworx-io/worx-code/system-prompt";
+import { buildSystemPrompt, buildVolatileProjectContext } from "@bworx-io/worx-code/system-prompt";
+import type { WorkspaceTree } from "@bworx-io/worx-code/workspace-tree";
 import { hashPrefix } from "../../orchestration-token-benchmark/src/prefix-stability";
 
 function workspaceTree(rendered: string): WorkspaceTree {

@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import type { ImageContent } from "@gajae-code/ai";
-import type { ExtensionAPI } from "@gajae-code/coding-agent";
-import type { ExecResult } from "@gajae-code/coding-agent/exec/exec";
+import type { ExtensionAPI } from "@bworx-io/worx-code";
+import type { ExecResult } from "@bworx-io/worx-code/exec/exec";
 import {
 	createExactPrefixCommandBridge,
 	createOuroborosOooBridge,
@@ -11,7 +10,8 @@ import {
 	type InputEventResult,
 	OOO_BRIDGE_RECURSION_ENV,
 	OOO_BRIDGE_TIMEOUT_ENV,
-} from "@gajae-code/coding-agent/extensibility/extensions";
+} from "@bworx-io/worx-code/extensibility/extensions";
+import type { ImageContent } from "@gajae-code/ai";
 import activateOooBridge from "../examples/extensions/ooo-bridge";
 import type { MCPRequestOptions, MCPServerConnection, MCPToolCallResult } from "../src/runtime-mcp";
 import * as runtimeMcpModule from "../src/runtime-mcp";

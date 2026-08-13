@@ -350,10 +350,9 @@ function taskNeedsNative(key: string): boolean {
 		key === "root-test:release" ||
 		key === "release-publish-contract" ||
 		key === "root-check" ||
-		key === "check:@gajae-code/coding-agent" ||
+		key === "check:@bworx-io/worx-code" ||
 		key === "cli-smoke" ||
 		key === "runtime-check" ||
-		key === "wrapper-version" ||
 		key === "deep-interview-definitions" ||
 		key === "deep-interview-runtime" ||
 		key === "bridge-client-sdk-package-smoke" ||
@@ -727,10 +726,9 @@ export function planTasks(paths: readonly string[], packages: readonly Workspace
 	const rustChanged = paths.some(isRustPath);
 	const installChanged = paths.some(isInstallPath);
 	const publishChanged = paths.some(isReleasePublishPath);
-	const wrapperChanged = paths.some(isUnscopedWrapperPath);
 	const toolingScriptChanged = paths.some(isToolingScriptPath);
 	const deepInterviewOnly = isDeepInterviewOnly(paths);
-	const needsNativeRuntime = !deepInterviewOnly && (paths.some(isCodingAgentRuntimePath) || wrapperChanged || fullWorkspace);
+	const needsNativeRuntime = !deepInterviewOnly && (paths.some(isCodingAgentRuntimePath) || fullWorkspace);
 	const workflowHarnessOnly = paths.length > 0 && paths.every(isWorkflowHarnessPath);
 	const ciOnly = paths.length > 0 && paths.every(changedPath => changedPath.startsWith(".github/"));
 
@@ -769,9 +767,6 @@ export function planTasks(paths: readonly string[], packages: readonly Workspace
 
 	if (toolingScriptChanged && !fullWorkspace && !ciOnly && !workflowHarnessOnly) {
 		add(tasks, "root-check", "Root TypeScript/tooling check", ["bun", "run", "ci:check:full"]);
-	}
-	if (wrapperChanged) {
-		add(tasks, "wrapper-version", "Unscoped wrapper CLI version smoke", ["bun", "packages/gajae-code/bin/gjc.js", "--version"]);
 	}
 	if (publishChanged) {
 		addReleasePublishTasks(tasks);
@@ -879,9 +874,6 @@ export function planTargetedTasks(paths: readonly string[], packages: readonly W
 		}
 		if (isReleasePublishPath(changedPath)) {
 			addReleasePublishTasks(tasks);
-			if (isUnscopedWrapperPath(changedPath)) {
-				add(tasks, "wrapper-version", "Unscoped wrapper CLI version smoke", ["bun", "packages/gajae-code/bin/gjc.js", "--version"]);
-			}
 		}
 		if (isBridgeClientSdkPackageSmokePath(changedPath)) {
 			add(tasks, "bridge-client-sdk-package-smoke", "Bridge-client SDK package smoke", ["bun", "packages/coding-agent/scripts/build-sdk-package-smoke.ts"]);
@@ -921,9 +913,6 @@ export function planTargetedTasks(paths: readonly string[], packages: readonly W
 			}
 			if (isCodingAgentRuntimePath(changedPath)) {
 				add(tasks, "cli-smoke", "GJC CLI smoke test", ["bun", "run", "ci:test:smoke"]);
-			}
-			if (isUnscopedWrapperPath(changedPath)) {
-				add(tasks, "wrapper-version", "Unscoped wrapper CLI version smoke", ["bun", "packages/gajae-code/bin/gjc.js", "--version"]);
 			}
 			continue;
 		}
@@ -976,7 +965,7 @@ function addWorkspaceTestTasks(tasks: Map<string, Task>, packages: readonly Work
 }
 
 function addPackageTestTasks(tasks: Map<string, Task>, workspacePackage: WorkspacePackage): void {
-	if (workspacePackage.name !== "@gajae-code/coding-agent") {
+	if (workspacePackage.name !== "@bworx-io/worx-code") {
 		add(tasks, `test:${workspacePackage.name}`, `Test ${workspacePackage.name}`, packageScriptCommand("test"), resolvePackageCwd(workspacePackage.dir));
 		return;
 	}
@@ -991,8 +980,8 @@ function addPackageTestTasks(tasks: Map<string, Task>, workspacePackage: Workspa
 function addCodingAgentTestShard(tasks: Map<string, Task>, shard: number, total: number = codingAgentTestShards()): void {
 	add(
 		tasks,
-		`test:@gajae-code/coding-agent:shard-${shard}-of-${total}`,
-		`Test @gajae-code/coding-agent shard ${shard}/${total}`,
+		`test:@bworx-io/worx-code:shard-${shard}-of-${total}`,
+		`Test @bworx-io/worx-code shard ${shard}/${total}`,
 		["bun", "test", `--shard=${shard}/${total}`],
 		resolvePackageCwd("packages/coding-agent"),
 	);
@@ -1001,8 +990,8 @@ function addCodingAgentTestShard(tasks: Map<string, Task>, shard: number, total:
 function addCodingAgentSdkProductionHostTask(tasks: Map<string, Task>): void {
 	add(
 		tasks,
-		"test:@gajae-code/coding-agent:sdk-production-host-isolated",
-		"Test @gajae-code/coding-agent production SDK host in isolation",
+		"test:@bworx-io/worx-code:sdk-production-host-isolated",
+		"Test @bworx-io/worx-code production SDK host in isolation",
 		[
 			"bun",
 			"test",
@@ -1176,8 +1165,7 @@ function isRootPackageReleaseHarnessOnly(paths: readonly string[]): boolean {
 		paths.every(changedPath =>
 			changedPath === "package.json" ||
 			isReleasePublishPath(changedPath) ||
-			isReleaseHarnessScriptPath(changedPath) ||
-			isUnscopedWrapperPath(changedPath),
+			isReleaseHarnessScriptPath(changedPath),
 		)
 	);
 }
@@ -1500,15 +1488,11 @@ function isReleasePublishPath(changedPath: string): boolean {
 		changedPath === "scripts/ci-release-publish.ts" ||
 		changedPath === "scripts/release-evidence.ts" ||
 		changedPath.startsWith("packages/bridge-client/") ||
-		changedPath.startsWith("packages/gajae-code/") ||
 		changedPath.startsWith("packages/natives-") ||
 		changedPath === "packages/natives/package.json"
 	);
 }
 
-function isUnscopedWrapperPath(changedPath: string): boolean {
-	return changedPath.startsWith("packages/gajae-code/");
-}
 
 function isString(value: unknown): value is string {
 	return typeof value === "string";

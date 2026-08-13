@@ -13,20 +13,20 @@ import {
 	writeModelCache,
 } from "@gajae-code/ai";
 import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
-import { kNoAuth, MODEL_ROLE_IDS, ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
+import { kNoAuth, MODEL_ROLE_IDS, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	type ModelLookupRegistry,
 	resolveModelFromString,
 	resolveModelOverride,
 	resolveModelOverrideWithAuthFallback,
-} from "@gajae-code/coding-agent/config/model-resolver";
+} from "@bworx-io/worx-code/config/model-resolver";
 import {
 	buildProviderSelectionCatalog,
 	createProviderSelectionPolicy,
-} from "@gajae-code/coding-agent/config/provider-selection-policy";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { addApiCompatibleProvider } from "@gajae-code/coding-agent/setup/provider-onboarding";
+} from "@bworx-io/worx-code/config/provider-selection-policy";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { addApiCompatibleProvider } from "@bworx-io/worx-code/setup/provider-onboarding";
 import { $credentialEnv, hookFetch, Snowflake } from "@gajae-code/utils";
 
 describe("model roles", () => {

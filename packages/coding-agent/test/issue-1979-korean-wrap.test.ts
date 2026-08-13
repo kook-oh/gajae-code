@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { AssistantMessageComponent } from "@gajae-code/coding-agent/modes/components/assistant-message";
-import { HookSelectorComponent } from "@gajae-code/coding-agent/modes/components/hook-selector";
-import { IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { getThemeByName, setThemeInstance, theme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
+import { HookSelectorComponent } from "@bworx-io/worx-code/modes/components/hook-selector";
+import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
 import { Container, Text, TUI, visibleWidth } from "@gajae-code/tui";
 import { VirtualTerminal } from "../../tui/test/virtual-terminal";
 

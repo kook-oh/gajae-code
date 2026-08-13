@@ -8,8 +8,8 @@ import {
 	MemoryBlobStore,
 	openVerifiedResidentCacheInstanceDir,
 	ResidentCacheTrustError,
-} from "@gajae-code/coding-agent/session/blob-store";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/blob-store";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();

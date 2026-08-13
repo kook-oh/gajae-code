@@ -9,8 +9,8 @@ import {
 	resolveSelector,
 	restoreModelFromSession,
 	splitSelectorThinkingSuffix,
-} from "@gajae-code/coding-agent/config/model-resolver";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+} from "@bworx-io/worx-code/config/model-resolver";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 
 const model = (provider: string, id: string): Model<"anthropic-messages"> => ({
 	id,

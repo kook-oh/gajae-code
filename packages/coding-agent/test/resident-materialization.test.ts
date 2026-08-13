@@ -12,12 +12,12 @@ import {
 	resolveResidentImageDataSync,
 	resolveResidentImageDataUrlSync,
 	resolveTextBlobSync,
-} from "@gajae-code/coding-agent/session/blob-store";
+} from "@bworx-io/worx-code/session/blob-store";
 import {
 	materializeResidentEntriesForPersistenceForTests,
 	residentBlobSentinelForTests,
 	SessionManager,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 import { measureSessionMemory } from "../bench/session-memory.bench";
 
 const tmpRoots: string[] = [];

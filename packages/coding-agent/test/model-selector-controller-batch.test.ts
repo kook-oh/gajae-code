@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import { ThinkingLevel } from "@gajae-code/agent-core";
 import type { Model } from "@gajae-code/ai";
-import { resolveAgentModelPatterns, resolveModelOverride } from "@gajae-code/coding-agent/config/model-resolver";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ModelSelectorComponent } from "@gajae-code/coding-agent/modes/components/model-selector";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+import { resolveAgentModelPatterns, resolveModelOverride } from "@bworx-io/worx-code/config/model-resolver";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import type { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 
 let testTheme = await getThemeByName("red-claw");
 

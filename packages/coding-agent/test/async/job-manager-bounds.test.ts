@@ -3,7 +3,7 @@ import {
 	AsyncJobManager,
 	type ResumeDescriptor,
 	type SubagentRecord,
-} from "@gajae-code/coding-agent/async/job-manager";
+} from "@bworx-io/worx-code/async/job-manager";
 
 function subagentRecord(subagentId: string, currentJobId: string, status: SubagentRecord["status"]): SubagentRecord {
 	return {

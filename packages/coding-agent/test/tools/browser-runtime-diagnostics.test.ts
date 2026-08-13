@@ -6,7 +6,7 @@ import {
 	maskBrowserRuntimeUrl,
 	pageErrorDiagnostic,
 	serializeRuntimeDiagnostics,
-} from "@gajae-code/coding-agent/tools/browser/runtime-diagnostics";
+} from "@bworx-io/worx-code/tools/browser/runtime-diagnostics";
 
 describe("browser runtime diagnostics", () => {
 	it("reduces http(s) URLs to origin only, never echoing path segments or query strings", () => {

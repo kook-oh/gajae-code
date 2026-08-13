@@ -1,17 +1,17 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 
-import { IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { CommandController } from "@gajae-code/coding-agent/modes/controllers/command-controller";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { getWelcomeTranscriptReservedRows } from "@gajae-code/coding-agent/modes/interactive-mode";
+import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { CommandController } from "@bworx-io/worx-code/modes/controllers/command-controller";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { getWelcomeTranscriptReservedRows } from "@bworx-io/worx-code/modes/interactive-mode";
 import {
 	IRC_OBSERVATION_LEDGER_MAX_RECORDS,
 	IRC_OBSERVATION_LEDGER_MAX_SEEN_IDENTITIES,
 	IrcObservationLedger,
-} from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { getThemeByName, setThemeInstance, theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
+} from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import { Container, Text } from "@gajae-code/tui";
 
 function createForkContext(fork: () => Promise<boolean>) {

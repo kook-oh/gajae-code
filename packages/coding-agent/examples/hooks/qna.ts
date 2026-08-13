@@ -6,9 +6,9 @@
  * 2. Shows a spinner while extracting (hides editor)
  * 3. Loads the result into the editor for user to fill in answers
  */
+import type { HookAPI } from "@bworx-io/worx-code";
+import { BorderedLoader } from "@bworx-io/worx-code";
 import { complete, type UserMessage } from "@gajae-code/ai";
-import type { HookAPI } from "@gajae-code/coding-agent";
-import { BorderedLoader } from "@gajae-code/coding-agent";
 
 const SYSTEM_PROMPT = `You are a question extractor. Given text from a conversation, extract any questions that need answering and format them for the user to fill in.
 

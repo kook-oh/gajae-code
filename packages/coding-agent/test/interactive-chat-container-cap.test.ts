@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, describe, expect, test, vi } from "bun:test";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { addChatChild, CollapsedChatHistoryComponent } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { addChatChild, CollapsedChatHistoryComponent } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import { type Component, Container } from "@gajae-code/tui";
 
 beforeAll(async () => {

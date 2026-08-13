@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { handleCratesIo } from "@gajae-code/coding-agent/web/scrapers/crates-io";
-import { handleGoPkg } from "@gajae-code/coding-agent/web/scrapers/go-pkg";
-import { handleHex } from "@gajae-code/coding-agent/web/scrapers/hex";
-import { handleNpm } from "@gajae-code/coding-agent/web/scrapers/npm";
-import { handlePubDev } from "@gajae-code/coding-agent/web/scrapers/pub-dev";
-import { handlePyPI } from "@gajae-code/coding-agent/web/scrapers/pypi";
+import { handleCratesIo } from "@bworx-io/worx-code/web/scrapers/crates-io";
+import { handleGoPkg } from "@bworx-io/worx-code/web/scrapers/go-pkg";
+import { handleHex } from "@bworx-io/worx-code/web/scrapers/hex";
+import { handleNpm } from "@bworx-io/worx-code/web/scrapers/npm";
+import { handlePubDev } from "@bworx-io/worx-code/web/scrapers/pub-dev";
+import { handlePyPI } from "@bworx-io/worx-code/web/scrapers/pypi";
 
 const SKIP = !Bun.env.WEB_FETCH_INTEGRATION;
 

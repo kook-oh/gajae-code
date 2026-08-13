@@ -5,8 +5,8 @@
  */
 import * as path from "node:path";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { AssistantMessageComponent } from "@gajae-code/coding-agent/modes/components/assistant-message";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { ProcessTerminal, TUI } from "@gajae-code/tui";
 import { sleep } from "bun";
 

@@ -4,19 +4,19 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { Usage } from "@gajae-code/ai";
 import { classifyFallbackTrigger } from "@gajae-code/ai/utils/fallback-transport";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import {
 	buildCacheBehaviorWarning,
 	computeCacheMissCostSummary,
-} from "@gajae-code/coding-agent/session/cache-economics";
+} from "@bworx-io/worx-code/session/cache-economics";
 import {
 	cappedExponentialWithFullJitter,
 	compactionRetryDelay,
 	effectiveFallbackDelay,
 	FallbackChainController,
-} from "@gajae-code/coding-agent/session/fallback-chain-controller";
+} from "@bworx-io/worx-code/session/fallback-chain-controller";
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1_000;
 const zeroPriceUsage: Usage = {

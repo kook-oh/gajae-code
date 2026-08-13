@@ -13,7 +13,7 @@ import {
 	gcPidProbe,
 	gcProbeToLeasePidStatus,
 	runGjcGcCommand,
-} from "@gajae-code/coding-agent/gjc-runtime/gc-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 import { SessionIndex } from "../src/sdk/broker/session-index";
 

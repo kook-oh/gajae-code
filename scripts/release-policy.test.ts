@@ -43,7 +43,7 @@ describe("stable release policy", () => {
 		expect(publish).toContain("github.event_name != 'workflow_dispatch'");
 		expect(publish).toContain("--prepare-evidence --evidence-dir");
 		expect(publish).toContain("--publish-from-evidence");
-		expect(publish).toContain("gajae-production-release");
+		expect(publish).toContain("worx-production-release");
 		expect(publish).toContain("softprops/action-gh-release");
 		expect(publish).toContain("draft: false");
 	});
@@ -58,10 +58,10 @@ describe("stable release policy", () => {
 		expect(native).not.toContain("platform: linux, arch: arm64");
 		expect(native).not.toContain("platform: darwin, arch: x64");
 		expect(native).not.toContain("platform: win32");
-		expect(publish).toContain('"gjc-linux-x64", "gjc-darwin-arm64"');
-		expect(publish).not.toContain('"gjc-linux-arm64"');
-		expect(publish).not.toContain('"gjc-darwin-x64"');
-		expect(publish).not.toContain('"gjc-windows-x64.exe"');
+		expect(publish).toContain('"worx-linux-x64", "worx-darwin-arm64"');
+		expect(publish).not.toContain('"worx-linux-arm64"');
+		expect(publish).not.toContain('"worx-darwin-x64"');
+		expect(publish).not.toContain('"worx-windows-x64.exe"');
 	});
 
 	test("stable tags and nightly publication lanes are non-cancelling", async () => {
@@ -198,12 +198,12 @@ describe("stable release policy", () => {
 		expect(publish).toContain("fail_on_unmatched_files: true");
 		expect(publish).toContain("Verify immutable GitHub Release");
 		expect(publish.indexOf("Reject pre-existing release tag or release")).toBeLessThan(publish.indexOf("Publish packages to npm"));
-		expect(publish).toContain("gajae-nightly-release");
+		expect(publish).toContain("worx-nightly-release");
 		expect(publish).toContain("prerelease: ${{ needs.release_metadata.outputs.channel == 'nightly' }}");
 		expect(publish).toContain("make_latest: ${{ needs.release_metadata.outputs.channel != 'nightly' }}");
-		expect(publish).toContain("gajae-release-packages-expected-v1.json");
-		expect(publish).toContain("gajae-release-packages-v1.json");
-		expect(publish).toContain("gajae-release-channel-v1.json");
+		expect(publish).toContain("worx-release-packages-expected-v1.json");
+		expect(publish).toContain("worx-release-packages-v1.json");
+		expect(publish).toContain("worx-release-channel-v1.json");
 	});
 	test("updates owned Bun lock versions without re-resolving third-party packages", () => {
 		const lock = `{

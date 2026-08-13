@@ -1,9 +1,9 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { runNativeDeepInterviewCommand } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-runtime";
-import { deepInterviewDraftPath } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-stage";
-import { modeStatePath } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { runNativeDeepInterviewCommand } from "@bworx-io/worx-code/gjc-runtime/deep-interview-runtime";
+import { deepInterviewDraftPath } from "@bworx-io/worx-code/gjc-runtime/deep-interview-stage";
+import { modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 
 const TEST_SESSION_ID = "stage-test-session";
 const tempRoots: string[] = [];

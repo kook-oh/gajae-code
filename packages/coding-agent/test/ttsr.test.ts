@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import { parseRuleConditionAndScope, type Rule } from "@gajae-code/coding-agent/capability/rule";
-import { buildRuleFromMarkdown } from "@gajae-code/coding-agent/discovery/helpers";
-import { TtsrManager } from "@gajae-code/coding-agent/export/ttsr";
+import { parseRuleConditionAndScope, type Rule } from "@bworx-io/worx-code/capability/rule";
+import { buildRuleFromMarkdown } from "@bworx-io/worx-code/discovery/helpers";
+import { TtsrManager } from "@bworx-io/worx-code/export/ttsr";
 
 function makeRule(partial: Partial<Rule>): Rule {
 	return {

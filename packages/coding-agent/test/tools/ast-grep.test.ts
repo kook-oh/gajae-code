@@ -3,8 +3,8 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { supportsLanguage } from "@bworx-io/worx-code-natives";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 
 function createTestSession(cwd = "/tmp/test", overrides: Partial<ToolSession> = {}): ToolSession {
 	return {

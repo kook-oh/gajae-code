@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createAgentSession } from "@gajae-code/coding-agent/sdk";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createAgentSession } from "@bworx-io/worx-code/sdk";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
 	buildSystemPrompt,
 	loadProjectContextFiles,
 	loadSystemPromptFiles,
-} from "@gajae-code/coding-agent/system-prompt";
+} from "@bworx-io/worx-code/system-prompt";
 import { cleanupTempHome } from "./helpers/temp-home-cleanup";
 
 function escapeRegExp(text: string): string {

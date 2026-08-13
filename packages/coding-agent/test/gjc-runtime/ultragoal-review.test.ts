@@ -3,14 +3,14 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { deflateSync } from "node:zlib";
-import { modeStatePath as sessionModeStatePath } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { modeStatePath as sessionModeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	createUltragoalPlan,
 	readUltragoalLedger,
 	readUltragoalPlan,
 	runNativeUltragoalCommand,
 	startNextUltragoalGoal,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

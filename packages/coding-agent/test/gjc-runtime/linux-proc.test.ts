@@ -6,7 +6,7 @@ import {
 	probeLinuxProcPidSync,
 	readLinuxProcStartTime,
 	readLinuxProcStartTimeSync,
-} from "@gajae-code/coding-agent/gjc-runtime/linux-proc";
+} from "@bworx-io/worx-code/gjc-runtime/linux-proc";
 
 /**
  * Build a `/proc/<pid>/stat`-shaped string with configurable identity fields.

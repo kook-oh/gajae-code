@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import {
 	PET_CAPABILITY_SETTLE_MS,
 	warnWhenPetCapabilitySettled,
-} from "@gajae-code/coding-agent/modes/components/pet-capability";
+} from "@bworx-io/worx-code/modes/components/pet-capability";
 import { ImageProtocol, setTerminalImageProtocol, TERMINAL } from "@gajae-code/tui";
 
 const originalProtocol = TERMINAL.imageProtocol;

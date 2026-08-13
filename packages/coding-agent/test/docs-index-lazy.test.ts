@@ -49,7 +49,7 @@ describe("internal-urls docs index loading", () => {
 		const stdout = runBunEval(`
 			const marker = Symbol.for("gjc.docs-index.generated.loaded");
 			Reflect.deleteProperty(globalThis, marker);
-			await import("@gajae-code/coding-agent/internal-urls");
+			await import("@bworx-io/worx-code/internal-urls");
 			const loaded = Reflect.get(globalThis, marker) === true;
 			console.log(JSON.stringify({ loaded }));
 		`);
@@ -60,7 +60,7 @@ describe("internal-urls docs index loading", () => {
 
 	it("loads the generated docs corpus when resolving gjc docs", () => {
 		const stdout = runBunEval(`
-			const { InternalUrlRouter } = await import("@gajae-code/coding-agent/internal-urls");
+			const { InternalUrlRouter } = await import("@bworx-io/worx-code/internal-urls");
 			const resource = await InternalUrlRouter.instance().resolve("gjc://");
 			console.log(JSON.stringify({
 				contentType: resource.contentType,

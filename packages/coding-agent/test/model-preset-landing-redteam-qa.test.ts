@@ -1,12 +1,12 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import { Effort, type Model } from "@gajae-code/ai";
-import { BUILTIN_MODEL_PROFILES, type ModelProfileDefinition } from "@gajae-code/coding-agent/config/model-profiles";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { BUILTIN_MODEL_PROFILES, type ModelProfileDefinition } from "@bworx-io/worx-code/config/model-profiles";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	ModelSelectorComponent,
 	type ModelSelectorSelection,
-} from "@gajae-code/coding-agent/modes/components/model-selector";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+} from "@bworx-io/worx-code/modes/components/model-selector";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { TUI } from "@gajae-code/tui";
 
 function normalizeRenderedText(text: string): string {

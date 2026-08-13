@@ -1,15 +1,15 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { activeSnapshotPath, auditPath, sessionStateDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { activeSnapshotPath, auditPath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	AlreadyExistsError,
 	appendJsonl,
 	createJsonNoClobber,
 	rebuildActiveSnapshot,
 	writeActiveEntry,
-} from "@gajae-code/coding-agent/gjc-runtime/state-writer";
-import type { SkillActiveState } from "@gajae-code/coding-agent/skill-state/active-state";
+} from "@bworx-io/worx-code/gjc-runtime/state-writer";
+import type { SkillActiveState } from "@bworx-io/worx-code/skill-state/active-state";
 
 const TEST_SESSION_ID = "test-session";
 

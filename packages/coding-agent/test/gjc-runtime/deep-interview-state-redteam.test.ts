@@ -5,15 +5,15 @@ import * as path from "node:path";
 import {
 	appendOrMergeDeepInterviewRound,
 	enrichDeepInterviewRoundScoring,
-} from "@gajae-code/coding-agent/gjc-runtime/deep-interview-recorder";
+} from "@bworx-io/worx-code/gjc-runtime/deep-interview-recorder";
 import {
 	mergeDeepInterviewEnvelope,
 	mergeDeepInterviewRounds,
 	normalizeDeepInterviewEnvelope,
-} from "@gajae-code/coding-agent/gjc-runtime/deep-interview-state";
-import { activeSnapshotPath, modeStatePath } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { reconcileWorkflowSkillState, runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
-import { deriveDeepInterviewHud } from "@gajae-code/coding-agent/skill-state/workflow-hud";
+} from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
+import { activeSnapshotPath, modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { reconcileWorkflowSkillState, runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
+import { deriveDeepInterviewHud } from "@bworx-io/worx-code/skill-state/workflow-hud";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

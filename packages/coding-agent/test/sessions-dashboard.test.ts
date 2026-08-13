@@ -6,11 +6,11 @@ import {
 	dashboardSessions,
 	SessionsDashboardComponent,
 	sessionLivenessFromPresence,
-} from "@gajae-code/coding-agent/modes/components/sessions-dashboard";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { MemorySessionStorage, type SessionStorageWriter } from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/modes/components/sessions-dashboard";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { MemorySessionStorage, type SessionStorageWriter } from "@bworx-io/worx-code/session/session-storage";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 
 initTheme();

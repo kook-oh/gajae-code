@@ -82,7 +82,7 @@ let isDryRun = false;
 export const NPM_REGISTRY_URL = "https://registry.npmjs.org/";
 export const NPM_RELEASE_TAG = "latest";
 export const NPM_NIGHTLY_TAG = "nightly";
-export const RELEASE_CHANNEL_EVIDENCE_FILE = "gajae-release-channel-v1.json";
+export const RELEASE_CHANNEL_EVIDENCE_FILE = "worx-release-channel-v1.json";
 export type ReleaseChannel = "stable" | "nightly";
 
 interface ReleasePolicy {
@@ -205,7 +205,6 @@ export const packages: PublishPackage[] = [
 	{ dir: "packages/agent", kind: "typescript" },
 	{ dir: "packages/bridge-client", kind: "typescript" },
 	{ dir: "packages/coding-agent", kind: "typescript" },
-	{ dir: "packages/gajae-code", kind: "manifest" },
 ];
 const dependencyFieldNames = [
 	"dependencies",

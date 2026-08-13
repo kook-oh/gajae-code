@@ -18,7 +18,7 @@
  * 2. Use /plan to toggle plan mode on/off
  * 3. Or start in plan mode with --plan flag
  */
-import type { ExtensionAPI, ExtensionContext } from "@gajae-code/coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@bworx-io/worx-code";
 import { Key } from "@gajae-code/tui";
 
 // Read-only tools for plan mode

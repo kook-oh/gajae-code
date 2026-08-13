@@ -5,34 +5,34 @@ import * as path from "node:path";
 import * as url from "node:url";
 import * as zlib from "node:zlib";
 import type { AgentToolContext } from "@gajae-code/agent-core";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async";
-import { DEFAULT_BASH_INTERCEPTOR_RULES, Settings } from "@gajae-code/coding-agent/config/settings";
-import { EditTool } from "@gajae-code/coding-agent/edit";
-import { saveAgentBashOriginalArtifact } from "@gajae-code/coding-agent/session/agent-session";
-import { ArtifactManager } from "@gajae-code/coding-agent/session/artifacts";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { AsyncJobManager } from "@bworx-io/worx-code/async";
+import { DEFAULT_BASH_INTERCEPTOR_RULES, Settings } from "@bworx-io/worx-code/config/settings";
+import { EditTool } from "@bworx-io/worx-code/edit";
+import { saveAgentBashOriginalArtifact } from "@bworx-io/worx-code/session/agent-session";
+import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
 	DEFAULT_ARTIFACT_MAX_BYTES,
 	OutputSink,
 	truncateHeadBytes,
-} from "@gajae-code/coding-agent/session/streaming-output";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/session/streaming-output";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	type BashOriginalArtifactSaveResult,
 	BashTool,
 	saveBashOriginalArtifactForTests,
-} from "@gajae-code/coding-agent/tools/bash";
-import { FindTool } from "@gajae-code/coding-agent/tools/find";
-import { JobTool } from "@gajae-code/coding-agent/tools/job";
+} from "@bworx-io/worx-code/tools/bash";
+import { FindTool } from "@bworx-io/worx-code/tools/find";
+import { JobTool } from "@bworx-io/worx-code/tools/job";
 import {
 	formatArtifactReference,
 	formatOutputNotice,
 	outputMeta,
 	wrapToolWithMetaNotice,
-} from "@gajae-code/coding-agent/tools/output-meta";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
-import { DEFAULT_FILE_LIMIT, MULTI_FILE_PER_FILE_MATCHES, SearchTool } from "@gajae-code/coding-agent/tools/search";
-import { WriteTool } from "@gajae-code/coding-agent/tools/write";
+} from "@bworx-io/worx-code/tools/output-meta";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import { DEFAULT_FILE_LIMIT, MULTI_FILE_PER_FILE_MATCHES, SearchTool } from "@bworx-io/worx-code/tools/search";
+import { WriteTool } from "@bworx-io/worx-code/tools/write";
 import { $which, Snowflake } from "@gajae-code/utils";
 import { unzipSync } from "fflate";
 

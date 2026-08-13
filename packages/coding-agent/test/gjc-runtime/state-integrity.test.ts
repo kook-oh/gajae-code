@@ -7,7 +7,7 @@ import {
 	modeStatePath,
 	sessionStateDir,
 	transactionJournalPath,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { runNativeStateCommand } from "../../src/gjc-runtime/state-runtime";
 import { writeJsonAtomic } from "../../src/gjc-runtime/state-writer";
 

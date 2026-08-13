@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import type { FileDisplayModeSession } from "@gajae-code/coding-agent/utils/file-display-mode";
-import { resolveFileDisplayMode } from "@gajae-code/coding-agent/utils/file-display-mode";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import type { FileDisplayModeSession } from "@bworx-io/worx-code/utils/file-display-mode";
+import { resolveFileDisplayMode } from "@bworx-io/worx-code/utils/file-display-mode";
 
 // ─── Env isolation ───────────────────────────────────────────────────────────
 

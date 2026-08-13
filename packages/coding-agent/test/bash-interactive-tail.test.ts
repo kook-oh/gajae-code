@@ -3,8 +3,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentToolContext } from "@gajae-code/agent-core";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { runInteractiveBashPty } from "@gajae-code/coding-agent/tools/bash-interactive";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { runInteractiveBashPty } from "@bworx-io/worx-code/tools/bash-interactive";
 
 interface DisposableComponent {
 	dispose?: () => void;

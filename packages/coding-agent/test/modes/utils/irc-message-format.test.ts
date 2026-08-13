@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it } from "bun:test";
-import { IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { initTheme, theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { initTheme, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import {
 	formatIrcMessageBlock,
 	type ParsedIrcMessage,
 	parseIrcMessage,
-} from "@gajae-code/coding-agent/modes/utils/irc-message";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
+} from "@bworx-io/worx-code/modes/utils/irc-message";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import {
 	associateSessionMessageObservationId,
 	buildSessionContext,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 import { Container } from "@gajae-code/tui";
 
 beforeEach(async () => {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { createLspWritethrough } from "@gajae-code/coding-agent/lsp";
-import * as lspConfig from "@gajae-code/coding-agent/lsp/config";
+import { createLspWritethrough } from "@bworx-io/worx-code/lsp";
+import * as lspConfig from "@bworx-io/worx-code/lsp/config";
 import { TempDir } from "@gajae-code/utils";
 
 describe("createLspWritethrough batching", () => {

@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import { Agent, ThinkingLevel } from "@gajae-code/agent-core";
 import type { Model } from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 const alpha = {
 	provider: "test",

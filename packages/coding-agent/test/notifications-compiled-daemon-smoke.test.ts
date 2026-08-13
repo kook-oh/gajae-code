@@ -101,7 +101,7 @@ describe("compiled daemon smoke coverage", () => {
 			new Response(proc.stderr).text(),
 		]);
 		expect(`${exitCode}\n${stdout}\n${stderr}`).toStartWith("0\n");
-		fs.copyFileSync(path.join(repoRoot, `packages/coding-agent/dist/gjc${executableSuffix}`), outPath);
+		fs.copyFileSync(path.join(repoRoot, `packages/coding-agent/dist/worx${executableSuffix}`), outPath);
 		fs.chmodSync(outPath, 0o755);
 	}
 

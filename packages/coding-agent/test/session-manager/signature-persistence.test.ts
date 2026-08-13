@@ -6,7 +6,7 @@ import {
 	CURRENT_SESSION_VERSION,
 	SessionManager,
 	type SessionMessageEntry,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 import { getBlobsDir, TempDir } from "@gajae-code/utils";
 
 function isAssistantSessionEntry(entry: unknown): entry is SessionMessageEntry & { message: AssistantMessage } {

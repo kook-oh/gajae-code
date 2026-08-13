@@ -4,16 +4,16 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { Shell } from "@bworx-io/worx-code-natives";
 import * as piNatives from "@bworx-io/worx-code-natives";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { getRuntimeResourceCounts } from "@gajae-code/coding-agent/debug/runtime-gauges";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { getRuntimeResourceCounts } from "@bworx-io/worx-code/debug/runtime-gauges";
 import {
 	disposeAllShellSessions,
 	executeBash,
 	getShellSessionCount,
 	normalizeMinimizedSaveResultForTests,
-} from "@gajae-code/coding-agent/exec/bash-executor";
-import { DEFAULT_MAX_BYTES } from "@gajae-code/coding-agent/session/streaming-output";
-import * as shellSnapshot from "@gajae-code/coding-agent/utils/shell-snapshot";
+} from "@bworx-io/worx-code/exec/bash-executor";
+import { DEFAULT_MAX_BYTES } from "@bworx-io/worx-code/session/streaming-output";
+import * as shellSnapshot from "@bworx-io/worx-code/utils/shell-snapshot";
 
 const BACKGROUND_COMPLETION_RACE_MS = 750;
 // Direct executor callers retain the shared 20 KiB head alongside the 50 KiB tail.

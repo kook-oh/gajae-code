@@ -5,20 +5,20 @@ import * as path from "node:path";
 import { openRecoveryFsRoot, type RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import { Agent } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	acquireMemoryGuardClaims,
 	releaseMemoryGuardClaims,
-} from "@gajae-code/coding-agent/gjc-runtime/memory-guard-owner-claims";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+} from "@bworx-io/worx-code/gjc-runtime/memory-guard-owner-claims";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import type {
 	MemoryGuardParticipantDescriptorV1,
 	MemoryGuardSessionManagerCheckpointV1,
-} from "@gajae-code/coding-agent/session/memory-guard-checkpoint-participant";
-import { memoryGuardCanonicalJson } from "@gajae-code/coding-agent/session/memory-guard-checkpoint-participant";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/memory-guard-checkpoint-participant";
+import { memoryGuardCanonicalJson } from "@bworx-io/worx-code/session/memory-guard-checkpoint-participant";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 const tempRoots: string[] = [];
 const authStores: AuthStorage[] = [];

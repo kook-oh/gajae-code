@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { discoverAndLoadExtensions } from "@gajae-code/coding-agent/extensibility/extensions/loader";
+import { discoverAndLoadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
 import { getAgentDir, getPluginsDir, setAgentDir, TempDir } from "@gajae-code/utils";
 
-const currentPiCodingAgentPath = Bun.resolveSync("@gajae-code/coding-agent", import.meta.dir);
-const currentPiExtensionsPath = Bun.resolveSync("@gajae-code/coding-agent/extensibility/extensions", import.meta.dir);
+const currentPiCodingAgentPath = Bun.resolveSync("@bworx-io/worx-code", import.meta.dir);
+const currentPiExtensionsPath = Bun.resolveSync("@bworx-io/worx-code/extensibility/extensions", import.meta.dir);
 
 describe("plugin extension discovery", () => {
 	let projectDir: TempDir;

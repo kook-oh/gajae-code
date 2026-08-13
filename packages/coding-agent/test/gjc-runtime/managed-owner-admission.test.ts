@@ -3,8 +3,8 @@ import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { sessionUltragoalDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { lifecyclePaths } from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+import { sessionUltragoalDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { lifecyclePaths } from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");
 const admissionModule = path.join(

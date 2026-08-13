@@ -5,7 +5,7 @@ import {
 	cappedExponentialWithFullJitter,
 	effectiveFallbackDelay,
 	FallbackChainController,
-} from "@gajae-code/coding-agent/session/fallback-chain-controller";
+} from "@bworx-io/worx-code/session/fallback-chain-controller";
 
 function chain(entries: string[]): ConfiguredFallbackChain {
 	return { role: "default", entries, origin: "model_selection", explicitHead: true };

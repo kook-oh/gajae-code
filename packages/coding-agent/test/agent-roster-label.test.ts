@@ -1,12 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentRegistry } from "@gajae-code/coding-agent/registry/agent-registry";
-import { createAgentSession } from "@gajae-code/coding-agent/sdk";
-import type { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
+import { createAgentSession } from "@bworx-io/worx-code/sdk";
+import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { TempDir } from "@gajae-code/utils";
 
 interface SessionRequest {

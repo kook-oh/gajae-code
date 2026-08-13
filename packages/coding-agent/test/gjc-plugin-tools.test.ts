@@ -24,7 +24,7 @@ async function writeTool(cwd: string, fileName: string, toolName: string): Promi
 	const toolPath = path.join(toolsDir, fileName);
 	await fs.writeFile(
 		toolPath,
-		`import type { CustomToolFactory } from "@gajae-code/coding-agent/extensibility/custom-tools/types";
+		`import type { CustomToolFactory } from "@bworx-io/worx-code/extensibility/custom-tools/types";
 
 const factory: CustomToolFactory = pi => ({
 	name: ${JSON.stringify(toolName)},

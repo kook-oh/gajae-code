@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { handleHuggingFace } from "@gajae-code/coding-agent/web/scrapers/huggingface";
-import { handleSpotify } from "@gajae-code/coding-agent/web/scrapers/spotify";
-import { handleVimeo } from "@gajae-code/coding-agent/web/scrapers/vimeo";
+import { handleHuggingFace } from "@bworx-io/worx-code/web/scrapers/huggingface";
+import { handleSpotify } from "@bworx-io/worx-code/web/scrapers/spotify";
+import { handleVimeo } from "@bworx-io/worx-code/web/scrapers/vimeo";
 
 const SKIP = !Bun.env.WEB_FETCH_INTEGRATION;
 

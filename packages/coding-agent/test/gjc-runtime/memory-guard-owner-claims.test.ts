@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { LinuxProcPidProbeResult } from "@gajae-code/coding-agent/gjc-runtime/linux-proc";
+import type { LinuxProcPidProbeResult } from "@bworx-io/worx-code/gjc-runtime/linux-proc";
 import {
 	acquireMemoryGuardClaims,
 	type MemoryGuardClaimOwner,
@@ -10,7 +10,7 @@ import {
 	probeMemoryGuardClaimsReleased,
 	readMemoryGuardClaimsForTest,
 	releaseMemoryGuardClaims,
-} from "@gajae-code/coding-agent/gjc-runtime/memory-guard-owner-claims";
+} from "@bworx-io/worx-code/gjc-runtime/memory-guard-owner-claims";
 
 function owner(overrides: Partial<MemoryGuardClaimOwner> = {}): MemoryGuardClaimOwner {
 	return {

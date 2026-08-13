@@ -31,8 +31,7 @@ function rootPackage(version = "1.2.3"): string {
 		{
 			workspaces: {
 				catalog: {
-					"@gajae-code/coding-agent": version,
-					"gajae-code": version,
+					"@bworx-io/worx-code": version,
 				},
 			},
 		},
@@ -41,7 +40,7 @@ function rootPackage(version = "1.2.3"): string {
 	);
 }
 
-function packageJson(name: string, version = "1.2.3", homepage = "https://gajae-code.com"): string {
+function packageJson(name: string, version = "1.2.3", homepage = "https://github.com/bworx-io/worx-code"): string {
 	return JSON.stringify({ name, version, homepage }, null, "\t");
 }
 
@@ -52,17 +51,17 @@ async function addGeneratedDocsIndex(root: string): Promise<void> {
 }
 const SOURCE_SHA = "a".repeat(40);
 const DIFFERENT_SOURCE_SHA = "e".repeat(40);
-const GIT_API = "https://api.github.com/repos/Yeachan-Heo/gajae-code/git";
+const GIT_API = "https://api.github.com/repos/bworx-io/worx-code/git";
 
-const LATEST_RELEASE_API = "https://api.github.com/repos/Yeachan-Heo/gajae-code/releases/latest";
-const RELEASE_LIST_API = "https://api.github.com/repos/Yeachan-Heo/gajae-code/releases?per_page=100";
-const RELEASE_LIST_PAGE_TWO_API = "https://api.github.com/repos/Yeachan-Heo/gajae-code/releases?per_page=100&page=2";
+const LATEST_RELEASE_API = "https://api.github.com/repos/bworx-io/worx-code/releases/latest";
+const RELEASE_LIST_API = "https://api.github.com/repos/bworx-io/worx-code/releases?per_page=100";
+const RELEASE_LIST_PAGE_TWO_API = "https://api.github.com/repos/bworx-io/worx-code/releases?per_page=100&page=2";
 const TAG_API = `${GIT_API}/ref/tags/v1.2.3`;
 
-const RELEASE_STATE_URL = "https://gajae-code.com/release-sync.json";
-const RELEASE_URL = "https://github.com/Yeachan-Heo/gajae-code/releases/tag/v1.2.3";
-const EXPECTED_ASSET_URL = "https://assets.example/gajae-release-packages-expected-v1.json";
-const FINAL_ASSET_URL = "https://assets.example/gajae-release-packages-v1.json";
+const RELEASE_STATE_URL = "https://github.com/bworx-io/worx-code/release-sync.json";
+const RELEASE_URL = "https://github.com/bworx-io/worx-code/releases/tag/v1.2.3";
+const EXPECTED_ASSET_URL = "https://assets.example/worx-release-packages-expected-v1.json";
+const FINAL_ASSET_URL = "https://assets.example/worx-release-packages-v1.json";
 
 type MockFetchResponse = Response | string | Record<string, unknown> | unknown[];
 
@@ -75,13 +74,10 @@ function stableRelease(assets?: Array<{ name: string; browser_download_url: stri
 		published_at: "2026-07-12T04:00:25.000Z",
 		html_url: RELEASE_URL,
 		assets: assets ?? [
-			{ name: "gjc-linux-x64", browser_download_url: "https://assets.example/gjc-linux-x64" },
-			{ name: "gjc-linux-arm64", browser_download_url: "https://assets.example/gjc-linux-arm64" },
-			{ name: "gjc-darwin-arm64", browser_download_url: "https://assets.example/gjc-darwin-arm64" },
-			{ name: "gjc-darwin-x64", browser_download_url: "https://assets.example/gjc-darwin-x64" },
-			{ name: "gjc-windows-x64.exe", browser_download_url: "https://assets.example/gjc-windows-x64.exe" },
-			{ name: "gajae-release-packages-expected-v1.json", browser_download_url: EXPECTED_ASSET_URL },
-			{ name: "gajae-release-packages-v1.json", browser_download_url: FINAL_ASSET_URL },
+			{ name: "worx-linux-x64", browser_download_url: "https://assets.example/worx-linux-x64" },
+			{ name: "worx-darwin-arm64", browser_download_url: "https://assets.example/worx-darwin-arm64" },
+			{ name: "worx-release-packages-expected-v1.json", browser_download_url: EXPECTED_ASSET_URL },
+			{ name: "worx-release-packages-v1.json", browser_download_url: FINAL_ASSET_URL },
 		],
 	};
 }
@@ -94,14 +90,14 @@ function releaseState(version = "1.2.3", changelogPath = "packages/coding-agent/
 				id: 123,
 				published_at: "2026-07-12T04:00:25Z",
 				tag: `v${version}`,
-				url: `https://github.com/Yeachan-Heo/gajae-code/releases/tag/v${version}`,
+				url: `https://github.com/bworx-io/worx-code/releases/tag/v${version}`,
 				version,
 			},
 			schema_version: 1,
 			source: {
 				changelog_path: changelogPath,
 				commit_sha: sourceCommit,
-				repository: "Yeachan-Heo/gajae-code",
+				repository: "bworx-io/worx-code",
 			},
 		},
 		null,
@@ -207,8 +203,7 @@ describe("public docs/site/version sync guard", () => {
 	test("passes when package versions, homepage metadata, marketing docs, and generated docs index match", async () => {
 		const root = await createRepo({
 			"package.json": rootPackage(),
-			"packages/coding-agent/package.json": packageJson("@gajae-code/coding-agent"),
-			"packages/gajae-code/package.json": packageJson("gajae-code"),
+			"packages/coding-agent/package.json": packageJson("@bworx-io/worx-code"),
 			"README.md": "# Gajae-Code\n\n## Recent highlights\n",
 			"docs/sdk.md": "# SDK\n\nCurrent docs.\n",
 		});
@@ -229,17 +224,15 @@ describe("public docs/site/version sync guard", () => {
 	test("fails on package, catalog, homepage, stale marketing, and generated docs drift", async () => {
 		const root = await createRepo({
 			"package.json": rootPackage("1.2.3"),
-			"packages/coding-agent/package.json": packageJson("@gajae-code/coding-agent", "1.2.3"),
-			"packages/gajae-code/package.json": packageJson("gajae-code", "1.2.2", "https://example.invalid"),
+			"packages/coding-agent/package.json": packageJson("@bworx-io/worx-code", "1.2.2", "https://example.invalid"),
 			"README.md": "# Gajae-Code\n\n## New in 1.2.2\n",
 			"docs/sdk.md": "# SDK\n",
 			"packages/coding-agent/src/internal-urls/docs-index.generated.ts": "stale\n",
 		});
 
 		const violations = await checkPublicVersionSync(root);
-		expect(violations.some(violation => violation.path === "packages/gajae-code/package.json" && violation.message.includes("version 1.2.2"))).toBe(true);
-		expect(violations.some(violation => violation.path === "packages/gajae-code/package.json" && violation.message.includes("homepage"))).toBe(true);
-		expect(violations.some(violation => violation.path === "package.json" && violation.message.includes("catalog gajae-code"))).toBe(true);
+		expect(violations.some(violation => violation.path === "packages/coding-agent/package.json" && violation.message.includes("version 1.2.2"))).toBe(true);
+		expect(violations.some(violation => violation.path === "packages/coding-agent/package.json" && violation.message.includes("homepage"))).toBe(true);
 		expect(violations.some(violation => violation.path === "README.md" && violation.message.includes("Visible marketing version 1.2.2"))).toBe(true);
 		expect(violations.some(violation => violation.path.includes("docs-index.generated.ts") && violation.message.includes("stale"))).toBe(true);
 	});
@@ -249,8 +242,7 @@ describe("public docs/site/version sync guard", () => {
 		// restores the unmergeable one-line-per-doc artifact to the index.
 		const root = await createRepo({
 			"package.json": rootPackage(),
-			"packages/coding-agent/package.json": packageJson("@gajae-code/coding-agent"),
-			"packages/gajae-code/package.json": packageJson("gajae-code"),
+			"packages/coding-agent/package.json": packageJson("@bworx-io/worx-code"),
 			"README.md": "# Gajae-Code\n",
 			"docs/sdk.md": "# SDK\n\nCurrent docs.\n",
 			".gitignore": "packages/coding-agent/src/internal-urls/docs-index.generated.ts\n",
@@ -278,8 +270,7 @@ describe("public docs/site/version sync guard", () => {
 		// rather than fail on a missing git or a non-repo directory.
 		const root = await createRepo({
 			"package.json": rootPackage(),
-			"packages/coding-agent/package.json": packageJson("@gajae-code/coding-agent"),
-			"packages/gajae-code/package.json": packageJson("gajae-code"),
+			"packages/coding-agent/package.json": packageJson("@bworx-io/worx-code"),
 			"README.md": "# Gajae-Code\n",
 			"docs/sdk.md": "# SDK\n\nCurrent docs.\n",
 		});
@@ -431,19 +422,16 @@ describe("public docs/site/version sync guard", () => {
 
 	test("live check rejects a stable release without final package evidence before reading deployed state", async () => {
 		const incompleteAssets = [
-			{ name: "gjc-linux-x64", browser_download_url: "https://assets.example/gjc-linux-x64" },
-			{ name: "gjc-linux-arm64", browser_download_url: "https://assets.example/gjc-linux-arm64" },
-			{ name: "gjc-darwin-arm64", browser_download_url: "https://assets.example/gjc-darwin-arm64" },
-			{ name: "gjc-darwin-x64", browser_download_url: "https://assets.example/gjc-darwin-x64" },
-			{ name: "gjc-windows-x64.exe", browser_download_url: "https://assets.example/gjc-windows-x64.exe" },
-			{ name: "gajae-release-packages-expected-v1.json", browser_download_url: EXPECTED_ASSET_URL },
+			{ name: "worx-linux-x64", browser_download_url: "https://assets.example/worx-linux-x64" },
+			{ name: "worx-darwin-arm64", browser_download_url: "https://assets.example/worx-darwin-arm64" },
+			{ name: "worx-release-packages-expected-v1.json", browser_download_url: EXPECTED_ASSET_URL },
 		];
 		const responses = liveResponses(stableRelease(incompleteAssets), releaseState());
 
 		await expect(checkLivePublicVersionSync("unused", mockFetch(responses), 50)).resolves.toEqual([
 			{
 				path: LATEST_RELEASE_API,
-				message: "Published release v1.2.3 is incomplete: missing gajae-release-packages-v1.json.",
+				message: "Published release v1.2.3 is incomplete: missing worx-release-packages-v1.json.",
 			},
 		]);
 	});

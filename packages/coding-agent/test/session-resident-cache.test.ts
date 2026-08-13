@@ -4,9 +4,9 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
 
-import { exportFromFile, exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
-import { BlobStore, EphemeralBlobStore, externalizeImageDataSync } from "@gajae-code/coding-agent/session/blob-store";
-import { SessionManager, type SessionMessageEntry } from "@gajae-code/coding-agent/session/session-manager";
+import { exportFromFile, exportSessionToHtml } from "@bworx-io/worx-code/export/html";
+import { BlobStore, EphemeralBlobStore, externalizeImageDataSync } from "@bworx-io/worx-code/session/blob-store";
+import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();

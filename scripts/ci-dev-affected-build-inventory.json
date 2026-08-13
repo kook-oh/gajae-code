@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "typescript": [
-    { "id": "coding-agent", "name": "@gajae-code/coding-agent", "dir": "packages/coding-agent", "nativeConsumer": true, "nativeProducer": false },
+    { "id": "coding-agent", "name": "@bworx-io/worx-code", "dir": "packages/coding-agent", "nativeConsumer": true, "nativeProducer": false },
     { "id": "stats", "name": "@gajae-code/stats", "dir": "packages/stats", "nativeConsumer": false, "nativeProducer": false }
   ],
   "cargo": [

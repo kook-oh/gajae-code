@@ -8,9 +8,9 @@ import {
 	mergeModelProfiles,
 	recommendModelProfileForProvider,
 	resolveProfileBindings,
-} from "@gajae-code/coding-agent/config/model-profiles";
-import { parseModelString, splitSelectorThinkingSuffix } from "@gajae-code/coding-agent/config/model-resolver";
-import { ProfileModelSelectorSchema } from "@gajae-code/coding-agent/config/models-config-schema";
+} from "@bworx-io/worx-code/config/model-profiles";
+import { parseModelString, splitSelectorThinkingSuffix } from "@bworx-io/worx-code/config/model-resolver";
+import { ProfileModelSelectorSchema } from "@bworx-io/worx-code/config/models-config-schema";
 import modelsJson from "../../ai/src/models.json";
 import { normalizeModelSelectorValue, selectorHead } from "../src/config/model-selector-value";
 

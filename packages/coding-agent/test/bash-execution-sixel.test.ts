@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { BashExecutionComponent } from "@gajae-code/coding-agent/modes/components/bash-execution";
-import { IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { getThemeByName, setThemeInstance, theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import { sanitizeWithOptionalSixelPassthrough } from "@gajae-code/coding-agent/utils/sixel";
+import { BashExecutionComponent } from "@bworx-io/worx-code/modes/components/bash-execution";
+import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import { sanitizeWithOptionalSixelPassthrough } from "@bworx-io/worx-code/utils/sixel";
 import { ImageProtocol, TERMINAL, type TUI } from "@gajae-code/tui";
 import { sanitizeText } from "@gajae-code/utils";
 

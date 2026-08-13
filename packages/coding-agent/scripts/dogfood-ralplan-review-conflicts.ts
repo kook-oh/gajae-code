@@ -1,7 +1,7 @@
 /**
  * Product-surface dogfood for #2902 ralplan typed review conflicts.
  *
- * Uses the **compiled** `packages/coding-agent/dist/gjc` binary (not source
+ * Uses the **compiled** `packages/coding-agent/dist/worx` binary (not source
  * `cli.ts`) so evidence matches the owner exact-head compiled-binary gate:
  *   1) open conflicts fail closed (exit 2, Join blocked)
  *   2) complete disposition document is accepted and persisted
@@ -20,7 +20,7 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const defaultBinary = path.join(repoRoot, "packages/coding-agent/dist/gjc");
+const defaultBinary = path.join(repoRoot, "packages/coding-agent/dist/worx");
 
 async function resolveCompiledBinary(): Promise<string> {
 	const binary = process.env.GJC_BINARY?.trim() || defaultBinary;

@@ -4,8 +4,8 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { VERSION } from "@gajae-code/coding-agent";
-import type { Args } from "@gajae-code/coding-agent/cli/args";
+import { VERSION } from "@bworx-io/worx-code";
+import type { Args } from "@bworx-io/worx-code/cli/args";
 import {
 	applyGjcTmuxProfile,
 	buildDefaultTmuxLaunchPlan,
@@ -16,25 +16,25 @@ import {
 	launchDefaultTmuxIfNeeded as launchDefaultTmuxIfNeededRaw,
 	type TmuxLaunchContext,
 	type TmuxSpawnOptions,
-} from "@gajae-code/coding-agent/gjc-runtime/launch-tmux";
+} from "@bworx-io/worx-code/gjc-runtime/launch-tmux";
 import {
 	__setBinaryResolverForTests,
 	__setExecutableIdentityResolverForTests,
-} from "@gajae-code/coding-agent/gjc-runtime/psmux-detect";
-import { sessionRuntimeDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { persistCoordinatorRuntimeStateFromPostmortem } from "@gajae-code/coding-agent/gjc-runtime/session-state-sidecar";
+} from "@bworx-io/worx-code/gjc-runtime/psmux-detect";
+import { sessionRuntimeDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { persistCoordinatorRuntimeStateFromPostmortem } from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
 import {
 	captureOwnerGenerationBaselineSync,
 	isExactScopedBootstrapSuccessReceipt,
 	lifecyclePaths,
 	replaceOwnerGenerationSync,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	__setCreateOwnerIsolationForTests,
 	__setMutationServerProofForTests,
 	createGjcTmuxSession,
 	removeGjcTmuxSession,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-sessions";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-sessions";
 import { postmortem } from "@gajae-code/utils";
 
 function args(overrides: Partial<Args> = {}): Args {

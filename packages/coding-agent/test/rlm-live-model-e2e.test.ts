@@ -14,21 +14,21 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { readNotebookDocument } from "@gajae-code/coding-agent/edit/notebook";
-import { disposeKernelSessionsByOwner } from "@gajae-code/coding-agent/eval/py/executor";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
+import { disposeKernelSessionsByOwner } from "@bworx-io/worx-code/eval/py/executor";
 import {
 	ensureRlmSessionDir,
 	generateRlmSessionId,
 	resolveRlmArtifactPaths,
-} from "@gajae-code/coding-agent/rlm/artifacts";
-import { loadRlmDataContext } from "@gajae-code/coding-agent/rlm/data-context";
-import { createRlmPreset } from "@gajae-code/coding-agent/rlm/index";
-import { RlmNotebookWriter } from "@gajae-code/coding-agent/rlm/notebook";
-import { assertRlmToolAllowlist } from "@gajae-code/coding-agent/rlm/preset";
-import { createRlmPythonTool } from "@gajae-code/coding-agent/rlm/python-tool";
-import { synthesizeRlmReport } from "@gajae-code/coding-agent/rlm/report";
-import { type CreateAgentSessionOptions, createAgentSession } from "@gajae-code/coding-agent/sdk";
+} from "@bworx-io/worx-code/rlm/artifacts";
+import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
+import { createRlmPreset } from "@bworx-io/worx-code/rlm/index";
+import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
+import { assertRlmToolAllowlist } from "@bworx-io/worx-code/rlm/preset";
+import { createRlmPythonTool } from "@bworx-io/worx-code/rlm/python-tool";
+import { synthesizeRlmReport } from "@bworx-io/worx-code/rlm/report";
+import { type CreateAgentSessionOptions, createAgentSession } from "@bworx-io/worx-code/sdk";
 
 const LIVE = process.env.GJC_RLM_LIVE === "1";
 const SALES_CSV = "region,amount\nnorth,100\nnorth,150\nsouth,200\nsouth,50\neast,300\n";

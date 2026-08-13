@@ -32,7 +32,7 @@ const COMPILED_RELOAD_WARNING =
 export function resolveGjcRuntimeSpawnInfo(execPath: string = process.execPath): GjcRuntimeSpawnInfo {
 	const base = path.basename(execPath).toLowerCase();
 	const fromSource = base === "bun" || base === "node" || base.startsWith("bun") || base.startsWith("node");
-	const sourceEntry = fromSource ? path.resolve(import.meta.dir, "../../bin/gjc.js") : undefined;
+	const sourceEntry = fromSource ? path.resolve(import.meta.dir, "../../bin/worx.js") : undefined;
 	if (fromSource) {
 		return {
 			execPath,

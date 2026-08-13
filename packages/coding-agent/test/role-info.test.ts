@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { getRoleInfo } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { getRoleInfo } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 
 describe("getRoleInfo", () => {
 	test("returns built-in role info", () => {

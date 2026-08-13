@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { withFileLock } from "@gajae-code/coding-agent/config/file-lock";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
+import { withFileLock } from "@bworx-io/worx-code/config/file-lock";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { logger } from "@gajae-code/utils";
 import { YAML } from "bun";
 

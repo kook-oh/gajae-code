@@ -4,7 +4,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { lstat, readFile, readdir } from "node:fs/promises";
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import { SdkClient, listSdkSessionEndpoints, type SdkSessionEndpoint } from "@gajae-code/coding-agent/sdk";
+import { SdkClient, listSdkSessionEndpoints, type SdkSessionEndpoint } from "@bworx-io/worx-code/sdk";
 
 // Trusted-local procedural policy only; this template does not isolate a modified process from endpoint authority.
 

@@ -14,8 +14,8 @@ import { gunzipSync, gzipSync } from "node:zlib";
 import { $ } from "bun";
 
 export const RELEASE_EVIDENCE_SCHEMA_VERSION = 1;
-export const EXPECTED_EVIDENCE_FILE = "gajae-release-packages-expected-v1.json";
-export const FINAL_EVIDENCE_FILE = "gajae-release-packages-v1.json";
+export const EXPECTED_EVIDENCE_FILE = "worx-release-packages-expected-v1.json";
+export const FINAL_EVIDENCE_FILE = "worx-release-packages-v1.json";
 
 export interface PublicPackageDefinition {
 	dir: string;
@@ -24,17 +24,16 @@ export interface PublicPackageDefinition {
 
 /** The complete, ordered-by-name public package contract. */
 export const PUBLIC_PACKAGE_DEFINITIONS: readonly PublicPackageDefinition[] = [
+	{ dir: "packages/coding-agent", name: "@bworx-io/worx-code" },
 	{ dir: "packages/natives", name: "@bworx-io/worx-code-natives" },
 	{ dir: "packages/natives-darwin-arm64", name: "@bworx-io/worx-code-natives-darwin-arm64" },
 	{ dir: "packages/natives-linux-x64", name: "@bworx-io/worx-code-natives-linux-x64" },
 	{ dir: "packages/agent", name: "@gajae-code/agent-core" },
 	{ dir: "packages/ai", name: "@gajae-code/ai" },
 	{ dir: "packages/bridge-client", name: "@gajae-code/bridge-client" },
-	{ dir: "packages/coding-agent", name: "@gajae-code/coding-agent" },
 	{ dir: "packages/stats", name: "@gajae-code/stats" },
 	{ dir: "packages/tui", name: "@gajae-code/tui" },
 	{ dir: "packages/utils", name: "@gajae-code/utils" },
-	{ dir: "packages/gajae-code", name: "gajae-code" },
 ] as const;
 
 const dependencyFieldNames = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"] as const;
@@ -1122,7 +1121,7 @@ export function createGoldenReleaseEvidence(): GoldenReleaseEvidence {
 		const manifest = JSON.stringify({
 			name: definition.name,
 			version: releaseVersion,
-			...(definition.name === "@gajae-code/coding-agent"
+			...(definition.name === "@bworx-io/worx-code"
 				? { devDependencies: { "@gajae-code/ai": releaseVersion } }
 				: {}),
 		});

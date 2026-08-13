@@ -8,8 +8,8 @@
  * 1. Copy this file to ~/.gjc/agent/extensions/ (legacy: ~/.pi/agent/extensions/) or your project's .gjc/extensions/
  * 2. Use /tools to open the tool selector
  */
-import type { ExtensionAPI, ExtensionContext } from "@gajae-code/coding-agent";
-import { getSettingsListTheme } from "@gajae-code/coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@bworx-io/worx-code";
+import { getSettingsListTheme } from "@bworx-io/worx-code";
 import { Container, type SettingItem, SettingsList } from "@gajae-code/tui";
 
 // State persisted to session

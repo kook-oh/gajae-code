@@ -1,8 +1,8 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { modeStatePath, sessionStateDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { readWorkflowStateJson, runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
+import { modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { readWorkflowStateJson, runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 import * as logger from "@gajae-code/utils/logger";
 
 const TEST_SESSION_ID = "test-session";

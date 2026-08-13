@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 

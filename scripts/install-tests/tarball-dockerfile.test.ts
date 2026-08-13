@@ -14,6 +14,9 @@ describe("tarball Verdaccio smoke publish list", () => {
 		const packages = readPublishPackages(dockerfile);
 		const platformPackages = ["natives-darwin-arm64", "natives-linux-x64"];
 
+		expect(packages).toContain("coding-agent");
+		expect(packages).not.toContain("gajae-code");
+
 		expect(packages.filter(pkg => pkg.startsWith("natives-"))).toEqual(platformPackages);
 		const nativesIndex = packages.indexOf("natives");
 		expect(nativesIndex).toBeGreaterThan(-1);
@@ -29,5 +32,13 @@ describe("tarball Verdaccio smoke publish list", () => {
 		expect(dockerfile).toContain("natives-linux-x64) prefix=\"pi_natives.linux-x64\" ;;");
 		expect(dockerfile).toContain("Expected linux-x64 native artifact matching ${prefix}*.node");
 		expect(dockerfile).toContain('cp "${artifact}.build.json" native/');
+	});
+
+	test("installs and invokes the renamed engine package", async () => {
+		const dockerfile = await Bun.file(dockerfilePath).text();
+
+		expect(dockerfile).toContain("bun add @bworx-io/worx-code --registry");
+		expect(dockerfile).toContain("RUN worx --version");
+		expect(dockerfile).not.toContain("bun add gajae-code --registry");
 	});
 });

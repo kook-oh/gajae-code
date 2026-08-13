@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { getThemeByName } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { ResolveTool, resolveToolRenderer } from "@gajae-code/coding-agent/tools/resolve";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { getThemeByName } from "@bworx-io/worx-code/modes/theme/theme";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { ResolveTool, resolveToolRenderer } from "@bworx-io/worx-code/tools/resolve";
 import { sanitizeText } from "@gajae-code/utils";
 import * as z from "zod/v4";
 

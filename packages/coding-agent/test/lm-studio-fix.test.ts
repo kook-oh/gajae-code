@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { hookFetch, Snowflake } from "@gajae-code/utils";
 
 describe("ModelRegistry LM Studio Fixes", () => {

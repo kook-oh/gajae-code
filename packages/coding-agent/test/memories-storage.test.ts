@@ -12,7 +12,7 @@ import {
 	openMemoryDb,
 	tryClaimGlobalPhase2Job,
 	upsertThreads,
-} from "@gajae-code/coding-agent/memories/storage";
+} from "@bworx-io/worx-code/memories/storage";
 import { Snowflake } from "@gajae-code/utils";
 
 const GLOBAL_KIND = "memory_consolidate_global";

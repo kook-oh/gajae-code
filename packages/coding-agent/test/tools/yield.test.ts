@@ -2,9 +2,9 @@ import { describe, expect, it } from "bun:test";
 import type { Tool, ToolCall } from "@gajae-code/ai/types";
 import { enforceStrictSchema } from "@gajae-code/ai/utils/schema";
 import { validateToolArguments } from "@gajae-code/ai/utils/validation";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { YieldTool } from "@gajae-code/coding-agent/tools/yield";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { YieldTool } from "@bworx-io/worx-code/tools/yield";
 
 function createSession(overrides: Partial<ToolSession> = {}): ToolSession {
 	return {

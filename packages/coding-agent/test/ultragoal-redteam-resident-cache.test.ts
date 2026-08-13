@@ -4,9 +4,9 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
-import { sweepResidentCacheRoot } from "@gajae-code/coding-agent/session/blob-store";
-import { SessionManager, SessionManagerTestHooks } from "@gajae-code/coding-agent/session/session-manager";
+import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
+import { sweepResidentCacheRoot } from "@bworx-io/worx-code/session/blob-store";
+import { SessionManager, SessionManagerTestHooks } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const MiB = 1024 * 1024;

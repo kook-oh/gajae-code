@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { InternalUrlRouter } from "@gajae-code/coding-agent/internal-urls";
-import { getMemoryRoot } from "@gajae-code/coding-agent/memories";
-import type { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
+import { InternalUrlRouter } from "@bworx-io/worx-code/internal-urls";
+import { getMemoryRoot } from "@bworx-io/worx-code/memories";
+import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 import { AgentRegistry } from "../../src/registry/agent-registry";
 

@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import type { Model } from "@gajae-code/ai";
-import { getThemeByName, setThemeInstance, theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { executeBuiltinSlashCommand } from "@gajae-code/coding-agent/slash-commands/builtin-registry";
+import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { executeBuiltinSlashCommand } from "@bworx-io/worx-code/slash-commands/builtin-registry";
 import { Text } from "@gajae-code/tui";
 
 function model(provider: string, id: string): Model {

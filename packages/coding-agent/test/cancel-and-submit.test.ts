@@ -4,11 +4,11 @@ import { Agent, type AgentMessage, type StreamFn } from "@gajae-code/agent-core"
 import { getBundledModel } from "@gajae-code/ai";
 import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { type AbortOutcome, AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { type AbortOutcome, AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { logger, TempDir } from "@gajae-code/utils";
 
 type Scenario = "mid-streaming" | "active tool" | "auto-retry" | "pre-existing steering+follow-up entries";

@@ -3,9 +3,9 @@ import { writeFileSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { removeFileLockDirForGc, withFileLock } from "@gajae-code/coding-agent/config/file-lock";
-import { fileLocksGcAdapter } from "@gajae-code/coding-agent/config/file-lock-gc";
-import type { GcContext, GcPidProbe, GcRecord } from "@gajae-code/coding-agent/gjc-runtime/gc-runtime";
+import { removeFileLockDirForGc, withFileLock } from "@bworx-io/worx-code/config/file-lock";
+import { fileLocksGcAdapter } from "@bworx-io/worx-code/config/file-lock-gc";
+import type { GcContext, GcPidProbe, GcRecord } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 
 const DEAD_PID = 525_252;
 const LIVE_PID = 636_363;

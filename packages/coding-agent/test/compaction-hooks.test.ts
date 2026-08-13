@@ -8,20 +8,20 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	HookRunner,
 	type LoadedHook,
 	type SessionBeforeCompactEvent,
 	type SessionCompactEvent,
 	type SessionEvent,
-} from "@gajae-code/coding-agent/extensibility/hooks";
-import { theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/extensibility/hooks";
+import { theme } from "@bworx-io/worx-code/modes/theme/theme";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 import { Snowflake } from "@gajae-code/utils";
 import { e2eApiKey } from "./utilities";
 

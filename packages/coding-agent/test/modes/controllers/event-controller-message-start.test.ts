@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 import type { TextContent, UserMessage } from "@gajae-code/ai";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
-import type { CustomMessage } from "@gajae-code/coding-agent/session/messages";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
+import type { CustomMessage } from "@bworx-io/worx-code/session/messages";
 
 import { Container } from "@gajae-code/tui";
 

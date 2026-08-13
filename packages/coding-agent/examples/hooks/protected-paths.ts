@@ -4,7 +4,7 @@
  * Blocks write and edit operations to protected paths.
  * Useful for preventing accidental modifications to sensitive files.
  */
-import type { HookAPI } from "@gajae-code/coding-agent";
+import type { HookAPI } from "@bworx-io/worx-code";
 
 export default function (pi: HookAPI) {
 	const protectedPaths = [".env", ".git/", "node_modules/"];

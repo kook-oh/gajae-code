@@ -7,7 +7,7 @@ import {
 	buildSystemPrompt,
 	buildSystemPromptToolMetadata,
 	buildVolatileProjectContext,
-} from "@gajae-code/coding-agent/system-prompt";
+} from "@bworx-io/worx-code/system-prompt";
 import { prompt } from "@gajae-code/utils";
 import Handlebars from "handlebars";
 import * as z from "zod/v4";

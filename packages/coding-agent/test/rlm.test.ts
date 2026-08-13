@@ -3,24 +3,24 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getBundledModel } from "@gajae-code/ai/models";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createEmptyNotebook, readNotebookDocument } from "@gajae-code/coding-agent/edit/notebook";
-import type { CustomTool } from "@gajae-code/coding-agent/extensibility/custom-tools/types";
-import { rlmArtifactRoot } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createEmptyNotebook, readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
+import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
+import { rlmArtifactRoot } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	ensureRlmSessionDir,
 	generateRlmSessionId,
 	isValidRlmSessionId,
 	resolveRlmArtifactPaths,
-} from "@gajae-code/coding-agent/rlm/artifacts";
-import { loadRlmDataContext } from "@gajae-code/coding-agent/rlm/data-context";
+} from "@bworx-io/worx-code/rlm/artifacts";
+import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
 import {
 	buildRlmGoalObjective,
 	createRlmPreset,
 	ensureRlmGjcSessionId,
 	runRlmCommand,
-} from "@gajae-code/coding-agent/rlm/index";
-import { RlmNotebookWriter } from "@gajae-code/coding-agent/rlm/notebook";
+} from "@bworx-io/worx-code/rlm/index";
+import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
 import {
 	assertRlmToolAllowlist,
 	buildRlmSystemPrompt,
@@ -28,15 +28,15 @@ import {
 	RLM_READ_ONLY_BASH_PREFIXES,
 	RLM_RESEARCH_PROMPT,
 	RLM_TOOL_ALLOWLIST,
-} from "@gajae-code/coding-agent/rlm/preset";
-import { synthesizeRlmReport } from "@gajae-code/coding-agent/rlm/report";
-import type { RlmCellResult } from "@gajae-code/coding-agent/rlm/types";
-import { type CreateAgentSessionOptions, createAgentSession } from "@gajae-code/coding-agent/sdk";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/rlm/preset";
+import { synthesizeRlmReport } from "@bworx-io/worx-code/rlm/report";
+import type { RlmCellResult } from "@bworx-io/worx-code/rlm/types";
+import { type CreateAgentSessionOptions, createAgentSession } from "@bworx-io/worx-code/sdk";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
 	checkBashAllowedPrefixes,
 	normalizeReadOnlyBashCommand,
-} from "@gajae-code/coding-agent/tools/bash-allowed-prefixes";
+} from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
 import * as z from "zod/v4";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

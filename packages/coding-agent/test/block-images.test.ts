@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { processFileArguments } from "@gajae-code/coding-agent/cli/file-processor";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
+import { processFileArguments } from "@bworx-io/worx-code/cli/file-processor";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
 
 // 1x1 red PNG image as base64 (smallest valid PNG)
 const TINY_PNG_BASE64 =

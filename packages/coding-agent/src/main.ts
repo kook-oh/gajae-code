@@ -91,7 +91,7 @@ async function checkForNewVersion(
 ): Promise<string | undefined> {
 	try {
 		// Resolved from npm config so mirrored/firewalled networks are checked too.
-		const { version } = await fetchLatestPackageVersion("@gajae-code/coding-agent", {
+		const { version } = await fetchLatestPackageVersion("@bworx-io/worx-code", {
 			distTag: distTagForChannel(channel),
 		});
 		return Bun.semver.order(version, currentVersion) > 0 ? version : undefined;

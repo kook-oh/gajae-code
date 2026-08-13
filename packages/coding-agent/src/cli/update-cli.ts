@@ -20,10 +20,9 @@ import {
 	type NpmRegistryLookupOptions,
 } from "../utils/npm-registry";
 
-const RELEASE_REPO = "Yeachan-Heo/gajae-code";
-const PACKAGE = "@gajae-code/coding-agent";
-const NPM_WRAPPER_PACKAGE = "gajae-code";
-const NPM_MANAGED_PACKAGES = [NPM_WRAPPER_PACKAGE, PACKAGE] as const;
+const RELEASE_REPO = "bworx-io/worx-code";
+const PACKAGE = "@bworx-io/worx-code";
+const NPM_MANAGED_PACKAGES = [PACKAGE] as const;
 
 export interface UpdateCommandOptions {
 	force: boolean;

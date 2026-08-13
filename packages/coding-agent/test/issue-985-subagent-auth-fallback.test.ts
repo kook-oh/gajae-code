@@ -3,16 +3,16 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { Api, Model } from "@gajae-code/ai";
-import { kNoAuth, ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
+import { kNoAuth, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	type ModelLookupRegistry,
 	resolveModelOverrideWithAuthFallback,
-} from "@gajae-code/coding-agent/config/model-resolver";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+} from "@bworx-io/worx-code/config/model-resolver";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import {
 	type ConfiguredFallbackChain,
 	FallbackChainController,
-} from "@gajae-code/coding-agent/session/fallback-chain-controller";
+} from "@bworx-io/worx-code/session/fallback-chain-controller";
 
 /**
  * Regression test for #985.

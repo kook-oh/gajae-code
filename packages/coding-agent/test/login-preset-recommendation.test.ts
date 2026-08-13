@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import { ThinkingLevel } from "@gajae-code/agent-core";
 import type { Model } from "@gajae-code/ai";
-import type { ModelProfileDefinition } from "@gajae-code/coding-agent/config/model-profiles";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+import type { ModelProfileDefinition } from "@bworx-io/worx-code/config/model-profiles";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 
 const model = (provider: string, id: string): Model =>
 	({

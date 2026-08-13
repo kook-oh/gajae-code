@@ -3,9 +3,9 @@ import {
 	createPetSelectItems,
 	getPetUnavailableWarning,
 	PET_UNAVAILABLE_WARNING,
-} from "@gajae-code/coding-agent/modes/components/pet-capability";
-import { PetSelectorComponent } from "@gajae-code/coding-agent/modes/components/pet-selector";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+} from "@bworx-io/worx-code/modes/components/pet-capability";
+import { PetSelectorComponent } from "@bworx-io/worx-code/modes/components/pet-selector";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 
 function stripAnsi(text: string): string {
 	return text.replace(/\x1b\[[0-9;]*m/g, "");

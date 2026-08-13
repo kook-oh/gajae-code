@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "gajae-code",
+      "name": "worx-code",
       "devDependencies": {
         "@biomejs/biome": "catalog:",
         "@types/bun": "catalog:",
@@ -16,8 +16,8 @@
       "name": "@gajae-code/agent-core",
       "version": "0.13.1",
       "dependencies": {
-        "@gajae-code/ai": "catalog:",
         "@bworx-io/worx-code-natives": "catalog:",
+        "@gajae-code/ai": "catalog:",
         "@gajae-code/utils": "catalog:",
         "@opentelemetry/api": "catalog:",
       },
@@ -53,18 +53,18 @@
       },
     },
     "packages/coding-agent": {
-      "name": "@gajae-code/coding-agent",
+      "name": "@bworx-io/worx-code",
       "version": "0.13.1",
       "bin": {
-        "gjc": "bin/gjc.js",
+        "worx": "bin/worx.js",
       },
       "dependencies": {
         "@agentclientprotocol/sdk": "catalog:",
         "@babel/parser": "catalog:",
+        "@bworx-io/worx-code-natives": "catalog:",
         "@gajae-code/agent-core": "catalog:",
         "@gajae-code/ai": "catalog:",
         "@gajae-code/bridge-client": "catalog:",
-        "@bworx-io/worx-code-natives": "catalog:",
         "@gajae-code/stats": "catalog:",
         "@gajae-code/tui": "catalog:",
         "@gajae-code/utils": "catalog:",
@@ -91,16 +91,6 @@
         "@types/babel__traverse": "catalog:",
         "@types/bun": "catalog:",
         "@types/ws": "catalog:",
-      },
-    },
-    "packages/gajae-code": {
-      "name": "gajae-code",
-      "version": "0.13.1",
-      "bin": {
-        "gjc": "bin/gjc.js",
-      },
-      "dependencies": {
-        "@gajae-code/coding-agent": "catalog:",
       },
     },
     "packages/natives": {
@@ -194,9 +184,9 @@
         "@babel/parser": "catalog:",
         "@babel/traverse": "catalog:",
         "@babel/types": "catalog:",
+        "@bworx-io/worx-code": "catalog:",
         "@gajae-code/agent-core": "catalog:",
         "@gajae-code/ai": "catalog:",
-        "@gajae-code/coding-agent": "catalog:",
         "@gajae-code/tui": "catalog:",
         "@gajae-code/utils": "catalog:",
         "diff": "catalog:",
@@ -234,15 +224,15 @@
     "@biomejs/biome": "2.5.2",
     "@bufbuild/protobuf": "^2.12.0",
     "@bufbuild/protoc-gen-es": "^2.12.0",
+    "@bworx-io/worx-code": "0.13.1",
+    "@bworx-io/worx-code-natives": "0.13.1",
+    "@bworx-io/worx-code-natives-darwin-arm64": "0.13.1",
+    "@bworx-io/worx-code-natives-linux-x64": "0.13.1",
     "@gajae-code/agent-core": "0.13.1",
     "@gajae-code/ai": "0.13.1",
     "@gajae-code/bridge-client": "0.13.1",
-    "@gajae-code/coding-agent": "0.13.1",
-    "@bworx-io/worx-code-natives": "0.13.1",
-    "@bworx-io/worx-code-natives-darwin-arm64": "0.13.1",
     "@gajae-code/natives-darwin-x64": "0.13.1",
     "@gajae-code/natives-linux-arm64": "0.13.1",
-    "@bworx-io/worx-code-natives-linux-x64": "0.13.1",
     "@gajae-code/natives-win32-x64": "0.13.1",
     "@gajae-code/stats": "0.13.1",
     "@gajae-code/tui": "0.13.1",
@@ -343,6 +333,14 @@
 
     "@bufbuild/protobuf": ["@bufbuild/protobuf@2.13.0", "", {}, "sha512-acq7c49vxfm1ggJ95P70TX7ABDM0vxr1SYD3BB0o0jnBLB4OAqeHyKuN+cD3w80gXEDQ2zxHpR6CUeA+O/aU9g=="],
 
+    "@bworx-io/worx-code": ["@bworx-io/worx-code@workspace:packages/coding-agent"],
+
+    "@bworx-io/worx-code-natives": ["@bworx-io/worx-code-natives@workspace:packages/natives"],
+
+    "@bworx-io/worx-code-natives-darwin-arm64": ["@bworx-io/worx-code-natives-darwin-arm64@workspace:packages/natives-darwin-arm64"],
+
+    "@bworx-io/worx-code-natives-linux-x64": ["@bworx-io/worx-code-natives-linux-x64@workspace:packages/natives-linux-x64"],
+
     "@colors/colors": ["@colors/colors@1.6.0", "", {}, "sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA=="],
 
     "@dabh/diagnostics": ["@dabh/diagnostics@2.0.8", "", { "dependencies": { "@so-ric/colorspace": "^1.1.6", "enabled": "2.0.x", "kuler": "^2.0.0" } }, "sha512-R4MSXTVnuMzGD7bzHdW2ZhhdPC/igELENcq5IjEverBvq5hn1SXCWcsi6eSsdWP0/Ur+SItRRjAktmdoX/8R/Q=="],
@@ -359,17 +357,9 @@
 
     "@gajae-code/bridge-client": ["@gajae-code/bridge-client@workspace:packages/bridge-client"],
 
-    "@gajae-code/coding-agent": ["@gajae-code/coding-agent@workspace:packages/coding-agent"],
-
-    "@gajae-code/natives": ["@gajae-code/natives@workspace:packages/natives"],
-
-    "@gajae-code/natives-darwin-arm64": ["@gajae-code/natives-darwin-arm64@workspace:packages/natives-darwin-arm64"],
-
     "@gajae-code/natives-darwin-x64": ["@gajae-code/natives-darwin-x64@workspace:packages/natives-darwin-x64"],
 
     "@gajae-code/natives-linux-arm64": ["@gajae-code/natives-linux-arm64@workspace:packages/natives-linux-arm64"],
-
-    "@gajae-code/natives-linux-x64": ["@gajae-code/natives-linux-x64@workspace:packages/natives-linux-x64"],
 
     "@gajae-code/natives-win32-x64": ["@gajae-code/natives-win32-x64@workspace:packages/natives-win32-x64"],
 
@@ -824,8 +814,6 @@
     "file-type": ["file-type@21.3.4", "", { "dependencies": { "@tokenizer/inflate": "^0.4.1", "strtok3": "^10.3.4", "token-types": "^6.1.1", "uint8array-extras": "^1.4.0" } }, "sha512-Ievi/yy8DS3ygGvT47PjSfdFoX+2isQueoYP1cntFW1JLYAuS4GD7NUPGg4zv2iZfV52uDyk5w5Z0TdpRS6Q1g=="],
 
     "fn.name": ["fn.name@1.1.0", "", {}, "sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw=="],
-
-    "gajae-code": ["gajae-code@workspace:packages/gajae-code"],
 
     "get-caller-file": ["get-caller-file@2.0.5", "", {}, "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg=="],
 

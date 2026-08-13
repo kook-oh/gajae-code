@@ -9,5 +9,5 @@
 export {};
 
 throw new Error(
-	"@gajae-code/coding-agent/commands/worktree was deliberately removed: the `gjc worktree` command and its cleanup implementation are gone. Inspect leftover managed worktrees under ~/.gjc/wt manually and use `git worktree remove` or `git worktree prune` instead.",
+	"@bworx-io/worx-code/commands/worktree was deliberately removed: the `gjc worktree` command and its cleanup implementation are gone. Inspect leftover managed worktrees under ~/.gjc/wt manually and use `git worktree remove` or `git worktree prune` instead.",
 );

@@ -8,7 +8,7 @@ const repoRoot = path.join(import.meta.dir, "..");
 const defaultReceiptPath = path.join(repoRoot, ".ci-dev-darwin-arm64-receipt.json");
 const sha256 = /^[a-f0-9]{64}$/;
 const gitSha = /^[a-f0-9]{40}$/;
-const canonicalSmokeArgv = ["packages/coding-agent/dist/gjc", "--smoke-test"] as const;
+const canonicalSmokeArgv = ["packages/coding-agent/dist/worx", "--smoke-test"] as const;
 const smokeEnvironmentKeys = ["HOME", "XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME"] as const;
 
 type SmokeEnvironment = Record<(typeof smokeEnvironmentKeys)[number], string>;

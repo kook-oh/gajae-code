@@ -7,11 +7,11 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Agent, type AgentMessage, type AgentTool } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 const contextWindow = 200_000;
 const sessions: AgentSession[] = [];

@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { listRecentSessions } from "@gajae-code/coding-agent/sdk/bus/recent-activity";
+import { listRecentSessions } from "@bworx-io/worx-code/sdk/bus/recent-activity";
 import {
 	prepareManagedSessionScopeForWriteSync,
 	resolveManagedScope,

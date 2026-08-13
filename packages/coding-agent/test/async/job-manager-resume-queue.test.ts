@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { AsyncJobManager, type SubagentRunOutcome } from "@gajae-code/coding-agent/async/job-manager";
+import { AsyncJobManager, type SubagentRunOutcome } from "@bworx-io/worx-code/async/job-manager";
 
 /** Build a manager that records every delivered completion. */
 function makeManager(opts?: { maxRunningJobs?: number; retentionMs?: number }) {

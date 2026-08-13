@@ -2,12 +2,12 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { exportFromFile, exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
+import { exportFromFile, exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import {
 	type ColdSpillRef,
 	SessionManager,
 	type SessionMessageEntry,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 import { getBlobsDir, Snowflake } from "@gajae-code/utils";
 
 function largeMarker(label: string): string {

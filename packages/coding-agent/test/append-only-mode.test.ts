@@ -3,7 +3,7 @@ import {
 	providerSupportsAppendOnlyAuto,
 	resolveAppendOnlyMode,
 	resolveIntentTracingEnabled,
-} from "@gajae-code/coding-agent/sdk";
+} from "@bworx-io/worx-code/sdk";
 
 describe("append-only auto allowlist", () => {
 	it("auto-enables for DeepSeek and direct Anthropic only", () => {

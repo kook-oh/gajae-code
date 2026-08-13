@@ -10,7 +10,7 @@ import {
 	discoverModels,
 	ModelRegistry,
 	SessionManager,
-} from "@gajae-code/coding-agent";
+} from "@bworx-io/worx-code";
 
 // Default: discoverAuthStorage() uses ~/.gjc/agent/agent.db
 // discoverModels() loads built-in + custom models from ~/.gjc/agent/models.json

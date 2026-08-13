@@ -5,7 +5,7 @@ import * as path from "node:path";
 import {
 	createRunnerScriptCache,
 	createRunnerScriptInitializer,
-} from "@gajae-code/coding-agent/eval/py/runner-artifact";
+} from "@bworx-io/worx-code/eval/py/runner-artifact";
 import RUNNER_SCRIPT from "../../src/eval/py/runner.py" with { type: "text" };
 
 describe("Python runner artifact", () => {

@@ -3,8 +3,8 @@ import {
 	BUILTIN_MODEL_PROFILES,
 	mergeModelProfiles,
 	resolveProfileBindings,
-} from "@gajae-code/coding-agent/config/model-profiles";
-import { ModelsConfigSchema, ProfileModelSelectorSchema } from "@gajae-code/coding-agent/config/models-config-schema";
+} from "@bworx-io/worx-code/config/model-profiles";
+import { ModelsConfigSchema, ProfileModelSelectorSchema } from "@bworx-io/worx-code/config/models-config-schema";
 
 function issuePaths(error: { issues: Array<{ path: PropertyKey[] }> }): string[] {
 	return error.issues.map(issue => issue.path.join("."));

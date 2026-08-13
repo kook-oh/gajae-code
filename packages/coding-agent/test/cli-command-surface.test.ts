@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { lifecyclePaths } from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+import { lifecyclePaths } from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import packageJson from "../package.json";
 import { interactiveBootstrapText, routeModelsAlias, routeRootArgv } from "../src/cli";
 import { parseArgs } from "../src/cli/args";
@@ -112,7 +112,7 @@ describe("GJC public CLI command surface", () => {
 			});
 			const admittedOutput = `${admitted.stdout.toString()}\n${admitted.stderr.toString()}`;
 			expect(admitted.exitCode, admittedOutput).toBe(0);
-			expect(admitted.stdout.toString()).toMatch(/^gjc\/\d+\.\d+\.\d+\n$/);
+			expect(admitted.stdout.toString()).toMatch(/^worx\/\d+\.\d+\.\d+\n$/);
 			const bindingFiles = (await fs.readdir(lifecycle.root)).filter(
 				file => file.startsWith("child-") && file.endsWith(".binding.json"),
 			);
@@ -209,16 +209,16 @@ process.exitCode = await child.exited;`;
 			const extract = Bun.spawnSync(["tar", "xzf", tarball], { cwd: stageDir, stdout: "pipe", stderr: "pipe" });
 			expect(extract.exitCode, extract.stderr.toString()).toBe(0);
 			const consumerDir = path.join(stageDir, "consumer");
-			await fs.mkdir(path.join(consumerDir, "node_modules", "@gajae-code"), { recursive: true });
+			await fs.mkdir(path.join(consumerDir, "node_modules", "@bworx-io"), { recursive: true });
 			await fs.symlink(
 				path.join(stageDir, "package"),
-				path.join(consumerDir, "node_modules", "@gajae-code", "coding-agent"),
+				path.join(consumerDir, "node_modules", "@bworx-io", "worx-code"),
 			);
 			for (const subpath of [
-				"@gajae-code/coding-agent/cli/worktree-cli",
-				"@gajae-code/coding-agent/cli/worktree-cli.js",
-				"@gajae-code/coding-agent/commands/worktree",
-				"@gajae-code/coding-agent/commands/worktree.js",
+				"@bworx-io/worx-code/cli/worktree-cli",
+				"@bworx-io/worx-code/cli/worktree-cli.js",
+				"@bworx-io/worx-code/commands/worktree",
+				"@bworx-io/worx-code/commands/worktree.js",
 			]) {
 				const child = Bun.spawnSync([process.execPath, "-e", `await import(${JSON.stringify(subpath)})`], {
 					cwd: consumerDir,
@@ -309,10 +309,10 @@ process.exitCode = await child.exited;`;
 
 	it("preserves root fast-path and legacy team-help precedence", () => {
 		const cases = [
-			{ args: ["--tmux", "--version"], output: /^gjc\/\d+\.\d+\.\d+\n$/ },
-			{ args: ["--tmux", "-v"], output: /^gjc\/\d+\.\d+\.\d+\n$/ },
-			{ args: ["--resume", "--version"], output: /^gjc\/\d+\.\d+\.\d+\n$/ },
-			{ args: ["--resume", "-v"], output: /^gjc\/\d+\.\d+\.\d+\n$/ },
+			{ args: ["--tmux", "--version"], output: /^worx\/\d+\.\d+\.\d+\n$/ },
+			{ args: ["--tmux", "-v"], output: /^worx\/\d+\.\d+\.\d+\n$/ },
+			{ args: ["--resume", "--version"], output: /^worx\/\d+\.\d+\.\d+\n$/ },
+			{ args: ["--resume", "-v"], output: /^worx\/\d+\.\d+\.\d+\n$/ },
 			{ args: ["--help"], output: "USAGE" },
 			{ args: ["--tmux", "--help"], output: "USAGE" },
 			{ args: ["--resume", "--help"], output: "USAGE" },
@@ -349,7 +349,7 @@ process.exitCode = await child.exited;`;
 			const output = `${result.stdout.toString()}\n${result.stderr.toString()}`;
 
 			expect(result.exitCode, output).toBe(0);
-			expect(result.stdout.toString()).toContain("$ gjc launch");
+			expect(result.stdout.toString()).toContain("$ worx launch");
 		}
 
 		for (const args of [
@@ -381,7 +381,7 @@ process.exitCode = await child.exited;`;
 			stdout: "pipe",
 		});
 		expect(unrelated.exitCode, unrelated.stderr.toString()).toBe(0);
-		expect(unrelated.stdout.toString()).toMatch(/^gjc\/\d+\.\d+\.\d+\n$/);
+		expect(unrelated.stdout.toString()).toMatch(/^worx\/\d+\.\d+\.\d+\n$/);
 	}, 30_000);
 
 	it("does not capture absolute-path prompts as startup slash commands", () => {

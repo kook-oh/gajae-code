@@ -4,7 +4,7 @@
  * Skills provide specialized instructions loaded into the system prompt.
  * Discover, filter, merge, or replace them.
  */
-import { createAgentSession, discoverSkills, SessionManager, type Skill } from "@gajae-code/coding-agent";
+import { createAgentSession, discoverSkills, SessionManager, type Skill } from "@bworx-io/worx-code";
 
 // Discover all skills from cwd/.gjc/skills, ~/.gjc/agent/skills, etc.
 const { skills: allSkills } = await discoverSkills();

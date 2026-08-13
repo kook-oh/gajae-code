@@ -3,7 +3,7 @@ import type { Model } from "@gajae-code/ai";
 import {
 	resolveAgentCreationModel,
 	updateAgentModelOverride,
-} from "@gajae-code/coding-agent/modes/components/agent-dashboard";
+} from "@bworx-io/worx-code/modes/components/agent-dashboard";
 
 const availableModel = {
 	provider: "available-provider",

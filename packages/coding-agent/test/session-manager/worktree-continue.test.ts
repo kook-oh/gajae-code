@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { SessionManager, SessionMigrationPolicyError } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager, SessionMigrationPolicyError } from "@bworx-io/worx-code/session/session-manager";
 import { getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@gajae-code/utils";
 
 function git(cwd: string, ...args: string[]): string {

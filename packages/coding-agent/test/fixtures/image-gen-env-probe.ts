@@ -6,7 +6,7 @@ import type { Model } from "@gajae-code/ai";
 import {
 	getOpenAIImageBaseUrlForTest,
 	googleImageApiKeyFromEnvForTest,
-} from "@gajae-code/coding-agent/tools/image-gen";
+} from "@bworx-io/worx-code/tools/image-gen";
 
 const model = {
 	id: "gpt-image-1",

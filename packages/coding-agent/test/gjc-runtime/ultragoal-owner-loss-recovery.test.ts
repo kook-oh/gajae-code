@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { sessionUltragoalDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { sessionUltragoalDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	captureUltragoalRecoverySnapshot,
 	parseStrictTerminalTranscript,
@@ -11,7 +11,7 @@ import {
 	validateOwnerLossBinding,
 	validateRecoveryAdmission,
 	validateRecoveryPath,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const sessionId = "session-2681";
 const binding = {

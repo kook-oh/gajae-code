@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { disposeAllKernelSessions, executePython } from "@gajae-code/coding-agent/eval/py/executor";
-import type { KernelExecuteResult } from "@gajae-code/coding-agent/eval/py/kernel";
-import * as pythonKernel from "@gajae-code/coding-agent/eval/py/kernel";
+import { disposeAllKernelSessions, executePython } from "@bworx-io/worx-code/eval/py/executor";
+import type { KernelExecuteResult } from "@bworx-io/worx-code/eval/py/kernel";
+import * as pythonKernel from "@bworx-io/worx-code/eval/py/kernel";
 import { getProjectDir } from "@gajae-code/utils";
 
 class FakeKernel {

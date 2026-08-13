@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { LoadContext } from "@gajae-code/coding-agent/capability/types";
-import { type AgentsMdReader, loadAgentsMd } from "@gajae-code/coding-agent/discovery/agents-md";
+import type { LoadContext } from "@bworx-io/worx-code/capability/types";
+import { type AgentsMdReader, loadAgentsMd } from "@bworx-io/worx-code/discovery/agents-md";
 
 const MAX_FILE_BYTES = 64 * 1024;
 

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "bun:test";
 
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, isEnoent, setAgentDir, TempDir } from "@gajae-code/utils";
 
 async function fileExists(p: string): Promise<boolean> {

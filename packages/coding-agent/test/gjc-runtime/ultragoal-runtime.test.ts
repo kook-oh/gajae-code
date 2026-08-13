@@ -9,12 +9,12 @@ import {
 	modeStatePath as sessionModeStatePath,
 	sessionStateDir,
 	sessionUltragoalDir,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { reconcileWorkflowSkillState } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { reconcileWorkflowSkillState } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 import {
 	validateCompletionReceipt,
 	verifyUltragoalDurableCompletionState,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 
 import {
 	addUltragoalSubgoal,
@@ -35,8 +35,8 @@ import {
 	validateExecutorQaRedTeamEvidenceForReview,
 	validateUltragoalQualityGateReadOnly,
 	waitForReplayProcessWithTimeout,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
-import { readVisibleSkillActiveState } from "@gajae-code/coding-agent/skill-state/active-state";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
+import { readVisibleSkillActiveState } from "@bworx-io/worx-code/skill-state/active-state";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

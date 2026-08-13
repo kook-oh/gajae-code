@@ -3,7 +3,7 @@
  *
  * Shows how to replace or modify the default system prompt.
  */
-import { createAgentSession, SessionManager } from "@gajae-code/coding-agent";
+import { createAgentSession, SessionManager } from "@bworx-io/worx-code";
 
 // Option 1: Replace prompt entirely
 const { session: session1 } = await createAgentSession({

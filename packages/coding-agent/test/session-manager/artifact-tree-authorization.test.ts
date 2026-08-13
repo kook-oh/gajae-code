@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 // Runtime-level regression coverage for gajae-code#3302: the runtime never
 // supplied `ToolSession.getAuthorizedArtifactsDirs`, so a same-tree detached

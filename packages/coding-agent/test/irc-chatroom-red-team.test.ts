@@ -6,16 +6,16 @@ import {
 	computeIrcSplitWidths,
 	type IrcSidebarTheme,
 	IrcSplitViewComponent,
-} from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext, IrcArrivalSnapshot } from "@gajae-code/coding-agent/modes/types";
+} from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext, IrcArrivalSnapshot } from "@bworx-io/worx-code/modes/types";
 import {
 	formatIrcMessageBlock,
 	type ParsedIrcMessage,
 	parseIrcMessage,
-} from "@gajae-code/coding-agent/modes/utils/irc-message";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
+} from "@bworx-io/worx-code/modes/utils/irc-message";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import { type Component, Container, TUI, visibleWidth } from "@gajae-code/tui";
 import { VirtualTerminal } from "../../tui/test/virtual-terminal";
 

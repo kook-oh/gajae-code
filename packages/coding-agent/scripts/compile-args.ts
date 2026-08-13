@@ -62,7 +62,7 @@ export function buildReleaseCompileArgs(target: string, outfile: string): string
 	});
 }
 
-export function buildDevCompileArgs(outfile = "dist/gjc"): string[] {
+export function buildDevCompileArgs(outfile = "dist/worx"): string[] {
 	return buildCompileArgs({
 		root: "../..",
 		entrypoints: devEntrypoints,

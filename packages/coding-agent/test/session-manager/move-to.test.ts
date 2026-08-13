@@ -9,8 +9,8 @@ import {
 	type SessionHeader,
 	SessionManager,
 	syncSessionMoveDirectory,
-} from "@gajae-code/coding-agent/session/session-manager";
-import { stripOuterDoubleQuotes } from "@gajae-code/coding-agent/tools/path-utils";
+} from "@bworx-io/worx-code/session/session-manager";
+import { stripOuterDoubleQuotes } from "@bworx-io/worx-code/tools/path-utils";
 import { getConfigRootDir, getSessionsDir, setAgentDir } from "@gajae-code/utils";
 import { resolveManagedScope } from "../../src/session/internal/managed-session-scope";
 import { makeAssistantMessage } from "./helpers";

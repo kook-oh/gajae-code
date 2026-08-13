@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, describe, expect, it } from "bun:test";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { type IrcSidebarTheme, IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { ToolExecutionComponent } from "@gajae-code/coding-agent/modes/components/tool-execution";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import * as themeModule from "@gajae-code/coding-agent/modes/theme/theme";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { type IrcSidebarTheme, IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { ToolExecutionComponent } from "@bworx-io/worx-code/modes/components/tool-execution";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 import { ImageProtocol, TERMINAL, type TUI } from "@gajae-code/tui";
 
 beforeAll(async () => {

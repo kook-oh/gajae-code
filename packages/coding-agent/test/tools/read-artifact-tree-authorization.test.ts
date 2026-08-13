@@ -4,12 +4,12 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentToolContext } from "@gajae-code/agent-core";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { InternalUrlRouter } from "@gajae-code/coding-agent/internal-urls";
-import { AgentRegistry } from "@gajae-code/coding-agent/registry/agent-registry";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { InternalUrlRouter } from "@bworx-io/worx-code/internal-urls";
+import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
 
 // Tool-boundary regression coverage for gajae-code#3302.
 //

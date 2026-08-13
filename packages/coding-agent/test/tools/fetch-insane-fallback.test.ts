@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { type SettingPath, Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { tryInsaneFallback } from "@gajae-code/coding-agent/tools/fetch";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
-import * as bridge from "@gajae-code/coding-agent/web/insane/bridge";
-import * as urlGuard from "@gajae-code/coding-agent/web/insane/url-guard";
-import * as scrapers from "@gajae-code/coding-agent/web/scrapers/types";
+import { type SettingPath, Settings } from "@bworx-io/worx-code/config/settings";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { tryInsaneFallback } from "@bworx-io/worx-code/tools/fetch";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import * as bridge from "@bworx-io/worx-code/web/insane/bridge";
+import * as urlGuard from "@bworx-io/worx-code/web/insane/url-guard";
+import * as scrapers from "@bworx-io/worx-code/web/scrapers/types";
 import { Snowflake } from "@gajae-code/utils";
 
 const baseArgs = {

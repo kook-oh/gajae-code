@@ -14,11 +14,11 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import type { AgentSessionEvent } from "@gajae-code/coding-agent/session/agent-session";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import type { AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
 import { TERMINAL } from "@gajae-code/tui";
 
 beforeAll(() => {

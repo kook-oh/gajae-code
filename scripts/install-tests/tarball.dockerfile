@@ -68,7 +68,7 @@ RUN cat > /repo/scripts/publish-local.sh <<'SCRIPT'
 set -e
 
 REGISTRY="http://localhost:4873"
-PACKAGES=(utils ai natives-darwin-arm64 natives-linux-x64 natives tui stats agent coding-agent gajae-code)
+PACKAGES=(utils ai natives-darwin-arm64 natives-linux-x64 natives tui stats agent coding-agent)
 
 # Build version maps from local workspaces and the root catalog.
 jq '.workspaces.catalog // {}' /repo/package.json > /tmp/catalog-versions.json
@@ -166,9 +166,9 @@ RUN verdaccio --config /root/.config/verdaccio/config.yaml &>/dev/null & \
 WORKDIR /test
 RUN verdaccio --config /root/.config/verdaccio/config.yaml &>/dev/null & \
     sleep 3 && \
-    bun add gajae-code --registry http://localhost:4873 && \
+    bun add @bworx-io/worx-code --registry http://localhost:4873 && \
     pkill -f verdaccio
 
 # Verify the installed package works
 ENV PATH="/test/node_modules/.bin:$PATH"
-RUN gjc --version
+RUN worx --version

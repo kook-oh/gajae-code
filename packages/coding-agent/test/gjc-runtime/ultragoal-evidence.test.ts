@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { isAllowedGitReplayCommand, pngCrc32 } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-evidence";
+import { isAllowedGitReplayCommand, pngCrc32 } from "@bworx-io/worx-code/gjc-runtime/ultragoal-evidence";
 
 describe("ultragoal evidence extraction", () => {
 	it("retains the PNG CRC32 implementation", () => {

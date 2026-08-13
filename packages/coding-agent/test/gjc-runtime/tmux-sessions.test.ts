@@ -3,29 +3,29 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { buildWindowsPowerShellInnerCommand } from "@gajae-code/coding-agent/gjc-runtime/launch-tmux";
+import { buildWindowsPowerShellInnerCommand } from "@bworx-io/worx-code/gjc-runtime/launch-tmux";
 import {
 	__setBinaryResolverForTests,
 	__setExecutableIdentityResolverForTests,
 	clearPsmuxDetectionCache,
-} from "@gajae-code/coding-agent/gjc-runtime/psmux-detect";
+} from "@bworx-io/worx-code/gjc-runtime/psmux-detect";
 import {
 	buildGjcTmuxExactOptionTarget,
 	buildGjcTmuxExactSessionTarget,
 	buildGjcTmuxUntaggedSessionHint,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-common";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-common";
 import {
 	captureOwnerGenerationBaselineSync,
 	lifecyclePaths,
 	observeOwnerTerminal,
 	replaceOwnerGenerationSync,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
 	bindGjcTmuxProviderAuthority,
 	persistGjcTmuxProviderAuthoritySync,
 	resolveGjcTmuxProviderContext,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-provider-context";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-provider-context";
 import {
 	__setCreateOwnerIsolationForTests,
 	__setMutationServerProofForTests,
@@ -35,7 +35,7 @@ import {
 	listGjcTmuxSessions,
 	removeGjcTmuxSession,
 	statusGjcTmuxSession,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-sessions";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-sessions";
 import { prepareManagedDirectoryRoot } from "../../src/session/internal/managed-session-storage";
 
 // `Bun.spawnSync` is called in two shapes in production: the array form

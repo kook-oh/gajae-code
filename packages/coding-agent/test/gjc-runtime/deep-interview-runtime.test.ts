@@ -2,20 +2,20 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as url from "node:url";
-import { runNativeDeepInterviewCommand } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-runtime";
+import { runNativeDeepInterviewCommand } from "@bworx-io/worx-code/gjc-runtime/deep-interview-runtime";
 import {
 	createDeepInterviewIntentManifest,
 	MAX_INITIAL_CONTEXT_LENGTH,
 	reviewDeepInterviewIntent,
-} from "@gajae-code/coding-agent/gjc-runtime/deep-interview-state";
-import { runNativeRalplanCommand } from "@gajae-code/coding-agent/gjc-runtime/ralplan-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
+import { runNativeRalplanCommand } from "@bworx-io/worx-code/gjc-runtime/ralplan-runtime";
 import {
 	activeSnapshotPath,
 	auditPath,
 	modeStatePath,
 	sessionPlansDir,
 	sessionSpecsDir,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
 
 import { getConfigRootDir, setAgentDir } from "@gajae-code/utils";
 import { resetSettingsForTest } from "../../src/config/settings";

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import type { Rule } from "@gajae-code/coding-agent/capability/rule";
-import { buildRuleFromMarkdown } from "@gajae-code/coding-agent/discovery/helpers";
-import { TtsrManager } from "@gajae-code/coding-agent/export/ttsr";
-import { buildSessionContext, type SessionEntry } from "@gajae-code/coding-agent/session/session-manager";
+import type { Rule } from "@bworx-io/worx-code/capability/rule";
+import { buildRuleFromMarkdown } from "@bworx-io/worx-code/discovery/helpers";
+import { TtsrManager } from "@bworx-io/worx-code/export/ttsr";
+import { buildSessionContext, type SessionEntry } from "@bworx-io/worx-code/session/session-manager";
 
 const source = { provider: "test", providerName: "test", path: "/tmp/rule.md", level: "project" as const };
 

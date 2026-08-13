@@ -7,14 +7,14 @@ import * as path from "node:path";
 import {
 	buildGjcTmuxExactOptionTarget,
 	buildGjcTmuxProfileCommands,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-common";
-import { replaceOwnerGeneration } from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-common";
+import { replaceOwnerGeneration } from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	forceCloseGjcTmuxSession,
 	listGjcTmuxSessions,
 	readTmuxSessionTagsForGc,
 	statusGjcTmuxSession,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-sessions";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-sessions";
 
 const tmux = Bun.which("tmux");
 const systemdRun = Bun.which("systemd-run");

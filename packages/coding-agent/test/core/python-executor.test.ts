@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { disposeAllKernelSessions, executePythonWithKernel } from "@gajae-code/coding-agent/eval/py/executor";
-import { DEFAULT_MAX_BYTES } from "@gajae-code/coding-agent/session/streaming-output";
+import { disposeAllKernelSessions, executePythonWithKernel } from "@bworx-io/worx-code/eval/py/executor";
+import { DEFAULT_MAX_BYTES } from "@bworx-io/worx-code/session/streaming-output";
 import { TempDir } from "@gajae-code/utils";
 import { FakeKernel } from "./helpers";
 

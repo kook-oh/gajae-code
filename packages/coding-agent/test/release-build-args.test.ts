@@ -4,7 +4,7 @@ import * as path from "node:path";
 
 import { buildDevCompileArgs, buildReleaseCompileArgs, releaseEntrypoints } from "../scripts/compile-args";
 
-const releaseArgs = buildReleaseCompileArgs("bun-darwin-arm64", "packages/coding-agent/binaries/gjc-darwin-arm64");
+const releaseArgs = buildReleaseCompileArgs("bun-darwin-arm64", "packages/coding-agent/binaries/worx-darwin-arm64");
 
 function valuesAfter(args: string[], flag: string): string[] {
 	const values: string[] = [];
@@ -69,7 +69,7 @@ describe("release build compile args", () => {
 
 	it("has exactly one target and outfile", () => {
 		expect(valuesAfter(releaseArgs, "--target")).toEqual(["bun-darwin-arm64"]);
-		expect(valuesAfter(releaseArgs, "--outfile")).toEqual(["packages/coding-agent/binaries/gjc-darwin-arm64"]);
+		expect(valuesAfter(releaseArgs, "--outfile")).toEqual(["packages/coding-agent/binaries/worx-darwin-arm64"]);
 	});
 
 	it("release script dry-run executes the builder output unmodified", () => {

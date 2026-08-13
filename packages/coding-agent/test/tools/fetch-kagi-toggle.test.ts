@@ -3,15 +3,15 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as natives from "@bworx-io/worx-code-natives";
-import { type SettingPath, Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { escapeUntrustedContent, loadReadUrlCacheEntry, WRAP_PREFIX_CHARS } from "@gajae-code/coding-agent/tools/fetch";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
-import * as imageResize from "@gajae-code/coding-agent/utils/image-resize";
-import * as toolsManager from "@gajae-code/coding-agent/utils/tools-manager";
-import { specialHandlers } from "@gajae-code/coding-agent/web/scrapers";
-import * as scrapers from "@gajae-code/coding-agent/web/scrapers/types";
-import * as scraperUtils from "@gajae-code/coding-agent/web/scrapers/utils";
+import { type SettingPath, Settings } from "@bworx-io/worx-code/config/settings";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { escapeUntrustedContent, loadReadUrlCacheEntry, WRAP_PREFIX_CHARS } from "@bworx-io/worx-code/tools/fetch";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import * as imageResize from "@bworx-io/worx-code/utils/image-resize";
+import * as toolsManager from "@bworx-io/worx-code/utils/tools-manager";
+import { specialHandlers } from "@bworx-io/worx-code/web/scrapers";
+import * as scrapers from "@bworx-io/worx-code/web/scrapers/types";
+import * as scraperUtils from "@bworx-io/worx-code/web/scrapers/utils";
 import { hookFetch, ptree, Snowflake } from "@gajae-code/utils";
 
 const withMissingSystemPython = () => {

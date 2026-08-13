@@ -3,7 +3,7 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { TempDir } from "@gajae-code/utils";
 import {
 	injectManagedFileRename,

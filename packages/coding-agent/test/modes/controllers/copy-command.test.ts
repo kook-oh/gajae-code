@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as native from "@bworx-io/worx-code-natives";
-import { CommandController } from "@gajae-code/coding-agent/modes/controllers/command-controller";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { CommandController } from "@bworx-io/worx-code/modes/controllers/command-controller";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 
 function createController(options: { assistantText?: string; hasAssistantMessage?: boolean; handoffText?: string }) {
 	const showStatus = vi.fn();

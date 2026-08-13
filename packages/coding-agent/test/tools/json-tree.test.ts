@@ -60,7 +60,7 @@ describe("renderJsonTreeLines", () => {
 
 	it("keeps escaped tabs readable in wrapped string values", async () => {
 		const theme = await testTheme();
-		const value = "node_modules/@gajae-code/coding-agent\tpackages/coding-agent/src/tools/json-tree.ts";
+		const value = "node_modules/@bworx-io/worx-code\tpackages/coding-agent/src/tools/json-tree.ts";
 
 		const tree = renderJsonTreeLines({ value }, theme, 2, 10, 28);
 		const lines = stripLines(tree.lines);

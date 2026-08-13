@@ -7,7 +7,7 @@ import {
 	BlobStore,
 	EphemeralBlobStore,
 	MemoryBlobStore,
-} from "@gajae-code/coding-agent/session/blob-store";
+} from "@bworx-io/worx-code/session/blob-store";
 
 const tempDirs: string[] = [];
 

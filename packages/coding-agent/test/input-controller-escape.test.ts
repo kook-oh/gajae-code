@@ -1,14 +1,14 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { InputController } from "@gajae-code/coding-agent/modes/controllers/input-controller";
+import { AsyncJobManager } from "@bworx-io/worx-code/async";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { InputController } from "@bworx-io/worx-code/modes/controllers/input-controller";
 import type {
 	ComposerSubmissionOptions,
 	InteractiveModeContext,
 	SubmittedUserInput,
-} from "@gajae-code/coding-agent/modes/types";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { SubagentTool } from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code/modes/types";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { SubagentTool } from "@bworx-io/worx-code/tools/implementations";
 import type { SlashCommand } from "@gajae-code/tui";
 
 beforeAll(async () => {

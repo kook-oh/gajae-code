@@ -14,7 +14,7 @@ import {
 	sessionStateDir,
 	tmuxRuntimeSessionPath,
 	transactionJournalPath,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	detectLatestSession,
 	resolveGjcSessionForRead,
@@ -22,7 +22,7 @@ import {
 	resolveSessionIdFromSources,
 	SessionResolutionError,
 	writeSessionActivityMarker,
-} from "@gajae-code/coding-agent/gjc-runtime/session-resolution";
+} from "@bworx-io/worx-code/gjc-runtime/session-resolution";
 
 const tempRoots: string[] = [];
 

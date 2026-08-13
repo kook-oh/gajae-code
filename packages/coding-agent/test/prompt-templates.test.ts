@@ -9,9 +9,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { expandPromptTemplate, type PromptTemplate } from "@gajae-code/coding-agent/config/prompt-templates";
-import { expandSlashCommand, type FileSlashCommand } from "@gajae-code/coding-agent/extensibility/slash-commands";
-import { parseCommandArgs, substituteArgs } from "@gajae-code/coding-agent/utils/command-args";
+import { expandPromptTemplate, type PromptTemplate } from "@bworx-io/worx-code/config/prompt-templates";
+import { expandSlashCommand, type FileSlashCommand } from "@bworx-io/worx-code/extensibility/slash-commands";
+import { parseCommandArgs, substituteArgs } from "@bworx-io/worx-code/utils/command-args";
 import browserDescription from "../src/prompts/tools/browser.md" with { type: "text" };
 import hashlineDescription from "../src/prompts/tools/hashline.md" with { type: "text" };
 

@@ -6,7 +6,7 @@ import {
 	CURRENT_SESSION_VERSION,
 	loadEntriesFromFile,
 	SessionManager,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 
 describe("existing title picker projection reproduction", () => {
 	let testDir: string | undefined;

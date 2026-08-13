@@ -2,24 +2,24 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { AgentTool, AgentToolContext } from "@gajae-code/agent-core";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	activeSnapshotPath,
 	modeStatePath,
 	sessionActivityPath,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { isUltragoalAskBlocked } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { isUltragoalAskBlocked } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	computeUltragoalPlanGeneration,
 	createUltragoalPlan,
 	getUltragoalPaths,
 	hashStructuredValue,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { AskTool } from "@gajae-code/coding-agent/tools/ask";
-import { ToolError } from "@gajae-code/coding-agent/tools/tool-errors";
-import { guardToolForUltragoalAsk } from "@gajae-code/coding-agent/tools/ultragoal-ask-guard";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { AskTool } from "@bworx-io/worx-code/tools/ask";
+import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
+import { guardToolForUltragoalAsk } from "@bworx-io/worx-code/tools/ultragoal-ask-guard";
 
 const TEST_SESSION_ID = "ultragoal-ask-guard-test-session";
 const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;

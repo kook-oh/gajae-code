@@ -9,14 +9,14 @@ import {
 	readUltragoalGjcObjective,
 	writeCurrentSessionGoalModeState,
 	writePendingGoalModeRequest,
-} from "@gajae-code/coding-agent/gjc-runtime/goal-mode-request";
-import { sessionStateDir, sessionUltragoalDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/goal-mode-request";
+import { sessionStateDir, sessionUltragoalDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	buildSessionContext,
 	loadEntriesFromFile,
 	SessionContextTooLargeError,
 	type SessionEntry,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

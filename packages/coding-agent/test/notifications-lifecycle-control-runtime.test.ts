@@ -4,8 +4,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { parseLaunchWorktreeMode } from "@gajae-code/coding-agent/gjc-runtime/launch-worktree";
-import type { SessionCloseFrame, SessionCreateFrame } from "@gajae-code/coding-agent/sdk/bus/index";
+import { parseLaunchWorktreeMode } from "@bworx-io/worx-code/gjc-runtime/launch-worktree";
+import type { SessionCloseFrame, SessionCreateFrame } from "@bworx-io/worx-code/sdk/bus/index";
 import {
 	attachLifecycleControl,
 	buildCreateArgv,
@@ -19,9 +19,9 @@ import {
 	type LifecycleControlServer,
 	type LifecycleControlServerFactory,
 	outcomeToResponse,
-} from "@gajae-code/coding-agent/sdk/bus/lifecycle-control-runtime";
-import type { LedgerEntry, OrchestratorDeps } from "@gajae-code/coding-agent/sdk/bus/lifecycle-orchestrator";
-import { startDaemonLifecycleControl } from "@gajae-code/coding-agent/sdk/bus/telegram-daemon";
+} from "@bworx-io/worx-code/sdk/bus/lifecycle-control-runtime";
+import type { LedgerEntry, OrchestratorDeps } from "@bworx-io/worx-code/sdk/bus/lifecycle-orchestrator";
+import { startDaemonLifecycleControl } from "@bworx-io/worx-code/sdk/bus/telegram-daemon";
 import { getConfigRootDir, logger } from "@gajae-code/utils";
 import { Settings } from "../src/config/settings";
 import { tokenFingerprint } from "../src/sdk/bus/config";

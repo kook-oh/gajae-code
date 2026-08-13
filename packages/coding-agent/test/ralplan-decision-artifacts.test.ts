@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { getDefaultGjcDefinitions } from "@gajae-code/coding-agent/defaults/gjc-defaults";
-import { getBundledAgent } from "@gajae-code/coding-agent/task/agents";
+import { getDefaultGjcDefinitions } from "@bworx-io/worx-code/defaults/gjc-defaults";
+import { getBundledAgent } from "@bworx-io/worx-code/task/agents";
 
 const rolePromptSectionContracts = [
 	{

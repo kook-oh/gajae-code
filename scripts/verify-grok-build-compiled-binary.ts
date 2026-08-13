@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 const repoRoot = path.resolve(import.meta.dir, "..");
-const binaryPath = path.resolve(repoRoot, process.argv[2] ?? "packages/coding-agent/dist/gjc");
+const binaryPath = path.resolve(repoRoot, process.argv[2] ?? "packages/coding-agent/dist/worx");
 const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-grok-compiled-agent-"));
 
 try {

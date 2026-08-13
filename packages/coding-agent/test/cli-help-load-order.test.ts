@@ -160,7 +160,7 @@ describe("CLI help load order", () => {
 
 		expect(exitCode, combined).toBe(0);
 		expect(stdout).toContain("USAGE");
-		expect(stdout).toContain("$ gjc contribute-pr");
+		expect(stdout).toContain("$ worx contribute-pr");
 		expect(stdout).toContain("--no-spawn");
 		expect(combined).not.toContain("Failed to load pi_natives native addon");
 	}, 15_000);
@@ -203,21 +203,21 @@ describe("CLI help load order", () => {
 
 		expect(exitCode, combined).toBe(0);
 		expect(stdout).toContain("Commands:");
-		expect(stdout).toContain("gjc setup");
-		expect(stdout).toContain("gjc session");
-		expect(stdout).toContain("gjc state");
-		expect(stdout).toContain("gjc harness");
-		expect(stdout).toContain("gjc config");
-		expect(stdout).toContain("gjc ralplan");
-		expect(stdout).toContain("gjc ultragoal");
-		expect(stdout).toContain("gjc team");
-		expect(stdout).toContain("gjc mcp");
-		expect(stdout).toContain("gjc mcp-serve");
-		expect(stdout).toContain("gjc contribute-pr");
-		expect(stdout).toContain("gjc web-search");
-		expect(stdout).toContain("gjc codex-native-hook");
-		expect(stdout).toContain("gjc gc");
-		expect(stdout).toContain("gjc <command> --help");
+		expect(stdout).toContain("worx setup");
+		expect(stdout).toContain("worx session");
+		expect(stdout).toContain("worx state");
+		expect(stdout).toContain("worx harness");
+		expect(stdout).toContain("worx config");
+		expect(stdout).toContain("worx ralplan");
+		expect(stdout).toContain("worx ultragoal");
+		expect(stdout).toContain("worx team");
+		expect(stdout).toContain("worx mcp");
+		expect(stdout).toContain("worx mcp-serve");
+		expect(stdout).toContain("worx contribute-pr");
+		expect(stdout).toContain("worx web-search");
+		expect(stdout).toContain("worx codex-native-hook");
+		expect(stdout).toContain("worx gc");
+		expect(stdout).toContain("worx <command> --help");
 		expect(stdout).toContain("Available Tools");
 		expect(stdout).toContain("Useful Commands");
 		expect(stderr).toBe("");
@@ -298,7 +298,7 @@ describe("CLI help load order", () => {
 			]);
 
 			expect(exitCode).toBe(0);
-			expect(stdout).toMatch(/^gjc\/\d+\.\d+\.\d+\n$/);
+			expect(stdout).toMatch(/^worx\/\d+\.\d+\.\d+\n$/);
 			expect(stderr).toBe("");
 		}
 	}, 15_000);
@@ -315,7 +315,7 @@ describe("CLI help load order", () => {
 		await fs.mkdir(xdg, { recursive: true });
 		await fs.mkdir(agentDir, { recursive: true });
 
-		const wrapperPath = path.join(repoRoot, "packages", "coding-agent", "bin", "gjc.js");
+		const wrapperPath = path.join(repoRoot, "packages", "coding-agent", "bin", "worx.js");
 		const proc = Bun.spawn([process.execPath, wrapperPath, "--help"], {
 			cwd: repoRoot,
 			stdout: "pipe",
@@ -341,7 +341,7 @@ describe("CLI help load order", () => {
 ${stderr}`;
 
 		expect(exitCode, combined).toBe(0);
-		expect(stdout).toContain("gjc v");
+		expect(stdout).toContain("worx v");
 		expect(stdout).toContain("USAGE");
 		expect(combined).not.toContain("Bun is a fast JavaScript runtime");
 	}, 15_000);

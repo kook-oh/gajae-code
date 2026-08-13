@@ -12,11 +12,11 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { completionNotifyDisabledByEnv } from "@gajae-code/coding-agent/sdk/bus/config";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { completionNotifyDisabledByEnv } from "@bworx-io/worx-code/sdk/bus/config";
 import { TERMINAL } from "@gajae-code/tui";
 
 type NotifyProc = Bun.Subprocess<"ignore", "ignore", "ignore">;

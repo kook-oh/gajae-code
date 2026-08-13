@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..");
-const binWrapper = path.join(repoRoot, "packages", "gajae-code", "bin", "gjc.js");
+const binWrapper = path.join(repoRoot, "packages", "coding-agent", "bin", "worx.js");
 
 let cleanupRoot: string | undefined;
 
@@ -25,15 +25,15 @@ async function readStream(stream: ReadableStream<Uint8Array>): Promise<string> {
 }
 
 async function copyWrapperIntoInstallRoot(root: string): Promise<string> {
-	const installedBinDir = path.join(root, "node_modules", "gajae-code", "bin");
+	const installedBinDir = path.join(root, "node_modules", "@bworx-io", "worx-code", "bin");
 	await fs.mkdir(installedBinDir, { recursive: true });
-	const installedWrapper = path.join(installedBinDir, "gjc.js");
+	const installedWrapper = path.join(installedBinDir, "worx.js");
 	await fs.copyFile(binWrapper, installedWrapper);
 	return installedWrapper;
 }
 
 async function writeMockCodingAgentPackage(root: string): Promise<string> {
-	const packageDir = path.join(root, "node_modules", "@gajae-code", "coding-agent");
+	const packageDir = path.join(root, "node_modules", "@bworx-io", "worx-code");
 	await fs.mkdir(packageDir, { recursive: true });
 	const marker = path.join(root, "run-cli-argv.json");
 	await fs.writeFile(
@@ -41,7 +41,7 @@ async function writeMockCodingAgentPackage(root: string): Promise<string> {
 		JSON.stringify(
 			{
 				type: "module",
-				name: "@gajae-code/coding-agent",
+				name: "@bworx-io/worx-code",
 				exports: { "./cli": "./cli.js" },
 			},
 			null,
@@ -62,9 +62,9 @@ afterEach(async () => {
 	}
 });
 
-describe("gajae-code global bin wrapper", () => {
-	it("invokes runCli from the installed coding-agent dependency instead of only side-effect importing it", async () => {
-		const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-global-bin-wrapper-"));
+describe("WORX global bin entrypoint", () => {
+	it("invokes runCli from the installed WORX engine package", async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), "worx-global-bin-"));
 		cleanupRoot = root;
 		const installedWrapper = await copyWrapperIntoInstallRoot(root);
 		const marker = await writeMockCodingAgentPackage(root);

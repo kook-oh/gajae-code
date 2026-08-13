@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { deflateSync } from "node:zlib";
-import { verifyUltragoalDurableCompletionState } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
+import { verifyUltragoalDurableCompletionState } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	CRITIC_GATE_HARD_STOP_EVENT,
 	computeCriticVerdictPlanGeneration,
@@ -12,7 +12,7 @@ import {
 	TERMINAL_CRITIC_CEILING,
 	terminalCriticCeilingReached,
 	terminalCriticHardStopReached,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-receipt-freshness";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-receipt-freshness";
 import {
 	appendLedger,
 	countUltragoalNudges,
@@ -24,7 +24,7 @@ import {
 	recordUltragoalCriticVerdict,
 	runNativeUltragoalCommand,
 	startNextUltragoalGoal,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-critic-gate-test-session";
 const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;

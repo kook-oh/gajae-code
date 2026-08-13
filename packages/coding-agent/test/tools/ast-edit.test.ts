@@ -4,9 +4,9 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { supportsLanguage } from "@bworx-io/worx-code-natives";
 import { adaptSchemaForStrict, toolWireSchema } from "@gajae-code/ai/utils/schema";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { ToolChoiceQueue } from "@gajae-code/coding-agent/session/tool-choice-queue";
-import { createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { ToolChoiceQueue } from "@bworx-io/worx-code/session/tool-choice-queue";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 
 type InvokedToolResult = {
 	content: Array<{ type: string; text?: string }>;

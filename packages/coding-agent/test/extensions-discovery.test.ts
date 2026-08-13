@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { discoverAndLoadExtensions, loadExtensions } from "@gajae-code/coding-agent/extensibility/extensions/loader";
+import { discoverAndLoadExtensions, loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
 import { getProjectAgentDir, TempDir } from "@gajae-code/utils";
 import { filterUserScoped } from "./utils/filter-user-extensions";
 

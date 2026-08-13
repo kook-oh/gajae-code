@@ -6,11 +6,11 @@ import * as http from "node:http";
 import * as https from "node:https";
 import { Readable } from "node:stream";
 import type { Model } from "@gajae-code/ai";
-import type { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import type { Settings } from "@gajae-code/coding-agent/config/settings";
-import type { CustomToolContext } from "@gajae-code/coding-agent/extensibility/custom-tools";
-import type { ReadonlySessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { getImageGenToolsWithRegistry, imageGenTool } from "@gajae-code/coding-agent/tools/image-gen";
+import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import type { Settings } from "@bworx-io/worx-code/config/settings";
+import type { CustomToolContext } from "@bworx-io/worx-code/extensibility/custom-tools";
+import type { ReadonlySessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { getImageGenToolsWithRegistry, imageGenTool } from "@bworx-io/worx-code/tools/image-gen";
 
 const originalFetch = global.fetch;
 const originalOpenRouterKey = Bun.env.OPENROUTER_API_KEY;

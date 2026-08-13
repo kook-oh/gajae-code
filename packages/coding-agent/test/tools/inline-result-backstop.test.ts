@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "bun:test";
 import type { AgentTool, AgentToolContext, AgentToolResult } from "@gajae-code/agent-core";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createReadonlySessionManager, SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { wrapToolWithMetaNotice } from "@gajae-code/coding-agent/tools/output-meta";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createReadonlySessionManager, SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { wrapToolWithMetaNotice } from "@bworx-io/worx-code/tools/output-meta";
 
 const HEAD_MARKER = "HEAD_MARKER_START";
 const TAIL_MARKER = "TAIL_MARKER_END";

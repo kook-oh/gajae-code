@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getThemeByName } from "@gajae-code/coding-agent/modes/theme/theme";
+import { getThemeByName } from "@bworx-io/worx-code/modes/theme/theme";
 import {
 	dedupeParseErrors,
 	formatCodeFrameLine,
@@ -10,7 +10,7 @@ import {
 	formatScreenshot,
 	getPreviewLines,
 	shortenPath,
-} from "@gajae-code/coding-agent/tools/render-utils";
+} from "@bworx-io/worx-code/tools/render-utils";
 import { formatScreenshot as formatBrowserScreenshot } from "../../src/tools/browser/screenshot-format";
 
 describe("parse error formatting", () => {

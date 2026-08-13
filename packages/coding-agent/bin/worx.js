@@ -1,4 +1,4 @@
 #!/usr/bin/env bun
-import { runCli } from "@gajae-code/coding-agent/cli";
+import { runCli } from "@bworx-io/worx-code/cli";
 
 await runCli(process.argv.slice(2));

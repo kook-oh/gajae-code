@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { renderStateGraph } from "@gajae-code/coding-agent/gjc-runtime/state-graph";
-import { runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
+import { renderStateGraph } from "@bworx-io/worx-code/gjc-runtime/state-graph";
+import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 
 describe("GJC state graph rendering", () => {
 	it("renders one skill as ascii", () => {

@@ -5,11 +5,11 @@ import * as path from "node:path";
 import { Agent, type AgentMessage } from "@gajae-code/agent-core";
 import type { SimpleStreamOptions } from "@gajae-code/ai";
 import { createMockModel, type MockModel, registerMockApi } from "@gajae-code/ai/providers/mock";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentRegistry } from "@gajae-code/coding-agent/registry/agent-registry";
-import { AgentSession, type EphemeralTurnPurpose } from "@gajae-code/coding-agent/session/agent-session";
-import { convertToLlm } from "@gajae-code/coding-agent/session/messages";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
+import { AgentSession, type EphemeralTurnPurpose } from "@bworx-io/worx-code/session/agent-session";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 registerMockApi();
 

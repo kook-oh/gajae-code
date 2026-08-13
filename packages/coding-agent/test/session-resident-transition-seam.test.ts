@@ -5,18 +5,18 @@ import * as path from "node:path";
 import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import * as native from "@bworx-io/worx-code-natives";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { EphemeralBlobStore, MemoryBlobStore } from "@gajae-code/coding-agent/session/blob-store";
+import { EphemeralBlobStore, MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
 import type {
 	MemoryGuardParticipantDescriptorV1,
 	MemoryGuardSessionManagerCheckpointV1,
-} from "@gajae-code/coding-agent/session/memory-guard-checkpoint-participant";
+} from "@bworx-io/worx-code/session/memory-guard-checkpoint-participant";
 import {
 	CURRENT_SESSION_VERSION,
 	type SessionDestinationInput,
 	SessionManager,
 	SessionManagerTestHooks,
-} from "@gajae-code/coding-agent/session/session-manager";
-import { MemorySessionStorage } from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-manager";
+import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
 import { getAgentDir, getResidentCacheRootDir, getTerminalSessionsDir, setAgentDir } from "@gajae-code/utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 

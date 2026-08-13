@@ -1,18 +1,18 @@
 {
 	"name": "@bworx-io/worx-code-natives-linux-x64",
 	"version": "0.13.1",
-	"description": "Linux x64 native addons for @gajae-code/natives",
+	"description": "Linux x64 native addons for @bworx-io/worx-code-natives",
 	"type": "module",
-	"homepage": "https://gajae-code.com",
-	"author": "Yeachan-Heo",
+	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Yeachan-Heo/gajae-code.git",
+		"url": "git+https://github.com/bworx-io/worx-code.git",
 		"directory": "packages/natives-linux-x64"
 	},
 	"bugs": {
-		"url": "https://github.com/Yeachan-Heo/gajae-code/issues"
+		"url": "https://github.com/bworx-io/worx-code/issues"
 	},
 	"os": [
 		"linux"

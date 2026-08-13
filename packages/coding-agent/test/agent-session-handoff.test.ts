@@ -6,16 +6,16 @@ import * as compactionModule from "@gajae-code/agent-core/compaction";
 import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
 import { getBundledModel } from "@gajae-code/ai/models";
 import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { createAppendOnlyContextManager } from "@gajae-code/coding-agent/append-only-mode";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async/job-manager";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { ExtensionRunner, loadExtensions } from "@gajae-code/coding-agent/extensibility/extensions";
-import * as internalUrls from "@gajae-code/coding-agent/internal-urls";
-import { AgentSession, type AgentSessionEvent } from "@gajae-code/coding-agent/session/agent-session";
-import { ArtifactManager } from "@gajae-code/coding-agent/session/artifacts";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { createAppendOnlyContextManager } from "@bworx-io/worx-code/append-only-mode";
+import { AsyncJobManager } from "@bworx-io/worx-code/async/job-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { ExtensionRunner, loadExtensions } from "@bworx-io/worx-code/extensibility/extensions";
+import * as internalUrls from "@bworx-io/worx-code/internal-urls";
+import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
+import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { TempDir } from "@gajae-code/utils";
 
 describe("AgentSession handoff", () => {

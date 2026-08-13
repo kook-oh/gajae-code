@@ -4,17 +4,17 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { Shell } from "@bworx-io/worx-code-natives";
 import * as piNatives from "@bworx-io/worx-code-natives";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
+import { AsyncJobManager } from "@bworx-io/worx-code/async";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	disposeAllShellSessions,
 	executeBash,
 	getShellSessionCount,
-} from "@gajae-code/coding-agent/exec/bash-executor";
-import { ArtifactManager } from "@gajae-code/coding-agent/session/artifacts";
-import { DEFAULT_ARTIFACT_MAX_BYTES, OutputSink } from "@gajae-code/coding-agent/session/streaming-output";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { BashTool } from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code/exec/bash-executor";
+import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
+import { DEFAULT_ARTIFACT_MAX_BYTES, OutputSink } from "@bworx-io/worx-code/session/streaming-output";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { BashTool } from "@bworx-io/worx-code/tools/implementations";
 
 function makeTempDir(): string {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gjc-bash-lifecycle-"));
@@ -262,7 +262,7 @@ describe("bash resource lifecycle", () => {
 			allocateOutputArtifact: (toolType: string) => artifacts.allocatePath(toolType),
 		} as unknown as ToolSession;
 		const originalText = "x".repeat(DEFAULT_ARTIFACT_MAX_BYTES + 1024);
-		const bashModule = await import("@gajae-code/coding-agent/tools/bash");
+		const bashModule = await import("@bworx-io/worx-code/tools/bash");
 		const artifactId = await bashModule.saveBashOriginalArtifactForTests(session, originalText);
 
 		expect(artifactId).toBeString();

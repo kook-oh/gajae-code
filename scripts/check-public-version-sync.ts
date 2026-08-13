@@ -75,19 +75,16 @@ interface ExpectedDeployedRelease {
 	commitSha: string;
 }
 
-const PUBLIC_HOMEPAGE = "https://gajae-code.com";
+const PUBLIC_HOMEPAGE = "https://github.com/bworx-io/worx-code";
 const PUBLIC_RELEASE_STATE = `${PUBLIC_HOMEPAGE}/release-sync.json`;
-const SOURCE_REPOSITORY = "Yeachan-Heo/gajae-code";
+const SOURCE_REPOSITORY = "bworx-io/worx-code";
 const SOURCE_LATEST_RELEASE_API = `https://api.github.com/repos/${SOURCE_REPOSITORY}/releases/latest`;
 const SOURCE_GIT_API = `https://api.github.com/repos/${SOURCE_REPOSITORY}/git`;
-const EXPECTED_EVIDENCE_ASSET = "gajae-release-packages-expected-v1.json";
-const FINAL_EVIDENCE_ASSET = "gajae-release-packages-v1.json";
+const EXPECTED_EVIDENCE_ASSET = "worx-release-packages-expected-v1.json";
+const FINAL_EVIDENCE_ASSET = "worx-release-packages-v1.json";
 const STABLE_BINARY_ASSETS = [
-	"gjc-linux-x64",
-	"gjc-linux-arm64",
-	"gjc-darwin-arm64",
-	"gjc-darwin-x64",
-	"gjc-windows-x64.exe",
+	"worx-linux-x64",
+	"worx-darwin-arm64",
 ] as const;
 const STABLE_TAG_RE = /^v(\d+\.\d+\.\d+)$/;
 const SHA256_RE = /^[a-f0-9]{64}$/;
@@ -97,7 +94,7 @@ const GENERATED_DOCS_INDEX = "packages/coding-agent/src/internal-urls/docs-index
 const VERSIONED_MARKETING_RE = /\b(?:New in|Also new in|Gajae Code|Gajae-Code|Feature card for the)\s+(\d+\.\d+\.\d+)\b/gi;
 const MARKETING_VERSION_FILES = ["README.md", "docs/**/*.md", "packages/*/README.md"];
 const LIVE_FETCH_TIMEOUT_MS = 5_000;
-const PUBLIC_FETCH_HEADERS = { "User-Agent": "gajae-code-public-version-sync/2.0" };
+const PUBLIC_FETCH_HEADERS = { "User-Agent": "worx-code-public-version-sync/2.0" };
 const PUBLIC_RELEASE_PACKAGE_NAMES = PUBLIC_PACKAGE_DEFINITIONS.map((definition) => definition.name);
 
 async function pathExists(candidate: string): Promise<boolean> {
@@ -189,10 +186,10 @@ export async function checkPublicVersionSync(repoRoot = path.join(import.meta.di
 	const rootPackagePath = path.join(repoRoot, "package.json");
 	const rootPackage = await readJson<PackageJson>(rootPackagePath);
 	const catalog = rootPackage.workspaces?.catalog ?? {};
-	const canonicalVersion = catalog["@gajae-code/coding-agent"];
+	const canonicalVersion = catalog["@bworx-io/worx-code"];
 
 	if (!canonicalVersion) {
-		violations.push({ path: "package.json", message: "Missing canonical @gajae-code/coding-agent catalog version." });
+		violations.push({ path: "package.json", message: "Missing canonical @bworx-io/worx-code catalog version." });
 		return violations;
 	}
 

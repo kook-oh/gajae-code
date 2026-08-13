@@ -3,10 +3,10 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { runInteractiveMode, StartupUpdateOrchestrator, submitInteractiveInput } from "@gajae-code/coding-agent/main";
-import type { InteractiveMode } from "@gajae-code/coding-agent/modes/interactive-mode";
-import type { SubmittedUserInput } from "@gajae-code/coding-agent/modes/types";
-import type { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
+import { runInteractiveMode, StartupUpdateOrchestrator, submitInteractiveInput } from "@bworx-io/worx-code/main";
+import type { InteractiveMode } from "@bworx-io/worx-code/modes/interactive-mode";
+import type { SubmittedUserInput } from "@bworx-io/worx-code/modes/types";
+import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import {
 	GJC_COORDINATOR_SESSION_ID_ENV,
 	GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV,

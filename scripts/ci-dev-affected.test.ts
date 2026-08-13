@@ -838,7 +838,7 @@ describe("--matrix-json and --task CLI fan-out", () => {
 		const pr = await runScript(["--matrix-json"], "packages/natives/src/index.ts", { CI_DEV_PLAN_MODE: "pr" });
 		expect(pr.exitCode).toBe(0);
 		expect((JSON.parse(pr.stdout.trim()) as Array<{ key: string }>).map(entry => entry.key)).toEqual([
-			"check:@gajae-code/natives",
+			"check:@bworx-io/worx-code-natives",
 			"install-methods",
 			"native-linux-x64",
 			"ts-build:ts:Y29kaW5nLWFnZW50:cGFja2FnZXMvY29kaW5nLWFnZW50",
@@ -850,10 +850,10 @@ describe("--matrix-json and --task CLI fan-out", () => {
 		expect((JSON.parse(push.stdout.trim()) as Array<{ key: string }>).map(entry => entry.key)).toEqual([
 			"check:@gajae-code/agent-core", "test:@gajae-code/agent-core",
 			"check:@gajae-code/ai", "test:@gajae-code/ai",
-			"check:@gajae-code/coding-agent",
-			...Array.from({ length: 8 }, (_, index) => `test:@gajae-code/coding-agent:shard-${index + 1}-of-8`),
-			"test:@gajae-code/coding-agent:sdk-production-host-isolated",
-			"check:@gajae-code/natives", "test:@gajae-code/natives",
+			"check:@bworx-io/worx-code",
+			...Array.from({ length: 8 }, (_, index) => `test:@bworx-io/worx-code:shard-${index + 1}-of-8`),
+			"test:@bworx-io/worx-code:sdk-production-host-isolated",
+			"check:@bworx-io/worx-code-natives", "test:@bworx-io/worx-code-natives",
 			"check:@gajae-code/stats", "test:@gajae-code/stats",
 			"check:@gajae-code/tui", "test:@gajae-code/tui",
 			"check:@gajae-code/typescript-edit-benchmark", "test:@gajae-code/typescript-edit-benchmark",
@@ -1013,9 +1013,9 @@ describe("--matrix-json and --task CLI fan-out", () => {
 
 describe("planTargetedTasks PR-mode targeting", () => {
 	const codingAgent: WorkspacePackage = {
-		name: "@gajae-code/coding-agent",
+		name: "@bworx-io/worx-code",
 		dir: "packages/coding-agent",
-		manifest: { name: "@gajae-code/coding-agent", scripts: { check: "biome check .", test: "bun test" } },
+		manifest: { name: "@bworx-io/worx-code", scripts: { check: "biome check .", test: "bun test" } },
 	};
 	const bridgeClient: WorkspacePackage = {
 		name: "@gajae-code/bridge-client",
@@ -1044,15 +1044,15 @@ describe("planTargetedTasks PR-mode targeting", () => {
 		const keys = tasks.map(task => task.key);
 		expect(keys).toContain("test:packages/coding-agent/test/edit/foo.test.ts");
 		// No broad package-wide test, and no other coding-agent test file.
-		expect(keys).not.toContain("test:@gajae-code/coding-agent");
+		expect(keys).not.toContain("test:@bworx-io/worx-code");
 		expect(keys).not.toContain("test:packages/coding-agent/test/edit/bar.test.ts");
 		const testTask = tasks.find(task => task.key === "test:packages/coding-agent/test/edit/foo.test.ts");
 		expect(testTask?.command).toEqual(["bun", "test", "packages/coding-agent/test/edit/foo.test.ts"]);
 	});
 
 	test("SDK host and coordinator prompt-control changes include shard 1 and the isolated production host", () => {
-		const shardOne = "test:@gajae-code/coding-agent:shard-1-of-8";
-		const isolated = "test:@gajae-code/coding-agent:sdk-production-host-isolated";
+		const shardOne = "test:@bworx-io/worx-code:shard-1-of-8";
+		const isolated = "test:@bworx-io/worx-code:sdk-production-host-isolated";
 		for (const changedPath of [
 			"packages/coding-agent/src/sdk/bus/index.ts",
 			"packages/coding-agent/src/sdk/host/reverse-leases.ts",
@@ -1064,7 +1064,7 @@ describe("planTargetedTasks PR-mode targeting", () => {
 			const keys = tasks.map(task => task.key);
 			expect(keys).toContain(shardOne);
 			expect(tasks.find(task => task.key === shardOne)?.command).toEqual(["bun", "test", "--shard=1/8"]);
-			expect(keys.filter(key => key.startsWith("test:@gajae-code/coding-agent:shard-"))).toEqual([shardOne]);
+			expect(keys.filter(key => key.startsWith("test:@bworx-io/worx-code:shard-"))).toEqual([shardOne]);
 			expect(keys).toContain(isolated);
 			expect(tasks.find(task => task.key === isolated)?.command).toEqual([
 				"bun",
@@ -1079,12 +1079,12 @@ describe("planTargetedTasks PR-mode targeting", () => {
 	test("basename collisions fall back to package checks instead of arbitrary tests", () => {
 		const tasks = targeted(["packages/coding-agent/src/sdk/bus/index.ts"]);
 		const keys = tasks.map(task => task.key);
-		expect(keys).toContain("check:@gajae-code/coding-agent");
-		expect(keys).toContain("test:@gajae-code/coding-agent:shard-1-of-8");
-		expect(keys).toContain("test:@gajae-code/coding-agent:sdk-production-host-isolated");
+		expect(keys).toContain("check:@bworx-io/worx-code");
+		expect(keys).toContain("test:@bworx-io/worx-code:shard-1-of-8");
+		expect(keys).toContain("test:@bworx-io/worx-code:sdk-production-host-isolated");
 		expect(keys).not.toContain("test:packages/coding-agent/test/sdk/index.test.ts");
 		expect(keys).not.toContain("test:packages/coding-agent/test/other/index.test.ts");
-		expect(describeTasks(tasks).find(entry => entry.key === "check:@gajae-code/coding-agent")).toMatchObject({
+		expect(describeTasks(tasks).find(entry => entry.key === "check:@bworx-io/worx-code")).toMatchObject({
 			native: true,
 			nativeBuild: false,
 		});
@@ -1150,8 +1150,8 @@ test("tab-worker graph changes always include install-methods and are Darwin rel
 		const tasks = targeted(["packages/coding-agent/test/edit/deleted.test.ts"]);
 		const keys = tasks.map(task => task.key);
 		expect(keys).not.toContain("test:packages/coding-agent/test/edit/deleted.test.ts");
-		expect(keys).not.toContain("test:@gajae-code/coding-agent");
-		expect(keys).toContain("check:@gajae-code/coding-agent");
+		expect(keys).not.toContain("test:@bworx-io/worx-code");
+		expect(keys).toContain("check:@bworx-io/worx-code");
 		expect(keys).toContain("cli-smoke");
 		expect(keys.filter(key => key === "native-linux-x64" || key === "native-build")).toEqual(["native-linux-x64"]);
 	});
@@ -1161,8 +1161,8 @@ test("tab-worker graph changes always include install-methods and are Darwin rel
 		const keys = tasks.map(task => task.key);
 		expect(keys).toContain("test:packages/coding-agent/test/rlm-live-model-e2e.test.ts");
 		expect(keys.filter(key => key === "native-linux-x64" || key === "native-build")).toEqual(["native-linux-x64"]);
-		expect(keys).not.toContain("test:@gajae-code/coding-agent");
-		expect(keys).not.toContain("check:@gajae-code/coding-agent");
+		expect(keys).not.toContain("test:@bworx-io/worx-code");
+		expect(keys).not.toContain("check:@bworx-io/worx-code");
 
 		const entries = describeTasks(tasks);
 		const liveShard = entries.find(entry => entry.key === "test:packages/coding-agent/test/rlm-live-model-e2e.test.ts");
@@ -1191,7 +1191,7 @@ test("tab-worker graph changes always include install-methods and are Darwin rel
 	test("a source file with no mapped test runs the owning package check, not its test suite", () => {
 		const tasks = targeted(["packages/coding-agent/src/edit/unmapped.ts"]);
 		const keys = tasks.map(task => task.key);
-		expect(keys).toContain("check:@gajae-code/coding-agent");
+		expect(keys).toContain("check:@bworx-io/worx-code");
 		expect(keys).toContain("cli-smoke"); // coding-agent runtime smoke
 		expect(keys.some(key => key.startsWith("test:"))).toBe(false);
 	});
@@ -1201,7 +1201,7 @@ test("tab-worker graph changes always include install-methods and are Darwin rel
 		const keys = tasks.map(task => task.key);
 		expect(keys).toEqual([
 			"test:packages/coding-agent/test/startup-update-contract.test.ts",
-			"check:@gajae-code/coding-agent",
+			"check:@bworx-io/worx-code",
 			"cli-smoke",
 			"native-linux-x64",
 		]);
@@ -1303,14 +1303,6 @@ test("tab-worker graph changes always include install-methods and are Darwin rel
 		expect(tasks.find(task => task.key === "test:scripts/release-evidence.test.ts")?.command).toEqual(["bun", "test", "scripts/release-evidence.test.ts"]);
 	});
 
-	test("unscoped wrapper package changes keep wrapper-version smoke with release validation", () => {
-		const tasks = targeted(["packages/gajae-code/bin/gjc.js"]);
-		const keys = tasks.map(task => task.key);
-		expect(keys).toContain("release-publish-contract");
-		expect(keys).toContain("release-publish-dry-run");
-		expect(keys).toContain("wrapper-version");
-	});
-
 	test("root-level codeish fallback plans the native artifact required by the bounded check", () => {
 		const tasks = targeted(["scripts/unmapped-tool.ts"]);
 		const keys = tasks.map(task => task.key);
@@ -1408,9 +1400,9 @@ test("Python SDK changes plan dedicated Python validation and one native build",
 
 describe("push-mode broad planning still runs the fuller suite", () => {
 	const codingAgent: WorkspacePackage = {
-		name: "@gajae-code/coding-agent",
+		name: "@bworx-io/worx-code",
 		dir: "packages/coding-agent",
-		manifest: { name: "@gajae-code/coding-agent", scripts: { check: "biome check .", test: "bun test" } },
+		manifest: { name: "@bworx-io/worx-code", scripts: { check: "biome check .", test: "bun test" } },
 	};
 
 	const bridgeClient: WorkspacePackage = {
@@ -1421,25 +1413,25 @@ describe("push-mode broad planning still runs the fuller suite", () => {
 	test("push mode splits the package-wide coding-agent test across bounded shards", () => {
 		const tasks = planTasks(["packages/coding-agent/src/edit/foo.ts"], [codingAgent]);
 		const keys = tasks.map(task => task.key);
-		const testShards = tasks.filter(task => task.key.startsWith("test:@gajae-code/coding-agent:shard-"));
+		const testShards = tasks.filter(task => task.key.startsWith("test:@bworx-io/worx-code:shard-"));
 		// Broad planner keeps the post-merge fuller suite, but not as one 30m shard.
 		expect(testShards.map(task => task.key)).toEqual([
-			"test:@gajae-code/coding-agent:shard-1-of-8",
-			"test:@gajae-code/coding-agent:shard-2-of-8",
-			"test:@gajae-code/coding-agent:shard-3-of-8",
-			"test:@gajae-code/coding-agent:shard-4-of-8",
-			"test:@gajae-code/coding-agent:shard-5-of-8",
-			"test:@gajae-code/coding-agent:shard-6-of-8",
-			"test:@gajae-code/coding-agent:shard-7-of-8",
-			"test:@gajae-code/coding-agent:shard-8-of-8",
+			"test:@bworx-io/worx-code:shard-1-of-8",
+			"test:@bworx-io/worx-code:shard-2-of-8",
+			"test:@bworx-io/worx-code:shard-3-of-8",
+			"test:@bworx-io/worx-code:shard-4-of-8",
+			"test:@bworx-io/worx-code:shard-5-of-8",
+			"test:@bworx-io/worx-code:shard-6-of-8",
+			"test:@bworx-io/worx-code:shard-7-of-8",
+			"test:@bworx-io/worx-code:shard-8-of-8",
 		]);
 		expect(testShards[0]?.command).toEqual(["bun", "test", "--shard=1/8"]);
 		expect(testShards[0]?.cwd).toBe(resolvePackageCwd("packages/coding-agent"));
-		expect(keys).not.toContain("test:@gajae-code/coding-agent");
-		expect(keys).toContain("check:@gajae-code/coding-agent");
+		expect(keys).not.toContain("test:@bworx-io/worx-code");
+		expect(keys).toContain("check:@bworx-io/worx-code");
 
 		const entries = describeTasks(tasks);
-		expect(entries.find(entry => entry.key === "test:@gajae-code/coding-agent:shard-1-of-8")?.native).toBe(true);
+		expect(entries.find(entry => entry.key === "test:@bworx-io/worx-code:shard-1-of-8")?.native).toBe(true);
 	});
 
 	test("push mode schedules release evidence contract, dry-run, and focused coverage once", () => {
@@ -1487,15 +1479,15 @@ describe("push-mode broad planning still runs the fuller suite", () => {
 		expect(keys).toContain("root-test:release");
 		expect(describeTasks(tasks).find(task => task.key === "root-test:release")?.native).toBe(true);
 		expect(keys).not.toContain("root-test");
-		expect(tasks.filter(task => task.key.startsWith("test:@gajae-code/coding-agent:shard-")).map(task => task.key)).toEqual([
-			"test:@gajae-code/coding-agent:shard-1-of-8",
-			"test:@gajae-code/coding-agent:shard-2-of-8",
-			"test:@gajae-code/coding-agent:shard-3-of-8",
-			"test:@gajae-code/coding-agent:shard-4-of-8",
-			"test:@gajae-code/coding-agent:shard-5-of-8",
-			"test:@gajae-code/coding-agent:shard-6-of-8",
-			"test:@gajae-code/coding-agent:shard-7-of-8",
-			"test:@gajae-code/coding-agent:shard-8-of-8",
+		expect(tasks.filter(task => task.key.startsWith("test:@bworx-io/worx-code:shard-")).map(task => task.key)).toEqual([
+			"test:@bworx-io/worx-code:shard-1-of-8",
+			"test:@bworx-io/worx-code:shard-2-of-8",
+			"test:@bworx-io/worx-code:shard-3-of-8",
+			"test:@bworx-io/worx-code:shard-4-of-8",
+			"test:@bworx-io/worx-code:shard-5-of-8",
+			"test:@bworx-io/worx-code:shard-6-of-8",
+			"test:@bworx-io/worx-code:shard-7-of-8",
+			"test:@bworx-io/worx-code:shard-8-of-8",
 		]);
 	});
 });
@@ -1564,9 +1556,9 @@ describe("Cargo workspace ambiguity", () => {
 describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 	const fullModePackages: WorkspacePackage[] = [
 		{
-			name: "@gajae-code/coding-agent",
+			name: "@bworx-io/worx-code",
 			dir: "packages/coding-agent",
-			manifest: { name: "@gajae-code/coding-agent", scripts: { test: "true" } },
+			manifest: { name: "@bworx-io/worx-code", scripts: { test: "true" } },
 		},
 		{
 			name: "@gajae-code/example",
@@ -1606,9 +1598,9 @@ describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 		expect(keys).toContain("runtime-check");
 		expect(keys).toContain("test:@gajae-code/example");
 		// Default coding-agent shard count stays 8 (dev parity).
-		expect(keys.filter(key => key.startsWith("test:@gajae-code/coding-agent:shard-")).length).toBe(8);
-		expect(keys).toContain("test:@gajae-code/coding-agent:shard-1-of-8");
-		expect(keys).toContain("test:@gajae-code/coding-agent:sdk-production-host-isolated");
+		expect(keys.filter(key => key.startsWith("test:@bworx-io/worx-code:shard-")).length).toBe(8);
+		expect(keys).toContain("test:@bworx-io/worx-code:shard-1-of-8");
+		expect(keys).toContain("test:@bworx-io/worx-code:sdk-production-host-isolated");
 		// Default rust-test stays a single unpartitioned task.
 		expect(keys).toContain("rust-test");
 		expect(keys.some(key => key.startsWith("rust-test:partition-"))).toBe(false);
@@ -1625,7 +1617,7 @@ describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 		expect(runtimeCheck?.command).toEqual(["bun", "run", "check:runtime"]);
 		expect(runtimeCheck?.cwd).toBe(resolvePackageCwd("packages/coding-agent"));
 		const isolatedSdkHost = tasks.find(
-			task => task.key === "test:@gajae-code/coding-agent:sdk-production-host-isolated",
+			task => task.key === "test:@bworx-io/worx-code:sdk-production-host-isolated",
 		);
 		expect(isolatedSdkHost?.command).toEqual([
 			"bun",
@@ -1641,10 +1633,10 @@ describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 		const keys = withEnv({ CI_CODING_AGENT_TEST_SHARDS: "16" }, () =>
 			planFullTasks(fullModePackages).map(task => task.key),
 		);
-		const shards = keys.filter(key => key.startsWith("test:@gajae-code/coding-agent:shard-"));
+		const shards = keys.filter(key => key.startsWith("test:@bworx-io/worx-code:shard-"));
 		expect(shards.length).toBe(16);
-		expect(shards).toContain("test:@gajae-code/coding-agent:shard-1-of-16");
-		expect(shards).toContain("test:@gajae-code/coding-agent:shard-16-of-16");
+		expect(shards).toContain("test:@bworx-io/worx-code:shard-1-of-16");
+		expect(shards).toContain("test:@bworx-io/worx-code:shard-16-of-16");
 	});
 
 	test("CI_RUST_TEST_PARTITIONS splits rust-test into nextest partitions", () => {
@@ -1667,7 +1659,7 @@ describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 			{ CI_CODING_AGENT_TEST_SHARDS: "0", CI_RUST_TEST_PARTITIONS: "abc" },
 			() => planFullTasks(fullModePackages).map(task => task.key),
 		);
-		expect(keys.filter(key => key.startsWith("test:@gajae-code/coding-agent:shard-")).length).toBe(8);
+		expect(keys.filter(key => key.startsWith("test:@bworx-io/worx-code:shard-")).length).toBe(8);
 		expect(keys).toContain("rust-test");
 		expect(keys.some(key => key.startsWith("rust-test:partition-"))).toBe(false);
 	});
@@ -1679,6 +1671,6 @@ describe("planFullTasks — Main CI full mode (issue: shard main CI)", () => {
 		expect(entries.filter(entry => entry.nativeBuild).map(entry => entry.key)).toEqual(["native-linux-x64"]);
 		expect(entries.find(entry => entry.key === "cli-smoke")?.native).toBe(true);
 		expect(entries.find(entry => entry.key === "runtime-check")?.native).toBe(true);
-		expect(entries.find(entry => entry.key === "test:@gajae-code/coding-agent:shard-1-of-16")?.native).toBe(true);
+		expect(entries.find(entry => entry.key === "test:@bworx-io/worx-code:shard-1-of-16")?.native).toBe(true);
 	});
 });

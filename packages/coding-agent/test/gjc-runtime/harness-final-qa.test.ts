@@ -2,14 +2,14 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { withFileLock } from "@gajae-code/coding-agent/config/file-lock";
-import { writeCurrentSessionGoalModeState } from "@gajae-code/coding-agent/gjc-runtime/goal-mode-request";
+import { withFileLock } from "@bworx-io/worx-code/config/file-lock";
+import { writeCurrentSessionGoalModeState } from "@bworx-io/worx-code/gjc-runtime/goal-mode-request";
 import {
 	resolveSessionIdFromSources,
 	SessionResolutionError,
-} from "@gajae-code/coding-agent/gjc-runtime/session-resolution";
-import { validateCliReplay } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-evidence";
-import type { Goal } from "@gajae-code/coding-agent/goals/state";
+} from "@bworx-io/worx-code/gjc-runtime/session-resolution";
+import { validateCliReplay } from "@bworx-io/worx-code/gjc-runtime/ultragoal-evidence";
+import type { Goal } from "@bworx-io/worx-code/goals/state";
 
 const tempDirs: string[] = [];
 

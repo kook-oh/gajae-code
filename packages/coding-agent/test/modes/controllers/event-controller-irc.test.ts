@@ -1,12 +1,12 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
-import { IrcSplitViewComponent } from "@gajae-code/coding-agent/modes/components/irc-sidebar";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { IrcObservationLedger } from "@gajae-code/coding-agent/modes/irc-observation-ledger";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext, IrcArrivalSnapshot } from "@gajae-code/coding-agent/modes/types";
-import { parseIrcMessage } from "@gajae-code/coding-agent/modes/utils/irc-message";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
-import type { CustomMessage } from "@gajae-code/coding-agent/session/messages";
+import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext, IrcArrivalSnapshot } from "@bworx-io/worx-code/modes/types";
+import { parseIrcMessage } from "@bworx-io/worx-code/modes/utils/irc-message";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
+import type { CustomMessage } from "@bworx-io/worx-code/session/messages";
 import { Container, Text, TUI } from "@gajae-code/tui";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 

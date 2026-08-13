@@ -8,6 +8,7 @@
  * - Interact with the user via UI primitives
  */
 
+import type * as piCodingAgent from "@bworx-io/worx-code";
 import type {
 	AgentMessage,
 	AgentToolResult,
@@ -32,7 +33,6 @@ import type {
 	UsageReport,
 } from "@gajae-code/ai/core";
 import type { OAuthCredentials, OAuthLoginCallbacks } from "@gajae-code/ai/utils/oauth/types";
-import type * as piCodingAgent from "@gajae-code/coding-agent";
 import type { AutocompleteItem, Component, EditorTheme, KeyId, TUI } from "@gajae-code/tui";
 import type { KeybindingsManager } from "../../config/keybindings";
 import type { ModelRegistry } from "../../config/model-registry";

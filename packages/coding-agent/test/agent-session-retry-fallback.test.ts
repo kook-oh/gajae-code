@@ -5,21 +5,21 @@ import { Agent, type AgentTool } from "@gajae-code/agent-core";
 import { type AssistantMessage, getBundledModel, type Model, type ToolCall } from "@gajae-code/ai";
 import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { EditTool } from "@gajae-code/coding-agent/edit";
-import { ExtensionRunner } from "@gajae-code/coding-agent/extensibility/extensions/runner";
-import type { Extension } from "@gajae-code/coding-agent/extensibility/extensions/types";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { EditTool } from "@bworx-io/worx-code/edit";
+import { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions/runner";
+import type { Extension } from "@bworx-io/worx-code/extensibility/extensions/types";
 import {
 	AgentSession,
 	type AgentSessionEvent,
 	DefaultModelSelectionRecoveryError,
-} from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { ReadTool } from "@gajae-code/coding-agent/tools/read";
-import { SearchTool } from "@gajae-code/coding-agent/tools/search";
+} from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import { SearchTool } from "@bworx-io/worx-code/tools/search";
 import { TempDir } from "@gajae-code/utils";
 import { z } from "zod";
 

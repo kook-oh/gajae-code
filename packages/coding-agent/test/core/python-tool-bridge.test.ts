@@ -4,8 +4,8 @@ import {
 	disposePyToolBridge,
 	ensurePyToolBridge,
 	registerPyToolBridge,
-} from "@gajae-code/coding-agent/eval/py/tool-bridge";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/eval/py/tool-bridge";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 
 interface FakeCall {
 	id: string;

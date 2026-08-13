@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from "bun:test";
 import type { Model } from "@gajae-code/ai";
-import type { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
+import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	clearProviderAuthHealth,
 	getProviderAuthHealth,
 	recordProviderAuthHealth,
-} from "@gajae-code/coding-agent/config/provider-auth-health";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { ModelSelectorComponent } from "@gajae-code/coding-agent/modes/components/model-selector";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
-import { AuthStorage, type AuthStorage as AuthStorageType } from "@gajae-code/coding-agent/session/auth-storage";
+} from "@bworx-io/worx-code/config/provider-auth-health";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import { AuthStorage, type AuthStorage as AuthStorageType } from "@bworx-io/worx-code/session/auth-storage";
 import type { TUI } from "@gajae-code/tui";
 
 const model = (provider: string, id: string): Model =>

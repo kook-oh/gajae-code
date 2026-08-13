@@ -8,8 +8,8 @@ import {
 	computeAmbiguityFloor,
 	disputeFactsFromRetractedRound,
 	enrichDeepInterviewRoundScoring,
-} from "@gajae-code/coding-agent/gjc-runtime/deep-interview-recorder";
-import { modeStatePath } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/deep-interview-recorder";
+import { modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

@@ -178,7 +178,7 @@ export async function loadCustomCommands(options: LoadCustomCommandsOptions = {}
 			execCommand(command, args, execOptions?.cwd ?? cwd, execOptions),
 		typebox,
 		zod,
-		pi: await import("@gajae-code/coding-agent"),
+		pi: await import("@bworx-io/worx-code"),
 	};
 
 	// 1. Load bundled commands first (lowest priority - can be overridden)

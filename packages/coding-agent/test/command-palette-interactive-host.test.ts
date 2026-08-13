@@ -1,23 +1,23 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type Mock, vi } from "bun:test";
 import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
-import { KeybindingsManager } from "@gajae-code/coding-agent/config/keybindings";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import type { LoadedCustomCommand } from "@gajae-code/coding-agent/extensibility/custom-commands";
+import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import type { LoadedCustomCommand } from "@bworx-io/worx-code/extensibility/custom-commands";
 import {
 	ExtensionRunner,
 	loadExtensions,
 	type RegisteredCommand,
-} from "@gajae-code/coding-agent/extensibility/extensions";
-import type { Skill } from "@gajae-code/coding-agent/extensibility/skills";
-import { CommandPaletteComponent } from "@gajae-code/coding-agent/modes/components/command-palette";
-import { InteractiveMode } from "@gajae-code/coding-agent/modes/interactive-mode";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { HistoryStorage } from "@gajae-code/coding-agent/session/history-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import * as titleGenerator from "@gajae-code/coding-agent/utils/title-generator";
+} from "@bworx-io/worx-code/extensibility/extensions";
+import type { Skill } from "@bworx-io/worx-code/extensibility/skills";
+import { CommandPaletteComponent } from "@bworx-io/worx-code/modes/components/command-palette";
+import { InteractiveMode } from "@bworx-io/worx-code/modes/interactive-mode";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { HistoryStorage } from "@bworx-io/worx-code/session/history-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import * as titleGenerator from "@bworx-io/worx-code/utils/title-generator";
 import { setKeybindings } from "@gajae-code/tui";
 import { TempDir } from "@gajae-code/utils";
 import { ModelRegistry } from "../src/config/model-registry";

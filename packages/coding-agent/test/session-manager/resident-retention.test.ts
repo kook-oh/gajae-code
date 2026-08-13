@@ -3,13 +3,13 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { ImageContent, Message, ProviderPayload, TextContent } from "@gajae-code/ai";
-import { MemoryBlobStore } from "@gajae-code/coding-agent/session/blob-store";
-import { type PreparedNewSession, SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
+import { type PreparedNewSession, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
 	MemorySessionStorage,
 	type SessionStorage,
 	type SessionStorageWriter,
-} from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-storage";
 import { getAgentDir, getBlobsDir, setAgentDir } from "@gajae-code/utils";
 
 const LARGE_TEXT = "T".repeat(700_000);

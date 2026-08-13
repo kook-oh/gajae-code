@@ -2,9 +2,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { SettingsSelectorComponent } from "@gajae-code/coding-agent/modes/components/settings-selector";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { SettingsSelectorComponent } from "@bworx-io/worx-code/modes/components/settings-selector";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 
 beforeAll(async () => {
 	await initTheme();

@@ -5,25 +5,25 @@ import * as path from "node:path";
 import {
 	GJC_MODEL_ASSIGNMENT_TARGET_IDS,
 	GJC_MODEL_ASSIGNMENT_TARGETS,
-} from "@gajae-code/coding-agent/config/model-registry";
+} from "@bworx-io/worx-code/config/model-registry";
 import {
 	DEFAULT_GJC_DEFINITION_NAMES,
 	getDefaultGjcDefinitions,
 	getEmbeddedDefaultGjcSkillFragments,
 	getEmbeddedDefaultGjcSkills,
 	installDefaultGjcDefinitions,
-} from "@gajae-code/coding-agent/defaults/gjc-defaults";
+} from "@bworx-io/worx-code/defaults/gjc-defaults";
 import {
 	buildSkillPromptMessage,
 	loadSkills,
 	resetActiveSkillsForTests,
 	setActiveSkills,
-} from "@gajae-code/coding-agent/extensibility/skills";
-import { parseInternalUrl } from "@gajae-code/coding-agent/internal-urls/parse";
-import { SkillProtocolHandler } from "@gajae-code/coding-agent/internal-urls/skill-protocol";
-import { getBundledAgent } from "@gajae-code/coding-agent/task/agents";
-import { discoverAgents } from "@gajae-code/coding-agent/task/discovery";
-import { checkBashAllowedPrefixes } from "@gajae-code/coding-agent/tools/bash-allowed-prefixes";
+} from "@bworx-io/worx-code/extensibility/skills";
+import { parseInternalUrl } from "@bworx-io/worx-code/internal-urls/parse";
+import { SkillProtocolHandler } from "@bworx-io/worx-code/internal-urls/skill-protocol";
+import { getBundledAgent } from "@bworx-io/worx-code/task/agents";
+import { discoverAgents } from "@bworx-io/worx-code/task/discovery";
+import { checkBashAllowedPrefixes } from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
 import { prompt } from "@gajae-code/utils";
 
 const tempRoots: string[] = [];

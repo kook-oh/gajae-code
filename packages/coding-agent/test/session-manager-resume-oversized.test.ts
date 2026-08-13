@@ -8,8 +8,8 @@ import {
 	type ResumeSessionIdentity,
 	SessionManager,
 	SessionTranscriptOversizedError,
-} from "@gajae-code/coding-agent/session/session-manager";
-import { FileSessionStorage } from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-manager";
+import { FileSessionStorage } from "@bworx-io/worx-code/session/session-storage";
 
 const tempDirs: string[] = [];
 

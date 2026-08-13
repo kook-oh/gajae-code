@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { hasUi, reconcileSettingsSchema } from "@gajae-code/coding-agent/config/settings-schema";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { hasUi, reconcileSettingsSchema } from "@bworx-io/worx-code/config/settings-schema";
 
 const SETTING_PATH = "sdk.promptDeadlineMs";
 

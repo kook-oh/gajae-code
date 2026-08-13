@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { splitInternalUrlSel } from "@gajae-code/coding-agent/tools/path-utils";
+import { splitInternalUrlSel } from "@bworx-io/worx-code/tools/path-utils";
 
 describe("splitInternalUrlSel", () => {
 	it("peels strict artifact selectors, including compounds", () => {

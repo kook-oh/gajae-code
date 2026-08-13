@@ -9,8 +9,8 @@ import {
 	validateSchemaCompatibility,
 	validateStrictSchemaEnforcement,
 } from "@gajae-code/ai/utils/schema";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createTools, HIDDEN_TOOLS, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, HIDDEN_TOOLS, type ToolSession } from "@bworx-io/worx-code/tools";
 
 interface ToolSchemaEntry {
 	name: string;

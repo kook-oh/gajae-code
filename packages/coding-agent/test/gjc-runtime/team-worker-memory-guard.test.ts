@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { type GjcTeamTask, selectCurrentClaimedTaskForWorker } from "@gajae-code/coding-agent/gjc-runtime/team-store";
+import { type GjcTeamTask, selectCurrentClaimedTaskForWorker } from "@bworx-io/worx-code/gjc-runtime/team-store";
 import {
 	advisoryReasonForTeamWorkerMemoryGuard,
 	appendTeamWorkerMemoryGuardLedgerEntry,
@@ -9,7 +9,7 @@ import {
 	nextTeamWorkerMemoryGuardAttempt,
 	readTeamWorkerMemoryGuardLedger,
 	teamWorkerMemoryGuardLedgerPath,
-} from "@gajae-code/coding-agent/gjc-runtime/team-worker-memory-guard";
+} from "@bworx-io/worx-code/gjc-runtime/team-worker-memory-guard";
 
 const tempRoots: string[] = [];
 

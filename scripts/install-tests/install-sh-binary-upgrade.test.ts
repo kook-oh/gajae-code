@@ -6,7 +6,7 @@ import * as path from "node:path";
 const repoRoot = path.join(import.meta.dir, "..", "..");
 const installScript = path.join(repoRoot, "scripts", "install.sh");
 
-const EXISTING_BINARY = '#!/bin/sh\necho "gjc 0.8.1 (existing install)"\n';
+const EXISTING_BINARY = '#!/bin/sh\necho "worx 0.8.1 (existing install)"\n';
 const RELEASE_JSON = '{"tag_name": "v0.9.0"}';
 const NEW_BINARY_CONTENT = "#!/bin/sh\necho new-binary\n";
 
@@ -70,7 +70,7 @@ async function runInstaller(): Promise<{ exitCode: number; stdout: string; stder
 }
 
 beforeEach(() => {
-	const root = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-install-sh-"));
+	const root = fs.mkdtempSync(path.join(os.tmpdir(), "worx-install-sh-"));
 	const shimDir = path.join(root, "shim-bin");
 	const installDir = path.join(root, "install");
 	fs.mkdirSync(shimDir, { recursive: true });
@@ -83,8 +83,8 @@ afterEach(() => {
 });
 
 describe("install.sh binary upgrades", () => {
-	test("a failed download leaves the existing gjc binary untouched", async () => {
-		const existingPath = path.join(sandbox.installDir, "gjc");
+	test("a failed download leaves the existing worx binary untouched", async () => {
+		const existingPath = path.join(sandbox.installDir, "worx");
 		fs.writeFileSync(existingPath, EXISTING_BINARY);
 		fs.chmodSync(existingPath, 0o755);
 		writeCurlShim(sandbox.shimDir, { downloadFails: true });
@@ -97,7 +97,7 @@ describe("install.sh binary upgrades", () => {
 	});
 
 	test("a successful download replaces the binary and leaves no temp files", async () => {
-		const existingPath = path.join(sandbox.installDir, "gjc");
+		const existingPath = path.join(sandbox.installDir, "worx");
 		fs.writeFileSync(existingPath, EXISTING_BINARY);
 		fs.chmodSync(existingPath, 0o755);
 		writeCurlShim(sandbox.shimDir, { downloadFails: false });
@@ -109,6 +109,6 @@ describe("install.sh binary upgrades", () => {
 		// The install must be executable and must not leave partial download
 		// artifacts next to the binary.
 		expect(fs.statSync(existingPath).mode & 0o100).toBe(0o100);
-		expect(fs.readdirSync(sandbox.installDir)).toEqual(["gjc"]);
+		expect(fs.readdirSync(sandbox.installDir)).toEqual(["worx"]);
 	});
 });

@@ -8,8 +8,8 @@ import {
 	parseSessionEntries,
 	type SessionHeader,
 	SessionManager,
-} from "@gajae-code/coding-agent/session/session-manager";
-import { FileSessionStorage, type SessionStorageWriter } from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-manager";
+import { FileSessionStorage, type SessionStorageWriter } from "@bworx-io/worx-code/session/session-storage";
 import { getConfigRootDir, parseJsonlLenient, setAgentDir } from "@gajae-code/utils";
 
 import { makeAssistantMessage } from "./helpers";

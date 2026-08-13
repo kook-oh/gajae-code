@@ -1,14 +1,14 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "bun:test";
-import type { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { resetSettingsForTest, type SettingPath, Settings, settings } from "@gajae-code/coding-agent/config/settings";
+import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { resetSettingsForTest, type SettingPath, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import {
 	ProviderOrderContext,
 	type ProviderOrderSnapshot,
-} from "@gajae-code/coding-agent/modes/components/provider-order-context";
-import { ProviderOrderEditorComponent } from "@gajae-code/coding-agent/modes/components/provider-order-editor";
-import { SettingsSelectorComponent } from "@gajae-code/coding-agent/modes/components/settings-selector";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+} from "@bworx-io/worx-code/modes/components/provider-order-context";
+import { ProviderOrderEditorComponent } from "@bworx-io/worx-code/modes/components/provider-order-editor";
+import { SettingsSelectorComponent } from "@bworx-io/worx-code/modes/components/settings-selector";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 
 interface Fixture {
 	settings: Settings;

@@ -5,7 +5,7 @@ import * as path from "node:path";
 import type { UsageProvider } from "@gajae-code/ai";
 import * as oauth from "@gajae-code/ai/utils/oauth";
 import type { OAuthCredentials } from "@gajae-code/ai/utils/oauth/types";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { Snowflake } from "@gajae-code/utils";
 
 describe("AuthStorage account rotation", () => {

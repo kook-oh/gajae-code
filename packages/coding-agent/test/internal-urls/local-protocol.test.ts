@@ -9,9 +9,9 @@ import {
 	LocalProtocolHandler,
 	resolveLocalRoot,
 	resolveLocalUrlToPath,
-} from "@gajae-code/coding-agent/internal-urls";
-import { AgentRegistry } from "@gajae-code/coding-agent/registry/agent-registry";
-import type { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
+} from "@bworx-io/worx-code/internal-urls";
+import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
+import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 
 async function withTempDir<T>(fn: (dir: string) => Promise<T>): Promise<T> {
 	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "local-protocol-"));

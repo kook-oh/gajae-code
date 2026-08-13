@@ -5,18 +5,18 @@ import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
 import type { AssistantMessage, TextContent, ToolCall, UserMessage } from "@gajae-code/ai";
 import { getBundledModel } from "@gajae-code/ai";
-import { createAppendOnlyContextManager } from "@gajae-code/coding-agent/append-only-mode";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { createAppendOnlyContextManager } from "@bworx-io/worx-code/append-only-mode";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import {
 	type ColdSpillRef,
 	type CustomMessageEntry,
 	SessionManager,
 	type SessionMessageEntry,
-} from "@gajae-code/coding-agent/session/session-manager";
-import { MemorySessionStorage } from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-manager";
+import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
 import { getBlobsDir } from "@gajae-code/utils";
 
 const TURN_PAYLOAD_CHARS = 200_000;

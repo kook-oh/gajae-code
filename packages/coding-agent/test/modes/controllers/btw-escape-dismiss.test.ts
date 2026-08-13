@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it, vi } from "bun:test";
-import { CustomEditor } from "@gajae-code/coding-agent/modes/components/custom-editor";
-import { BtwController } from "@gajae-code/coding-agent/modes/controllers/btw-controller";
-import { InputController } from "@gajae-code/coding-agent/modes/controllers/input-controller";
-import { getEditorTheme, initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { CustomEditor } from "@bworx-io/worx-code/modes/components/custom-editor";
+import { BtwController } from "@bworx-io/worx-code/modes/controllers/btw-controller";
+import { InputController } from "@bworx-io/worx-code/modes/controllers/input-controller";
+import { getEditorTheme, initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { Container, type TUI } from "@gajae-code/tui";
 import { setKittyProtocolActive } from "@gajae-code/tui/keys";
 

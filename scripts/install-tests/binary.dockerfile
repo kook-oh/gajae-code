@@ -22,8 +22,8 @@ RUN cd packages/coding-agent && bun run build
 
 # Install binary to PATH
 RUN mkdir -p /root/.local/bin && \
-    cp packages/coding-agent/dist/gjc /root/.local/bin/
+    cp packages/coding-agent/dist/worx /root/.local/bin/
 ENV PATH="/root/.local/bin:$PATH"
 
 # Verify
-RUN HOME=/tmp/gjc-home XDG_DATA_HOME=/tmp/gjc-xdg gjc --version
+RUN HOME=/tmp/worx-home XDG_DATA_HOME=/tmp/worx-xdg worx --version

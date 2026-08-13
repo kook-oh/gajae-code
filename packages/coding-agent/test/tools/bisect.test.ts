@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { BUILTIN_TOOLS, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { BUILTIN_TOOLS, type ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	type BisectMarkResult,
 	BisectTool,
@@ -10,7 +10,7 @@ import {
 	classifyExit,
 	parseFirstBadCommit,
 	runBisectController,
-} from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code/tools/implementations";
 
 const FORTY_HEX = "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678";
 

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { emitHostStatus } from "@gajae-code/coding-agent/modes/utils/host-status";
+import { emitHostStatus } from "@bworx-io/worx-code/modes/utils/host-status";
 
 afterEach(() => {
 	vi.restoreAllMocks();

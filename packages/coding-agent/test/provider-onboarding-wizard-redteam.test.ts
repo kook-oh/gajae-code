@@ -3,16 +3,16 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { AuthStorage, SqliteAuthCredentialStore } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { CustomProviderWizardComponent } from "@gajae-code/coding-agent/modes/components/custom-provider-wizard";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { CustomProviderWizardComponent } from "@bworx-io/worx-code/modes/components/custom-provider-wizard";
 import {
 	type ProviderOnboardingAction,
 	ProviderOnboardingSelectorComponent,
-} from "@gajae-code/coding-agent/modes/components/provider-onboarding-selector";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { addApiCompatibleProvider, type ProviderSetupInput } from "@gajae-code/coding-agent/setup/provider-onboarding";
+} from "@bworx-io/worx-code/modes/components/provider-onboarding-selector";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { addApiCompatibleProvider, type ProviderSetupInput } from "@bworx-io/worx-code/setup/provider-onboarding";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();

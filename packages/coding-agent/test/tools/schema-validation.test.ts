@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { normalizeSchemaForGoogle } from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createTools, HIDDEN_TOOLS, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, HIDDEN_TOOLS, type ToolSession } from "@bworx-io/worx-code/tools";
 
 /**
  * Problematic JSON Schema features that cause issues with various providers.

@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { resolveLaunchDisposition } from "@gajae-code/coding-agent/cli/launch-disposition";
+import { resolveLaunchDisposition } from "@bworx-io/worx-code/cli/launch-disposition";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..");
 const cliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");

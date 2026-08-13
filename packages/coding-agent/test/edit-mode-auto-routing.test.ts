@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	reconcileSettingsSchema,
 	type SettingPath,
 	validateSettingPatch,
-} from "@gajae-code/coding-agent/config/settings-schema";
-import { EditTool } from "@gajae-code/coding-agent/edit";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+} from "@bworx-io/worx-code/config/settings-schema";
+import { EditTool } from "@bworx-io/worx-code/edit";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	DEFAULT_EDIT_MODE,
 	detectModelEditFamily,
@@ -16,7 +16,7 @@ import {
 	resolveEditMode,
 	resolveEditModeDetails,
 	resolveForcedEnvEditMode,
-} from "@gajae-code/coding-agent/utils/edit-mode";
+} from "@bworx-io/worx-code/utils/edit-mode";
 
 // ─── Env isolation ───────────────────────────────────────────────────────────
 

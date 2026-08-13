@@ -1,12 +1,12 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { SkillMessageComponent } from "@gajae-code/coding-agent/modes/components/skill-message";
-import * as themeModule from "@gajae-code/coding-agent/modes/theme/theme";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { SkillMessageComponent } from "@bworx-io/worx-code/modes/components/skill-message";
+import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 import {
 	type CustomMessage,
 	SKILL_PROMPT_MESSAGE_TYPE,
 	type SkillPromptDetails,
-} from "@gajae-code/coding-agent/session/messages";
+} from "@bworx-io/worx-code/session/messages";
 
 beforeAll(async () => {
 	resetSettingsForTest();

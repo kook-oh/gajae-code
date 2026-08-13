@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { deriveDeepInterviewHud } from "@gajae-code/coding-agent/skill-state/workflow-hud";
+import { deriveDeepInterviewHud } from "@bworx-io/worx-code/skill-state/workflow-hud";
 import {
 	assertDeepInterviewEnvelopeInputLimits,
 	assertDeepInterviewInputWithinLimit,

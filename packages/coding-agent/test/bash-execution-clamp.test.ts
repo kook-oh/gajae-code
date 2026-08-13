@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "bun:test";
-import { BashExecutionComponent } from "@gajae-code/coding-agent/modes/components/bash-execution";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+import { BashExecutionComponent } from "@bworx-io/worx-code/modes/components/bash-execution";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { TUI } from "@gajae-code/tui";
 import { visibleWidth } from "@gajae-code/tui";
 

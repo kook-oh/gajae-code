@@ -3,9 +3,9 @@ import * as fs from "node:fs";
 import * as http from "node:http";
 import * as os from "node:os";
 import * as path from "node:path";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { resetSettingsForTest } from "@gajae-code/coding-agent/config/settings";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { resetSettingsForTest } from "@bworx-io/worx-code/config/settings";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { Snowflake } from "@gajae-code/utils";
 
 const EXPECTED_KEY = "issue-2945-local-key";

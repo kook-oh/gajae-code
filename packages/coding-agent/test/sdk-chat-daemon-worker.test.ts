@@ -1394,7 +1394,7 @@ describe("chat daemon worker", () => {
 	// it after hundreds of unrelated tests in one Bun process can starve its broker
 	// request boundary; the isolated task still exercises the real process topology.
 	const skipProductionSessionHost =
-		process.env.AFFECTED_TASK_KEY?.startsWith("test:@gajae-code/coding-agent:shard-") ?? false;
+		process.env.AFFECTED_TASK_KEY?.startsWith("test:@bworx-io/worx-code:shard-") ?? false;
 	const productionSessionHostTestName =
 		"routes Slack safe queries through the production Session SDK host across generation and worker restart";
 	it.skipIf(skipProductionSessionHost)(

@@ -15,9 +15,9 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { Model } from "@gajae-code/ai";
 import * as ai from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { startMemoryStartupTask } from "@gajae-code/coding-agent/memories";
-import * as memoryStorage from "@gajae-code/coding-agent/memories/storage";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { startMemoryStartupTask } from "@bworx-io/worx-code/memories";
+import * as memoryStorage from "@bworx-io/worx-code/memories/storage";
 import { getAgentDbPath, logger, Snowflake } from "@gajae-code/utils";
 
 interface SessionLike {

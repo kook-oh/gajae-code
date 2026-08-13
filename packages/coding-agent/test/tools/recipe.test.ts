@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	buildPromptModel,
 	commandFromOp,
@@ -12,7 +12,7 @@ import {
 	resolveCommand,
 	tasksFromCargoMetadata,
 	titleFromOp,
-} from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code/tools/implementations";
 
 const detectedRunners: DetectedRunner[] = [
 	{

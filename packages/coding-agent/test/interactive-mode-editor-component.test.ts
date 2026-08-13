@@ -2,9 +2,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:
 import { stripVTControlCharacters } from "node:util";
 import { Agent } from "@gajae-code/agent-core";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { formatKeyHint, formatKeyHints, type KeyDisplayContext } from "@gajae-code/coding-agent/config/keybindings";
-import { resetSettingsForTest, Settings, settings } from "@gajae-code/coding-agent/config/settings";
-import { initTheme, theme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { formatKeyHint, formatKeyHints, type KeyDisplayContext } from "@bworx-io/worx-code/config/keybindings";
+import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
+import { initTheme, theme } from "@bworx-io/worx-code/modes/theme/theme";
 import { CURSOR_MARKER, ImageProtocol, setTerminalImageProtocol, TERMINAL, Text, visibleWidth } from "@gajae-code/tui";
 import { TempDir } from "@gajae-code/utils";
 import { ModelRegistry } from "../src/config/model-registry";

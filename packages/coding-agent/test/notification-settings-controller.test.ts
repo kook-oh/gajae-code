@@ -2,8 +2,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { CasReceipt } from "@gajae-code/coding-agent/config/atomic-yaml-patch";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
+import type { CasReceipt } from "@bworx-io/worx-code/config/atomic-yaml-patch";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import type {
 	NotificationsEditorOperations,
 	NotificationsEditorPreferences,
@@ -12,37 +12,37 @@ import type {
 	NotificationsPreflightResult,
 	NotificationsProviderSetupInput,
 	PreparedNotificationProviderConfiguration,
-} from "@gajae-code/coding-agent/modes/components/notifications-settings-editor";
-import { SettingsSelectorComponent } from "@gajae-code/coding-agent/modes/components/settings-selector";
+} from "@bworx-io/worx-code/modes/components/notifications-settings-editor";
+import { SettingsSelectorComponent } from "@bworx-io/worx-code/modes/components/settings-selector";
 import {
 	createNotificationsEditorOperations,
 	type NotificationsEditorAdapterContext,
 	type NotificationsEditorOperationDependencies,
-} from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+} from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import {
 	getNotificationConfig,
 	type NotificationProvider,
 	type NotificationSettingsSnapshot,
-} from "@gajae-code/coding-agent/sdk/bus/config";
+} from "@bworx-io/worx-code/sdk/bus/config";
 import {
 	createTelegramActivationMarker,
 	telegramActivationIdentity,
-} from "@gajae-code/coding-agent/sdk/bus/notification-orchestration";
+} from "@bworx-io/worx-code/sdk/bus/notification-orchestration";
 import type {
 	NotificationHealthReport,
 	NotificationRecoveryReport,
 	NotificationStatusReport,
-} from "@gajae-code/coding-agent/sdk/bus/notification-service";
+} from "@bworx-io/worx-code/sdk/bus/notification-service";
 import type {
 	NotificationSessionReconcileResult,
 	NotificationSessionStatus,
-} from "@gajae-code/coding-agent/sdk/bus/session-control";
+} from "@bworx-io/worx-code/sdk/bus/session-control";
 import {
 	readNotificationRootRegistration,
 	registerNotificationRoot,
 	withNotificationRootRegistryFence,
-} from "@gajae-code/coding-agent/sdk/bus/telegram-daemon";
+} from "@bworx-io/worx-code/sdk/bus/telegram-daemon";
 
 const TOKEN = "1234567890:ABCDEFghijkLmnOpQrsTuvWxYz012345678";
 

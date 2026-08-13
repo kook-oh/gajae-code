@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { resolveLocalUrlToPath } from "@gajae-code/coding-agent/internal-urls";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { resolveLocalUrlToPath } from "@bworx-io/worx-code/internal-urls";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { TempDir } from "@gajae-code/utils";
 import { ModelRegistry } from "../src/config/model-registry";
 import type { ExtensionCommandContextActions } from "../src/extensibility/extensions";

@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 
-import { HookInputComponent } from "@gajae-code/coding-agent/modes/components/hook-input";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
+import { HookInputComponent } from "@bworx-io/worx-code/modes/components/hook-input";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { TUI } from "@gajae-code/tui";
 
 beforeAll(async () => {

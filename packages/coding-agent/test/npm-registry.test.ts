@@ -15,7 +15,7 @@ import {
 } from "../src/utils/npm-registry";
 
 const HOME = "/home/tester";
-const PACKAGE = "@gajae-code/coding-agent";
+const PACKAGE = "@bworx-io/worx-code";
 const userNpmrc = path.join(HOME, ".npmrc");
 
 const tempDirs: string[] = [];
@@ -751,7 +751,7 @@ describe("repository-controlled configuration is not consulted", () => {
 describe("buildRegistryPackageUrl", () => {
 	it("keeps the scoped package slash unencoded and collapses trailing slashes", () => {
 		expect(buildRegistryPackageUrl("https://nexus.example.com/repository/npm-all/", PACKAGE, "latest")).toBe(
-			"https://nexus.example.com/repository/npm-all/@gajae-code/coding-agent/latest",
+			"https://nexus.example.com/repository/npm-all/@bworx-io/worx-code/latest",
 		);
 	});
 
@@ -794,7 +794,7 @@ describe("fetchLatestPackageVersion", () => {
 			warnings: [],
 		});
 		expect(seen).toHaveLength(1);
-		expect(seen[0]?.url).toBe("https://nexus.example.com/repository/npm-all/@gajae-code/coding-agent/latest");
+		expect(seen[0]?.url).toBe("https://nexus.example.com/repository/npm-all/@bworx-io/worx-code/latest");
 		expect(seen[0]?.headers?.Authorization).toBe("Bearer tok-123");
 		expect(seen[0]?.headers?.Accept).toContain("application/vnd.npm.install-v1+json");
 	});
@@ -810,8 +810,8 @@ describe("fetchLatestPackageVersion", () => {
 
 		expect(result.version).toBe("1.2.3");
 		expect(seen).toEqual([
-			"https://nexus.example.com/npm/@gajae-code/coding-agent/latest",
-			"https://nexus.example.com/npm/@gajae-code/coding-agent",
+			"https://nexus.example.com/npm/@bworx-io/worx-code/latest",
+			"https://nexus.example.com/npm/@bworx-io/worx-code",
 		]);
 	});
 
@@ -821,7 +821,7 @@ describe("fetchLatestPackageVersion", () => {
 		);
 
 		await expect(failing).rejects.toThrow(
-			"https://nexus.example.com/@gajae-code/coding-agent responded 404 Not Found (registry from $npm_config_registry)",
+			"https://nexus.example.com/@bworx-io/worx-code responded 404 Not Found (registry from $npm_config_registry)",
 		);
 	});
 
@@ -831,7 +831,7 @@ describe("fetchLatestPackageVersion", () => {
 		);
 
 		await expect(failing).rejects.toThrow(
-			`https://nexus.example.com/@gajae-code/coding-agent/latest responded 503 (registry from ${userNpmrc})`,
+			`https://nexus.example.com/@bworx-io/worx-code/latest responded 503 (registry from ${userNpmrc})`,
 		);
 	});
 
@@ -854,7 +854,7 @@ describe("fetchLatestPackageVersion", () => {
 			lookup({}, async () => respond(null, { ok: false, status: 500, statusText: "Server Error" })),
 		);
 
-		expect(message).toBe("https://registry.npmjs.org/@gajae-code/coding-agent/latest responded 500 Server Error");
+		expect(message).toBe("https://registry.npmjs.org/@bworx-io/worx-code/latest responded 500 Server Error");
 	});
 
 	it("reports a timeout as a timeout", async () => {

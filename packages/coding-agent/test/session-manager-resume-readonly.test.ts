@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { deleteSessionPickerCandidate } from "@gajae-code/coding-agent/cli/session-picker";
+import { deleteSessionPickerCandidate } from "@bworx-io/worx-code/cli/session-picker";
 import {
 	createReadonlySessionManager,
 	parseSessionEntries,
@@ -12,14 +12,14 @@ import {
 	SessionManager,
 	type StrictSessionOpenResult,
 	sessionArtifactCapability,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 import {
 	FileSessionStorage,
 	MemorySessionStorage,
 	type SessionStorageSnapshot,
 	type SessionStorageStat,
 	type SessionStorageWriter,
-} from "@gajae-code/coding-agent/session/session-storage";
+} from "@bworx-io/worx-code/session/session-storage";
 import {
 	getAgentDir,
 	getResidentCacheRootDir,

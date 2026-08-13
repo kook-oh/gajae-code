@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it, type Mock, vi } from "bun:test";
-import { EventController } from "@gajae-code/coding-agent/modes/controllers/event-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import type { AgentSessionEvent } from "@gajae-code/coding-agent/session/agent-session";
+import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import type { AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
 
 type AutoCompactionEndEvent = Extract<AgentSessionEvent, { type: "auto_compaction_end" }>;
 beforeAll(() => initTheme());

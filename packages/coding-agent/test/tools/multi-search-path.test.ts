@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createTools, type ToolSession } from "@gajae-code/coding-agent/tools";
-import { resolveExplicitSearchPaths } from "@gajae-code/coding-agent/tools/path-utils";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
+import { resolveExplicitSearchPaths } from "@bworx-io/worx-code/tools/path-utils";
 
 const isWindows = process.platform === "win32";
 

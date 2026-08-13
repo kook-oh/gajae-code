@@ -70,27 +70,17 @@ function workflowJob(workflow: string, name: string): string {
 	return workflow.slice(start, nextJob === -1 ? workflow.length : start + marker.length + nextJob);
 }
 
-describe("unscoped gajae-code package publication", () => {
-	test("manifest exposes gjc and depends on the scoped CLI package", async () => {
-		const aliasManifest = await readManifest("packages/gajae-code");
+describe("WORX engine package publication", () => {
+	test("manifest exposes the worx CLI from the scoped engine package", async () => {
 		const codingAgentManifest = await readManifest("packages/coding-agent");
 
-		expect(aliasManifest.private).toBeUndefined();
-		expect(aliasManifest.name).toBe("gajae-code");
-		// The unscoped wrapper may carry a patch-only hotfix version when an
-		// immutable npm publish has to be superseded without republishing the
-		// scoped CLI. Its dependency remains catalog-backed so the release
-		// publisher resolves it to the current @gajae-code/coding-agent version.
-		expect(aliasManifest.version).toMatch(/^\d+\.\d+\.\d+$/);
-		expect(aliasManifest.version.split(".").slice(0, 2)).toEqual(codingAgentManifest.version.split(".").slice(0, 2));
-		expect(Number(aliasManifest.version.split(".")[2])).toBeGreaterThanOrEqual(
-			Number(codingAgentManifest.version.split(".")[2]),
-		);
-		expect(aliasManifest.bin).toEqual({ gjc: "bin/gjc.js" });
-		expect(aliasManifest.dependencies?.["@gajae-code/coding-agent"]).toBe("catalog:");
-		const wrapper = await Bun.file(path.join(repoRoot, "packages/gajae-code/bin/gjc.js")).text();
-		expect(wrapper).toContain('import { runCli } from "@gajae-code/coding-agent/cli";');
-		expect(wrapper).toContain("await runCli(process.argv.slice(2));");
+		expect(codingAgentManifest.private).toBeUndefined();
+		expect(codingAgentManifest.name).toBe("@bworx-io/worx-code");
+		expect(codingAgentManifest.bin).toEqual({ worx: "bin/worx.js" });
+		const entrypoint = await Bun.file(path.join(repoRoot, "packages/coding-agent/bin/worx.js")).text();
+		expect(entrypoint).toContain('import { runCli } from "@bworx-io/worx-code/cli";');
+		expect(entrypoint).toContain("await runCli(process.argv.slice(2));");
+		expect(await Bun.file(path.join(repoRoot, "packages/gajae-code/package.json")).exists()).toBe(false);
 	});
 
 	test("release dependency normalization collapses repeated file prefixes", () => {
@@ -102,14 +92,14 @@ describe("unscoped gajae-code package publication", () => {
 		expect(normalizeFileDependencySpec("catalog:")).toBe("catalog:");
 	});
 
-	test("release publish order publishes the alias after its scoped dependency", async () => {
+	test("release publish order contains the scoped engine without a wrapper package", async () => {
 		const releaseScript = await Bun.file(path.join(repoRoot, "scripts/ci-release-publish.ts")).text();
 		const bridgeClientIndex = releaseScript.indexOf('dir: "packages/bridge-client"');
 		const codingAgentIndex = releaseScript.indexOf('dir: "packages/coding-agent"');
 		const aliasIndex = releaseScript.indexOf('dir: "packages/gajae-code"');
 
 		expect(codingAgentIndex).toBeGreaterThan(-1);
-		expect(aliasIndex).toBeGreaterThan(codingAgentIndex);
+		expect(aliasIndex).toBe(-1);
 		expect(bridgeClientIndex).toBeGreaterThan(-1);
 		expect(bridgeClientIndex).toBeLessThan(codingAgentIndex);
 	});
@@ -164,22 +154,22 @@ describe("unscoped gajae-code package publication", () => {
 		}
 	});
 
-	test("plans the real gajae-code wrapper edge before the wrapper is published", () => {
+	test("plans the engine after one of its internal dependencies", () => {
 		const records = canonicalEvidenceRecords();
-		const wrapper = records.find(record => record.name === "gajae-code")!;
-		wrapper.internal_dependencies = { "@gajae-code/coding-agent": "1.2.3" };
+		const engine = records.find(record => record.name === "@bworx-io/worx-code")!;
+		engine.internal_dependencies = { "@gajae-code/utils": "1.2.3" };
 
 		const plannedNames = planExpectedEvidencePublication(records).map(record => record.name);
-		expect(plannedNames.indexOf("@gajae-code/coding-agent")).toBeLessThan(plannedNames.indexOf("gajae-code"));
+		expect(plannedNames.indexOf("@gajae-code/utils")).toBeLessThan(plannedNames.indexOf("@bworx-io/worx-code"));
 	});
 
 	test("topologically moves an early declared package behind a late dependency", () => {
 		const records = canonicalEvidenceRecords();
 		const utils = records.find(record => record.name === "@gajae-code/utils")!;
-		utils.internal_dependencies = { "gajae-code": "1.2.3" };
+		utils.internal_dependencies = { "@bworx-io/worx-code": "1.2.3" };
 
 		const plannedNames = planExpectedEvidencePublication(records).map(record => record.name);
-		expect(plannedNames.indexOf("gajae-code")).toBeLessThan(plannedNames.indexOf("@gajae-code/utils"));
+		expect(plannedNames.indexOf("@bworx-io/worx-code")).toBeLessThan(plannedNames.indexOf("@gajae-code/utils"));
 	});
 
 	test("rejects a closed-set internal dependency cycle before registry publication begins", async () => {
@@ -333,12 +323,12 @@ describe("release bump set equals publish set", () => {
 	});
 });
 describe("immutable stable release contracts", () => {
-	test("publisher configuration equals the closed 11-package evidence definition", () => {
+	test("publisher configuration equals the closed 10-package evidence definition", () => {
 		const publishedDirs = publishPackages.map(pkg => pkg.dir).sort();
 		const evidencedDirs = PUBLIC_PACKAGE_DEFINITIONS.map(definition => definition.dir).sort();
 
-		expect(PUBLIC_PACKAGE_DEFINITIONS).toHaveLength(11);
-		expect(publishPackages).toHaveLength(11);
+		expect(PUBLIC_PACKAGE_DEFINITIONS).toHaveLength(10);
+		expect(publishPackages).toHaveLength(10);
 		expect(publishedDirs).toEqual(evidencedDirs);
 	});
 
@@ -425,13 +415,13 @@ describe("immutable stable release contracts", () => {
 			"--evidence-dir",
 			"release-evidence",
 			"--release-serialization-key",
-			"gajae-nightly-release",
+			"worx-nightly-release",
 			"--release-channel",
 			"nightly",
 		])).toEqual({
 			mode: "publish-from-evidence",
 			evidenceDir: "release-evidence",
-			releaseSerializationKey: "gajae-nightly-release",
+			releaseSerializationKey: "worx-nightly-release",
 			releaseChannel: "nightly",
 		});
 		expect(() => parseReleasePublishCli(["--dry-run", "--evidence-dir", "release-evidence"])).toThrow("cannot be combined");
@@ -511,16 +501,16 @@ describe("native release binary coverage", () => {
 
 		expect(publish).toContain("--prepare-evidence --evidence-dir");
 		expect(publish).toContain("--publish-from-evidence");
-		expect(publish).toContain("gajae-production-release");
-		expect(publish).toContain("gajae-nightly-release");
+		expect(publish).toContain("worx-production-release");
+		expect(publish).toContain("worx-nightly-release");
 		expect(publish).toContain("Persist pre-publication package evidence");
 		expect(publish).toContain("NPM_TOKEN: ${{ secrets.NPM_TOKEN }}");
 
 		expect(publish).toContain("softprops/action-gh-release");
 		expect(publish).toContain("draft: false");
-		expect(publish).toContain("release-binaries/gjc-*");
-		expect(publish).toContain("gajae-release-packages-v1.json");
-		expect(publish).toContain("gajae-release-channel-v1.json");
+		expect(publish).toContain("release-binaries/worx-*");
+		expect(publish).toContain("worx-release-packages-v1.json");
+		expect(publish).toContain("worx-release-channel-v1.json");
 		expect(publish).toContain("fail_on_unmatched_files: true");
 		expect(publish).toContain("Verify immutable GitHub Release");
 
@@ -566,8 +556,10 @@ describe("native release binary coverage", () => {
 		const installer = await Bun.file(path.join(repoRoot, "scripts/install-tests/run-ci.sh")).text();
 		expect(installer).toContain("stage_linux_x64_optional_package");
 		expect(installer).toContain(
-			"for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats coding-agent gajae-code",
+			"for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats coding-agent",
 		);
+		expect(installer).toContain("@bworx-io/worx-code");
+		expect(installer).toContain("./node_modules/.bin/worx");
 		expect(installer).toContain("@bworx-io/worx-code-natives-linux-x64");
 		expect(installer).toContain("bworx-io-worx-code-natives-[0-9]*.tgz");
 		expect(installer).toContain("pi_natives.linux-x64*.node.build.json");

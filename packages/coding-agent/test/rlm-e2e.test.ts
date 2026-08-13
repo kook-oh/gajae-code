@@ -11,18 +11,18 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { readNotebookDocument } from "@gajae-code/coding-agent/edit/notebook";
-import { disposeKernelSessionsByOwner } from "@gajae-code/coding-agent/eval/py/executor";
-import type { CustomToolContext } from "@gajae-code/coding-agent/extensibility/custom-tools/types";
+import { readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
+import { disposeKernelSessionsByOwner } from "@bworx-io/worx-code/eval/py/executor";
+import type { CustomToolContext } from "@bworx-io/worx-code/extensibility/custom-tools/types";
 import {
 	ensureRlmSessionDir,
 	generateRlmSessionId,
 	resolveRlmArtifactPaths,
-} from "@gajae-code/coding-agent/rlm/artifacts";
-import { loadRlmDataContext } from "@gajae-code/coding-agent/rlm/data-context";
-import { RlmNotebookWriter } from "@gajae-code/coding-agent/rlm/notebook";
-import { createRlmPythonTool } from "@gajae-code/coding-agent/rlm/python-tool";
-import { synthesizeRlmReport } from "@gajae-code/coding-agent/rlm/report";
+} from "@bworx-io/worx-code/rlm/artifacts";
+import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
+import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
+import { createRlmPythonTool } from "@bworx-io/worx-code/rlm/python-tool";
+import { synthesizeRlmReport } from "@bworx-io/worx-code/rlm/report";
 
 const SALES_CSV = `region,amount
 north,100

@@ -3,18 +3,18 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { RenderResultOptions } from "@gajae-code/agent-core";
-import { LspTool } from "@gajae-code/coding-agent/lsp";
-import * as lspClient from "@gajae-code/coding-agent/lsp/client";
-import * as lspConfig from "@gajae-code/coding-agent/lsp/config";
-import { getServersForFile, loadConfig } from "@gajae-code/coding-agent/lsp/config";
-import { renderCall, renderResult } from "@gajae-code/coding-agent/lsp/render";
+import { LspTool } from "@bworx-io/worx-code/lsp";
+import * as lspClient from "@bworx-io/worx-code/lsp/client";
+import * as lspConfig from "@bworx-io/worx-code/lsp/config";
+import { getServersForFile, loadConfig } from "@bworx-io/worx-code/lsp/config";
+import { renderCall, renderResult } from "@bworx-io/worx-code/lsp/render";
 import type {
 	CodeAction,
 	Diagnostic,
 	LspClient,
 	ServerConfig,
 	SymbolInformation,
-} from "@gajae-code/coding-agent/lsp/types";
+} from "@bworx-io/worx-code/lsp/types";
 import {
 	applyCodeAction,
 	collectGlobMatches,
@@ -25,10 +25,10 @@ import {
 	hasGlobPattern,
 	resolveDiagnosticTargets,
 	resolveSymbolColumn,
-} from "@gajae-code/coding-agent/lsp/utils";
-import { getThemeByName } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { clampTimeout } from "@gajae-code/coding-agent/tools/tool-timeouts";
+} from "@bworx-io/worx-code/lsp/utils";
+import { getThemeByName } from "@bworx-io/worx-code/modes/theme/theme";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { clampTimeout } from "@bworx-io/worx-code/tools/tool-timeouts";
 import * as piUtils from "@gajae-code/utils";
 import { sanitizeText, TempDir } from "@gajae-code/utils";
 

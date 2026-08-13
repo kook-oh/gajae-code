@@ -1,14 +1,14 @@
 import { beforeAll, describe, expect, it } from "bun:test";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	formatDeepInterviewSelectorPrompt,
 	isDeepInterviewAskQuestion,
 	renderDeepInterviewAskQuestion,
-} from "@gajae-code/coding-agent/deep-interview/render-middleware";
-import { AssistantMessageComponent } from "@gajae-code/coding-agent/modes/components/assistant-message";
-import { initTheme, theme } from "@gajae-code/coding-agent/modes/theme/theme";
-import { askToolRenderer } from "@gajae-code/coding-agent/tools/ask";
+} from "@bworx-io/worx-code/deep-interview/render-middleware";
+import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
+import { initTheme, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import { askToolRenderer } from "@bworx-io/worx-code/tools/ask";
 
 function createAssistantMessage(text: string): AssistantMessage {
 	return {

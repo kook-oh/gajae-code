@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import * as evalIndex from "@gajae-code/coding-agent/eval";
-import * as pyKernel from "@gajae-code/coding-agent/eval/py/kernel";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { EvalTool } from "@gajae-code/coding-agent/tools/eval";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import * as evalIndex from "@bworx-io/worx-code/eval";
+import * as pyKernel from "@bworx-io/worx-code/eval/py/kernel";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { EvalTool } from "@bworx-io/worx-code/tools/eval";
 
 function makeSession(settings = Settings.isolated()): ToolSession {
 	return {

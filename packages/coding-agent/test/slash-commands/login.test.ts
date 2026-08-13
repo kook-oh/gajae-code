@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { OAuthManualInputManager } from "@gajae-code/coding-agent/modes/oauth-manual-input";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { executeBuiltinSlashCommand } from "@gajae-code/coding-agent/slash-commands/builtin-registry";
+import { OAuthManualInputManager } from "@bworx-io/worx-code/modes/oauth-manual-input";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { executeBuiltinSlashCommand } from "@bworx-io/worx-code/slash-commands/builtin-registry";
 
 type RuntimeHarness = {
 	runtime: { ctx: InteractiveModeContext; handleBackgroundCommand: () => void };

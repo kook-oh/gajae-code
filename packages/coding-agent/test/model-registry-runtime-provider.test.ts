@@ -5,8 +5,8 @@ import * as path from "node:path";
 import { type AssistantMessageEventStream, clearCustomApis, Effort, getCustomApi } from "@gajae-code/ai";
 import { getOAuthProviders, unregisterOAuthProviders } from "@gajae-code/ai/utils/oauth";
 import type { OAuthCredentials } from "@gajae-code/ai/utils/oauth/types";
-import { ModelRegistry, type ProviderConfigInput } from "@gajae-code/coding-agent/config/model-registry";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { ModelRegistry, type ProviderConfigInput } from "@bworx-io/worx-code/config/model-registry";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { Snowflake } from "@gajae-code/utils";
 
 describe("ModelRegistry runtime provider registration", () => {

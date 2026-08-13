@@ -4,7 +4,7 @@ import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
 import {
 	getStreamingEditToolCallForEvent,
 	type StreamingEditParsedCacheEntry,
-} from "@gajae-code/coding-agent/session/agent-session";
+} from "@bworx-io/worx-code/session/agent-session";
 
 function eventFor(argumentsValue: unknown): AgentEvent {
 	const toolCall: ToolCall = {

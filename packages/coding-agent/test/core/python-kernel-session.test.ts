@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { disposeAllKernelSessions, executePython } from "@gajae-code/coding-agent/eval/py/executor";
+import { disposeAllKernelSessions, executePython } from "@bworx-io/worx-code/eval/py/executor";
 import type {
 	KernelExecuteOptions,
 	KernelExecuteResult,
 	KernelShutdownResult,
-} from "@gajae-code/coding-agent/eval/py/kernel";
-import { PythonKernel } from "@gajae-code/coding-agent/eval/py/kernel";
+} from "@bworx-io/worx-code/eval/py/kernel";
+import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
 import { TempDir } from "@gajae-code/utils";
 
 class FakeKernel {

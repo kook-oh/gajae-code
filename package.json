@@ -1,5 +1,5 @@
 {
-  "name": "gajae-code",
+  "name": "worx-code",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.3.14",
@@ -23,7 +23,7 @@
       "@gajae-code/agent-core": "0.13.1",
       "@gajae-code/ai": "0.13.1",
       "@gajae-code/bridge-client": "0.13.1",
-      "@gajae-code/coding-agent": "0.13.1",
+      "@bworx-io/worx-code": "0.13.1",
       "@bworx-io/worx-code-natives": "0.13.1",
       "@bworx-io/worx-code-natives-darwin-arm64": "0.13.1",
       "@gajae-code/natives-darwin-x64": "0.13.1",
@@ -83,7 +83,7 @@
   "overrides": {},
   "scripts": {
     "install:dev": "bun install && bun --cwd=packages/coding-agent link && bun --cwd=packages/ai link && bun run dev:link && bun packages/coding-agent/src/cli.ts setup defaults",
-    "install:dev:bin": "bun install && bun run --cwd=packages/coding-agent build && bun run dev:link:bin && packages/coding-agent/dist/gjc setup defaults",
+    "install:dev:bin": "bun install && bun run --cwd=packages/coding-agent build && bun run dev:link:bin && packages/coding-agent/dist/worx setup defaults",
     "install:defaults": "bun packages/coding-agent/src/cli.ts setup defaults",
     "dev": "bun --cwd=packages/coding-agent src/cli.ts",
     "conformance:run": "bun packages/coding-agent/scripts/run-acp-conformance.ts",

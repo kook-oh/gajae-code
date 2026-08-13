@@ -239,10 +239,10 @@ describe("Print mode", () => {
 		installImmediateStdoutMock(stdoutOutput);
 		process.exitCode = 0;
 
-		const assistantMsg = makeAssistantMessage({ content: [{ type: "text", text: "@gajae-code/coding-agent" }] });
+		const assistantMsg = makeAssistantMessage({ content: [{ type: "text", text: "@bworx-io/worx-code" }] });
 		await runPrintMode(createMockSession([assistantMsg, makeToolResultMessage()]), { mode: "text" });
 
-		expect(stdoutOutput.join("")).toContain("@gajae-code/coding-agent");
+		expect(stdoutOutput.join("")).toContain("@bworx-io/worx-code");
 		expect(process.exitCode).toBe(0);
 	});
 

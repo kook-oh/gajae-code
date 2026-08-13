@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { transcriptContinuations } from "@gajae-code/coding-agent/modes/acp/acp-agent";
+import { transcriptContinuations } from "@bworx-io/worx-code/modes/acp/acp-agent";
 
 describe("transcriptContinuations", () => {
 	it("keeps only fully specified continuation descriptors", () => {

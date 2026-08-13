@@ -15,7 +15,7 @@ import {
 	probePsmux,
 	resolveGjcTmuxBinary,
 	resolveGjcTmuxExecutableIdentity,
-} from "@gajae-code/coding-agent/gjc-runtime/psmux-detect";
+} from "@bworx-io/worx-code/gjc-runtime/psmux-detect";
 import {
 	assertGjcTmuxMutationAuthoritySync,
 	bindGjcTmuxProviderAuthority,
@@ -25,8 +25,8 @@ import {
 	readGjcTmuxProviderAuthoritySync,
 	resolveGjcTmuxCommand,
 	resolveGjcTmuxProviderContext,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-common";
-import { lifecyclePaths } from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-common";
+import { lifecyclePaths } from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
 	assertGjcTmuxStagedMutationAuthoritySync,

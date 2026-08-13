@@ -6,12 +6,12 @@ import * as path from "node:path";
 import {
 	createDeepInterviewIntentManifest,
 	reviewDeepInterviewIntent,
-} from "@gajae-code/coding-agent/gjc-runtime/deep-interview-state";
+} from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
 import {
 	activeSnapshotPath,
 	modeStatePath,
 	sessionStateDir,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { runNativeStateCommand } from "../../src/gjc-runtime/state-runtime";
 import { WORKFLOW_STATE_VERSION } from "../../src/skill-state/workflow-state-contract";
 

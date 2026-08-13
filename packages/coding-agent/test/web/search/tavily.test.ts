@@ -4,7 +4,7 @@ import {
 	buildRequestBody,
 	searchTavily,
 	type TavilySearchParams,
-} from "@gajae-code/coding-agent/web/search/providers/tavily";
+} from "@bworx-io/worx-code/web/search/providers/tavily";
 import { hookFetch } from "@gajae-code/utils";
 
 describe("Tavily buildRequestBody", () => {

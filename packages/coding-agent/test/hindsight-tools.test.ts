@@ -9,14 +9,14 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { HindsightApi } from "@gajae-code/coding-agent/hindsight/client";
-import type { HindsightConfig } from "@gajae-code/coding-agent/hindsight/config";
-import { HindsightSessionState } from "@gajae-code/coding-agent/hindsight/state";
-import { HindsightRecallTool } from "@gajae-code/coding-agent/tools/hindsight-recall";
-import { HindsightReflectTool } from "@gajae-code/coding-agent/tools/hindsight-reflect";
-import { HindsightRetainTool } from "@gajae-code/coding-agent/tools/hindsight-retain";
-import type { ToolSession } from "@gajae-code/coding-agent/tools/index";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { HindsightApi } from "@bworx-io/worx-code/hindsight/client";
+import type { HindsightConfig } from "@bworx-io/worx-code/hindsight/config";
+import { HindsightSessionState } from "@bworx-io/worx-code/hindsight/state";
+import { HindsightRecallTool } from "@bworx-io/worx-code/tools/hindsight-recall";
+import { HindsightReflectTool } from "@bworx-io/worx-code/tools/hindsight-reflect";
+import { HindsightRetainTool } from "@bworx-io/worx-code/tools/hindsight-retain";
+import type { ToolSession } from "@bworx-io/worx-code/tools/index";
 
 const TEST_SESSION_ID = "test-session-id";
 let registeredState: HindsightSessionState | undefined;

@@ -2,9 +2,9 @@ import { describe, expect, test, vi } from "bun:test";
 import { Agent, type AgentOptions } from "@gajae-code/agent-core";
 import type { Model, ProviderSessionState } from "@gajae-code/ai";
 import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 const model = { provider: "test", id: "model", api: "openai-responses", name: "model" } as Model;
 

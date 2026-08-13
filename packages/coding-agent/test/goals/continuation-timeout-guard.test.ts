@@ -5,7 +5,7 @@ import {
 	decideTimeoutHold,
 	toResultText,
 	turnTimeoutFingerprint,
-} from "@gajae-code/coding-agent/goals/continuation-timeout-guard";
+} from "@bworx-io/worx-code/goals/continuation-timeout-guard";
 
 describe("continuation timeout guard", () => {
 	it("classifies timeout, successful, and other-error tool outcomes", () => {

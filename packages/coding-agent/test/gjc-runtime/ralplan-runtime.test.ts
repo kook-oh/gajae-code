@@ -11,19 +11,19 @@ import {
 	resolveRalplanAutoHandoff,
 	resolveRalplanMaxReviewPassesPerLane,
 	runNativeRalplanCommand,
-} from "@gajae-code/coding-agent/gjc-runtime/ralplan-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ralplan-runtime";
 import {
 	GJC_RALPLAN_ARTIFACT_ENV,
 	GJC_RESTRICTED_ROLE_AGENT_BASH_ENV,
-} from "@gajae-code/coding-agent/gjc-runtime/restricted-role-agent-bash";
+} from "@bworx-io/worx-code/gjc-runtime/restricted-role-agent-bash";
 import {
 	activeEntryPath,
 	activeSnapshotPath,
 	modeStatePath,
 	sessionPlansDir,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
-import { readVisibleSkillActiveState } from "@gajae-code/coding-agent/skill-state/active-state";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
+import { readVisibleSkillActiveState } from "@bworx-io/worx-code/skill-state/active-state";
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];

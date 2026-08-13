@@ -6,7 +6,7 @@ import type { Api, Model } from '@gajae-code/ai/core';
 import { Effort } from '@gajae-code/ai/model-thinking';
 import type { OAuthCredentials, OAuthLoginCallbacks } from '@gajae-code/ai/utils/oauth/types';
 import { loginXai, refreshXaiToken, XAI_OAUTH_SCOPE } from '@gajae-code/ai/utils/oauth/xai';
-import type { ExtensionAPI, ProviderConfig } from '@gajae-code/coding-agent';
+import type { ExtensionAPI, ProviderConfig } from '@bworx-io/worx-code';
 import { type GrokCliModelConfig, resolveModels } from '../models/catalog.js';
 import { sanitizePayload } from '../payload/sanitize.js';
 import { getBaseUrl, isGrokBuildBaseUrlOverrideIgnored } from '../shared/base-url.js';

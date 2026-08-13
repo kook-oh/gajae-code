@@ -9,7 +9,7 @@ import {
 	DEFAULT_FUZZY_THRESHOLD,
 	findMatch,
 	formatLineHash,
-} from "@gajae-code/coding-agent/edit";
+} from "@bworx-io/worx-code/edit";
 
 describe("findMatch", () => {
 	describe("exact matching", () => {

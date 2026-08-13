@@ -5,7 +5,7 @@ import * as path from "node:path";
 import type { AgentToolContext } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
 import { validateToolArguments } from "@gajae-code/ai/utils/validation";
-import { createAgentSession } from "@gajae-code/coding-agent/sdk";
+import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { Settings } from "../src/config/settings";
 import { createDeepInterviewIntentManifest } from "../src/gjc-runtime/deep-interview-state";
 import { activeEntryPath, modeStatePath, sessionStateDir } from "../src/gjc-runtime/session-layout";

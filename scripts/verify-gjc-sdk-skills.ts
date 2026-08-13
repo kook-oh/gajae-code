@@ -104,7 +104,7 @@ gate(
 
 gate(
 	"templates are direct SDK clients",
-	typeScript.includes('@gajae-code/coding-agent/sdk') && python.includes("from gjc_sdk import") && python.includes("SdkClient"),
+	typeScript.includes('@bworx-io/worx-code/sdk') && python.includes("from gjc_sdk import") && python.includes("SdkClient"),
 	"maintained SDK imports",
 );
 gate(

@@ -2,8 +2,8 @@ import { beforeAll, describe, expect, it } from "bun:test";
 import {
 	CommandPaletteComponent,
 	type CommandPaletteEntry,
-} from "@gajae-code/coding-agent/modes/components/command-palette";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+} from "@bworx-io/worx-code/modes/components/command-palette";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 
 const entries: CommandPaletteEntry[] = [
 	{

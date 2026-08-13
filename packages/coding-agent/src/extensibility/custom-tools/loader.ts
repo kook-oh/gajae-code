@@ -89,7 +89,7 @@ export class CustomToolLoader {
 	#seenNames: Set<string>;
 
 	constructor(
-		pi: typeof import("@gajae-code/coding-agent"),
+		pi: typeof import("@bworx-io/worx-code"),
 		cwd: string,
 		builtInToolNames: string[],
 		pushPendingAction?: (action: {
@@ -182,12 +182,7 @@ export async function loadCustomTools(
 	}) => void,
 	beforeImport?: CustomToolImportGuard,
 ) {
-	const loader = new CustomToolLoader(
-		await import("@gajae-code/coding-agent"),
-		cwd,
-		builtInToolNames,
-		pushPendingAction,
-	);
+	const loader = new CustomToolLoader(await import("@bworx-io/worx-code"), cwd, builtInToolNames, pushPendingAction);
 	await loader.load(pathsWithSources, beforeImport);
 	return {
 		tools: loader.tools,

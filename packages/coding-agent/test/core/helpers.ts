@@ -1,5 +1,5 @@
-import type { PythonKernelExecutor } from "@gajae-code/coding-agent/eval/py/executor";
-import type { KernelExecuteOptions, KernelExecuteResult } from "@gajae-code/coding-agent/eval/py/kernel";
+import type { PythonKernelExecutor } from "@bworx-io/worx-code/eval/py/executor";
+import type { KernelExecuteOptions, KernelExecuteResult } from "@bworx-io/worx-code/eval/py/kernel";
 
 export class FakeKernel implements PythonKernelExecutor {
 	private result: KernelExecuteResult;

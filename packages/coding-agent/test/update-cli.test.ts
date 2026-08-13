@@ -59,7 +59,7 @@ describe("update-cli release lookup", () => {
 			},
 		});
 
-		expect(requested).toEqual(["https://nexus.example.com/repository/npm-all/@gajae-code/coding-agent/latest"]);
+		expect(requested).toEqual(["https://nexus.example.com/repository/npm-all/@bworx-io/worx-code/latest"]);
 		expect(release).toEqual({
 			tag: "v9.9.9",
 			version: "9.9.9",
@@ -80,7 +80,7 @@ describe("update-cli release lookup", () => {
 			}),
 		});
 
-		await expect(failing).rejects.toThrow("https://registry.npmjs.org/@gajae-code/coding-agent/latest responded 503");
+		await expect(failing).rejects.toThrow("https://registry.npmjs.org/@bworx-io/worx-code/latest responded 503");
 	});
 });
 
@@ -164,7 +164,7 @@ describe("update-cli binary release assets", () => {
 	it("reports actionable Unix manual update commands for unsupported fallback paths", () => {
 		const instructions = formatManualUpdateInstructionsForTest("linux");
 
-		expect(instructions).toContain("bun install -g @gajae-code/coding-agent@latest");
+		expect(instructions).toContain("bun install -g @bworx-io/worx-code@latest");
 		expect(instructions).toContain("npm, pnpm, or another package manager");
 		expect(instructions).toContain(
 			"curl -fsSL https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/main/scripts/install.sh | sh -s -- --binary",
@@ -174,7 +174,7 @@ describe("update-cli binary release assets", () => {
 	it("reports actionable Windows manual update commands for unsupported fallback paths", () => {
 		const instructions = formatManualUpdateInstructionsForTest("win32");
 
-		expect(instructions).toContain("bun install -g @gajae-code/coding-agent@latest");
+		expect(instructions).toContain("bun install -g @bworx-io/worx-code@latest");
 		expect(instructions).toContain("npm, pnpm, or another package manager");
 		expect(instructions).toContain(
 			"irm https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/main/scripts/install.ps1 | iex",
@@ -221,7 +221,7 @@ describe("update-cli binary release assets", () => {
 
 		expect(message).toContain("Download failed for gjc-linux-x64");
 		expect(message).toContain("Yeachan-Heo/gajae-code/releases/download/v0.2.3/gjc-linux-x64");
-		expect(message).toContain("bun install -g @gajae-code/coding-agent@latest");
+		expect(message).toContain("bun install -g @bworx-io/worx-code@latest");
 	});
 
 	it("points at the mirror that named the version when the GitHub asset is missing", () => {
@@ -235,7 +235,7 @@ describe("update-cli binary release assets", () => {
 
 		expect(message).toContain("Download failed for gjc-linux-x64");
 		expect(message).toContain("was resolved from https://nexus.example.com/npm");
-		expect(message).toContain("bun install -g @gajae-code/coding-agent@latest");
+		expect(message).toContain("bun install -g @bworx-io/worx-code@latest");
 	});
 
 	it("says nothing about provenance when the public registry named the version", () => {
@@ -251,7 +251,7 @@ describe("update-cli binary release assets", () => {
 
 	it("includes actionable guidance when the platform has no release asset", () => {
 		expect(() => buildReleaseBinaryUrlForTest("0.2.3", "freebsd", "x64")).toThrow(
-			"bun install -g @gajae-code/coding-agent@latest",
+			"bun install -g @bworx-io/worx-code@latest",
 		);
 	});
 });
@@ -847,7 +847,7 @@ describe("update-cli channel robustness", () => {
 			},
 		});
 
-		expect(requested).toEqual(["https://registry.npmjs.org/@gajae-code/coding-agent/nightly"]);
+		expect(requested).toEqual(["https://registry.npmjs.org/@bworx-io/worx-code/nightly"]);
 		expect(release.version).toBe("1.2.3-nightly.1.1.gabc");
 	});
 
@@ -876,8 +876,8 @@ describe("update-cli channel robustness", () => {
 		});
 
 		expect(requested).toEqual([
-			"https://registry.npmjs.org/@gajae-code/coding-agent/nightly",
-			"https://registry.npmjs.org/@gajae-code/coding-agent",
+			"https://registry.npmjs.org/@bworx-io/worx-code/nightly",
+			"https://registry.npmjs.org/@bworx-io/worx-code",
 		]);
 		expect(release.version).toBe("1.2.4-nightly.1.1.gabc");
 	});

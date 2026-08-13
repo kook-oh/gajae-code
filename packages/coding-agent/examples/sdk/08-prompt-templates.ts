@@ -3,12 +3,7 @@
  *
  * File-based templates that inject content when invoked with /templatename.
  */
-import {
-	createAgentSession,
-	discoverPromptTemplates,
-	type PromptTemplate,
-	SessionManager,
-} from "@gajae-code/coding-agent";
+import { createAgentSession, discoverPromptTemplates, type PromptTemplate, SessionManager } from "@bworx-io/worx-code";
 
 // Discover templates from cwd/.pi/prompts/ and ~/.pi/agent/prompts/
 const discovered = await discoverPromptTemplates();

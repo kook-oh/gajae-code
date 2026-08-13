@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 const packageDir = path.resolve(import.meta.dir, "..");
-const packageName = "@gajae-code/coding-agent";
+const packageName = "@bworx-io/worx-code";
 const agentPackageDir = path.resolve(packageDir, "../agent");
 const aiPackageDir = path.resolve(packageDir, "../ai");
 const bridgeClientPackageDir = path.resolve(packageDir, "../bridge-client");

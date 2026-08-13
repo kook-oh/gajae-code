@@ -2,13 +2,13 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { getSessionSlashCommands } from "@gajae-code/coding-agent/extensibility/extensions/get-commands-handler";
-import type { Skill } from "@gajae-code/coding-agent/extensibility/skills";
-import { buildSystemPrompt } from "@gajae-code/coding-agent/system-prompt";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { SkillTool } from "@gajae-code/coding-agent/tools/skill";
-import { SkillDiscoveryTool } from "@gajae-code/coding-agent/tools/skill-discovery";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { getSessionSlashCommands } from "@bworx-io/worx-code/extensibility/extensions/get-commands-handler";
+import type { Skill } from "@bworx-io/worx-code/extensibility/skills";
+import { buildSystemPrompt } from "@bworx-io/worx-code/system-prompt";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { SkillTool } from "@bworx-io/worx-code/tools/skill";
+import { SkillDiscoveryTool } from "@bworx-io/worx-code/tools/skill-discovery";
 
 async function makeSkill(
 	root: string,

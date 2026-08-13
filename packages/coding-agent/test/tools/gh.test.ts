@@ -2,15 +2,15 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:te
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	buildSearchDateQualifier,
 	GithubTool,
 	parsePrUnifiedDiff,
 	parseSearchDateBound,
-} from "@gajae-code/coding-agent/tools/gh";
-import * as git from "@gajae-code/coding-agent/utils/git";
+} from "@bworx-io/worx-code/tools/gh";
+import * as git from "@bworx-io/worx-code/utils/git";
 import { getAgentDir, hashPath, setAgentDir } from "@gajae-code/utils";
 import * as z from "zod/v4";
 

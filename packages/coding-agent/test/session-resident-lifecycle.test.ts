@@ -5,8 +5,8 @@ import * as os from "node:os";
 import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { exportSessionToHtml } from "@gajae-code/coding-agent/export/html";
-import { SessionManager, type SessionMessageEntry } from "@gajae-code/coding-agent/session/session-manager";
+import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
+import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();

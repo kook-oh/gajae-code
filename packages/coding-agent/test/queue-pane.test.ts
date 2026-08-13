@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import { formatKeyHint } from "@gajae-code/coding-agent/config/keybindings";
-import { QueuePaneComponent } from "@gajae-code/coding-agent/modes/components/queue-pane";
-import { QueuedMessageSelectorComponent } from "@gajae-code/coding-agent/modes/components/queued-message-selector";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
+import { formatKeyHint } from "@bworx-io/worx-code/config/keybindings";
+import { QueuePaneComponent } from "@bworx-io/worx-code/modes/components/queue-pane";
+import { QueuedMessageSelectorComponent } from "@bworx-io/worx-code/modes/components/queued-message-selector";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 
 beforeAll(async () => {
 	await initTheme(false, undefined, undefined, "red-claw", "blue-crab");

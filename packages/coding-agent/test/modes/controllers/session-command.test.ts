@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it } from "bun:test";
 import { getBundledModel, type Model, type Usage } from "@gajae-code/ai";
-import { CommandController } from "@gajae-code/coding-agent/modes/controllers/command-controller";
-import { getThemeByName, setThemeInstance } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+import { CommandController } from "@bworx-io/worx-code/modes/controllers/command-controller";
+import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { Text } from "@gajae-code/tui";
 
 async function renderSessionInfo(costBreakdown?: Usage["cost"], model?: Model): Promise<string> {

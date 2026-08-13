@@ -3,14 +3,14 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
-import { AsyncJobManager } from "@gajae-code/coding-agent/async/job-manager";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import * as internalUrls from "@gajae-code/coding-agent/internal-urls";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { ArtifactManager } from "@gajae-code/coding-agent/session/artifacts";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { AsyncJobManager } from "@bworx-io/worx-code/async/job-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import * as internalUrls from "@bworx-io/worx-code/internal-urls";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { TempDir } from "@gajae-code/utils";
 
 const CLEANUP_NOTICE =

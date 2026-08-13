@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { sessionUltragoalDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
+import { sessionUltragoalDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	type UltragoalGuardState,
 	validateCompletionReceipt,
 	verifyUltragoalDurableCompletionState,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
-import { computeUltragoalPlanGeneration } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-receipt-freshness";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
+import { computeUltragoalPlanGeneration } from "@bworx-io/worx-code/gjc-runtime/ultragoal-receipt-freshness";
 import {
 	addUltragoalSubgoal,
 	checkpointUltragoalGoal,
@@ -21,7 +21,7 @@ import {
 	type UltragoalGoal,
 	type UltragoalLedgerEvent,
 	type UltragoalPlan,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-durable-completion-release-test-session";
 const tempRoots: string[] = [];

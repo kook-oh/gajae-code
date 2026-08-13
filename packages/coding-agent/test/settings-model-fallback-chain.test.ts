@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { normalizeModelSelectorValue } from "@gajae-code/coding-agent/config/model-selector-value";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
+import { normalizeModelSelectorValue } from "@bworx-io/worx-code/config/model-selector-value";
+import { Settings } from "@bworx-io/worx-code/config/settings";
 
 describe("settings model fallback chains", () => {
 	test("accepts scalar and array selector chains without narrowing permissive aliases", () => {

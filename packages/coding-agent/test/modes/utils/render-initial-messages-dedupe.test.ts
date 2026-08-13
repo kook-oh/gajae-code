@@ -17,11 +17,11 @@
  */
 
 import { beforeAll, describe, expect, it, type Mock, vi } from "bun:test";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
-import { UiHelpers } from "@gajae-code/coding-agent/modes/utils/ui-helpers";
-import type { SessionContext } from "@gajae-code/coding-agent/session/session-manager";
-import { SessionContextTooLargeError, SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
+import type { SessionContext } from "@bworx-io/worx-code/session/session-manager";
+import { SessionContextTooLargeError, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { Container } from "@gajae-code/tui";
 
 beforeAll(() => {

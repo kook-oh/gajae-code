@@ -12,11 +12,11 @@ import {
 } from "@gajae-code/ai";
 import { createMockModel, type MockModel, registerMockApi } from "@gajae-code/ai/providers/mock";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { BTW_STREAM_IDLE_TIMEOUT_MS } from "@gajae-code/coding-agent/session/btw-contract";
-import { convertToLlm } from "@gajae-code/coding-agent/session/messages";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { BTW_STREAM_IDLE_TIMEOUT_MS } from "@bworx-io/worx-code/session/btw-contract";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 registerMockApi();
 const CONTROLLED_BTW_API = "controlled-btw-test";

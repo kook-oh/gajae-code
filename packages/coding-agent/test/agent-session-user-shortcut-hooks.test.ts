@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { Agent } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import * as pythonExecutor from "@gajae-code/coding-agent/eval/py/executor";
-import * as bashExecutor from "@gajae-code/coding-agent/exec/bash-executor";
-import type { ExtensionRunner } from "@gajae-code/coding-agent/extensibility/extensions";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import * as pythonExecutor from "@bworx-io/worx-code/eval/py/executor";
+import * as bashExecutor from "@bworx-io/worx-code/exec/bash-executor";
+import type { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { TempDir } from "@gajae-code/utils";
 
 describe("AgentSession user shortcut hooks", () => {

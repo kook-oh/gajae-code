@@ -7,7 +7,7 @@ import {
 	parseGitNameStatus,
 	parseGitUntrackedPaths,
 	spawnText,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-change-set";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-change-set";
 
 describe("ultragoal change-set extraction", () => {
 	it("preserves rename paths and categories", () => {

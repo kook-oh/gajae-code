@@ -31,7 +31,7 @@
 		"@babel/traverse": "catalog:",
 		"@babel/types": "catalog:",
 		"@gajae-code/agent-core": "catalog:",
-		"@gajae-code/coding-agent": "catalog:",
+		"@bworx-io/worx-code": "catalog:",
 		"@gajae-code/utils": "catalog:",
 		"diff": "catalog:",
 		"prettier": "catalog:",

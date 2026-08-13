@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { isUltragoalPauseBlocked } from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
+import { isUltragoalPauseBlocked } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	CRITIC_GATE_HARD_STOP_EVENT,
 	CRITIC_GATE_OVERRIDE_EVENT,
@@ -12,7 +12,7 @@ import {
 	terminalCriticCeilingReached,
 	terminalCriticGateOverridden,
 	terminalCriticHardStopReached,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-receipt-freshness";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-receipt-freshness";
 import {
 	appendLedger,
 	createUltragoalPlan,
@@ -21,7 +21,7 @@ import {
 	recordUltragoalBlockerClassification,
 	recordUltragoalCriticVerdict,
 	runNativeUltragoalCommand,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-critic-pause-ceiling-test-session";
 const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;

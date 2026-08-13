@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 import type { AssistantMessage, Message, TextContent, ToolCall, ToolResultMessage, Usage } from "@gajae-code/ai";
 import { SessionManager } from "../src/session/session-manager";
 
-const PACKAGE_NAME = "@gajae-code/coding-agent";
+const PACKAGE_NAME = "@bworx-io/worx-code";
 const BENCH_NAME = "session-get-entries";
 const WARMUP_ITERATIONS = 20;
 const MEASURE_ITERATIONS = 200;

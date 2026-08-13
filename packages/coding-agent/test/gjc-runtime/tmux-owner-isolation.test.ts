@@ -27,11 +27,11 @@ import {
 	replaceOwnerGenerationSync,
 	TMUX_OWNER_ISOLATION_MAX_LINE_BYTES,
 	tmuxOwnerIsolationBootstrapArgv,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
 import {
 	isTmuxOwnerIsolationCliArgv,
 	tmuxServerProof,
-} from "@gajae-code/coding-agent/gjc-runtime/tmux-owner-isolation-cli";
+} from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation-cli";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");
 const ownerIsolationCliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");

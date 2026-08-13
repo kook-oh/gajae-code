@@ -3,8 +3,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { type AssistantMessageEventStream, clearCustomApis, getCustomApi } from "@gajae-code/ai";
-import { ModelRegistry, type ProviderConfigInput } from "@gajae-code/coding-agent/config/model-registry";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
+import { ModelRegistry, type ProviderConfigInput } from "@bworx-io/worx-code/config/model-registry";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { Snowflake } from "@gajae-code/utils";
 
 describe("ModelRegistry runtime source cleanup", () => {

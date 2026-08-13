@@ -1,16 +1,16 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import { ThinkingLevel } from "@gajae-code/agent-core";
 import { Effort, getBundledModel, type Model } from "@gajae-code/ai";
-import type { GjcModelAssignmentTargetId, ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { ModelSelectorComponent } from "@gajae-code/coding-agent/modes/components/model-selector";
+import type { GjcModelAssignmentTargetId, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import {
 	getThemeByName,
 	setSymbolPreset,
 	setTheme,
 	setThemeInstance,
 	theme,
-} from "@gajae-code/coding-agent/modes/theme/theme";
+} from "@bworx-io/worx-code/modes/theme/theme";
 import type { TUI } from "@gajae-code/tui";
 
 function normalizeRenderedText(text: string): string {

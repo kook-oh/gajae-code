@@ -3,18 +3,18 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { AuthStorage, SqliteAuthCredentialStore } from "@gajae-code/ai";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	CustomProviderWizardComponent,
 	type CustomProviderWizardSubmit,
-} from "@gajae-code/coding-agent/modes/components/custom-provider-wizard";
+} from "@bworx-io/worx-code/modes/components/custom-provider-wizard";
 import {
 	type ProviderOnboardingAction,
 	ProviderOnboardingSelectorComponent,
-} from "@gajae-code/coding-agent/modes/components/provider-onboarding-selector";
-import { SelectorController } from "@gajae-code/coding-agent/modes/controllers/selector-controller";
-import { initTheme } from "@gajae-code/coding-agent/modes/theme/theme";
-import type { InteractiveModeContext } from "@gajae-code/coding-agent/modes/types";
+} from "@bworx-io/worx-code/modes/components/provider-onboarding-selector";
+import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
+import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();

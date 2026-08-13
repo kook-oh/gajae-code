@@ -12,9 +12,9 @@ import {
 	type SessionHeader,
 	SessionManagedStorageError,
 	SessionManager,
-} from "@gajae-code/coding-agent/session/session-manager";
+} from "@bworx-io/worx-code/session/session-manager";
 
-import { MemorySessionStorage } from "@gajae-code/coding-agent/session/session-storage";
+import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
 
 import { getConfigRootDir, getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@gajae-code/utils";
 import { listManagedCandidates, resolveManagedScope } from "../../src/session/internal/managed-session-scope";

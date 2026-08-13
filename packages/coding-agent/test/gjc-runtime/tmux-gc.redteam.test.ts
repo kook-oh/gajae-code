@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, spyOn, vi } from "bun:test";
 import * as fs from "node:fs/promises";
-import type { GcContext } from "@gajae-code/coding-agent/gjc-runtime/gc-runtime";
-import { tmuxSessionsGcAdapter } from "@gajae-code/coding-agent/gjc-runtime/tmux-gc";
+import type { GcContext } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
+import { tmuxSessionsGcAdapter } from "@bworx-io/worx-code/gjc-runtime/tmux-gc";
 
 const env = { GJC_TMUX_COMMAND: "tmux-redteam" };
 const cwd = "/tmp/gjc-redteam-project";

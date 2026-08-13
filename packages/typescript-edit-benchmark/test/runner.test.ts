@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { formatSessionDumpText, SessionManager } from "@bworx-io/worx-code";
 import type { AgentMessage } from "@gajae-code/agent-core";
-import { formatSessionDumpText, SessionManager } from "@gajae-code/coding-agent";
 import { TempDir } from "@gajae-code/utils";
 import { generateReport } from "../src/report";
 import { buildBenchmarkResult, type TaskRunResult, writeConversationDump } from "../src/runner";

@@ -40,7 +40,7 @@ export function tmuxOwnerIsolationBootstrapArgv(): string[] {
 	if (entry && /\.(?:[cm]?js|ts)$/.test(entry) && !/\.test\.[^.]+$/.test(entry)) {
 		return [process.execPath, entry, TMUX_OWNER_ISOLATION_CLI_FLAG];
 	}
-	return [process.execPath, path.resolve(import.meta.dir, "../../bin/gjc.js"), TMUX_OWNER_ISOLATION_CLI_FLAG];
+	return [process.execPath, path.resolve(import.meta.dir, "../../bin/worx.js"), TMUX_OWNER_ISOLATION_CLI_FLAG];
 }
 
 function scopedExecutionArgv(expectedScope: string): string[] {

@@ -3,9 +3,9 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getBundledModel } from "@gajae-code/ai";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { createAgentSession } from "@gajae-code/coding-agent/sdk";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createAgentSession } from "@bworx-io/worx-code/sdk";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { Snowflake } from "@gajae-code/utils";
 
 function textContent(result: { content?: Array<{ type: string; text?: string }> }): string {

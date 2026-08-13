@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { buildDevCompileArgs } from "./compile-args";
 
 const packageDir = path.join(import.meta.dir, "..");
-const outputPath = path.join(packageDir, "dist", "gjc");
+const outputPath = path.join(packageDir, "dist", "worx");
 const nativeDir = path.join(packageDir, "..", "natives", "native");
 
 function shouldAdhocSignDarwinBinary(): boolean {

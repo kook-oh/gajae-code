@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
-import type { CustomEntry, SessionEntry } from "@gajae-code/coding-agent/session/session-manager";
+import type { CustomEntry, SessionEntry } from "@bworx-io/worx-code/session/session-manager";
 import {
 	buildWorkflowIntentDiff,
 	WORKFLOW_INTENT_DIFF_CUSTOM_TYPE,
 	type WorkflowIntentDiff,
-} from "@gajae-code/coding-agent/workflow/workflow-intent-diff";
+} from "@bworx-io/worx-code/workflow/workflow-intent-diff";
 import {
 	collectWorkflowIntentReports,
 	summarizeWorkflowConsensus,
-} from "@gajae-code/coding-agent/workflow/workflow-intent-report-consumer";
+} from "@bworx-io/worx-code/workflow/workflow-intent-report-consumer";
 
 function mustBuildIntent(prompt: string): WorkflowIntentDiff {
 	const intent = buildWorkflowIntentDiff(prompt);

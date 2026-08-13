@@ -4,12 +4,12 @@ import * as path from "node:path";
 import {
 	assertUltragoalPauseAllowed,
 	isUltragoalPauseBlocked,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-guard";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	createUltragoalPlan,
 	recordUltragoalBlockerClassification,
 	recordUltragoalCriticVerdict,
-} from "@gajae-code/coding-agent/gjc-runtime/ultragoal-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-pause-guard-redteam-session";
 const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;

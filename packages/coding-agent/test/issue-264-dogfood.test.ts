@@ -21,6 +21,6 @@ describe("issue #264 — dogfood build and telemetry boundaries", () => {
 
 		expect(source).toContain('new Bun.Glob("pi_natives.*.node")');
 		expect(source).toContain('path.join(packageDir, "dist", filename)');
-		expect(source.indexOf("await stageWorkspaceNativeAddons();")).toBeGreaterThan(source.indexOf('"dist/gjc"'));
+		expect(source.indexOf("await stageWorkspaceNativeAddons();")).toBeGreaterThan(source.indexOf('"dist/worx"'));
 	});
 });

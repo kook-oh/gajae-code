@@ -2,19 +2,19 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { appendOrMergeDeepInterviewRound } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-recorder";
-import { runNativeDeepInterviewCommand } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-runtime";
-import { runNativeRalplanCommand } from "@gajae-code/coding-agent/gjc-runtime/ralplan-runtime";
-import { auditPath, modeStatePath, sessionStateDir } from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { migrateAndPersistLegacyState } from "@gajae-code/coding-agent/gjc-runtime/state-migrations";
-import { runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
-import { RequiredOnWriteEnvelopeSchema } from "@gajae-code/coding-agent/gjc-runtime/state-schema";
-import { writeWorkflowEnvelopeAtomic } from "@gajae-code/coding-agent/gjc-runtime/state-writer";
+import { appendOrMergeDeepInterviewRound } from "@bworx-io/worx-code/gjc-runtime/deep-interview-recorder";
+import { runNativeDeepInterviewCommand } from "@bworx-io/worx-code/gjc-runtime/deep-interview-runtime";
+import { runNativeRalplanCommand } from "@bworx-io/worx-code/gjc-runtime/ralplan-runtime";
+import { auditPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { migrateAndPersistLegacyState } from "@bworx-io/worx-code/gjc-runtime/state-migrations";
+import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
+import { RequiredOnWriteEnvelopeSchema } from "@bworx-io/worx-code/gjc-runtime/state-schema";
+import { writeWorkflowEnvelopeAtomic } from "@bworx-io/worx-code/gjc-runtime/state-writer";
 import {
 	type GjcTeamSnapshot,
 	persistGjcTeamModeStateSummary,
-} from "@gajae-code/coding-agent/gjc-runtime/team-runtime";
-import { WORKFLOW_STATE_VERSION } from "@gajae-code/coding-agent/skill-state/workflow-state-contract";
+} from "@bworx-io/worx-code/gjc-runtime/team-runtime";
+import { WORKFLOW_STATE_VERSION } from "@bworx-io/worx-code/skill-state/workflow-state-contract";
 
 const TEST_SESSION_ID = "test-session";
 

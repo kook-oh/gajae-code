@@ -3,14 +3,14 @@ import {
 	disposeAllKernelSessions,
 	disposeKernelSessionsByOwner,
 	executePython,
-} from "@gajae-code/coding-agent/eval/py/executor";
+} from "@bworx-io/worx-code/eval/py/executor";
 import type {
 	KernelExecuteResult,
 	KernelShutdownResult,
 	PythonKernel as PythonKernelInstance,
-} from "@gajae-code/coding-agent/eval/py/kernel";
-import * as pythonKernel from "@gajae-code/coding-agent/eval/py/kernel";
-import { PythonKernel } from "@gajae-code/coding-agent/eval/py/kernel";
+} from "@bworx-io/worx-code/eval/py/kernel";
+import * as pythonKernel from "@bworx-io/worx-code/eval/py/kernel";
+import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
 
 const OK_RESULT: KernelExecuteResult = {
 	status: "ok",

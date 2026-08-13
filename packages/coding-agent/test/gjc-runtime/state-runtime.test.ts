@@ -1,13 +1,13 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { deepInterviewCharacterCount } from "@gajae-code/coding-agent/gjc-runtime/deep-interview-state";
+import { deepInterviewCharacterCount } from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
 import {
 	activeSnapshotPath,
 	modeStatePath,
 	sessionStateDir,
-} from "@gajae-code/coding-agent/gjc-runtime/session-layout";
-import { runNativeStateCommand } from "@gajae-code/coding-agent/gjc-runtime/state-runtime";
+} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 
 const TEST_SESSION_ID = "test-session";
 

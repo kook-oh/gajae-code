@@ -1,4 +1,4 @@
-import type { CustomToolFactory } from "@gajae-code/coding-agent";
+import type { CustomToolFactory } from "@bworx-io/worx-code";
 
 const factory: CustomToolFactory = pi => ({
 	name: "hello",

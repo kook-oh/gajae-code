@@ -4,13 +4,13 @@ import * as path from "node:path";
 import { Agent, type AgentTool } from "@gajae-code/agent-core";
 import { getBundledModel } from "@gajae-code/ai";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { ModelRegistry } from "@gajae-code/coding-agent/config/model-registry";
-import { Settings } from "@gajae-code/coding-agent/config/settings";
-import { AgentSession } from "@gajae-code/coding-agent/session/agent-session";
-import { AuthStorage } from "@gajae-code/coding-agent/session/auth-storage";
-import { convertToLlm } from "@gajae-code/coding-agent/session/messages";
-import { SessionManager } from "@gajae-code/coding-agent/session/session-manager";
-import { syncSkillActiveState } from "@gajae-code/coding-agent/skill-state/active-state";
+import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { syncSkillActiveState } from "@bworx-io/worx-code/skill-state/active-state";
 import { TempDir } from "@gajae-code/utils";
 import * as z from "zod/v4";
 import { resolveSubskillActivationForSkillInvocation, toActiveSubskillEntry } from "../src/extensibility/gjc-plugins";
@@ -36,7 +36,7 @@ async function writeCustomTool(fileName: string, toolName: string): Promise<stri
 	const toolPath = path.join(toolsDir, fileName);
 	await fs.writeFile(
 		toolPath,
-		`import type { CustomToolFactory } from "@gajae-code/coding-agent/extensibility/custom-tools/types";
+		`import type { CustomToolFactory } from "@bworx-io/worx-code/extensibility/custom-tools/types";
 
 const factory: CustomToolFactory = pi => ({
 	name: ${JSON.stringify(toolName)},

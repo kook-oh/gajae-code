@@ -2,15 +2,15 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { type Skill as CapabilitySkill, skillCapability } from "@gajae-code/coding-agent/capability/skill";
-import { getCapability } from "@gajae-code/coding-agent/discovery";
+import { type Skill as CapabilitySkill, skillCapability } from "@bworx-io/worx-code/capability/skill";
+import { getCapability } from "@bworx-io/worx-code/discovery";
 import {
 	buildSkillPromptMessage,
 	loadSkills,
 	loadSkillsFromDir,
 	parseSkillInvocations,
 	type Skill,
-} from "@gajae-code/coding-agent/extensibility/skills";
+} from "@bworx-io/worx-code/extensibility/skills";
 
 const fixturesDir = path.resolve(import.meta.dirname, "fixtures/skills");
 const collisionFixturesDir = path.resolve(import.meta.dirname, "fixtures/skills-collision");

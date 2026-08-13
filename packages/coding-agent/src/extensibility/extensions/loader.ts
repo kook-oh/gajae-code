@@ -164,7 +164,7 @@ class ConcreteExtensionAPI implements ExtensionAPI, IExtensionRuntime {
 	}> = [];
 
 	constructor(
-		public readonly pi: typeof import("@gajae-code/coding-agent"),
+		public readonly pi: typeof import("@bworx-io/worx-code"),
 		private readonly extension: Extension,
 		private readonly runtime: IExtensionRuntime,
 		private readonly cwd: string,
@@ -369,7 +369,7 @@ async function loadExtension(
 		}
 
 		const extension = createExtension(extensionPath, resolvedPath);
-		const api = new ConcreteExtensionAPI(await import("@gajae-code/coding-agent"), extension, runtime, cwd, eventBus);
+		const api = new ConcreteExtensionAPI(await import("@bworx-io/worx-code"), extension, runtime, cwd, eventBus);
 		await factory(api);
 
 		return { extension, error: null };
@@ -390,7 +390,7 @@ export async function loadExtensionFromFactory(
 	name = "<inline>",
 ): Promise<Extension> {
 	const extension = createExtension(name, name);
-	const api = new ConcreteExtensionAPI(await import("@gajae-code/coding-agent"), extension, runtime, cwd, eventBus);
+	const api = new ConcreteExtensionAPI(await import("@bworx-io/worx-code"), extension, runtime, cwd, eventBus);
 	await factory(api);
 	return extension;
 }

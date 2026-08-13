@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { disposeAllKernelSessions, executePython, type PythonResult } from "@gajae-code/coding-agent/eval/py/executor";
+import { disposeAllKernelSessions, executePython, type PythonResult } from "@bworx-io/worx-code/eval/py/executor";
 import type {
 	KernelExecuteOptions,
 	KernelExecuteResult,
 	KernelShutdownResult,
-} from "@gajae-code/coding-agent/eval/py/kernel";
-import { PythonKernel } from "@gajae-code/coding-agent/eval/py/kernel";
-import { ensurePythonRuntime } from "@gajae-code/coding-agent/eval/py/runtime";
+} from "@bworx-io/worx-code/eval/py/kernel";
+import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
+import { ensurePythonRuntime } from "@bworx-io/worx-code/eval/py/runtime";
 import { TempDir } from "@gajae-code/utils";
 
 const originalStart = PythonKernel.start;

@@ -4,7 +4,7 @@ import {
 	buildCanonicalModelIndex,
 	compareEquivalentModelVariants,
 	getFinalSlashSegmentAliasKey,
-} from "@gajae-code/coding-agent/config/model-equivalence";
+} from "@bworx-io/worx-code/config/model-equivalence";
 
 function makeModel(provider: string, id: string, overrides: Partial<Model<Api>> = {}): Model<Api> {
 	return {

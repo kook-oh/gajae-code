@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { resetSettingsForTest, Settings } from "@gajae-code/coding-agent/config/settings";
-import { ToolExecutionComponent } from "@gajae-code/coding-agent/modes/components/tool-execution";
-import * as themeModule from "@gajae-code/coding-agent/modes/theme/theme";
-import type { ToolSession } from "@gajae-code/coding-agent/tools";
-import { resetVimRendererStateForTest, VimTool, vimToolRenderer } from "@gajae-code/coding-agent/tools/vim";
-import { VimBuffer } from "@gajae-code/coding-agent/vim/buffer";
-import { VimEngine } from "@gajae-code/coding-agent/vim/engine";
-import { parseKeySequences } from "@gajae-code/coding-agent/vim/parser";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { ToolExecutionComponent } from "@bworx-io/worx-code/modes/components/tool-execution";
+import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
+import type { ToolSession } from "@bworx-io/worx-code/tools";
+import { resetVimRendererStateForTest, VimTool, vimToolRenderer } from "@bworx-io/worx-code/tools/vim";
+import { VimBuffer } from "@bworx-io/worx-code/vim/buffer";
+import { VimEngine } from "@bworx-io/worx-code/vim/engine";
+import { parseKeySequences } from "@bworx-io/worx-code/vim/parser";
 import type { TUI } from "@gajae-code/tui";
 
 function textResult(result: { content: Array<{ type: string; text?: string }> }): string {

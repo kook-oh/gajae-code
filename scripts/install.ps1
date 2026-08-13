@@ -22,10 +22,10 @@ try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 } catch {}
 
-$Repo = "Yeachan-Heo/gajae-code"
-$Package = "@gajae-code/coding-agent"
-$InstallDir = if ($env:GJC_INSTALL_DIR) { $env:GJC_INSTALL_DIR } else { "$env:LOCALAPPDATA\gjc" }
-$BinaryName = "gjc-windows-x64.exe"
+$Repo = "bworx-io/worx-code"
+$Package = "@bworx-io/worx-code"
+$InstallDir = if ($env:GJC_INSTALL_DIR) { $env:GJC_INSTALL_DIR } else { "$env:LOCALAPPDATA\worx" }
+$BinaryName = "worx-windows-x64.exe"
 $MinimumBunVersion = "1.3.14"
 
 function Test-BunInstalled {
@@ -189,7 +189,7 @@ function Install-ViaBun {
             throw "git is required for -Ref when installing from source"
         }
 
-        $tmpRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("gjc-install-" + [System.Guid]::NewGuid().ToString("N"))
+        $tmpRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("worx-install-" + [System.Guid]::NewGuid().ToString("N"))
         New-Item -ItemType Directory -Force -Path $tmpRoot | Out-Null
 
         try {
@@ -242,11 +242,11 @@ function Install-ViaBun {
     }
 
     Write-Host ""
-    Write-Host "✓ Installed gjc via bun" -ForegroundColor Green
+    Write-Host "✓ Installed worx via bun" -ForegroundColor Green
 
     Configure-BashShell
 
-    Write-Host "Run 'gjc' to get started!"
+    Write-Host "Run 'worx' to get started!"
 }
 
 function Install-Binary {
@@ -271,11 +271,11 @@ function Install-Binary {
     New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
     # Download binary to a temp file first so a failed or partial download
-    # never clobbers an existing working install at $InstallDir\gjc.exe.
+    # never clobbers an existing working install at $InstallDir\worx.exe.
     $BinaryUrl = "https://github.com/$Repo/releases/download/$Latest/$BinaryName"
     Write-Host "Downloading $BinaryName..."
-    $OutPath = Join-Path $InstallDir "gjc.exe"
-    $DownloadTmp = Join-Path $InstallDir (".gjc.download." + [System.Guid]::NewGuid().ToString("N"))
+    $OutPath = Join-Path $InstallDir "worx.exe"
+    $DownloadTmp = Join-Path $InstallDir (".worx.download." + [System.Guid]::NewGuid().ToString("N"))
     try {
         Invoke-WebRequest -Uri $BinaryUrl -OutFile $DownloadTmp
     } catch {
@@ -285,7 +285,7 @@ function Install-Binary {
     Move-Item -Force $DownloadTmp $OutPath
 
     Write-Host ""
-    Write-Host "✓ Installed gjc to $OutPath" -ForegroundColor Green
+    Write-Host "✓ Installed worx to $OutPath" -ForegroundColor Green
 
     # Add to PATH if not already there
     $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -298,9 +298,9 @@ function Install-Binary {
     Configure-BashShell
 
     if ($needsRestart) {
-        Write-Host "Restart your terminal, then run 'gjc' to get started!"
+        Write-Host "Restart your terminal, then run 'worx' to get started!"
     } else {
-        Write-Host "Run 'gjc' to get started!"
+        Write-Host "Run 'worx' to get started!"
     }
 }
 

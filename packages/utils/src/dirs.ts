@@ -19,7 +19,7 @@ import { engines, version } from "../package.json" with { type: "json" };
 import { parseEnvFile } from "./env-file";
 
 /** App name (e.g. "gjc") */
-export const APP_NAME: string = "gjc";
+export const APP_NAME: string = "worx";
 
 /** Config directory name (e.g. ".gjc") */
 export const CONFIG_DIR_NAME: string = ".gjc";

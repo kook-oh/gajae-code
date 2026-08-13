@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-# GJC Coding Agent Installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/main/scripts/install.sh | sh
+# WORX Code Installer
+# Usage: curl -fsSL https://raw.githubusercontent.com/bworx-io/worx-code/main/scripts/install.sh | sh
 #
 # Options:
 #   --source       Install via bun (installs bun if needed)
@@ -10,8 +10,8 @@ set -e
 #   --ref <ref>    Install specific tag/commit/branch
 #   -r <ref>       Shorthand for --ref
 
-REPO="Yeachan-Heo/gajae-code"
-PACKAGE="@gajae-code/coding-agent"
+REPO="bworx-io/worx-code"
+PACKAGE="@bworx-io/worx-code"
 INSTALL_DIR="${GJC_INSTALL_DIR:-$HOME/.local/bin}"
 MIN_BUN_VERSION="1.3.14"
 
@@ -179,8 +179,8 @@ install_via_bun() {
         }
     fi
     echo ""
-    echo "✓ Installed gjc via bun"
-    echo "Run 'gjc' to get started!"
+    echo "✓ Installed worx via bun"
+    echo "Run 'worx' to get started!"
 }
 
 # Install binary from GitHub releases
@@ -201,7 +201,7 @@ install_binary() {
         *)             echo "Unsupported architecture: $ARCH"; exit 1 ;;
     esac
 
-    BINARY="gjc-${PLATFORM}-${ARCH}"
+    BINARY="worx-${PLATFORM}-${ARCH}"
     # Get release tag
     if [ -n "$REF" ]; then
         echo "Fetching release $REF..."
@@ -226,30 +226,30 @@ install_binary() {
 
     mkdir -p "$INSTALL_DIR"
     # Download binary to a temp file first so a failed or partial download
-    # never clobbers an existing working install at ${INSTALL_DIR}/gjc.
+    # never clobbers an existing working install at ${INSTALL_DIR}/worx.
     BINARY_URL="https://github.com/${REPO}/releases/download/${LATEST}/${BINARY}"
-    DOWNLOAD_TMP="${INSTALL_DIR}/.gjc.download.$$"
+    DOWNLOAD_TMP="${INSTALL_DIR}/.worx.download.$$"
     echo "Downloading ${BINARY}..."
     if ! curl -fsSL "$BINARY_URL" -o "$DOWNLOAD_TMP"; then
         rm -f "$DOWNLOAD_TMP"
         echo ""
-        echo "No prebuilt GJC binary was found for ${PLATFORM}-${ARCH} in ${LATEST}."
+        echo "No prebuilt WORX binary was found for ${PLATFORM}-${ARCH} in ${LATEST}."
         echo "Fallback options:"
-        echo "  - Install via Bun/npm source package: bun install -g gajae-code"
+        echo "  - Install via Bun/npm source package: bun install -g @bworx-io/worx-code"
         echo "  - Re-run this installer with --source to build/use the npm package path"
         echo "  - Choose a release that publishes ${BINARY}"
         echo "Expected asset URL: $BINARY_URL"
         exit 1
     fi
     chmod +x "$DOWNLOAD_TMP"
-    mv -f "$DOWNLOAD_TMP" "${INSTALL_DIR}/gjc"
+    mv -f "$DOWNLOAD_TMP" "${INSTALL_DIR}/worx"
     echo ""
-    echo "✓ Installed gjc to ${INSTALL_DIR}/gjc"
+    echo "✓ Installed worx to ${INSTALL_DIR}/worx"
 
     # Check if in PATH
     case ":$PATH:" in
-        *":$INSTALL_DIR:"*) echo "Run 'gjc' to get started!" ;;
-        *) echo "Add ${INSTALL_DIR} to your PATH, then run 'gjc'" ;;
+        *":$INSTALL_DIR:"*) echo "Run 'worx' to get started!" ;;
+        *) echo "Add ${INSTALL_DIR} to your PATH, then run 'worx'" ;;
     esac
 }
 
