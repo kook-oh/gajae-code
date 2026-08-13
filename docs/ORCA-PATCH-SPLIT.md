@@ -4,7 +4,7 @@ Date: 2026-08-13. This is a measurement-only inventory of the frozen ORCA overla
 
 ## Manifest disposition
 
-`patches/materialization.manifest.json:7-23` and `patches/anchors.manifest.json:5-20` both declare 12 active patches and one excluded patch: `05-worx-panels-mount.patch`. The inventory contains 13 `.patch` files; with the two manifest inputs it has 15 patch-ish artifacts.
+`patches/materialization.manifest.json:7-23` and `patches/anchors.manifest.json:5-20` both declare 12 active patches and one excluded patch: `05-worx-panels-mount.patch`. The inventory contains 13 `.patch` files plus two `.md` patch stubs, `02-worx-hooks.md` and `03-worx-panels-mount.md`, for 15 patch-ish artifacts. The manifests and exemption record are separate inventory inputs.
 
 ## Measurement method
 
@@ -32,4 +32,4 @@ The table aggregates numstat rows. “Additive” counts `create mode` records f
 | 13-g022-responsive-landing-onboarding-editor.patch | active | 18 | 2,934 | 217 | 6 | 12 |
 | 14-g022-localize-responsive-controls.patch | active | 5 | 55 | 20 | 0 | 5 |
 
-The observed 13 `.patch` files and 15 patch-ish artifacts match the corrected inventory. `05-worx-panels-mount.patch` remains an anchor input only, not an active materialization patch.
+The observed 13 `.patch` files and two `.md` patch stubs match the corrected 15-artifact inventory. `05-worx-panels-mount.patch` remains an anchor input only, not an active materialization patch.
