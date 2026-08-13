@@ -1093,6 +1093,16 @@ export class ManagedSessionDescendantStore {
 			throw new Error("Managed descendant root binding changed");
 		}
 	}
+	#sameScopeRebasedReceiptIdentity(
+		bound: { dev: bigint; ino: bigint },
+		current: { dev: bigint; ino: bigint },
+	): boolean {
+		if (current.ino !== bound.ino) return false;
+		if (current.dev === bound.dev) return true;
+		// macOS can reassign st_dev after a remount. The live bound scope device
+		// replaces that stale mount-epoch value, but inode equality is never waived.
+		return current.dev === this.#subtreeRoot.dev;
+	}
 
 	#recoverReplacementCleanupPlaceholder(
 		receiptPath: string,
@@ -1111,8 +1121,7 @@ export class ManagedSessionDescendantStore {
 			if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
 			throw error;
 		}
-		if (detachedReceipt.identity.dev !== binding.receipt.dev || detachedReceipt.identity.ino !== binding.receipt.ino)
-			return false;
+		if (!this.#sameScopeRebasedReceiptIdentity(binding.receipt, detachedReceipt.identity)) return false;
 
 		const quarantineName = replacementReceiptPlaceholderRetirementName(
 			placeholder.identity,
@@ -1150,12 +1159,11 @@ export class ManagedSessionDescendantStore {
 			if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
 			throw error;
 		}
-		if (receipt.identity.dev !== binding.receipt.dev || receipt.identity.ino !== binding.receipt.ino) {
+		if (!this.#sameScopeRebasedReceiptIdentity(binding.receipt, receipt.identity)) {
 			if (this.#recoverReplacementCleanupPlaceholder(receiptPath, binding, receipt)) return;
 			throw new Error("managed_replace_cleanup_receipt_invalid");
 		}
-		const predecessor = binding.predecessor;
-		const quarantineName = replacementReceiptRetirementName(receipt.identity, predecessor);
+		const quarantineName = replacementReceiptRetirementName(binding.receipt, binding.predecessor);
 		const detached = nativeSessionStorage().exactUnlink(receiptPath, {
 			dev: receipt.identity.dev,
 			ino: receipt.identity.ino,

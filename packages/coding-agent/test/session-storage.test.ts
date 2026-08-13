@@ -1117,6 +1117,73 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 		expect(fs.readFileSync(predecessorPath, "utf8")).toBe("retained predecessor\n");
 		expect(fs.readFileSync(path.join(root, "receipt-detached"), "utf8")).toBe("trigger\n");
 	});
+	it("detaches a canonical receipt after the scope device identity is rebased", () => {
+		const predecessorPath = path.join(root, "rebase-predecessor");
+		fs.writeFileSync(predecessorPath, "predecessor\n");
+		const predecessor = snapshot(predecessorPath);
+		const contents = JSON.stringify({ arbitrary: "receipt contents are advisory" });
+		const { receipt, receiptIdentity } = publishReceipt(predecessor, contents);
+		const staleDevice = (BigInt(receiptIdentity.dev) ^ 1n).toString();
+		const boundPredecessor = { ...predecessor, dev: staleDevice };
+		const boundReceipt = { ...receiptIdentity, dev: staleDevice };
+		const reboundReceipt = receiptPath(boundPredecessor, boundReceipt);
+		fs.renameSync(receipt, reboundReceipt);
+
+		replay("receipt-device-rebased");
+
+		expect(fs.existsSync(reboundReceipt)).toBe(false);
+		expect(fs.readFileSync(receiptQuarantine(boundReceipt, boundPredecessor), "utf8")).toBe(contents);
+		expect(fs.readFileSync(predecessorPath, "utf8")).toBe("predecessor\n");
+		expect(fs.readFileSync(path.join(root, "receipt-device-rebased"), "utf8")).toBe("trigger\n");
+	});
+
+	it("recovers a cleanup placeholder after the scope device identity is rebased", () => {
+		const predecessorPath = path.join(root, "rebase-placeholder-predecessor");
+		fs.writeFileSync(predecessorPath, "predecessor\n");
+		const predecessor = snapshot(predecessorPath);
+		const contents = JSON.stringify({ arbitrary: "receipt contents are advisory" });
+		const { receipt, receiptIdentity } = publishReceipt(predecessor, contents);
+		const staleDevice = (BigInt(receiptIdentity.dev) ^ 1n).toString();
+		const boundPredecessor = { ...predecessor, dev: staleDevice };
+		const boundReceipt = { ...receiptIdentity, dev: staleDevice };
+		const reboundReceipt = receiptPath(boundPredecessor, boundReceipt);
+		const quarantine = receiptQuarantine(boundReceipt, boundPredecessor);
+		fs.renameSync(receipt, reboundReceipt);
+		leaveReceiptPlaceholder = true;
+
+		replay("rebase-placeholder-first");
+
+		expect(fs.readFileSync(reboundReceipt, "utf8")).toBe("");
+		expect(fs.readFileSync(quarantine, "utf8")).toBe(contents);
+
+		replay("rebase-placeholder-second");
+
+		expect(fs.existsSync(reboundReceipt)).toBe(false);
+		expect(fs.readFileSync(quarantine, "utf8")).toBe(contents);
+		expect(fs.readFileSync(path.join(root, "rebase-placeholder-second"), "utf8")).toBe("trigger\n");
+	});
+
+	it("keeps a substituted canonical receipt fail-closed after a device rebase", () => {
+		const predecessorPath = path.join(root, "rebase-substitution-predecessor");
+		fs.writeFileSync(predecessorPath, "predecessor\n");
+		const predecessor = snapshot(predecessorPath);
+		const contents = JSON.stringify({ arbitrary: "receipt contents are advisory" });
+		const { receipt, receiptIdentity } = publishReceipt(predecessor, contents);
+		const staleDevice = (BigInt(receiptIdentity.dev) ^ 1n).toString();
+		const boundPredecessor = { ...predecessor, dev: staleDevice };
+		const boundReceipt = { ...receiptIdentity, dev: staleDevice };
+		const reboundReceipt = receiptPath(boundPredecessor, boundReceipt);
+		const retainedOriginal = path.join(root, "retained-original-receipt");
+		fs.renameSync(receipt, retainedOriginal);
+		fs.writeFileSync(reboundReceipt, contents);
+
+		expect(() => replay("rebase-substituted-receipt")).toThrow("managed_replace_cleanup_receipt_invalid");
+
+		expect(fs.readFileSync(reboundReceipt, "utf8")).toBe(contents);
+		expect(fs.readFileSync(retainedOriginal, "utf8")).toBe(contents);
+		expect(fs.existsSync(receiptQuarantine(boundReceipt, boundPredecessor))).toBe(false);
+		expect(fs.existsSync(path.join(root, "rebase-substituted-receipt"))).toBe(false);
+	});
 
 	it("reconciles an exchange placeholder left by an interrupted receipt cleanup", () => {
 		vi.restoreAllMocks();
