@@ -10,15 +10,15 @@ environment values, or raw logs.
 Run each phase with an opaque session identifier:
 
 ```bash
-bash scripts/gjc-session/issue-1938-cgroup-repro.sh --phase pre-code --session-id "$GJC_SESSION_ID"
-receipt=.gjc/_session-"$GJC_SESSION_ID"/runtime/evidence/issue-1938/pre-code.json
+bash scripts/gjc-session/issue-1938-cgroup-repro.sh --phase pre-code --session-id "$WORX_SESSION_ID"
+receipt=.gjc/_session-"$WORX_SESSION_ID"/runtime/evidence/issue-1938/pre-code.json
 run_nonce="$(bun -e 'console.log((await Bun.file(process.argv[1]).json()).run_nonce)' "$receipt")"
 bun scripts/gjc-session/validate-issue-1938-evidence.ts "$receipt" "$(git rev-parse HEAD)" "$run_nonce"
 ```
 
 ```bash
-bash scripts/gjc-session/issue-1938-cgroup-repro.sh --phase post-code --session-id "$GJC_SESSION_ID"
-receipt=.gjc/_session-"$GJC_SESSION_ID"/runtime/evidence/issue-1938/post-code.json
+bash scripts/gjc-session/issue-1938-cgroup-repro.sh --phase post-code --session-id "$WORX_SESSION_ID"
+receipt=.gjc/_session-"$WORX_SESSION_ID"/runtime/evidence/issue-1938/post-code.json
 run_nonce="$(bun -e 'console.log((await Bun.file(process.argv[1]).json()).run_nonce)' "$receipt")"
 bun scripts/gjc-session/validate-issue-1938-evidence.ts "$receipt" "$(git rev-parse HEAD)" "$run_nonce"
 ```

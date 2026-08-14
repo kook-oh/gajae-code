@@ -192,7 +192,7 @@ When multiple built-in primary servers support the same file, a default server c
 
 ## lspmux
 
-`GJC_DISABLE_LSPMUX=1` is the canonical opt-out. `PI_DISABLE_LSPMUX=1` is a supported compatibility alias. A truthy value for either variable disables lspmux probing and wrapping.
+`WORX_DISABLE_LSPMUX=1` is the canonical opt-out. `PI_DISABLE_LSPMUX=1` is a supported compatibility alias. A truthy value for either variable disables lspmux probing and wrapping.
 
 ## Built-in server list
 

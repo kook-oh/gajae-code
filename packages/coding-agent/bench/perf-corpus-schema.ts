@@ -593,10 +593,10 @@ export function validatePerfCorpusReport(report: PerfCorpusReport): { ok: boolea
 		errors.push("runner.environment invalid");
 	}
 	const expectedEnvironmentKeys = [
-		"GJC_MEMORY_ITERATIONS",
-		"GJC_MEMORY_PROFILE",
-		"GJC_MEMORY_SURFACE_ORDER",
-		...(report.runner.profile === "soak" ? ["GJC_MEMORY_DURATION_MS"] : []),
+		"WORX_MEMORY_ITERATIONS",
+		"WORX_MEMORY_PROFILE",
+		"WORX_MEMORY_SURFACE_ORDER",
+		...(report.runner.profile === "soak" ? ["WORX_MEMORY_DURATION_MS"] : []),
 	].sort();
 	if (
 		isRecord(report.runner.environment) &&
@@ -650,13 +650,13 @@ export function validatePerfCorpusReport(report: PerfCorpusReport): { ok: boolea
 	if (
 		typeof report.runner.environment !== "object" ||
 		report.runner.environment === null ||
-		report.runner.environment.GJC_MEMORY_PROFILE !== report.runner.profile ||
-		report.runner.environment.GJC_MEMORY_ITERATIONS !== String(report.runner.iterationsTarget) ||
+		report.runner.environment.WORX_MEMORY_PROFILE !== report.runner.profile ||
+		report.runner.environment.WORX_MEMORY_ITERATIONS !== String(report.runner.iterationsTarget) ||
 		(report.runner.profile === "soak"
-			? report.runner.environment.GJC_MEMORY_DURATION_MS !== String(report.runner.durationTargetMs)
-			: report.runner.environment.GJC_MEMORY_DURATION_MS !== undefined) ||
+			? report.runner.environment.WORX_MEMORY_DURATION_MS !== String(report.runner.durationTargetMs)
+			: report.runner.environment.WORX_MEMORY_DURATION_MS !== undefined) ||
 		(memorySurfaceOrderValid &&
-			report.runner.environment.GJC_MEMORY_SURFACE_ORDER !== report.runner.memorySurfaceOrder.join(","))
+			report.runner.environment.WORX_MEMORY_SURFACE_ORDER !== report.runner.memorySurfaceOrder.join(","))
 	) {
 		errors.push("runner.environment does not match memory controls");
 	}

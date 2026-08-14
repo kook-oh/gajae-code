@@ -152,8 +152,8 @@
 - Codex websocket first-event timeouts now discard the timed-out connection before the outer retry/fallback layer handles the typed failure, preventing late frames from the abandoned request from being consumed by the replayed turn.
 - Codex named-tool requests now recognize provider `Tool choice '<name>' not found in 'tools' parameter` errors as runtime capability failures and retry once without forcing the choice.
 - The Kimi OAuth host (`KIMI_CODE_OAUTH_HOST` / `KIMI_OAUTH_HOST`) is now resolved from trusted environment sources only. That host receives the device-authorization request, the authorization-code exchange, and the refresh call that carries the existing refresh token, so reading it through the merged view that includes the caller's `cwd/.env` let a repository redirect the login flow and collect the user's Kimi credentials. Resolution now uses the non-project resolver; shell and user-level configuration is unchanged.
-- The documented `GJC_NO_STRICT` environment variable now takes effect. `adaptSchemaForStrict` read only the legacy `PI_NO_STRICT`, so an operator hitting a provider that rejects strict function schemas set the documented name and strict mode stayed on. Both names are honoured, canonical name first, and `GJC_NO_STRICT` is now listed in the environment-variable reference rather than only in the schema-normalisation note.
-- The documented `GJC_AUTH_NO_BORROW` environment variable now takes effect. Only the legacy `PI_AUTH_NO_BORROW` was read, so an operator who followed the documentation to disable macOS native-app token borrowing still had a JWT read out of the Perplexity desktop application during login. Both names are now honoured, and the contract stays presence-based as documented so that setting it to `0` cannot silently re-enable borrowing.
+- The documented `WORX_NO_STRICT` environment variable now takes effect. `adaptSchemaForStrict` read only the legacy `PI_NO_STRICT`, so an operator hitting a provider that rejects strict function schemas set the documented name and strict mode stayed on. Both names are honoured, canonical name first, and `WORX_NO_STRICT` is now listed in the environment-variable reference rather than only in the schema-normalisation note.
+- The documented `WORX_AUTH_NO_BORROW` environment variable now takes effect. Only the legacy `PI_AUTH_NO_BORROW` was read, so an operator who followed the documentation to disable macOS native-app token borrowing still had a JWT read out of the Perplexity desktop application during login. Both names are now honoured, and the contract stays presence-based as documented so that setting it to `0` cannot silently re-enable borrowing.
 - The Azure client's `AZURE_OPENAI_API_KEY` fallback is now resolved from trusted environment sources only. It read the merged view that includes the caller's `cwd/.env`, so a repository could supply the credential the client authenticates with; provider credential resolution is documented as excluding the project `.env`, and this fallback now matches. An explicit caller-supplied key still takes precedence, and shell / user-level configuration is unchanged.
 - Anthropic and Ollama tool calls cut off by an output-token limit are now marked incomplete before dispatch, so repaired partial JSON is rejected instead of executing with truncated arguments.
 - The Anthropic "thinking blocks in the latest assistant message cannot be modified" 400 now escalates its one-shot replay repair. The error names the latest assistant message but its cited `messages.N.content.M` path can point at an earlier replayed turn, so the latest-only repair was rejected identically and killed the turn; recovery now retries once more with thinking dropped from every replayed assistant message.
@@ -189,8 +189,8 @@
 - HTTP 400 request dumps are now bounded. Every 400 wrote a file containing the full sanitized request body and nothing ever removed one, so the directory grew without limit — a developer machine reached 27,249 files totalling 7.0 GB, which was 96% of everything under `~/.gjc`. The newest 50 are retained, matching the bounded retention the rotating application log already uses, and pruning stays best-effort so diagnostics never turn a request failure into a second failure.
 - Anthropic `ping` keepalives no longer reset stream progress, so responses that stop producing content now reach the idle timeout instead of hanging indefinitely.
 - The Anthropic endpoint decision is now resolved from trusted environment sources only: `ANTHROPIC_BASE_URL`, `FOUNDRY_BASE_URL`, `ZCODE_PLAN_ANTHROPIC_BASE_URL`, and the `CLAUDE_CODE_USE_FOUNDRY` mode switch. `Bun.env` is `process.env` and the env module merges the caller's `cwd/.env` into it, so a repository could previously plant a `.env` that redirected authenticated Anthropic requests — the resolved base URL becomes `${baseUrl}/v1/messages` while the headers carry the API key or OAuth token. Resolution now goes through the non-project resolver (launching shell plus GJC/user-owned `.env` files); shell and user-level configuration is unchanged.
-- The documented `GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS` environment variable now takes effect: the stream-watchdog idle-timeout helpers resolve it GJC-first before the legacy `PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` / `PI_STREAM_IDLE_TIMEOUT_MS` aliases (previously only the `PI_`-prefixed names were read, so setting the documented GJC name was a silent no-op).
-- The documented OpenAI-code provider knobs now take effect: `GJC_OPENAI_CODE_DEBUG`, `GJC_OPENAI_CODE_WEBSOCKET`, `GJC_OPENAI_CODE_WEBSOCKET_IDLE_TIMEOUT_MS`, `GJC_OPENAI_CODE_WEBSOCKET_RETRY_BUDGET`, and `GJC_OPENAI_CODE_WEBSOCKET_RETRY_DELAY_MS` are resolved GJC-first ahead of the legacy `PI_CODEX_*` names. The Codex → OpenAI-code rename had updated the documentation but not the reads, so every documented name was a silent no-op.
+- The documented `WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS` environment variable now takes effect: the stream-watchdog idle-timeout helpers resolve it GJC-first before the legacy `PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` / `PI_STREAM_IDLE_TIMEOUT_MS` aliases (previously only the `PI_`-prefixed names were read, so setting the documented GJC name was a silent no-op).
+- The documented OpenAI-code provider knobs now take effect: `WORX_OPENAI_CODE_DEBUG`, `WORX_OPENAI_CODE_WEBSOCKET`, `WORX_OPENAI_CODE_WEBSOCKET_IDLE_TIMEOUT_MS`, `WORX_OPENAI_CODE_WEBSOCKET_RETRY_BUDGET`, and `WORX_OPENAI_CODE_WEBSOCKET_RETRY_DELAY_MS` are resolved GJC-first ahead of the legacy `PI_CODEX_*` names. The Codex → OpenAI-code rename had updated the documentation but not the reads, so every documented name was a silent no-op.
 
 ## [0.11.9] - 2026-07-24
 ### Fixed
@@ -420,7 +420,7 @@
 
 ### Changed
 
-- Changed the Anthropic provider's default prompt-cache retention to `long` (`ttl: "1h"`) when a request and model omit `cacheRetention`. The previous default (~5m) was too fragile for long-running Codex/Gajae-Code subagent workflows, where the cached prefix was frequently evicted between turns. The 1h `ttl` marker is only emitted on the canonical Anthropic API (`api.anthropic.com`) for models advertising `supportsLongCacheRetention`; proxies, gateways, and models without that capability still fall back to the default ephemeral breakpoint (Anthropic services it at ~5m). Explicit request/model `cacheRetention` and the `GJC_CACHE_RETENTION`/`PI_CACHE_RETENTION` env overrides continue to win, and `resolveCacheRetention` now accepts a `fallback` argument (defaulting to `"short"`) so non-Anthropic providers are unaffected.
+- Changed the Anthropic provider's default prompt-cache retention to `long` (`ttl: "1h"`) when a request and model omit `cacheRetention`. The previous default (~5m) was too fragile for long-running Codex/Gajae-Code subagent workflows, where the cached prefix was frequently evicted between turns. The 1h `ttl` marker is only emitted on the canonical Anthropic API (`api.anthropic.com`) for models advertising `supportsLongCacheRetention`; proxies, gateways, and models without that capability still fall back to the default ephemeral breakpoint (Anthropic services it at ~5m). Explicit request/model `cacheRetention` and the `WORX_CACHE_RETENTION`/`PI_CACHE_RETENTION` env overrides continue to win, and `resolveCacheRetention` now accepts a `fallback` argument (defaulting to `"short"`) so non-Anthropic providers are unaffected.
 
 ## [0.5.1] - 2026-06-14
 
@@ -481,7 +481,7 @@
 ### Added
 
 - Added minimax-m3 model support across MiniMax providers.
-- Honored the `GJC_CACHE_RETENTION` environment variable and `cacheRetention` model config so hosts can control provider prompt-cache retention (#379/#381).
+- Honored the `WORX_CACHE_RETENTION` environment variable and `cacheRetention` model config so hosts can control provider prompt-cache retention (#379/#381).
 - Added an Opus max reasoning preset to the model thinking presets (#372).
 - Refreshed the generated models schema for the new model/config surface (#382).
 
@@ -2415,11 +2415,11 @@
 ### Changed
 
 - Replaced direct `Bun.env` access with `getEnv()` utility from `@gajae-code/utils` for consistent environment variable handling across all providers
-- Updated environment variable names from `GJC_*` prefix to `PI_*` prefix for consistency (e.g., `GJC_CODING_AGENT_DIR` → `PI_CODING_AGENT_DIR`)
+- Updated environment variable names from `WORX_*` prefix to `PI_*` prefix for consistency (e.g., `WORX_CODING_AGENT_DIR` → `PI_CODING_AGENT_DIR`)
 
 ### Removed
 
-- Removed automatic environment variable migration from `PI_*` to `GJC_*` prefixes via `migrate-env.ts` module
+- Removed automatic environment variable migration from `PI_*` to `WORX_*` prefixes via `migrate-env.ts` module
 
 ## [10.5.0] - 2026-02-04
 

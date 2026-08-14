@@ -238,7 +238,7 @@ async function runRunner(options: { command: string[]; cwd: string; sessionCwd?:
 	await commandOutput(
 		options.command,
 		options.cwd,
-		options.sessionCwd ? { GJC_ACP_CONFORMANCE_CWD: options.sessionCwd } : undefined,
+		options.sessionCwd ? { WORX_ACP_CONFORMANCE_CWD: options.sessionCwd } : undefined,
 	);
 }
 async function readReport(reportPath: string): Promise<unknown> {

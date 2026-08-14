@@ -46,7 +46,7 @@ The control surface should:
 
 - cmux is not the terminal host;
 - the Stream Deck application or hardware is unavailable;
-- the target GJC session has SDK hosting disabled with `GJC_SDK_DISABLE=1` and SDK question answering is required;
+- the target GJC session has SDK hosting disabled with `WORX_SDK_DISABLE=1` and SDK question answering is required;
 - the requested action would overwrite a shared checkout containing unrelated work;
 - the operator expects generic UI automation instead of deterministic cmux and SDK commands.
 

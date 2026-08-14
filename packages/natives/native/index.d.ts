@@ -1325,7 +1325,7 @@ export interface InboundImageEvent {
 }
 
 /**
- * Installs a Rust panic hook only when `GJC_NATIVE_CRASH_DIAGNOSTICS` is set.
+ * Installs a Rust panic hook only when `WORX_NATIVE_CRASH_DIAGNOSTICS` is set.
  *
  * This is an opt-in structured panic report, not a minidump/signal handler.
  * It intentionally avoids always-on work and does not attempt to recover from

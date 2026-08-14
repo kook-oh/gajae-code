@@ -70,10 +70,10 @@ bun test packages/coding-agent/test/perf-corpus.test.ts
 bun --smol --expose-gc packages/coding-agent/bench/perf-corpus.bench.ts
 
 # Opt into the longer bounded soak profile
-GJC_MEMORY_PROFILE=soak bun --smol --expose-gc packages/coding-agent/bench/perf-corpus.bench.ts
+WORX_MEMORY_PROFILE=soak bun --smol --expose-gc packages/coding-agent/bench/perf-corpus.bench.ts
 
 # Override the per-surface duration (250–60000 ms) and minimum iterations
-GJC_MEMORY_PROFILE=soak GJC_MEMORY_DURATION_MS=10000 GJC_MEMORY_ITERATIONS=100000 bun --smol --expose-gc packages/coding-agent/bench/perf-corpus.bench.ts
+WORX_MEMORY_PROFILE=soak WORX_MEMORY_DURATION_MS=10000 WORX_MEMORY_ITERATIONS=100000 bun --smol --expose-gc packages/coding-agent/bench/perf-corpus.bench.ts
 ```
 
 ## Profiler-artifact expectations
@@ -101,7 +101,7 @@ Detailed memory fixtures cover seven explicit surfaces: CLI startup/configuratio
 The command-line runner executes each memory surface in a fresh Bun subprocess and records `runner.memoryIsolation: "process-per-surface"` so allocator high-water state from one fixture cannot contaminate the next surface's baseline. Programmatic `runPerfCorpusBenchmark()` defaults to in-process fixtures and records `"in-process"` for focused contract tests; pass `{ isolatedMemory: true }` for acceptance-equivalent evidence. Process-tree RSS snapshots exclude the `ps` sampler process and degrade both endpoints to `"unavailable"` when either snapshot fails. The process-tree baseline is captured after GC, followed by another GC that clears sampler allocations before the local baseline and workload begin. Soak workloads use single-iteration batches so approximately 50 ms sampling cannot be hidden behind a large synchronous chunk. Post-teardown return fields remain `null` when GC is unavailable.
 
 Use the `short` profile for deterministic contract and shape checks; its bounded iteration window intentionally reports `null` slopes when less than 250 ms is observed. Use `soak` for repeated sampling and slope characterization. For decision evidence:
-The soak default runs each surface for at least one second and samples at approximately 50 ms intervals. `GJC_MEMORY_DURATION_MS` accepts 250–60000 ms and `GJC_MEMORY_ITERATIONS` accepts 1–10000000; record overrides with the artifact.
+The soak default runs each surface for at least one second and samples at approximately 50 ms intervals. `WORX_MEMORY_DURATION_MS` accepts 250–60000 ms and `WORX_MEMORY_ITERATIONS` accepts 1–10000000; record overrides with the artifact.
 
 1. Pin the source SHA, Bun version, platform/architecture, profile, fixture inputs, and command.
 2. Run at least five short repetitions and three independent soak repetitions on an otherwise idle runner.

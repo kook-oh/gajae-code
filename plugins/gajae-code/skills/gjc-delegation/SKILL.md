@@ -18,10 +18,10 @@ delegate whole workflows to GJC and receive durable turn status plus artifacts.
 
 ## Fail-closed safety
 
-The bundled MCP config sets `GJC_COORDINATOR_MCP_WORKDIR_ROOTS` to the host
-project directory and does **not** set `GJC_COORDINATOR_MCP_MUTATIONS`.
+The bundled MCP config sets `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` to the host
+project directory and does **not** set `WORX_COORDINATOR_MCP_MUTATIONS`.
 Delegation is read-only until the user explicitly enables a mutation class and
-passes `allow_mutation: true` per call. `GJC_COORDINATOR_MCP_REPO` is a
+passes `allow_mutation: true` per call. `WORX_COORDINATOR_MCP_REPO` is a
 namespace label only, never a filesystem path.
 ## Codex resume bridge correlation
 

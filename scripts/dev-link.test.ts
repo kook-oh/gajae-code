@@ -284,7 +284,7 @@ describe("dev:link", () => {
 
 		const result = Bun.spawnSync([process.execPath, fixtureScript, "--binary"], {
 			cwd: root,
-			env: { ...process.env, GJC_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}` },
+			env: { ...process.env, WORX_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}` },
 			stderr: "pipe",
 			stdout: "pipe",
 		});
@@ -305,7 +305,7 @@ describe("dev:link", () => {
 		await fs.symlink(workspaceWrapper, shadow);
 
 		const result = Bun.spawnSync([process.execPath, "scripts/dev-link.ts"], {
-			env: { ...process.env, GJC_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}:${process.env.PATH ?? ""}` },
+			env: { ...process.env, WORX_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}:${process.env.PATH ?? ""}` },
 			stderr: "pipe",
 			stdout: "pipe",
 		});
@@ -325,7 +325,7 @@ describe("dev:link", () => {
 			`#!/usr/bin/env sh\nif [ "$1" = "--smoke-test" ]; then echo "smoke-test: ok"; exit 0; fi\necho shadow\nexit 0\n`,
 		);
 		const result = Bun.spawnSync([process.execPath, "scripts/dev-link.ts"], {
-			env: { ...process.env, GJC_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}` },
+			env: { ...process.env, WORX_DEV_LINK_DIR: targetDir, PATH: `${shadowDir}:${targetDir}` },
 			stderr: "pipe",
 			stdout: "pipe",
 		});

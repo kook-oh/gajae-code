@@ -463,7 +463,7 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     env:
       CI_DEV_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-      GJC_REAL_SESSION_TESTS: "1"
+      WORX_REAL_SESSION_TESTS: "1"
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:

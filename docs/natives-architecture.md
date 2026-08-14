@@ -67,7 +67,7 @@ For x64, variant selection uses:
 - macOS: `sysctl -n machdep.cpu.leaf7_features`, then `machdep.cpu.features`
 - Windows: PowerShell check for `System.Runtime.Intrinsics.X86.Avx2`
 
-`GJC_NATIVE_VARIANT` can force `modern` or `baseline`; invalid values are ignored.
+`WORX_NATIVE_VARIANT` can force `modern` or `baseline`; invalid values are ignored.
 
 ### Binary distribution and extraction model
 

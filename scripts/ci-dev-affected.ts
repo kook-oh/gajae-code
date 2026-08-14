@@ -508,9 +508,9 @@ async function emitMatrix(): Promise<void> {
 		`plan_digest=${digest}`,
 		`plan_source_sha=${sourceSha}`,
 		`plan_mode=${mode}`,
-		"changed_paths<<__GJC_PATHS_EOF__",
+		"changed_paths<<__WORX_PATHS_EOF__",
 		...paths,
-		"__GJC_PATHS_EOF__",
+		"__WORX_PATHS_EOF__",
 		"",
 	];
 	await fs.appendFile(githubOutput, lines.join("\n"));

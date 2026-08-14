@@ -200,7 +200,7 @@ jobs:
          matrix:
             python-version: ["3.10", "3.11", "3.12", "3.13"]
       env:
-         GJC_REAL_SESSION_TESTS: "1"
+         WORX_REAL_SESSION_TESTS: "1"
       steps:
          - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
          - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2

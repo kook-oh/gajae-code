@@ -66,7 +66,7 @@ async function assertFixtureControlsStayTestOnly(): Promise<void> {
 		ensureSource.includes("startFixtureBrokerCommandWithLeaseForTest"),
 		"Dedicated fixture launch boundary is missing its explicit ForTest label",
 	);
-	assert(!/GJC_.*(?:GSF1|SSH1|SELF_REAP)/.test(ensureSource), "Production environment can select fixture controls");
+	assert(!/WORX_.*(?:GSF1|SSH1|SELF_REAP)/.test(ensureSource), "Production environment can select fixture controls");
 }
 
 async function rejectedWebSocket(url: string): Promise<void> {

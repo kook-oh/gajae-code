@@ -23,7 +23,7 @@ try {
 }
 
 // The session-context materialization budget defaults to 512 MiB in production
-// (overridable via GJC_SESSION_CONTEXT_BUDGET_BYTES). Test fixtures in
+// (overridable via WORX_SESSION_CONTEXT_BUDGET_BYTES). Test fixtures in
 // session-context-overflow.test.ts were authored against the former 64 MiB
 // default (BIG_TEXT = 40 MiB → ~80 MiB measured). Pin the budget to 64 MiB for
 // the test process so those fixtures keep triggering the overflow preflight
@@ -33,7 +33,7 @@ try {
 // override would leak across files and make the 512 MiB production default
 // nondeterministic. The production default itself is exercised deterministically
 // by session-context-budget.test.ts, which spawns a clean subprocess (no
-// GJC_SESSION_CONTEXT_BUDGET_BYTES in the environment) and asserts the resolved
+// WORX_SESSION_CONTEXT_BUDGET_BYTES in the environment) and asserts the resolved
 // budget equals 512 MiB — so the test pin here cannot drift from production
 // semantics silently.
-process.env.GJC_SESSION_CONTEXT_BUDGET_BYTES = String(64 * 1024 * 1024);
+process.env.WORX_SESSION_CONTEXT_BUDGET_BYTES = String(64 * 1024 * 1024);

@@ -10,9 +10,9 @@ source "$SCRIPT_DIR/postmortem.sh"
 [[ $# -eq 2 ]] || { echo "Usage: $0 <session-name> <worktree-path>" >&2; exit 2; }
 SESSION="$1"
 WORKDIR="$2"
-GJC_BIN="${GJC_BIN-$(command -v gjc || true)}"
-TMUX_BIN="${GJC_SESSION_TMUX_BIN:-tmux}"
-STATE_DIR="${GJC_SESSION_STATE_DIR:-$WORKDIR/.gjc-session-state/$SESSION}"
+WORX_BIN="${WORX_BIN-$(command -v gjc || true)}"
+TMUX_BIN="${WORX_SESSION_TMUX_BIN:-tmux}"
+STATE_DIR="${WORX_SESSION_STATE_DIR:-$WORKDIR/.gjc-session-state/$SESSION}"
 RUNTIME_STATE_JSON="$STATE_DIR/runtime-state.json"
 SOCKET_KEY="gjc-${SESSION//[^A-Za-z0-9_.-]/_}"
 MONITOR_SESSION="${SESSION}-owner-monitor"
@@ -26,8 +26,8 @@ show_recovery_hint() {
   echo "durable vanished status: $STATE_DIR/vanished.json" >&2
 }
 
-if [[ -z "$GJC_BIN" ]] || { [[ "$GJC_BIN" == */* ]] && [[ ! -x "$GJC_BIN" ]]; } || { [[ "$GJC_BIN" != */* ]] && ! command -v "$GJC_BIN" >/dev/null 2>&1; }; then
-  echo "gjc not found in PATH; set GJC_BIN" >&2
+if [[ -z "$WORX_BIN" ]] || { [[ "$WORX_BIN" == */* ]] && [[ ! -x "$WORX_BIN" ]]; } || { [[ "$WORX_BIN" != */* ]] && ! command -v "$WORX_BIN" >/dev/null 2>&1; }; then
+  echo "gjc not found in PATH; set WORX_BIN" >&2
   exit 1
 fi
 [[ -d "$WORKDIR" ]] || { echo "directory not found: $WORKDIR" >&2; exit 1; }
@@ -40,7 +40,7 @@ LIFECYCLE_DIR="$STATE_DIR/$SESSION/owner-lifecycle"
 GENERATION_JSON="$LIFECYCLE_DIR/generation.json"
 exec 9>"${GENERATION_JSON%.json}.transition.lock"
 flock -x 9
-GJC_SESSION_TRANSITION_LOCK_HELD=1
+WORX_SESSION_TRANSITION_LOCK_HELD=1
 reconcile_prior_generation() {
   local prior_generation prior_generation_kind
   [[ -f "$GENERATION_JSON" ]] || return 0
@@ -97,7 +97,7 @@ except (KeyError, OSError, TypeError, ValueError):
     raise SystemExit(1)
 PY
   then
-    local deadline=$((SECONDS + ${GJC_SESSION_PENDING_VERDICT_GRACE_SECONDS:-3}))
+    local deadline=$((SECONDS + ${WORX_SESSION_PENDING_VERDICT_GRACE_SECONDS:-3}))
     while (( SECONDS < deadline )) && [[ ! -f "$LIFECYCLE_DIR/verdict-$prior_generation.json" ]]; do sleep 0.1; done
   fi
 
@@ -369,7 +369,7 @@ creation_exit() { local status="$?" cleanup_failed=0 publication_failed=false; i
 trap creation_exit EXIT
 rm -f "$STATE_DIR/started.json" "$STATE_DIR/prompt-accepted.json" "$STATE_DIR/terminal.json" "$STATE_DIR/final.json" "$STATE_DIR/recovery.json"
 METADATA_CANONICAL="$LIFECYCLE_DIR/metadata-$OWNER_GENERATION.json"
-python3 - "$METADATA_CANONICAL" "$SESSION" "$WORKDIR" "$BRANCH" "$CREATED_AT" "$GJC_BIN" "$STATE_DIR" "$RUNTIME_STATE_JSON" "$WORKTREE_BASELINE_DIRTY" "$OWNER_GENERATION" "$SOCKET_KEY" <<'PY'
+python3 - "$METADATA_CANONICAL" "$SESSION" "$WORKDIR" "$BRANCH" "$CREATED_AT" "$WORX_BIN" "$STATE_DIR" "$RUNTIME_STATE_JSON" "$WORKTREE_BASELINE_DIRTY" "$OWNER_GENERATION" "$SOCKET_KEY" <<'PY'
 import json
 import sys
 path, session, workdir, branch, created_at, gjc_bin, state_dir, runtime_state, baseline_dirty, generation, socket_key = sys.argv[1:]
@@ -388,9 +388,9 @@ gjc_session_write_public_marker "$CREATION_CANONICAL" creation_started "$SESSION
 cat >"$STATE_DIR/runner.sh" <<'RUNNER'
 #!/usr/bin/env bash
 set +e
-source "$GJC_SESSION_POSTMORTEM_SH"
+source "$WORX_SESSION_POSTMORTEM_SH"
 write_terminal() {
-  python3 - "$GJC_SESSION_FINAL_CANONICAL_JSON" "$GJC_SESSION_TERMINAL_CANONICAL_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" "$1" "$2" "$3" "$GJC_COORDINATOR_SESSION_STATE_FILE" "$GJC_SESSION_WORKDIR" "$GJC_SESSION_WORKTREE_BASELINE_DIRTY" "$GJC_SESSION_PROMPT_ACCEPTED_JSON" <<'PY'
+  python3 - "$WORX_SESSION_FINAL_CANONICAL_JSON" "$WORX_SESSION_TERMINAL_CANONICAL_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" "$1" "$2" "$3" "$WORX_COORDINATOR_SESSION_STATE_FILE" "$WORX_SESSION_WORKDIR" "$WORX_SESSION_WORKTREE_BASELINE_DIRTY" "$WORX_SESSION_PROMPT_ACCEPTED_JSON" <<'PY'
 import json
 import datetime
 import os
@@ -412,7 +412,7 @@ if runtime_path and os.path.isfile(runtime_path) and os.path.getsize(runtime_pat
         owner = data.get("session_id")
         cwd = data.get("cwd")
         runtime_generation = data.get("owner_generation")
-        fresh_after = os.environ.get("GJC_SESSION_RUNTIME_FRESH_AFTER", "")
+        fresh_after = os.environ.get("WORX_SESSION_RUNTIME_FRESH_AFTER", "")
         approved_states = {"running", "needs_user_input", "completed", "errored"}
         runtime["sessionMatches"] = isinstance(owner, str) and bool(owner) and owner == session
         runtime["cwdMatches"] = isinstance(cwd, str) and bool(cwd) and os.path.realpath(cwd) == os.path.realpath(workdir)
@@ -433,7 +433,7 @@ if os.path.isfile(prompt_path) and os.path.getsize(prompt_path) > 0:
     try:
         with open(prompt_path, encoding="utf-8") as handle:
             marker = json.load(handle)
-        with open(os.path.join(os.environ["GJC_SESSION_STATE_DIR"], session, "owner-lifecycle", "generation.json"), encoding="utf-8") as handle:
+        with open(os.path.join(os.environ["WORX_SESSION_STATE_DIR"], session, "owner-lifecycle", "generation.json"), encoding="utf-8") as handle:
             current_generation = json.load(handle).get("generation")
         prompt_accepted = (
             marker.get("schema_version") == 1
@@ -474,8 +474,8 @@ for path, value in ((terminal_path, terminal), (final_path, final)):
         try: os.unlink(temporary)
         except FileNotFoundError: pass
 PY
-  gjc_session_publish_current_alias "$GJC_SESSION_TERMINAL_CANONICAL_JSON" "$GJC_SESSION_TERMINAL_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" terminal
-  gjc_session_publish_current_alias "$GJC_SESSION_FINAL_CANONICAL_JSON" "$GJC_SESSION_FINAL_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" terminal
+  gjc_session_publish_current_alias "$WORX_SESSION_TERMINAL_CANONICAL_JSON" "$WORX_SESSION_TERMINAL_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" terminal
+  gjc_session_publish_current_alias "$WORX_SESSION_FINAL_CANONICAL_JSON" "$WORX_SESSION_FINAL_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" terminal
 }
 [[ $# -eq 4 && "$1" == --finalize ]] || exit 2
 write_terminal "$2" "$3" "$4"
@@ -498,7 +498,7 @@ child = None
 SIGNAL_NAMES = {signal.SIGTERM: "SIGTERM", signal.SIGINT: "SIGINT", signal.SIGHUP: "SIGHUP"}
 
 def write_immutable(path, record, inject=None):
-    if inject and os.environ.get("GJC_SESSION_TEST_FAIL_RECEIPT_WRITE") in {inject, inject.removesuffix("_canonical")}:
+    if inject and os.environ.get("WORX_SESSION_TEST_FAIL_RECEIPT_WRITE") in {inject, inject.removesuffix("_canonical")}:
         raise OSError("injected receipt write failure")
     temporary = f"{path}.{os.getpid()}.tmp"
     try:
@@ -514,9 +514,9 @@ def write_immutable(path, record, inject=None):
 
 
 def record_publication_failure(boundary):
-    state_dir = os.environ["GJC_SESSION_STATE_DIR"]
-    session = os.environ["GJC_SESSION_NAME"]
-    generation = os.environ["GJC_SESSION_OWNER_GENERATION"]
+    state_dir = os.environ["WORX_SESSION_STATE_DIR"]
+    session = os.environ["WORX_SESSION_NAME"]
+    generation = os.environ["WORX_SESSION_OWNER_GENERATION"]
     path = os.path.join(state_dir, session, "owner-lifecycle", f"failure-publication-{generation}-{boundary}.json")
     record = {"schema_version": 1, "kind": "failure_publication_failed", "session_id": session, "owner_generation": generation, "boundary": boundary}
     try:
@@ -526,10 +526,10 @@ def record_publication_failure(boundary):
 
 
 def publish_current_alias(canonical_path, alias_path, kind, inject=None):
-    if inject and os.environ.get("GJC_SESSION_TEST_FAIL_RECEIPT_WRITE") == inject:
+    if inject and os.environ.get("WORX_SESSION_TEST_FAIL_RECEIPT_WRITE") == inject:
         raise OSError("injected receipt write failure")
     completed = subprocess.run(
-        ["bash", "-c", 'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" "$7"', "gjc-supervisor-failure-alias", os.environ["GJC_SESSION_POSTMORTEM_SH"], canonical_path, alias_path, os.path.join(os.environ["GJC_SESSION_STATE_DIR"], os.environ["GJC_SESSION_NAME"], "owner-lifecycle", "generation.json"), os.environ["GJC_SESSION_NAME"], os.environ["GJC_SESSION_OWNER_GENERATION"], kind],
+        ["bash", "-c", 'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" "$7"', "gjc-supervisor-failure-alias", os.environ["WORX_SESSION_POSTMORTEM_SH"], canonical_path, alias_path, os.path.join(os.environ["WORX_SESSION_STATE_DIR"], os.environ["WORX_SESSION_NAME"], "owner-lifecycle", "generation.json"), os.environ["WORX_SESSION_NAME"], os.environ["WORX_SESSION_OWNER_GENERATION"], kind],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         timeout=3,
@@ -546,10 +546,10 @@ def observe(signum):
     request = {
         "schema_version": 1,
         "op": "observe_terminal",
-        "session_id": os.environ["GJC_SESSION_NAME"],
-        "owner_generation": os.environ["GJC_SESSION_OWNER_GENERATION"],
-        "state_dir": os.environ["GJC_SESSION_STATE_DIR"],
-        "socket_key": os.environ["GJC_TMUX_OWNER_SERVER_KEY"],
+        "session_id": os.environ["WORX_SESSION_NAME"],
+        "owner_generation": os.environ["WORX_SESSION_OWNER_GENERATION"],
+        "state_dir": os.environ["WORX_SESSION_STATE_DIR"],
+        "socket_key": os.environ["WORX_TMUX_OWNER_SERVER_KEY"],
         "observer": "raw_monitor",
         "observed_at": now(),
         "signal": signal_name,
@@ -559,10 +559,10 @@ def observe(signum):
     }
     if signum == signal.SIGTERM:
         intent_path = os.path.join(
-            os.environ["GJC_SESSION_STATE_DIR"],
-            os.environ["GJC_SESSION_NAME"],
+            os.environ["WORX_SESSION_STATE_DIR"],
+            os.environ["WORX_SESSION_NAME"],
             "owner-lifecycle",
-            f'intent-{os.environ["GJC_SESSION_OWNER_GENERATION"]}.json',
+            f'intent-{os.environ["WORX_SESSION_OWNER_GENERATION"]}.json',
         )
         try:
             with open(intent_path, encoding="utf-8") as handle:
@@ -576,9 +576,9 @@ def observe(signum):
                 and set(intent) == {"schema_version", "intent_id", "generation", "session_id", "server_key", "expected_terminal", "dispatch_id", "created_at", "expires_at", "state"}
                 and intent["schema_version"] == 1
                 and isinstance(intent["intent_id"], str) and bool(intent["intent_id"])
-                and intent["session_id"] == os.environ["GJC_SESSION_NAME"]
-                and intent["generation"] == os.environ["GJC_SESSION_OWNER_GENERATION"]
-                and intent["server_key"] == os.environ["GJC_TMUX_OWNER_SERVER_KEY"]
+                and intent["session_id"] == os.environ["WORX_SESSION_NAME"]
+                and intent["generation"] == os.environ["WORX_SESSION_OWNER_GENERATION"]
+                and intent["server_key"] == os.environ["WORX_TMUX_OWNER_SERVER_KEY"]
                 and intent["state"] == "pending"
                 and intent["expected_terminal"] == {"signal": "SIGTERM", "result": "owner_term_then_session_cleanup"}
                 and isinstance(intent["dispatch_id"], str) and bool(intent["dispatch_id"])
@@ -590,7 +590,7 @@ def observe(signum):
             pass
     try:
         completed = subprocess.run(
-            [os.environ["GJC_SESSION_GJC_BIN"], "--internal-tmux-owner-isolation"],
+            [os.environ["WORX_SESSION_WORX_BIN"], "--internal-tmux-owner-isolation"],
             input=f"{json.dumps(request, separators=(',', ':'))}\n",
             text=True,
             stdout=subprocess.PIPE,
@@ -601,9 +601,9 @@ def observe(signum):
         if completed.returncode != 0:
             raise ValueError("terminal observer adapter failed")
         verdict = json.loads(completed.stdout)
-        state_dir = os.environ["GJC_SESSION_STATE_DIR"]
-        session = os.environ["GJC_SESSION_NAME"]
-        generation = os.environ["GJC_SESSION_OWNER_GENERATION"]
+        state_dir = os.environ["WORX_SESSION_STATE_DIR"]
+        session = os.environ["WORX_SESSION_NAME"]
+        generation = os.environ["WORX_SESSION_OWNER_GENERATION"]
         lifecycle_dir = os.path.join(state_dir, session, "owner-lifecycle")
         generation_path = os.path.join(lifecycle_dir, "generation.json")
         canonical_path = os.path.join(lifecycle_dir, f"verdict-{generation}.json")
@@ -620,7 +620,7 @@ def observe(signum):
             and isinstance(verdict.get("classification"), str)
         ):
             raise ValueError("invalid canonical verdict")
-        validated = subprocess.run(["bash", "-c", 'source "$1"; gjc_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6"', "gjc-supervisor-verdict", os.environ["GJC_SESSION_POSTMORTEM_SH"], canonical_path, generation_path, session, generation, os.environ["GJC_TMUX_OWNER_SERVER_KEY"]], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=3, check=False)
+        validated = subprocess.run(["bash", "-c", 'source "$1"; gjc_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6"', "gjc-supervisor-verdict", os.environ["WORX_SESSION_POSTMORTEM_SH"], canonical_path, generation_path, session, generation, os.environ["WORX_TMUX_OWNER_SERVER_KEY"]], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=3, check=False)
         if validated.returncode != 0:
             raise ValueError("invalid full canonical verdict")
         subprocess.run(
@@ -629,7 +629,7 @@ def observe(signum):
                 "-c",
                 'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6"',
                 "gjc-supervisor-alias",
-                os.environ["GJC_SESSION_POSTMORTEM_SH"],
+                os.environ["WORX_SESSION_POSTMORTEM_SH"],
                 canonical_path,
                 os.path.join(state_dir, "verdict.json"),
                 generation_path,
@@ -642,9 +642,9 @@ def observe(signum):
             check=True,
         )
     except (OSError, ValueError, subprocess.SubprocessError):
-        state_dir = os.environ["GJC_SESSION_STATE_DIR"]
-        session = os.environ["GJC_SESSION_NAME"]
-        generation = os.environ["GJC_SESSION_OWNER_GENERATION"]
+        state_dir = os.environ["WORX_SESSION_STATE_DIR"]
+        session = os.environ["WORX_SESSION_NAME"]
+        generation = os.environ["WORX_SESSION_OWNER_GENERATION"]
         record = {"schema_version": 1, "kind": "supervisor_failure", "session_id": session, "owner_generation": generation, "reason": "observer_or_alias_validation_failed"}
         try:
             canonical_path = os.path.join(state_dir, session, "owner-lifecycle", f"supervisor-failure-{generation}.json")
@@ -675,21 +675,21 @@ for handled_signal in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
     signal.signal(handled_signal, forward)
 
 started_at = now()
-command = [os.environ["GJC_SESSION_GJC_BIN"]]
+command = [os.environ["WORX_SESSION_WORX_BIN"]]
 try:
-    child = subprocess.Popen(command, cwd=os.environ["GJC_SESSION_WORKDIR"])
+    child = subprocess.Popen(command, cwd=os.environ["WORX_SESSION_WORKDIR"])
     status = child.wait()
 except OSError:
     status = 127
 exit_code = status if status >= 0 else 128 - status
 finalized = subprocess.run(
-    ["bash", os.environ["GJC_SESSION_RUNNER_SH"], "--finalize", str(exit_code), started_at, now()],
+    ["bash", os.environ["WORX_SESSION_RUNNER_SH"], "--finalize", str(exit_code), started_at, now()],
     check=False,
 )
 if finalized.returncode != 0:
-    state_dir = os.environ["GJC_SESSION_STATE_DIR"]
-    session = os.environ["GJC_SESSION_NAME"]
-    generation = os.environ["GJC_SESSION_OWNER_GENERATION"]
+    state_dir = os.environ["WORX_SESSION_STATE_DIR"]
+    session = os.environ["WORX_SESSION_NAME"]
+    generation = os.environ["WORX_SESSION_OWNER_GENERATION"]
     record = {"schema_version": 1, "kind": "finalization_failed", "session_id": session, "owner_generation": generation, "owner_exit_code": exit_code, "finalizer_exit_code": finalized.returncode}
     try:
         canonical_path = os.path.join(state_dir, session, "owner-lifecycle", f"finalization-failure-{generation}.json")
@@ -702,7 +702,7 @@ raise SystemExit(exit_code)
 SUPERVISOR
 chmod 700 "$STATE_DIR/supervisor.py"
 
-LAUNCH=(env "GJC_SESSION_NAME=$SESSION" "GJC_SESSION_WORKDIR=$WORKDIR" "GJC_SESSION_BRANCH=$BRANCH" "GJC_SESSION_STATE_DIR=$STATE_DIR" "GJC_SESSION_OWNER_GENERATION=$OWNER_GENERATION" "GJC_SESSION_RUNTIME_FRESH_AFTER=$CREATED_AT" "GJC_SESSION_STARTED_JSON=$STATE_DIR/started.json" "GJC_SESSION_TERMINAL_JSON=$STATE_DIR/terminal.json" "GJC_SESSION_TERMINAL_CANONICAL_JSON=$LIFECYCLE_DIR/terminal-$OWNER_GENERATION.json" "GJC_SESSION_FINAL_JSON=$STATE_DIR/final.json" "GJC_SESSION_FINAL_CANONICAL_JSON=$LIFECYCLE_DIR/final-$OWNER_GENERATION.json" "GJC_SESSION_GENERATION_JSON=$GENERATION_JSON" "GJC_COORDINATOR_SESSION_ID=$SESSION" "GJC_COORDINATOR_SESSION_BRANCH=$BRANCH" "GJC_COORDINATOR_SESSION_STATE_FILE=$RUNTIME_STATE_JSON" "GJC_TMUX_OWNER_GENERATION=$OWNER_GENERATION" "GJC_TMUX_OWNER_STATE_DIR=$STATE_DIR" "GJC_TMUX_OWNER_SERVER_KEY=$SOCKET_KEY" "GJC_SESSION_PROMPT_ACCEPTED_JSON=$STATE_DIR/prompt-accepted.json" "GJC_SESSION_WORKTREE_BASELINE_DIRTY=$WORKTREE_BASELINE_DIRTY" "GJC_SESSION_GJC_BIN=$GJC_BIN" "GJC_SESSION_RUNNER_SH=$STATE_DIR/runner.sh" "GJC_SESSION_POSTMORTEM_SH=$SCRIPT_DIR/postmortem.sh" python3 "$STATE_DIR/supervisor.py")
+LAUNCH=(env "WORX_SESSION_NAME=$SESSION" "WORX_SESSION_WORKDIR=$WORKDIR" "WORX_SESSION_BRANCH=$BRANCH" "WORX_SESSION_STATE_DIR=$STATE_DIR" "WORX_SESSION_OWNER_GENERATION=$OWNER_GENERATION" "WORX_SESSION_RUNTIME_FRESH_AFTER=$CREATED_AT" "WORX_SESSION_STARTED_JSON=$STATE_DIR/started.json" "WORX_SESSION_TERMINAL_JSON=$STATE_DIR/terminal.json" "WORX_SESSION_TERMINAL_CANONICAL_JSON=$LIFECYCLE_DIR/terminal-$OWNER_GENERATION.json" "WORX_SESSION_FINAL_JSON=$STATE_DIR/final.json" "WORX_SESSION_FINAL_CANONICAL_JSON=$LIFECYCLE_DIR/final-$OWNER_GENERATION.json" "WORX_SESSION_GENERATION_JSON=$GENERATION_JSON" "WORX_COORDINATOR_SESSION_ID=$SESSION" "WORX_COORDINATOR_SESSION_BRANCH=$BRANCH" "WORX_COORDINATOR_SESSION_STATE_FILE=$RUNTIME_STATE_JSON" "WORX_TMUX_OWNER_GENERATION=$OWNER_GENERATION" "WORX_TMUX_OWNER_STATE_DIR=$STATE_DIR" "WORX_TMUX_OWNER_SERVER_KEY=$SOCKET_KEY" "WORX_SESSION_PROMPT_ACCEPTED_JSON=$STATE_DIR/prompt-accepted.json" "WORX_SESSION_WORKTREE_BASELINE_DIRTY=$WORKTREE_BASELINE_DIRTY" "WORX_SESSION_WORX_BIN=$WORX_BIN" "WORX_SESSION_RUNNER_SH=$STATE_DIR/runner.sh" "WORX_SESSION_POSTMORTEM_SH=$SCRIPT_DIR/postmortem.sh" python3 "$STATE_DIR/supervisor.py")
 LAUNCH_SHELL="$(shell_join "${LAUNCH[@]}")"
 TMUX_ARGV=("$TMUX_BIN" -L "$SOCKET_KEY" new-session -d -P -F '#{session_id}' -s "$SESSION" -c "$WORKDIR" -n gjc "$LAUNCH_SHELL")
 PLAN_LINE="$(python3 - "$SESSION" "$OWNER_GENERATION" "$WORKDIR" "$STATE_DIR" "$SOCKET_KEY" "$GENERATION_BASELINE_JSON" "${TMUX_ARGV[@]}" <<'PY'
@@ -711,7 +711,7 @@ session, generation, cwd, state_dir, socket_key, baseline, *argv = sys.argv[1:]
 print(json.dumps({"schema_version": 1, "op": "plan", "platform": "linux", "session_id": session, "owner_generation": generation, "cwd": cwd, "state_dir": state_dir, "socket_key": socket_key, "tmux_argv": argv, "baseline": json.loads(baseline)}, separators=(",", ":")))
 PY
 )"
-PLAN_RESPONSE="$(printf '%s\n' "$PLAN_LINE" | "$GJC_BIN" --internal-tmux-owner-isolation)" || { echo "owner-isolation plan protocol failed" >&2; exit 1; }
+PLAN_RESPONSE="$(printf '%s\n' "$PLAN_LINE" | "$WORX_BIN" --internal-tmux-owner-isolation)" || { echo "owner-isolation plan protocol failed" >&2; exit 1; }
 PLAN_MODE="$(python3 - "$PLAN_RESPONSE" "$SESSION" "$OWNER_GENERATION" "$STATE_DIR" "$SOCKET_KEY" "$GENERATION_BASELINE_JSON" "${TMUX_ARGV[@]}" <<'PY'
 import datetime, json, sys
 try:
@@ -773,7 +773,7 @@ record_rollback_identity owner_session "$SESSION" ROLLBACK_OWNER_NATIVE_ID ROLLB
 
 CREATION_BOUNDARY=postspawn
 
-POST_SPAWN_RESPONSE="$(printf '%s\n' "$PLAN_LINE" | "$GJC_BIN" --internal-tmux-owner-isolation)" || { echo "owner-isolation post-spawn proof failed" >&2; show_recovery_hint; exit 1; }
+POST_SPAWN_RESPONSE="$(printf '%s\n' "$PLAN_LINE" | "$WORX_BIN" --internal-tmux-owner-isolation)" || { echo "owner-isolation post-spawn proof failed" >&2; show_recovery_hint; exit 1; }
 python3 - "$POST_SPAWN_RESPONSE" "$SESSION" "$SOCKET_KEY" "$ROLLBACK_OWNER_SERVER_PID" "$ROLLBACK_OWNER_SERVER_START_TIME" <<'PY' || { echo "owner-isolation post-spawn server proof rejected" >&2; show_recovery_hint; exit 1; }
 import json
 import sys
@@ -842,7 +842,7 @@ session, generation, state_dir, baseline = sys.argv[1:]
 print(json.dumps({"schema_version":1,"op":"publish_generation","session_id":session,"owner_generation":generation,"state_dir":state_dir,"baseline":json.loads(baseline)}, separators=(",", ":")))
 PY
 )"
-GENERATION_PUBLISH_RESPONSE="$(printf '%s\n' "$GENERATION_PUBLISH_REQUEST" | "$GJC_BIN" --internal-tmux-owner-isolation)" || { echo "generation publication protocol failed" >&2; exit 1; }
+GENERATION_PUBLISH_RESPONSE="$(printf '%s\n' "$GENERATION_PUBLISH_REQUEST" | "$WORX_BIN" --internal-tmux-owner-isolation)" || { echo "generation publication protocol failed" >&2; exit 1; }
 python3 - "$GENERATION_PUBLISH_RESPONSE" "$OWNER_GENERATION" <<'PY' || { echo "generation publication rejected" >&2; exit 1; }
 import json, sys
 try:
@@ -912,14 +912,14 @@ fi
 cat >"$STATE_DIR/monitor.sh" <<'MONITOR'
 #!/usr/bin/env bash
 set -euo pipefail
-source "$GJC_SESSION_POSTMORTEM_SH"
-interval="${GJC_SESSION_MONITOR_INTERVAL:-5}"
+source "$WORX_SESSION_POSTMORTEM_SH"
+interval="${WORX_SESSION_MONITOR_INTERVAL:-5}"
 case "$interval" in ''|*[!0-9]*) interval=5 ;; esac
 (( interval >= 1 )) || interval=1
 last_seen_ms="$(date +%s%3N)"
 while true; do
   probe_started_ms="$(date +%s%3N)"
-  if timeout 1s "$GJC_SESSION_TMUX_BIN" -L "$GJC_SESSION_SOCKET_KEY" has-session -t "=$GJC_SESSION_NAME" >/dev/null 2>&1; then
+  if timeout 1s "$WORX_SESSION_TMUX_BIN" -L "$WORX_SESSION_SOCKET_KEY" has-session -t "=$WORX_SESSION_NAME" >/dev/null 2>&1; then
     last_seen_ms="$probe_started_ms"
     sleep "$interval"
     continue
@@ -930,7 +930,7 @@ while true; do
   sleep 1
 done
 observed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-request="$(python3 - "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" "$GJC_SESSION_STATE_DIR" "$GJC_SESSION_SOCKET_KEY" "$observed_at" <<'PY'
+request="$(python3 - "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" "$WORX_SESSION_STATE_DIR" "$WORX_SESSION_SOCKET_KEY" "$observed_at" <<'PY'
 import json, sys
 session, generation, state_dir, socket_key, observed_at = sys.argv[1:]
 print(json.dumps({"schema_version":1,"op":"observe_terminal","session_id":session,"owner_generation":generation,"state_dir":state_dir,"socket_key":socket_key,"observer":"raw_monitor","observed_at":observed_at,"signal":"UNKNOWN","exit_code":None,"exit_kind":"owner_lost","reason":"tmux_session_missing"}, separators=(",", ":")))
@@ -943,13 +943,13 @@ while true; do
   remaining_ms=$((deadline_at_ms - now_ms))
   (( remaining_ms > 0 )) || break
   remaining_seconds="$(printf '%d.%03d' "$((remaining_ms / 1000))" "$((remaining_ms % 1000))")"
-  if verdict="$(printf '%s\n' "$request" | timeout "${remaining_seconds}s" "$GJC_SESSION_GJC_BIN" --internal-tmux-owner-isolation)"; then break; fi
+  if verdict="$(printf '%s\n' "$request" | timeout "${remaining_seconds}s" "$WORX_SESSION_WORX_BIN" --internal-tmux-owner-isolation)"; then break; fi
   verdict=""; sleep 1
 done
 now_ms="$(date +%s%3N)"
 if [[ -z "$verdict" || "$now_ms" -ge "$deadline_at_ms" ]]; then
-  monitor_failure_canonical="$GJC_SESSION_STATE_DIR/$GJC_SESSION_NAME/owner-lifecycle/monitor-failure-$GJC_SESSION_OWNER_GENERATION.json"
-  python3 - "$monitor_failure_canonical" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" <<'PY'
+  monitor_failure_canonical="$WORX_SESSION_STATE_DIR/$WORX_SESSION_NAME/owner-lifecycle/monitor-failure-$WORX_SESSION_OWNER_GENERATION.json"
+  python3 - "$monitor_failure_canonical" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" <<'PY'
 import json, os, sys
 path, session, generation = sys.argv[1:]
 record = {"schema_version":1,"kind":"monitor_failure","session_id":session,"owner_generation":generation,"reason":"observer_timeout_or_failure"}
@@ -965,37 +965,37 @@ finally:
     try: os.unlink(temporary)
     except FileNotFoundError: pass
 PY
-  gjc_session_publish_current_alias "$monitor_failure_canonical" "$GJC_SESSION_STATE_DIR/monitor-failure.json" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" monitor_failure || exit 1
+  gjc_session_publish_current_alias "$monitor_failure_canonical" "$WORX_SESSION_STATE_DIR/monitor-failure.json" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" monitor_failure || exit 1
   exit 1
 fi
 within_recovery_deadline() { [[ "$(date +%s%3N)" -lt "$deadline_at_ms" ]]; }
 
 within_recovery_deadline || exit 1
-gjc_session_validate_raw_verdict "$GJC_SESSION_VERDICT_CANONICAL_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" "$GJC_SESSION_SOCKET_KEY" || exit 1
+gjc_session_validate_raw_verdict "$WORX_SESSION_VERDICT_CANONICAL_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" "$WORX_SESSION_SOCKET_KEY" || exit 1
 within_recovery_deadline || exit 1
-classification="$(python3 - "$GJC_SESSION_VERDICT_CANONICAL_JSON" <<'PY'
+classification="$(python3 - "$WORX_SESSION_VERDICT_CANONICAL_JSON" <<'PY'
 import json, sys
 with open(sys.argv[1], encoding="utf-8") as handle: print(json.load(handle)["classification"])
 PY
 )"
 within_recovery_deadline || exit 1
-gjc_session_publish_current_alias "$GJC_SESSION_VERDICT_CANONICAL_JSON" "$GJC_SESSION_VERDICT_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" || exit 1
+gjc_session_publish_current_alias "$WORX_SESSION_VERDICT_CANONICAL_JSON" "$WORX_SESSION_VERDICT_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" || exit 1
 within_recovery_deadline || exit 1
 if [[ "$classification" == unexpected_owner_loss ]]; then
   within_recovery_deadline || exit 1
-  gjc_session_write_vanished_json "$GJC_SESSION_VANISHED_CANONICAL_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_WORKDIR" tmux_session_missing owner_lost failure false false "$GJC_SESSION_OWNER_GENERATION"
+  gjc_session_write_vanished_json "$WORX_SESSION_VANISHED_CANONICAL_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_WORKDIR" tmux_session_missing owner_lost failure false false "$WORX_SESSION_OWNER_GENERATION"
   within_recovery_deadline || exit 1
-  gjc_session_publish_current_alias "$GJC_SESSION_VANISHED_CANONICAL_JSON" "$GJC_SESSION_VANISHED_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" || exit 1
+  gjc_session_publish_current_alias "$WORX_SESSION_VANISHED_CANONICAL_JSON" "$WORX_SESSION_VANISHED_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" || exit 1
   within_recovery_deadline || exit 1
-  gjc_session_publish_current_alias "$GJC_SESSION_INCIDENT_CANONICAL_JSON" "$GJC_SESSION_INCIDENT_JSON" "$GJC_SESSION_GENERATION_JSON" "$GJC_SESSION_NAME" "$GJC_SESSION_OWNER_GENERATION" owner_incident || exit 1
+  gjc_session_publish_current_alias "$WORX_SESSION_INCIDENT_CANONICAL_JSON" "$WORX_SESSION_INCIDENT_JSON" "$WORX_SESSION_GENERATION_JSON" "$WORX_SESSION_NAME" "$WORX_SESSION_OWNER_GENERATION" owner_incident || exit 1
   within_recovery_deadline || exit 1
 fi
 MONITOR
 chmod +x "$STATE_DIR/monitor.sh"
 CREATION_BOUNDARY=monitor
 
-if [[ "${GJC_SESSION_MONITOR_DISABLE:-0}" != 1 ]]; then
-  MONITOR_LAUNCH=(env "GJC_SESSION_NAME=$SESSION" "GJC_SESSION_WORKDIR=$WORKDIR" "GJC_SESSION_OWNER_GENERATION=$OWNER_GENERATION" "GJC_SESSION_STATE_DIR=$STATE_DIR" "GJC_SESSION_SOCKET_KEY=$SOCKET_KEY" "GJC_SESSION_TMUX_BIN=$TMUX_BIN" "GJC_SESSION_GJC_BIN=$GJC_BIN" "GJC_SESSION_POSTMORTEM_SH=$SCRIPT_DIR/postmortem.sh" "GJC_SESSION_GENERATION_JSON=$GENERATION_JSON" "GJC_SESSION_VERDICT_JSON=$STATE_DIR/verdict.json" "GJC_SESSION_VERDICT_CANONICAL_JSON=$LIFECYCLE_DIR/verdict-$OWNER_GENERATION.json" "GJC_SESSION_VANISHED_JSON=$STATE_DIR/vanished.json" "GJC_SESSION_VANISHED_CANONICAL_JSON=$LIFECYCLE_DIR/vanished-$OWNER_GENERATION.json" "GJC_SESSION_INCIDENT_JSON=$STATE_DIR/incident.json" "GJC_SESSION_INCIDENT_CANONICAL_JSON=$LIFECYCLE_DIR/incident-$OWNER_GENERATION.json" "GJC_SESSION_MONITOR_INTERVAL=${GJC_SESSION_MONITOR_INTERVAL:-5}" bash "$STATE_DIR/monitor.sh")
+if [[ "${WORX_SESSION_MONITOR_DISABLE:-0}" != 1 ]]; then
+  MONITOR_LAUNCH=(env "WORX_SESSION_NAME=$SESSION" "WORX_SESSION_WORKDIR=$WORKDIR" "WORX_SESSION_OWNER_GENERATION=$OWNER_GENERATION" "WORX_SESSION_STATE_DIR=$STATE_DIR" "WORX_SESSION_SOCKET_KEY=$SOCKET_KEY" "WORX_SESSION_TMUX_BIN=$TMUX_BIN" "WORX_SESSION_WORX_BIN=$WORX_BIN" "WORX_SESSION_POSTMORTEM_SH=$SCRIPT_DIR/postmortem.sh" "WORX_SESSION_GENERATION_JSON=$GENERATION_JSON" "WORX_SESSION_VERDICT_JSON=$STATE_DIR/verdict.json" "WORX_SESSION_VERDICT_CANONICAL_JSON=$LIFECYCLE_DIR/verdict-$OWNER_GENERATION.json" "WORX_SESSION_VANISHED_JSON=$STATE_DIR/vanished.json" "WORX_SESSION_VANISHED_CANONICAL_JSON=$LIFECYCLE_DIR/vanished-$OWNER_GENERATION.json" "WORX_SESSION_INCIDENT_JSON=$STATE_DIR/incident.json" "WORX_SESSION_INCIDENT_CANONICAL_JSON=$LIFECYCLE_DIR/incident-$OWNER_GENERATION.json" "WORX_SESSION_MONITOR_INTERVAL=${WORX_SESSION_MONITOR_INTERVAL:-5}" bash "$STATE_DIR/monitor.sh")
   "$TMUX_BIN" -L "$SOCKET_KEY" new-session -d -s "$MONITOR_SESSION" -c "$WORKDIR" -n owner-monitor "$(shell_join "${MONITOR_LAUNCH[@]}")" || { echo "owner monitor creation failed" >&2; exit 1; }
   ROLLBACK_MONITOR_CREATED=1
   record_rollback_identity monitor_session "$MONITOR_SESSION" ROLLBACK_MONITOR_NATIVE_ID ROLLBACK_MONITOR_SERVER_PID ROLLBACK_MONITOR_SERVER_START_TIME ROLLBACK_MONITOR_SESSION_NAME || { echo "owner monitor rollback identity receipt failed" >&2; exit 1; }
@@ -1005,7 +1005,7 @@ ROLLBACK_ARMED=0
 trap - EXIT
 flock -u 9
 exec 9>&-
-unset GJC_SESSION_TRANSITION_LOCK_HELD
+unset WORX_SESSION_TRANSITION_LOCK_HELD
 printf 'created GJC session: %s\n' "$SESSION"
 printf '  workdir: %s\n  branch: %s\n  state: %s\n' "$WORKDIR" "$BRANCH" "$STATE_DIR"
 printf '  markers: creation-state.json started.json terminal.json final.json verdict.json incident.json recovery.json\n'

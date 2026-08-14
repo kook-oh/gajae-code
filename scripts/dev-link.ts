@@ -17,7 +17,7 @@
  *   bun scripts/dev-link.ts --check    # doctor: fail if `worx` has drifted
  *
  * Env:
- *   GJC_DEV_LINK_DIR   override the target bin dir (default ~/.local/bin)
+ *   WORX_DEV_LINK_DIR   override the target bin dir (default ~/.local/bin)
  */
 
 import * as fs from "node:fs";
@@ -29,7 +29,7 @@ const cliSource = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts
 const cliSourceReal = realpath(cliSource) ?? cliSource;
 const binarySource = path.join(repoRoot, "packages", "coding-agent", "dist", "worx");
 const HOME = os.homedir();
-const targetDir = process.env.GJC_DEV_LINK_DIR ?? path.join(HOME, ".local", "bin");
+const targetDir = process.env.WORX_DEV_LINK_DIR ?? path.join(HOME, ".local", "bin");
 const BUN_SHIM_VERSION = 5478;
 const MAX_BUN_SHIM_METADATA_BYTES = 64 * 1024;
 const MAX_BUN_SHIM_EXECUTABLE_BYTES = 1024 * 1024;

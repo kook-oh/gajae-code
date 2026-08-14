@@ -39,9 +39,9 @@ At module initialization, `native/index.js` computes:
   - otherwise `~/.gjc/natives`.
 - **Compiled-binary mode** (`detectCompiledBinary`): true if any of:
   - embedded-addon manifest is non-null,
-  - `GJC_COMPILED` env var is set,
+  - `WORX_COMPILED` env var is set,
   - `import.meta.url` contains Bun embedded markers (`$bunfs`, `~BUN`, `%7EBUN`).
-- **Variant override**: `GJC_NATIVE_VARIANT` (`modern`/`baseline` only; invalid values ignored).
+- **Variant override**: `WORX_NATIVE_VARIANT` (`modern`/`baseline` only; invalid values ignored).
 - **Selected variant**: explicit override, otherwise runtime AVX2 detection on x64 (`modern` if AVX2, else `baseline`).
 
 ## Platform support and tag resolution
@@ -59,7 +59,7 @@ Unsupported platforms are not rejected before probing. The loader first tries th
 
 ### x64 behavior
 
-1. `GJC_NATIVE_VARIANT=modern|baseline` wins when valid.
+1. `WORX_NATIVE_VARIANT=modern|baseline` wins when valid.
 2. Otherwise AVX2 support is detected:
    - Linux: scan `/proc/cpuinfo` for `avx2`.
    - macOS: `sysctl -n machdep.cpu.leaf7_features`, then `machdep.cpu.features`.

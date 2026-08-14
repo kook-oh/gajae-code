@@ -104,7 +104,7 @@ Theme lookup order (`loadThemeJson`):
 Custom themes directory comes from `getCustomThemesDir()`:
 
 - default: `~/.gjc/agent/themes`
-- overridden by `GJC_CODING_AGENT_DIR` (`$GJC_CODING_AGENT_DIR/themes`)
+- overridden by `WORX_CODING_AGENT_DIR` (`$WORX_CODING_AGENT_DIR/themes`)
 
 `getAvailableThemes()` returns merged built-in + custom names, sorted, with built-ins taking precedence on name collision.
 

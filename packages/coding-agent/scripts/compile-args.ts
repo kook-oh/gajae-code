@@ -15,8 +15,8 @@ export const compileAutoloadDisableFlags = [
 ];
 
 const compiledDefineFlags = ['process.env.PI_COMPILED="true"'];
-const releaseDefineFlags = [...compiledDefineFlags, 'process.env.GJC_BUILD_CHANNEL="release"'];
-const devDefineFlags = [...compiledDefineFlags, 'process.env.GJC_BUILD_CHANNEL="dev"'];
+const releaseDefineFlags = [...compiledDefineFlags, 'process.env.WORX_BUILD_CHANNEL="release"'];
+const devDefineFlags = [...compiledDefineFlags, 'process.env.WORX_BUILD_CHANNEL="dev"'];
 
 export const compiledExternalPackages = ["mupdf"];
 

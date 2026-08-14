@@ -12,7 +12,7 @@ set -e
 
 REPO="bworx-io/worx-code"
 PACKAGE="@bworx-io/worx-code"
-INSTALL_DIR="${GJC_INSTALL_DIR:-$HOME/.local/bin}"
+INSTALL_DIR="${WORX_INSTALL_DIR:-$HOME/.local/bin}"
 MIN_BUN_VERSION="1.3.14"
 
 # Parse arguments

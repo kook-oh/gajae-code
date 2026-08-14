@@ -893,13 +893,13 @@ export class TUI extends Container {
 	#lastObservedWidth = 0;
 	// Trailing debounce for the settled width repair. Instance-local: taken from
 	// options.widthSettleMs when provided (deterministic harnesses pass 0 to
-	// disable), otherwise from GJC_TUI_WIDTH_SETTLE_MS / PI_TUI_WIDTH_SETTLE_MS,
+	// disable), otherwise from WORX_TUI_WIDTH_SETTLE_MS / PI_TUI_WIDTH_SETTLE_MS,
 	// otherwise 1000. Sampled once at construction.
 	#widthSettleMs: number = TUI.#readWidthSettleMs();
 	static readonly #WIDTH_SETTLE_MS = 1000;
 
 	static #readWidthSettleMs(): number {
-		const raw = Bun.env.GJC_TUI_WIDTH_SETTLE_MS ?? Bun.env.PI_TUI_WIDTH_SETTLE_MS;
+		const raw = Bun.env.WORX_TUI_WIDTH_SETTLE_MS ?? Bun.env.PI_TUI_WIDTH_SETTLE_MS;
 		if (raw === undefined || raw === "") return TUI.#WIDTH_SETTLE_MS;
 		const parsed = Number.parseInt(raw, 10);
 		return Number.isFinite(parsed) && parsed >= 0 ? parsed : TUI.#WIDTH_SETTLE_MS;
@@ -931,14 +931,14 @@ export class TUI extends Container {
 	#sixelProbeBuffer = "";
 	#sixelProbeTimeout?: NodeJS.Timeout;
 	#sixelProbeUnsubscribe?: () => void;
-	#showHardwareCursor = $pickflag("GJC_HARDWARE_CURSOR", "PI_HARDWARE_CURSOR");
+	#showHardwareCursor = $pickflag("WORX_HARDWARE_CURSOR", "PI_HARDWARE_CURSOR");
 	#debugRedraw = TUI.#readDebugRedrawFlag();
 	#legacyMultiplexerFullRender = false;
-	// macOS: steady-block cursor anchors CJK IME overlays; disable with GJC_TUI_IME_CURSOR=0.
-	readonly #useImeBlockCursor = $flag("GJC_TUI_IME_CURSOR", process.platform === "darwin");
+	// macOS: steady-block cursor anchors CJK IME overlays; disable with WORX_TUI_IME_CURSOR=0.
+	readonly #useImeBlockCursor = $flag("WORX_TUI_IME_CURSOR", process.platform === "darwin");
 	// showHardwareCursor=false but cursor is shown for IME anchoring (macOS).
 	#imeCursorActive = false;
-	#clearOnShrink = $pickflag("GJC_CLEAR_ON_SHRINK", "PI_CLEAR_ON_SHRINK");
+	#clearOnShrink = $pickflag("WORX_CLEAR_ON_SHRINK", "PI_CLEAR_ON_SHRINK");
 	#synchronizedOutputBegin = "";
 	#synchronizedOutputEnd = "";
 
@@ -983,7 +983,7 @@ export class TUI extends Container {
 
 	static #readDebugRedrawFlag(): boolean {
 		TUI.#renderCounters.debugRedrawEnvReads += 1;
-		return $pickflag("GJC_DEBUG_REDRAW", "PI_DEBUG_REDRAW");
+		return $pickflag("WORX_DEBUG_REDRAW", "PI_DEBUG_REDRAW");
 	}
 
 	#appendDebugRedrawLog(message: string): void {
@@ -1026,7 +1026,7 @@ export class TUI extends Container {
 			 * Trailing debounce for the settled width repair, in ms. `0` disables the
 			 * settled repair (deterministic harnesses need this — a wall-clock-timed
 			 * full replay lands at nondeterministic logical positions). Defaults to
-			 * `GJC_TUI_WIDTH_SETTLE_MS` / `PI_TUI_WIDTH_SETTLE_MS`, then 1000.
+			 * `WORX_TUI_WIDTH_SETTLE_MS` / `PI_TUI_WIDTH_SETTLE_MS`, then 1000.
 			 */
 			widthSettleMs?: number;
 		} = {},
@@ -1035,7 +1035,7 @@ export class TUI extends Container {
 		this.terminal = terminal;
 		this.#legacyMultiplexerFullRender =
 			isMultiplexerSession(Bun.env) && envIsEnabled(Bun.env.PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER);
-		const synchronizedOutputEnabled = $flag("GJC_TUI_SYNCHRONIZED_OUTPUT", true);
+		const synchronizedOutputEnabled = $flag("WORX_TUI_SYNCHRONIZED_OUTPUT", true);
 		this.#synchronizedOutputBegin = synchronizedOutputEnabled ? "\x1b[?2026h" : "";
 		this.#synchronizedOutputEnd = synchronizedOutputEnabled ? "\x1b[?2026l" : "";
 		if (showHardwareCursor !== undefined) {
@@ -3933,7 +3933,7 @@ export class TUI extends Container {
 
 		// Content shrunk below the previous render and no overlays - re-render to clear empty rows
 		// (overlays need the padding, so only do this when no overlays are active)
-		// Configurable via setClearOnShrink() or GJC_CLEAR_ON_SHRINK=0 env var
+		// Configurable via setClearOnShrink() or WORX_CLEAR_ON_SHRINK=0 env var
 		if (this.#clearOnShrink && newLines.length < this.#previousLines.length && this.overlayStack.length === 0) {
 			logRedraw(`clearOnShrink (prev=${this.#previousLines.length}, new=${newLines.length})`);
 			if (useViewportRepaintPath) {
@@ -4384,7 +4384,7 @@ export class TUI extends Container {
 		buffer += seq;
 		buffer = this.#frameSynchronizedOutput(buffer);
 
-		if ($pickflag("GJC_TUI_DEBUG", "PI_TUI_DEBUG")) {
+		if ($pickflag("WORX_TUI_DEBUG", "PI_TUI_DEBUG")) {
 			const debugDir = "/tmp/tui";
 			fs.mkdirSync(debugDir, { recursive: true });
 			const debugPath = path.join(debugDir, `render-${Date.now()}-${Math.random().toString(36).slice(2)}.log`);

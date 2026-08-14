@@ -60,7 +60,7 @@ async function main(): Promise<void> {
 	await initRepo(right);
 
 	const sessionId = `dogfood-2901-${process.pid}`;
-	const env = { ...process.env, GJC_SESSION_ID: sessionId };
+	const env = { ...process.env, WORX_SESSION_ID: sessionId };
 
 	console.log("# Dogfood: repository binding (#2901)");
 	console.log(`root=${dogfoodRoot}`);

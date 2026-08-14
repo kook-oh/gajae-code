@@ -84,8 +84,8 @@ Runtime x64 candidate order also includes the unsuffixed default filename after 
 
 ## Runtime flags
 
-- `GJC_NATIVE_VARIANT`: x64 runtime override; valid values are `modern` and `baseline`.
-- `GJC_COMPILED`: legacy compiled-mode signal. A populated embedded-addon manifest is also a compiled-mode signal and is the authoritative signal for Bun standalone builds that do not preserve `process.env.GJC_COMPILED`.
+- `WORX_NATIVE_VARIANT`: x64 runtime override; valid values are `modern` and `baseline`.
+- `WORX_COMPILED`: legacy compiled-mode signal. A populated embedded-addon manifest is also a compiled-mode signal and is the authoritative signal for Bun standalone builds that do not preserve `process.env.WORX_COMPILED`.
 
 ## Build-time flags/options
 
@@ -145,7 +145,7 @@ Typical local loop:
 
 ## Shipped/compiled binary workflow
 
-In compiled mode (`GJC_COMPILED`, Bun embedded URL markers, or populated embedded manifest):
+In compiled mode (`WORX_COMPILED`, Bun embedded URL markers, or populated embedded manifest):
 
 1. Loader computes versioned cache dir: `<getNativesDir()>/<packageVersion>`.
 2. If embedded manifest matches current platform+version, loader may extract the selected embedded file into that versioned dir.
@@ -194,7 +194,7 @@ Generated declarations currently include exports from these Rust modules:
 | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `Cannot find module` or dynamic library load error for every candidate | Missing release artifact, wrong platform tag, or stale compiled cache                       | Inspect loader error list and `packages/natives/native` filenames | Build correct target/variant; delete stale cache for the package version                      |
 | Export is missing at runtime but present in TypeScript                 | Stale `.node` loaded, generated declarations newer than binary, or Rust export not compiled | Require the actual candidate and inspect `Object.keys(mod)`       | Rebuild native package and remove stale candidate/cache paths                                 |
-| x64 machine loads baseline when modern expected                        | `GJC_NATIVE_VARIANT=baseline`, no AVX2 detected, or modern file unavailable                  | Check env and filenames in `native/`                              | Build modern variant (`TARGET_VARIANT=modern ... build`) and ship it                          |
+| x64 machine loads baseline when modern expected                        | `WORX_NATIVE_VARIANT=baseline`, no AVX2 detected, or modern file unavailable                  | Check env and filenames in `native/`                              | Build modern variant (`TARGET_VARIANT=modern ... build`) and ship it                          |
 | Cross-build produces wrong-labeled binary                              | Mismatch between `CROSS_TARGET` and `TARGET_PLATFORM`/`TARGET_ARCH`, or missing x64 variant | Confirm env tuple and output filename                             | Re-run with consistent env values and explicit x64 `TARGET_VARIANT`                           |
 | Compiled binary fails after upgrade                                    | Stale extracted cache or embedded manifest version mismatch                                 | Inspect `<getNativesDir()>/<version>` and loader error list       | Delete versioned cache for the package version; regenerate embedded manifest during packaging |
 | `embed:native` fails with `No native addons found`                     | Required platform artifact was not built before embedding                                   | Check expected list in error text                                 | Build at least one expected artifact for the target, then rerun `embed:native`                |

@@ -47,7 +47,7 @@
 
 - Applied the compact 12–32-column primary layout to slash-command autocomplete while leaving file and other completion lists on their existing layout.
 - Restored 60 fps time-dependent loader gradients on direct local terminals while retaining the 80 ms cadence and congestion dropping on SSH and multiplexed terminals.
-- Bounded loader animation scheduling to 80 ms, stopped OSC 11 polling after DA1 proves the query unsupported while preserving Mode 2031 recovery, and added the default-on `GJC_TUI_SYNCHRONIZED_OUTPUT=0` compatibility opt-out for terminal parsers that mishandle synchronized-output framing. Real iOS-client validation remains pending for #3798.
+- Bounded loader animation scheduling to 80 ms, stopped OSC 11 polling after DA1 proves the query unsupported while preserving Mode 2031 recovery, and added the default-on `WORX_TUI_SYNCHRONIZED_OUTPUT=0` compatibility opt-out for terminal parsers that mishandle synchronized-output framing. Real iOS-client validation remains pending for #3798.
 - Decorative animation ticks now pause while stdout has more than 64 KiB buffered, preventing slow SSH terminals and multiplexers from accumulating stale spinner frames.
 
 ## [0.12.11] - 2026-08-03
@@ -182,7 +182,7 @@
 ### Fixed
 
 - Real interactive terminals now repaint only the visible viewport during forced renders instead of clearing and replaying native scrollback.
-- Terminal graphics protocols are no longer assumed under terminal multiplexers: the blind Kitty fallback for `TERM=tmux-*`/`screen-*` (and detected kitty/iTerm2 protocols leaking through multiplexer env) emitted raw graphics escapes the multiplexer consumed, leaving the Gajae composer pet invisible while its out-of-band cursor writes intermittently corrupted the TUI frame. Image protocols are now unconditionally dropped under tmux/screen/zellij (shared multiplexer predicate with the renderer host policy, including `$TMUX_PANE`, `$STY`, `$ZELLIJ`, and `GJC_TMUX_LAUNCHED`) unless `PI_FORCE_IMAGE_PROTOCOL` explicitly forces a protocol, which remains an expert override.
+- Terminal graphics protocols are no longer assumed under terminal multiplexers: the blind Kitty fallback for `TERM=tmux-*`/`screen-*` (and detected kitty/iTerm2 protocols leaking through multiplexer env) emitted raw graphics escapes the multiplexer consumed, leaving the Gajae composer pet invisible while its out-of-band cursor writes intermittently corrupted the TUI frame. Image protocols are now unconditionally dropped under tmux/screen/zellij (shared multiplexer predicate with the renderer host policy, including `$TMUX_PANE`, `$STY`, `$ZELLIJ`, and `WORX_TMUX_LAUNCHED`) unless `PI_FORCE_IMAGE_PROTOCOL` explicitly forces a protocol, which remains an expert override.
 - Fixed the startup sixel capability probe's response parsing and authority: XTSMGRAPHICS replies are read per spec (`Ps=0` success; `1/2/3` errors — tmux's `CSI ?2;3;0S` error no longer counts as support), the DA1 device-class parameter is no longer misread as the sixel extension attribute (`CSI ?4;6c` identifies a VT132, not sixel), an explicit `PI_FORCE_IMAGE_PROTOCOL` (including `off`) suppresses probing entirely, and the probe never runs inside a multiplexer because tmux advertises DA1 `;4` from compile-time support regardless of the attached client.
 - A configured Gajae pet now re-applies automatically when the asynchronous sixel probe enables graphics after startup (new `onImageProtocolChanged` subscription), instead of staying hidden until `/pet` is re-run; `/pet` also reports multiplexer graphics suppression explicitly instead of suggesting a different terminal.
 
@@ -226,7 +226,7 @@
 
 - Empty select/settings lists now still honor cancel while preserving populated-list keybinding precedence, and settings lists keep selection indices clamped when items disappear or submenus close after list shrinkage.
 
-- Fixed Windows Hangul/CJK IME composition breaking the queue-message shortcut (Alt+Enter/Alt+Q): the app no longer enables the xterm `modifyOtherKeys` fallback on win32, where Windows Terminal/conhost do not support the Kitty keyboard protocol anyway. `modifyOtherKeys` made modified-key chords bypass the IME commit, so a syllable still being composed was dropped and the queue action fired on empty text unless the user typed a trailing space first. Legacy encodings still deliver Alt+Enter and the newline chords; opt back into the enhancement with `GJC_TUI_KEYBOARD_PROTOCOL`.
+- Fixed Windows Hangul/CJK IME composition breaking the queue-message shortcut (Alt+Enter/Alt+Q): the app no longer enables the xterm `modifyOtherKeys` fallback on win32, where Windows Terminal/conhost do not support the Kitty keyboard protocol anyway. `modifyOtherKeys` made modified-key chords bypass the IME commit, so a syllable still being composed was dropped and the queue action fired on empty text unless the user typed a trailing space first. Legacy encodings still deliver Alt+Enter and the newline chords; opt back into the enhancement with `WORX_TUI_KEYBOARD_PROTOCOL`.
 
 ## [0.7.11] - 2026-07-03
 
@@ -287,7 +287,7 @@
 
 ### Fixed
 
-- Fixed Korean/Hangul input composition breaking in Android Termius, where typing `안녕하세요` produced duplicated jamo/syllable residue (`ㅇ아안ㄴ녀녕…`). GJC's startup keyboard reprogramming (Kitty keyboard protocol query `CSI ? u` / push `CSI > 7 u`, and the xterm modifyOtherKeys fallback `CSI > 4 ; 2 m`) disrupts the Android IME's syllable composition. Added a `GJC_TUI_KEYBOARD_PROTOCOL` opt-out (enabled by default): set `GJC_TUI_KEYBOARD_PROTOCOL=0` to leave the keyboard in its default mode so IME composition works, matching terminals/TUIs that never enable these enhanced input modes.
+- Fixed Korean/Hangul input composition breaking in Android Termius, where typing `안녕하세요` produced duplicated jamo/syllable residue (`ㅇ아안ㄴ녀녕…`). GJC's startup keyboard reprogramming (Kitty keyboard protocol query `CSI ? u` / push `CSI > 7 u`, and the xterm modifyOtherKeys fallback `CSI > 4 ; 2 m`) disrupts the Android IME's syllable composition. Added a `WORX_TUI_KEYBOARD_PROTOCOL` opt-out (enabled by default): set `WORX_TUI_KEYBOARD_PROTOCOL=0` to leave the keyboard in its default mode so IME composition works, matching terminals/TUIs that never enable these enhanced input modes.
 
 ## [0.5.0] - 2026-06-13
 
@@ -773,14 +773,14 @@
 - Introduced `terminal-capabilities.ts` module consolidating terminal detection and image protocol support
 - Added `TerminalInfo` class with methods for detecting image lines and formatting notifications
 - Added `NotifyProtocol` enum supporting Bell, OSC 99, and OSC 9 notification protocols
-- Added `isNotificationSuppressed()` function to check `GJC_NOTIFICATIONS` environment variable
+- Added `isNotificationSuppressed()` function to check `WORX_NOTIFICATIONS` environment variable
 - Added `TERMINAL` constant providing detected terminal capabilities at runtime
 
 ### Changed
 
-- Changed notification suppression environment variable from `GJC_NOTIFICATIONS` to `PI_NOTIFICATIONS`
-- Changed TUI write log environment variable from `GJC_TUI_WRITE_LOG` to `PI_TUI_WRITE_LOG`
-- Changed hardware cursor environment variable from `GJC_HARDWARE_CURSOR` to `PI_HARDWARE_CURSOR`
+- Changed notification suppression environment variable from `WORX_NOTIFICATIONS` to `PI_NOTIFICATIONS`
+- Changed TUI write log environment variable from `WORX_TUI_WRITE_LOG` to `PI_TUI_WRITE_LOG`
+- Changed hardware cursor environment variable from `WORX_HARDWARE_CURSOR` to `PI_HARDWARE_CURSOR`
 - Updated environment variable access to use `getEnv()` utility function from `@gajae-code/utils` for consistent handling
 - Renamed `TERMINAL_INFO` export to `TERMINAL` for clearer API semantics
 - Reorganized terminal image exports from `terminal-image` to `terminal-capabilities` module

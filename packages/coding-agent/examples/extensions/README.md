@@ -30,7 +30,7 @@ Ouroboros setup installs its own managed bridge. Replace that file with this sta
 ```bash
 curl -fL https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/4311fefd49e9c6781c4d1111b8dd3f758e7d8974/packages/coding-agent/examples/extensions/ooo-bridge.ts -o /tmp/gjc-ooo-bridge.ts
 shasum -a 256 /tmp/gjc-ooo-bridge.ts
-mkdir -p "${HOME}/${GJC_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${GJC_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge/index.ts"
+mkdir -p "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge/index.ts"
 ```
 
 The `shasum` output must match `2b0e1e25ac145331f112da629076875542db6f6e63c3c17adcd6770a4dcaf7bd` before the copy. The file has no runtime package imports and uses the host API injected by GJC, so compiled binaries do not require a peer `node_modules` directory beside the installation.

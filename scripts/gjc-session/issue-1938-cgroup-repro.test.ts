@@ -60,7 +60,7 @@ const runUnsupportedSerializer = async (environment: Record<string, string>) => 
 
 	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
-	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, GJC_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
+	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
 	try {
 		expect(await proc.exited).toBe(77);
 		const value = JSON.parse(await Bun.file(evidencePath).text());
@@ -76,7 +76,7 @@ const runIndeterminateCleanupProbe = async (probe: "tmux" | "systemd") => {
 
 	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
-	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, GJC_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: probe, ...(probe === "tmux" ? { GJC_ISSUE1938_TEST_TMUX_CLEANUP_PROBE: "error" } : { GJC_ISSUE1938_TEST_SYSTEMD_CLEANUP_PROBE: "error" }) }, stdout: "pipe", stderr: "pipe" });
+	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: probe, ...(probe === "tmux" ? { WORX_ISSUE1938_TEST_TMUX_CLEANUP_PROBE: "error" } : { WORX_ISSUE1938_TEST_SYSTEMD_CLEANUP_PROBE: "error" }) }, stdout: "pipe", stderr: "pipe" });
 	try {
 		expect(await proc.exited).toBe(1);
 		expect(Date.now() - startedAt).toBeLessThan(7_000);
@@ -92,7 +92,7 @@ const runHeldMonitorCleanup = async () => {
 	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 	const startedAt = Date.now();
-	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, GJC_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: "monitor" }, stdout: "pipe", stderr: "pipe" });
+	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: "monitor" }, stdout: "pipe", stderr: "pipe" });
 	try {
 		expect(await proc.exited).toBe(1);
 		expect(Date.now() - startedAt).toBeLessThan(7_000);
@@ -143,7 +143,7 @@ describe("issue #1938 evidence", () => {
 		expect(script).toContain('[[ "$DISPOSABLE_UNIT" == true ]] || exit 77');
 		expect(script).toContain('write_unsupported_evidence');
 
-		expect(script).not.toContain("GJC_SESSION_WORKDIR");
+		expect(script).not.toContain("WORX_SESSION_WORKDIR");
 	});
 	test("uses measured strict verdict deadlines", () => {
 		expect(script).toContain(`EXPECTED_VERDICT_DEADLINE_MS=${ISSUE_1938_EXPECTED_VERDICT_DEADLINE_MS}`);
@@ -152,7 +152,7 @@ describe("issue #1938 evidence", () => {
 		expect(script).toContain('recovery_trigger_started_ms="$(date +%s%3N)"');
 		expect(script).toContain('--trigger-start-ms "$raw_trigger_started_ms" --deadline-at-ms "$raw_deadline_at_ms"');
 		expect(script).toContain('--trigger-start-ms "$recovery_trigger_started_ms" --deadline-at-ms "$recovery_deadline_at_ms"');
-		expect(script).toContain('GJC_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS"');
+		expect(script).toContain('WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS"');
 		expect(script).not.toContain("seq 1 150");
 	});
 
@@ -387,14 +387,14 @@ describe("issue #1938 evidence", () => {
 	test("renders semantically valid unsupported receipts through every available serializer", async () => {
 		const environments: Array<Record<string, string>> = [
 			{},
-			{ GJC_ISSUE1938_TEST_DISABLE_PYTHON: "1" },
-			{ GJC_ISSUE1938_TEST_DISABLE_PYTHON: "1", GJC_ISSUE1938_TEST_DISABLE_BUN: "1" },
+			{ WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1" },
+			{ WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1", WORX_ISSUE1938_TEST_DISABLE_BUN: "1" },
 		];
 		for (const environment of environments) {
 			const value = await runUnsupportedSerializer(environment);
 			expect(value.status).toBe("unsupported");
 			expect(value.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/);
-			if (environment.GJC_ISSUE1938_TEST_DISABLE_BUN === "1") {
+			if (environment.WORX_ISSUE1938_TEST_DISABLE_BUN === "1") {
 				expect(value.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
 			} else {
 				expect(value.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
@@ -408,11 +408,11 @@ describe("issue #1938 evidence", () => {
 		expect(script).toContain("new Date().toISOString()");
 	});
 	test("leaves no partial receipt when same-directory atomic publication is interrupted", async () => {
-		for (const environment of [{}, { GJC_ISSUE1938_TEST_DISABLE_PYTHON: "1" }, { GJC_ISSUE1938_TEST_DISABLE_PYTHON: "1", GJC_ISSUE1938_TEST_DISABLE_BUN: "1" }]) {
+		for (const environment of [{}, { WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1" }, { WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1", WORX_ISSUE1938_TEST_DISABLE_BUN: "1" }]) {
 			const sessionId = `serializer-interrupted-${randomUUID()}`;
 			const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
 			const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
-			const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, GJC_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", GJC_ISSUE1938_TEST_FAIL_EVIDENCE_RENAME: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
+			const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", WORX_ISSUE1938_TEST_FAIL_EVIDENCE_RENAME: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
 			try {
 				expect(await proc.exited).toBe(1);
 				expect(await Bun.file(evidencePath).exists()).toBe(false);
@@ -426,7 +426,7 @@ test("leaves no partial receipt when the Python serializer fails", async () => {
 	const sessionId = `serializer-failed-${randomUUID()}`;
 	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
-	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, GJC_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", GJC_ISSUE1938_TEST_FAIL_PYTHON_SERIALIZER: "1" }, stdout: "pipe", stderr: "pipe" });
+	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", WORX_ISSUE1938_TEST_FAIL_PYTHON_SERIALIZER: "1" }, stdout: "pipe", stderr: "pipe" });
 	try {
 		expect(await proc.exited).toBe(1);
 		expect(await Bun.file(evidencePath).exists()).toBe(false);

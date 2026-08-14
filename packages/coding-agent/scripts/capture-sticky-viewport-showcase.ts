@@ -274,7 +274,7 @@ export async function captureProvenance(): Promise<CaptureProvenance> {
 	);
 	return {
 		git_head: gitHead,
-		oracle_commit: process.env.GJC_STICKY_VIEWPORT_ORACLE_COMMIT?.trim() ?? gitHead,
+		oracle_commit: process.env.WORX_STICKY_VIEWPORT_ORACLE_COMMIT?.trim() ?? gitHead,
 		git_diff_scope: PROVENANCE_DIFF_SCOPE,
 		git_diff_binary_sha256: hash(await git(["diff", "--binary", "HEAD", "--", ...PROVENANCE_DIFF_SCOPE])),
 		source_sha256: sourceSha256,

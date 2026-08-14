@@ -94,7 +94,7 @@ describe("VB001 gen-3 harness gates", () => {
 
 	test("M3 rejects failed and incomplete S4/S5 proof while preserving positive provider probes", () => {
 		const s4Marker = "gjc-rss-reference-0123456789abcdef ... of 29960 lines";
-		const s5Marker = "GJC_RSS_BASH_BYTES=8388608";
+		const s5Marker = "WORX_RSS_BASH_BYTES=8388608";
 		expect(successfulScenarioResult("S4", s4Marker)).toBe(true);
 		expect(successfulScenarioResult("S4", `${s4Marker}\nERROR: read failed`)).toBe(false);
 		expect(successfulScenarioResult("S5", s5Marker)).toBe(true);

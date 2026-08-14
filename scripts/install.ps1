@@ -24,7 +24,7 @@ try {
 
 $Repo = "bworx-io/worx-code"
 $Package = "@bworx-io/worx-code"
-$InstallDir = if ($env:GJC_INSTALL_DIR) { $env:GJC_INSTALL_DIR } else { "$env:LOCALAPPDATA\worx" }
+$InstallDir = if ($env:WORX_INSTALL_DIR) { $env:WORX_INSTALL_DIR } else { "$env:LOCALAPPDATA\worx" }
 $BinaryName = "worx-windows-x64.exe"
 $MinimumBunVersion = "1.3.14"
 

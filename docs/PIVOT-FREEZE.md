@@ -168,7 +168,7 @@ The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:16
 ```
 
 Output: `27` unique `gjc_`-prefixed MCP tool names (23 coordinator, 4 SDK).
-[V] `git grep -h -o -E 'GJC_[A-Z_]+' -- 'packages/*/src/**' | sort -u | wc -l`
+[V] `git grep -h -o -E 'WORX_[A-Z_]+' -- 'packages/*/src/**' | sort -u | wc -l`
 outputs `276` unique identifiers across package source. This supersedes the
 plan's preliminary count of 282 and the narrower coding-agent-only count of
 251; P1 must use a fresh exhaustive sweep rather than either stale count.
@@ -186,7 +186,7 @@ P1 may rename these surfaces, but must preserve their behavior:
 `--mode rpc` is not a current engine contract. The CLI parser rejects it as
 removed, and the SDK documentation names the SDK machine interface as the only
 external-control interface. `ems-review` still contains an opt-in RPC branch,
-but `GJC_RPC` defaults off, so that branch is a downstream incompatibility rather
+but `WORX_RPC` defaults off, so that branch is a downstream incompatibility rather
 than behavior to restore. P1 must not reintroduce the retired RPC protocol.
 Before cutover, the EMS track must replace that branch with the supported
 SDK/Coordinator lifecycle, prompt, status, and event contracts while retaining

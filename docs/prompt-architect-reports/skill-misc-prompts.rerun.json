@@ -31,7 +31,7 @@
       "file_path": "packages/coding-agent/src/defaults/gjc/skills/deep-interview/SKILL.md",
       "line_start": 100,
       "line_end": 107,
-      "body": "The SKILL fallback path says to read only `[$GJC_CONFIG_DIR|~/.gjc]/settings.json` and `./.gjc/settings.json`, with project settings overriding user settings and defaulting to `0.05`. The runtime also checks modern YAML config first (`GJC_CODING_AGENT_DIR/config.yml`, `$GJC_CONFIG_DIR/agent/config.yml`, or `~/.gjc/agent/config.yml`) before project/user JSON (`deep-interview-runtime.ts:382-415`), and `--quick|--standard|--deep` map to `0.6/0.5/0.35` when no configured threshold exists (`deep-interview-runtime.ts:36-41, 524-550`). Update the SKILL so agents fallback to the same sources and explain the mode thresholds, or change runtime precedence to match the documented contract."
+      "body": "The SKILL fallback path says to read only `[$WORX_CONFIG_DIR|~/.gjc]/settings.json` and `./.gjc/settings.json`, with project settings overriding user settings and defaulting to `0.05`. The runtime also checks modern YAML config first (`WORX_CODING_AGENT_DIR/config.yml`, `$WORX_CONFIG_DIR/agent/config.yml`, or `~/.gjc/agent/config.yml`) before project/user JSON (`deep-interview-runtime.ts:382-415`), and `--quick|--standard|--deep` map to `0.6/0.5/0.35` when no configured threshold exists (`deep-interview-runtime.ts:36-41, 524-550`). Update the SKILL so agents fallback to the same sources and explain the mode thresholds, or change runtime precedence to match the documented contract."
     },
     {
       "title": "Remove the unsupported deep-interview --research-setup branch",

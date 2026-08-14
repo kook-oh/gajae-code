@@ -76,7 +76,7 @@ function parseArgs(argv: string[]): CaptureArgs {
 	let out: string | undefined;
 	let candidateModel = DEFAULT_COMPOSER_CANDIDATE_MODEL;
 	let baselineModel = DEFAULT_CODEX_BASELINE_MODEL;
-	let gjcBin = process.env.GJC_BIN?.trim() || "gjc";
+	let gjcBin = process.env.WORX_BIN?.trim() || "gjc";
 	let scenarioFilter: Set<ScenarioId> | undefined;
 	let timeoutSec = 600;
 	for (let i = 0; i < argv.length; i++) {

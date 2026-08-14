@@ -6,8 +6,8 @@ const repoRoot = path.join(import.meta.dir, "..");
 // Local agent sessions may export a workflow session id, which would redirect
 // state-runtime tests into session-scoped state paths. CI gates exercise the
 // default native-free state files, so keep this script hermetic.
-delete process.env.GJC_SESSION_ID;
-delete process.env.GJC_STATE_SESSION_ID;
+delete process.env.WORX_SESSION_ID;
+delete process.env.WORX_STATE_SESSION_ID;
 
 const relevantPathPrefixes = [
 	"packages/coding-agent/",

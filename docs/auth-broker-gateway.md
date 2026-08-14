@@ -93,7 +93,7 @@ gjc auth-gateway token   [--regenerate] [--json]
 gjc auth-gateway status  [--json]
 ```
 
-- `serve` requires `GJC_AUTH_BROKER_URL` (or `auth.broker.url` in `config.yml`) — the gateway is itself a broker client. It calls `AuthBrokerClient.fetchSnapshot()`, wraps it in `RemoteAuthCredentialStore`, and constructs an `AuthStorage` that resolves access tokens through the broker. Default bind is `127.0.0.1:4000`. The gateway token is stored at `<config-dir>/auth-gateway.token` (`0600`); `--no-auth` disables the bearer check entirely (loopback-only use).
+- `serve` requires `WORX_AUTH_BROKER_URL` (or `auth.broker.url` in `config.yml`) — the gateway is itself a broker client. It calls `AuthBrokerClient.fetchSnapshot()`, wraps it in `RemoteAuthCredentialStore`, and constructs an `AuthStorage` that resolves access tokens through the broker. Default bind is `127.0.0.1:4000`. The gateway token is stored at `<config-dir>/auth-gateway.token` (`0600`); `--no-auth` disables the bearer check entirely (loopback-only use).
 - `token` / `status` mirror the broker’s equivalents.
 
 ### Endpoints
@@ -136,29 +136,29 @@ The 15 s client window deliberately sits below the broker’s 5 min server cache
 
 ## Operator opt-in
 
-The broker is **off** unless `GJC_AUTH_BROKER_URL` (or `auth.broker.url` in `config.yml`) is set. When set, `discoverAuthStorage` in `packages/coding-agent/src/sdk/session.ts` swaps the local SQLite credential store for `RemoteAuthCredentialStore` and every API call resolves credentials through the broker.
+The broker is **off** unless `WORX_AUTH_BROKER_URL` (or `auth.broker.url` in `config.yml`) is set. When set, `discoverAuthStorage` in `packages/coding-agent/src/sdk/session.ts` swaps the local SQLite credential store for `RemoteAuthCredentialStore` and every API call resolves credentials through the broker.
 
 ### Environment variables
 
 | Variable | Purpose | Required when |
 | -------- | ------- | ------------- |
-| `GJC_AUTH_BROKER_URL`   | Base URL of the remote auth-broker (e.g. `https://broker.tailnet:8765`). Selecting this puts the client in broker mode — local SQLite is bypassed. | Any time the gjc client should resolve credentials through a broker (and required by `gjc auth-gateway serve`). |
-| `GJC_AUTH_BROKER_TOKEN` | Bearer token used for every broker endpoint except `/v1/healthz`. | When `GJC_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`. |
+| `WORX_AUTH_BROKER_URL`   | Base URL of the remote auth-broker (e.g. `https://broker.tailnet:8765`). Selecting this puts the client in broker mode — local SQLite is bypassed. | Any time the gjc client should resolve credentials through a broker (and required by `gjc auth-gateway serve`). |
+| `WORX_AUTH_BROKER_TOKEN` | Bearer token used for every broker endpoint except `/v1/healthz`. | When `WORX_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`. |
 
 Resolution order in `resolveAuthBrokerConfig()`:
 
-1. `GJC_AUTH_BROKER_URL` env (else `auth.broker.url` from `config.yml`, with `$ENV_NAME` resolution);
-2. `GJC_AUTH_BROKER_TOKEN` env (else `auth.broker.token` from `config.yml`, else `<config-dir>/auth-broker.token`);
+1. `WORX_AUTH_BROKER_URL` env (else `auth.broker.url` from `config.yml`, with `$ENV_NAME` resolution);
+2. `WORX_AUTH_BROKER_TOKEN` env (else `auth.broker.token` from `config.yml`, else `<config-dir>/auth-broker.token`);
 3. URL set but no token resolvable → hard error pointing at the token file path.
 
-The gateway has no dedicated env vars — it inherits `GJC_AUTH_BROKER_*` because it is itself a broker client.
+The gateway has no dedicated env vars — it inherits `WORX_AUTH_BROKER_*` because it is itself a broker client.
 
 ### `config.yml` keys
 
 | Key | Default | Purpose |
 | --- | ------- | ------- |
-| `auth.broker.url`   | unset | Same as `GJC_AUTH_BROKER_URL`; env wins. Hidden from the settings UI. |
-| `auth.broker.token` | unset | Same as `GJC_AUTH_BROKER_TOKEN`; env wins. Values may be the literal token or `$ENV_NAME` to indirect through env. |
+| `auth.broker.url`   | unset | Same as `WORX_AUTH_BROKER_URL`; env wins. Hidden from the settings UI. |
+| `auth.broker.token` | unset | Same as `WORX_AUTH_BROKER_TOKEN`; env wins. Values may be the literal token or `$ENV_NAME` to indirect through env. |
 
 ### Token files
 
@@ -167,7 +167,7 @@ The gateway has no dedicated env vars — it inherits `GJC_AUTH_BROKER_*` becaus
 | `<config-dir>/auth-broker.token`  | `gjc auth-broker serve` (created at first start) | `0600` in a `0700` parent dir |
 | `<config-dir>/auth-gateway.token` | `gjc auth-gateway serve` (skipped under `--no-auth`) | `0600` in a `0700` parent dir |
 
-`<config-dir>` resolves to `~/.gjc/` (respecting `GJC_CONFIG_DIR`).
+`<config-dir>` resolves to `~/.gjc/` (respecting `WORX_CONFIG_DIR`).
 
 ## Interaction with the local API-key resolution order
 
@@ -177,6 +177,6 @@ The broker only owns OAuth credentials and provider-API-key credentials that wer
 
 ## See also
 
-- [`secrets.md`](./secrets.md) — secret obfuscation around tokens that *do* leak through (e.g. `GJC_AUTH_BROKER_TOKEN` in shell output).
+- [`secrets.md`](./secrets.md) — secret obfuscation around tokens that *do* leak through (e.g. `WORX_AUTH_BROKER_TOKEN` in shell output).
 - [`models.md`](./models.md) — provider auth resolution order; the broker plugs in at layers 2–3 (stored credentials).
-- [`environment-variables.md`](./environment-variables.md) — full env reference including `GJC_AUTH_BROKER_URL` / `GJC_AUTH_BROKER_TOKEN`.
+- [`environment-variables.md`](./environment-variables.md) — full env reference including `WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN`.

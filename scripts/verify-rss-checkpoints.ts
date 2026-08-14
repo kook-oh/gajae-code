@@ -170,7 +170,7 @@ const checkpointRoot = path.join(repoRoot, ".gjc", "rss-checkpoints");
 const REFERENCE_CHUNK_MARKER = "gjc-rss-reference-0123456789abcdef";
 const REFERENCE_LARGE_LINE_COUNT = 29_960;
 const BASH_OUTPUT_BYTES = 8_388_608;
-const BASH_OUTPUT_MARKER = `GJC_RSS_BASH_BYTES=${BASH_OUTPUT_BYTES}`;
+const BASH_OUTPUT_MARKER = `WORX_RSS_BASH_BYTES=${BASH_OUTPUT_BYTES}`;
 const binaryPath = path.join(repoRoot, "packages", "coding-agent", "dist", "gjc");
 const buildCommand = "bun --cwd=packages/coding-agent run build";
 const deferredS6Reason = "requires W7/W8 authorization and daemon implementation";
@@ -606,7 +606,7 @@ async function startProviderStub(): Promise<ProviderStub> {
 				for (const resultText of scenarioToolResults(parsed)) {
 					if (!expectedScenario || !successfulScenarioResult(expectedScenario, resultText)) {
 						if (expectedScenario) stats.failedScenarioResultCount += 1;
-						if (expectedScenario && process.env.GJC_RSS_DEBUG_RESULT) { try { fsSync.writeFileSync(process.env.GJC_RSS_DEBUG_RESULT, resultText); } catch {} }
+						if (expectedScenario && process.env.WORX_RSS_DEBUG_RESULT) { try { fsSync.writeFileSync(process.env.WORX_RSS_DEBUG_RESULT, resultText); } catch {} }
 						continue;
 					}
 					if (expectedScenario === "S4") stats.successfulReadResultCount += 1;
@@ -716,9 +716,9 @@ import os, pty, select, subprocess, sys, time
 binary = ${JSON.stringify(binaryPath)}
 repo_root = ${JSON.stringify(repoRoot)}
 env = os.environ.copy()
-agent_dir = env.get("GJC_AGENT_DIR", "")
+agent_dir = env.get("WORX_AGENT_DIR", "")
 debug_paths = [os.path.join(agent_dir, "gjc-debug.log"), os.path.join(agent_dir, "state", "gjc-debug.log")]
-barrier_file = env.get("GJC_RSS_BARRIER_FILE", "")
+barrier_file = env.get("WORX_RSS_BARRIER_FILE", "")
 master, slave = pty.openpty()
 child = subprocess.Popen([binary, "--no-session", "--no-tools"], cwd=repo_root, env=env, stdin=slave, stdout=slave, stderr=slave, close_fds=True)
 os.close(slave)
@@ -814,10 +814,10 @@ async function writeProcessProbe(root: string, command: string[], cwd: string): 
 import * as fs from "node:fs";
 const target = ${JSON.stringify(command)};
 const targetCwd = ${JSON.stringify(cwd)};
-const metricsPath = process.env.GJC_RSS_MEMORY_PROBE;
-const barrierPath = process.env.GJC_RSS_BARRIER_FILE;
-const cleanupPath = process.env.GJC_RSS_CLEANUP_FILE;
-if (!metricsPath) throw new Error("GJC_RSS_MEMORY_PROBE is required");
+const metricsPath = process.env.WORX_RSS_MEMORY_PROBE;
+const barrierPath = process.env.WORX_RSS_BARRIER_FILE;
+const cleanupPath = process.env.WORX_RSS_CLEANUP_FILE;
+if (!metricsPath) throw new Error("WORX_RSS_MEMORY_PROBE is required");
 let barrierWritten = !barrierPath;
 let childDone = false;
 const snapshot = (phase: "start" | "barrier" | "exit") => {
@@ -830,14 +830,14 @@ const barrierTimer = setInterval(() => {
   if (!barrierWritten && barrierPath && fs.existsSync(barrierPath)) {
     barrierWritten = true;
     snapshot("barrier");
-    if (process.env.GJC_RSS_SCENARIO === "S7" && !childDone) setTimeout(() => { try { if (cleanupPath) fs.writeFileSync(cleanupPath, "SIGINT\\n", "utf8"); } catch {} child?.kill("SIGINT"); }, 100);
+    if (process.env.WORX_RSS_SCENARIO === "S7" && !childDone) setTimeout(() => { try { if (cleanupPath) fs.writeFileSync(cleanupPath, "SIGINT\\n", "utf8"); } catch {} child?.kill("SIGINT"); }, 100);
   }
 }, 2);
 barrierTimer.unref?.();
 let child: any;
 child = Bun.spawn(target, {
   cwd: targetCwd,
-  env: { ...Bun.env, GJC_RSS_PROBE_CHILD: "1" },
+  env: { ...Bun.env, WORX_RSS_PROBE_CHILD: "1" },
   stdin: "ignore",
   stdout: "inherit",
   stderr: "inherit",
@@ -909,7 +909,7 @@ interface ProcessMeasureOptions {
 
 async function measureProcess(command: string[], env: Record<string, string>, cwd: string, timeoutMs = 30_000, options: ProcessMeasureOptions = {}): Promise<ProcessSample> {
 	const processEnv = options.memoryProbeFile
-		? { ...env, GJC_RSS_MEMORY_PROBE: options.memoryProbeFile, ...(options.cleanupFile ? { GJC_RSS_CLEANUP_FILE: options.cleanupFile } : {}) }
+		? { ...env, WORX_RSS_MEMORY_PROBE: options.memoryProbeFile, ...(options.cleanupFile ? { WORX_RSS_CLEANUP_FILE: options.cleanupFile } : {}) }
 		: env;
 	const proc = Bun.spawn(maxRssCommand(command), { cwd, env: processEnv, stdin: "ignore", stdout: "pipe", stderr: "pipe" });
 	const stdoutPromise = new Response(proc.stdout).text();
@@ -1126,11 +1126,11 @@ async function measureScenario(
 		const missingAdvertisementBefore = provider.stats.missingScenarioAdvertisementCount;
 		const env: Record<string, string> = {
 			...baseEnv,
-			...(id === "S3" ? { GJC_DEBUG_REDRAW: "1" } : {}),
-			...(barrierFile ? { GJC_RSS_BARRIER_FILE: barrierFile } : {}),
-			GJC_RSS_SCENARIO: id,
-			GJC_RSS_REFERENCE_WORKSPACE: referenceWorkspace,
-			GJC_RSS_PROVIDER_STUB: provider.url,
+			...(id === "S3" ? { WORX_DEBUG_REDRAW: "1" } : {}),
+			...(barrierFile ? { WORX_RSS_BARRIER_FILE: barrierFile } : {}),
+			WORX_RSS_SCENARIO: id,
+			WORX_RSS_REFERENCE_WORKSPACE: referenceWorkspace,
+			WORX_RSS_PROVIDER_STUB: provider.url,
 			RSS_HARNESS_API_KEY: "rss-harness",
 		};
 		if (barrierFile) await fs.rm(barrierFile, { force: true });
@@ -1174,7 +1174,7 @@ async function measureScenario(
 	const observedToolNames = measuredToolNames;
 	const successfulToolResults = id === "S4" ? measuredSuccessfulReadResults : id === "S5" ? measuredSuccessfulBashResults : id === "S7" ? measuredMcpCalls : 0;
 	const workload = {
-		expected: id === "S4" ? "one advertised read result containing the 1 MiB marker/line count per sample" : id === "S5" ? "one advertised bash result containing GJC_RSS_BASH_BYTES=8388608 per sample" : id === "S7" ? "one MCP echo tool call and child process" : "no tool call",
+		expected: id === "S4" ? "one advertised read result containing the 1 MiB marker/line count per sample" : id === "S5" ? "one advertised bash result containing WORX_RSS_BASH_BYTES=8388608 per sample" : id === "S7" ? "one MCP echo tool call and child process" : "no tool call",
 		observedToolCalls,
 		observedToolNames,
 		observedMcpCalls,
@@ -1574,12 +1574,12 @@ async function main(): Promise<void> {
 		await writeModelsConfig(agentDir, activeProvider.url, activeProvider.s7Url);
 
 		const baseEnv: Record<string, string> = {};
-		for (const [key, value] of Object.entries(Bun.env)) if (!key.startsWith("GJC_") && value !== undefined) baseEnv[key] = value;
+		for (const [key, value] of Object.entries(Bun.env)) if (!key.startsWith("WORX_") && value !== undefined) baseEnv[key] = value;
 		baseEnv.HOME = home;
 		baseEnv.USERPROFILE = home;
 		baseEnv.XDG_CONFIG_HOME = xdgConfig;
-		baseEnv.GJC_CODING_AGENT_DIR = agentDir;
-		baseEnv.GJC_AGENT_DIR = agentDir;
+		baseEnv.WORX_CODING_AGENT_DIR = agentDir;
+		baseEnv.WORX_AGENT_DIR = agentDir;
 		const gitCommit = currentCommit;
 		const floorPolicy = options.milestone ? FLOOR_POLICIES[options.milestone] : undefined;
 		if (options.rescopeRef && !floorPolicy) throw new CheckpointError("RescopeReferenceInvalid", "--rescope-ref requires --milestone.");

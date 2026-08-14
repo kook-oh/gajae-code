@@ -93,7 +93,7 @@ PY
   local generation="${5:?generation required}"
   local kind="${6:-}"
   local transition_lock="${generation_path%.json}.transition.lock"
-  if [[ "${GJC_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
+  if [[ "${WORX_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
     exec {gjc_alias_lock_fd}>"$transition_lock"
     flock -x "$gjc_alias_lock_fd"
   fi
@@ -131,7 +131,7 @@ finally:
     database.close()
 PY
   local rc=$?
-  if [[ "${GJC_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
+  if [[ "${WORX_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
     flock -u "$gjc_alias_lock_fd"
     eval "exec ${gjc_alias_lock_fd}>&-"
   fi

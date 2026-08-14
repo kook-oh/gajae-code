@@ -23,9 +23,9 @@ EVIDENCE_PATH="$EVIDENCE_DIR/$PHASE.json"
 
 
 now() {
-  if [[ "${GJC_ISSUE1938_TEST_DISABLE_PYTHON:-}" != 1 ]] && command -v python3 >/dev/null 2>&1; then
+  if [[ "${WORX_ISSUE1938_TEST_DISABLE_PYTHON:-}" != 1 ]] && command -v python3 >/dev/null 2>&1; then
     python3 -c 'from datetime import datetime, timezone; print(datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"))'
-  elif [[ "${GJC_ISSUE1938_TEST_DISABLE_BUN:-}" != 1 ]] && command -v bun >/dev/null 2>&1; then
+  elif [[ "${WORX_ISSUE1938_TEST_DISABLE_BUN:-}" != 1 ]] && command -v bun >/dev/null 2>&1; then
     bun -e 'console.log(new Date().toISOString())'
   else
     date -u +%Y-%m-%dT%H:%M:%SZ
@@ -41,9 +41,9 @@ GIT_AVAILABLE=false; command -v git >/dev/null 2>&1 && git -C "$REPO_ROOT" rev-p
 BUN_AVAILABLE=false; command -v bun >/dev/null 2>&1 && BUN_AVAILABLE=true
 PYTHON3_AVAILABLE=false; command -v python3 >/dev/null 2>&1 && PYTHON3_AVAILABLE=true
 DISPOSABLE_UNIT=false; [[ "$LINUX" == true && "$PROC" == true && "$SYSTEMCTL_USER" == true && "$SYSTEMD_RUN_USER" == true && "$SCRIPT_PTY" == true && "$TMUX_AVAILABLE" == true && "$GIT_AVAILABLE" == true && "$BUN_AVAILABLE" == true && "$PYTHON3_AVAILABLE" == true ]] && DISPOSABLE_UNIT=true
-if [[ "${GJC_ISSUE1938_TEST_FORCE_UNSUPPORTED:-}" == 1 ]]; then SYSTEMCTL_USER=false; DISPOSABLE_UNIT=false; fi
-[[ "${GJC_ISSUE1938_TEST_DISABLE_PYTHON:-}" == 1 ]] && PYTHON3_AVAILABLE=false
-[[ "${GJC_ISSUE1938_TEST_DISABLE_BUN:-}" == 1 ]] && BUN_AVAILABLE=false
+if [[ "${WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED:-}" == 1 ]]; then SYSTEMCTL_USER=false; DISPOSABLE_UNIT=false; fi
+[[ "${WORX_ISSUE1938_TEST_DISABLE_PYTHON:-}" == 1 ]] && PYTHON3_AVAILABLE=false
+[[ "${WORX_ISSUE1938_TEST_DISABLE_BUN:-}" == 1 ]] && BUN_AVAILABLE=false
 
 # Capabilities are classified before any disposable resource is made.  Unsupported
 # environments have one portable outcome and never leave a partial receipt.
@@ -61,7 +61,7 @@ VERDICT_POLL_MS=100
 
 publish_evidence_temp() {
   local temporary="$1"
-  [[ "${GJC_ISSUE1938_TEST_FAIL_EVIDENCE_RENAME:-}" != 1 ]] || { rm -f "$temporary"; return 1; }
+  [[ "${WORX_ISSUE1938_TEST_FAIL_EVIDENCE_RENAME:-}" != 1 ]] || { rm -f "$temporary"; return 1; }
   mv -f -- "$temporary" "$EVIDENCE_PATH"
 }
 write_evidence() {
@@ -73,7 +73,7 @@ completed = None if os.environ["COMPLETED_AT"] == "null" else os.environ["COMPLE
 def nullable(name): return os.environ[name] or None
 payload = {"schema_version":1,"issue":"1938","phase":os.environ["PHASE"],"status":os.environ["STATUS"],"generated_at":__import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(timespec="milliseconds").replace("+00:00","Z"),"source_revision":nullable("SOURCE_REVISION"),"run_nonce":nullable("RUN_NONCE"),"capabilities":{key:os.environ[key.upper()] == "true" for key in ("linux","proc","systemctl_user","systemd_run_user","python3","script","tmux","git","bun","disposable_unit")},"cases":json.loads(os.environ["CASES"]),"cleanup":{"status":os.environ["CLEANUP_STATUS"],"unit":nullable("SERVICE_UNIT"),"scope":nullable("SCOPE_UNIT"),"completed_at":completed}}
 with open(sys.argv[1], "w", encoding="utf-8") as handle: json.dump(payload, handle, separators=(",",":")); handle.write("\n")
-if os.environ.get("GJC_ISSUE1938_TEST_FAIL_PYTHON_SERIALIZER") == "1": raise SystemExit(1)
+if os.environ.get("WORX_ISSUE1938_TEST_FAIL_PYTHON_SERIALIZER") == "1": raise SystemExit(1)
 PY
   publish_evidence_temp "$temporary"
 }
@@ -104,7 +104,7 @@ PY
 
 private_tmux_session_pid() {
   local tmpdir="$1" socket="$2" native_id="$3" output rc
-  [[ "${GJC_ISSUE1938_TEST_TMUX_CLEANUP_PROBE:-}" != error ]] || return 2
+  [[ "${WORX_ISSUE1938_TEST_TMUX_CLEANUP_PROBE:-}" != error ]] || return 2
   output="$(TMUX_TMPDIR="$tmpdir" tmux -L "$socket" display-message -p -t "$native_id" '#{session_id}\t#{pid}' 2>&1)"; rc=$?
   if [[ $rc -eq 0 && "$output" =~ ^\$[0-9]+$'\t'[1-9][0-9]*$ ]]; then
     printf '%s\n' "${output#*$'\t'}"
@@ -173,7 +173,7 @@ terminate_owned_server() {
 }
 unit_is_explicitly_gone() {
   local unit="$1" load_state rc
-  [[ "${GJC_ISSUE1938_TEST_SYSTEMD_CLEANUP_PROBE:-}" != error ]] || return 2
+  [[ "${WORX_ISSUE1938_TEST_SYSTEMD_CLEANUP_PROBE:-}" != error ]] || return 2
   load_state="$(systemctl --user show "$unit" --property=LoadState --value 2>&1)"; rc=$?
   [[ $rc -eq 0 ]] || return 2
   [[ "$load_state" == not-found ]]
@@ -227,8 +227,8 @@ PY
 trap cleanup EXIT INT TERM
 mkdir -p "$EVIDENCE_DIR" || exit 1
 rm -f "$EVIDENCE_PATH" || exit 1
-if [[ -n "${GJC_ISSUE1938_TEST_CLEANUP_PROBE_ONLY:-}" ]]; then
-  case "$GJC_ISSUE1938_TEST_CLEANUP_PROBE_ONLY" in
+if [[ -n "${WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY:-}" ]]; then
+  case "$WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY" in
     tmux) TRACKED_SERVERS+=("/nonexistent|test|\$1|$$|$(proc_start_time $$)|$(proc_cgroup $$)") ;;
     monitor)
       TMUX_TMPDIR_PRIVATE="$(mktemp -d)" || exit 1
@@ -341,12 +341,12 @@ run_post_code() {
   [[ "$(git -C "$REPO_ROOT" rev-parse HEAD)" == "$(git -C "$WORKTREE" rev-parse HEAD)" ]] || { append_case raw_proof_before_exec failed "$started" "$(now)" '' product-entrypoint '' '' proven '' source_revision_mismatch; return 1; }
   product_bin="$WORKTREE/issue-1938-gjc"; tmux_wrapper="$WORKTREE/issue-1938-tmux"
   printf '#!/usr/bin/env bash\nexec %q %q "$@"\n' "$bun_bin" "$WORKTREE/packages/coding-agent/src/cli.ts" >"$product_bin"
-  printf '#!/usr/bin/env bash\nexec %q -L "$GJC_ISSUE1938_TMUX_SOCKET" "$@"\n' "$tmux_bin" >"$tmux_wrapper"
+  printf '#!/usr/bin/env bash\nexec %q -L "$WORX_ISSUE1938_TMUX_SOCKET" "$@"\n' "$tmux_bin" >"$tmux_wrapper"
   chmod 700 "$product_bin" "$tmux_wrapper"
 
   raw_session="issue1938-raw-$RUN_PREFIX-$$"; raw_state="$WORKTREE/.gjc-session-state/$raw_session"; RAW_SOCKET="gjc-${raw_session//[^A-Za-z0-9_.-]/_}"
 
-  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" GJC_ISSUE1938_TMUX_SOCKET="$RAW_SOCKET" GJC_BIN="$product_bin" GJC_SESSION_TMUX_BIN="$tmux_wrapper" GJC_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" GJC_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$raw_session" "$WORKTREE"; then append_case raw_proof_before_exec failed "$started" "$(now)" '' "$raw_session" '' '' proven '' launch_failed "$SERVICE_UNIT"; return 1; fi
+  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RAW_SOCKET" WORX_BIN="$product_bin" WORX_SESSION_TMUX_BIN="$tmux_wrapper" WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" WORX_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$raw_session" "$WORKTREE"; then append_case raw_proof_before_exec failed "$started" "$(now)" '' "$raw_session" '' '' proven '' launch_failed "$SERVICE_UNIT"; return 1; fi
   raw_pid="$(wait_server_pid "$raw_session" "$RAW_SOCKET" || true)"; raw_cgroup="$(proc_cgroup "$raw_pid")"; completed="$(now)"
   if [[ -n "$raw_pid" && -n "$raw_cgroup" ]] && independent_scope "$raw_cgroup" && track_server "$WORKTREE/tmux" "$RAW_SOCKET" "$raw_session" "$raw_pid" && track_server "$WORKTREE/tmux" "$RAW_SOCKET" "${raw_session}-owner-monitor" "$raw_pid"; then owner_unit="$(owner_scope "$raw_cgroup")"; TRACKED_UNITS+=("$owner_unit"); append_case raw_proof_before_exec passed "$started" "$completed" "$raw_pid" "$raw_session" "$raw_cgroup" '' proven '' proven "$owner_unit"; else append_case raw_proof_before_exec failed "$started" "$completed" "$raw_pid" "$raw_session" "$raw_cgroup" '' proven '' unavailable "$SERVICE_UNIT"; return 1; fi
 
@@ -359,7 +359,7 @@ run_post_code() {
   managed_session="issue1938-managed-$RUN_PREFIX-$$"; SERVICE_UNIT="gjc-issue1938-managed-$RUN_PREFIX-$$-$RANDOM.service"; TRACKED_UNITS+=("$SERVICE_UNIT")
 
 
-  if ! start_unsafe_service env -u TMUX -u TMUX_PANE -u GJC_TMUX_LAUNCHED TMUX_TMPDIR="$WORKTREE/tmux" GJC_ISSUE1938_TMUX_SOCKET="$TMUX_SOCKET" GJC_TMUX_COMMAND="$tmux_wrapper" GJC_TMUX_SESSION="$managed_session" GJC_LAUNCH_POLICY=tmux script -qefc "$product_bin --tmux" /dev/null; then append_case managed_proof_before_exec failed "$started" "$(now)" '' "$managed_session" '' '' proven '' launch_failed "$SERVICE_UNIT"; return 1; fi
+  if ! start_unsafe_service env -u TMUX -u TMUX_PANE -u WORX_TMUX_LAUNCHED TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$TMUX_SOCKET" WORX_TMUX_COMMAND="$tmux_wrapper" WORX_TMUX_SESSION="$managed_session" WORX_LAUNCH_POLICY=tmux script -qefc "$product_bin --tmux" /dev/null; then append_case managed_proof_before_exec failed "$started" "$(now)" '' "$managed_session" '' '' proven '' launch_failed "$SERVICE_UNIT"; return 1; fi
   pid="$(wait_server_pid "$managed_session" "$TMUX_SOCKET" || true)"; cgroup="$(proc_cgroup "$pid")"
   if [[ -n "$pid" && -n "$cgroup" ]] && independent_scope "$cgroup" && track_server "$WORKTREE/tmux" "$TMUX_SOCKET" "$managed_session" "$pid"; then owner_unit="$(owner_scope "$cgroup")"; TRACKED_UNITS+=("$owner_unit"); append_case managed_proof_before_exec passed "$started" "$(now)" "$pid" "$managed_session" "$cgroup" '' proven '' proven "$owner_unit"; else append_case managed_proof_before_exec failed "$started" "$(now)" "$pid" "$managed_session" "$cgroup" '' proven '' unavailable "$SERVICE_UNIT"; return 1; fi
 
@@ -367,7 +367,7 @@ run_post_code() {
   raw_baseline="$(capture_verdict_baseline "$raw_state" "$raw_session" "$bun_bin")" || return 1
   IFS=$'\t' read -r raw_baseline_generation raw_baseline_verdict_id raw_baseline_incident_id raw_baseline_incident_alias_id raw_baseline_vanished_id raw_baseline_vanished_alias_id <<<"$raw_baseline"
   raw_trigger_started_ms="$(date +%s%3N)"
-  if TMUX_TMPDIR="$WORKTREE/tmux" GJC_ISSUE1938_TMUX_SOCKET="$RAW_SOCKET" GJC_TMUX_COMMAND="$tmux_wrapper" "$product_bin" session force-close "$raw_session" >/dev/null; then :; else append_case expected_close_verdict failed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown SIGTERM unavailable; return 1; fi
+  if TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RAW_SOCKET" WORX_TMUX_COMMAND="$tmux_wrapper" "$product_bin" session force-close "$raw_session" >/dev/null; then :; else append_case expected_close_verdict failed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown SIGTERM unavailable; return 1; fi
   raw_deadline_at_ms=$((raw_trigger_started_ms + EXPECTED_VERDICT_DEADLINE_MS))
   raw_wait="$("$bun_bin" "$SCRIPT_DIR/wait-for-issue-1938-verdict.ts" --state-dir "$raw_state" --session "$raw_session" --classification expected_operator_shutdown --require-incident false --trigger-start-ms "$raw_trigger_started_ms" --deadline-at-ms "$raw_deadline_at_ms" --poll-ms "$VERDICT_POLL_MS" --baseline-generation "$raw_baseline_generation" --baseline-verdict-id "$raw_baseline_verdict_id" --baseline-incident-id "$raw_baseline_incident_id" --baseline-incident-alias-id "$raw_baseline_incident_alias_id" --baseline-vanished-id "$raw_baseline_vanished_id" --baseline-vanished-alias-id "$raw_baseline_vanished_alias_id" --artifact-dir "$EVIDENCE_DIR/artifacts" --artifact-name expected_close_verdict)" || { append_case expected_close_verdict failed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown SIGTERM unavailable; return 1; }
   IFS=$'\t' read -r raw_key raw_signal raw_result raw_latency raw_artifact_path raw_artifact_sha256 < <(parse_wait_receipt "$raw_wait") || { append_case expected_close_verdict failed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown SIGTERM unavailable; return 1; }
@@ -376,7 +376,7 @@ run_post_code() {
   recovery_session="issue1938-recovery-$RUN_PREFIX-$$"; recovery_state="$WORKTREE/.gjc-session-state/$recovery_session"; RECOVERY_SOCKET="gjc-${recovery_session//[^A-Za-z0-9_.-]/_}"; SERVICE_UNIT="gjc-issue1938-recovery-$RUN_PREFIX-$$-$RANDOM.service"; TRACKED_UNITS+=("$SERVICE_UNIT")
 
 
-  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" GJC_ISSUE1938_TMUX_SOCKET="$RECOVERY_SOCKET" GJC_BIN="$product_bin" GJC_SESSION_TMUX_BIN="$tmux_wrapper" GJC_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" GJC_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$recovery_session" "$WORKTREE"; then append_case unexpected_incident_recovery failed "$started" "$(now)" '' "$recovery_session" '' SIGTERM unexpected_owner_loss UNKNOWN launch_failed; return 1; fi
+  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RECOVERY_SOCKET" WORX_BIN="$product_bin" WORX_SESSION_TMUX_BIN="$tmux_wrapper" WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" WORX_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$recovery_session" "$WORKTREE"; then append_case unexpected_incident_recovery failed "$started" "$(now)" '' "$recovery_session" '' SIGTERM unexpected_owner_loss UNKNOWN launch_failed; return 1; fi
   pid="$(wait_server_pid "$recovery_session" "$RECOVERY_SOCKET" || true)"; cgroup="$(proc_cgroup "$pid")"
   if [[ -z "$pid" || -z "$cgroup" ]] || ! independent_scope "$cgroup"; then append_case unexpected_incident_recovery failed "$started" "$(now)" "$pid" "$recovery_session" "$cgroup" SIGTERM unexpected_owner_loss UNKNOWN unavailable; return 1; fi
   owner_unit="$(owner_scope "$cgroup")"; TRACKED_UNITS+=("$owner_unit"); track_server "$WORKTREE/tmux" "$RECOVERY_SOCKET" "$recovery_session" "$pid" && track_server "$WORKTREE/tmux" "$RECOVERY_SOCKET" "${recovery_session}-owner-monitor" "$pid" || { append_case unexpected_incident_recovery failed "$started" "$(now)" "$pid" "$recovery_session" "$cgroup" SIGTERM unexpected_owner_loss UNKNOWN unavailable; return 1; }
@@ -391,7 +391,7 @@ run_post_code() {
   IFS=$'\t' read -r recovery_key recovery_signal recovery_result recovery_latency recovery_artifact_path recovery_artifact_sha256 < <(parse_wait_receipt "$recovery_wait") || { append_case unexpected_incident_recovery failed "$started" "$(now)" "$pid" "$recovery_session" "$cgroup" SIGTERM unexpected_owner_loss UNKNOWN unavailable; return 1; }
 
   SERVICE_UNIT="gjc-issue1938-recovered-$RUN_PREFIX-$$-$RANDOM.service"; TRACKED_UNITS+=("$SERVICE_UNIT")
-  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" GJC_ISSUE1938_TMUX_SOCKET="$RECOVERY_SOCKET" GJC_BIN="$product_bin" GJC_SESSION_TMUX_BIN="$tmux_wrapper" GJC_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" GJC_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$recovery_session" "$WORKTREE"; then append_case unexpected_incident_recovery failed "$started" "$(now)" '' "$recovery_session" '' SIGTERM unexpected_owner_loss UNKNOWN recovery_launch_failed '' '' "$recovery_key" "$recovery_latency"; return 1; fi
+  if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RECOVERY_SOCKET" WORX_BIN="$product_bin" WORX_SESSION_TMUX_BIN="$tmux_wrapper" WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" WORX_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$recovery_session" "$WORKTREE"; then append_case unexpected_incident_recovery failed "$started" "$(now)" '' "$recovery_session" '' SIGTERM unexpected_owner_loss UNKNOWN recovery_launch_failed '' '' "$recovery_key" "$recovery_latency"; return 1; fi
   pid="$(wait_server_pid "$recovery_session" "$RECOVERY_SOCKET" || true)"; cgroup="$(proc_cgroup "$pid")"; if [[ -z "$pid" || -z "$cgroup" ]] || ! independent_scope "$cgroup"; then append_case unexpected_incident_recovery failed "$started" "$(now)" "$pid" "$recovery_session" "$cgroup" SIGTERM unexpected_owner_loss UNKNOWN recovery_scope_unavailable; return 1; fi; owner_unit="$(owner_scope "$cgroup")"; TRACKED_UNITS+=("$owner_unit"); track_server "$WORKTREE/tmux" "$RECOVERY_SOCKET" "$recovery_session" "$pid" && track_server "$WORKTREE/tmux" "$RECOVERY_SOCKET" "${recovery_session}-owner-monitor" "$pid" || { append_case unexpected_incident_recovery failed "$started" "$(now)" "$pid" "$recovery_session" "$cgroup" SIGTERM unexpected_owner_loss UNKNOWN recovery_identity_unavailable; return 1; }
   if ! python3 - "$recovery_state/recovery.json" "$recovery_state" "$recovery_session" "$recovery_key" <<'PY'
 import json, os, sys

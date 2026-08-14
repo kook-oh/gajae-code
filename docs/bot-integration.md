@@ -63,13 +63,13 @@ The generated config uses these environment variables:
 
 | Variable | Purpose |
 | --- | --- |
-| `GJC_COORDINATOR_MCP_WORKDIR_ROOTS` | Required allowlist for workdirs and artifact paths. |
-| `GJC_COORDINATOR_MCP_MUTATIONS` | Startup opt-in for mutation classes: `sessions`, `questions`, `reports`, or `all`. |
-| `GJC_COORDINATOR_MCP_SESSION_COMMAND` | Command used to start real GJC sessions, defaulting to `gjc --worktree` in generated setup. |
-| `GJC_COORDINATOR_MCP_PROFILE` | Optional profile namespace so one bot cannot enumerate another profile's state. |
-| `GJC_COORDINATOR_MCP_REPO` | Optional repo namespace so one repo cannot enumerate another repo's state. |
-| `GJC_COORDINATOR_MCP_STATE_ROOT` | Optional coordination state root; defaults under `.gjc/state/coordinator-mcp`. |
-| `GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Maximum bytes returned by artifact reads. |
+| `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` | Required allowlist for workdirs and artifact paths. |
+| `WORX_COORDINATOR_MCP_MUTATIONS` | Startup opt-in for mutation classes: `sessions`, `questions`, `reports`, or `all`. |
+| `WORX_COORDINATOR_MCP_SESSION_COMMAND` | Command used to start real GJC sessions, defaulting to `gjc --worktree` in generated setup. |
+| `WORX_COORDINATOR_MCP_PROFILE` | Optional profile namespace so one bot cannot enumerate another profile's state. |
+| `WORX_COORDINATOR_MCP_REPO` | Optional repo namespace so one repo cannot enumerate another repo's state. |
+| `WORX_COORDINATOR_MCP_STATE_ROOT` | Optional coordination state root; defaults under `.gjc/state/coordinator-mcp`. |
+| `WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Maximum bytes returned by artifact reads. |
 
 Mutating calls require both startup opt-in, per-call `allow_mutation: true`, and the required caller-provided `idempotency_key`. Missing any one fails closed.
 
@@ -113,7 +113,7 @@ Mutating tools:
 - `worx_coordinator_register_codex_handoff` — registers the Codex app-server resume bridge with a unix/loopback endpoint and token-file reference only.
 - `worx_coordinator_ack_codex_handoff` — acknowledges a Codex resume wake by durable `wake_key`; wake prompts never include GJC final responses.
 
-`worx_coordinator_stop_session` closes a coordinator delegate-created (ephemeral) session through canonical SDK broker lifecycle control, then removes its coordinator metadata only after the broker reports success. It refuses sessions with an active turn. User-registered sessions require both `force: true` and the `GJC_COORDINATOR_MCP_FORCE_STOP` capability; the same SDK lifecycle path reaps abandoned ephemeral delegate sessions after the configured idle TTL.
+`worx_coordinator_stop_session` closes a coordinator delegate-created (ephemeral) session through canonical SDK broker lifecycle control, then removes its coordinator metadata only after the broker reports success. It refuses sessions with an active turn. User-registered sessions require both `force: true` and the `WORX_COORDINATOR_MCP_FORCE_STOP` capability; the same SDK lifecycle path reaps abandoned ephemeral delegate sessions after the configured idle TTL.
 
 High-level delegation tools:
 
@@ -125,7 +125,7 @@ The `worx_delegate_*` tools package common GJC workflows for hosts that want to 
 
 ### Start a managed GJC session
 
-Call `worx_coordinator_start_session` with a canonical workdir inside `GJC_COORDINATOR_MCP_WORKDIR_ROOTS`:
+Call `worx_coordinator_start_session` with a canonical workdir inside `WORX_COORDINATOR_MCP_WORKDIR_ROOTS`:
 
 ```json
 {
@@ -371,11 +371,11 @@ Generic MCP controller config:
       "command": "gjc",
       "args": ["mcp-serve", "coordinator"],
       "env": {
-        "GJC_COORDINATOR_MCP_WORKDIR_ROOTS": "/home/bot/src/project:/home/bot/src/worktrees",
-        "GJC_COORDINATOR_MCP_MUTATIONS": "sessions,questions,reports",
-        "GJC_COORDINATOR_MCP_PROFILE": "controller-prod",
-        "GJC_COORDINATOR_MCP_REPO": "project",
-        "GJC_COORDINATOR_MCP_SESSION_COMMAND": "gjc --worktree"
+        "WORX_COORDINATOR_MCP_WORKDIR_ROOTS": "/home/bot/src/project:/home/bot/src/worktrees",
+        "WORX_COORDINATOR_MCP_MUTATIONS": "sessions,questions,reports",
+        "WORX_COORDINATOR_MCP_PROFILE": "controller-prod",
+        "WORX_COORDINATOR_MCP_REPO": "project",
+        "WORX_COORDINATOR_MCP_SESSION_COMMAND": "gjc --worktree"
       },
       "enabled": true
     }
@@ -400,7 +400,7 @@ Hermes and OpenClaw can use the same MCP tool contract. Their names here are exa
 
 - Do not put provider API keys, GitHub tokens, or bot secrets in prompts.
 - Prefer host tools, host URI schemes, or bot-side sidecars for credentialed external writes.
-- Keep `GJC_COORDINATOR_MCP_WORKDIR_ROOTS` narrow; do not allow `/`, `/home`, or broad parent directories.
+- Keep `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` narrow; do not allow `/`, `/home`, or broad parent directories.
 - Use namespaces for multi-tenant bots.
 - Keep mutation classes minimal: read-only for dashboards, `sessions` for work dispatch, `questions` for answering questions, and `reports` for final state.
 - Treat `.gjc/` as local runtime state and evidence. Do not expose it wholesale to untrusted users.

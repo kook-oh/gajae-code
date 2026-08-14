@@ -75,12 +75,12 @@
 - `ALLOWED_HANDOFF|HANDOFF_TARGETS|handoffTargets|allowedTargets|KNOWN_MODES` in `['packages/coding-agent/src/gjc-runtime/state-runtime.ts', 'packages/coding-agent/src/gjc-runtime/workflow-command-ref.ts']`
 - `deliberate` in `['packages/coding-agent/src/gjc-runtime/deep-interview-runtime.ts']`
 - `--quick|--standard|--deep\b|research-setup` in `['packages/coding-agent/src/gjc-runtime/deep-interview-runtime.ts', 'packages/coding-agent/src/defaults/gjc/skills']`
-- `CANONICAL_GJC_WORKFLOW_SKILLS\s*=|CanonicalGjcWorkflowSkill\s*=` in `['packages/coding-agent/src']`
+- `CANONICAL_WORX_WORKFLOW_SKILLS\s*=|CanonicalGjcWorkflowSkill\s*=` in `['packages/coding-agent/src']`
 - `classify-blocker|record-review-blockers|start-pipeline-overlap|sparkshell` in `['packages/coding-agent/src/gjc-runtime', 'packages/coding-agent/src/commands']`
 - `benchmark-system|benchmark-task|benchmark-retry` in `['packages/typescript-edit-benchmark/src']`
 - `benchmarkSystemPrompt|benchmarkTaskPrompt|benchmarkRetryPrompt|guided_context|task_prompt|retry_context|multiFile|instructions` in `['packages/typescript-edit-benchmark/src/runner.ts']`
 - `## Behavior|## Planning/Execution Boundary|## What This Skill Must Do|## GPT-5.5 Guidance Alignment|Follow the Plan skill|the next the|`execution`, `execution`` in `['packages/coding-agent/src/defaults/gjc/skills']`
-- `worx_delegate_plan|worx_coordinator_await_turn|worx_coordinator_watch_events|GJC_COORDINATOR_MCP_MUTATIONS|GJC_COORDINATOR_MCP_WORKDIR_ROOTS` in `['packages', 'plugins']`
+- `worx_delegate_plan|worx_coordinator_await_turn|worx_coordinator_watch_events|WORX_COORDINATOR_MCP_MUTATIONS|WORX_COORDINATOR_MCP_WORKDIR_ROOTS` in `['packages', 'plugins']`
 - `read-teaming|e2e/read|oh-my-codex` in `['packages/coding-agent/src/defaults/gjc/skills']`
 - `expandPromptTemplate` in `['packages/coding-agent/src']`
 - `topLevelTags` in `['packages/utils/src/prompt.ts']`

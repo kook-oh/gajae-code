@@ -154,12 +154,12 @@ let noBadRoots = true;
 let noMutations = true;
 for (const rel of mcpFiles) {
 	const text = read(rel);
-	if (!text.includes("GJC_COORDINATOR_MCP_WORKDIR_ROOTS")) workdirRootsOk = false;
-	if (/GJC_COORDINATOR_MCP_ROOTS[^_]/.test(text)) noBadRoots = false;
-	if (text.includes("GJC_COORDINATOR_MCP_MUTATIONS")) noMutations = false;
+	if (!text.includes("WORX_COORDINATOR_MCP_WORKDIR_ROOTS")) workdirRootsOk = false;
+	if (/WORX_COORDINATOR_MCP_ROOTS[^_]/.test(text)) noBadRoots = false;
+	if (text.includes("WORX_COORDINATOR_MCP_MUTATIONS")) noMutations = false;
 }
 gate("MCP config uses WORKDIR_ROOTS", mcpFiles.length > 0 && workdirRootsOk, `mcp files: ${mcpFiles.length}`);
-gate("MCP config omits invalid ROOTS var", noBadRoots, "no GJC_COORDINATOR_MCP_ROOTS present");
+gate("MCP config omits invalid ROOTS var", noBadRoots, "no WORX_COORDINATOR_MCP_ROOTS present");
 gate("MCP config omits MUTATIONS by default", noMutations, "fail-closed: mutations off until opt-in");
 
 // Command/skill docs reference the delegate tools.

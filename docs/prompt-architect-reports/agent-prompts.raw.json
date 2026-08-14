@@ -44,7 +44,7 @@
   ],
   "positives": [
     "Frontmatter parsing well-tested; roster and required plan sections pinned by tests (task-bundled-agent-surface.test.ts, ralplan-decision-artifacts.test.ts)",
-    "Restricted-bash design coherent end-to-end: prompt constraint <-> bashAllowedPrefixes <-> checkBashAllowedPrefixes enforcement with GJC_RALPLAN_ARTIFACT env carve-out",
+    "Restricted-bash design coherent end-to-end: prompt constraint <-> bashAllowedPrefixes <-> checkBashAllowedPrefixes enforcement with WORX_RALPLAN_ARTIFACT env carve-out",
     "Verdict vocabularies consistent across prompts, ralplan SKILL gates, and HUD severity mapping",
     "forkContext declared exactly where task.md advertises it and enforced at task/index.ts:335"
   ],

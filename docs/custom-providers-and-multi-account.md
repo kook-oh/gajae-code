@@ -64,11 +64,11 @@ When a provider has several OAuth credentials, GJC ranks them at session start a
 
 ```sh
 # default: prefer the least-drained account (spreads load, keeps burst headroom)
-GJC_CREDENTIAL_RANKING_MODE=balanced
+WORX_CREDENTIAL_RANKING_MODE=balanced
 
 # drain the soonest-to-reset account first (good for perishable tumbling-window
 # quota like Claude 5h/7d windows)
-GJC_CREDENTIAL_RANKING_MODE=earliest-reset
+WORX_CREDENTIAL_RANKING_MODE=earliest-reset
 ```
 
 Blocked or exhausted accounts always sort last regardless of strategy. Ranking affects session start only; a running session keeps its credential.
@@ -86,10 +86,10 @@ A listed API-key provider beats every omitted OAuth provider; resetting Provider
 
 ### Team-scale pools: auth broker / gateway
 
-To share one credential pool across machines or containers, run `gjc auth-broker serve` as the single refresh owner and point clients at it with `GJC_AUTH_BROKER_URL` / `GJC_AUTH_BROKER_TOKEN`. The gateway (`gjc auth-gateway serve`) additionally hides access tokens from clients entirely. Per-credential health probing surfaces which row in a multi-account pool is producing 401s. See [`auth-broker-gateway.md`](./auth-broker-gateway.md).
+To share one credential pool across machines or containers, run `gjc auth-broker serve` as the single refresh owner and point clients at it with `WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN`. The gateway (`gjc auth-gateway serve`) additionally hides access tokens from clients entirely. Per-credential health probing surfaces which row in a multi-account pool is producing 401s. See [`auth-broker-gateway.md`](./auth-broker-gateway.md).
 
 ## See also
 
 - [`models.md`](./models.md) — full `models.yml` reference, auth resolution order, presets
 - [`multi-vendor-profiles.md`](./multi-vendor-profiles.md) — role-based cross-vendor profiles
-- [`environment-variables.md`](./environment-variables.md) — `GJC_CREDENTIAL_RANKING_MODE`, broker vars, credential import roots
+- [`environment-variables.md`](./environment-variables.md) — `WORX_CREDENTIAL_RANKING_MODE`, broker vars, credential import roots

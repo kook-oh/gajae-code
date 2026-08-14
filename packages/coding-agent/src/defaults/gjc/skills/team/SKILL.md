@@ -21,7 +21,7 @@ Use the shared workflow guidance pattern: outcome-first framing, concise visible
 
 ## Corrupt current-session state recovery
 
-When team detects its own current-session state is corrupt, tampered, unreadable, or stale on resume, run `gjc state clear --force --mode team` before reseeding or restarting. Scope the clear to the current session via `--session-id`, the command payload, or `GJC_SESSION_ID`; it clears only team state for that session and never clears other skills or sessions.
+When team detects its own current-session state is corrupt, tampered, unreadable, or stale on resume, run `gjc state clear --force --mode team` before reseeding or restarting. Scope the clear to the current session via `--session-id`, the command payload, or `WORX_SESSION_ID`; it clears only team state for that session and never clears other skills or sessions.
 
 ## What This Skill Must Do
 
@@ -72,10 +72,10 @@ Workers provide task status and verification evidence only. They do not own Ultr
 
 Important: `N:agent-type` (for example `3:executor`) selects the worker count and role prompt. Plain `gjc team "task"` defaults to 3 executor workers; `gjc team 1:executor "task"` is the explicit single-worker form.
 
-To launch the worker with a specific GJC-compatible command, use `GJC_TEAM_WORKER_COMMAND`:
+To launch the worker with a specific GJC-compatible command, use `WORX_TEAM_WORKER_COMMAND`:
 
 ```bash
-GJC_TEAM_WORKER_COMMAND="bun packages/coding-agent/src/cli.ts" gjc team executor "update docs and report"
+WORX_TEAM_WORKER_COMMAND="bun packages/coding-agent/src/cli.ts" gjc team executor "update docs and report"
 ```
 
 ## Preconditions
@@ -150,13 +150,13 @@ When `$team` is used as a follow-up mode from ralplan, carry forward the approve
    - `.gjc/_session-{sessionid}/state/team/<team>/workers/<worker>/status.json`
    - `.gjc/_session-{sessionid}/state/team/<team>/workers/<worker>/lifecycle.json`
    - `.gjc/_session-{sessionid}/state/team/<team>/workers/<worker>/heartbeat.json`
-4. Resolve the worker command from `GJC_TEAM_WORKER_COMMAND` or the active `gjc` entrypoint.
+4. Resolve the worker command from `WORX_TEAM_WORKER_COMMAND` or the active `gjc` entrypoint.
 5. Split the current tmux window like GJC team: worker 1 is split horizontally to the right of the leader, workers 2..N are vertically stacked in the right column, then `select-layout main-vertical` and `main-pane-width` keep leader-left/worker-right at roughly 50/50.
 6. Launch the worker with:
-   - `GJC_TEAM_NAME=<team>`
-   - `GJC_TEAM_WORKER_ID=worker-1`
-   - `GJC_TEAM_STATE_ROOT=<leader-cwd>/.gjc/_session-{sessionid}/state/team`
-   - optional `GJC_TEAM_WORKTREE_PATH=<path>` when worktree mode is active
+   - `WORX_TEAM_NAME=<team>`
+   - `WORX_TEAM_WORKER_ID=worker-1`
+   - `WORX_TEAM_STATE_ROOT=<leader-cwd>/.gjc/_session-{sessionid}/state/team`
+   - optional `WORX_TEAM_WORKTREE_PATH=<path>` when worktree mode is active
 7. Automatically integrate worker worktree commits during leader monitoring:
    - dirty worker worktrees are auto-checkpointed before integration
    - clean-ahead worker history is merged into the leader with a runtime merge commit
@@ -170,7 +170,7 @@ Important:
 
 - Leader remains in the existing left pane.
 - Worker panes are independent full GJC worker CLI sessions on the right side of a leader-left/worker-right split.
-- Worker CLI selection is teammate-only: `GJC_TEAM_WORKER_CLI` and `GJC_TEAM_WORKER_CLI_MAP` accept only `auto` or `gjc`; legacy/provider values such as `codex`, `claude`, or `gemini` are rejected before launch.
+- Worker CLI selection is teammate-only: `WORX_TEAM_WORKER_CLI` and `WORX_TEAM_WORKER_CLI_MAP` accept only `auto` or `gjc`; legacy/provider values such as `codex`, `claude`, or `gemini` are rejected before launch.
 - The worker may run in a dedicated git worktree (`gjc team --worktree[=<name>]`) while sharing the team state root.
 - `shutdown` kills only the recorded worker pane after confirming it still belongs to the stored tmux target and is not the leader pane. It never kills the tmux session.
 
@@ -205,7 +205,7 @@ A GJC worker session publishes its own heartbeat while an agent turn or owned ba
 
 ### Opt-in stalled-worker continuation
 
-`GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS=1` enables a separate, default-off monitor-only nudge for a stalled live worker. It is considered only when the team is running (not dry-run), the worker heartbeat is stale (using `GJC_TEAM_HEARTBEAT_STALE_MS`, default `120000` ms), and all of these checks pass:
+`WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS=1` enables a separate, default-off monitor-only nudge for a stalled live worker. It is considered only when the team is running (not dry-run), the worker heartbeat is stale (using `WORX_TEAM_HEARTBEAT_STALE_MS`, default `120000` ms), and all of these checks pass:
 
 - The recorded pane id is a non-leader `%<number>` pane that tmux currently reports in the recorded `tmux_target` as that same pane id; no other pane is targeted.
 - Shutdown authority is proven absent; valid-present and invalid/unreadable records veto continuation without suppressing normal stale-claim recovery.
@@ -326,14 +326,14 @@ Worker protocol:
 
 Useful runtime env vars:
 
-- `GJC_TMUX_COMMAND` / `GJC_TEAM_TMUX_COMMAND`
-  - tmux executable override (default `tmux` on POSIX; `psmux` / `pmux` / `tmux` resolution on native Windows). `GJC_TMUX_COMMAND` applies to every GJC tmux flow; `GJC_TEAM_TMUX_COMMAND` is honored as a team-path alias. Values are executable paths/names, not shell command lines.
-  - Native Windows psmux boundary: a generic-banner `tmux.exe` alias is classified by matching its executable identity with resolved `psmux.exe` / `pmux.exe` companions. Unresolved or conflicting identity evidence fails closed with `gjc_tmux_provider_ambiguous`; `GJC_PSMUX_COMMAND` must resolve to the same executable identity as the selected alias.
+- `WORX_TMUX_COMMAND` / `WORX_TEAM_TMUX_COMMAND`
+  - tmux executable override (default `tmux` on POSIX; `psmux` / `pmux` / `tmux` resolution on native Windows). `WORX_TMUX_COMMAND` applies to every GJC tmux flow; `WORX_TEAM_TMUX_COMMAND` is honored as a team-path alias. Values are executable paths/names, not shell command lines.
+  - Native Windows psmux boundary: a generic-banner `tmux.exe` alias is classified by matching its executable identity with resolved `psmux.exe` / `pmux.exe` companions. Unresolved or conflicting identity evidence fails closed with `gjc_tmux_provider_ambiguous`; `WORX_PSMUX_COMMAND` must resolve to the same executable identity as the selected alias.
   - Managed psmux session creation, attachment, lifecycle mutation, and team startup remain unsupported because psmux cannot provide the immutable native session identity required by the owner-isolation contract. Use WSL or verified native tmux for live team workers.
-  - Windows psmux namespace boundary: psmux uses the tmux-compatible global `-L <namespace>` flag for server isolation, but GJC does not accept flags in `GJC_TMUX_COMMAND` or expose structured runtime `-L` support.
-- `GJC_TEAM_WORKER_COMMAND`
+  - Windows psmux namespace boundary: psmux uses the tmux-compatible global `-L <namespace>` flag for server isolation, but GJC does not accept flags in `WORX_TMUX_COMMAND` or expose structured runtime `-L` support.
+- `WORX_TEAM_WORKER_COMMAND`
   - worker command override (default resolves to active GJC entrypoint or `gjc`)
-- `GJC_TEAM_STATE_ROOT`
+- `WORX_TEAM_STATE_ROOT`
   - team state root override (default `<cwd>/.gjc/_session-{sessionid}/state/team`)
 
 ## Failure Modes and Diagnosis
@@ -347,7 +347,7 @@ Operator note (important for GJC panes):
 
 - **Outside tmux:** non-dry-run launch fails before team state or worktrees are created. Start `gjc team` from an attached tmux leader pane.
 - **Split failure:** startup records a failed phase if state was already initialized, rolls back created worktrees, and never kills the leader tmux session.
-- **Worker API ENOENT:** team state is missing or `GJC_TEAM_STATE_ROOT` points somewhere else. Check `.gjc/_session-{sessionid}/state/team/<team>/` before assuming worker failure.
+- **Worker API ENOENT:** team state is missing or `WORX_TEAM_STATE_ROOT` points somewhere else. Check `.gjc/_session-{sessionid}/state/team/<team>/` before assuming worker failure.
 - **Stale pane on shutdown:** shutdown only kills a recorded worker pane when it still belongs to the stored `tmux_target` and is not the leader pane. Stale panes outside that target require manual inspection.
 - **Integration conflict:** `gjc team monitor <team>` / `resume` aborts the failing merge, cherry-pick, or worker rebase; `gjc team status <team>` is read-only inspection. Inspect `.gjc/_session-{sessionid}/state/team/<team>/integration-report.md`, `.gjc/_session-{sessionid}/state/team/<team>/events.jsonl`, `.gjc/_session-{sessionid}/state/team/<team>/mailbox/leader-fixed.json`, and `.gjc/_session-{sessionid}/reports/team-commit-hygiene/<team>.ledger.json`.
 

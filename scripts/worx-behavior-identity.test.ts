@@ -65,7 +65,7 @@ const FORBIDDEN_BEHAVIOR_IDENTIFIERS = [
 	},
 	{
 		label: "Coordinator session executable",
-		pattern: /GJC_COORDINATOR_MCP_SESSION_COMMAND[^\n]*\bgjc --worktree\b/gu,
+		pattern: /WORX_COORDINATOR_MCP_SESSION_COMMAND[^\n]*\bgjc --worktree\b/gu,
 	},
 ] as const;
 
@@ -105,6 +105,7 @@ async function findForbiddenBehaviorIdentifiers(): Promise<string[]> {
 async function findLegacyGjcEnvironmentVariables(relativeRoots: readonly string[]): Promise<string[]> {
 	const violations: string[] = [];
 	const glob = new Bun.Glob("**/*");
+	const legacyEnvironmentVariable = new RegExp(`\\b${["GJC", "_"].join("")}[A-Z_0-9]+\\b`, "u");
 	for (const relativeRoot of relativeRoots) {
 		for await (const relativePath of glob.scan({
 			cwd: path.join(REPO_ROOT, relativeRoot),
@@ -112,11 +113,12 @@ async function findLegacyGjcEnvironmentVariables(relativeRoots: readonly string[
 		})) {
 			const repoPath = path.join(relativeRoot, relativePath);
 			if (repoPath.startsWith("docs/plans/")) continue;
+			if (repoPath.endsWith(".generated.ts")) continue;
 			const file = Bun.file(path.join(REPO_ROOT, repoPath));
 			if (file.size > 5_000_000) continue;
 			const source = await file.text();
 			for (const [index, line] of source.split("\n").entries()) {
-				if (/\bGJC_[A-Z_0-9]+\b/u.test(line)) violations.push(`${repoPath}:${index + 1}: ${line.trim()}`);
+				if (legacyEnvironmentVariable.test(line)) violations.push(`${repoPath}:${index + 1}: ${line.trim()}`);
 			}
 		}
 	}
@@ -132,7 +134,7 @@ describe("WORX behavior identity", () => {
 	test("generates WORX Coordinator session commands", () => {
 		const hostSetup = buildHostPluginSetup("claude", { root: [REPO_ROOT] });
 		expect(hostSetup.coordinatorConfigPreview.command).toBe("worx");
-		expect(hostSetup.coordinatorConfigPreview.env.GJC_COORDINATOR_MCP_SESSION_COMMAND).toBe("worx --worktree");
+		expect(hostSetup.coordinatorConfigPreview.env.WORX_COORDINATOR_MCP_SESSION_COMMAND).toBe("worx --worktree");
 
 		const hermesSetup = buildHermesSetupSpec({ root: [REPO_ROOT] });
 		expect(hermesSetup.serverKey).toBe("worx_coordinator");

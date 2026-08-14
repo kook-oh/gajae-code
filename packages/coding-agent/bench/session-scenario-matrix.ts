@@ -641,8 +641,8 @@ function secondaryArtifactsFromArg(value: string | undefined): SecondaryArtifact
 function benchmarkEnv(gcStrategy: GcStrategy, secondaryArtifacts: SecondaryArtifacts): NodeJS.ProcessEnv {
 	return {
 		...process.env,
-		GJC_SESSION_MEMORY_GC_STRATEGY: gcStrategy,
-		GJC_SESSION_MEMORY_SECONDARY_ARTIFACT_MODE:
+		WORX_SESSION_MEMORY_GC_STRATEGY: gcStrategy,
+		WORX_SESSION_MEMORY_SECONDARY_ARTIFACT_MODE:
 			secondaryArtifacts === "current" ? "auto" : "disabled",
 	};
 }

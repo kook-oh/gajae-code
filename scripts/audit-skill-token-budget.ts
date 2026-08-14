@@ -4,7 +4,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 import { listCommandRefBlocks } from "../packages/coding-agent/src/gjc-runtime/workflow-command-ref";
-import { CANONICAL_GJC_WORKFLOW_SKILLS } from "../packages/coding-agent/src/skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../packages/coding-agent/src/skill-state/canonical-skills";
 
 interface SectionBudget {
 	blockId: string;
@@ -41,7 +41,7 @@ function markerBlock(content: string, start: string, end: string): string | unde
 }
 
 export function auditSkillTokenBudget(): SkillBudget[] {
-	return CANONICAL_GJC_WORKFLOW_SKILLS.map(skill => {
+	return CANONICAL_WORX_WORKFLOW_SKILLS.map(skill => {
 		const sourcePath = path.join(skillsRoot, skill, "SKILL.md");
 		const content = fs.readFileSync(sourcePath, "utf8");
 		const sections = listCommandRefBlocks(skill).flatMap(block => {

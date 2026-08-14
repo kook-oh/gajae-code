@@ -74,7 +74,7 @@ Ouroboros setup installs its own managed GJC bridge. Replace it with the standal
 ```bash
 curl -fL https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/4311fefd49e9c6781c4d1111b8dd3f758e7d8974/packages/coding-agent/examples/extensions/ooo-bridge.ts -o /tmp/gjc-ooo-bridge.ts
 shasum -a 256 /tmp/gjc-ooo-bridge.ts
-mkdir -p "${HOME}/${GJC_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${GJC_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge/index.ts"
+mkdir -p "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge/index.ts"
 ```
 
 The `shasum` output must match the published example digest before the copy. The example has no runtime imports: it obtains the bundled bridge helper from the injected extension API, so the copied file works in compiled GJC binaries without extension-local `node_modules`. For project-only installation, copy the same verified file to `.gjc/extensions/ouroboros-ooo-bridge/index.ts`. Start a new GJC session after installation, then run:
@@ -92,7 +92,7 @@ Set `OUROBOROS_CLI=/absolute/path/to/ouroboros` when the executable is outside `
 
 The canonical install location is the agent extensions directory discovered by the native GJC provider:
 
-- user-level: `$HOME/${GJC_CONFIG_DIR:-.gjc}/agent/extensions`
+- user-level: `$HOME/${WORX_CONFIG_DIR:-.gjc}/agent/extensions`
 - project-level: `<cwd>/.gjc/extensions`
 
 For native discovery, install one of:
@@ -103,8 +103,8 @@ For native discovery, install one of:
 
 The loader scans one level under each `extensions` directory. Complex packages should use a package manifest instead of relying on recursive discovery.
 
-`GJC_CONFIG_DIR` selects the **home-relative** config directory name: the config root is `<home>/<GJC_CONFIG_DIR>`, defaulting to `~/.gjc`. It does not select a project directory — the project-level path is the constant `.gjc` (`discovery/helpers.ts`, `getProjectAgentDir()`), so `GJC_CONFIG_DIR` never moves it. `GJC_CODING_AGENT_DIR` overrides the agent directory **path** rather than naming one under `$HOME`; it is resolved with `path.resolve`, so an absolute value is used as-is and a relative value is resolved against the current working directory.
+`WORX_CONFIG_DIR` selects the **home-relative** config directory name: the config root is `<home>/<WORX_CONFIG_DIR>`, defaulting to `~/.gjc`. It does not select a project directory — the project-level path is the constant `.gjc` (`discovery/helpers.ts`, `getProjectAgentDir()`), so `WORX_CONFIG_DIR` never moves it. `WORX_CODING_AGENT_DIR` overrides the agent directory **path** rather than naming one under `$HOME`; it is resolved with `path.resolve`, so an absolute value is used as-is and a relative value is resolved against the current working directory.
 
-Discovery is the exception to that second override. The native provider builds its user-level root from `GJC_CONFIG_DIR` alone (`<home>/<config-dir>/agent`) and never consults `getAgentDir()`, so an operator who sets `GJC_CODING_AGENT_DIR` moves the agent directory for the rest of the product but **not** for extension, skill, rule, or hook discovery.
+Discovery is the exception to that second override. The native provider builds its user-level root from `WORX_CONFIG_DIR` alone (`<home>/<config-dir>/agent`) and never consults `getAgentDir()`, so an operator who sets `WORX_CODING_AGENT_DIR` moves the agent directory for the rest of the product but **not** for extension, skill, rule, or hook discovery.
 
 Hooks are not the input bridge surface: `packages/coding-agent/src/capability/hook.ts` defines pre/post tool hooks only.

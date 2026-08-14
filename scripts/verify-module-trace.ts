@@ -53,7 +53,7 @@ const TRACE_MILESTONE_DENY_RULES: Record<string, string[]> = {
 	W5b: ["@bworx-io/worx-code-natives", "bun:sqlite", "packages/ai/src/providers/**"],
 };
 
-const TRACE_ROOT_SENTINEL = "__GJC_TRACE_ROOT__";
+const TRACE_ROOT_SENTINEL = "__WORX_TRACE_ROOT__";
 
 interface TraceRecord {
 	specifier: string;
@@ -237,7 +237,7 @@ function parseArgs(argv: string[]): CliOptions {
 function isolatedEnvironment(tempRoot: string, scenario: ScenarioName): Record<string, string> {
 	const env: Record<string, string> = {};
 	for (const [key, value] of Object.entries(Bun.env)) {
-		if (!key.startsWith("GJC_") && value !== undefined) env[key] = value;
+		if (!key.startsWith("WORX_") && value !== undefined) env[key] = value;
 	}
 	const home = path.join(tempRoot, "home");
 	const xdgConfig = path.join(tempRoot, "xdg-config");
@@ -247,10 +247,10 @@ function isolatedEnvironment(tempRoot: string, scenario: ScenarioName): Record<s
 		HOME: home,
 		USERPROFILE: home,
 		XDG_CONFIG_HOME: xdgConfig,
-		GJC_CODING_AGENT_DIR: agentDir,
-		GJC_AGENT_DIR: agentDir,
-		GJC_TRACE_SCENARIO: scenario,
-		GJC_TRACE_HARNESS: "1",
+		WORX_CODING_AGENT_DIR: agentDir,
+		WORX_AGENT_DIR: agentDir,
+		WORX_TRACE_SCENARIO: scenario,
+		WORX_TRACE_HARNESS: "1",
 	};
 }
 
@@ -497,8 +497,8 @@ async function readTrace(tracePath: string, entryPath: string): Promise<TraceRec
 
 async function runIdleScenario(tempRoot: string, env: Record<string, string>): Promise<{ stdout: string; stderr: string; exitCode: number; barrier: string }> {
 	const debugPaths = [
-		path.join(env.GJC_AGENT_DIR ?? "", "gjc-debug.log"),
-		path.join(env.GJC_AGENT_DIR ?? "", "state", "gjc-debug.log"),
+		path.join(env.WORX_AGENT_DIR ?? "", "gjc-debug.log"),
+		path.join(env.WORX_AGENT_DIR ?? "", "state", "gjc-debug.log"),
 	];
 	const driverPath = path.join(tempRoot, "idle-driver.py");
 	const pythonSource = `
@@ -591,12 +591,12 @@ async function runScenario(tempRoot: string, scenario: ScenarioName): Promise<Sc
 			`Scenario "${scenario}" cannot yet reach its non-interactive barrier`,
 		);
 	}
-	const requestedTracePath = process.env.GJC_TRACE_OUT?.trim();
+	const requestedTracePath = process.env.WORX_TRACE_OUT?.trim();
 	const tracePath = requestedTracePath || path.join(tempRoot, `${scenario}.trace.json`);
 	const env = isolatedEnvironment(tempRoot, scenario);
-	env.GJC_TRACE_OUT = tracePath;
+	env.WORX_TRACE_OUT = tracePath;
 	if (scenario === "idle") {
-		env.GJC_DEBUG_REDRAW = "1";
+		env.WORX_DEBUG_REDRAW = "1";
 		const result = await runIdleScenario(tempRoot, env);
 		const records = await readTrace(tracePath, cliEntry);
 		return {

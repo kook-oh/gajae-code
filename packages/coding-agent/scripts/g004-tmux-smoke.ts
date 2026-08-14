@@ -32,7 +32,7 @@ const tmuxBootstrapEnv: NodeJS.ProcessEnv = {
 const tmuxBinary = resolveGjcTmuxCommand(tmuxBootstrapEnv);
 const privateEnv: NodeJS.ProcessEnv = {
 	...tmuxBootstrapEnv,
-	GJC_TMUX_COMMAND: wrapper,
+	WORX_TMUX_COMMAND: wrapper,
 };
 let scopeRunner: Bun.Subprocess<"ignore", "ignore", "pipe"> | null = null;
 

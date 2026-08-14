@@ -185,7 +185,7 @@ await Bun.write(
 // The pinned corpus reads `README.md` from the session cwd the runner passes on
 // `session/new`. The runner creates that directory but seeds no content, so seed it
 // here (never inside the upstream corpus) when the harness names it.
-const scratchCwd = process.env.GJC_ACP_CONFORMANCE_CWD?.trim();
+const scratchCwd = process.env.WORX_ACP_CONFORMANCE_CWD?.trim();
 if (scratchCwd) {
 	const scratchReadme = path.join(scratchCwd, "README.md");
 	if (!(await Bun.file(scratchReadme).exists())) await Bun.write(scratchReadme, "acpx conformance workspace\n");
@@ -202,7 +202,7 @@ child = Bun.spawn(
 	],
 	{
 		cwd: root,
-		env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir, PI_CODING_AGENT_DIR: agentDir },
+		env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir, PI_CODING_AGENT_DIR: agentDir },
 		stdin: "inherit",
 		stdout: "inherit",
 		stderr: "inherit",

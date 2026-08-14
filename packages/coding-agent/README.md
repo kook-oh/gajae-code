@@ -18,13 +18,13 @@ GJC already exposes public lifecycle events through the extension/hook event con
 - `turn_end` — a model/tool turn finished. The public payload is `{ type: "turn_end", turnIndex, message, toolResults }`.
 - `agent_end` — the agent loop for a submitted prompt reached a terminal boundary. The public payload is `{ type: "agent_end", messages }`.
 
-For simple local side effects that do not need a full extension, set the user-level `completion.notifyCommand`. GJC runs it on completed agent turns with `GJC_NOTIFICATION_*` environment variables (`GJC_NOTIFICATION_TITLE`, `GJC_NOTIFICATION_BODY`, `GJC_NOTIFICATION_JSON`, etc.); project settings cannot activate this command hook.
+For simple local side effects that do not need a full extension, set the user-level `completion.notifyCommand`. GJC runs it on completed agent turns with `WORX_NOTIFICATION_*` environment variables (`WORX_NOTIFICATION_TITLE`, `WORX_NOTIFICATION_BODY`, `WORX_NOTIFICATION_JSON`, etc.); project settings cannot activate this command hook.
 
 ```sh
-gjc config set completion.notifyCommand 'cmux notify --title "$GJC_NOTIFICATION_TITLE" --body "$GJC_NOTIFICATION_BODY"'
+gjc config set completion.notifyCommand 'cmux notify --title "$WORX_NOTIFICATION_TITLE" --body "$WORX_NOTIFICATION_BODY"'
 ```
 
-When GJC runs inside a cmux terminal (`CMUX_WORKSPACE_ID` is set), GJC best-effort renames that cmux workspace to the current GJC session name (with a `GJC: ` prefix) — but only when the workspace still has its default title, so a name you pinned (or one set by a peer session sharing the workspace) is never overwritten. Opt out with `GJC_NO_CMUX_RENAME=1`.
+When GJC runs inside a cmux terminal (`CMUX_WORKSPACE_ID` is set), GJC best-effort renames that cmux workspace to the current GJC session name (with a `GJC: ` prefix) — but only when the workspace still has its default title, so a name you pinned (or one set by a peer session sharing the workspace) is never overwritten. Opt out with `WORX_NO_CMUX_RENAME=1`.
 
 Windows Terminal may keep BEL (`[Console]::Write([char]7)`) silent depending on profile and system sound settings even when `notifications.terminalBell` is enabled. For an audible Windows completion beep, configure a user-level PowerShell command hook instead:
 
@@ -55,7 +55,7 @@ type PublicLifecycleNotification = {
 };
 
 export default function lifecycleNotifier(pi: ExtensionAPI) {
-	const enabled = process.env.GJC_LIFECYCLE_NOTIFY === "1";
+	const enabled = process.env.WORX_LIFECYCLE_NOTIFY === "1";
 	if (!enabled) return;
 
 	const send = async (payload: PublicLifecycleNotification) => {
@@ -88,7 +88,7 @@ This is the supported repo-native lifecycle notification path. It is not Claude 
 
 ## Windows psmux authority boundary
 
-On native Windows, GJC-managed psmux sessions persist a per-owner `ProviderAuthority`: the exact resolved executable identity and an isolated tmux-compatible `-L` namespace. `GJC_TMUX_COMMAND` is an executable path/name only, never `psmux -L …`. Recover managed sessions through GJC so it reuses and re-proves that authority; do not fall back to ambient `tmux`/`psmux` or manually recreate a namespace. An unavailable, changed, or ambiguous authority fails closed.
+On native Windows, GJC-managed psmux sessions persist a per-owner `ProviderAuthority`: the exact resolved executable identity and an isolated tmux-compatible `-L` namespace. `WORX_TMUX_COMMAND` is an executable path/name only, never `psmux -L …`. Recover managed sessions through GJC so it reuses and re-proves that authority; do not fall back to ambient `tmux`/`psmux` or manually recreate a namespace. An unavailable, changed, or ambiguous authority fails closed.
 
 ## Memory backends
 

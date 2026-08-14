@@ -29,7 +29,7 @@ All exports live under `@gajae-code/ai/utils/schema`:
   from `normalize.ts`.
 - `adaptSchemaForStrict(schema, strict)` from `./adapt` — thin composer that
   wraps `tryEnforceStrictSchema` for provider call sites and consults
-  `GJC_NO_STRICT` (env `GJC_NO_STRICT`) for the global bypass.
+  `WORX_NO_STRICT` (env `WORX_NO_STRICT`) for the global bypass.
 
 Removed in the unified-flow refactor:
 

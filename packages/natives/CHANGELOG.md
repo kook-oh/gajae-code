@@ -734,7 +734,7 @@
 - Exported `killTree` function to kill a process and all its descendants using platform-native APIs
 - Exported `listDescendants` function to list all descendant PIDs of a process
 - Added `dev:native` npm script to build debug native binaries with `--dev` flag
-- Added `GJC_DEV` environment variable support for loading and debugging development native builds
+- Added `WORX_DEV` environment variable support for loading and debugging development native builds
 - Exported keyboard parsing and matching functions: `parseKey`, `parseKittySequence`, `matchesLegacySequence`, and `matchesKey` for terminal input handling
 - Exported `KeyEventType` enum and `ParsedKittyResult` type for Kitty keyboard protocol support
 - Added `parseKey` function to parse terminal input and return normalized key identifiers (e.g., "ctrl+c", "shift+tab")

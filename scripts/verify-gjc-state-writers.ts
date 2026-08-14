@@ -42,7 +42,7 @@ const MUTATION_API_PATTERNS: readonly RegExp[] = [
 ];
 
 // `.gjc` is referenced directly, or via a known path-helper symbol that resolves under `.gjc`.
-const GJC_REFERENCE_PATTERNS: readonly RegExp[] = [
+const WORX_REFERENCE_PATTERNS: readonly RegExp[] = [
 	/["'`]\.gjc(?:[\\/]|["'`])/u,
 	/\bstateDirFor\b/u,
 	/\bmodeStateFile\b/u,
@@ -97,7 +97,7 @@ function locallyReferencesGjc(lines: readonly string[], index: number): boolean 
 	for (let i = start; i <= end; i++) {
 		const line = lines[i]?.trim() ?? "";
 		if (line.startsWith("//") || line.startsWith("*")) continue;
-		if (GJC_REFERENCE_PATTERNS.some(re => re.test(line))) return true;
+		if (WORX_REFERENCE_PATTERNS.some(re => re.test(line))) return true;
 	}
 	return false;
 }
@@ -111,7 +111,7 @@ function nearbyAssignmentTargetsThisLine(lines: readonly string[], index: number
 	const start = Math.max(0, index - 3);
 	for (let i = start; i < index; i++) {
 		const prior = lines[i]?.trim() ?? "";
-		if (!GJC_REFERENCE_PATTERNS.some(re => re.test(prior))) continue;
+		if (!WORX_REFERENCE_PATTERNS.some(re => re.test(prior))) continue;
 		const assignment = /(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=/u.exec(prior);
 		if (assignment && new RegExp(`\\b${assignment[1]}\\b`, "u").test(line)) return true;
 	}
@@ -119,7 +119,7 @@ function nearbyAssignmentTargetsThisLine(lines: readonly string[], index: number
 }
 
 function sameLineReferencesGjc(line: string): boolean {
-	return GJC_REFERENCE_PATTERNS.some(re => re.test(line));
+	return WORX_REFERENCE_PATTERNS.some(re => re.test(line));
 }
 
 

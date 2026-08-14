@@ -16,8 +16,8 @@ Most runtime lookups use `$env` from `@gajae-code/utils` (`packages/utils/src/en
 
 1. Existing process environment (`Bun.env`)
 2. Project `.env` (`$PWD/.env`) for keys not already set
-3. Agent `.env` (`~/.gjc/agent/.env`, respecting `GJC_CONFIG_DIR` / `GJC_CODING_AGENT_DIR`) for keys not already set
-4. Config-root `.env` (`~/.gjc/.env`, respecting `GJC_CONFIG_DIR`) for keys not already set
+3. Agent `.env` (`~/.gjc/agent/.env`, respecting `WORX_CONFIG_DIR` / `WORX_CODING_AGENT_DIR`) for keys not already set
+4. Config-root `.env` (`~/.gjc/.env`, respecting `WORX_CONFIG_DIR`) for keys not already set
 5. Home `.env` (`~/.env`) for keys not already set
 6. Login shell rc files (`~/.zshenv`, `~/.zprofile`, `~/.zshrc`, `~/.bash_profile`, `~/.bashrc`) for keys not already set
 
@@ -25,7 +25,7 @@ Step 6 does not execute those files. Each is scanned line by line for literal `e
 
 Because the scan is per line and has no notion of shell block structure, it does not reflect whether an assignment would actually run. An assignment nested in an `if` or a function body is read exactly like a top-level one, so a value you guarded behind something like `if [ -n "$CI" ]` in `~/.zshrc` still reaches `$env` unconditionally. Only assignments that do not start their own line — for example one packed after `case ... in` on the same line — are missed.
 
-Keys are used exactly as written. A `PI_`-prefixed key in a `.env` file is not mirrored to its `GJC_` counterpart, or the reverse — where both spellings are accepted it is because the reading code asks for both names.
+Keys are used exactly as written. A `PI_`-prefixed key in a `.env` file is not mirrored to its `WORX_` counterpart, or the reverse — where both spellings are accepted it is because the reading code asks for both names.
 
 ---
 
@@ -103,10 +103,10 @@ When the broker is enabled, the local SQLite credential store is bypassed and al
 
 | Variable                | Used for                                                                                          | Required when                                                                                                          | Notes / precedence                                                                                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GJC_AUTH_BROKER_URL`   | Base URL of the remote auth-broker (e.g. `https://broker.tailnet:8765`); selects broker mode      | Resolving credentials through a broker; also required by `gjc auth-gateway serve` (the gateway is itself a broker client) | Wins over `auth.broker.url` in `config.yml`. When set with no resolvable token, `resolveAuthBrokerConfig()` hard-errors instead of falling back to local SQLite.                                    |
-| `GJC_AUTH_BROKER_TOKEN` | Bearer token sent on every broker endpoint except `/v1/healthz`                                   | `GJC_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`     | Resolution: this env → `auth.broker.token` (`$ENV_NAME` indirection supported) → `<config-dir>/auth-broker.token` (mode `0600`). `<config-dir>` is `~/.gjc/` (respecting `GJC_CONFIG_DIR`).         |
+| `WORX_AUTH_BROKER_URL`   | Base URL of the remote auth-broker (e.g. `https://broker.tailnet:8765`); selects broker mode      | Resolving credentials through a broker; also required by `gjc auth-gateway serve` (the gateway is itself a broker client) | Wins over `auth.broker.url` in `config.yml`. When set with no resolvable token, `resolveAuthBrokerConfig()` hard-errors instead of falling back to local SQLite.                                    |
+| `WORX_AUTH_BROKER_TOKEN` | Bearer token sent on every broker endpoint except `/v1/healthz`                                   | `WORX_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`     | Resolution: this env → `auth.broker.token` (`$ENV_NAME` indirection supported) → `<config-dir>/auth-broker.token` (mode `0600`). `<config-dir>` is `~/.gjc/` (respecting `WORX_CONFIG_DIR`).         |
 
-The gateway has no dedicated env vars — it inherits `GJC_AUTH_BROKER_*`. Its own inbound bearer token lives at `<config-dir>/auth-gateway.token` and is managed via `gjc auth-gateway token`.
+The gateway has no dedicated env vars — it inherits `WORX_AUTH_BROKER_*`. Its own inbound bearer token lives at `<config-dir>/auth-gateway.token` and is managed via `gjc auth-gateway token`.
 
 ### Multi-account credential ranking
 
@@ -114,7 +114,7 @@ When more than one OAuth credential is stored for the same provider (e.g. severa
 
 | Variable                      | Used for                                          | Required when  | Notes / precedence                                                                                                                                                                                                                                                                                            |
 | ----------------------------- | ------------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GJC_CREDENTIAL_RANKING_MODE` | Multi-account OAuth credential selection strategy | Never (opt-in) | `balanced` (default) prefers the least-drained account (spreads load, keeps burst headroom). `earliest-reset` prefers the soonest-to-reset non-blocked account (earliest-expiry-first) so perishable tumbling-window quota (e.g. Claude 5h/7d) is drained before reset. Unset/unknown → `balanced`. Only affects session-start ranking; blocked/exhausted accounts still sort last. |
+| `WORX_CREDENTIAL_RANKING_MODE` | Multi-account OAuth credential selection strategy | Never (opt-in) | `balanced` (default) prefers the least-drained account (spreads load, keeps burst headroom). `earliest-reset` prefers the soonest-to-reset non-blocked account (earliest-expiry-first) so perishable tumbling-window quota (e.g. Claude 5h/7d) is drained before reset. Unset/unknown → `balanced`. Only affects session-start ranking; blocked/exhausted accounts still sort last. |
 
 ### External CLI credential import roots
 
@@ -246,12 +246,12 @@ providers:
 
 ### GJC workflow bridge commands
 
-`gjc ralplan`, `gjc deep-interview`, and `gjc state` are private runtime bridge commands. They require `GJC_RUNTIME_BINARY` (or legacy `GJC_LEGACY_RUNTIME_BINARY`) to point at the private runtime executable; public bundled workflow use remains through `/skill:ralplan` and `/skill:deep-interview` inside a GJC session.
+`gjc ralplan`, `gjc deep-interview`, and `gjc state` are private runtime bridge commands. They require `WORX_RUNTIME_BINARY` (or legacy `WORX_LEGACY_RUNTIME_BINARY`) to point at the private runtime executable; public bundled workflow use remains through `/skill:ralplan` and `/skill:deep-interview` inside a GJC session.
 
 | Variable | Behavior |
 | --- | --- |
-| `GJC_RUNTIME_BINARY` | Private runtime bridge binary for `gjc ralplan`, `gjc deep-interview`, and `gjc state` |
-| `GJC_LEGACY_RUNTIME_BINARY` | Legacy fallback bridge binary name |
+| `WORX_RUNTIME_BINARY` | Private runtime bridge binary for `gjc ralplan`, `gjc deep-interview`, and `gjc state` |
+| `WORX_LEGACY_RUNTIME_BINARY` | Legacy fallback bridge binary name |
 
 ### Interactive `--tmux` startup and scroll/mouse profile
 
@@ -267,20 +267,20 @@ Set `mouse.enabled: true` to let GJC capture the wheel for virtual session scrol
 
 | Variable | Behavior |
 | --- | --- |
-| `GJC_LAUNCH_POLICY` | Launch policy for `--tmux` startup: `tmux` (default) or `direct` (skip the tmux session) |
-| `GJC_TMUX_SESSION` | Explicit tmux session name override for `--tmux` startup. Use a unique value (for example `GJC_TMUX_SESSION=gjc-fresh-$(date +%s) gjc --tmux`) to force a fresh named session. |
-| `GJC_TMUX_COMMAND` | tmux binary/name override for every GJC tmux flow (`GJC_TEAM_TMUX_COMMAND` is honored as a team-path alias). This is not a shell command line; include only the executable path/name, not flags. |
-| `GJC_TMUX_PROFILE` | Set `0`/`false`/`off` to apply only the required ownership tags and skip the scroll/mouse/clipboard profile |
-| `GJC_MOUSE` | Set `0`/`false`/`off` to skip the managed profile's tmux `mouse on`; this does not disable GJC's own mouse support |
-| `GJC_PSMUX_COMMAND` | Identifies a psmux wrapper for Windows alias resolution. The value must resolve to the same executable identity as the selected `tmux` command; unresolved or conflicting evidence fails closed. |
-| `GJC_PSMUX_DETECTION` | Set `0`/`false`/`off` to skip banner-based psmux detection. Executable-name and alias-identity safety checks still apply. |
-| `GJC_PSMUX_FORCE_DETECT` | Set `1`/`true`/`on` to re-probe the multiplexer on every call instead of caching the per-process verdict. |
+| `WORX_LAUNCH_POLICY` | Launch policy for `--tmux` startup: `tmux` (default) or `direct` (skip the tmux session) |
+| `WORX_TMUX_SESSION` | Explicit tmux session name override for `--tmux` startup. Use a unique value (for example `WORX_TMUX_SESSION=gjc-fresh-$(date +%s) gjc --tmux`) to force a fresh named session. |
+| `WORX_TMUX_COMMAND` | tmux binary/name override for every GJC tmux flow (`WORX_TEAM_TMUX_COMMAND` is honored as a team-path alias). This is not a shell command line; include only the executable path/name, not flags. |
+| `WORX_TMUX_PROFILE` | Set `0`/`false`/`off` to apply only the required ownership tags and skip the scroll/mouse/clipboard profile |
+| `WORX_MOUSE` | Set `0`/`false`/`off` to skip the managed profile's tmux `mouse on`; this does not disable GJC's own mouse support |
+| `WORX_PSMUX_COMMAND` | Identifies a psmux wrapper for Windows alias resolution. The value must resolve to the same executable identity as the selected `tmux` command; unresolved or conflicting evidence fails closed. |
+| `WORX_PSMUX_DETECTION` | Set `0`/`false`/`off` to skip banner-based psmux detection. Executable-name and alias-identity safety checks still apply. |
+| `WORX_PSMUX_FORCE_DETECT` | Set `1`/`true`/`on` to re-probe the multiplexer on every call instead of caching the per-process verdict. |
 
 #### Windows psmux detection boundary
 
 On native Windows, [psmux](https://github.com/psmux/psmux) may be installed as `psmux.exe`, `pmux.exe`, or a `tmux.exe` alias. The alias can report only a generic `tmux 3.3.6` banner, so GJC compares the selected `tmux.exe` executable identity with resolved `psmux.exe` / `pmux.exe` companions. A matching identity is classified as psmux; distinct identities preserve native-tmux semantics.
 
-If the selected command, an explicit `GJC_PSMUX_COMMAND`, or a resolved companion cannot be identified consistently, GJC reports `gjc_tmux_provider_ambiguous` and refuses before applying native-tmux target or mutation semantics. Correct `PATH`, set `GJC_TMUX_COMMAND` to a verified executable, or make `GJC_PSMUX_COMMAND` resolve to the same wrapper identity.
+If the selected command, an explicit `WORX_PSMUX_COMMAND`, or a resolved companion cannot be identified consistently, GJC reports `gjc_tmux_provider_ambiguous` and refuses before applying native-tmux target or mutation semantics. Correct `PATH`, set `WORX_TMUX_COMMAND` to a verified executable, or make `WORX_PSMUX_COMMAND` resolve to the same wrapper identity.
 
 GJC-managed Windows psmux flows persist a `ProviderAuthority` for each owner generation. It binds the resolved absolute executable's identity and GJC's isolated server namespace; a missing, changed, or ambiguous identity fails closed. GJC recovery reads and re-proves that persisted authority rather than using an ambient multiplexer.
 
@@ -288,13 +288,13 @@ GJC-managed Windows psmux flows persist a `ProviderAuthority` for each owner gen
 
 psmux follows tmux-style server semantics: `new-session -c <path>`, `new-window -c <path>`, and GJC's `gjc --tmux` cwd only choose the start directory for the session/window/pane. They do **not** create a per-project server namespace. For a managed Windows psmux owner, GJC creates and persists an isolated namespace and invokes the bound executable with `-L <namespace>` on every operation.
 
-GJC does not expose a `GJC_TMUX_NAMESPACE` runtime knob or parse flags from `GJC_TMUX_COMMAND`. Do not set `GJC_TMUX_COMMAND="psmux -L my-project"` and do not recover with ambient `tmux`/`psmux` or a manually supplied `-L` value; `GJC_TMUX_COMMAND` is one executable path/name. Use the GJC session or lifecycle operation so it reuses the persisted ProviderAuthority. If that authority cannot be read and re-proved, GJC refuses the operation.
+GJC does not expose a `WORX_TMUX_NAMESPACE` runtime knob or parse flags from `WORX_TMUX_COMMAND`. Do not set `WORX_TMUX_COMMAND="psmux -L my-project"` and do not recover with ambient `tmux`/`psmux` or a manually supplied `-L` value; `WORX_TMUX_COMMAND` is one executable path/name. Use the GJC session or lifecycle operation so it reuses the persisted ProviderAuthority. If that authority cannot be read and re-proved, GJC refuses the operation.
 
 #### WSL / Windows Terminal scrolling
 
 GJC's SGR mouse support is disabled by default, so tmux or Windows Terminal retains wheel ownership. In a GJC-managed tmux session, the default profile's `mouse on` enters tmux copy-mode and scrolls pane history.
 
-Set `mouse.enabled: true` to make the wheel scroll GJC's virtual session viewport three rows at a time, including inside `gjc --tmux`. PageUp/PageDown page the visible transcript lane, moving by its height minus one row. Set `GJC_MOUSE=off` as well as leaving GJC mouse support disabled to skip tmux mouse capture and let Windows Terminal handle its native scrollback. Keyboard fallback for tmux copy-mode remains `Ctrl-b [`, followed by `PgUp`/arrows; press `q` to exit.
+Set `mouse.enabled: true` to make the wheel scroll GJC's virtual session viewport three rows at a time, including inside `gjc --tmux`. PageUp/PageDown page the visible transcript lane, moving by its height minus one row. Set `WORX_MOUSE=off` as well as leaving GJC mouse support disabled to skip tmux mouse capture and let Windows Terminal handle its native scrollback. Keyboard fallback for tmux copy-mode remains `Ctrl-b [`, followed by `PgUp`/arrows; press `q` to exit.
 
 ### Team tmux backend, dry-run, and state paths
 
@@ -304,13 +304,13 @@ Set `mouse.enabled: true` to make the wheel scroll GJC's virtual session viewpor
 
 | Variable | Behavior |
 | --- | --- |
-| `GJC_TEAM_STATE_ROOT` | Overrides the team state root (default `<cwd>/.gjc/state/team`) |
-| `GJC_TEAM_TMUX_COMMAND` | tmux binary/command override for team launch |
-| `GJC_TEAM_WORKER_COMMAND` | Worker GJC command override |
-| `GJC_TEAM_WORKER_CLI` | Team worker CLI selector; accepted values are `auto` or `gjc` |
-| `GJC_TEAM_WORKER_CLI_MAP` | Comma-separated worker CLI selector map; entries must be `auto` or `gjc` |
-| `GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS` | Default-off stalled-worker continuation for the mutating `gjc team monitor` path; only exact value `1` enables it. A nudge is fenced to a running non-dry-run team, stale heartbeat, live recorded non-leader pane in the recorded tmux target, a proven-absent shutdown authority record, `ready`/`working` lifecycle with a valid non-terminal worker status, one current matching in-progress claim, and a lease that covers the hold. Valid-present or invalid/unreadable shutdown authority vetoes continuation but does not suppress normal stale-claim recovery. It uses at most two immutable journaled attempts (30s, then 120s) and fails closed on restart/unknown outcome. It sends a fixed prompt only to that pane on verified native tmux transport; psmux and native Windows send-keys fallback transports record a skipped outcome and send no continuation input. It does not replay providers, inspect/inject dynamic pane content or cross panes, kill/relaunch/split workers, or alter claims. |
-| `GJC_TEAM_HEARTBEAT_STALE_MS` | Stale-heartbeat threshold in milliseconds. Defaults to `120000`; a non-numeric value falls back to that default, a positive value below `3` is clamped to `3`, and a non-positive value disables stale-heartbeat detection (and with it the worker's own heartbeat publishing). A GJC worker session publishes a runtime-owned heartbeat every third of this window (minimum 1ms, capped at 30s) while an agent turn or owned background job is active, and `gjc team` exports the configured value into worker panes, which do not inherit the launching shell's environment. |
+| `WORX_TEAM_STATE_ROOT` | Overrides the team state root (default `<cwd>/.gjc/state/team`) |
+| `WORX_TEAM_TMUX_COMMAND` | tmux binary/command override for team launch |
+| `WORX_TEAM_WORKER_COMMAND` | Worker GJC command override |
+| `WORX_TEAM_WORKER_CLI` | Team worker CLI selector; accepted values are `auto` or `gjc` |
+| `WORX_TEAM_WORKER_CLI_MAP` | Comma-separated worker CLI selector map; entries must be `auto` or `gjc` |
+| `WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS` | Default-off stalled-worker continuation for the mutating `gjc team monitor` path; only exact value `1` enables it. A nudge is fenced to a running non-dry-run team, stale heartbeat, live recorded non-leader pane in the recorded tmux target, a proven-absent shutdown authority record, `ready`/`working` lifecycle with a valid non-terminal worker status, one current matching in-progress claim, and a lease that covers the hold. Valid-present or invalid/unreadable shutdown authority vetoes continuation but does not suppress normal stale-claim recovery. It uses at most two immutable journaled attempts (30s, then 120s) and fails closed on restart/unknown outcome. It sends a fixed prompt only to that pane on verified native tmux transport; psmux and native Windows send-keys fallback transports record a skipped outcome and send no continuation input. It does not replay providers, inspect/inject dynamic pane content or cross panes, kill/relaunch/split workers, or alter claims. |
+| `WORX_TEAM_HEARTBEAT_STALE_MS` | Stale-heartbeat threshold in milliseconds. Defaults to `120000`; a non-numeric value falls back to that default, a positive value below `3` is clamped to `3`, and a non-positive value disables stale-heartbeat detection (and with it the worker's own heartbeat publishing). A GJC worker session publishes a runtime-owned heartbeat every third of this window (minimum 1ms, capped at 30s) while an agent turn or owned background job is active, and `gjc team` exports the configured value into worker panes, which do not inherit the launching shell's environment. |
 
 ### Hermes MCP bridge
 
@@ -320,16 +320,16 @@ Coordinator MCP currently exposes durable polling/await tools, not push subscrip
 
 | Variable | Behavior |
 | --- | --- |
-| `GJC_COORDINATOR_MCP_WORKDIR_ROOTS` | Required allowlist for workdir and artifact paths. `gjc setup hermes` renders absolute normalized paths joined with the platform path delimiter (`:` on POSIX, `;` on Windows). The bridge parser also accepts commas, semicolons, and newlines for legacy manual configs. |
-| `GJC_COORDINATOR_MCP_MUTATIONS` | Enables mutating tool classes as a comma-separated list (`sessions`, `questions`, `reports`) or `all`. `sessions` covers session startup, prompt delivery, durable turn journal updates, queue, and force operations. Per-call `allow_mutation: true` is still required. |
-| `GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Max bytes returned by artifact reads (default `65536`, capped at `1048576`). |
-| `GJC_COORDINATOR_MCP_STATE_ROOT` | Bridge coordination state root (default `<cwd>/.gjc/state/coordinator-mcp`). |
-| `GJC_COORDINATOR_MCP_PROFILE` | Optional profile namespace for session/question/report state. Missing scope never widens to global session enumeration. |
-| `GJC_COORDINATOR_MCP_REPO` | Optional repo namespace for session/question/report state. Missing scope never widens to global session enumeration. |
-| `GJC_COORDINATOR_MCP_SESSION_COMMAND` | Optional **typed SDK lifecycle selector**, never a shell command that the coordinator executes. The only supported values are exactly `gjc` and `gjc --worktree [name]`; the latter optionally selects the GJC-managed worktree name. Wrapper binaries, shell syntax, model/provider flags, tmux flags, and other legacy command shapes fail closed before session creation. `gjc setup hermes` renders `gjc --worktree` by default. When omitted, SDK lifecycle creation still uses the requested coordinator workdir; no coordinator-owned tmux startup or prompt injection is performed. |
-| `GJC_COORDINATOR_MCP_SETUP_MANAGED_BY` | Marker written by `gjc setup hermes` for safe managed config updates. |
-| `GJC_COORDINATOR_MCP_SETUP_SCHEMA_VERSION` | Managed setup schema version written by `gjc setup hermes`. |
-| `GJC_COORDINATOR_MCP_SETUP_SIGNATURE` | Deterministic managed setup signature used to detect safe updates versus unmanaged conflicts. |
+| `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` | Required allowlist for workdir and artifact paths. `gjc setup hermes` renders absolute normalized paths joined with the platform path delimiter (`:` on POSIX, `;` on Windows). The bridge parser also accepts commas, semicolons, and newlines for legacy manual configs. |
+| `WORX_COORDINATOR_MCP_MUTATIONS` | Enables mutating tool classes as a comma-separated list (`sessions`, `questions`, `reports`) or `all`. `sessions` covers session startup, prompt delivery, durable turn journal updates, queue, and force operations. Per-call `allow_mutation: true` is still required. |
+| `WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Max bytes returned by artifact reads (default `65536`, capped at `1048576`). |
+| `WORX_COORDINATOR_MCP_STATE_ROOT` | Bridge coordination state root (default `<cwd>/.gjc/state/coordinator-mcp`). |
+| `WORX_COORDINATOR_MCP_PROFILE` | Optional profile namespace for session/question/report state. Missing scope never widens to global session enumeration. |
+| `WORX_COORDINATOR_MCP_REPO` | Optional repo namespace for session/question/report state. Missing scope never widens to global session enumeration. |
+| `WORX_COORDINATOR_MCP_SESSION_COMMAND` | Optional **typed SDK lifecycle selector**, never a shell command that the coordinator executes. The only supported values are exactly `gjc` and `gjc --worktree [name]`; the latter optionally selects the GJC-managed worktree name. Wrapper binaries, shell syntax, model/provider flags, tmux flags, and other legacy command shapes fail closed before session creation. `gjc setup hermes` renders `gjc --worktree` by default. When omitted, SDK lifecycle creation still uses the requested coordinator workdir; no coordinator-owned tmux startup or prompt injection is performed. |
+| `WORX_COORDINATOR_MCP_SETUP_MANAGED_BY` | Marker written by `gjc setup hermes` for safe managed config updates. |
+| `WORX_COORDINATOR_MCP_SETUP_SCHEMA_VERSION` | Managed setup schema version written by `gjc setup hermes`. |
+| `WORX_COORDINATOR_MCP_SETUP_SIGNATURE` | Deterministic managed setup signature used to detect safe updates versus unmanaged conflicts. |
 
 ### Google Vertex AI
 
@@ -356,20 +356,20 @@ OAuth host chain: `KIMI_CODE_OAUTH_HOST` → `KIMI_OAUTH_HOST` → `https://auth
 
 | Variable                   | Default / behavior                                              |
 | -------------------------- | --------------------------------------------------------------- |
-| `GJC_AI_GEMINI_CLI_VERSION` | Overrides Gemini CLI user-agent version tag (`0.49.0` if unset). `PI_AI_GEMINI_CLI_VERSION` remains supported as a legacy fallback. |
+| `WORX_AI_GEMINI_CLI_VERSION` | Overrides Gemini CLI user-agent version tag (`0.49.0` if unset). `PI_AI_GEMINI_CLI_VERSION` remains supported as a legacy fallback. |
 
 ### OpenAI code provider responses (feature/debug controls)
 
 | Variable                             | Behavior                                             |
 | ------------------------------------ | ---------------------------------------------------- |
-| `GJC_OPENAI_CODE_DEBUG`                     | `1`/`true` enables OpenAI code provider debug logging      |
-| `GJC_NO_STRICT`                       | Global bypass for OpenAI-style strict schema enforcement (`adaptSchemaForStrict`); legacy alias `PI_NO_STRICT` |
-| `GJC_OPENAI_CODE_WEBSOCKET`                 | `1`/`true` enables websocket transport preference    |
-| `GJC_OPENAI_CODE_WEBSOCKET_V2`              | `1`/`true` enables websocket v2 path                 |
-| `GJC_OPENAI_CODE_WEBSOCKET_IDLE_TIMEOUT_MS` | Positive integer override (default 300000)           |
-| `GJC_OPENAI_CODE_WEBSOCKET_RETRY_BUDGET`    | Non-negative integer override (default 5)            |
-| `GJC_OPENAI_CODE_WEBSOCKET_RETRY_DELAY_MS`  | Positive integer base backoff override (default 500) |
-| `GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS`   | Positive integer OpenAI stream idle timeout override |
+| `WORX_OPENAI_CODE_DEBUG`                     | `1`/`true` enables OpenAI code provider debug logging      |
+| `WORX_NO_STRICT`                       | Global bypass for OpenAI-style strict schema enforcement (`adaptSchemaForStrict`); legacy alias `PI_NO_STRICT` |
+| `WORX_OPENAI_CODE_WEBSOCKET`                 | `1`/`true` enables websocket transport preference    |
+| `WORX_OPENAI_CODE_WEBSOCKET_V2`              | `1`/`true` enables websocket v2 path                 |
+| `WORX_OPENAI_CODE_WEBSOCKET_IDLE_TIMEOUT_MS` | Positive integer override (default 300000)           |
+| `WORX_OPENAI_CODE_WEBSOCKET_RETRY_BUDGET`    | Non-negative integer override (default 5)            |
+| `WORX_OPENAI_CODE_WEBSOCKET_RETRY_DELAY_MS`  | Positive integer base backoff override (default 500) |
+| `WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS`   | Positive integer OpenAI stream idle timeout override |
 
 ### Cursor provider debug
 
@@ -382,7 +382,7 @@ OAuth host chain: `KIMI_CODE_OAUTH_HOST` → `KIMI_OAUTH_HOST` → `https://auth
 
 | Variable             | Behavior                                                                                                          |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `GJC_CACHE_RETENTION` | If `long`, enables long retention where supported (`anthropic`, `openai-responses`, Bedrock retention resolution); any other value forces `short`. The Anthropic provider already defaults to `long` (1h) when unset, so this is mainly an opt-out (`short`) or a way to extend long retention to other providers. |
+| `WORX_CACHE_RETENTION` | If `long`, enables long retention where supported (`anthropic`, `openai-responses`, Bedrock retention resolution); any other value forces `short`. The Anthropic provider already defaults to `long` (1h) when unset, so this is mainly an opt-out (`short`) or a way to extend long retention to other providers. |
 
 ---
 
@@ -399,7 +399,7 @@ OAuth host chain: `KIMI_CODE_OAUTH_HOST` → `KIMI_OAUTH_HOST` → `https://auth
 | `TAVILY_API_KEY`                                    | Tavily search provider                                        |
 | `ZAI_API_KEY`                                       | z.ai search provider (also checks stored OAuth in `agent.db`) |
 | `OPENAI_API_KEY` / OpenAI code OAuth in DB                | OpenAI code search provider availability/auth                       |
-| `GJC_OPENAI_CODE_WEB_SEARCH_MODEL`                         | OpenAI code search provider model override                          |
+| `WORX_OPENAI_CODE_WEB_SEARCH_MODEL`                         | OpenAI code search provider model override                          |
 | `MOONSHOT_SEARCH_API_KEY` / `KIMI_SEARCH_API_KEY`   | Kimi/Moonshot search provider env auth                        |
 | `MOONSHOT_SEARCH_BASE_URL` / `KIMI_SEARCH_BASE_URL` | Kimi/Moonshot search endpoint override                        |
 | `KAGI_API_KEY`                                      | Kagi search provider                                          |
@@ -433,7 +433,7 @@ Related vars:
 
 | Variable            | Behavior                                                                        |
 | ------------------- | ------------------------------------------------------------------------------- |
-| `GJC_AUTH_NO_BORROW` | If set, disables macOS native-app token borrowing path in Perplexity login flow |
+| `WORX_AUTH_NO_BORROW` | If set, disables macOS native-app token borrowing path in Perplexity login flow |
 
 ---
 
@@ -441,16 +441,16 @@ Related vars:
 
 | Variable                  | Default / behavior                                                                                                  |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `GJC_PY`                   | Eval backend override: `0`/`bash`=JavaScript only, `1`/`py`=Python only, `mix`/`both`=both; invalid values ignored |
-| `GJC_PYTHON_SKIP_CHECK`    | If `1`, skips Python interpreter availability checks (subprocess runner still starts on demand)                     |
-| `GJC_PYTHON_INTEGRATION`   | If `1`, opts gated integration tests in (e.g. `python-runner.integration.test.ts`) into running against real Python |
-| `GJC_PYTHON_IPC_TRACE`     | If `1`, logs NDJSON frames exchanged with the Python runner subprocess                                              |
+| `WORX_PY`                   | Eval backend override: `0`/`bash`=JavaScript only, `1`/`py`=Python only, `mix`/`both`=both; invalid values ignored |
+| `WORX_PYTHON_SKIP_CHECK`    | If `1`, skips Python interpreter availability checks (subprocess runner still starts on demand)                     |
+| `WORX_PYTHON_INTEGRATION`   | If `1`, opts gated integration tests in (e.g. `python-runner.integration.test.ts`) into running against real Python |
+| `WORX_PYTHON_IPC_TRACE`     | If `1`, logs NDJSON frames exchanged with the Python runner subprocess                                              |
 | `VIRTUAL_ENV`             | Highest-priority venv path for Python runtime resolution                                                            |
 
 Extra conditional behavior:
 
 - If `BUN_ENV=test` or `NODE_ENV=test`, Python availability checks are treated as OK and warming is skipped.
-- Python env filtering denies common API keys and allows safe base vars + `LC_`, `XDG_`, `GJC_` prefixes.
+- Python env filtering denies common API keys and allows safe base vars + `LC_`, `XDG_`, `WORX_` prefixes.
 
 ---
 
@@ -458,35 +458,35 @@ Extra conditional behavior:
 
 | Variable                     | Default / behavior                                                                                 |
 | ---------------------------- | -------------------------------------------------------------------------------------------------- |
-| `GJC_SMOL_MODEL`              | Ephemeral model-role override for `smol` (CLI `--smol` takes precedence)                           |
-| `GJC_SLOW_MODEL`              | Ephemeral model-role override for `slow` (CLI `--slow` takes precedence)                           |
-| `GJC_PLAN_MODEL`              | Ephemeral model-role override for `plan` (CLI `--plan` takes precedence)                           |
-| `GJC_NO_TITLE`                | If set (any non-empty value), disables auto session title generation on first user message         |
-| `GJC_NO_CMUX_RENAME`         | If set (any non-empty value), disables renaming the containing cmux workspace to the current session name |
+| `WORX_SMOL_MODEL`              | Ephemeral model-role override for `smol` (CLI `--smol` takes precedence)                           |
+| `WORX_SLOW_MODEL`              | Ephemeral model-role override for `slow` (CLI `--slow` takes precedence)                           |
+| `WORX_PLAN_MODEL`              | Ephemeral model-role override for `plan` (CLI `--plan` takes precedence)                           |
+| `WORX_NO_TITLE`                | If set (any non-empty value), disables auto session title generation on first user message         |
+| `WORX_NO_CMUX_RENAME`         | If set (any non-empty value), disables renaming the containing cmux workspace to the current session name |
 | `NULL_PROMPT`                | If `true`, system prompt builder returns empty string                                              |
-| `GJC_BLOCKED_AGENT`           | Blocks a specific subagent type in task tool                                                       |
-| `GJC_SUBPROCESS_CMD`          | Overrides subagent spawn command (`gjc` / `gjc.cmd` resolution bypass)                             |
-| `GJC_TASK_MAX_OUTPUT_BYTES`   | Max captured output bytes per subagent (default `500000`)                                          |
-| `GJC_TASK_MAX_OUTPUT_LINES`   | Max captured output lines per subagent (default `5000`)                                            |
-| `GJC_TIMING`                  | If set (any non-empty value), prints a hierarchical timing-span tree to **stderr** via `logger.printTimings()`. In interactive mode the tree prints once the agent is ready (before the TUI starts); in print mode it prints after the whole prompt batch completes. Print-mode prompts are wrapped in `print:prompt:initial` / `print:prompt:next` spans so each user message shows up as its own row. `GJC_TIMING=x` exits the process with code 0 right after printing in interactive mode (use to measure cold startup only). `GJC_TIMING=full` lists every module-load entry instead of just the top N. |
-| `GJC_PACKAGE_DIR`             | Overrides package asset base dir resolution (docs/examples/changelog path lookup)                  |
-| `GJC_DISABLE_LSPMUX`          | Canonical lspmux opt-out. A truthy value disables lspmux probing and wrapping; `PI_DISABLE_LSPMUX` is a supported compatibility alias with the same effect. |
-| `PI_DISABLE_LSPMUX`           | Supported compatibility alias for `GJC_DISABLE_LSPMUX`; a truthy value also disables lspmux probing and wrapping. |
+| `WORX_BLOCKED_AGENT`           | Blocks a specific subagent type in task tool                                                       |
+| `WORX_SUBPROCESS_CMD`          | Overrides subagent spawn command (`gjc` / `gjc.cmd` resolution bypass)                             |
+| `WORX_TASK_MAX_OUTPUT_BYTES`   | Max captured output bytes per subagent (default `500000`)                                          |
+| `WORX_TASK_MAX_OUTPUT_LINES`   | Max captured output lines per subagent (default `5000`)                                            |
+| `WORX_TIMING`                  | If set (any non-empty value), prints a hierarchical timing-span tree to **stderr** via `logger.printTimings()`. In interactive mode the tree prints once the agent is ready (before the TUI starts); in print mode it prints after the whole prompt batch completes. Print-mode prompts are wrapped in `print:prompt:initial` / `print:prompt:next` spans so each user message shows up as its own row. `WORX_TIMING=x` exits the process with code 0 right after printing in interactive mode (use to measure cold startup only). `WORX_TIMING=full` lists every module-load entry instead of just the top N. |
+| `WORX_PACKAGE_DIR`             | Overrides package asset base dir resolution (docs/examples/changelog path lookup)                  |
+| `WORX_DISABLE_LSPMUX`          | Canonical lspmux opt-out. A truthy value disables lspmux probing and wrapping; `PI_DISABLE_LSPMUX` is a supported compatibility alias with the same effect. |
+| `PI_DISABLE_LSPMUX`           | Supported compatibility alias for `WORX_DISABLE_LSPMUX`; a truthy value also disables lspmux probing and wrapping. |
 | `SMITHERY_URL`               | Smithery web URL override (default `https://smithery.ai`)                                          |
 | `SMITHERY_API_URL`           | Smithery API base URL override (default `https://api.smithery.ai`)                                 |
 | `PUPPETEER_EXECUTABLE_PATH`  | Browser tool Chromium executable override                                                          |
 | `LM_STUDIO_BASE_URL`         | Default implicit LM Studio discovery base URL override (`http://127.0.0.1:1234/v1` if unset)       |
 | `OLLAMA_BASE_URL`            | Default implicit Ollama discovery base URL override (`http://127.0.0.1:11434` if unset)            |
 | `LLAMA_CPP_BASE_URL`         | Default implicit Llama.cpp discovery base URL override (`http://127.0.0.1:8080` if unset)          |
-| `GJC_EDIT_VARIANT`            | Forces edit tool variant (`patch`, `replace`, `hashline`, `vim`, `apply_patch`). The force beats `edit.modelVariants`, `edit.mode`, and automatic model-family routing; invalid values fail fast at startup. `PI_EDIT_VARIANT` is the legacy alias. |
-| `GJC_FORCE_IMAGE_PROTOCOL`    | Forces supported image protocol (`kitty`, `iterm2`/`iterm`, `sixel`, `none`) where used            |
-| `GJC_ALLOW_SIXEL_PASSTHROUGH` | Allows SIXEL passthrough when `GJC_FORCE_IMAGE_PROTOCOL=sixel`                                      |
-| `GJC_NO_PTY`                  | If `1`, disables interactive PTY path for bash tool                                                |
-| `GJC_SESSION_CONTEXT_BUDGET_BYTES` | Overrides the synchronous session-context materialization budget in bytes (default `536870912` = 512 MiB, ceiling `8589934592` = 8 GiB). Only a canonical positive-integer value is honored; anything invalid (empty, non-numeric, negative, zero, overflowing a safe integer, or above the ceiling) fail-closes to the 512 MiB default with a warning. Raise it above your measured session size to suppress the `SessionContextTooLargeError` preflight, or lower it to restore the old tight bound. |
+| `WORX_EDIT_VARIANT`            | Forces edit tool variant (`patch`, `replace`, `hashline`, `vim`, `apply_patch`). The force beats `edit.modelVariants`, `edit.mode`, and automatic model-family routing; invalid values fail fast at startup. `PI_EDIT_VARIANT` is the legacy alias. |
+| `WORX_FORCE_IMAGE_PROTOCOL`    | Forces supported image protocol (`kitty`, `iterm2`/`iterm`, `sixel`, `none`) where used            |
+| `WORX_ALLOW_SIXEL_PASSTHROUGH` | Allows SIXEL passthrough when `WORX_FORCE_IMAGE_PROTOCOL=sixel`                                      |
+| `WORX_NO_PTY`                  | If `1`, disables interactive PTY path for bash tool                                                |
+| `WORX_SESSION_CONTEXT_BUDGET_BYTES` | Overrides the synchronous session-context materialization budget in bytes (default `536870912` = 512 MiB, ceiling `8589934592` = 8 GiB). Only a canonical positive-integer value is honored; anything invalid (empty, non-numeric, negative, zero, overflowing a safe integer, or above the ceiling) fail-closes to the 512 MiB default with a warning. Raise it above your measured session size to suppress the `SessionContextTooLargeError` preflight, or lower it to restore the old tight bound. |
 
 LSP project configuration may control declarative matching, activation, and capabilities, but it cannot define a command, arguments, executable, client factory, initialization options, or opaque server settings. Trusted user-wide configuration outside the project—including the recommended `~/.gjc/agent/lsp.*` files and supported legacy user locations—can override LSP launches and server options; automatic discovery uses trusted external executables and rejects project-owned lexical paths as well as symlink-resolved project binaries.
 
-`GJC_NO_PTY` is also set internally when CLI `--no-pty` is used.
+`WORX_NO_PTY` is also set internally when CLI `--no-pty` is used.
 
 ---
 
@@ -496,8 +496,8 @@ These are consumed via `@gajae-code/utils/dirs` and affect where coding-agent st
 
 | Variable              | Default / behavior                                                            |
 | --------------------- | ----------------------------------------------------------------------------- |
-| `GJC_CONFIG_DIR`       | Config root dirname under home (default `.gjc`)                               |
-| `GJC_CODING_AGENT_DIR` | Full override for agent directory (default `~/<GJC_CONFIG_DIR or .gjc>/agent`) |
+| `WORX_CONFIG_DIR`       | Config root dirname under home (default `.gjc`)                               |
+| `WORX_CODING_AGENT_DIR` | Full override for agent directory (default `~/<WORX_CONFIG_DIR or .gjc>/agent`) |
 | `PWD`                 | Used when matching canonical current working directory in path helpers        |
 
 ---
@@ -508,18 +508,18 @@ These are consumed via `@gajae-code/utils/dirs` and affect where coding-agent st
 
 | Variable                   | Behavior                                                                       |
 | -------------------------- | ------------------------------------------------------------------------------ |
-| `GJC_BASH_NO_CI`            | Suppresses automatic `CI=true` injection into spawned shell env                |
-| `PI_BASH_NO_CI`             | Legacy alias fallback for `GJC_BASH_NO_CI`                                     |
-| `CLAUDE_BASH_NO_CI`         | Legacy alias fallback for `GJC_BASH_NO_CI`                                     |
-| `GJC_BASH_NO_LOGIN`         | Disables login-shell mode; shell args become `['-c']` instead of `['-l','-c']` |
-| `PI_BASH_NO_LOGIN`          | Legacy alias fallback for `GJC_BASH_NO_LOGIN`                                  |
-| `CLAUDE_BASH_NO_LOGIN`      | Legacy alias fallback for `GJC_BASH_NO_LOGIN`                                  |
+| `WORX_BASH_NO_CI`            | Suppresses automatic `CI=true` injection into spawned shell env                |
+| `PI_BASH_NO_CI`             | Legacy alias fallback for `WORX_BASH_NO_CI`                                     |
+| `CLAUDE_BASH_NO_CI`         | Legacy alias fallback for `WORX_BASH_NO_CI`                                     |
+| `WORX_BASH_NO_LOGIN`         | Disables login-shell mode; shell args become `['-c']` instead of `['-l','-c']` |
+| `PI_BASH_NO_LOGIN`          | Legacy alias fallback for `WORX_BASH_NO_LOGIN`                                  |
+| `CLAUDE_BASH_NO_LOGIN`      | Legacy alias fallback for `WORX_BASH_NO_LOGIN`                                  |
 | `PI_SHELL_PREFIX`           | Optional command prefix wrapper                                                |
 | `CLAUDE_CODE_SHELL_PREFIX`  | Legacy alias fallback for `PI_SHELL_PREFIX`                                    |
 | `VISUAL`                   | Preferred external editor command                                              |
 | `EDITOR`                   | Fallback external editor command                                               |
 
-Current implementation: `GJC_BASH_NO_CI` and `GJC_BASH_NO_LOGIN` are resolved first, then the `PI_*` and `CLAUDE_*` aliases above. Both are boolean-like: only `1`/`Y`/`TRUE`/`YES`/`ON` (case-insensitive) enable them, so an explicit `GJC_BASH_NO_LOGIN=0` keeps the login shell even when a legacy alias is truthy. The shell prefix is read from `PI_SHELL_PREFIX`/`CLAUDE_CODE_SHELL_PREFIX` only; `GJC_SHELL_PREFIX` is not currently honored.
+Current implementation: `WORX_BASH_NO_CI` and `WORX_BASH_NO_LOGIN` are resolved first, then the `PI_*` and `CLAUDE_*` aliases above. Both are boolean-like: only `1`/`Y`/`TRUE`/`YES`/`ON` (case-insensitive) enable them, so an explicit `WORX_BASH_NO_LOGIN=0` keeps the login shell even when a legacy alias is truthy. The shell prefix is read from `PI_SHELL_PREFIX`/`CLAUDE_CODE_SHELL_PREFIX` only; `WORX_SHELL_PREFIX` is not currently honored.
 
 ---
 
@@ -544,20 +544,20 @@ These are read as runtime signals; they are usually set by the terminal/OS rathe
 
 | Variable                  | Behavior                                                                              |
 | ------------------------- | ------------------------------------------------------------------------------------- |
-| `GJC_NOTIFICATIONS`       | `0` is a hard notification runtime opt-out; `1` explicitly enables the generic current-session path even without a globally configured adapter. |
-| `GJC_NOTIFICATIONS_TOKEN` | An explicit generic current-session opt-in token. It has the same runtime precedence as `GJC_NOTIFICATIONS=1`; it does not supply or override global Telegram credentials. |
-| `GJC_NOTIFICATIONS_STREAM` | `1` forces live assistant-output streaming for this process; `0` / `off` / `false` disables it. Unset or unknown values defer to the global `notifications.telegram.streaming.enabled` preference, which defaults to `true` and activates durable streaming only for a configured Telegram adapter. |
-| `GJC_NOTIFICATIONS_STREAM_INTERVAL_MS` | Minimum interval between live Telegram stream edits; defaults to `500` and clamps to at least `200`. |
-| `GJC_NOTIFICATIONS_TURN_MAX` | Optional finalized turn-text cap for notification streaming; defaults to the bounded full-turn ceiling for split-capable clients. |
-| `GJC_NOTIFY`              | `off` / `0` / `false` suppresses the notification control surface for this process, including completion notifications; global config is untouched and child processes inherit it. It wins over explicit notification opt-in. Use it for non-interactive runs (`gjc -p --no-session`) that must remain silent. |
-| `GJC_TUI_WRITE_LOG`        | If set, logs TUI writes to file                                                       |
-| `GJC_HARDWARE_CURSOR`      | If `1`, enables hardware cursor mode                                                  |
-| `GJC_CLEAR_ON_SHRINK`      | If `1`, clears empty rows when content shrinks                                        |
-| `GJC_DEBUG_REDRAW`         | If `1`, enables redraw debug logging                                                  |
-| `GJC_TUI_DEBUG`            | If `1`, enables deep TUI debug dump path                                              |
-| `GJC_FORCE_IMAGE_PROTOCOL` | Forces terminal image protocol detection (`kitty`, `iterm2`/`iterm`, `sixel`, `none`) |
-| `GJC_TUI_KEYBOARD_PROTOCOL` | Enhanced keyboard input (Kitty keyboard protocol + xterm modifyOtherKeys). Enabled by default; set `0` / `false` to leave the keyboard in its default mode. Use this when a terminal (e.g. Android Termius) breaks IME/Hangul composition while these enhanced modes are active. |
-| `GJC_TUI_SYNCHRONIZED_OUTPUT` | Synchronized-output framing (`CSI ?2026h/l`) is enabled by default. Set `0` / `false` / `off` / `no` before starting or restarting GJC to remove that framing for terminal parsers that render it incorrectly. This is a process-wide compatibility and diagnostic switch, not tmux/Byobu client detection or per-client negotiation. Disabling it may expose visible tearing; return to the default after diagnosis unless the client requires the workaround. |
+| `WORX_NOTIFICATIONS`       | `0` is a hard notification runtime opt-out; `1` explicitly enables the generic current-session path even without a globally configured adapter. |
+| `WORX_NOTIFICATIONS_TOKEN` | An explicit generic current-session opt-in token. It has the same runtime precedence as `WORX_NOTIFICATIONS=1`; it does not supply or override global Telegram credentials. |
+| `WORX_NOTIFICATIONS_STREAM` | `1` forces live assistant-output streaming for this process; `0` / `off` / `false` disables it. Unset or unknown values defer to the global `notifications.telegram.streaming.enabled` preference, which defaults to `true` and activates durable streaming only for a configured Telegram adapter. |
+| `WORX_NOTIFICATIONS_STREAM_INTERVAL_MS` | Minimum interval between live Telegram stream edits; defaults to `500` and clamps to at least `200`. |
+| `WORX_NOTIFICATIONS_TURN_MAX` | Optional finalized turn-text cap for notification streaming; defaults to the bounded full-turn ceiling for split-capable clients. |
+| `WORX_NOTIFY`              | `off` / `0` / `false` suppresses the notification control surface for this process, including completion notifications; global config is untouched and child processes inherit it. It wins over explicit notification opt-in. Use it for non-interactive runs (`gjc -p --no-session`) that must remain silent. |
+| `WORX_TUI_WRITE_LOG`        | If set, logs TUI writes to file                                                       |
+| `WORX_HARDWARE_CURSOR`      | If `1`, enables hardware cursor mode                                                  |
+| `WORX_CLEAR_ON_SHRINK`      | If `1`, clears empty rows when content shrinks                                        |
+| `WORX_DEBUG_REDRAW`         | If `1`, enables redraw debug logging                                                  |
+| `WORX_TUI_DEBUG`            | If `1`, enables deep TUI debug dump path                                              |
+| `WORX_FORCE_IMAGE_PROTOCOL` | Forces terminal image protocol detection (`kitty`, `iterm2`/`iterm`, `sixel`, `none`) |
+| `WORX_TUI_KEYBOARD_PROTOCOL` | Enhanced keyboard input (Kitty keyboard protocol + xterm modifyOtherKeys). Enabled by default; set `0` / `false` to leave the keyboard in its default mode. Use this when a terminal (e.g. Android Termius) breaks IME/Hangul composition while these enhanced modes are active. |
+| `WORX_TUI_SYNCHRONIZED_OUTPUT` | Synchronized-output framing (`CSI ?2026h/l`) is enabled by default. Set `0` / `false` / `off` / `no` before starting or restarting GJC to remove that framing for terminal parsers that render it incorrectly. This is a process-wide compatibility and diagnostic switch, not tmux/Byobu client detection or per-client negotiation. Disabling it may expose visible tearing; return to the default after diagnosis unless the client requires the workaround. |
 
 ---
 
@@ -565,9 +565,9 @@ These are read as runtime signals; they are usually set by the terminal/OS rathe
 
 | Variable                  | Behavior                                                            |
 | ------------------------- | ------------------------------------------------------------------- |
-| `GJC_COMMIT_TEST_FALLBACK` | If `true` (case-insensitive), force commit fallback generation path |
-| `GJC_COMMIT_NO_FALLBACK`   | If `true`, disables fallback when agent returns no proposal         |
-| `GJC_COMMIT_MAP_REDUCE`    | If `false`, disables map-reduce commit analysis path                |
+| `WORX_COMMIT_TEST_FALLBACK` | If `true` (case-insensitive), force commit fallback generation path |
+| `WORX_COMMIT_NO_FALLBACK`   | If `true`, disables fallback when agent returns no proposal         |
+| `WORX_COMMIT_MAP_REDUCE`    | If `false`, disables map-reduce commit analysis path                |
 | `DEBUG`                   | If set, commit agent error stack traces are printed                 |
 
 ---
@@ -576,7 +576,7 @@ These are read as runtime signals; they are usually set by the terminal/OS rathe
 
 | Variable | Values | Default | Behavior |
 | --- | --- | --- | --- |
-| `GJC_ACP_PERMISSION_MODE` | `prompt`, `auto`, `always-allow` | `prompt` | Controls whether ACP tool calls use the client's permission prompt or the SDK allow policy. `auto` and `always-allow` both allow gated tool calls without prompting. Invalid values fail safely to `prompt`. |
+| `WORX_ACP_PERMISSION_MODE` | `prompt`, `auto`, `always-allow` | `prompt` | Controls whether ACP tool calls use the client's permission prompt or the SDK allow policy. `auto` and `always-allow` both allow gated tool calls without prompting. Invalid values fail safely to `prompt`. |
 
 ACP client metadata at `_meta.gjc.permissionHandling` takes precedence when the client supplies that field; the process environment is the fallback. JetBrains Air custom agents can set the fallback per agent in `acp.json`:
 
@@ -587,7 +587,7 @@ ACP client metadata at `_meta.gjc.permissionHandling` takes precedence when the 
       "command": "/absolute/path/to/gjc",
       "args": ["acp", "--mpreset", "opus-codex"],
       "env": {
-        "GJC_ACP_PERMISSION_MODE": "always-allow"
+        "WORX_ACP_PERMISSION_MODE": "always-allow"
       }
     }
   }
@@ -603,7 +603,7 @@ See [External control readiness](./external-control-readiness.md#jetbrains-air-c
 
 ## 12) Removed ingress modes
 
-`--mode rpc`, `--mode rpc-ui`, and `--mode bridge` have been removed. The retired bridge-prefixed variables and `GJC_RPC_EMIT_TITLE` are not runtime configuration variables. Use the [SDK machine interface](./sdk.md) for external machine control.
+`--mode rpc`, `--mode rpc-ui`, and `--mode bridge` have been removed. The retired bridge-prefixed variables and `WORX_RPC_EMIT_TITLE` are not runtime configuration variables. Use the [SDK machine interface](./sdk.md) for external machine control.
 
 ---
 

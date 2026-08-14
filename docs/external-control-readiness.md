@@ -48,14 +48,14 @@ The following example starts the `opus-codex` model preset and allows tool calls
       "command": "/absolute/path/to/gjc",
       "args": ["acp", "--mpreset", "opus-codex"],
       "env": {
-        "GJC_ACP_PERMISSION_MODE": "always-allow"
+        "WORX_ACP_PERMISSION_MODE": "always-allow"
       }
     }
   }
 }
 ```
 
-`always-allow` gives the agent permission to execute gated tools, including shell commands, without an Air approval prompt. Omit `GJC_ACP_PERMISSION_MODE` or set it to `prompt` when manual approval is required. Start a new Air task after changing `acp.json`; restart Air if it reuses an already-running agent process.
+`always-allow` gives the agent permission to execute gated tools, including shell commands, without an Air approval prompt. Omit `WORX_ACP_PERMISSION_MODE` or set it to `prompt` when manual approval is required. Start a new Air task after changing `acp.json`; restart Air if it reuses an already-running agent process.
 
 Air supplies MCP servers through ACP session requests. GJC accepts client-supplied stdio, HTTP, and SSE definitions for new sessions and offline resume. Do not add `--mcp-config` to the ACP command: that CLI option is intentionally unsupported for broker-backed ACP. A live session's MCP configuration is immutable; reconnect declarations from Air attach to the existing configuration instead of attempting to replace it. Close or resume the offline session to change its MCP configuration.
 Air clients that advertise form elicitation receive `AskUserQuestion` selections and free-text prompts through ACP; declining or cancelling the form leaves the ask unanswered.

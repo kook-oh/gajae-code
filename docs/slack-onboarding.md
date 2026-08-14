@@ -80,7 +80,7 @@ prepare session authority → bind the existing root through the live daemon →
 ```
 
 1. **Prepare.** Start the session prepared. A manually started session opts in
-   with `GJC_NOTIFY_BIND_EXISTING_THREAD=1` in its environment; a broker
+   with `WORX_NOTIFY_BIND_EXISTING_THREAD=1` in its environment; a broker
    lifecycle-managed session is prepared by its launch request instead (see
    below). Either way the session publishes its endpoint and registers with the
    broker exactly as usual, so its id and endpoint generation are discoverable
@@ -105,7 +105,7 @@ prepare session authority → bind the existing root through the live daemon →
 
 The opt-in is per session and explicit: only the exact value `1` prepares a
 session, and a session without it keeps the stock immediate-ready root. The
-existing global (`notifications.enabled`, `GJC_NOTIFICATIONS=0`) and per-session
+existing global (`notifications.enabled`, `WORX_NOTIFICATIONS=0`) and per-session
 opt-outs are unchanged and still authoritative.
 
 Preparation has exactly two authorities and they never overlap. A manually

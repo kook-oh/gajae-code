@@ -186,18 +186,18 @@ layer:
 - `notifications.telegram.botToken = <token>`
 - `notifications.telegram.chatId = <paired chat id>`
 - `notifications.redact = true` only when `--redact` was passed
-- `notifications.telegram.streaming.enabled = true` by default; set it to `false` to disable durable live Telegram assistant-output updates globally. `GJC_NOTIFICATIONS_STREAM=1` forces process-local streaming, while `0`, `off`, or `false` forces it off.
+- `notifications.telegram.streaming.enabled = true` by default; set it to `false` to disable durable live Telegram assistant-output updates globally. `WORX_NOTIFICATIONS_STREAM=1` forces process-local streaming, while `0`, `off`, or `false` forces it off.
 
 Provider completeness, malformed-state quarantine, desired intent, effective enablement, runtime readiness, and delivery outcome are separate status dimensions. Telegram is complete when its bot token and private-chat id are valid; it is effective only when it is complete, not quarantined, desired on, and the global master is on. Provider-local malformed values are quarantined without erasing safe sibling values or secrets. Removing Telegram is adapter-local: it removes only Telegram credentials and sets Telegram desired intent off without changing `notifications.enabled` or any Discord/Slack state.
 
 
 Three lifecycle gates keep SDK hosting, setup, and managed delivery separate:
 
-1. An eligible host receives the dormant notification control surface. `GJC_NOTIFY=off`,
+1. An eligible host receives the dormant notification control surface. `WORX_NOTIFY=off`,
    `0`, or `false` is a hard process opt-out; unsupported hosts and
    helper/subagent sessions are also ineligible.
 2. Every eligible top-level session hosts its local SDK endpoint by default,
-   independently of notification configuration. `GJC_SDK_DISABLE=1` opts out of
+   independently of notification configuration. `WORX_SDK_DISABLE=1` opts out of
    SDK hosting for that session.
 3. A managed Telegram daemon is ensured only for a complete global Telegram
    configuration with managed delivery enabled. Discord-only, Slack-only, and
@@ -208,21 +208,21 @@ Environment/session precedence for managed delivery is implemented in
 
 For a GJC-spawned child, `notifications.sessionScope=primary` suppresses managed
 notification delivery to avoid duplicate topics; `all` permits it.
-`GJC_NOTIFICATIONS=1` or `GJC_NOTIFICATIONS_TOKEN` explicitly opts that child in,
+`WORX_NOTIFICATIONS=1` or `WORX_NOTIFICATIONS_TOKEN` explicitly opts that child in,
 but never overrides a hard opt-out or a helper/subagent exclusion.
 
 Managed-delivery precedence is highest first; it does not change independently
 hosted SDK endpoints:
 
-1. `GJC_NOTIFY=off`, `0`, or `false` prevents the notification control surface
+1. `WORX_NOTIFY=off`, `0`, or `false` prevents the notification control surface
    for that process.
-2. `GJC_NOTIFICATIONS=0` suppresses automatic generic current-session admission; explicit `/notify on` may override that suppression only for the current session.
+2. `WORX_NOTIFICATIONS=0` suppresses automatic generic current-session admission; explicit `/notify on` may override that suppression only for the current session.
 3. Local `/notify off` disables managed delivery only for the current session.
-4. `GJC_NOTIFICATIONS=1` or `GJC_NOTIFICATIONS_TOKEN` enables the legacy
+4. `WORX_NOTIFICATIONS=1` or `WORX_NOTIFICATIONS_TOKEN` enables the legacy
    explicit managed-delivery path.
 5. A complete global configuration enables managed delivery automatically.
 6. Otherwise managed delivery stays off; the SDK endpoint remains hosted unless
-   `GJC_SDK_DISABLE=1` is set.
+   `WORX_SDK_DISABLE=1` is set.
 
 ## 6. Start or reuse sessions
 
@@ -233,7 +233,7 @@ gjc --tmux
 ```
 
 or use any other supported GJC launch mode. Every eligible top-level session
-writes its SDK endpoint unless `GJC_SDK_DISABLE=1`; when managed Telegram
+writes its SDK endpoint unless `WORX_SDK_DISABLE=1`; when managed Telegram
 delivery is configured and enabled, it also ensures the Telegram daemon is running.
 
 The managed daemon is a singleton per bot token/chat pair. Telegram allows only
@@ -391,7 +391,7 @@ does not edit global config or credentials:
 - `/notify off` disables the current session endpoint and removes its discovery record without changing global setup;
 - `/notify on` explicitly re-enables the current generic session when a complete effective provider or another explicit environment path is available.
 
-`GJC_NOTIFICATIONS=0` suppresses automatic generic current-session admission only. An explicit `/notify on` may override that one automatic-admission suppression for the current session; it does not alter durable provider intent or enable a direct provider API. `GJC_NOTIFY=off`, `0`, or `false` remains the hard process-level opt-out and exposes no notification control surface to override.
+`WORX_NOTIFICATIONS=0` suppresses automatic generic current-session admission only. An explicit `/notify on` may override that one automatic-admission suppression for the current session; it does not alter durable provider intent or enable a direct provider API. `WORX_NOTIFY=off`, `0`, or `false` remains the hard process-level opt-out and exposes no notification control surface to override.
 
 ## 9. Debug-only manual bridge
 
@@ -454,7 +454,7 @@ recovery removes only dead-owner artifacts and never touches a live owner.
 Check, in order:
 
 1. `gjc notify status` and confirm the selected provider is complete, not quarantined, desired on, and effective
-2. the session has not run `/notify off`; when `GJC_NOTIFICATIONS=0` suppresses automatic admission, run `/notify on` explicitly
+2. the session has not run `/notify off`; when `WORX_NOTIFICATIONS=0` suppresses automatic admission, run `/notify on` explicitly
 3. the repo has `.gjc/state/sdk/<sessionId>.json`, or `.gjc/state/chat/sdk/<sessionId>.json` when a proven foreign Telegram owner is isolated while Discord/Slack remains effective
 4. the selected provider runtime is ready or attached
 5. the managed daemon state is fresh under the GJC agent notifications directory

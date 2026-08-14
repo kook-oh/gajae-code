@@ -11,12 +11,12 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 import { listVerbs } from "../packages/coding-agent/src/gjc-runtime/workflow-manifest";
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../packages/coding-agent/src/skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../packages/coding-agent/src/skill-state/canonical-skills";
 import { SDK_SESSION_CLI_VERBS, SDK_SESSION_RAW_KINDS } from "./generate-gjc-plugins";
 
 const repoRoot = path.join(import.meta.dir, "..");
 const skillsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills");
-const skills = new Set<string>(CANONICAL_GJC_WORKFLOW_SKILLS);
+const skills = new Set<string>(CANONICAL_WORX_WORKFLOW_SKILLS);
 
 type AdvisorySkill = "gjc-sdk-session" | "gjc-sdk-guides";
 type DocumentedSkill = CanonicalGjcWorkflowSkill | AdvisorySkill;
@@ -176,7 +176,7 @@ function main(): void {
 	const mutationRefs: MutationRef[] = [];
 	const advisoryContentGates: string[] = [];
 
-	for (const skill of CANONICAL_GJC_WORKFLOW_SKILLS) {
+	for (const skill of CANONICAL_WORX_WORKFLOW_SKILLS) {
 		const file = path.join(skillsRoot, skill, "SKILL.md");
 		const content = fs.readFileSync(file, "utf8");
 		commandRefs.push(...collectCommandRefs(file, content));

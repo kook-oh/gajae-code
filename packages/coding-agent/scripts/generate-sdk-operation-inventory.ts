@@ -5,8 +5,8 @@ import * as path from "node:path";
 import { ADAPTERS, OPERATIONS, type Operation } from "../src/sdk/protocol/operation-registry";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..");
-const inventoryPath = process.env.GJC_SDK_OPERATION_INVENTORY
-	? path.resolve(process.env.GJC_SDK_OPERATION_INVENTORY)
+const inventoryPath = process.env.WORX_SDK_OPERATION_INVENTORY
+	? path.resolve(process.env.WORX_SDK_OPERATION_INVENTORY)
 	: path.join(repoRoot, "packages/coding-agent/src/sdk/protocol/operation-inventory.generated.json");
 
 /** Reviewed seams deliberately excluded from the public SDK operation surface. */
@@ -790,7 +790,7 @@ export function scanAcpMethods(sourceText: string): string[] {
 }
 
 async function scanSeams(): Promise<SourceSeam[]> {
-	const root = process.env.GJC_SDK_SEAM_SCAN_ROOT;
+	const root = process.env.WORX_SDK_SEAM_SCAN_ROOT;
 	if (root) {
 		const files = await fs.readdir(root, { recursive: true });
 		const seams: SourceSeam[] = [];

@@ -39,7 +39,7 @@ export function isUnsolicitedProbeReply(sequence: string): boolean {
  * Whether GJC may reprogram the keyboard with enhanced input protocols
  * (the Kitty keyboard protocol and the xterm modifyOtherKeys fallback).
  *
- * Enabled by default. Set `GJC_TUI_KEYBOARD_PROTOCOL=0` to leave the keyboard in
+ * Enabled by default. Set `WORX_TUI_KEYBOARD_PROTOCOL=0` to leave the keyboard in
  * its default mode. Some terminals — notably Android Termius — break IME
  * composition (e.g. Korean/Hangul syllable composition) while these enhanced
  * modes are active, committing every intermediate composing jamo/syllable
@@ -48,7 +48,7 @@ export function isUnsolicitedProbeReply(sequence: string): boolean {
  * Korean correctly.
  */
 export function keyboardEnhancementEnabled(): boolean {
-	return $flag("GJC_TUI_KEYBOARD_PROTOCOL", true);
+	return $flag("WORX_TUI_KEYBOARD_PROTOCOL", true);
 }
 
 /**
@@ -279,7 +279,7 @@ export class ProcessTerminal implements Terminal {
 	#stdinBuffer?: StdinBuffer;
 	#stdinDataHandler?: (data: string | Buffer) => void;
 	#dead = false;
-	#writeLogPath = $pickenv("GJC_TUI_WRITE_LOG", "PI_TUI_WRITE_LOG") || "";
+	#writeLogPath = $pickenv("WORX_TUI_WRITE_LOG", "PI_TUI_WRITE_LOG") || "";
 	#detachLogPath = $env.PI_TUI_TERMINAL_DETACH_LOG || "";
 	#windowsVTInputRestore?: () => void;
 	#stdoutErrorHandler?: (err: Error) => void;
@@ -803,7 +803,7 @@ export class ProcessTerminal implements Terminal {
 		// types a trailing space to force a commit first). Skip the fallback on
 		// win32; legacy encodings still deliver Alt+Enter (ESC CR) and the newline
 		// chords, and IME composition works again. Opt back in with
-		// GJC_TUI_KEYBOARD_PROTOCOL=0 disabling all enhancement, or force-enable
+		// WORX_TUI_KEYBOARD_PROTOCOL=0 disabling all enhancement, or force-enable
 		// elsewhere if a Kitty-capable Windows terminal appears.
 		if (process.platform === "win32") {
 			return;

@@ -55,7 +55,7 @@ async function runInstaller(): Promise<{ exitCode: number; stdout: string; stder
 		env: {
 			...process.env,
 			PATH: `${sandbox.shimDir}:/usr/bin:/bin`,
-			GJC_INSTALL_DIR: sandbox.installDir,
+			WORX_INSTALL_DIR: sandbox.installDir,
 			NEW_BINARY_CONTENT,
 		},
 		stdout: "pipe",

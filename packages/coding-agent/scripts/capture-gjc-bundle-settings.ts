@@ -13,22 +13,22 @@ import type {
 import { type GjcBundleLifecyclePort, GjcBundleSettingsComponent } from "../src/modes/components/gjc-bundle-settings";
 import { setTheme } from "../src/modes/theme/theme";
 import {
-	GJC_BUNDLE_SETTINGS_ENTRIES,
-	GJC_BUNDLE_SETTINGS_STATES,
-	GJC_BUNDLE_SETTINGS_VIEWPORTS,
 	type GjcBundleSettingsFixture,
+	WORX_BUNDLE_SETTINGS_ENTRIES,
+	WORX_BUNDLE_SETTINGS_STATES,
+	WORX_BUNDLE_SETTINGS_VIEWPORTS,
 } from "../test/fixtures/gjc-bundles-settings-cases";
 
-export const GJC_BUNDLE_SETTINGS_CAPTURE_FILES = [
+export const WORX_BUNDLE_SETTINGS_CAPTURE_FILES = [
 	"terminal.txt",
 	"terminal-ansi.txt",
 	"terminal.html",
 	"metadata.json",
 ] as const;
 
-type CaptureFileName = (typeof GJC_BUNDLE_SETTINGS_CAPTURE_FILES)[number];
+type CaptureFileName = (typeof WORX_BUNDLE_SETTINGS_CAPTURE_FILES)[number];
 
-type FixtureEntry = (typeof GJC_BUNDLE_SETTINGS_ENTRIES)[number];
+type FixtureEntry = (typeof WORX_BUNDLE_SETTINGS_ENTRIES)[number];
 
 type CapturePlanItem = {
 	entryId: string;
@@ -170,13 +170,13 @@ class FixtureLifecyclePort implements GjcBundleLifecyclePort {
 }
 
 function fixtureFor(stateId: string): GjcBundleSettingsFixture {
-	const state = GJC_BUNDLE_SETTINGS_STATES.find(candidate => candidate.id === stateId);
+	const state = WORX_BUNDLE_SETTINGS_STATES.find(candidate => candidate.id === stateId);
 	if (!state) throw new Error(`Unknown GJC Bundle settings state: ${stateId}`);
 	return state.fixture;
 }
 
 function viewportFor(viewportId: string): { id: string; cols: number; rows: number } {
-	const viewport = GJC_BUNDLE_SETTINGS_VIEWPORTS.find(candidate => candidate.id === viewportId);
+	const viewport = WORX_BUNDLE_SETTINGS_VIEWPORTS.find(candidate => candidate.id === viewportId);
 	if (viewport) return viewport;
 	if (viewportId === "48x36") return { id: "48x36", cols: 48, rows: 36 };
 	throw new Error(`Unknown GJC Bundle settings viewport: ${viewportId}`);
@@ -211,10 +211,10 @@ export async function renderGjcBundleSettingsEntry(
 }
 
 export function gjcBundleSettingsCapturePlan(
-	entries: readonly FixtureEntry[] = GJC_BUNDLE_SETTINGS_ENTRIES,
+	entries: readonly FixtureEntry[] = WORX_BUNDLE_SETTINGS_ENTRIES,
 ): CapturePlanItem[] {
 	return entries.flatMap(entry =>
-		GJC_BUNDLE_SETTINGS_CAPTURE_FILES.map(fileName => ({ entryId: entry.entryId, fileName })),
+		WORX_BUNDLE_SETTINGS_CAPTURE_FILES.map(fileName => ({ entryId: entry.entryId, fileName })),
 	);
 }
 
@@ -254,22 +254,24 @@ async function writeEntry(entry: FixtureEntry, outputRoot: string): Promise<void
 	const directory = path.join(outputRoot, entry.entryId);
 	await fs.mkdir(directory, { recursive: true });
 	await Promise.all(
-		GJC_BUNDLE_SETTINGS_CAPTURE_FILES.map(fileName => Bun.write(path.join(directory, fileName), artifacts[fileName])),
+		WORX_BUNDLE_SETTINGS_CAPTURE_FILES.map(fileName =>
+			Bun.write(path.join(directory, fileName), artifacts[fileName]),
+		),
 	);
 }
 
 export async function verifyGjcBundleSettingsCapture(outputRoot: string): Promise<void> {
-	for (const entry of GJC_BUNDLE_SETTINGS_ENTRIES) {
+	for (const entry of WORX_BUNDLE_SETTINGS_ENTRIES) {
 		const directory = path.join(outputRoot, entry.entryId);
 		const names = (await fs.readdir(directory)).sort();
 		if (
-			names.length !== GJC_BUNDLE_SETTINGS_CAPTURE_FILES.length ||
-			names.some((name, index) => name !== GJC_BUNDLE_SETTINGS_CAPTURE_FILES.slice().sort()[index])
+			names.length !== WORX_BUNDLE_SETTINGS_CAPTURE_FILES.length ||
+			names.some((name, index) => name !== WORX_BUNDLE_SETTINGS_CAPTURE_FILES.slice().sort()[index])
 		) {
 			throw new Error(`Expected exactly four capture files for ${entry.entryId}`);
 		}
 		const artifacts = await artifactContents(entry);
-		for (const fileName of GJC_BUNDLE_SETTINGS_CAPTURE_FILES) {
+		for (const fileName of WORX_BUNDLE_SETTINGS_CAPTURE_FILES) {
 			const content = await Bun.file(path.join(directory, fileName)).text();
 			assertSafeContent(`${entry.entryId}/${fileName}`, content);
 			if (content !== artifacts[fileName])
@@ -295,12 +297,12 @@ async function main(): Promise<void> {
 	if (mode === "verify") {
 		await verifyGjcBundleSettingsCapture(resolvedOutputRoot);
 		process.stdout.write(
-			`Verified ${GJC_BUNDLE_SETTINGS_ENTRIES.length} deterministic GJC Bundle settings entries.\n`,
+			`Verified ${WORX_BUNDLE_SETTINGS_ENTRIES.length} deterministic GJC Bundle settings entries.\n`,
 		);
 		return;
 	}
-	for (const entry of GJC_BUNDLE_SETTINGS_ENTRIES) await writeEntry(entry, resolvedOutputRoot);
-	process.stdout.write(`Captured ${GJC_BUNDLE_SETTINGS_ENTRIES.length} deterministic GJC Bundle settings entries.\n`);
+	for (const entry of WORX_BUNDLE_SETTINGS_ENTRIES) await writeEntry(entry, resolvedOutputRoot);
+	process.stdout.write(`Captured ${WORX_BUNDLE_SETTINGS_ENTRIES.length} deterministic GJC Bundle settings entries.\n`);
 }
 
 if (import.meta.main) await main();

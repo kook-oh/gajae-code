@@ -65,14 +65,14 @@ Working against a scratch agent directory instead:
 
 ```sh
 bun run restart:sdk-broker -- --agent-dir /tmp/gjc-acp-agent --close-session-hosts
-GJC_CODING_AGENT_DIR=/tmp/gjc-acp-agent gjc acp
+WORX_CODING_AGENT_DIR=/tmp/gjc-acp-agent gjc acp
 ```
 
 A fresh agent directory carries no credentials. Stored local credentials live
 in `agent.db`, not `models.db`; do not copy a live SQLite database. Authenticate
 inside the scratch agent directory, use provider environment variables or an
 auth broker, or copy `agent.db` only while no process is using either database.
-For Paseo, put `GJC_CODING_AGENT_DIR` in the provider's `env` entry and restart
+For Paseo, put `WORX_CODING_AGENT_DIR` in the provider's `env` entry and restart
 the Paseo daemon, or pass it with `paseo run --env` so the provider process
 receives the override.
 

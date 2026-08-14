@@ -12,7 +12,7 @@
  *   bun run build
  *   bun packages/coding-agent/scripts/dogfood-ralplan-review-conflicts.ts
  *
- * Optional: GJC_BINARY=/path/to/gjc overrides the default dist path.
+ * Optional: WORX_BINARY=/path/to/gjc overrides the default dist path.
  */
 import * as fsp from "node:fs/promises";
 import * as os from "node:os";
@@ -23,7 +23,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const defaultBinary = path.join(repoRoot, "packages/coding-agent/dist/worx");
 
 async function resolveCompiledBinary(): Promise<string> {
-	const binary = process.env.GJC_BINARY?.trim() || defaultBinary;
+	const binary = process.env.WORX_BINARY?.trim() || defaultBinary;
 	try {
 		const st = await fsp.stat(binary);
 		if (!st.isFile()) throw new Error(`not a file: ${binary}`);
@@ -58,7 +58,7 @@ async function main(): Promise<void> {
 	const binary = await resolveCompiledBinary();
 	const dogfoodRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "gjc-dogfood-2902-"));
 	const sessionId = `dogfood-2902-${process.pid}`;
-	const env = { ...process.env, GJC_SESSION_ID: sessionId };
+	const env = { ...process.env, WORX_SESSION_ID: sessionId };
 	const full = Bun.spawnSync(["git", "-C", repoRoot, "rev-parse", "HEAD"]).stdout.toString().trim();
 	const short = Bun.spawnSync(["git", "-C", repoRoot, "rev-parse", "--short=8", "HEAD"]).stdout.toString().trim();
 	const binaryStat = await fsp.stat(binary);

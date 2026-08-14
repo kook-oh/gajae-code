@@ -6,20 +6,20 @@
  * local smoke checks, not performance comparisons.
  *
  * Normal measurements (five child runs per command):
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --runs 5
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode put-latency --runs 5
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --runs 5
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --runs 5
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode put-latency --runs 5
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --runs 5
  *
  * HEAD forced-rebuild baseline (copy this script to the pinned HEAD worktree):
  *   git worktree add /tmp/gjc-bench-head 3649db42e
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --baseline forced-rebuild --runs 5
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --baseline forced-rebuild --runs 5
  *
  * Small smoke fixture and deliberate invalid-run demonstration:
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --entries 8 --bytes-per-entry 4096 --runs 1
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode put-latency --puts 64 --runs 1
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --entries 8 --bytes-per-entry 4096 --cache-cap-bytes 1024 --runs 1
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --entries 8 --bytes-per-entry 4096 --cache-cap-bytes 1024 --skip-gc --runs 1
- *   TMPDIR="$HOME/tmp-gjc-tests/" GJC_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --force-memory-only --runs 1
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --entries 8 --bytes-per-entry 4096 --runs 1
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode put-latency --puts 64 --runs 1
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --entries 8 --bytes-per-entry 4096 --cache-cap-bytes 1024 --runs 1
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode read-churn --entries 8 --bytes-per-entry 4096 --cache-cap-bytes 1024 --skip-gc --runs 1
+ *   TMPDIR="$HOME/tmp-gjc-tests/" WORX_CODING_AGENT_DIR="$(mktemp -d)" NO_COLOR=1 bun packages/coding-agent/scripts/resident-memory-bench.ts --mode rss --force-memory-only --runs 1
  *
  * `--skip-gc` deliberately bypasses the required turn boundary and forced GC;
  * the --skip-gc command must exit non-zero with the invalid-run diagnostic. Do not
@@ -540,8 +540,8 @@ async function withPersistentFixture<T>(
 }
 
 async function forceResidentCacheMemoryFallback(): Promise<void> {
-	const agentDir = process.env.GJC_CODING_AGENT_DIR;
-	if (!agentDir) throw new Error("--force-memory-only requires GJC_CODING_AGENT_DIR to be set.");
+	const agentDir = process.env.WORX_CODING_AGENT_DIR;
+	if (!agentDir) throw new Error("--force-memory-only requires WORX_CODING_AGENT_DIR to be set.");
 	await fs.mkdir(agentDir, { recursive: true, mode: 0o700 });
 	await fs.writeFile(path.join(agentDir, "resident-cache"), "forced resident cache memory fallback\n", {
 		encoding: "utf8",
@@ -551,7 +551,7 @@ async function forceResidentCacheMemoryFallback(): Promise<void> {
 }
 
 async function residentCacheDiskBytes(): Promise<number | null> {
-	const agentDir = process.env.GJC_CODING_AGENT_DIR;
+	const agentDir = process.env.WORX_CODING_AGENT_DIR;
 	if (!agentDir) return null;
 	const root = path.join(agentDir, "resident-cache");
 	const instanceDirs = await fs.readdir(root, { withFileTypes: true }).catch(() => undefined);

@@ -9,7 +9,7 @@ Starts a GJC harness control-plane session with its RuntimeOwner resident inside
 Use this for SDK/harness ownership debugging when the owner process must remain operator-visible.
 
 Env:
-  GJC_HARNESS_STATE_ROOT  default: ~/.local/state/gjc-harness-tmux/<session-name>
+  WORX_HARNESS_STATE_ROOT  default: ~/.local/state/gjc-harness-tmux/<session-name>
   tmux server: default tmux server
 USAGE
 }
@@ -51,22 +51,22 @@ fi
 
 issue_or_pr="$(node -e 'const raw=process.argv[1]||""; const m=raw.match(/(?:#|PR-|pr-|issue-|Issue-|issues\/|pull\/)?(\d+)$/) || raw.match(/#(\d+)/); process.stdout.write(m ? m[1] : raw)' "$issue_or_pr_raw")"
 
-root="${GJC_HARNESS_STATE_ROOT:-$HOME/.local/state/gjc-harness-tmux/$session_name}"
+root="${WORX_HARNESS_STATE_ROOT:-$HOME/.local/state/gjc-harness-tmux/$session_name}"
 sid="h-tmux-${session_name}-$(date +%s)"
 mkdir -p "$root"
 
 input="$(node -e 'const [workspace, branch, base, issueOrPr, sessionId] = process.argv.slice(1); process.stdout.write(JSON.stringify({harness:"gajae-code",workspace,branch,base,issueOrPr: issueOrPr || undefined,sessionId,detach:false}))' "$workspace" "$branch_label" "$base" "$issue_or_pr" "$sid")"
 (
   cd "$workspace"
-  GJC_HARNESS_STATE_ROOT="$root" gjc harness start --input "$input" --json
+  WORX_HARNESS_STATE_ROOT="$root" gjc harness start --input "$input" --json
 ) >"/tmp/${session_name}.gjc-start.json"
 
 tmux kill-session -t "$session_name" 2>/dev/null || true
-printf -v owner_command '%q ' env "GJC_HARNESS_STATE_ROOT=$root" gjc harness __owner --session "$sid"
+printf -v owner_command '%q ' env "WORX_HARNESS_STATE_ROOT=$root" gjc harness __owner --session "$sid"
 tmux new-session -d -s "$session_name" -n owner -c "$workspace" "exec $owner_command"
 
 for _ in $(seq 1 30); do
-  if GJC_HARNESS_STATE_ROOT="$root" gjc harness observe --session "$sid" --json >"/tmp/${session_name}.gjc-observe.json" 2>/dev/null; then
+  if WORX_HARNESS_STATE_ROOT="$root" gjc harness observe --session "$sid" --json >"/tmp/${session_name}.gjc-observe.json" 2>/dev/null; then
     if node -e 'const fs=require("fs"); const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); process.exit(j.state?.ownerLive ? 0 : 1)' "/tmp/${session_name}.gjc-observe.json"; then
       break
     fi

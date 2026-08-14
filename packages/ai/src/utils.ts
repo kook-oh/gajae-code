@@ -499,7 +499,7 @@ export function getOpenAIResponsesHistoryItems(
 /**
  * Resolve cache retention preference.
  *
- * Resolution order: explicit request value → `GJC_CACHE_RETENTION` →
+ * Resolution order: explicit request value → `WORX_CACHE_RETENTION` →
  * legacy `PI_CACHE_RETENTION` → `fallback`. Both env vars act as explicit
  * opt-in (`"long"`) or opt-out (any other value) so a provider-specific
  * `fallback` only applies when nothing else is configured. `fallback`
@@ -511,8 +511,8 @@ export function resolveCacheRetention(
 	fallback: CacheRetention = "short",
 ): CacheRetention {
 	if (cacheRetention) return cacheRetention;
-	if ($env.GJC_CACHE_RETENTION === "long") return "long";
-	if ($env.GJC_CACHE_RETENTION !== undefined) return "short";
+	if ($env.WORX_CACHE_RETENTION === "long") return "long";
+	if ($env.WORX_CACHE_RETENTION !== undefined) return "short";
 	if ($env.PI_CACHE_RETENTION === "long") return "long";
 	if ($env.PI_CACHE_RETENTION !== undefined) return "short";
 	return fallback;

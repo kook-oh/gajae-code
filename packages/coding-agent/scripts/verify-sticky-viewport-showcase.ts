@@ -437,7 +437,7 @@ const ORACLE_SOURCES = [
 // therefore rejects an honest bundle before any evidence guard runs. This value is
 // environment-supplied rather than bundle-supplied, so a bundle author cannot
 // choose which commit vouches for the oracle.
-const ORACLE_COMMIT_ENV = "GJC_STICKY_VIEWPORT_ORACLE_COMMIT";
+const ORACLE_COMMIT_ENV = "WORX_STICKY_VIEWPORT_ORACLE_COMMIT";
 const verifyOracleIntegrity = async (gitHead: string, declaredProvenanceCommit: unknown) => {
 	// Authority is exactly one commit. Reachability is NOT authority: bytes
 	// committed on an unrelated local or remote-tracking ref are reachable via

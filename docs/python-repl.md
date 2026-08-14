@@ -131,7 +131,7 @@ If an intermediate cell fails:
 Environment is filtered before launching the runner:
 
 - Allowlist includes core vars like `PATH`, `HOME`, locale vars, `VIRTUAL_ENV`, `PYTHONPATH`, etc.
-- Allow-prefixes: `LC_`, `XDG_`, `GJC_`
+- Allow-prefixes: `LC_`, `XDG_`, `WORX_`
 - Denylist strips common API keys (OpenAI/Anthropic/Gemini/etc.)
 
 Runtime selection order:
@@ -146,13 +146,13 @@ The runner additionally receives `PYTHONUNBUFFERED=1` and `PYTHONIOENCODING=utf-
 
 ## Tool availability and mode selection
 
-`eval.py` / `eval.js` (both default `true`) plus optional `GJC_PY` override controls eval backend exposure:
+`eval.py` / `eval.js` (both default `true`) plus optional `WORX_PY` override controls eval backend exposure:
 
 - Python backend only (`eval.py=true`, `eval.js=false`)
 - JavaScript backend only (`eval.py=false`, `eval.js=true`)
 - both backends
 
-`GJC_PY` accepted values:
+`WORX_PY` accepted values:
 
 - `0` / `bash` → JavaScript backend only
 - `1` / `py` → Python backend only
@@ -226,7 +226,7 @@ Output is streamed through `OutputSink` and may be persisted to artifact storage
 
 ## Operational troubleshooting
 
-- **Python backend not available** — Check `eval.py`, `GJC_PY`, and that `python`/`python3` is on PATH. If preflight fails and `eval.js` is enabled, omit `language` or pass `language: "js"` to use JavaScript.
+- **Python backend not available** — Check `eval.py`, `WORX_PY`, and that `python`/`python3` is on PATH. If preflight fails and `eval.js` is enabled, omit `language` or pass `language: "js"` to use JavaScript.
 - **No Python on PATH** — Install a system Python 3.8+ or place a venv at `~/.gjc/python-env`. `gjc setup python --check` reports the resolved interpreter.
 - **Execution hangs then times out** — Increase tool `timeout` (max 600s) if workload is legitimate. For stuck native code, cancellation triggers `SIGINT` first then escalates; the session restarts on the next request.
 - **stdin/input prompts in Python code** — `input()` is not supported; pass data programmatically.
@@ -234,7 +234,7 @@ Output is streamed through `OutputSink` and may be persisted to artifact storage
 
 ## Relevant environment variables
 
-- `GJC_PY` — tool exposure override
-- `GJC_PYTHON_SKIP_CHECK=1` — bypass Python preflight/warm checks
-- `GJC_PYTHON_INTEGRATION=1` — enable gated integration tests that spawn a real Python
-- `GJC_PYTHON_IPC_TRACE=1` — log NDJSON frames exchanged with the runner subprocess
+- `WORX_PY` — tool exposure override
+- `WORX_PYTHON_SKIP_CHECK=1` — bypass Python preflight/warm checks
+- `WORX_PYTHON_INTEGRATION=1` — enable gated integration tests that spawn a real Python
+- `WORX_PYTHON_IPC_TRACE=1` — log NDJSON frames exchanged with the runner subprocess

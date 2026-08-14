@@ -125,7 +125,7 @@ GJC session (upstream)                          your client (anywhere)
   maintain a shared daemon, singleton, or chat-to-session registry;
   multiplexing many sessions into one integration is a client-side concern.
 - **Hosted by default.** SDK hosting is independent of notification
-  configuration. Set `GJC_SDK_DISABLE=1` to opt out of hosting for a top-level
+  configuration. Set `WORX_SDK_DISABLE=1` to opt out of hosting for a top-level
   session.
 - **Notification delivery is optional.** Configure and enable a managed
   notification adapter only when remote delivery is needed; the SDK endpoint
@@ -178,7 +178,7 @@ A wrong/missing token is rejected at the handshake with HTTP `401`.
 
 When the SDK starts its default internal broker or session host from the published TypeScript source, GJC uses a fixed Bun launch policy: `--no-env-file`, a product-owned empty `bunfig.toml`, absolute product entrypoint paths, and no inherited `BUN_OPTIONS` or mutable compiled-mode markers. The broker bootstraps from the product SDK directory rather than the caller project; a session host still runs with the lifecycle-authorized workspace as its process cwd.
 
-This boundary prevents a child from newly loading caller-cwd or user-global Bun preload/dotenv policy. It cannot determine how a value already present in the parent environment was originally loaded, so ordinary provider/GJC environment values remain inherited. Default internal children, including compiled self-spawns, remove inherited `BUN_OPTIONS` so parent eval/test/inspect/debug/runtime options cannot be replayed into a detached child. Compiled binaries otherwise retain their existing self-spawn command contract, corroborated by a dedicated embedded marker and exact anchored Bun virtual-filesystem identity. The explicit `GJC_SDK_SESSION_COMMAND` session-host override remains a trusted legacy operator boundary and is not parsed as a shell-safe general command API. There is no broker-command override.
+This boundary prevents a child from newly loading caller-cwd or user-global Bun preload/dotenv policy. It cannot determine how a value already present in the parent environment was originally loaded, so ordinary provider/GJC environment values remain inherited. Default internal children, including compiled self-spawns, remove inherited `BUN_OPTIONS` so parent eval/test/inspect/debug/runtime options cannot be replayed into a detached child. Compiled binaries otherwise retain their existing self-spawn command contract, corroborated by a dedicated embedded marker and exact anchored Bun virtual-filesystem identity. The explicit `WORX_SDK_SESSION_COMMAND` session-host override remains a trusted legacy operator boundary and is not parsed as a shell-safe general command API. There is no broker-command override.
 
 Broker and per-session discovery tokens remain in their authoritative private discovery files because clients need them. Launch errors, logs, and diagnostics redact those tokens and never include the child environment or isolation configuration contents.
 
@@ -493,7 +493,7 @@ than returning a plausible built-ins-only catalog.
 
 Broker `session.create`, `session.fork`, and `session.resume` validate `modelPreset`
 before spawning against the same `<broker.settings.agentDir>/models.yml` authority
-that the child receives through `GJC_AGENT_DIR` / `GJC_CODING_AGENT_DIR`. Unknown
+that the child receives through `WORX_AGENT_DIR` / `WORX_CODING_AGENT_DIR`. Unknown
 IDs return `unknown_model_profile`. Both typed errors include bounded `details`
 with `requestedProfile` where applicable, whole exact `availableProfiles` entries
 that fit the detail budget, and `discoveryQuery: "models.profiles.list"`. The
@@ -661,7 +661,7 @@ setup fails closed without saving or exposing the raw token.
 
 Configuration completeness, provider-local quarantine, durable desired intent, effective enablement, runtime readiness, and delivery outcomes are separate contracts. The global `notifications.enabled` master never erases provider credentials or desired flags. `/settings` edits secrets through explicit `keep`, `replace`, or `remove` actions, commits only the selected provider in one CAS batch, and reports post-commit observer or activation failures without pretending the durable save rolled back. Malformed provider-local values are quarantined for explicit repair while safe sibling providers remain usable; malformed global notification structure remains fail-closed.
 
-`GJC_NOTIFICATIONS=0` suppresses only automatic generic current-session admission. Explicit `/notify on` can opt the current session back in without mutating durable provider state, and direct provider APIs remain governed by provider effectiveness and their own runtime readiness. If Telegram ownership is proven foreign while Discord or Slack is effective, GJC publishes the chat daemon endpoint under the isolated `.gjc/state/chat/sdk/` discovery path; the blocked Telegram scanner never receives the shared endpoint token.
+`WORX_NOTIFICATIONS=0` suppresses only automatic generic current-session admission. Explicit `/notify on` can opt the current session back in without mutating durable provider state, and direct provider APIs remain governed by provider effectiveness and their own runtime readiness. If Telegram ownership is proven foreign while Discord or Slack is effective, GJC publishes the chat daemon endpoint under the isolated `.gjc/state/chat/sdk/` discovery path; the blocked Telegram scanner never receives the shared endpoint token.
 
 - [Telegram notification onboarding](./telegram-onboarding.md) documents
   `gjc notify setup` and private-chat pairing.
@@ -817,7 +817,7 @@ Inside a GJC session, `/notify` controls the current session only:
 - `/notify off` disables the current session's notification endpoint and removes
   its discovery record without mutating global Settings;
 - `/notify on` re-enables the current session when global setup is complete and
-  `GJC_NOTIFICATIONS=0` is not forcing opt-out.
+  `WORX_NOTIFICATIONS=0` is not forcing opt-out.
 
 ### Manual Telegram CLI is for debugging
 
@@ -903,7 +903,7 @@ End-to-end manual check once `gjc notify setup` has paired your private chat:
 
 1. **Pair + start.** Run `gjc notify setup` (BotFather token, DM the bot to pair).
    Start any GJC session with notifications enabled so the daemon owner is
-   running (`gjc launch` in a repo, or `GJC_NOTIFICATIONS=1`). The owner starts
+   running (`gjc launch` in a repo, or `WORX_NOTIFICATIONS=1`). The owner starts
    the loopback control endpoint and accepts `/session_*` while running; with zero
    active sessions it still idle-exits after the inactivity timeout.
 2. **Create.** From your paired chat, pick `/session_create` from the Telegram

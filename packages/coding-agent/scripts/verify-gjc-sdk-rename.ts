@@ -2,8 +2,8 @@
 
 import * as path from "node:path";
 
-const repoRoot = process.env.GJC_SDK_RENAME_SCAN_ROOT
-	? path.resolve(process.env.GJC_SDK_RENAME_SCAN_ROOT)
+const repoRoot = process.env.WORX_SDK_RENAME_SCAN_ROOT
+	? path.resolve(process.env.WORX_SDK_RENAME_SCAN_ROOT)
 	: path.resolve(import.meta.dir, "..", "..", "..");
 const scannerPath = "packages/coding-agent/scripts/verify-gjc-sdk-rename.ts";
 const pinnedRollbackFixturePaths = new Set([

@@ -28,7 +28,7 @@
   },
   "synchronizedOutputAB": {
     "defaultEnabled": true,
-    "optOut": "GJC_TUI_SYNCHRONIZED_OUTPUT=0",
+    "optOut": "WORX_TUI_SYNCHRONIZED_OUTPUT=0",
     "enabledBalanced": true,
     "optOutSequenceCount": 0,
     "automatedByteIdentityEvidence": "resize-replay-storm.test.ts compares identical write count/order and payload after exact wrapper stripping",
@@ -98,7 +98,7 @@
       "multiplexer": "byobu 7.15 with tmux 3.7b backend",
       "paneSize": "100x30",
       "candidate": {
-        "command": "GJC_TUI_WRITE_LOG=/tmp/gjc-3798-input-live.log GJC_TUI_SYNCHRONIZED_OUTPUT=1 bun /tmp/gjc-3798-byobu-harness.ts input 60000",
+        "command": "WORX_TUI_WRITE_LOG=/tmp/gjc-3798-input-live.log WORX_TUI_SYNCHRONIZED_OUTPUT=1 bun /tmp/gjc-3798-byobu-harness.ts input 60000",
         "controller": "bun /tmp/gjc-3798-input-controller.ts gjc3798-input:0.0 /tmp/gjc-3798-input-live.log",
         "p50Ms": 8.501917,
         "p95Ms": 10.923417,
@@ -142,7 +142,7 @@
       },
       "upstreamDevBaseline": {
         "head": "55f13956042b8ed74d2279ca7d8bce6519502502",
-        "command": "GJC_TUI_WRITE_LOG=/tmp/gjc-3798-input-baseline.log GJC_TUI_SYNCHRONIZED_OUTPUT=1 bun /tmp/gjc-3798-byobu-baseline-harness.ts 60000",
+        "command": "WORX_TUI_WRITE_LOG=/tmp/gjc-3798-input-baseline.log WORX_TUI_SYNCHRONIZED_OUTPUT=1 bun /tmp/gjc-3798-byobu-baseline-harness.ts 60000",
         "controller": "bun /tmp/gjc-3798-input-controller.ts gjc3798-baseline:0.0 /tmp/gjc-3798-input-baseline.log",
         "p50Ms": 7.870167,
         "p95Ms": 10.179125,

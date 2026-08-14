@@ -313,8 +313,8 @@ async function fallbackForUnavailableTool(name: string): Promise<AuditedFallback
 export async function generateToolCatalogData(
 	options: ToolCatalogGenerationOptions = {},
 ): Promise<Record<string, GeneratedToolCatalogEntry>> {
-	const previousEditVariant = process.env.GJC_EDIT_VARIANT;
-	process.env.GJC_EDIT_VARIANT = "replace";
+	const previousEditVariant = process.env.WORX_EDIT_VARIANT;
+	process.env.WORX_EDIT_VARIANT = "replace";
 	const platform = options.platform ?? process.platform;
 	const arch = options.arch ?? process.arch;
 	try {
@@ -461,8 +461,8 @@ export async function generateToolCatalogData(
 		}
 		return output;
 	} finally {
-		if (previousEditVariant === undefined) delete process.env.GJC_EDIT_VARIANT;
-		else process.env.GJC_EDIT_VARIANT = previousEditVariant;
+		if (previousEditVariant === undefined) delete process.env.WORX_EDIT_VARIANT;
+		else process.env.WORX_EDIT_VARIANT = previousEditVariant;
 	}
 }
 

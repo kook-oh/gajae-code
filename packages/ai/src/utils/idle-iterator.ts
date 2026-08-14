@@ -28,7 +28,7 @@ function normalizeIdleTimeoutMs(value: string | undefined, fallback: number): nu
 /**
  * Returns the idle timeout used for provider streaming transports.
  *
- * `GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS` is honored first; `PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` is a backward-compatible alias.
+ * `WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS` is honored first; `PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` is a backward-compatible alias.
  * Set `PI_STREAM_IDLE_TIMEOUT_MS=0` to disable the watchdog.
  *
  * Providers that legitimately stream much slower than the global default can pass
@@ -37,7 +37,9 @@ function normalizeIdleTimeoutMs(value: string | undefined, fallback: number): nu
  */
 export function getStreamIdleTimeoutMs(fallbackMs: number = DEFAULT_STREAM_IDLE_TIMEOUT_MS): number | undefined {
 	return normalizeIdleTimeoutMs(
-		$env.GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS ?? $env.PI_STREAM_IDLE_TIMEOUT_MS ?? $env.PI_OPENAI_STREAM_IDLE_TIMEOUT_MS,
+		$env.WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS ??
+			$env.PI_STREAM_IDLE_TIMEOUT_MS ??
+			$env.PI_OPENAI_STREAM_IDLE_TIMEOUT_MS,
 		fallbackMs,
 	);
 }
@@ -45,11 +47,13 @@ export function getStreamIdleTimeoutMs(fallbackMs: number = DEFAULT_STREAM_IDLE_
 /**
  * Returns the idle timeout used for OpenAI-family streaming transports.
  *
- * Honors `GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS` first (`PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` is the legacy alias). Set `=0` to disable.
+ * Honors `WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS` first (`PI_OPENAI_STREAM_IDLE_TIMEOUT_MS` is the legacy alias). Set `=0` to disable.
  */
 export function getOpenAIStreamIdleTimeoutMs(): number | undefined {
 	return normalizeIdleTimeoutMs(
-		$env.GJC_OPENAI_STREAM_IDLE_TIMEOUT_MS ?? $env.PI_OPENAI_STREAM_IDLE_TIMEOUT_MS ?? $env.PI_STREAM_IDLE_TIMEOUT_MS,
+		$env.WORX_OPENAI_STREAM_IDLE_TIMEOUT_MS ??
+			$env.PI_OPENAI_STREAM_IDLE_TIMEOUT_MS ??
+			$env.PI_STREAM_IDLE_TIMEOUT_MS,
 		DEFAULT_STREAM_IDLE_TIMEOUT_MS,
 	);
 }

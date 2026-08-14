@@ -7,8 +7,8 @@ import { type ParserPlugin, parse } from "@babel/parser";
 import traverse, { type Binding, type NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 
-const repoRoot = process.env.GJC_SDK_CANONICALIZATION_SCAN_ROOT
-	? path.resolve(process.env.GJC_SDK_CANONICALIZATION_SCAN_ROOT)
+const repoRoot = process.env.WORX_SDK_CANONICALIZATION_SCAN_ROOT
+	? path.resolve(process.env.WORX_SDK_CANONICALIZATION_SCAN_ROOT)
 	: path.resolve(import.meta.dir, "..", "..", "..");
 const scannerPath = "packages/coding-agent/scripts/verify-gjc-sdk-canonicalization.ts";
 const packageManifestPath = "packages/coding-agent/package.json";
@@ -1090,12 +1090,12 @@ function shellArrayAssignmentRanges(contents: string): ShellRange[] {
 function shellGjcBinaryReferenceViolations(contents: string): ShellRange[] {
 	const normalizedContents = normalizeShellContinuations(contents);
 	const arrayRanges = shellArrayAssignmentRanges(normalizedContents);
-	const references = /(["']?)\$(?:GJC_BIN|GJC_SESSION_GJC_BIN|\{(?:GJC_BIN|GJC_SESSION_GJC_BIN)\})\1/g;
+	const references = /(["']?)\$(?:WORX_BIN|WORX_SESSION_WORX_BIN|\{(?:WORX_BIN|WORX_SESSION_WORX_BIN)\})\1/g;
 	const violations: ShellRange[] = [];
 	for (const reference of normalizedContents.matchAll(references)) {
 		const start = reference.index ?? 0;
 		const before = normalizedContents.slice(0, start);
-		if (/(?:^|[\s"'])GJC_SESSION_GJC_BIN\s*=\s*$/.test(before)) continue;
+		if (/(?:^|[\s"'])WORX_SESSION_WORX_BIN\s*=\s*$/.test(before)) continue;
 		if (arrayRanges.some(range => start >= range.start && start < range.end)) {
 			violations.push({ start, end: start + reference[0].length });
 			continue;
@@ -1204,7 +1204,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 		);
 	}
 
-	const canonicalCommand = /^\s*command\s*=\s*\[\s*os\.environ\[\s*["']GJC_SESSION_GJC_BIN["']\s*\]\s*\]\s*$/gm;
+	const canonicalCommand = /^\s*command\s*=\s*\[\s*os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]\s*\]\s*$/gm;
 	const canonicalCommands = [...contents.matchAll(canonicalCommand)];
 	const commandMutations = [
 		...contents.matchAll(/\bcommand\s*(?:\[[^\]\n]*\]\s*=|\.\s*[A-Za-z_][A-Za-z0-9_]*\s*\(|\+=|=)/g),
@@ -1216,36 +1216,36 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 	) {
 		violation(
 			commandMutations[0]?.index ?? 0,
-			"human-only tmux owner must launch exactly GJC_SESSION_GJC_BIN with zero startup arguments",
+			"human-only tmux owner must launch exactly WORX_SESSION_WORX_BIN with zero startup arguments",
 		);
 	}
 	const canonicalInteractivePopenAssignment =
-		/^\s*child\s*=\s*subprocess\.Popen\(\s*command\s*(?:,\s*cwd\s*=\s*os\.environ\[\s*["']GJC_SESSION_WORKDIR["']\s*\])?\s*\)\s*$/;
+		/^\s*child\s*=\s*subprocess\.Popen\(\s*command\s*(?:,\s*cwd\s*=\s*os\.environ\[\s*["']WORX_SESSION_WORKDIR["']\s*\])?\s*\)\s*$/;
 	const expectedLifecycleCallsites = [
 		{
 			operation: "terminal observer",
 			pattern:
-				/\bcompleted\s*=\s*subprocess\.run\(\s*\[\s*os\.environ\[\s*["']GJC_SESSION_GJC_BIN["']\s*\]\s*,\s*["']--internal-tmux-owner-isolation["']\s*\]\s*,/g,
+				/\bcompleted\s*=\s*subprocess\.run\(\s*\[\s*os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]\s*,\s*["']--internal-tmux-owner-isolation["']\s*\]\s*,/g,
 		},
 		{
 			operation: "owner-isolation plan",
 			pattern:
-				/\bPLAN_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$PLAN_LINE"\s*\|\s*"\$GJC_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
+				/\bPLAN_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$PLAN_LINE"\s*\|\s*"\$WORX_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
 		},
 		{
 			operation: "post-spawn proof",
 			pattern:
-				/\bPOST_SPAWN_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$PLAN_LINE"\s*\|\s*"\$GJC_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
+				/\bPOST_SPAWN_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$PLAN_LINE"\s*\|\s*"\$WORX_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
 		},
 		{
 			operation: "generation publication",
 			pattern:
-				/\bGENERATION_PUBLISH_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$GENERATION_PUBLISH_REQUEST"\s*\|\s*"\$GJC_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
+				/\bGENERATION_PUBLISH_RESPONSE\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$GENERATION_PUBLISH_REQUEST"\s*\|\s*"\$WORX_BIN"\s+--internal-tmux-owner-isolation\s*\)"/g,
 		},
 		{
 			operation: "terminal monitor",
 			pattern:
-				/\bif\s+verdict\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$request"\s*\|\s*timeout\s+"[^"]+"\s+"\$GJC_SESSION_GJC_BIN"\s+--internal-tmux-owner-isolation\s*\)"\s*;\s*then/g,
+				/\bif\s+verdict\s*=\s*"\$\(\s*printf\s+["'][^"']*["']\s+"\$request"\s*\|\s*timeout\s+"[^"]+"\s+"\$WORX_SESSION_WORX_BIN"\s+--internal-tmux-owner-isolation\s*\)"\s*;\s*then/g,
 		},
 	];
 	const expectedLifecycleRanges: ShellRange[] = [];
@@ -1285,7 +1285,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 		const isInteractiveLaunch =
 			match[1] === "Popen" && argument.text.trim() === "command" && canonicalInteractivePopenAssignment.test(line);
 		const isLifecycleCall =
-			/^\s*\[\s*os\.environ\[\s*["']GJC_SESSION_GJC_BIN["']\s*\]\s*,\s*["']--internal-tmux-owner-isolation["']\s*\]\s*$/.test(
+			/^\s*\[\s*os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]\s*,\s*["']--internal-tmux-owner-isolation["']\s*\]\s*$/.test(
 				argument.text,
 			);
 		if (isInteractiveLaunch) {
@@ -1305,7 +1305,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 			allowedGjcEnvironmentReferences.push({ start: argument.start, end: argument.start + argument.text.length });
 			continue;
 		}
-		if (/\bcommand\b|os\.environ\[\s*["']GJC_SESSION_GJC_BIN["']\s*\]/.test(argument.text)) {
+		if (/\bcommand\b|os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]/.test(argument.text)) {
 			violation(
 				match.index ?? 0,
 				"human-only tmux owner must invoke GJC only with zero interactive argv or the exact owner-isolation lifecycle argv",
@@ -1356,7 +1356,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 	for (const match of contents.matchAll(/\b(?:globals|locals|vars|getattr|setattr|delattr|eval|exec)\s*\(/g)) {
 		violation(match.index ?? 0, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
 	}
-	for (const match of contents.matchAll(/os\.environ\[\s*["']GJC_SESSION_GJC_BIN["']\s*\]/g)) {
+	for (const match of contents.matchAll(/os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]/g)) {
 		const offset = match.index ?? 0;
 		if (!allowedGjcEnvironmentReferences.some(range => offset >= range.start && offset < range.end)) {
 			violation(offset, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
@@ -1371,7 +1371,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 		})),
 	);
 	const shellGjcInvocations =
-		/(?:^|[|;&(]\s*|\b(?:command|exec)\s+|\btimeout\s+(?:"[^"\r\n]*"|'[^'\r\n]*'|[^\s]+)\s+)(["']?)\$(?:GJC_BIN|GJC_SESSION_GJC_BIN|\{(?:GJC_BIN|GJC_SESSION_GJC_BIN)\})\1([^\r\n;|&)]*)/gm;
+		/(?:^|[|;&(]\s*|\b(?:command|exec)\s+|\btimeout\s+(?:"[^"\r\n]*"|'[^'\r\n]*'|[^\s]+)\s+)(["']?)\$(?:WORX_BIN|WORX_SESSION_WORX_BIN|\{(?:WORX_BIN|WORX_SESSION_WORX_BIN)\})\1([^\r\n;|&)]*)/gm;
 	for (const match of normalizedContents.matchAll(shellGjcInvocations)) {
 		const argumentsText = (match[2] ?? "").trim().replace(/["']$/, "");
 		const isLifecycleCall = /^(?:["']?--internal-tmux-owner-isolation["']?)$/.test(argumentsText);
@@ -1386,7 +1386,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 	for (const reference of shellGjcBinaryReferenceViolations(contents)) {
 		violation(reference.start, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
 	}
-	for (const match of contents.matchAll(/\bGJC_SESSION_FLAGS\b/g)) {
+	for (const match of contents.matchAll(/\bWORX_SESSION_FLAGS\b/g)) {
 		violation(match.index ?? 0, "human-only tmux owner exposes caller-provided startup arguments");
 	}
 	return violations;
@@ -1918,7 +1918,7 @@ async function scan(): Promise<string[]> {
 			violations.push(`${file}:${lineNumber(contents, match.index ?? 0)}: imports removed unattended surface`);
 		}
 
-		for (const match of contents.matchAll(/\bGJC_BRIDGE_[A-Z0-9_]*\b/g)) {
+		for (const match of contents.matchAll(/\bWORX_BRIDGE_[A-Z0-9_]*\b/g)) {
 			violations.push(
 				`${file}:${lineNumber(contents, match.index ?? 0)}: forbidden bridge environment reference ${match[0]}`,
 			);
@@ -2000,7 +2000,7 @@ async function scan(): Promise<string[]> {
 			}
 			if (
 				file === teamWorkersTmuxPath &&
-				!/^export const GJC_TEAM_CONTINUATION_PROMPT =\n\t"Continue only your current claimed GJC team task\. Re-read current GJC team state; do not replay prior output; report status\.";$/m.test(
+				!/^export const WORX_TEAM_CONTINUATION_PROMPT =\n\t"Continue only your current claimed GJC team task\. Re-read current GJC team state; do not replay prior output; report status\.";$/m.test(
 					contents,
 				)
 			)
@@ -2054,7 +2054,7 @@ async function runSelfTestFixture(
 		const timeoutMs = options.timeoutMs ?? 10_000;
 		const scanner = Bun.spawn([process.execPath, import.meta.path], {
 			cwd: repoRoot,
-			env: { ...process.env, GJC_SDK_CANONICALIZATION_SCAN_ROOT: fixture },
+			env: { ...process.env, WORX_SDK_CANONICALIZATION_SCAN_ROOT: fixture },
 			stdout: "pipe",
 			stderr: "pipe",
 			timeout: timeoutMs,
@@ -2651,8 +2651,7 @@ async function selfTest(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/bridge-client/src/client.ts":
-				'import { SdkClient } from "@bworx-io/worx-code";\nvoid SdkClient;\n',
+			"packages/bridge-client/src/client.ts": 'import { SdkClient } from "@bworx-io/worx-code";\nvoid SdkClient;\n',
 		},
 		1,
 		"bridge-client imports coding-agent or AgentSession authority",
@@ -2748,13 +2747,13 @@ async function selfTest(): Promise<void> {
 	);
 	const canonicalCreateFixture = `#!/usr/bin/env bash
 [[ $# -eq 2 ]] || { echo "Usage: $0 <session-name> <worktree-path>" >&2; exit 2; }
-command = [os.environ["GJC_SESSION_GJC_BIN"]]
+command = [os.environ["WORX_SESSION_WORX_BIN"]]
 child = subprocess.Popen(command)
-completed = subprocess.run([os.environ["GJC_SESSION_GJC_BIN"], "--internal-tmux-owner-isolation"], input="{}")
-PLAN_RESPONSE="$(printf '%s\\n' "$PLAN_LINE" | "$GJC_BIN" --internal-tmux-owner-isolation)"
-POST_SPAWN_RESPONSE="$(printf '%s\\n' "$PLAN_LINE" | "$GJC_BIN" --internal-tmux-owner-isolation)"
-GENERATION_PUBLISH_RESPONSE="$(printf '%s\\n' "$GENERATION_PUBLISH_REQUEST" | "$GJC_BIN" --internal-tmux-owner-isolation)"
-if verdict="$(printf '%s\\n' "$request" | timeout "1s" "$GJC_SESSION_GJC_BIN" --internal-tmux-owner-isolation)"; then
+completed = subprocess.run([os.environ["WORX_SESSION_WORX_BIN"], "--internal-tmux-owner-isolation"], input="{}")
+PLAN_RESPONSE="$(printf '%s\\n' "$PLAN_LINE" | "$WORX_BIN" --internal-tmux-owner-isolation)"
+POST_SPAWN_RESPONSE="$(printf '%s\\n' "$PLAN_LINE" | "$WORX_BIN" --internal-tmux-owner-isolation)"
+GENERATION_PUBLISH_RESPONSE="$(printf '%s\\n' "$GENERATION_PUBLISH_REQUEST" | "$WORX_BIN" --internal-tmux-owner-isolation)"
+if verdict="$(printf '%s\\n' "$request" | timeout "1s" "$WORX_SESSION_WORX_BIN" --internal-tmux-owner-isolation)"; then
   true
 fi
 `;
@@ -2777,12 +2776,12 @@ fi
 		"must not alias or wrap the gjc executable",
 	);
 	await runSelfTestFixture(
-		{ "scripts/gjc-session/create.sh": `${canonicalCreateFixture}\n"$GJC_BIN" --internal-tmux-owner-isolation\n` },
+		{ "scripts/gjc-session/create.sh": `${canonicalCreateFixture}\n"$WORX_BIN" --internal-tmux-owner-isolation\n` },
 		1,
 		"invokes GJC with a non-lifecycle startup argument",
 	);
 	await runSelfTestFixture(
-		{ "scripts/gjc-session/create.sh": `${canonicalCreateFixture}\nGJC_SESSION_FLAGS=unsafe\n` },
+		{ "scripts/gjc-session/create.sh": `${canonicalCreateFixture}\nWORX_SESSION_FLAGS=unsafe\n` },
 		1,
 		"exposes caller-provided startup arguments",
 	);
@@ -2894,7 +2893,7 @@ fi
 			),
 		},
 		1,
-		"must launch exactly GJC_SESSION_GJC_BIN with zero startup arguments",
+		"must launch exactly WORX_SESSION_WORX_BIN with zero startup arguments",
 	);
 	await runSelfTestFixture(
 		{
@@ -2904,7 +2903,7 @@ fi
 			),
 		},
 		1,
-		"must launch exactly GJC_SESSION_GJC_BIN with zero startup arguments",
+		"must launch exactly WORX_SESSION_WORX_BIN with zero startup arguments",
 	);
 	await runSelfTestFixture(
 		{
@@ -2914,7 +2913,7 @@ fi
 			),
 		},
 		1,
-		"must launch exactly GJC_SESSION_GJC_BIN with zero startup arguments",
+		"must launch exactly WORX_SESSION_WORX_BIN with zero startup arguments",
 	);
 	await runSelfTestFixture(
 		{
@@ -2924,7 +2923,7 @@ fi
 			),
 		},
 		1,
-		"must launch exactly GJC_SESSION_GJC_BIN with zero startup arguments",
+		"must launch exactly WORX_SESSION_WORX_BIN with zero startup arguments",
 	);
 	await runSelfTestFixture(
 		{
@@ -2988,7 +2987,7 @@ fi
 	);
 	await runSelfTestFixture(
 		{
-			"scripts/gjc-session/create.sh": `${canonicalCreateFixture}\nlaunch = [os.environ["GJC_SESSION_GJC_BIN"], "--file", "task.md"]\nsubprocess.Popen(launch)\n`,
+			"scripts/gjc-session/create.sh": `${canonicalCreateFixture}\nlaunch = [os.environ["WORX_SESSION_WORX_BIN"], "--file", "task.md"]\nsubprocess.Popen(launch)\n`,
 		},
 		1,
 		"must not construct or wrap a non-lifecycle GJC argv",
@@ -2996,8 +2995,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'[os.environ["GJC_SESSION_GJC_BIN"], "--internal-tmux-owner-isolation"]',
-				'[\n  os.environ["GJC_SESSION_GJC_BIN"],\n  "--internal-tmux-owner-isolation",\n  "--file",\n  "task.md",\n]',
+				'[os.environ["WORX_SESSION_WORX_BIN"], "--internal-tmux-owner-isolation"]',
+				'[\n  os.environ["WORX_SESSION_WORX_BIN"],\n  "--internal-tmux-owner-isolation",\n  "--file",\n  "task.md",\n]',
 			),
 		},
 		1,
@@ -3006,8 +3005,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'captured=$("$GJC_BIN" --file task.md)',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'captured=$("$WORX_BIN" --file task.md)',
 			),
 		},
 		1,
@@ -3016,8 +3015,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'command "$GJC_BIN" --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'command "$WORX_BIN" --file task.md',
 			),
 		},
 		1,
@@ -3026,8 +3025,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'exec "$GJC_BIN" --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'exec "$WORX_BIN" --file task.md',
 			),
 		},
 		1,
@@ -3036,8 +3035,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'command -p "$GJC_BIN" --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'command -p "$WORX_BIN" --file task.md',
 			),
 		},
 		1,
@@ -3046,8 +3045,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'exec -a gjc "$GJC_BIN" --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'exec -a gjc "$WORX_BIN" --file task.md',
 			),
 		},
 		1,
@@ -3056,8 +3055,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'LAUNCH=(\n  "$GJC_BIN"\n  --file\n  task.md\n)\n"$' + '{LAUNCH[@]}"',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'LAUNCH=(\n  "$WORX_BIN"\n  --file\n  task.md\n)\n"$' + '{LAUNCH[@]}"',
 			),
 		},
 		1,
@@ -3066,8 +3065,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'launcher="$GJC_BIN"\n"$launcher" --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'launcher="$WORX_BIN"\n"$launcher" --file task.md',
 			),
 		},
 		1,
@@ -3076,8 +3075,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'"$GJC_BIN" --internal-tmux-owner-isolation \\\n  --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'"$WORX_BIN" --internal-tmux-owner-isolation \\\n  --file task.md',
 			),
 		},
 		1,
@@ -3086,8 +3085,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'"$GJC_BIN" \\\n  --file task.md',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'"$WORX_BIN" \\\n  --file task.md',
 			),
 		},
 		1,
@@ -3096,8 +3095,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'"$GJC_BIN" \\\n  session status',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'"$WORX_BIN" \\\n  session status',
 			),
 		},
 		1,
@@ -3106,8 +3105,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'"$GJC_BIN" \\\n  "write a prompt"',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'"$WORX_BIN" \\\n  "write a prompt"',
 			),
 		},
 		1,
@@ -3116,8 +3115,8 @@ fi
 	await runSelfTestFixture(
 		{
 			"scripts/gjc-session/create.sh": canonicalCreateFixture.replace(
-				'"$GJC_BIN" --internal-tmux-owner-isolation',
-				'"$GJC_BIN" --internal-tmux-owner-isolation \\\n  "write a prompt"',
+				'"$WORX_BIN" --internal-tmux-owner-isolation',
+				'"$WORX_BIN" --internal-tmux-owner-isolation \\\n  "write a prompt"',
 			),
 		},
 		1,
@@ -3526,10 +3525,10 @@ async function monitorGjcTeam(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/bridge-env.ts":
-				"const endpoint = process.env.GJC_BRIDGE_ENDPOINT;\nvoid endpoint;\n",
+				"const endpoint = process.env.WORX_BRIDGE_ENDPOINT;\nvoid endpoint;\n",
 		},
 		1,
-		"forbidden bridge environment reference GJC_BRIDGE_ENDPOINT",
+		"forbidden bridge environment reference WORX_BRIDGE_ENDPOINT",
 	);
 	await runSelfTestFixture(
 		{

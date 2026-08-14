@@ -41,7 +41,7 @@ gjc setup hermes \
   --install
 ```
 
-The generated setup is model-agnostic and worktree-isolated. By default it renders `GJC_COORDINATOR_MCP_SESSION_COMMAND` as `gjc --worktree`, which is a typed selector for SDK lifecycle creation—not a shell command the bridge runs. Spawned sessions launch inside a GJC-managed sibling worktree while GJC retains the source repository as project identity. Users who need a stable named branch can set `--worktree-name`:
+The generated setup is model-agnostic and worktree-isolated. By default it renders `WORX_COORDINATOR_MCP_SESSION_COMMAND` as `gjc --worktree`, which is a typed selector for SDK lifecycle creation—not a shell command the bridge runs. Spawned sessions launch inside a GJC-managed sibling worktree while GJC retains the source repository as project identity. Users who need a stable named branch can set `--worktree-name`:
 
 ```bash
 gjc setup hermes \
@@ -67,13 +67,13 @@ The bridge is read-only and fail-closed by default.
 Required root allowlist:
 
 ```bash
-export GJC_COORDINATOR_MCP_WORKDIR_ROOTS="/path/to/repo:/path/to/worktrees"
+export WORX_COORDINATOR_MCP_WORKDIR_ROOTS="/path/to/repo:/path/to/worktrees"
 ```
 
 Mutating tools require both startup opt-in and per-call consent:
 
 ```bash
-export GJC_COORDINATOR_MCP_MUTATIONS="sessions,questions,reports"
+export WORX_COORDINATOR_MCP_MUTATIONS="sessions,questions,reports"
 ```
 
 Every mutating MCP call that requires a caller key must include `allow_mutation: true` and the required caller-provided `idempotency_key`. The bridge durably binds the key to the tool and canonical arguments, serializes concurrent duplicates, replays the original bounded public response, and rejects reuse with different arguments as `idempotency_conflict`.
@@ -81,24 +81,24 @@ Every mutating MCP call that requires a caller key must include `allow_mutation:
 `worx_coordinator_start_session` uses SDK lifecycle control with the configured typed GJC selector. `gjc setup hermes` writes `gjc --worktree` by default:
 
 ```bash
-export GJC_COORDINATOR_MCP_SESSION_COMMAND="gjc --worktree"
+export WORX_COORDINATOR_MCP_SESSION_COMMAND="gjc --worktree"
 ```
 
 The only supported values are `gjc` and `gjc --worktree [name]`; this variable is never evaluated as a shell command. The coordinator binds registration, reuse, and control to the broker's exact canonical workspace and endpoint generation, then discovers the generation-bound SDK endpoint internally. Endpoint credentials are never persisted in coordinator records or returned by coordinator tools. `worx_coordinator_read_coordination_status` returns a canonical polling snapshot for public session, state, turn, question, report, and bounded event data. Tmux identifiers, when supplied while registering an existing session, are advisory process metadata only; they do not provide control authority, machine viewing, startup, prompt injection, or determine turn completion.
 
 For resume safety, prefer the generated GJC-native worktree selector over creating a git worktree in Hermes itself. GJC's launch path records the original repo as the project identity while running in the worktree, so session listing/resume can still group the session under the source project. If Hermes creates and later deletes an unmanaged worktree, a saved session may still exist but its cwd can be gone.
 
-Artifact reads are canonicalized, symlink escapes are rejected, and returned content is byte-capped by `GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP`.
+Artifact reads are canonicalized, symlink escapes are rejected, and returned content is byte-capped by `WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP`.
 
-`gjc setup hermes` renders `GJC_COORDINATOR_MCP_WORKDIR_ROOTS` with the host platform path delimiter (`:` on POSIX, `;` on Windows). Manual configs should prefer the same encoding.
+`gjc setup hermes` renders `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` with the host platform path delimiter (`:` on POSIX, `;` on Windows). Manual configs should prefer the same encoding.
 
 ## Optional namespace
 
 Use namespace variables to prevent cross-profile or cross-repo enumeration:
 
 ```bash
-export GJC_COORDINATOR_MCP_PROFILE="team-a"
-export GJC_COORDINATOR_MCP_REPO="gajae-code"
+export WORX_COORDINATOR_MCP_PROFILE="team-a"
+export WORX_COORDINATOR_MCP_REPO="gajae-code"
 ```
 
 Missing namespace never widens into global session enumeration.
@@ -214,7 +214,7 @@ This pull-loop contract is independent of #2549/#2551 and unattended plain-CLI h
 The bridge persists a restart-safe event journal under the configured coordinator state namespace, for example:
 
 ```text
-$GJC_COORDINATOR_MCP_STATE_ROOT/<profile>/<repo>/events/event-journal.jsonl
+$WORX_COORDINATOR_MCP_STATE_ROOT/<profile>/<repo>/events/event-journal.jsonl
 ```
 
 Each event is a bounded JSONL record with `schema_version`, monotonic namespace-local `seq`, stable `id`, `timestamp`, canonical `kind`, optional `session_id`/`turn_id`/`question_id`/`report_id`, short `summary`, optional `payload_ref`, and bounded scalar `metadata`. Full prompts, reports, final responses, and artifacts stay in their existing turn/report/artifact read paths; event records only point at them.
@@ -232,10 +232,10 @@ Each event is a bounded JSONL record with `schema_version`, monotonic namespace-
       "command": "gjc",
       "args": ["mcp-serve", "coordinator"],
       "env": {
-        "GJC_COORDINATOR_MCP_WORKDIR_ROOTS": "/path/to/repo",
-        "GJC_COORDINATOR_MCP_PROFILE": "team-a",
-        "GJC_COORDINATOR_MCP_REPO": "project",
-        "GJC_COORDINATOR_MCP_SESSION_COMMAND": "gjc --worktree"
+        "WORX_COORDINATOR_MCP_WORKDIR_ROOTS": "/path/to/repo",
+        "WORX_COORDINATOR_MCP_PROFILE": "team-a",
+        "WORX_COORDINATOR_MCP_REPO": "project",
+        "WORX_COORDINATOR_MCP_SESSION_COMMAND": "gjc --worktree"
       },
       "enabled": true
     }

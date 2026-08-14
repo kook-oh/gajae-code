@@ -12,9 +12,9 @@ try {
 		cwd: repoRoot,
 		env: {
 			...Bun.env,
-			GJC_CODING_AGENT_DIR: agentDir,
-			GJC_DISABLE_AUTO_UPDATE: "1",
-			GJC_GROK_CLI_MODELS: "grok-composer-2.5-fast,grok-build",
+			WORX_CODING_AGENT_DIR: agentDir,
+			WORX_DISABLE_AUTO_UPDATE: "1",
+			WORX_GROK_CLI_MODELS: "grok-composer-2.5-fast,grok-build",
 			GROK_CLI_OAUTH_TOKEN: "compiled-smoke-token",
 		},
 		stdout: "pipe",

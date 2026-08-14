@@ -87,7 +87,7 @@ export function isUnderTerminalMultiplexer(env: NodeJS.ProcessEnv = Bun.env): bo
 		multiplexerEnvEnabled(env.TMUX_PANE) ||
 		multiplexerEnvEnabled(env.STY) ||
 		multiplexerEnvEnabled(env.ZELLIJ) ||
-		multiplexerEnvEnabled(env.GJC_TMUX_LAUNCHED)
+		multiplexerEnvEnabled(env.WORX_TMUX_LAUNCHED)
 	) {
 		return true;
 	}
@@ -138,7 +138,7 @@ export function isCursorNeutralImagePermittedInFallback(): boolean {
 }
 
 function getForcedImageProtocol(): ImageProtocol | null | undefined {
-	const raw = $pickenv("GJC_FORCE_IMAGE_PROTOCOL", "PI_FORCE_IMAGE_PROTOCOL")?.trim().toLowerCase();
+	const raw = $pickenv("WORX_FORCE_IMAGE_PROTOCOL", "PI_FORCE_IMAGE_PROTOCOL")?.trim().toLowerCase();
 	if (!raw) return undefined;
 	if (raw === "kitty") return ImageProtocol.Kitty;
 	if (raw === "iterm2" || raw === "iterm") return ImageProtocol.Iterm2;

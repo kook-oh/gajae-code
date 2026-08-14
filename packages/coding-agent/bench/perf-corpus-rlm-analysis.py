@@ -874,12 +874,12 @@ def _validate_report(value: Any, schedule: dict[str, Any], prereg: dict[str, Any
         raise EvidenceError(f"{filename}: preregistered memory surface order mismatch")
     environment = _expect_dict(runner.get("environment"), f"{filename}.runner.environment")
     expected_controls = {
-        "GJC_MEMORY_PROFILE": profile,
-        "GJC_MEMORY_ITERATIONS": str(profile_config["iterationsTarget"]),
-        "GJC_MEMORY_SURFACE_ORDER": ",".join(expected_order),
+        "WORX_MEMORY_PROFILE": profile,
+        "WORX_MEMORY_ITERATIONS": str(profile_config["iterationsTarget"]),
+        "WORX_MEMORY_SURFACE_ORDER": ",".join(expected_order),
     }
     if profile == "soak":
-        expected_controls["GJC_MEMORY_DURATION_MS"] = str(profile_config["durationTargetMs"])
+        expected_controls["WORX_MEMORY_DURATION_MS"] = str(profile_config["durationTargetMs"])
     if environment != expected_controls:
         raise EvidenceError(f"{filename}: runner.environment exact controls drift")
     identity_source = {

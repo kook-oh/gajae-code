@@ -35,7 +35,7 @@ Coordinator MCP is a durable polling/await bridge, not a push subscription strea
 
 ## Worktree, model, and provider policy
 
-The Hermes bridge does not choose a model/provider. Generated setup configures `GJC_COORDINATOR_MCP_SESSION_COMMAND` to `worx --worktree` by default, so WORX creates and tracks the worktree while still using normal local model/provider resolution. Keep worktree creation inside WORX rather than creating unmanaged Hermes-side git worktrees; this preserves the original project identity for session listing and resume. If the operator config supplies a different `GJC_COORDINATOR_MCP_SESSION_COMMAND`, preserve it as explicit user intent.
+The Hermes bridge does not choose a model/provider. Generated setup configures `WORX_COORDINATOR_MCP_SESSION_COMMAND` to `worx --worktree` by default, so WORX creates and tracks the worktree while still using normal local model/provider resolution. Keep worktree creation inside WORX rather than creating unmanaged Hermes-side git worktrees; this preserves the original project identity for session listing and resume. If the operator config supplies a different `WORX_COORDINATOR_MCP_SESSION_COMMAND`, preserve it as explicit user intent.
 
 Provider-specific commands are examples only, never product defaults.
 
