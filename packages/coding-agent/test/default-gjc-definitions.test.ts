@@ -3,11 +3,11 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	GJC_MODEL_ASSIGNMENT_TARGET_IDS,
-	GJC_MODEL_ASSIGNMENT_TARGETS,
+	WORX_MODEL_ASSIGNMENT_TARGET_IDS,
+	WORX_MODEL_ASSIGNMENT_TARGETS,
 } from "@bworx-io/worx-code/config/model-registry";
 import {
-	DEFAULT_GJC_DEFINITION_NAMES,
+	DEFAULT_WORX_DEFINITION_NAMES,
 	getDefaultGjcDefinitions,
 	getEmbeddedDefaultGjcSkillFragments,
 	getEmbeddedDefaultGjcSkills,
@@ -75,7 +75,7 @@ describe("default GJC definitions", () => {
 		const workflowDefinitions = definitions.filter(definition => definition.kind === "skill");
 		const fragmentDefinitions = definitions.filter(definition => definition.kind === "skill-fragment");
 		const skills = workflowDefinitions.map(definition => definition.name).sort();
-		const expected = [...DEFAULT_GJC_DEFINITION_NAMES].sort();
+		const expected = [...DEFAULT_WORX_DEFINITION_NAMES].sort();
 
 		expect(skills).toEqual(expected);
 		expect(workflowDefinitions).toHaveLength(4);
@@ -111,7 +111,7 @@ describe("default GJC definitions", () => {
 			getEmbeddedDefaultGjcSkills()
 				.map(skill => skill.name)
 				.sort(),
-		).toEqual([...DEFAULT_GJC_DEFINITION_NAMES].sort());
+		).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
 		expect(fragments).toHaveLength(3);
 		expect(fragments.map(fragment => fragment.kind)).toEqual(["skill-fragment", "skill-fragment", "skill-fragment"]);
 		expect(fragments.map(fragment => fragment.relativePath).sort()).toEqual([
@@ -129,7 +129,7 @@ describe("default GJC definitions", () => {
 			getEmbeddedDefaultGjcSkills()
 				.map(skill => skill.name)
 				.sort(),
-		).toEqual([...DEFAULT_GJC_DEFINITION_NAMES].sort());
+		).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
 		expect(fragments).toHaveLength(2);
 		expect(fragments.map(fragment => fragment.kind)).toEqual(["skill-fragment", "skill-fragment"]);
 		expect(fragments.map(fragment => fragment.relativePath).sort()).toEqual([
@@ -232,7 +232,7 @@ describe("default GJC definitions", () => {
 	});
 
 	it("exposes default, four GJC role agents, and image as model assignment targets", () => {
-		expect(GJC_MODEL_ASSIGNMENT_TARGET_IDS).toEqual([
+		expect(WORX_MODEL_ASSIGNMENT_TARGET_IDS).toEqual([
 			"default",
 			"executor",
 			"architect",
@@ -240,7 +240,7 @@ describe("default GJC definitions", () => {
 			"critic",
 			"image",
 		]);
-		expect(GJC_MODEL_ASSIGNMENT_TARGET_IDS.map(id => GJC_MODEL_ASSIGNMENT_TARGETS[id].tag)).toEqual([
+		expect(WORX_MODEL_ASSIGNMENT_TARGET_IDS.map(id => WORX_MODEL_ASSIGNMENT_TARGETS[id].tag)).toEqual([
 			"DEFAULT",
 			"EXECUTOR",
 			"ARCHITECT",
@@ -339,7 +339,7 @@ describe("default GJC definitions", () => {
 			"<ultragoal_red_team_mode>",
 		);
 		for (const agent of [planner, architect, critic]) {
-			expect(agent?.systemPrompt).toContain("GJC_RALPLAN_ARTIFACT");
+			expect(agent?.systemPrompt).toContain("WORX_RALPLAN_ARTIFACT");
 			expect(agent?.systemPrompt).toContain(`--stage ${agent?.name}`);
 			expect(agent?.systemPrompt).toContain("restricted `bash`");
 		}
@@ -358,7 +358,7 @@ describe("default GJC definitions", () => {
 				enablePiUser: false,
 			});
 			const agents = await discoverAgents(repoRoot, home);
-			const expected = [...DEFAULT_GJC_DEFINITION_NAMES].sort();
+			const expected = [...DEFAULT_WORX_DEFINITION_NAMES].sort();
 
 			expect(skills.skills.map(skill => skill.name).sort()).toEqual(expected);
 			expect(skills.skills.some(skill => skill.name === "auto-research-greenfield")).toBe(false);
@@ -914,7 +914,7 @@ describe("bundled skills CLI", () => {
 		expect(exitCode).toBe(0);
 		expect(stderr).toBe("");
 		const parsed = JSON.parse(stdout) as { skills: Array<{ name: string; path: string }> };
-		expect(parsed.skills.map(skill => skill.name).sort()).toEqual([...DEFAULT_GJC_DEFINITION_NAMES].sort());
+		expect(parsed.skills.map(skill => skill.name).sort()).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
 		expect(parsed.skills.every(skill => skill.path.startsWith("embedded:gjc/skills/"))).toBe(true);
 		expect(parsed.skills.some(skill => skill.name === "auto-research-greenfield")).toBe(false);
 		expect(parsed.skills.some(skill => skill.name === "auto-answer-uncertain")).toBe(false);

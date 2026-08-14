@@ -433,15 +433,15 @@ describe("importCredentials", () => {
 	let originalAgentDir: string | undefined;
 
 	beforeEach(async () => {
-		originalAgentDir = process.env.GJC_AGENT_DIR;
+		originalAgentDir = process.env.WORX_AGENT_DIR;
 		homeDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-cred-import-home-"));
 		agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-cred-import-agent-"));
 		setAgentDir(agentDir);
 	});
 
 	afterEach(async () => {
-		if (originalAgentDir === undefined) delete process.env.GJC_AGENT_DIR;
-		else process.env.GJC_AGENT_DIR = originalAgentDir;
+		if (originalAgentDir === undefined) delete process.env.WORX_AGENT_DIR;
+		else process.env.WORX_AGENT_DIR = originalAgentDir;
 		await fs.rm(homeDir, { recursive: true, force: true });
 		await fs.rm(agentDir, { recursive: true, force: true });
 	});

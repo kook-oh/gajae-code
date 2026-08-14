@@ -38,14 +38,14 @@ describe("release build compile args", () => {
 
 	it("marks release binaries with release build metadata", () => {
 		expect(valuesAfter(releaseArgs, "--define")).toContain('process.env.PI_COMPILED="true"');
-		expect(valuesAfter(releaseArgs, "--define")).toContain('process.env.GJC_BUILD_CHANNEL="release"');
-		expect(valuesAfter(releaseArgs, "--define")).not.toContain('process.env.GJC_BUILD_CHANNEL="dev"');
+		expect(valuesAfter(releaseArgs, "--define")).toContain('process.env.WORX_BUILD_CHANNEL="release"');
+		expect(valuesAfter(releaseArgs, "--define")).not.toContain('process.env.WORX_BUILD_CHANNEL="dev"');
 	});
 
 	it("marks dev-compiled binaries as dev builds explicitly", () => {
 		const devDefines = valuesAfter(buildDevCompileArgs(), "--define");
 		expect(devDefines).toContain('process.env.PI_COMPILED="true"');
-		expect(devDefines).toContain('process.env.GJC_BUILD_CHANNEL="dev"');
+		expect(devDefines).toContain('process.env.WORX_BUILD_CHANNEL="dev"');
 	});
 
 	it("includes worker entrypoints in release args", () => {

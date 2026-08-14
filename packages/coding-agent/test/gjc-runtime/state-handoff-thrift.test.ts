@@ -15,11 +15,11 @@ import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { SkillTool } from "@bworx-io/worx-code/tools/skill";
 
 const TEST_SESSION_ID = "test-session";
-const INITIAL_SESSION_ID = process.env.GJC_SESSION_ID;
+const INITIAL_SESSION_ID = process.env.WORX_SESSION_ID;
 
 function restoreSessionId(sessionId: string | undefined): void {
-	if (sessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = sessionId;
+	if (sessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = sessionId;
 }
 
 function parseRequiredJson(text: string | undefined, source: string): Record<string, unknown> {
@@ -127,7 +127,7 @@ async function makeSkill(name: string, content: string): Promise<Skill> {
 
 describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 	it("goldens and asserts every preserved consumer key field", async () => {
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		const root = await tempDir();
 
 		const ralplanReceipt = await runNativeRalplanCommand(

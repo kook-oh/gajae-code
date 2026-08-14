@@ -167,10 +167,10 @@ describe("gjc session command", () => {
 	it("creates and reports a detached managed session as exact JSON DTO", async () => {
 		const calls: string[][] = [];
 		const stateRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-session-command-"));
-		const previousSession = process.env.GJC_TMUX_SESSION;
-		const previousStateFile = process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-		process.env.GJC_TMUX_SESSION = "custom_session";
-		process.env.GJC_COORDINATOR_SESSION_STATE_FILE = path.join(stateRoot, "state.json");
+		const previousSession = process.env.WORX_TMUX_SESSION;
+		const previousStateFile = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+		process.env.WORX_TMUX_SESSION = "custom_session";
+		process.env.WORX_COORDINATOR_SESSION_STATE_FILE = path.join(stateRoot, "state.json");
 		const plannedExecutions: string[][] = [];
 		const probedSockets = injectSafeAbsentToSafeOwnerProof(plannedExecutions);
 		// Production re-reads every `@gjc-*` option it just wrote and requires an exact
@@ -203,10 +203,10 @@ describe("gjc session command", () => {
 		try {
 			output = await runSessionCommand(["create", "--json"]);
 		} finally {
-			if (previousSession === undefined) delete process.env.GJC_TMUX_SESSION;
-			else process.env.GJC_TMUX_SESSION = previousSession;
-			if (previousStateFile === undefined) delete process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-			else process.env.GJC_COORDINATOR_SESSION_STATE_FILE = previousStateFile;
+			if (previousSession === undefined) delete process.env.WORX_TMUX_SESSION;
+			else process.env.WORX_TMUX_SESSION = previousSession;
+			if (previousStateFile === undefined) delete process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+			else process.env.WORX_COORDINATOR_SESSION_STATE_FILE = previousStateFile;
 			await fs.rm(stateRoot, { recursive: true, force: true });
 		}
 		const payload = JSON.parse(output);
@@ -233,10 +233,10 @@ describe("gjc session command", () => {
 
 	it("refuses unsafe or unverifiable owner servers before any tmux mutation", async () => {
 		const stateRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-session-command-preflight-"));
-		const previousSession = process.env.GJC_TMUX_SESSION;
-		const previousStateFile = process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-		process.env.GJC_TMUX_SESSION = "preflight_session";
-		process.env.GJC_COORDINATOR_SESSION_STATE_FILE = path.join(stateRoot, "state.json");
+		const previousSession = process.env.WORX_TMUX_SESSION;
+		const previousStateFile = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+		process.env.WORX_TMUX_SESSION = "preflight_session";
+		process.env.WORX_COORDINATOR_SESSION_STATE_FILE = path.join(stateRoot, "state.json");
 		try {
 			for (const state of ["unsafe", "unverifiable"] as const) {
 				const calls: string[][] = [];
@@ -262,10 +262,10 @@ describe("gjc session command", () => {
 				(Bun.spawnSync as unknown as SpawnSyncMock).mockRestore?.();
 			}
 		} finally {
-			if (previousSession === undefined) delete process.env.GJC_TMUX_SESSION;
-			else process.env.GJC_TMUX_SESSION = previousSession;
-			if (previousStateFile === undefined) delete process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-			else process.env.GJC_COORDINATOR_SESSION_STATE_FILE = previousStateFile;
+			if (previousSession === undefined) delete process.env.WORX_TMUX_SESSION;
+			else process.env.WORX_TMUX_SESSION = previousSession;
+			if (previousStateFile === undefined) delete process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+			else process.env.WORX_COORDINATOR_SESSION_STATE_FILE = previousStateFile;
 			await fs.rm(stateRoot, { recursive: true, force: true });
 		}
 	});

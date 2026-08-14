@@ -129,8 +129,8 @@ async function setup(
 }
 
 test("assistant text preceding an ask is flushed before the ask and not duplicated at turn_end", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -173,14 +173,14 @@ test("assistant text preceding an ask is flushed before the ask and not duplicat
 		await waitFor(() => turnStreams().length === 2, 3000, "settled turn_stream at idle");
 		expect(turnStreams()[1]!.text).toContain("All done.");
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("a tool-only ask turn does not mirror the preceding user prompt as turn output", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -205,14 +205,14 @@ test("a tool-only ask turn does not mirror the preceding user prompt as turn out
 		// and the assistant turn had no text of its own.
 		expect(turnStreams().length).toBe(0);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("inbound /verbose and /lean update runtime verbosity and confirmation policy", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames, ws, token, sid } = await setup();
 		const configUpdates = () => frames.filter(f => f.type === "config_update");
@@ -246,14 +246,14 @@ test("inbound /verbose and /lean update runtime verbosity and confirmation polic
 		await sleep(200);
 		expect(contextUpdates().length).toBe(beforeLeanIdle);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("drops an asynchronous context update completed after redaction changes", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const diffEntered = Promise.withResolvers<void>();
 		const releaseDiff = Promise.withResolvers<string | undefined>();
@@ -275,14 +275,14 @@ test("drops an asynchronous context update completed after redaction changes", a
 
 		expect(frames.some(f => f.type === "context_update")).toBe(false);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("verbose idle context includes compact cwd without usage metadata", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames, ws, token, sid } = await setup({ contextUsage: false, model: false });
 		const configUpdates = () => frames.filter(f => f.type === "config_update");
@@ -304,14 +304,14 @@ test("verbose idle context includes compact cwd without usage metadata", async (
 			"cwd-only verbose context_update",
 		);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("session shutdown emits session_closed before stopping the endpoint", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		await handlers.get("agent_start")!({ type: "agent_start" }, ctx);
@@ -320,8 +320,8 @@ test("session shutdown emits session_closed before stopping the endpoint", async
 		await handlers.get("session_shutdown")!({ type: "session_shutdown" }, ctx);
 		await waitFor(() => frames.some(f => f.type === "session_closed"), 3000, "session_closed frame");
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
@@ -344,8 +344,8 @@ const phaseOf = (f: Frame): string | undefined => (f as { phase?: string }).phas
 const finalAnswerOf = (f: Frame): boolean | undefined => (f as { finalAnswer?: boolean }).finalAnswer;
 
 test("a pre-ask lead-in is flushed as a finalized turn_stream before the ask, and an identical turn_end is deduped", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -374,14 +374,14 @@ test("a pre-ask lead-in is flushed as a finalized turn_stream before the ask, an
 		await sleep(150);
 		expect(turnStreams().length).toBe(1);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("a distinct lean answer after a pre-ask lead-in streams only at agent_end", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -436,14 +436,14 @@ test("a distinct lean answer after a pre-ask lead-in streams only at agent_end",
 		expect(phaseOf(turnStreams()[1]!)).toBe("finalized");
 		expect(finalAnswerOf(turnStreams()[1]!)).toBe(true);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("lean does not re-emit intermediate narration after a later ask lead-in at idle", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -486,14 +486,14 @@ test("lean does not re-emit intermediate narration after a later ask lead-in at 
 		expect(turnStreams().some(f => f.text?.includes("Intermediate narration"))).toBe(false);
 		expect(turnStreams().length).toBe(1);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("lean ask-free turns emit a single settled turn_stream only at agent_end", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -530,14 +530,14 @@ test("lean ask-free turns emit a single settled turn_stream only at agent_end", 
 		await sleep(150);
 		expect(turnStreams().length).toBe(1);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
 test("verbose still streams a finalized turn_stream at each turn_end", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const { handlers, ctx, frames, ws, token, sid } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -574,8 +574,8 @@ test("verbose still streams a finalized turn_stream at each turn_end", async () 
 		await sleep(150);
 		expect(turnStreams().length).toBe(2);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }, 30000);
 
@@ -588,10 +588,10 @@ const messageRefOf = (f: Frame): string | undefined => (f as { messageRef?: stri
 // must be dropped so no stale live edit follows the final. Lean deliberately
 // suppresses live streaming and defers settled answers to agent_end.
 test("stream-enabled final always carries a messageRef and a late message_update is dropped", async () => {
-	const prevN = process.env.GJC_NOTIFICATIONS;
-	const prevS = process.env.GJC_NOTIFICATIONS_STREAM;
-	process.env.GJC_NOTIFICATIONS = "1";
-	process.env.GJC_NOTIFICATIONS_STREAM = "1";
+	const prevN = process.env.WORX_NOTIFICATIONS;
+	const prevS = process.env.WORX_NOTIFICATIONS_STREAM;
+	process.env.WORX_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS_STREAM = "1";
 	try {
 		const { handlers, ctx, frames, ws, token, sid } = await setup();
 		const turnStreams = () => frames.filter(f => f.type === "turn_stream");
@@ -622,9 +622,9 @@ test("stream-enabled final always carries a messageRef and a late message_update
 		expect(turnStreams().length).toBe(before);
 		expect(turnStreams().some(f => phaseOf(f) === "live")).toBe(false);
 	} finally {
-		if (prevN === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevN;
-		if (prevS === undefined) delete process.env.GJC_NOTIFICATIONS_STREAM;
-		else process.env.GJC_NOTIFICATIONS_STREAM = prevS;
+		if (prevN === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevN;
+		if (prevS === undefined) delete process.env.WORX_NOTIFICATIONS_STREAM;
+		else process.env.WORX_NOTIFICATIONS_STREAM = prevS;
 	}
 }, 30000);

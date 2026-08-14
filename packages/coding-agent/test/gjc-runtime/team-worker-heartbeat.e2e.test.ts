@@ -26,13 +26,13 @@ const workers: Bun.Subprocess[] = [];
 let previousGjcSessionId: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = previousGjcSessionId;
+	if (previousGjcSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = previousGjcSessionId;
 });
 
 afterEach(async () => {
@@ -46,9 +46,9 @@ afterEach(async () => {
 
 const monitorEnv = (root: string) => ({
 	PATH: process.env.PATH ?? "",
-	GJC_SESSION_ID: TEST_SESSION_ID,
-	GJC_TEAM_HEARTBEAT_STALE_MS: String(STALE_MS),
-	GJC_TEAM_STATE_ROOT: teamStateRoot(root, TEST_SESSION_ID),
+	WORX_SESSION_ID: TEST_SESSION_ID,
+	WORX_TEAM_HEARTBEAT_STALE_MS: String(STALE_MS),
+	WORX_TEAM_STATE_ROOT: teamStateRoot(root, TEST_SESSION_ID),
 });
 
 async function startClaimedTeam(teamName: string): Promise<{ root: string; claimPath: string }> {
@@ -61,9 +61,9 @@ async function startClaimedTeam(teamName: string): Promise<{ root: string; claim
 		teamName,
 		cwd: root,
 		dryRun: true,
-		env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+		env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 	});
-	const claim = await claimGjcTeamTask(teamName, "worker-1", root, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID });
+	const claim = await claimGjcTeamTask(teamName, "worker-1", root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
 	expect(claim.ok).toBe(true);
 	return { root, claimPath: path.join(teamStateRoot(root, TEST_SESSION_ID), teamName, "claims", "task-1.json") };
 }
@@ -75,10 +75,10 @@ function spawnWorker(root: string, teamName: string, publishes: boolean): Bun.Su
 			...process.env,
 			TEST_HEARTBEAT_MODE: publishes ? "publish" : "silent",
 			WORK_CWD: root,
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_NAME: teamName,
-			GJC_TEAM_WORKER_ID: "worker-1",
-			GJC_TEAM_HEARTBEAT_STALE_MS: String(STALE_MS),
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_NAME: teamName,
+			WORX_TEAM_WORKER_ID: "worker-1",
+			WORX_TEAM_HEARTBEAT_STALE_MS: String(STALE_MS),
 		},
 		stdout: "ignore",
 		stderr: "ignore",

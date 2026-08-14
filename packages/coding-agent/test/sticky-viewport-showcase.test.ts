@@ -1093,7 +1093,7 @@ describe("sticky viewport production evidence verifier", () => {
 		const index = path.join(os.tmpdir(), `gjc-attacker-index-${Date.now()}`);
 		const refSuffix = `${process.pid}-${Date.now()}-${crypto.randomUUID()}`;
 		const refs = [`refs/heads/gjc-test-attacker-${refSuffix}`, `refs/remotes/origin/gjc-test-attacker-${refSuffix}`];
-		const originalOracleCommit = process.env.GJC_STICKY_VIEWPORT_ORACLE_COMMIT;
+		const originalOracleCommit = process.env.WORX_STICKY_VIEWPORT_ORACLE_COMMIT;
 		const git = async (args: string[], stdin?: string) => {
 			const proc = Bun.spawn(["git", ...args], {
 				cwd: REPOSITORY_ROOT,
@@ -1134,15 +1134,15 @@ describe("sticky viewport production evidence verifier", () => {
 			// The operator may have declared an authority for the whole run (that is how
 			// an uncommitted staged oracle is reviewed). Save and restore it rather than
 			// deleting, or this case silently unpins every later case in the file.
-			process.env.GJC_STICKY_VIEWPORT_ORACLE_COMMIT = await git(["rev-parse", "HEAD"]);
+			process.env.WORX_STICKY_VIEWPORT_ORACLE_COMMIT = await git(["rev-parse", "HEAD"]);
 			try {
 				await restampProvenance(root);
 				await expect(verifyStickyViewportShowcase(root)).rejects.toThrow("oracle integrity");
 			} finally {
-				restoreEnvironment("GJC_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
+				restoreEnvironment("WORX_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
 			}
 		} finally {
-			restoreEnvironment("GJC_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
+			restoreEnvironment("WORX_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
 			await Bun.write(resolveRepositoryPath(oracle), original);
 			for (const ref of refs) {
 				Bun.spawnSync(["git", "update-ref", "-d", ref], {
@@ -1165,7 +1165,7 @@ describe("sticky viewport production evidence verifier", () => {
 
 		const temporaryGitDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-older-oracle-"));
 		const index = path.join(temporaryGitDirectory, "index");
-		const originalOracleCommit = process.env.GJC_STICKY_VIEWPORT_ORACLE_COMMIT;
+		const originalOracleCommit = process.env.WORX_STICKY_VIEWPORT_ORACLE_COMMIT;
 		const git = async (args: string[], stdin?: string): Promise<string> => {
 			const proc = Bun.spawn(["git", ...args], {
 				cwd: REPOSITORY_ROOT,
@@ -1198,7 +1198,7 @@ describe("sticky viewport production evidence verifier", () => {
 			expect(authority).toMatch(/^[0-9a-f]{40}$/);
 			expect(await committedBlobSha256(authority, oracle)).not.toBe(running);
 
-			process.env.GJC_STICKY_VIEWPORT_ORACLE_COMMIT = authority;
+			process.env.WORX_STICKY_VIEWPORT_ORACLE_COMMIT = authority;
 			// Must observe the env var set immediately above, so no cached bundle.
 			const root = await captureUncached();
 			await restampProvenance(root);
@@ -1206,11 +1206,11 @@ describe("sticky viewport production evidence verifier", () => {
 				`oracle integrity: ${oracle} differs from its committed blob at ${authority}`,
 			);
 
-			restoreEnvironment("GJC_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
+			restoreEnvironment("WORX_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
 			await restampProvenance(root);
 			await verifyStickyViewportShowcase(root);
 		} finally {
-			restoreEnvironment("GJC_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
+			restoreEnvironment("WORX_STICKY_VIEWPORT_ORACLE_COMMIT", originalOracleCommit);
 			await fs.rm(temporaryGitDirectory, { recursive: true, force: true });
 		}
 	}, 300_000);

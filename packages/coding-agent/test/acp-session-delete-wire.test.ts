@@ -132,7 +132,7 @@ function buildChildEnv(root: string): Record<string, string> {
 		XDG_STATE_HOME: path.join(root, ".local", "state"),
 		XDG_CACHE_HOME: path.join(root, ".cache"),
 		XDG_RUNTIME_DIR: path.join(root, ".run"),
-		GJC_CODING_AGENT_DIR: path.join(root, "agent"),
+		WORX_CODING_AGENT_DIR: path.join(root, "agent"),
 		PI_CODING_AGENT_DIR: path.join(root, "agent"),
 		PI_NO_TITLE: "1",
 		NO_COLOR: "1",
@@ -168,7 +168,7 @@ async function spawnOracle(): Promise<Oracle> {
 		env.XDG_STATE_HOME,
 		env.XDG_CACHE_HOME,
 		env.XDG_RUNTIME_DIR,
-		env.GJC_CODING_AGENT_DIR,
+		env.WORX_CODING_AGENT_DIR,
 	];
 	await Promise.all(ownedDirs.map(dir => fs.promises.mkdir(dir, { recursive: true })));
 

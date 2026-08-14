@@ -8,6 +8,6 @@ import { $credentialEnv } from "../../src/env";
 console.log(
 	JSON.stringify({
 		agentDir: getAgentDir(),
-		probeValue: $credentialEnv("GJC_TRUST_PROBE_VALUE") ?? null,
+		probeValue: $credentialEnv("WORX_TRUST_PROBE_VALUE") ?? null,
 	}),
 );

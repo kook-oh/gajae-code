@@ -13,8 +13,8 @@ import {
 	runNativeRalplanCommand,
 } from "@bworx-io/worx-code/gjc-runtime/ralplan-runtime";
 import {
-	GJC_RALPLAN_ARTIFACT_ENV,
-	GJC_RESTRICTED_ROLE_AGENT_BASH_ENV,
+	WORX_RALPLAN_ARTIFACT_ENV,
+	WORX_RESTRICTED_ROLE_AGENT_BASH_ENV,
 } from "@bworx-io/worx-code/gjc-runtime/restricted-role-agent-bash";
 import {
 	activeEntryPath,
@@ -37,15 +37,15 @@ const ralplanPlanPath = (root: string, runId: string, ...parts: string[]) =>
 const CONFIG_ROOT_SETTINGS_PROBE = path.join(import.meta.dir, "..", "fixtures", "config-root-settings-probe.ts");
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 });
 
@@ -358,8 +358,8 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 		const seedReceipt = JSON.parse(seed.stdout ?? "{}") as { session_id: string; run_id: string };
 		expect(seedReceipt).toMatchObject({ session_id: ownerSessionId, run_id: ownerSessionId });
 
-		const previousSessionId = process.env.GJC_SESSION_ID;
-		process.env.GJC_SESSION_ID = childSessionId;
+		const previousSessionId = process.env.WORX_SESSION_ID;
+		process.env.WORX_SESSION_ID = childSessionId;
 		try {
 			const result = await runNativeRalplanCommand(
 				[
@@ -382,7 +382,7 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 				run_id: seedReceipt.run_id,
 			});
 		} finally {
-			process.env.GJC_SESSION_ID = previousSessionId;
+			process.env.WORX_SESSION_ID = previousSessionId;
 		}
 
 		const ownerArtifact = path.join(
@@ -452,8 +452,8 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 		const root = await tempDir();
 		const artifactPath = path.join(root, "secret.md");
 		await fs.writeFile(artifactPath, "# Secret\nshould-not-be-read\n");
-		const previous = process.env[GJC_RESTRICTED_ROLE_AGENT_BASH_ENV];
-		process.env[GJC_RESTRICTED_ROLE_AGENT_BASH_ENV] = "1";
+		const previous = process.env[WORX_RESTRICTED_ROLE_AGENT_BASH_ENV];
+		process.env[WORX_RESTRICTED_ROLE_AGENT_BASH_ENV] = "1";
 		try {
 			const result = await runNativeRalplanCommand(
 				[
@@ -477,17 +477,17 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 			expect(content).toBe(`${artifactPath}\n`);
 		} finally {
 			if (previous === undefined) {
-				delete process.env[GJC_RESTRICTED_ROLE_AGENT_BASH_ENV];
+				delete process.env[WORX_RESTRICTED_ROLE_AGENT_BASH_ENV];
 			} else {
-				process.env[GJC_RESTRICTED_ROLE_AGENT_BASH_ENV] = previous;
+				process.env[WORX_RESTRICTED_ROLE_AGENT_BASH_ENV] = previous;
 			}
 		}
 	});
 
 	it("--artifact-env reads artifact markdown from the sanctioned env var", async () => {
 		const root = await tempDir();
-		const previous = process.env[GJC_RALPLAN_ARTIFACT_ENV];
-		process.env[GJC_RALPLAN_ARTIFACT_ENV] =
+		const previous = process.env[WORX_RALPLAN_ARTIFACT_ENV];
+		process.env[WORX_RALPLAN_ARTIFACT_ENV] =
 			'# Critic Review\n\nMentions `"studio"`, `use client`, $VALUE, and backslashes: C:\\tmp.\n';
 		try {
 			const result = await runNativeRalplanCommand(
@@ -498,7 +498,7 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 					"--stage_n",
 					"3",
 					"--artifact-env",
-					GJC_RALPLAN_ARTIFACT_ENV,
+					WORX_RALPLAN_ARTIFACT_ENV,
 					"--run-id",
 					"env-run",
 				],
@@ -510,9 +510,9 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 			expect(content).toContain("C:\\tmp");
 		} finally {
 			if (previous === undefined) {
-				delete process.env[GJC_RALPLAN_ARTIFACT_ENV];
+				delete process.env[WORX_RALPLAN_ARTIFACT_ENV];
 			} else {
-				process.env[GJC_RALPLAN_ARTIFACT_ENV] = previous;
+				process.env[WORX_RALPLAN_ARTIFACT_ENV] = previous;
 			}
 		}
 	});
@@ -524,7 +524,7 @@ describe("native gjc ralplan runtime — --write artifact path", () => {
 			root,
 		);
 		expect(result.status).toBe(2);
-		expect(result.stderr).toContain("--artifact-env must be GJC_RALPLAN_ARTIFACT");
+		expect(result.stderr).toContain("--artifact-env must be WORX_RALPLAN_ARTIFACT");
 	});
 
 	it("final stage emits pending-approval.md alongside the stage artifact", async () => {
@@ -1715,9 +1715,9 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 	it("defaults to off when project and user settings are absent", async () => {
 		const root = await tempDir();
 		const userDir = await tempDir();
-		const previousConfigDir = process.env.GJC_CONFIG_DIR;
+		const previousConfigDir = process.env.WORX_CONFIG_DIR;
 		try {
-			process.env.GJC_CONFIG_DIR = userDir;
+			process.env.WORX_CONFIG_DIR = userDir;
 			expect(await resolveRalplanAutoHandoff(root)).toEqual({
 				configuredTarget: "off",
 				effectiveTarget: "off",
@@ -1725,8 +1725,8 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 				source: "default",
 			});
 		} finally {
-			if (previousConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = previousConfigDir;
+			if (previousConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = previousConfigDir;
 		}
 	});
 
@@ -1734,9 +1734,9 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		const root = await tempDir();
 		const userDir = await tempDir();
 		const projectPath = path.join(root, ".gjc", "settings.json");
-		const previousConfigDir = process.env.GJC_CONFIG_DIR;
+		const previousConfigDir = process.env.WORX_CONFIG_DIR;
 		try {
-			process.env.GJC_CONFIG_DIR = userDir;
+			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
 				JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
@@ -1749,8 +1749,8 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 				`invalid ralplan settings at ${projectPath}: malformed JSON`,
 			);
 		} finally {
-			if (previousConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = previousConfigDir;
+			if (previousConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = previousConfigDir;
 		}
 	});
 
@@ -1764,7 +1764,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 
 		const proc = Bun.spawn([process.execPath, CONFIG_ROOT_SETTINGS_PROBE, "--ralplan-auto-handoff"], {
 			cwd: root,
-			env: { ...process.env, HOME: home, GJC_CONFIG_DIR: configDir },
+			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: configDir },
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -2713,9 +2713,9 @@ describe("ralplan review lane budget settings", () => {
 	it("resolves nested and flat settings with project-over-user precedence", async () => {
 		const root = await tempDir();
 		const userDir = await tempDir();
-		const previousConfigDir = process.env.GJC_CONFIG_DIR;
+		const previousConfigDir = process.env.WORX_CONFIG_DIR;
 		try {
-			process.env.GJC_CONFIG_DIR = userDir;
+			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
 				JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
@@ -2735,17 +2735,17 @@ describe("ralplan review lane budget settings", () => {
 				source: projectPath,
 			});
 		} finally {
-			if (previousConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = previousConfigDir;
+			if (previousConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = previousConfigDir;
 		}
 	});
 
 	it("rejects malformed project settings instead of falling through to a user override", async () => {
 		const root = await tempDir();
 		const userDir = await tempDir();
-		const previousConfigDir = process.env.GJC_CONFIG_DIR;
+		const previousConfigDir = process.env.WORX_CONFIG_DIR;
 		try {
-			process.env.GJC_CONFIG_DIR = userDir;
+			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
 				JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
@@ -2757,8 +2757,8 @@ describe("ralplan review lane budget settings", () => {
 
 			await expect(resolveRalplanMaxReviewPassesPerLane(root)).rejects.toThrow(projectPath);
 		} finally {
-			if (previousConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = previousConfigDir;
+			if (previousConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = previousConfigDir;
 		}
 	});
 

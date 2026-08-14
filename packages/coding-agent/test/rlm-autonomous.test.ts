@@ -31,15 +31,15 @@ let previousGjcSessionId: string | undefined;
 
 beforeEach(async () => {
 	tmp = await fs.mkdtemp(path.join(os.tmpdir(), "rlm-auto-"));
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = "rlm-autonomous-test-session";
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = "rlm-autonomous-test-session";
 });
 
 afterEach(async () => {
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 	await fs.rm(tmp, { recursive: true, force: true });
 });

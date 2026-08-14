@@ -13,7 +13,7 @@ import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();
-const originalAgentDirOverride = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;
 const temporaryDirectories: string[] = [];
 
 beforeEach(() => {
@@ -23,8 +23,8 @@ beforeEach(() => {
 afterEach(async () => {
 	vi.restoreAllMocks();
 	setAgentDir(originalAgentDir);
-	if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-	else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+	if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+	else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 	await Promise.all(
 		temporaryDirectories.splice(0).map(directory => fs.promises.rm(directory, { recursive: true, force: true })),
 	);

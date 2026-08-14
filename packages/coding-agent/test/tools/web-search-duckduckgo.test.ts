@@ -301,7 +301,7 @@ describe("executeSearch honors the configured preferred provider", () => {
 	});
 });
 
-const RUN_LIVE_DDG_E2E = process.env.GJC_LIVE_DUCKDUCKGO_E2E === "1";
+const RUN_LIVE_DDG_E2E = process.env.WORX_LIVE_DUCKDUCKGO_E2E === "1";
 
 describe.skipIf(!RUN_LIVE_DDG_E2E)("DuckDuckGo live e2e", () => {
 	it("returns real web results without credentials", async () => {

@@ -58,7 +58,7 @@ async function mcpGlobal(
 ) {
 	const child = Bun.spawn([process.execPath, "run", cliEntrypoint, "mcp-serve", "sdk"], {
 		cwd: repo,
-		env: { ...(environment ?? process.env), GJC_CODING_AGENT_DIR: agentDir, GJC_AGENT_DIR: agentDir },
+		env: { ...(environment ?? process.env), WORX_CODING_AGENT_DIR: agentDir, WORX_AGENT_DIR: agentDir },
 		stdin: "pipe",
 		stdout: "pipe",
 		stderr: "pipe",
@@ -103,7 +103,7 @@ async function daemonGlobal(
 		],
 		{
 			cwd: repo,
-			env: { ...(environment ?? process.env), GJC_CODING_AGENT_DIR: agentDir, GJC_AGENT_DIR: agentDir },
+			env: { ...(environment ?? process.env), WORX_CODING_AGENT_DIR: agentDir, WORX_AGENT_DIR: agentDir },
 			stdout: "pipe",
 			stderr: "pipe",
 		},
@@ -128,7 +128,13 @@ async function acpGlobal(
 ) {
 	const child = Bun.spawn([process.execPath, cliEntrypoint, "--mode", "acp"], {
 		cwd: repo,
-		env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir, GJC_AGENT_DIR: agentDir, PI_NO_TITLE: "1", NO_COLOR: "1" },
+		env: {
+			...process.env,
+			WORX_CODING_AGENT_DIR: agentDir,
+			WORX_AGENT_DIR: agentDir,
+			PI_NO_TITLE: "1",
+			NO_COLOR: "1",
+		},
 		stdin: "pipe",
 		stdout: "pipe",
 		stderr: "pipe",

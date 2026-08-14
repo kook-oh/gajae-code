@@ -104,8 +104,8 @@ it("withholds proof when a row follows a proven terminal outcome", async () => {
 
 it("returns the real terminal outcome when a slow spawn is stamped by a concurrent recovery", async () => {
 	const agentDir = await temp();
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
-	process.env.GJC_SDK_SESSION_COMMAND = "/bin/sleep 60";
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
+	process.env.WORX_SDK_SESSION_COMMAND = "/bin/sleep 60";
 	const broker = new Broker({ agentDir });
 	await broker.start();
 	try {
@@ -140,8 +140,8 @@ it("returns the real terminal outcome when a slow spawn is stamped by a concurre
 			rows.filter(row => JSON.stringify(row.response ?? "").includes("terminal evidence could not be verified")),
 		).toHaveLength(0);
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(agentDir, { recursive: true, force: true });
 	}

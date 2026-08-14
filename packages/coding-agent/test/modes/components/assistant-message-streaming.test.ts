@@ -195,7 +195,7 @@ describe("AssistantMessageComponent streaming markdown", () => {
 		);
 		const rendered = component.renderWithViewportAnchors(14);
 		const anchors = rendered.anchors.flatMap(anchor => (anchor === null ? [] : [anchor]));
-		expect(rendered.lines.join("")).not.toContain("GJC_ANCHOR");
+		expect(rendered.lines.join("")).not.toContain("WORX_ANCHOR");
 		expect(anchors.length).toBeGreaterThan(1);
 		expect(new Set(anchors.map(anchor => anchor.id)).size).toBe(1);
 		expect(anchors[0]?.graphemeStart).toBe(0);

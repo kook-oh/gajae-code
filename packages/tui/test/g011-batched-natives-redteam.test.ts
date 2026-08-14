@@ -168,8 +168,8 @@ describe("G011 batched text natives red-team", () => {
 	});
 
 	it("FRAME-PARITY and FFI-COUNT: mixed frame emits reference bytes and uses few native calls", async () => {
-		const previousIme = Bun.env.GJC_TUI_IME_CURSOR;
-		Bun.env.GJC_TUI_IME_CURSOR = "0";
+		const previousIme = Bun.env.WORX_TUI_IME_CURSOR;
+		Bun.env.WORX_TUI_IME_CURSOR = "0";
 		const mutable = TERMINAL as unknown as { imageProtocol: ImageProtocol | null };
 		const originalProtocol = mutable.imageProtocol;
 		mutable.imageProtocol = ImageProtocol.Kitty;
@@ -227,8 +227,8 @@ describe("G011 batched text natives red-team", () => {
 		} finally {
 			tui.stop();
 			mutable.imageProtocol = originalProtocol;
-			if (previousIme === undefined) delete Bun.env.GJC_TUI_IME_CURSOR;
-			else Bun.env.GJC_TUI_IME_CURSOR = previousIme;
+			if (previousIme === undefined) delete Bun.env.WORX_TUI_IME_CURSOR;
+			else Bun.env.WORX_TUI_IME_CURSOR = previousIme;
 		}
 	});
 

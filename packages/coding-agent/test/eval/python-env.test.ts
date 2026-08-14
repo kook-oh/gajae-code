@@ -14,19 +14,19 @@ const RESOLVERS = [
 	{
 		kernel: resolveKernelSkipCheck,
 		tool: resolvePythonSkipCheck,
-		gjc: "GJC_PYTHON_SKIP_CHECK",
+		gjc: "WORX_PYTHON_SKIP_CHECK",
 		pi: "PI_PYTHON_SKIP_CHECK",
 	},
 	{
 		kernel: resolveKernelIpcTrace,
 		tool: resolvePythonIpcTrace,
-		gjc: "GJC_PYTHON_IPC_TRACE",
+		gjc: "WORX_PYTHON_IPC_TRACE",
 		pi: "PI_PYTHON_IPC_TRACE",
 	},
 	{
 		kernel: resolveKernelIntegrationGate,
 		tool: resolvePythonIntegrationGate,
-		gjc: "GJC_PYTHON_INTEGRATION",
+		gjc: "WORX_PYTHON_INTEGRATION",
 		pi: "PI_PYTHON_INTEGRATION",
 	},
 ] as const;

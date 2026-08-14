@@ -66,7 +66,7 @@ describe("web search CLI args", () => {
 	});
 });
 
-const originalAgentDir = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDir = process.env.WORX_CODING_AGENT_DIR;
 const originalXaiApiKey = process.env.XAI_API_KEY;
 const fallbackAgentDir = path.join(getConfigRootDir(), "agent");
 let testAgentDir = "";
@@ -84,7 +84,7 @@ afterEach(async () => {
 		setAgentDir(originalAgentDir);
 	} else {
 		setAgentDir(fallbackAgentDir);
-		delete process.env.GJC_CODING_AGENT_DIR;
+		delete process.env.WORX_CODING_AGENT_DIR;
 	}
 	if (originalXaiApiKey === undefined) delete process.env.XAI_API_KEY;
 	else process.env.XAI_API_KEY = originalXaiApiKey;

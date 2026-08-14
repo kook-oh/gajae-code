@@ -6,7 +6,7 @@ import * as path from "node:path";
 /**
  * `resolveConfigPaths` picks the `config.yml` whose `skills.customDirectories`
  * the agent then loads skills from, so the directory it is built from is a trust
- * boundary. It used to read `GJC_CODING_AGENT_DIR` / `GJC_CONFIG_DIR` straight
+ * boundary. It used to read `WORX_CODING_AGENT_DIR` / `WORX_CONFIG_DIR` straight
  * from `process.env`, which Bun populates from `cwd/.env` before any module
  * runs — so a repository could point the hook at a directory it ships and inject
  * its own skill directories, bypassing `trustedAgentDirOverride`.
@@ -41,7 +41,7 @@ function scenario(dotenv: string | undefined, configs: Record<string, string>): 
 async function customDirectoriesIn(dir: string, home: string): Promise<string[]> {
 	const proc = Bun.spawn([process.execPath, PROBE], {
 		cwd: path.join(dir, "repo"),
-		env: { ...process.env, HOME: home, GJC_CODING_AGENT_DIR: undefined, GJC_CONFIG_DIR: undefined },
+		env: { ...process.env, HOME: home, WORX_CODING_AGENT_DIR: undefined, WORX_CONFIG_DIR: undefined },
 		stdout: "pipe",
 		stderr: "pipe",
 	});
@@ -56,13 +56,13 @@ function skillConfig(directory: string): string {
 
 describe("skill hook agent-dir trust boundary", () => {
 	it("ignores an agent dir the project .env points at", async () => {
-		const { dir, home } = scenario(`GJC_CODING_AGENT_DIR=${path.join("/tmp", "planted")}\n`, {});
+		const { dir, home } = scenario(`WORX_CODING_AGENT_DIR=${path.join("/tmp", "planted")}\n`, {});
 		const planted = path.join(dir, "planted");
 		fs.mkdirSync(planted, { recursive: true });
 		fs.writeFileSync(path.join(planted, "config.yml"), skillConfig("/tmp/attacker-skills"));
 
 		// Point the .env at the planted dir inside this scenario.
-		fs.writeFileSync(path.join(dir, "repo", ".env"), `GJC_CODING_AGENT_DIR=${planted}\n`);
+		fs.writeFileSync(path.join(dir, "repo", ".env"), `WORX_CODING_AGENT_DIR=${planted}\n`);
 
 		expect(await customDirectoriesIn(dir, home)).not.toContain("/tmp/attacker-skills");
 	});
@@ -75,7 +75,7 @@ describe("skill hook agent-dir trust boundary", () => {
 	});
 
 	it("ignores a config dir name the project .env points at", async () => {
-		const { dir, home } = scenario("GJC_CONFIG_DIR=.evil\n", {});
+		const { dir, home } = scenario("WORX_CONFIG_DIR=.evil\n", {});
 		fs.mkdirSync(path.join(home, ".evil", "agent"), { recursive: true });
 		fs.writeFileSync(path.join(home, ".evil", "agent", "config.yml"), skillConfig("/tmp/evil-skills"));
 

@@ -61,7 +61,7 @@ function seed(workspace: string): SessionState {
 async function runHarness(args: string[]): Promise<{ code: number; json: Record<string, unknown> | null }> {
 	const proc = Bun.spawn(["bun", cliEntry, "harness", ...args], {
 		cwd: root,
-		env: { ...cliEnv.env, GJC_HARNESS_STATE_ROOT: root },
+		env: { ...cliEnv.env, WORX_HARNESS_STATE_ROOT: root },
 		stdout: "pipe",
 		stderr: "pipe",
 	});

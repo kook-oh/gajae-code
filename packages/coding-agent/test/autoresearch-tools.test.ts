@@ -93,11 +93,11 @@ describe("init_experiment", () => {
 
 	beforeEach(() => {
 		dbOverride = makeTempDir("pi-autoresearch-init-db");
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		fs.rmSync(dbOverride, { recursive: true, force: true });
 	});
 
@@ -273,11 +273,11 @@ describe("run_experiment", () => {
 
 	beforeEach(() => {
 		dbOverride = makeTempDir("pi-autoresearch-run-db");
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		fs.rmSync(dbOverride, { recursive: true, force: true });
 	});
 
@@ -379,11 +379,11 @@ describe("log_experiment", () => {
 
 	beforeEach(() => {
 		dbOverride = makeTempDir("pi-autoresearch-log-db");
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		fs.rmSync(dbOverride, { recursive: true, force: true });
 	});
 
@@ -796,11 +796,11 @@ describe("update_notes", () => {
 
 	beforeEach(() => {
 		dbOverride = makeTempDir("pi-autoresearch-notes-db");
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		fs.rmSync(dbOverride, { recursive: true, force: true });
 	});
 

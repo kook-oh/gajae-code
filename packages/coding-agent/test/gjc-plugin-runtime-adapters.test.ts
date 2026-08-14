@@ -73,7 +73,7 @@ describe("always-on plugin tool runtime activation", () => {
 		await fs.writeFile(
 			lateTool,
 			`import * as fs from "node:fs";
-if (process.env.GJC_LATE_IMPORT_SENTINEL) fs.writeFileSync(process.env.GJC_LATE_IMPORT_SENTINEL, "imported");
+if (process.env.WORX_LATE_IMPORT_SENTINEL) fs.writeFileSync(process.env.WORX_LATE_IMPORT_SENTINEL, "imported");
 export default pi => ({ name: "late_tool", label: "Late", description: "late", parameters: pi.zod.object({}), async execute() { return { content: [{ type: "text", text: "late" }] }; } });
 `,
 		);
@@ -87,7 +87,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 		const installed = await installGjcBundle({ cwd }, "project", source);
 		expect(installed.ok).toBe(true);
 		const lateSentinel = path.join(cwd, "late-imported");
-		process.env.GJC_LATE_IMPORT_SENTINEL = lateSentinel;
+		process.env.WORX_LATE_IMPORT_SENTINEL = lateSentinel;
 		try {
 			let mutated = false;
 			const result = await loadAlwaysOnPluginTools({
@@ -114,7 +114,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 					.catch(() => false),
 			).toBe(false);
 		} finally {
-			delete process.env.GJC_LATE_IMPORT_SENTINEL;
+			delete process.env.WORX_LATE_IMPORT_SENTINEL;
 		}
 	});
 

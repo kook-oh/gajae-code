@@ -19,7 +19,7 @@ import { SessionManager } from "../../../src/session/session-manager";
 const percentile = (sorted: number[], q: number): number =>
 	sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(q * sorted.length)))];
 
-const recordCount = Number.parseInt(process.env.GJC_SESSION_MEMORY_LATENCY_RECORDS ?? "60000", 10);
+const recordCount = Number.parseInt(process.env.WORX_SESSION_MEMORY_LATENCY_RECORDS ?? "60000", 10);
 if (!Number.isSafeInteger(recordCount) || recordCount < 1000 || recordCount > 64 * 1024)
 	throw new Error("invalid_latency_record_count");
 

@@ -1,18 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 } from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
 import type { GoalModeState } from "@bworx-io/worx-code/goals/state";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent } from "@gajae-code/agent-core";
+import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
+import { getBundledModel } from "@gajae-code/ai/models";
 import { logger, TempDir } from "@gajae-code/utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
@@ -323,10 +323,10 @@ describe("AgentSession active goal reminders", () => {
 	it("contains background coordinator state persistence failures without leaking sidecar data", async () => {
 		const stateFile = path.join(tempDir.path(), "corrupt-runtime-state.json");
 		await Bun.write(stateFile, '{"private_payload":"must-not-reach-logs"}');
-		const previousStateFile = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-		const previousSessionId = process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = session.sessionId;
+		const previousStateFile = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+		const previousSessionId = process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = session.sessionId;
 		const deliveredEvents: string[] = [];
 		session.subscribe(event => deliveredEvents.push(event.type));
 		let resolveWarning: (() => void) | undefined;
@@ -349,10 +349,10 @@ describe("AgentSession active goal reminders", () => {
 			]);
 			expect(warnSpy).toHaveBeenCalledWith("Failed to persist coordinator runtime state", { event: "turn_start" });
 		} finally {
-			if (previousStateFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = previousStateFile;
-			if (previousSessionId === undefined) delete process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_ID_ENV] = previousSessionId;
+			if (previousStateFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = previousStateFile;
+			if (previousSessionId === undefined) delete process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_ID_ENV] = previousSessionId;
 		}
 	});
 });

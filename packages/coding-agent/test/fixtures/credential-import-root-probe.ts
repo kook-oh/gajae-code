@@ -8,7 +8,7 @@
 // names the variable that redirected it.
 import { discoverExternalCredentials } from "../../src/setup/credential-import";
 
-const homeDir = process.env.GJC_PROBE_HOME_DIR ?? "";
+const homeDir = process.env.WORX_PROBE_HOME_DIR ?? "";
 const result = await discoverExternalCredentials({ homeDir, platform: "linux" });
 console.log(
 	JSON.stringify({

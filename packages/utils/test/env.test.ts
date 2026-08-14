@@ -66,11 +66,11 @@ describe("parseEnvFile", () => {
 		});
 	});
 
-	it("keeps legacy GJC_ variables from becoming PI_ defaults", () => {
-		const filePath = writeTempEnv("GJC_FEATURE=enabled\nGJC_BAD=before\0after\n");
+	it("keeps legacy WORX_ variables from becoming PI_ defaults", () => {
+		const filePath = writeTempEnv("WORX_FEATURE=enabled\nWORX_BAD=before\0after\n");
 
 		expect(parseEnvFile(filePath)).toEqual({
-			GJC_FEATURE: "enabled",
+			WORX_FEATURE: "enabled",
 		});
 	});
 });
@@ -99,7 +99,7 @@ describe("$inheritedEnv", () => {
 	it("keeps the inherited shell snapshot stable while $env reflects later fallback overlay mutation", () => {
 		const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pi-utils-env-inherited-"));
 		tempDirs.push(dir);
-		fs.writeFileSync(path.join(dir, ".env"), "GJC_ENV_TEST_UNUSED=unused\n");
+		fs.writeFileSync(path.join(dir, ".env"), "WORX_ENV_TEST_UNUSED=unused\n");
 
 		const envSourceUrl = pathToFileURL(path.resolve(import.meta.dir, "../src/env.ts")).href;
 		runEnvIsolationScript(
@@ -112,19 +112,19 @@ function assertEqual(actual: string | undefined, expected: string | undefined, l
 	}
 }
 
-assertEqual($inheritedEnv("GJC_ENV_TEST_INHERITED_ONLY"), "shell-from-parent", "inherited shell value");
-assertEqual($env.GJC_ENV_TEST_INHERITED_ONLY, "shell-from-parent", "initial merged env value");
-Bun.env.GJC_ENV_TEST_INHERITED_ONLY = "overlay-after-import";
-assertEqual($inheritedEnv("GJC_ENV_TEST_INHERITED_ONLY"), "shell-from-parent", "stable inherited shell snapshot");
-assertEqual($env.GJC_ENV_TEST_INHERITED_ONLY, "overlay-after-import", "live $env overlay value");
-Bun.env.GJC_ENV_TEST_FALLBACK_ONLY = "fallback-after-import";
-assertEqual($inheritedEnv("GJC_ENV_TEST_FALLBACK_ONLY"), undefined, "absent inherited value");
-assertEqual($env.GJC_ENV_TEST_FALLBACK_ONLY, "fallback-after-import", "fallback remains available through $env");
-delete Bun.env.GJC_ENV_TEST_INHERITED_ONLY;
-assertEqual($inheritedEnv("GJC_ENV_TEST_INHERITED_ONLY"), undefined, "deleted key is no longer inherited");
-assertEqual($env.GJC_ENV_TEST_INHERITED_ONLY, undefined, "deleted key is gone from merged env");
+assertEqual($inheritedEnv("WORX_ENV_TEST_INHERITED_ONLY"), "shell-from-parent", "inherited shell value");
+assertEqual($env.WORX_ENV_TEST_INHERITED_ONLY, "shell-from-parent", "initial merged env value");
+Bun.env.WORX_ENV_TEST_INHERITED_ONLY = "overlay-after-import";
+assertEqual($inheritedEnv("WORX_ENV_TEST_INHERITED_ONLY"), "shell-from-parent", "stable inherited shell snapshot");
+assertEqual($env.WORX_ENV_TEST_INHERITED_ONLY, "overlay-after-import", "live $env overlay value");
+Bun.env.WORX_ENV_TEST_FALLBACK_ONLY = "fallback-after-import";
+assertEqual($inheritedEnv("WORX_ENV_TEST_FALLBACK_ONLY"), undefined, "absent inherited value");
+assertEqual($env.WORX_ENV_TEST_FALLBACK_ONLY, "fallback-after-import", "fallback remains available through $env");
+delete Bun.env.WORX_ENV_TEST_INHERITED_ONLY;
+assertEqual($inheritedEnv("WORX_ENV_TEST_INHERITED_ONLY"), undefined, "deleted key is no longer inherited");
+assertEqual($env.WORX_ENV_TEST_INHERITED_ONLY, undefined, "deleted key is gone from merged env");
 `,
-			{ GJC_ENV_TEST_INHERITED_ONLY: "shell-from-parent" },
+			{ WORX_ENV_TEST_INHERITED_ONLY: "shell-from-parent" },
 			dir,
 		);
 	});
@@ -154,7 +154,7 @@ assertEqual($credentialEnv("ANTHROPIC_API_KEY"), undefined, "provider credential
 `,
 			{
 				HOME: home,
-				GJC_CODING_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
 			},
 			dir,
 		);
@@ -178,7 +178,7 @@ if ($credentialEnv("ANTHROPIC_API_KEY") !== "inherited-key") {
 `,
 			{
 				HOME: home,
-				GJC_CODING_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
 				ANTHROPIC_API_KEY: "inherited-key",
 			},
 			dir,
@@ -206,7 +206,7 @@ if ($credentialEnv("ANTHROPIC_API_KEY") !== undefined) {
 `,
 			{
 				HOME: home,
-				GJC_CODING_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
 				ANTHROPIC_API_KEY: "same-key",
 			},
 			dir,
@@ -241,7 +241,7 @@ if ($credentialEnv("LIVE_PROVIDER_KEY") !== undefined) {
 `,
 			{
 				HOME: home,
-				GJC_CODING_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
 			},
 			dir,
 		);
@@ -282,7 +282,7 @@ if (value !== "agent-second") {
 `,
 			{
 				HOME: home,
-				GJC_CODING_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
 			},
 			dir,
 		);
@@ -348,44 +348,44 @@ describe("$flag", () => {
 });
 
 describe("$pickflag", () => {
-	const GJC_NAME = "__GJC_UTILS_PICKFLAG_PROBE";
+	const WORX_NAME = "__WORX_UTILS_PICKFLAG_PROBE";
 	const PI_NAME = "__PI_UTILS_PICKFLAG_PROBE";
 	afterEach(() => {
-		delete process.env[GJC_NAME];
+		delete process.env[WORX_NAME];
 		delete process.env[PI_NAME];
 	});
 
 	it("prefers the GJC-first key when both are set", () => {
-		process.env[GJC_NAME] = "1";
+		process.env[WORX_NAME] = "1";
 		process.env[PI_NAME] = "0";
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(true);
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(true);
 	});
 
 	it("lets a falsy GJC value win over a truthy PI value (first set key decides)", () => {
-		process.env[GJC_NAME] = "0";
+		process.env[WORX_NAME] = "0";
 		process.env[PI_NAME] = "1";
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(false);
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(false);
 	});
 
 	it("falls back to the PI key when the GJC key is unset", () => {
 		process.env[PI_NAME] = "true";
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(true);
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(true);
 	});
 
 	it("returns false when neither key is set", () => {
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(false);
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(false);
 	});
 
 	it("applies TRUTHY case-insensitive matching per matched key", () => {
-		process.env[GJC_NAME] = "YES";
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(true);
-		process.env[GJC_NAME] = "enabled";
-		expect($pickflag(GJC_NAME, PI_NAME)).toBe(false);
+		process.env[WORX_NAME] = "YES";
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(true);
+		process.env[WORX_NAME] = "enabled";
+		expect($pickflag(WORX_NAME, PI_NAME)).toBe(false);
 	});
 });
 
 describe("$envpos", () => {
-	const NAME = "__GJC_UTILS_ENVPOS_PROBE";
+	const NAME = "__WORX_UTILS_ENVPOS_PROBE";
 
 	afterEach(() => {
 		delete process.env[NAME];
@@ -415,42 +415,42 @@ describe("$envpos", () => {
 });
 
 describe("$pickenvpos", () => {
-	const GJC_NAME = "__GJC_UTILS_PICKENVPOS_PROBE";
+	const WORX_NAME = "__WORX_UTILS_PICKENVPOS_PROBE";
 	const PI_NAME = "__PI_UTILS_PICKENVPOS_PROBE";
 	afterEach(() => {
-		delete process.env[GJC_NAME];
+		delete process.env[WORX_NAME];
 		delete process.env[PI_NAME];
 	});
 
 	it("prefers a positive GJC-first value when both are set", () => {
-		process.env[GJC_NAME] = "7";
+		process.env[WORX_NAME] = "7";
 		process.env[PI_NAME] = "9";
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(7);
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(7);
 	});
 
 	it("falls back to the PI key when the GJC key is unset", () => {
 		process.env[PI_NAME] = "42";
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(42);
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(42);
 	});
 
 	it("returns the default when neither key is set", () => {
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(100);
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(100);
 	});
 
 	it("returns the default when the only set value is invalid", () => {
-		process.env[GJC_NAME] = "not-a-number";
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(100);
+		process.env[WORX_NAME] = "not-a-number";
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(100);
 	});
 
 	it("skips a set-but-invalid GJC key and falls through to a valid PI key", () => {
-		process.env[GJC_NAME] = "-5";
+		process.env[WORX_NAME] = "-5";
 		process.env[PI_NAME] = "3";
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(3);
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(3);
 	});
 
 	it("skips a partially parsed GJC value and falls through to a valid PI key", () => {
-		process.env[GJC_NAME] = "12oops";
+		process.env[WORX_NAME] = "12oops";
 		process.env[PI_NAME] = "3";
-		expect($pickenvpos([GJC_NAME, PI_NAME], 100)).toBe(3);
+		expect($pickenvpos([WORX_NAME, PI_NAME], 100)).toBe(3);
 	});
 });

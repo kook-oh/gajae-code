@@ -4,8 +4,8 @@ import * as fsSync from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 
-const originalStateFileEnv = process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-const originalSessionIdEnv = process.env.GJC_COORDINATOR_SESSION_ID;
+const originalStateFileEnv = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+const originalSessionIdEnv = process.env.WORX_COORDINATOR_SESSION_ID;
 
 let getProjectDir: typeof import("@gajae-code/utils").getProjectDir;
 let setProjectDir: typeof import("@gajae-code/utils").setProjectDir;
@@ -37,10 +37,10 @@ beforeAll(async () => {
 
 afterEach(() => {
 	if (setProjectDir && originalProjectDir) setProjectDir(originalProjectDir);
-	if (originalStateFileEnv === undefined) delete process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-	else process.env.GJC_COORDINATOR_SESSION_STATE_FILE = originalStateFileEnv;
-	if (originalSessionIdEnv === undefined) delete process.env.GJC_COORDINATOR_SESSION_ID;
-	else process.env.GJC_COORDINATOR_SESSION_ID = originalSessionIdEnv;
+	if (originalStateFileEnv === undefined) delete process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+	else process.env.WORX_COORDINATOR_SESSION_STATE_FILE = originalStateFileEnv;
+	if (originalSessionIdEnv === undefined) delete process.env.WORX_COORDINATOR_SESSION_ID;
+	else process.env.WORX_COORDINATOR_SESSION_ID = originalSessionIdEnv;
 	mock.restore();
 	eventControllerPerfCounters?.reset();
 });
@@ -253,8 +253,8 @@ describe("advisory performance baselines", () => {
 	it("records sidecar sync readFileSync invocations per state-mapped event", async () => {
 		const tempDir = fsSync.mkdtempSync(path.join(os.tmpdir(), "gjc-perf-sidecar-"));
 		const stateFile = path.join(tempDir, "runtime-state.json");
-		process.env.GJC_COORDINATOR_SESSION_STATE_FILE = stateFile;
-		process.env.GJC_COORDINATOR_SESSION_ID = "session-sidecar-baseline";
+		process.env.WORX_COORDINATOR_SESSION_STATE_FILE = stateFile;
+		process.env.WORX_COORDINATOR_SESSION_ID = "session-sidecar-baseline";
 		const realReadFileSync = fsSync.readFileSync;
 		let readFileSyncCalls = 0;
 		spyOn(fsSync, "readFileSync").mockImplementation(((...args: Parameters<typeof fsSync.readFileSync>) => {

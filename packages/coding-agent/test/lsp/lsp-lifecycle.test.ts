@@ -189,7 +189,7 @@ describe("LSP lifecycle behavior", () => {
 			);
 			// Hermetic probe: bun test shares one process across test files, so
 			// ambient state left by another file must not reach this probe.
-			// (1) A disable flag in Bun.env (GJC_DISABLE_LSPMUX / PI_DISABLE_LSPMUX)
+			// (1) A disable flag in Bun.env (WORX_DISABLE_LSPMUX / PI_DISABLE_LSPMUX)
 			//     would short-circuit detectLspmux() to available:false.
 			// (2) A drifted process.cwd() (an earlier test that chdir'd into a temp
 			//     dir without restoring) would make the trust root a temp ancestor of
@@ -201,7 +201,7 @@ describe("LSP lifecycle behavior", () => {
 				PATH: ORIGINAL_PATH ? `${binDir}${path.delimiter}${ORIGINAL_PATH}` : binDir,
 				XDG_CONFIG_HOME: configHome,
 			};
-			delete probeEnv.GJC_DISABLE_LSPMUX;
+			delete probeEnv.WORX_DISABLE_LSPMUX;
 			delete probeEnv.PI_DISABLE_LSPMUX;
 			const proc = Bun.spawn([BUN, runner], {
 				cwd: import.meta.dir,

@@ -67,7 +67,7 @@ describe("getDisplayChangelogEntries", () => {
 		expect(`${top.major}.${top.minor}.${top.patch}`).toBe(VERSION);
 	});
 
-	it("ignores cwd and GJC_PACKAGE_DIR / PI_PACKAGE_DIR overrides for the displayed changelog", async () => {
+	it("ignores cwd and WORX_PACKAGE_DIR / PI_PACKAGE_DIR overrides for the displayed changelog", async () => {
 		const tempDir = await makeTempDir();
 		const decoyContent = [
 			"# Changelog",
@@ -82,12 +82,12 @@ describe("getDisplayChangelogEntries", () => {
 		await fs.writeFile(path.join(tempDir, "CHANGELOG.md"), decoyContent);
 
 		const originalCwd = process.cwd();
-		const originalGjcPackageDir = process.env.GJC_PACKAGE_DIR;
+		const originalGjcPackageDir = process.env.WORX_PACKAGE_DIR;
 		const originalPiPackageDir = process.env.PI_PACKAGE_DIR;
 
 		try {
 			process.chdir(tempDir);
-			process.env.GJC_PACKAGE_DIR = tempDir;
+			process.env.WORX_PACKAGE_DIR = tempDir;
 			process.env.PI_PACKAGE_DIR = tempDir;
 
 			const entries = getDisplayChangelogEntries();
@@ -99,8 +99,8 @@ describe("getDisplayChangelogEntries", () => {
 			expect(top.content).not.toContain("bogus stale entry from cwd");
 		} finally {
 			process.chdir(originalCwd);
-			if (originalGjcPackageDir === undefined) delete process.env.GJC_PACKAGE_DIR;
-			else process.env.GJC_PACKAGE_DIR = originalGjcPackageDir;
+			if (originalGjcPackageDir === undefined) delete process.env.WORX_PACKAGE_DIR;
+			else process.env.WORX_PACKAGE_DIR = originalGjcPackageDir;
 			if (originalPiPackageDir === undefined) delete process.env.PI_PACKAGE_DIR;
 			else process.env.PI_PACKAGE_DIR = originalPiPackageDir;
 		}

@@ -7,7 +7,7 @@ import { modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 
 const TEST_SESSION_ID = "stage-test-session";
 const tempRoots: string[] = [];
-const originalSessionId = process.env.GJC_SESSION_ID;
+const originalSessionId = process.env.WORX_SESSION_ID;
 
 async function tempDir(): Promise<string> {
 	const dir = await fs.mkdtemp(path.join(process.cwd(), ".tmp-deep-interview-stage-"));
@@ -16,7 +16,7 @@ async function tempDir(): Promise<string> {
 }
 
 beforeAll(() => {
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterEach(async () => {
@@ -24,8 +24,8 @@ afterEach(async () => {
 });
 
 afterAll(() => {
-	if (originalSessionId !== undefined) process.env.GJC_SESSION_ID = originalSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (originalSessionId !== undefined) process.env.WORX_SESSION_ID = originalSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 function parse(stdout: string | undefined): Record<string, unknown> {
@@ -230,7 +230,7 @@ describe("deep-interview staged transitions", () => {
 		expect(second).toMatchObject({ ok: true, removed: false });
 	});
 
-	it("inherits the session from GJC_SESSION_ID with no identity flags", async () => {
+	it("inherits the session from WORX_SESSION_ID with no identity flags", async () => {
 		const root = await tempDir();
 		await seed(root);
 		const staged = await run(root, [
@@ -311,8 +311,8 @@ describe("deep-interview staged transitions", () => {
 
 	it("reports a typed session error when no session id is resolvable", async () => {
 		const root = await tempDir();
-		const saved = process.env.GJC_SESSION_ID;
-		delete process.env.GJC_SESSION_ID;
+		const saved = process.env.WORX_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const staged = await run(root, [
 				"stage",
@@ -325,7 +325,7 @@ describe("deep-interview staged transitions", () => {
 			expect(staged.status).toBe(2);
 			expect(parse(staged.stderr)).toMatchObject({ ok: false, code: "DI_STAGE_SESSION_REQUIRED" });
 		} finally {
-			process.env.GJC_SESSION_ID = saved;
+			process.env.WORX_SESSION_ID = saved;
 		}
 	});
 

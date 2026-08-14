@@ -4,13 +4,13 @@ import { visibleWidth } from "@gajae-code/tui";
 import { resolveWelcomeIntroTickMs, WelcomeComponent } from "../src/modes/components/welcome";
 import { getThemeByName, setThemeInstance } from "../src/modes/theme/theme";
 
-const originalBuildChannel = process.env.GJC_BUILD_CHANNEL;
+const originalBuildChannel = process.env.WORX_BUILD_CHANNEL;
 
 afterEach(() => {
 	if (originalBuildChannel === undefined) {
-		delete process.env.GJC_BUILD_CHANNEL;
+		delete process.env.WORX_BUILD_CHANNEL;
 	} else {
-		process.env.GJC_BUILD_CHANNEL = originalBuildChannel;
+		process.env.WORX_BUILD_CHANNEL = originalBuildChannel;
 	}
 });
 beforeAll(async () => {
@@ -109,7 +109,7 @@ describe("WelcomeComponent viewport sizing", () => {
 	});
 
 	it("renders the production metadata resolver label when no override is provided", () => {
-		process.env.GJC_BUILD_CHANNEL = "release";
+		process.env.WORX_BUILD_CHANNEL = "release";
 		const welcome = new WelcomeComponent("1.2.3", "test-model", "test-provider", [], [], "ascii");
 		const rendered = welcome.render(120).map(stripRenderControls).join("\n");
 

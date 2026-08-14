@@ -40,7 +40,7 @@ async function waitForProcessExit(pid: number): Promise<void> {
 }
 
 function run(args: string[], env: NodeJS.ProcessEnv): void {
-	const result = Bun.spawnSync([env.GJC_TMUX_COMMAND!, ...args], { stdout: "pipe", stderr: "pipe", env });
+	const result = Bun.spawnSync([env.WORX_TMUX_COMMAND!, ...args], { stdout: "pipe", stderr: "pipe", env });
 	if (result.exitCode !== 0) throw new Error(result.stderr.toString());
 }
 
@@ -55,7 +55,7 @@ function procStartTime(pid: number): string {
 describe.skipIf(!isLinux || !tmux || !userScopeAvailable)("tmux exact owner close integration", () => {
 	afterEach(async () => {
 		for (const server of isolatedServers.splice(0)) {
-			Bun.spawnSync([server.env.GJC_TMUX_COMMAND!, "kill-server"], {
+			Bun.spawnSync([server.env.WORX_TMUX_COMMAND!, "kill-server"], {
 				stdout: "pipe",
 				stderr: "pipe",
 				env: server.env,
@@ -102,7 +102,7 @@ describe.skipIf(!isLinux || !tmux || !userScopeAvailable)("tmux exact owner clos
 			`import { writeFile } from "node:fs/promises";
 import { registerCoordinatorRuntimeStateFinalizer } from ${JSON.stringify(path.resolve(import.meta.dir, "../../src/gjc-runtime/session-state-sidecar.ts"))};
 registerCoordinatorRuntimeStateFinalizer({ sessionId: ${JSON.stringify(sessionId)}, cwd: ${JSON.stringify(stateDir)}, sessionFile: null });
-await writeFile(${JSON.stringify(childReadyFile)}, JSON.stringify({ launched: process.env.GJC_TMUX_LAUNCHED, generation: process.env.GJC_TMUX_OWNER_GENERATION, stateDir: process.env.GJC_TMUX_OWNER_STATE_DIR, socketKey: process.env.GJC_TMUX_OWNER_SERVER_KEY }));
+await writeFile(${JSON.stringify(childReadyFile)}, JSON.stringify({ launched: process.env.WORX_TMUX_LAUNCHED, generation: process.env.WORX_TMUX_OWNER_GENERATION, stateDir: process.env.WORX_TMUX_OWNER_STATE_DIR, socketKey: process.env.WORX_TMUX_OWNER_SERVER_KEY }));
 setInterval(() => {}, 1_000);
 `,
 		);
@@ -117,23 +117,23 @@ try {
 	throw error;
 }`,
 		);
-		await fs.writeFile(tmuxWrapper, `#!/usr/bin/env sh\nexec ${tmux} -L "$GJC_TEST_TMUX_SOCKET" "$@"\n`, {
+		await fs.writeFile(tmuxWrapper, `#!/usr/bin/env sh\nexec ${tmux} -L "$WORX_TEST_TMUX_SOCKET" "$@"\n`, {
 			mode: 0o700,
 		});
 		const env = {
 			...process.env,
-			GJC_TMUX_COMMAND: tmuxWrapper,
-			GJC_TEST_TMUX_SOCKET: socketName,
+			WORX_TMUX_COMMAND: tmuxWrapper,
+			WORX_TEST_TMUX_SOCKET: socketName,
 			TMUX_TMPDIR: tmuxTmpDir,
-			GJC_TMUX_LAUNCHED: "1",
-			GJC_TMUX_OWNER_GENERATION: generation,
-			GJC_TMUX_OWNER_STATE_DIR: stateDir,
-			GJC_TMUX_OWNER_SERVER_KEY: sessionName,
-			GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
-			GJC_COORDINATOR_SESSION_ID: sessionId,
-			GJC_MANAGED_OWNER_RUN_ID: runId,
-			GJC_MANAGED_OWNER_INCARNATION: incarnation,
-			GJC_MANAGED_OWNER_COMMAND_JSON: JSON.stringify([process.execPath, childScript]),
+			WORX_TMUX_LAUNCHED: "1",
+			WORX_TMUX_OWNER_GENERATION: generation,
+			WORX_TMUX_OWNER_STATE_DIR: stateDir,
+			WORX_TMUX_OWNER_SERVER_KEY: sessionName,
+			WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
+			WORX_COORDINATOR_SESSION_ID: sessionId,
+			WORX_MANAGED_OWNER_RUN_ID: runId,
+			WORX_MANAGED_OWNER_INCARNATION: incarnation,
+			WORX_MANAGED_OWNER_COMMAND_JSON: JSON.stringify([process.execPath, childScript]),
 		};
 		isolatedServers.push({ env, stateDir, scopeName });
 		const created = Bun.spawnSync(
@@ -144,7 +144,7 @@ try {
 				"--quiet",
 				"--unit",
 				scopeName,
-				env.GJC_TMUX_COMMAND!,
+				env.WORX_TMUX_COMMAND!,
 				"new-session",
 				"-d",
 				"-s",
@@ -179,7 +179,7 @@ try {
 			target,
 			env,
 			{ sessionId, sessionStateFile: stateFile, ownerGeneration: generation, ownerServerKey: sessionName },
-			{ tmuxCommand: env.GJC_TMUX_COMMAND },
+			{ tmuxCommand: env.WORX_TMUX_COMMAND },
 		))
 			run(command.args, env);
 		run(["set-option", "-t", target, "remain-on-exit", "on"], env);
@@ -188,7 +188,7 @@ try {
 			env,
 		);
 		const hasSession = (name: string) =>
-			Bun.spawnSync([env.GJC_TMUX_COMMAND!, "has-session", "-t", `=${name}`], {
+			Bun.spawnSync([env.WORX_TMUX_COMMAND!, "has-session", "-t", `=${name}`], {
 				stdout: "pipe",
 				stderr: "pipe",
 				env,
@@ -211,7 +211,7 @@ try {
 			sessionStateFile: stateFile,
 		});
 		const panePid = Number(
-			Bun.spawnSync([env.GJC_TMUX_COMMAND!, "display-message", "-p", "-t", target, "#{pane_pid}"], {
+			Bun.spawnSync([env.WORX_TMUX_COMMAND!, "display-message", "-p", "-t", target, "#{pane_pid}"], {
 				stdout: "pipe",
 				stderr: "pipe",
 				env,

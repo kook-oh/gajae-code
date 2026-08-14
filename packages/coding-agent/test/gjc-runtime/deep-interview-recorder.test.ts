@@ -31,13 +31,13 @@ async function tempDir(): Promise<string> {
 }
 
 beforeAll(() => {
-	priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 afterEach(async () => {

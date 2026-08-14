@@ -44,8 +44,8 @@ describe("Telegram onboarding docs", () => {
 		expect(onboarding).toContain(
 			"project config files are ignored, and runtime notification overrides\nare rejected",
 		);
-		expect(onboarding).toContain("`GJC_NOTIFY=off`, `0`, or `false`");
-		expect(onboarding).toContain("`GJC_NOTIFICATIONS=1` or `GJC_NOTIFICATIONS_TOKEN`");
+		expect(onboarding).toContain("`WORX_NOTIFY=off`, `0`, or `false`");
+		expect(onboarding).toContain("`WORX_NOTIFICATIONS=1` or `WORX_NOTIFICATIONS_TOKEN`");
 		expect(onboarding).toContain("GJC performs zero `getUpdates` discovery polls");
 		expect(onboarding).toContain("does not poll, kill, reload, or take over the\nowner");
 		expect(onboarding).toContain("The raw token is never printed by GJC status/setup output after it is stored");

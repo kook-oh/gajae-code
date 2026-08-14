@@ -180,7 +180,7 @@ describe("SessionSdkHost", () => {
 	test("hosts root sessions unless explicitly disabled", () => {
 		expect(shouldHostSdk({ notifications: { enabled: false } }, true, {})).toBe(true);
 		expect(shouldHostSdk({}, false, {})).toBe(false);
-		expect(shouldHostSdk({}, true, { GJC_SDK_DISABLE: "1" })).toBe(false);
+		expect(shouldHostSdk({}, true, { WORX_SDK_DISABLE: "1" })).toBe(false);
 	});
 
 	test("routes reverse ingress with Rust-aligned frames and records session readiness", async () => {

@@ -36,18 +36,18 @@ let originalGjcSessionId: string | undefined;
 beforeEach(async () => {
 	root = await mkdtemp(path.join(tmpdir(), "harness-store-"));
 	registryRoot = await mkdtemp(path.join(tmpdir(), "harness-root-registry-"));
-	registryEnv = { ...process.env, GJC_HARNESS_ROOT_REGISTRY_DIR: registryRoot };
-	originalGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = "test-session";
+	registryEnv = { ...process.env, WORX_HARNESS_ROOT_REGISTRY_DIR: registryRoot };
+	originalGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = "test-session";
 });
 
 afterEach(async () => {
 	await rm(root, { recursive: true, force: true });
 	await rm(registryRoot, { recursive: true, force: true });
 	if (originalGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = originalGjcSessionId;
+		process.env.WORX_SESSION_ID = originalGjcSessionId;
 	}
 });
 
@@ -130,12 +130,12 @@ describe("harness storage", () => {
 		expect(tail.map(e => e.cursor)).toEqual([2, 3]);
 	});
 
-	it("resolveHarnessRoot honors GJC_HARNESS_STATE_ROOT then cwd default", () => {
+	it("resolveHarnessRoot honors WORX_HARNESS_STATE_ROOT then cwd default", () => {
 		expect(resolveHarnessRoot({ root: "/x/y" })).toBe(path.resolve("/x/y"));
-		expect(resolveHarnessRoot({ env: { GJC_HARNESS_STATE_ROOT: "/z" } as NodeJS.ProcessEnv })).toBe(
+		expect(resolveHarnessRoot({ env: { WORX_HARNESS_STATE_ROOT: "/z" } as NodeJS.ProcessEnv })).toBe(
 			path.resolve("/z"),
 		);
-		expect(resolveHarnessRoot({ cwd: "/repo", env: { GJC_SESSION_ID: "test-session" } as NodeJS.ProcessEnv })).toBe(
+		expect(resolveHarnessRoot({ cwd: "/repo", env: { WORX_SESSION_ID: "test-session" } as NodeJS.ProcessEnv })).toBe(
 			harnessStateRoot("/repo", "test-session"),
 		);
 	});
@@ -147,8 +147,8 @@ describe("harness storage", () => {
 	it("controlSocketPath is stable, short, and records metadata", async () => {
 		const id = "h-socket";
 		const socketDir = await mkdtemp(path.join(tmpdir(), "h-"));
-		const first = controlSocketPath(root, id, { GJC_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
-		const second = controlSocketPath(root, id, { GJC_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
+		const first = controlSocketPath(root, id, { WORX_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
+		const second = controlSocketPath(root, id, { WORX_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
 		expect(first).toBe(second);
 		expect(Buffer.byteLength(first)).toBeLessThanOrEqual(MAX_UNIX_SOCKET_PATH_BYTES);
 		expect(first.startsWith(socketDir)).toBe(true);
@@ -157,9 +157,9 @@ describe("harness storage", () => {
 		expect(metadata).toEqual({ root, sessionId: id });
 	});
 
-	it("controlSocketPath uses GJC_HARNESS_SOCKET_DIR when set", async () => {
+	it("controlSocketPath uses WORX_HARNESS_SOCKET_DIR when set", async () => {
 		const socketDir = await mkdtemp(path.join(tmpdir(), "e-"));
-		const socketPath = controlSocketPath(root, "h-env", { GJC_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
+		const socketPath = controlSocketPath(root, "h-env", { WORX_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
 		expect(socketPath.startsWith(socketDir)).toBe(true);
 	});
 
@@ -169,7 +169,7 @@ describe("harness storage", () => {
 		try {
 			const longDir = path.join(root, "x".repeat(80));
 			const socketPath = controlSocketPath(root, "h-fallback", {
-				GJC_HARNESS_SOCKET_DIR: longDir,
+				WORX_HARNESS_SOCKET_DIR: longDir,
 			} as NodeJS.ProcessEnv);
 			expect(socketPath.startsWith(longDir)).toBe(false);
 			expect(socketPath.includes("gjch")).toBe(true);
@@ -186,7 +186,7 @@ describe("harness storage", () => {
 		try {
 			expect(() =>
 				controlSocketPath(root, "h-too-long", {
-					GJC_HARNESS_SOCKET_DIR: path.join(root, "o".repeat(80)),
+					WORX_HARNESS_SOCKET_DIR: path.join(root, "o".repeat(80)),
 				} as NodeJS.ProcessEnv),
 			).toThrow(/socket_path_too_long/);
 		} finally {
@@ -204,7 +204,7 @@ describe("harness storage", () => {
 			path.join(socketDir, `c-${digest.slice(0, 16)}.json`),
 			`${JSON.stringify({ root: "other", sessionId: id })}\n`,
 		);
-		const socketPath = controlSocketPath(root, id, { GJC_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
+		const socketPath = controlSocketPath(root, id, { WORX_HARNESS_SOCKET_DIR: socketDir } as NodeJS.ProcessEnv);
 		expect(path.basename(socketPath)).toBe(`c-${digest.slice(0, 24)}.sock`);
 	});
 

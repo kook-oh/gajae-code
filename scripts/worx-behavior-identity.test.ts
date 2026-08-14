@@ -102,6 +102,27 @@ async function findForbiddenBehaviorIdentifiers(): Promise<string[]> {
 	return violations;
 }
 
+async function findLegacyGjcEnvironmentVariables(relativeRoots: readonly string[]): Promise<string[]> {
+	const violations: string[] = [];
+	const glob = new Bun.Glob("**/*");
+	for (const relativeRoot of relativeRoots) {
+		for await (const relativePath of glob.scan({
+			cwd: path.join(REPO_ROOT, relativeRoot),
+			onlyFiles: true,
+		})) {
+			const repoPath = path.join(relativeRoot, relativePath);
+			if (repoPath.startsWith("docs/plans/")) continue;
+			const file = Bun.file(path.join(REPO_ROOT, repoPath));
+			if (file.size > 5_000_000) continue;
+			const source = await file.text();
+			for (const [index, line] of source.split("\n").entries()) {
+				if (/\bGJC_[A-Z_0-9]+\b/u.test(line)) violations.push(`${repoPath}:${index + 1}: ${line.trim()}`);
+			}
+		}
+	}
+	return violations.sort();
+}
+
 describe("WORX behavior identity", () => {
 	test("uses WORX names for the Coordinator MCP contract", () => {
 		expect(COORDINATOR_MCP_SERVER_NAME).toBe("worx-coordinator-mcp");
@@ -140,5 +161,9 @@ describe("WORX behavior identity", () => {
 
 	test("contains no legacy behavior identifiers in shipped sources", async () => {
 		expect(await findForbiddenBehaviorIdentifiers()).toEqual([]);
+	});
+
+	test("contains no legacy GJC environment variables outside plans and generated artifacts", async () => {
+		expect(await findLegacyGjcEnvironmentVariables(["packages", "scripts", ".github", "docs"])).toEqual([]);
 	});
 });

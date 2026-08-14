@@ -194,7 +194,7 @@ describe("setup CLI parsing", () => {
 			const configPreview = parsed.previews.find(preview => preview.path.endsWith(".yaml"))?.content ?? "";
 			expect(configPreview).not.toContain("openai/gpt-5.5");
 			expect(configPreview).not.toContain("--model");
-			expect(configPreview).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
+			expect(configPreview).toContain("WORX_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
 			expect(output).toContain("owns worktree creation and resume identity");
 		});
 
@@ -247,8 +247,8 @@ describe("setup CLI parsing", () => {
 			};
 			expect(parsed.mcp_servers.other?.command).toBe("other");
 			expect(parsed.mcp_servers.worx_coordinator?.command).toBe("worx");
-			expect(parsed.mcp_servers.worx_coordinator?.env?.GJC_COORDINATOR_MCP_MUTATIONS).toBe("sessions,questions");
-			expect(parsed.mcp_servers.worx_coordinator?.env?.GJC_COORDINATOR_MCP_SESSION_COMMAND).toBe("worx --worktree");
+			expect(parsed.mcp_servers.worx_coordinator?.env?.WORX_COORDINATOR_MCP_MUTATIONS).toBe("sessions,questions");
+			expect(parsed.mcp_servers.worx_coordinator?.env?.WORX_COORDINATOR_MCP_SESSION_COMMAND).toBe("worx --worktree");
 		});
 
 		it("renders named Hermes worktree commands and allows explicit opt-out", async () => {
@@ -265,7 +265,7 @@ describe("setup CLI parsing", () => {
 			});
 
 			const namedOutput = named.mock.calls.map(call => String(call[0])).join("");
-			expect(namedOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree hermes-gajae-code");
+			expect(namedOutput).toContain("WORX_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree hermes-gajae-code");
 			named.mockRestore();
 			const noWorktree = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 
@@ -279,8 +279,8 @@ describe("setup CLI parsing", () => {
 			});
 
 			const noWorktreeOutput = noWorktree.mock.calls.map(call => String(call[0])).join("");
-			expect(noWorktreeOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx");
-			expect(noWorktreeOutput).not.toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
+			expect(noWorktreeOutput).toContain("WORX_COORDINATOR_MCP_SESSION_COMMAND: worx");
+			expect(noWorktreeOutput).not.toContain("WORX_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
 		});
 
 		it("rejects unmanaged Hermes server conflicts unless forced", async () => {
@@ -366,9 +366,9 @@ describe("setup CLI host plugins", () => {
 			};
 			expect(parsed.host).toBe("claude");
 			expect(parsed.gated).toBe(false);
-			expect(parsed.coordinatorConfigPreview.env.GJC_COORDINATOR_MCP_WORKDIR_ROOTS).toBe("/tmp/example-repo");
-			expect(parsed.coordinatorConfigPreview.env.GJC_COORDINATOR_MCP_MUTATIONS).toBeUndefined();
-			expect("GJC_COORDINATOR_MCP_ROOTS" in parsed.coordinatorConfigPreview.env).toBe(false);
+			expect(parsed.coordinatorConfigPreview.env.WORX_COORDINATOR_MCP_WORKDIR_ROOTS).toBe("/tmp/example-repo");
+			expect(parsed.coordinatorConfigPreview.env.WORX_COORDINATOR_MCP_MUTATIONS).toBeUndefined();
+			expect("WORX_COORDINATOR_MCP_ROOTS" in parsed.coordinatorConfigPreview.env).toBe(false);
 		} finally {
 			stdout.mockRestore();
 		}

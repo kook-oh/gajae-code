@@ -18,7 +18,7 @@ describe("SDK session import graph", () => {
 			],
 			{
 				cwd: repositoryRoot,
-				env: { ...process.env, GJC_TRACE_OUT: tracePath },
+				env: { ...process.env, WORX_TRACE_OUT: tracePath },
 				stdout: "ignore",
 				stderr: "ignore",
 			},
@@ -53,7 +53,7 @@ describe("SDK session import graph", () => {
 		const runTrace = async (tracePath: string, entry: string[]) => {
 			const child = Bun.spawn(["bun", "--preload", path.join(repositoryRoot, "scripts/trace-loader.ts"), ...entry], {
 				cwd: repositoryRoot,
-				env: { ...process.env, GJC_TRACE_OUT: tracePath },
+				env: { ...process.env, WORX_TRACE_OUT: tracePath },
 				stdout: "ignore",
 				stderr: "ignore",
 			});
@@ -107,7 +107,7 @@ describe("SDK session import graph", () => {
 				["bun", "--preload", path.join(repositoryRoot, "scripts/trace-loader.ts"), entryPath],
 				{
 					cwd: repositoryRoot,
-					env: { ...process.env, GJC_TRACE_OUT: tracePath },
+					env: { ...process.env, WORX_TRACE_OUT: tracePath },
 					stdout: "ignore",
 					stderr: "ignore",
 				},

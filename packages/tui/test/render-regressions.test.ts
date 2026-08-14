@@ -414,7 +414,7 @@ describe("TUI terminal-state regressions", () => {
 		"TMUX_PANE",
 		"STY",
 		"ZELLIJ",
-		"GJC_TMUX_LAUNCHED",
+		"WORX_TMUX_LAUNCHED",
 		"TERMUX_VERSION",
 		"PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER",
 		"PI_TUI_VIRTUAL_VIEWPORT",

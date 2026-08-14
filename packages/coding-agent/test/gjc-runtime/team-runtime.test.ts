@@ -97,8 +97,8 @@ const teamReportPath = (root: string, fileName: string) =>
 	path.join(sessionReportsDir(root, TEST_SESSION_ID), "team-commit-hygiene", fileName);
 
 beforeAll(async () => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	fakeTmuxRunnerRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-fake-tmux-runner-"));
 	const sourcePath = path.join(fakeTmuxRunnerRoot, "fake-tmux.ts");
 	fakeTmuxRunnerPath = path.join(fakeTmuxRunnerRoot, process.platform === "win32" ? "fake-tmux.exe" : "fake-tmux");
@@ -233,9 +233,9 @@ if (command === "-V" || command === "--version") {
 
 afterAll(async () => {
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 	if (fakeTmuxRunnerRoot) await fs.rm(fakeTmuxRunnerRoot, { recursive: true, force: true });
 });
@@ -493,7 +493,7 @@ describe("native gjc team runtime", () => {
 			teamName: "demo-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		expect(snapshot.team_name).toBe("demo-team");
@@ -569,14 +569,14 @@ describe("native gjc team runtime", () => {
 			teamName: "worker-lifecycle-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const initialStatus = (await executeGjcTeamApiOperation(
 			"read-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { state: string };
 		expect(initialStatus.state).toBe("idle");
 
@@ -590,14 +590,14 @@ describe("native gjc team runtime", () => {
 				replacement_token: "startup-generation-1",
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { pid?: number; replacement_token?: string };
 		expect(startupAck.pid).toBe(1234);
 		expect(startupAck.replacement_token).toBe("startup-generation-1");
 
 		let snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("ready");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("idle");
@@ -607,14 +607,14 @@ describe("native gjc team runtime", () => {
 			"update-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1", status: "working", current_task_id: "task-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { state: string; current_task_id?: string };
 		expect(workingStatus.state).toBe("working");
 		expect(workingStatus.current_task_id).toBe("task-1");
 
 		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("working");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("working");
@@ -623,12 +623,12 @@ describe("native gjc team runtime", () => {
 			"update-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1", status: "blocked", reason: "waiting" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
 		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("ready");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("blocked");
@@ -642,14 +642,14 @@ describe("native gjc team runtime", () => {
 				mode: "force",
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { mode?: string; request_id?: string };
 		expect(forceRequest.mode).toBe("force");
 		expect(forceRequest.request_id).toBe("manual-force-stop");
 
 		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("draining");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.shutdown_mode).toBe("force");
@@ -666,9 +666,9 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: true,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: "",
-				GJC_TEAM_WORKER_COMMAND: "bun ./packages/coding-agent/src/cli.ts",
+				WORX_TEAM_WORKER_COMMAND: "bun ./packages/coding-agent/src/cli.ts",
 			},
 		});
 
@@ -680,7 +680,7 @@ describe("native gjc team runtime", () => {
 		expect(config.gjc_session_id).toBe(TEST_SESSION_ID);
 		expect(manifest.worker_command).toBe("bun ./packages/coding-agent/src/cli.ts");
 		expect(telemetry).toContain("bun ./packages/coding-agent/src/cli.ts");
-		expect(resolveGjcWorkerCommand(cleanupRoot, { GJC_TEAM_WORKER_COMMAND: "gjc-dev" })).toBe("gjc-dev");
+		expect(resolveGjcWorkerCommand(cleanupRoot, { WORX_TEAM_WORKER_COMMAND: "gjc-dev" })).toBe("gjc-dev");
 	});
 
 	it("builds PowerShell worker commands with an invocation operator", () => {
@@ -764,15 +764,15 @@ describe("native gjc team runtime", () => {
 
 		// POSIX: the marker carries the leader session id.
 		const posix = buildWorkerCommand(base, worker, "linux");
-		expect(posix).toContain("GJC_SPAWNED_BY_SESSION='leader-xyz'");
+		expect(posix).toContain("WORX_SPAWNED_BY_SESSION='leader-xyz'");
 
 		// Falls back to the (always non-blank) team name when the leader has no id,
 		// so presence-based suppression still marks the worker.
 		const noLeaderId = { ...base, leader: { ...base.leader, session_id: "  " } } satisfies GjcTeamConfig;
-		expect(buildWorkerCommand(noLeaderId, worker, "linux")).toContain("GJC_SPAWNED_BY_SESSION='prov-team'");
+		expect(buildWorkerCommand(noLeaderId, worker, "linux")).toContain("WORX_SPAWNED_BY_SESSION='prov-team'");
 
 		// Windows env assignment form is emitted too.
-		expect(buildWorkerCommand(base, worker, "win32")).toContain("$env:GJC_SPAWNED_BY_SESSION = 'leader-xyz';");
+		expect(buildWorkerCommand(base, worker, "win32")).toContain("$env:WORX_SPAWNED_BY_SESSION = 'leader-xyz';");
 	});
 
 	it("exports only the owning GJC session identity with platform-safe quoting", () => {
@@ -813,12 +813,12 @@ describe("native gjc team runtime", () => {
 		} satisfies GjcTeamWorker;
 
 		const posix = buildWorkerCommand(config, worker, "linux");
-		expect(posix).toContain("GJC_SESSION_ID='owner-'\\''$(echo hostile)'");
-		expect(posix).toContain("GJC_SPAWNED_BY_SESSION='foreign-session'");
+		expect(posix).toContain("WORX_SESSION_ID='owner-'\\''$(echo hostile)'");
+		expect(posix).toContain("WORX_SPAWNED_BY_SESSION='foreign-session'");
 
 		const windows = buildWorkerCommand(config, worker, "win32");
-		expect(windows).toContain("$env:GJC_SESSION_ID = 'owner-''$(echo hostile)';");
-		expect(windows).toContain("$env:GJC_SPAWNED_BY_SESSION = 'foreign-session';");
+		expect(windows).toContain("$env:WORX_SESSION_ID = 'owner-''$(echo hostile)';");
+		expect(windows).toContain("$env:WORX_SPAWNED_BY_SESSION = 'foreign-session';");
 	});
 
 	it("omits owning session identity instead of falling back to foreign provenance", () => {
@@ -858,10 +858,10 @@ describe("native gjc team runtime", () => {
 		} satisfies GjcTeamWorker;
 
 		const command = buildWorkerCommand(config, worker, "linux");
-		expect(command).toContain("unset GJC_SESSION_ID;");
-		expect(command).not.toContain("GJC_SESSION_ID='");
-		expect(command).toContain("GJC_SPAWNED_BY_SESSION='foreign-session'");
-		expect(buildWorkerCommand(config, worker, "win32")).toContain("$env:GJC_SESSION_ID = $null;");
+		expect(command).toContain("unset WORX_SESSION_ID;");
+		expect(command).not.toContain("WORX_SESSION_ID='");
+		expect(command).toContain("WORX_SPAWNED_BY_SESSION='foreign-session'");
+		expect(buildWorkerCommand(config, worker, "win32")).toContain("$env:WORX_SESSION_ID = $null;");
 	});
 
 	it("clears a foreign ambient session identity before executing a worker", () => {
@@ -875,7 +875,7 @@ describe("native gjc team runtime", () => {
 			max_workers: 1,
 			state_root: "/state",
 			worker_command:
-				"bun -e \"process.stdout.write((process.env.GJC_SESSION_ID ?? '<unset>') + '|' + (process.env.GJC_TEAM_WORKER ?? '<missing>'))\"",
+				"bun -e \"process.stdout.write((process.env.WORX_SESSION_ID ?? '<unset>') + '|' + (process.env.WORX_TEAM_WORKER ?? '<missing>'))\"",
 			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
@@ -902,7 +902,7 @@ describe("native gjc team runtime", () => {
 		} satisfies GjcTeamWorker;
 
 		const result = Bun.spawnSync(["sh", "-c", buildWorkerCommand(config, worker, "linux")], {
-			env: { ...process.env, GJC_SESSION_ID: "foreign-ambient-session" },
+			env: { ...process.env, WORX_SESSION_ID: "foreign-ambient-session" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -921,8 +921,8 @@ describe("native gjc team runtime", () => {
 				cwd: cleanupRoot,
 				dryRun: true,
 				env: {
-					GJC_SESSION_ID: "../foreign-session",
-					GJC_TEAM_STATE_ROOT: path.join(cleanupRoot, "team-state"),
+					WORX_SESSION_ID: "../foreign-session",
+					WORX_TEAM_STATE_ROOT: path.join(cleanupRoot, "team-state"),
 					PATH: "",
 				},
 			}),
@@ -940,7 +940,7 @@ describe("native gjc team runtime", () => {
 			dryRun: true,
 			env: {
 				CODEX_SESSION_ID: "foreign-session",
-				GJC_TEAM_STATE_ROOT: path.join(cleanupRoot, ".gjc", "team-state"),
+				WORX_TEAM_STATE_ROOT: path.join(cleanupRoot, ".gjc", "team-state"),
 				PATH: "",
 			},
 		});
@@ -967,10 +967,10 @@ describe("native gjc team runtime", () => {
 
 	it("keeps worker CLI selection limited to GJC teammate sessions", async () => {
 		expect(resolveGjcTeamWorkerCli({})).toBe("worx");
-		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "auto" })).toBe("worx");
-		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "worx" })).toBe("worx");
-		expect(resolveGjcTeamWorkerCliPlan(3, { GJC_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["worx", "worx", "worx"]);
-		expect(resolveGjcTeamWorkerCliPlan(2, { GJC_TEAM_WORKER_CLI_MAP: "worx,auto" })).toEqual(["worx", "worx"]);
+		expect(resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "auto" })).toBe("worx");
+		expect(resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "worx" })).toBe("worx");
+		expect(resolveGjcTeamWorkerCliPlan(3, { WORX_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["worx", "worx", "worx"]);
+		expect(resolveGjcTeamWorkerCliPlan(2, { WORX_TEAM_WORKER_CLI_MAP: "worx,auto" })).toEqual(["worx", "worx"]);
 		expect(translateGjcWorkerLaunchArgsForCli("worx", ["--model", "frontier"])).toEqual(["--model", "frontier"]);
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const snapshot = await startGjcTeam({
@@ -980,7 +980,7 @@ describe("native gjc team runtime", () => {
 			teamName: "gjc-worker-cli-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "", GJC_TEAM_WORKER_CLI_MAP: "worx,auto" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "", WORX_TEAM_WORKER_CLI_MAP: "worx,auto" },
 		});
 		const config = await Bun.file(path.join(snapshot.state_dir, "config.json")).json();
 		const manifest = await Bun.file(path.join(snapshot.state_dir, "manifest.v2.json")).json();
@@ -990,14 +990,14 @@ describe("native gjc team runtime", () => {
 		expect(telemetry).toContain('"worker_cli_plan":["worx","worx"]');
 
 		for (const provider of ["codex", "claude", "gemini"]) {
-			expect(() => resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: provider })).toThrow(
+			expect(() => resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: provider })).toThrow(
 				/WORX team launches WORX teammate sessions only/,
 			);
-			expect(() => resolveGjcTeamWorkerCliPlan(1, { GJC_TEAM_WORKER_CLI_MAP: provider })).toThrow(
+			expect(() => resolveGjcTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI_MAP: provider })).toThrow(
 				/WORX team launches WORX teammate sessions only/,
 			);
 			expect(() =>
-				resolveGjcTeamWorkerCliPlan(1, { GJC_TEAM_WORKER_CLI: provider, GJC_TEAM_WORKER_CLI_MAP: "worx" }),
+				resolveGjcTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI: provider, WORX_TEAM_WORKER_CLI_MAP: "worx" }),
 			).toThrow(/WORX team launches WORX teammate sessions only/);
 			if (!cleanupRoot) cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 			await expect(
@@ -1008,7 +1008,7 @@ describe("native gjc team runtime", () => {
 					teamName: `unsupported-${provider}`,
 					cwd: cleanupRoot,
 					dryRun: true,
-					env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "", GJC_TEAM_WORKER_CLI: provider },
+					env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "", WORX_TEAM_WORKER_CLI: provider },
 				}),
 			).rejects.toThrow(/WORX team launches WORX teammate sessions only/);
 		}
@@ -1055,10 +1055,10 @@ describe("native gjc team runtime", () => {
 			teamName: "worktree-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1090,8 +1090,8 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).toContain("claim-task/transition-task-status");
 		expect(tmuxLog).toContain(
 			process.platform === "win32"
-				? "$env:GJC_TEAM_WORKER = 'worktree-team/worker-1'"
-				: "GJC_TEAM_WORKER='worktree-team/worker-1'",
+				? "$env:WORX_TEAM_WORKER = 'worktree-team/worker-1'"
+				: "WORX_TEAM_WORKER='worktree-team/worker-1'",
 		);
 		expect(tmuxLog).toContain("true 'You are worker-1 in worx team worktree-team.");
 		expect(tmuxLog).not.toContain("send-keys -l");
@@ -1110,7 +1110,7 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).not.toContain("kill-session");
 	}, 30_000);
 
-	it("resolves the team tmux leader from GJC_TMUX_COMMAND, not only GJC_TEAM_TMUX_COMMAND", async () => {
+	it("resolves the team tmux leader from WORX_TMUX_COMMAND, not only WORX_TEAM_TMUX_COMMAND", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const snapshot = await startGjcTeam({
@@ -1120,10 +1120,10 @@ describe("native gjc team runtime", () => {
 			teamName: "tmux-command-override-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1135,7 +1135,7 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).not.toContain("send-keys -l");
 	}, 30_000);
 
-	it("targets the GJC-managed leader session from GJC_TMUX_ACTIVE_SESSION over a stale TMUX_PANE", async () => {
+	it("targets the GJC-managed leader session from WORX_TMUX_ACTIVE_SESSION over a stale TMUX_PANE", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const snapshot = await startGjcTeam({
@@ -1145,15 +1145,15 @@ describe("native gjc team runtime", () => {
 			teamName: "active-session-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				// A stale/ambiguous inherited pane points at the wrong session; the
 				// explicit GJC-managed session name must win so workers land in the
 				// intended leader session (issue #531).
 				TMUX_PANE: "%9",
-				GJC_TMUX_ACTIVE_SESSION: "test-session",
+				WORX_TMUX_ACTIVE_SESSION: "test-session",
 			},
 		});
 
@@ -1178,10 +1178,10 @@ describe("native gjc team runtime", () => {
 			teamName: "multi-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1192,13 +1192,13 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).toContain("split-window -v -t %2");
 		expect(tmuxLog).toContain(
 			process.platform === "win32"
-				? "$env:GJC_TEAM_WORKER = 'multi-team/worker-1'"
-				: "GJC_TEAM_WORKER='multi-team/worker-1'",
+				? "$env:WORX_TEAM_WORKER = 'multi-team/worker-1'"
+				: "WORX_TEAM_WORKER='multi-team/worker-1'",
 		);
 		expect(tmuxLog).toContain(
 			process.platform === "win32"
-				? "$env:GJC_TEAM_WORKER = 'multi-team/worker-2'"
-				: "GJC_TEAM_WORKER='multi-team/worker-2'",
+				? "$env:WORX_TEAM_WORKER = 'multi-team/worker-2'"
+				: "WORX_TEAM_WORKER='multi-team/worker-2'",
 		);
 		expect(tmuxLog).not.toContain("send-keys -l");
 		expect(tmuxLog).not.toContain("new-session");
@@ -1215,10 +1215,10 @@ describe("native gjc team runtime", () => {
 			teamName: "stale-leader-pane-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1242,10 +1242,10 @@ describe("native gjc team runtime", () => {
 				cwd: cleanupRoot,
 				platform: "win32",
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakePsmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakePsmux,
 				},
 			}),
 			// `startGjcTeam`'s tokenless psmux path fails closed at the launch guard with
@@ -1276,11 +1276,11 @@ describe("native gjc team runtime", () => {
 				cwd: cleanupRoot,
 				platform: "win32",
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_PSMUX_COMMAND: fakePsmux,
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_PSMUX_COMMAND: fakePsmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow("gjc_tmux_provider_ambiguous");
@@ -1301,10 +1301,10 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			platform: "win32",
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1323,10 +1323,10 @@ describe("native gjc team runtime", () => {
 				teamName: "layout-proof-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow("tmux_layout_postproof_failed");
@@ -1344,10 +1344,10 @@ describe("native gjc team runtime", () => {
 				teamName: "layout-topology-proof-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow("tmux_layout_postproof_failed");
@@ -1363,10 +1363,10 @@ describe("native gjc team runtime", () => {
 			teamName: "layout-separated-stack-proof-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		expect(snapshot.phase).toBe("running");
@@ -1384,10 +1384,10 @@ describe("native gjc team runtime", () => {
 				teamName: "layout-stack-proof-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow("tmux_layout_postproof_failed");
@@ -1406,10 +1406,10 @@ describe("native gjc team runtime", () => {
 				cwd: cleanupRoot,
 				platform: "win32",
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakePsmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakePsmux,
 				},
 			}),
 		).rejects.toThrow("gjc_team_tmux_provider_authority_unavailable");
@@ -1433,16 +1433,16 @@ describe("native gjc team runtime", () => {
 			teamName: "lane-distribution-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const task1 = await readGjcTeamTask("lane-distribution-team", "task-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		const task2 = await readGjcTeamTask("lane-distribution-team", "task-2", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 
 		expect(snapshot.task_counts.pending).toBe(2);
@@ -1469,7 +1469,7 @@ describe("native gjc team runtime", () => {
 				teamName: "ambiguous-lane-team",
 				cwd: cleanupRoot,
 				dryRun: true,
-				env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+				env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 			}),
 		).rejects.toThrow("ambiguous_team_lane_split");
 		expect(await Bun.file(teamStateDir(cleanupRoot, "ambiguous-lane-team")).exists()).toBe(false);
@@ -1487,10 +1487,10 @@ describe("native gjc team runtime", () => {
 				teamName: "ambiguous-lane-worktree-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow("ambiguous_team_lane_split");
@@ -1514,10 +1514,10 @@ describe("native gjc team runtime", () => {
 				teamName: "fail-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow(/gjc_team_requires_tmux_leader: start a tmux session first/);
@@ -1539,10 +1539,10 @@ describe("native gjc team runtime", () => {
 				teamName: "no-tmux-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: "gjc-nonexistent-tmux-binary-xyz",
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: "gjc-nonexistent-tmux-binary-xyz",
 				},
 			}),
 		).rejects.toThrow(/gjc_team_requires_tmux_leader:.*tmux_not_installed/);
@@ -1562,10 +1562,10 @@ describe("native gjc team runtime", () => {
 				teamName: "outside-tmux-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow(/gjc_team_requires_tmux_leader:.*not_inside_tmux/);
@@ -1580,7 +1580,7 @@ describe("native gjc team runtime", () => {
 
 		expect(
 			probeGjcTeamAvailability({
-				GJC_TMUX_COMMAND: fakeTmux,
+				WORX_TMUX_COMMAND: fakeTmux,
 				TMUX: "/tmp/tmux-501/default,1,0",
 			}),
 		).toEqual({ available: true });
@@ -1597,7 +1597,7 @@ describe("native gjc team runtime", () => {
 
 		expect(
 			probeGjcTeamAvailability({
-				GJC_TMUX_COMMAND: fakeTmux,
+				WORX_TMUX_COMMAND: fakeTmux,
 				TMUX: "/tmp/tmux-501/default,1,0",
 			}),
 		).toEqual({ available: true });
@@ -1621,10 +1621,10 @@ describe("native gjc team runtime", () => {
 				teamName: "unmanaged-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow(/unmanaged_tmux_session:test-session/);
@@ -1659,11 +1659,11 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: false,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
-				GJC_TMUX_LAUNCHED: "1",
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TMUX_LAUNCHED: "1",
 			},
 		});
 
@@ -1677,7 +1677,7 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).toContain("split-window");
 	});
 
-	it("adopts a user-created tmux leader by tagging it even without GJC_TMUX_LAUNCHED", async () => {
+	it("adopts a user-created tmux leader by tagging it even without WORX_TMUX_LAUNCHED", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { gjcProfile: false });
 
@@ -1689,10 +1689,10 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: false,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				TMUX: "/tmp/tmux-501/default,1,0",
 			},
 		});
@@ -1700,7 +1700,7 @@ describe("native gjc team runtime", () => {
 		expect(snapshot.team_name).toBe("adopted-team");
 		expect(snapshot.tmux_target).toBe("test-session:0");
 		const tmuxLog = await Bun.file(path.join(cleanupRoot, "tmux.log")).text();
-		// A real tmux session the user created (no GJC_TMUX_LAUNCHED) is adopted
+		// A real tmux session the user created (no WORX_TMUX_LAUNCHED) is adopted
 		// by writing and reading back GJC's ownership tag, then split into workers.
 		expect(tmuxLog).toContain("set-option -t =test-session: @gjc-profile 1");
 		expect(tmuxLog).toContain("split-window");
@@ -1718,10 +1718,10 @@ describe("native gjc team runtime", () => {
 				teamName: "split-fail-team",
 				cwd: cleanupRoot,
 				env: {
-					GJC_SESSION_ID: TEST_SESSION_ID,
+					WORX_SESSION_ID: TEST_SESSION_ID,
 					PATH: process.env.PATH ?? "",
-					GJC_TEAM_WORKER_COMMAND: "true",
-					GJC_TEAM_TMUX_COMMAND: fakeTmux,
+					WORX_TEAM_WORKER_COMMAND: "true",
+					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
 		).rejects.toThrow(/split failed|tmux_split_failed/);
@@ -1746,10 +1746,10 @@ describe("native gjc team runtime", () => {
 			worktreeMode: { enabled: true, detached: false, name: "feature/demo" },
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 
@@ -1772,10 +1772,10 @@ describe("native gjc team runtime", () => {
 			teamName: "cleanup-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const worktreePath = snapshot.workers[0]?.worktree_path ?? "";
@@ -1783,7 +1783,7 @@ describe("native gjc team runtime", () => {
 
 		const stopped = await shutdownGjcTeam("cleanup-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 
 		expect(stopped.phase).toBe("cancelled");
@@ -1804,10 +1804,10 @@ describe("native gjc team runtime", () => {
 			teamName: "stale-pane-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const configPath = path.join(snapshot.state_dir, "config.json");
@@ -1819,8 +1819,8 @@ describe("native gjc team runtime", () => {
 
 		await shutdownGjcTeam("stale-pane-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		const tmuxLog = await Bun.file(path.join(cleanupRoot, "tmux.log")).text();
@@ -1838,10 +1838,10 @@ describe("native gjc team runtime", () => {
 			teamName: "dirty-cleanup-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const worktreePath = snapshot.workers[0]?.worktree_path ?? "";
@@ -1849,7 +1849,7 @@ describe("native gjc team runtime", () => {
 
 		const stopped = await shutdownGjcTeam("dirty-cleanup-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 
 		expect(stopped.phase).toBe("cancelled");
@@ -1867,8 +1867,8 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: true,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
-				GJC_TEAM_TMUX_COMMAND: tmuxCommand,
+				WORX_SESSION_ID: TEST_SESSION_ID,
+				WORX_TEAM_TMUX_COMMAND: tmuxCommand,
 				PATH: "",
 			},
 		});
@@ -1876,19 +1876,19 @@ describe("native gjc team runtime", () => {
 		await expect(
 			transitionGjcTeamTask("life-team", "task-1", "completed", cleanupRoot, {
 				PATH: "",
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 			}),
 		).rejects.toThrow("claim_token_required:task-1");
 
 		const claim = await claimGjcTeamTask("life-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		await expect(
 			transitionGjcTeamTask("life-team", "task-1", "completed", cleanupRoot, {
 				PATH: "",
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 			}),
 		).rejects.toThrow("claim_token_required:task-1");
 		await expect(
@@ -1897,7 +1897,7 @@ describe("native gjc team runtime", () => {
 				"task-1",
 				"pending",
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				claim.claim_token,
 			),
 		).rejects.toThrow("invalid_task_transition:task-1:pending_requires_release");
@@ -1907,7 +1907,7 @@ describe("native gjc team runtime", () => {
 			"task-1",
 			"completed",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			claim.claim_token,
 			commandCompletionEvidence(),
 		);
@@ -1923,7 +1923,7 @@ describe("native gjc team runtime", () => {
 				"release-task-claim",
 				{ team_name: "life-team", task_id: "task-1", worker: "worker-1", claim_token: claim.claim_token },
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow(/task_terminal|claim_token_mismatch/);
 		await expect(
@@ -1931,24 +1931,27 @@ describe("native gjc team runtime", () => {
 				"transition-task-status",
 				{ team_name: "life-team", task_id: "task-1", to: "pending" },
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow("invalid_task_transition:task-1:pending_requires_release");
 		const reclaim = await claimGjcTeamTask(
 			"life-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-1",
 		);
 		expect(reclaim.ok).toBe(false);
 		expect(reclaim.reason).toBe("task_not_pending:task-1");
 
-		const status = await readGjcTeamSnapshot("life-team", cleanupRoot, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID });
+		const status = await readGjcTeamSnapshot("life-team", cleanupRoot, {
+			PATH: "",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+		});
 		expect(status.task_counts.completed).toBe(1);
-		expect(await listGjcTeams(cleanupRoot, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID })).toHaveLength(1);
+		expect(await listGjcTeams(cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID })).toHaveLength(1);
 
-		const stopped = await shutdownGjcTeam("life-team", cleanupRoot, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID });
+		const stopped = await shutdownGjcTeam("life-team", cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
 		expect(stopped.phase).toBe("complete");
 		expect(stopped.workers[0]?.status).toBe("stopped");
 		expect(stopped.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("stopped");
@@ -1970,14 +1973,14 @@ describe("native gjc team runtime", () => {
 			teamName: "receipt-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const claimReceipt = (await executeGjcTeamApiOperation(
 			"claim-task",
 			{ team_name: "receipt-team", worker_id: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as {
 			ok: boolean;
 			team_name: string;
@@ -2006,7 +2009,7 @@ describe("native gjc team runtime", () => {
 				claim_token: claimReceipt.claim_token,
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { ok: boolean; worker_id: string; task_id: string; status: string; task?: unknown };
 		expect(releaseReceipt).toMatchObject({ ok: true, worker_id: "worker-1", task_id: "task-1", status: "pending" });
 		expect(releaseReceipt.task).toBeUndefined();
@@ -2015,7 +2018,7 @@ describe("native gjc team runtime", () => {
 			"claim-task",
 			{ team_name: "receipt-team", worker_id: releaseReceipt.worker_id, task_id: releaseReceipt.task_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { ok: boolean; worker_id: string; task_id: string; status: string; claim_token: string; task?: unknown };
 		expect(secondClaimReceipt).toMatchObject({
 			ok: true,
@@ -2036,7 +2039,7 @@ describe("native gjc team runtime", () => {
 				claim_token: secondClaimReceipt.claim_token,
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as {
 			ok: boolean;
 			worker_id: string;
@@ -2064,7 +2067,7 @@ describe("native gjc team runtime", () => {
 			teamName: "trace-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = snapshot.state_dir;
 		const firstEvent = JSON.parse((await readEvents(stateDir)).trim().split(/\r?\n/)[0] ?? "") as {
@@ -2088,7 +2091,7 @@ describe("native gjc team runtime", () => {
 
 		const claim = await claimGjcTeamTask("trace-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		await transitionGjcTeamTask(
@@ -2096,14 +2099,14 @@ describe("native gjc team runtime", () => {
 			"task-1",
 			"completed",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			claim.claim_token,
 			commandCompletionEvidence("trace-backed completion"),
 		);
 
 		const traceRead = (await executeGjcTeamApiOperation("read-traces", { team_name: "trace-team" }, cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as {
 			traces: Array<{ event_type: string; source_event_id: string; evidence_refs?: string[] }>;
 		};
@@ -2122,7 +2125,7 @@ describe("native gjc team runtime", () => {
 			teamName: "trace-sanitized-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const secretBody = "SECRET_TOKEN=abc123";
 		const message = await sendGjcTeamMessage(
@@ -2131,7 +2134,7 @@ describe("native gjc team runtime", () => {
 			"leader-fixed",
 			secretBody,
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const traceJsonl = await Bun.file(path.join(snapshot.state_dir, "trace.jsonl")).text();
 		expect(traceJsonl).not.toContain(secretBody);
@@ -2141,7 +2144,7 @@ describe("native gjc team runtime", () => {
 			"read-traces",
 			{ team_name: "trace-sanitized-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { traces: Array<{ event_type: string; message?: string; data?: Record<string, unknown> }> };
 		const serializedTraces = JSON.stringify(traceRead);
 		expect(serializedTraces).not.toContain(secretBody);
@@ -2165,7 +2168,7 @@ describe("native gjc team runtime", () => {
 			teamName: "evidence-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "evidence-team");
 
@@ -2173,7 +2176,7 @@ describe("native gjc team runtime", () => {
 			"evidence-team",
 			"worker-2",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-2",
 		);
 		expect(workerTwoClaim.ok).toBe(true);
@@ -2187,12 +2190,12 @@ describe("native gjc team runtime", () => {
 				completion_evidence: inspectionCompletionEvidence("worker-2 completed by inspection"),
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
 		const completedTask = await readGjcTeamTask("evidence-team", "task-2", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(completedTask.completion_evidence?.items[0]?.kind).toBe("inspection");
 		expect(await Bun.file(path.join(stateDir, "evidence", "tasks", "task-2.json")).exists()).toBe(false);
@@ -2203,7 +2206,7 @@ describe("native gjc team runtime", () => {
 		);
 		const listed = (await executeGjcTeamApiOperation("list-tasks", { team_name: "evidence-team" }, cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as { tasks: Array<{ id: string; status: string }> };
 		expect(listed.tasks.map(task => task.id)).toEqual(["task-1", "task-2"]);
 		expect(listed.tasks.find(task => task.id === "task-2")?.status).toBe("completed");
@@ -2212,7 +2215,7 @@ describe("native gjc team runtime", () => {
 			"evidence-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-1",
 		);
 		expect(workerOneClaim.ok).toBe(true);
@@ -2227,7 +2230,7 @@ describe("native gjc team runtime", () => {
 					worker_id: "worker-2",
 				},
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow("claim_owner_mismatch:task-1");
 	});
@@ -2241,17 +2244,17 @@ describe("native gjc team runtime", () => {
 			teamName: "invalid-evidence-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "invalid-evidence-team");
 		const claim = await claimGjcTeamTask("invalid-evidence-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		const taskBefore = await readGjcTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		const eventsBefore = await readEvents(stateDir);
 		const claimPath = path.join(stateDir, "claims", "task-1.json");
@@ -2262,7 +2265,7 @@ describe("native gjc team runtime", () => {
 				"task-1",
 				"completed",
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				claim.claim_token,
 			),
 		).rejects.toThrow("completion_evidence_required:task-1");
@@ -2294,7 +2297,7 @@ describe("native gjc team runtime", () => {
 					"task-1",
 					"completed",
 					cleanupRoot,
-					{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+					{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 					claim.claim_token,
 					invalid.evidence,
 				),
@@ -2303,7 +2306,7 @@ describe("native gjc team runtime", () => {
 
 		const taskAfter = await readGjcTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(taskAfter.status).toBe(taskBefore.status);
 		expect(taskAfter.version).toBe(taskBefore.version);
@@ -2324,8 +2327,8 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: true,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
-				GJC_TEAM_TMUX_COMMAND: tmuxCommand,
+				WORX_SESSION_ID: TEST_SESSION_ID,
+				WORX_TEAM_TMUX_COMMAND: tmuxCommand,
 				PATH: "",
 			},
 		});
@@ -2334,7 +2337,7 @@ describe("native gjc team runtime", () => {
 			"review-evidence-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-1",
 		);
 		expect(firstClaim.ok).toBe(true);
@@ -2343,7 +2346,7 @@ describe("native gjc team runtime", () => {
 			"task-1",
 			"completed",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			firstClaim.claim_token,
 			inspectionCompletionEvidence("inspection-only task completed"),
 		);
@@ -2353,7 +2356,7 @@ describe("native gjc team runtime", () => {
 			"review-evidence-team",
 			"worker-2",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-2",
 		);
 		expect(secondClaim.ok).toBe(true);
@@ -2367,12 +2370,12 @@ describe("native gjc team runtime", () => {
 				completion_evidence: artifactCompletionEvidence("artifact-backed task completed"),
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
 		const stopped = await shutdownGjcTeam("review-evidence-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(stopped.phase).toBe("complete");
 	});
@@ -2388,15 +2391,15 @@ describe("native gjc team runtime", () => {
 			cwd: cleanupRoot,
 			dryRun: true,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
-				GJC_TEAM_TMUX_COMMAND: tmuxCommand,
+				WORX_SESSION_ID: TEST_SESSION_ID,
+				WORX_TEAM_TMUX_COMMAND: tmuxCommand,
 				PATH: "",
 			},
 		});
 		const stateDir = teamStateDir(cleanupRoot, "legacy-completed-team");
 		const task = await readGjcTeamTask("legacy-completed-team", "task-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		await Bun.write(
 			path.join(stateDir, "tasks", "task-1.json"),
@@ -2405,7 +2408,7 @@ describe("native gjc team runtime", () => {
 
 		const stopped = await shutdownGjcTeam("legacy-completed-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(stopped.phase).toBe("failed");
 		expect(await readEvents(stateDir)).toContain("completion_evidence_required:task-1");
@@ -2420,17 +2423,17 @@ describe("native gjc team runtime", () => {
 			teamName: "expired-claim-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "expired-claim-team");
 		const claim = await claimGjcTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		const claimedTask = await readGjcTeamTask("expired-claim-team", "task-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		if (!claimedTask.claim) throw new Error("expected claimed task");
 		const expiredClaim = { ...claimedTask.claim, leased_until: new Date(Date.now() - 60_000).toISOString() };
@@ -2442,7 +2445,7 @@ describe("native gjc team runtime", () => {
 
 		const recoveredClaim = await claimGjcTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(recoveredClaim.ok).toBe(true);
 		expect(recoveredClaim.claim_token).not.toBe(claim.claim_token);
@@ -2460,12 +2463,12 @@ describe("native gjc team runtime", () => {
 			teamName: "stale-heartbeat-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "stale-heartbeat-team");
 		const claim = await claimGjcTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		await Bun.write(
@@ -2479,8 +2482,8 @@ describe("native gjc team runtime", () => {
 
 		const snapshot = await monitorGjcTeam("stale-heartbeat-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_HEARTBEAT_STALE_MS: "1",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
 		});
 		expect(snapshot.task_counts.pending).toBe(1);
 		expect(await Bun.file(path.join(stateDir, "claims", "task-1.json")).exists()).toBe(false);
@@ -2488,8 +2491,8 @@ describe("native gjc team runtime", () => {
 
 		const retry = await claimGjcTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_HEARTBEAT_STALE_MS: "1",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
 		});
 		expect(retry.ok).toBe(false);
 		expect(retry.reason).toContain("worker_not_live:worker-1:stale_heartbeat");
@@ -2504,12 +2507,12 @@ describe("native gjc team runtime", () => {
 			teamName: "status-semantics-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "status-semantics-team");
 		const claim = await claimGjcTeamTask("status-semantics-team", "worker-1", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		await Bun.write(
@@ -2523,8 +2526,8 @@ describe("native gjc team runtime", () => {
 
 		const statusSnapshot = await readGjcTeamSnapshot("status-semantics-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_HEARTBEAT_STALE_MS: "1",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
 		});
 		expect(statusSnapshot.task_counts.in_progress).toBe(1);
 		expect(await Bun.file(path.join(stateDir, "claims", "task-1.json")).exists()).toBe(true);
@@ -2532,8 +2535,8 @@ describe("native gjc team runtime", () => {
 
 		const monitorSnapshot = await monitorGjcTeamSnapshot("status-semantics-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_HEARTBEAT_STALE_MS: "1",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
 		});
 		expect(monitorSnapshot.task_counts.pending).toBe(1);
 		expect(await Bun.file(path.join(stateDir, "claims", "task-1.json")).exists()).toBe(false);
@@ -2550,17 +2553,17 @@ describe("native gjc team runtime", () => {
 			teamName: "missing-pane-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const stateDir = snapshot.state_dir;
 		const claim = await claimGjcTeamTask("missing-pane-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 		expect(claim.ok).toBe(true);
 		const config = await readTeamConfig(stateDir);
@@ -2571,8 +2574,8 @@ describe("native gjc team runtime", () => {
 
 		const recovered = await monitorGjcTeam("missing-pane-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		expect(recovered.task_counts.pending).toBe(1);
@@ -2590,14 +2593,14 @@ describe("native gjc team runtime", () => {
 			teamName: "lane-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const wrongOwner = await claimGjcTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-2",
 		);
 		expect(wrongOwner.ok).toBe(false);
@@ -2615,7 +2618,7 @@ describe("native gjc team runtime", () => {
 				depends_on: ["task-1"],
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task_id: string; status: string; owner?: string; task?: unknown };
 		expect(dependentTask).toMatchObject({ task_id: "task-3", status: "pending", owner: "worker-1" });
 		expect(dependentTask.task).toBeUndefined();
@@ -2624,7 +2627,7 @@ describe("native gjc team runtime", () => {
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-3",
 		);
 		expect(blockedByDependency.ok).toBe(false);
@@ -2641,13 +2644,13 @@ describe("native gjc team runtime", () => {
 				required_role: "architect",
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const wrongRole = await claimGjcTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-4",
 		);
 		expect(wrongRole.ok).toBe(false);
@@ -2657,7 +2660,7 @@ describe("native gjc team runtime", () => {
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-1",
 		);
 		expect(implementationClaim.ok).toBe(true);
@@ -2666,7 +2669,7 @@ describe("native gjc team runtime", () => {
 			"task-1",
 			"completed",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			implementationClaim.claim_token,
 			commandCompletionEvidence("dependency completed"),
 		);
@@ -2675,7 +2678,7 @@ describe("native gjc team runtime", () => {
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"task-3",
 		);
 		expect(verificationClaim.ok).toBe(true);
@@ -2691,7 +2694,7 @@ describe("native gjc team runtime", () => {
 			teamName: "claim-race-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const claims = await Promise.all([
@@ -2699,14 +2702,14 @@ describe("native gjc team runtime", () => {
 				"claim-race-team",
 				"worker-1",
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				"task-1",
 			),
 			claimGjcTeamTask(
 				"claim-race-team",
 				"worker-2",
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				"task-1",
 			),
 		]);
@@ -2718,7 +2721,7 @@ describe("native gjc team runtime", () => {
 		);
 		const status = await readGjcTeamSnapshot("claim-race-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(status.task_counts.in_progress).toBe(1);
 	});
@@ -2770,47 +2773,47 @@ describe("native gjc team runtime", () => {
 			teamName: "api-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const created = (await executeGjcTeamApiOperation(
 			"create-task",
 			{ team_name: "api-team", subject: "Extra", description: "Extra work" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task_id: string; task?: unknown };
 		expect(created.task).toBeUndefined();
 		const read = (await executeGjcTeamApiOperation(
 			"read-task",
 			{ team_name: "api-team", task_id: created.task_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task: { subject: string } };
 		expect(read.task.subject).toBe("Extra");
 		const updated = (await executeGjcTeamApiOperation(
 			"update-task",
 			{ team_name: "api-team", task_id: created.task_id, subject: "Updated" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task_id: string; task?: unknown };
 		expect(updated.task).toBeUndefined();
 		const claim = (await executeGjcTeamApiOperation(
 			"claim-task",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { claim_token: string };
 		await executeGjcTeamApiOperation(
 			"release-task-claim",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1", claim_token: claim.claim_token },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const claimed = (await executeGjcTeamApiOperation(
 			"claim-task",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { claim_token: string };
 		await executeGjcTeamApiOperation(
 			"transition-task-status",
@@ -2822,33 +2825,33 @@ describe("native gjc team runtime", () => {
 				completionEvidence: artifactCompletionEvidence("API parity task completed by artifact"),
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
 		const message = (await executeGjcTeamApiOperation(
 			"send-message",
 			{ team_name: "api-team", from_worker: "worker-1", to_worker: "worker-2", body: "hello" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { message_id: string; body?: string };
 		expect(message.body).toBeUndefined();
 		await executeGjcTeamApiOperation(
 			"mailbox-mark-delivered",
 			{ team_name: "api-team", worker: "worker-2", message_id: message.message_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		await executeGjcTeamApiOperation(
 			"mailbox-mark-notified",
 			{ team_name: "api-team", worker: "worker-2", message_id: message.message_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const mailbox = (await executeGjcTeamApiOperation(
 			"mailbox-list",
 			{ team_name: "api-team", worker: "worker-2" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { messages: Array<{ delivered_at?: string; notified_at?: string }> };
 		expect(mailbox.messages[0]?.delivered_at).toBeTruthy();
 		expect(mailbox.messages[0]?.notified_at).toBeTruthy();
@@ -2857,25 +2860,25 @@ describe("native gjc team runtime", () => {
 			"write-worker-inbox",
 			{ team_name: "api-team", worker: "worker-1", content: "# Inbox" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		await executeGjcTeamApiOperation(
 			"write-worker-identity",
 			{ team_name: "api-team", worker: "worker-1", index: 1, role: "executor" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		await executeGjcTeamApiOperation(
 			"update-worker-heartbeat",
 			{ team_name: "api-team", worker: "worker-1", pid: 123, turn_count: 2, alive: true },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const heartbeat = (await executeGjcTeamApiOperation(
 			"read-worker-heartbeat",
 			{ team_name: "api-team", worker: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { pid: number };
 		expect(heartbeat.pid).toBe(123);
 
@@ -2883,44 +2886,44 @@ describe("native gjc team runtime", () => {
 			"append-event",
 			{ team_name: "api-team", type: "custom", worker: "worker-1" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const awaited = (await executeGjcTeamApiOperation("await-event", { team_name: "api-team" }, cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as { status: string };
 		expect(awaited.status).toBe("event");
 		await executeGjcTeamApiOperation(
 			"write-monitor-snapshot",
 			{ team_name: "api-team", snapshot: { ok: true } },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const monitor = (await executeGjcTeamApiOperation(
 			"read-monitor-snapshot",
 			{ team_name: "api-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { ok: boolean };
 		expect(monitor.ok).toBe(true);
 		await executeGjcTeamApiOperation(
 			"write-task-approval",
 			{ team_name: "api-team", task_id: created.task_id, status: "approved", reviewer: "leader" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		const approval = (await executeGjcTeamApiOperation(
 			"read-task-approval",
 			{ team_name: "api-team", task_id: created.task_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { status: string };
 		expect(approval.status).toBe("approved");
 		await executeGjcTeamApiOperation(
 			"write-shutdown-request",
 			{ team_name: "api-team", worker: "worker-1", requested_by: "leader-fixed" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 	});
 
@@ -2933,7 +2936,7 @@ describe("native gjc team runtime", () => {
 			teamName: "notification-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		const first = (await executeGjcTeamApiOperation(
@@ -2946,7 +2949,7 @@ describe("native gjc team runtime", () => {
 				idempotency_key: "stable-key",
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { message_id: string; body?: string };
 		const second = (await executeGjcTeamApiOperation(
 			"send-message",
@@ -2958,7 +2961,7 @@ describe("native gjc team runtime", () => {
 				idempotency_key: "stable-key",
 			},
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { message_id: string; body?: string };
 		expect(first.body).toBeUndefined();
 		expect(second.body).toBeUndefined();
@@ -2978,7 +2981,7 @@ describe("native gjc team runtime", () => {
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as {
 			notification_ids: string[];
 			delivery_states: string[];
@@ -2991,13 +2994,13 @@ describe("native gjc team runtime", () => {
 			"mailbox-mark-notified",
 			{ team_name: "notification-team", worker: "worker-2", message_id: first.message_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		notifications = (await executeGjcTeamApiOperation(
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { notification_ids: string[]; delivery_states: string[]; summary: { total: number } };
 		expect(notifications.delivery_states[0]).toBe("delivered");
 
@@ -3005,13 +3008,13 @@ describe("native gjc team runtime", () => {
 			"mailbox-mark-delivered",
 			{ team_name: "notification-team", worker: "worker-2", message_id: first.message_id },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 		notifications = (await executeGjcTeamApiOperation(
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { notification_ids: string[]; delivery_states: string[]; summary: { total: number } };
 		expect(notifications.delivery_states[0]).toBe("acknowledged");
 	});
@@ -3036,7 +3039,7 @@ describe("native gjc team runtime", () => {
 			teamName: "transport-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 			mailboxDeliveryTransport: transport,
 		});
 
@@ -3046,7 +3049,7 @@ describe("native gjc team runtime", () => {
 			"worker-2",
 			"hello through sdk seam",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"transport-key",
 			transport,
 		);
@@ -3056,7 +3059,7 @@ describe("native gjc team runtime", () => {
 			"worker-2",
 			"hello through sdk seam",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			"transport-key",
 			transport,
 		);
@@ -3064,7 +3067,7 @@ describe("native gjc team runtime", () => {
 			"notification-list",
 			{ team_name: "transport-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { delivery_states: string[]; notification_ids: string[] };
 
 		expect(duplicate.message_id).toBe(message.message_id);
@@ -3083,7 +3086,7 @@ describe("native gjc team runtime", () => {
 			teamName: "transport-fallback-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const transport = {
 			async deliverMailboxMessage() {
@@ -3097,7 +3100,7 @@ describe("native gjc team runtime", () => {
 			"worker-2",
 			"fallback please",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			undefined,
 			transport,
 		);
@@ -3105,7 +3108,7 @@ describe("native gjc team runtime", () => {
 			"notification-list",
 			{ team_name: "transport-fallback-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { delivery_states: string[] };
 
 		expect(notifications.delivery_states).toEqual(["sent"]);
@@ -3121,7 +3124,7 @@ describe("native gjc team runtime", () => {
 				teamName: `transport-${state}-team`,
 				cwd: cleanupRoot,
 				dryRun: true,
-				env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+				env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 			});
 			let attempts = 0;
 			const transport = {
@@ -3137,7 +3140,7 @@ describe("native gjc team runtime", () => {
 				"worker-2",
 				`hello ${state}`,
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				`transport-${state}-key`,
 				transport,
 			);
@@ -3147,7 +3150,7 @@ describe("native gjc team runtime", () => {
 				"worker-2",
 				`hello ${state}`,
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				`transport-${state}-key`,
 				transport,
 			);
@@ -3155,7 +3158,7 @@ describe("native gjc team runtime", () => {
 				"notification-list",
 				{ team_name: `transport-${state}-team` },
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			)) as { delivery_states: string[] };
 
 			expect(duplicate.message_id).toBe(message.message_id);
@@ -3175,7 +3178,7 @@ describe("native gjc team runtime", () => {
 			teamName: "transport-failed-fallback-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		let attempts = 0;
 		const transport = {
@@ -3191,7 +3194,7 @@ describe("native gjc team runtime", () => {
 			"worker-2",
 			"fallback after explicit failure",
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			undefined,
 			transport,
 		);
@@ -3199,7 +3202,7 @@ describe("native gjc team runtime", () => {
 			"notification-list",
 			{ team_name: "transport-failed-fallback-team" },
 			cleanupRoot,
-			{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { delivery_states: string[] };
 
 		expect(attempts).toBe(1);
@@ -3215,7 +3218,7 @@ describe("native gjc team runtime", () => {
 			teamName: "guard-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
 		await expect(
@@ -3223,7 +3226,7 @@ describe("native gjc team runtime", () => {
 				"send-message",
 				{ team_name: "guard-team", from_worker: "worker-1", to_worker: "../bad", body: "bad" },
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow(/invalid_worker_id/);
 		await expect(
@@ -3231,7 +3234,7 @@ describe("native gjc team runtime", () => {
 				"update-worker-heartbeat",
 				{ team_name: "guard-team", worker: "../escaped", pid: 9, alive: true },
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow(/invalid_worker_id/);
 		expect(
@@ -3240,10 +3243,10 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("guard-team", cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_STARTUP_GRACE_MS: "0",
-			GJC_TEAM_HEARTBEAT_STALE_MS: "0",
-			GJC_TEAM_NUDGE_COOLDOWN_MS: "60000",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_STARTUP_GRACE_MS: "0",
+			WORX_TEAM_HEARTBEAT_STALE_MS: "0",
+			WORX_TEAM_NUDGE_COOLDOWN_MS: "60000",
 		});
 		expect(monitored.workers[0]?.status).toBe("idle");
 		const nudgeDir = path.join(teamStateDir(cleanupRoot, "guard-team"), "workers", "worker-1", "nudges");
@@ -3264,10 +3267,10 @@ describe("native gjc team runtime", () => {
 			teamName: "integrate-dirty-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3277,8 +3280,8 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("integrate-dirty-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		expect((await Bun.file(path.join(cleanupRoot, "worker-output.txt")).text()).replaceAll("\r\n", "\n")).toBe(
@@ -3334,10 +3337,10 @@ describe("native gjc team runtime", () => {
 			teamName: "protected-checkpoint-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3348,8 +3351,8 @@ describe("native gjc team runtime", () => {
 
 		await monitorGjcTeam("protected-checkpoint-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		expect((await Bun.file(path.join(cleanupRoot, "semantic.txt")).text()).replaceAll("\r\n", "\n")).toBe(
@@ -3370,10 +3373,10 @@ describe("native gjc team runtime", () => {
 			teamName: "turn-end-request-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3382,11 +3385,11 @@ describe("native gjc team runtime", () => {
 		await Bun.write(path.join(worker.worktree_path, "turn-end-output.txt"), "pending\n");
 		const env = {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_NAME: "turn-end-request-team",
-			GJC_TEAM_WORKER_ID: "worker-1",
-			GJC_TEAM_STATE_ROOT: config.state_root,
-			GJC_TEAM_WORKTREE_PATH: worker.worktree_path,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_NAME: "turn-end-request-team",
+			WORX_TEAM_WORKER_ID: "worker-1",
+			WORX_TEAM_STATE_ROOT: config.state_root,
+			WORX_TEAM_WORKTREE_PATH: worker.worktree_path,
 		};
 
 		const first = await requestGjcWorkerIntegrationAttempt(worker.worktree_path, env);
@@ -3412,10 +3415,10 @@ describe("native gjc team runtime", () => {
 			teamName: "awaiting-request-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3424,18 +3427,18 @@ describe("native gjc team runtime", () => {
 		await Bun.write(path.join(worker.worktree_path, "requested-output.txt"), "pending integration\n");
 		const requestEnv = {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_NAME: "awaiting-request-team",
-			GJC_TEAM_WORKER_ID: "worker-1",
-			GJC_TEAM_STATE_ROOT: config.state_root,
-			GJC_TEAM_WORKTREE_PATH: worker.worktree_path,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_NAME: "awaiting-request-team",
+			WORX_TEAM_WORKER_ID: "worker-1",
+			WORX_TEAM_STATE_ROOT: config.state_root,
+			WORX_TEAM_WORKTREE_PATH: worker.worktree_path,
 		};
 		const requested = await requestGjcWorkerIntegrationAttempt(worker.worktree_path, requestEnv);
 		expect(requested.requested).toBe(true);
 
 		const claim = await claimGjcTeamTask("awaiting-request-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		await transitionGjcTeamTask(
 			"awaiting-request-team",
@@ -3444,7 +3447,7 @@ describe("native gjc team runtime", () => {
 			cleanupRoot,
 			{
 				PATH: process.env.PATH ?? "",
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 			},
 			claim.claim_token,
 			commandCompletionEvidence("integration request task completed"),
@@ -3452,7 +3455,7 @@ describe("native gjc team runtime", () => {
 
 		const status = await readGjcTeamSnapshot("awaiting-request-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(status.task_counts.completed).toBe(1);
 		expect(status.phase).toBe("awaiting_integration");
@@ -3460,7 +3463,7 @@ describe("native gjc team runtime", () => {
 
 		const stopped = await shutdownGjcTeam("awaiting-request-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(stopped.task_counts.completed).toBe(1);
 		expect(stopped.phase).toBe("awaiting_integration");
@@ -3477,10 +3480,10 @@ describe("native gjc team runtime", () => {
 			teamName: "diverged-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3491,14 +3494,14 @@ describe("native gjc team runtime", () => {
 
 		const first = await monitorGjcTeam("diverged-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 		const leaderAfterFirst = runGit(cleanupRoot, ["rev-parse", "HEAD"]);
 		const second = await monitorGjcTeam("diverged-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		expect((await Bun.file(path.join(cleanupRoot, "worker.txt")).text()).replaceAll("\r\n", "\n")).toBe("worker\n");
@@ -3522,10 +3525,10 @@ describe("native gjc team runtime", () => {
 			worktreeMode: { enabled: true, detached: false, name: "feature/conflict" },
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3536,8 +3539,8 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("merge-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		const workerState = monitored.integration_by_worker?.["worker-1"];
@@ -3564,10 +3567,10 @@ describe("native gjc team runtime", () => {
 			worktreeMode: { enabled: true, detached: false, name: "feature/awaiting-conflict" },
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3577,7 +3580,7 @@ describe("native gjc team runtime", () => {
 		await Bun.write(path.join(cleanupRoot, "README.md"), "# leader dirty\n");
 		const claim = await claimGjcTeamTask("awaiting-conflict-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		await transitionGjcTeamTask(
 			"awaiting-conflict-team",
@@ -3586,7 +3589,7 @@ describe("native gjc team runtime", () => {
 			cleanupRoot,
 			{
 				PATH: process.env.PATH ?? "",
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 			},
 			claim.claim_token,
 			commandCompletionEvidence("conflicting task completed before integration"),
@@ -3594,8 +3597,8 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("awaiting-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		expect(monitored.task_counts.completed).toBe(1);
@@ -3605,7 +3608,7 @@ describe("native gjc team runtime", () => {
 
 		const stopped = await shutdownGjcTeam("awaiting-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(stopped.task_counts.completed).toBe(1);
 		expect(stopped.phase).toBe("awaiting_integration");
@@ -3622,10 +3625,10 @@ describe("native gjc team runtime", () => {
 			teamName: "pick-conflict-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3638,8 +3641,8 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("pick-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 
 		const workerState = monitored.integration_by_worker?.["worker-1"];
@@ -3665,10 +3668,10 @@ describe("native gjc team runtime", () => {
 			teamName: "cross-rebase-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		await writeWorkerStatus(snapshot.state_dir, "worker-1", "idle");
@@ -3679,8 +3682,8 @@ describe("native gjc team runtime", () => {
 
 		const monitored = await monitorGjcTeam("cross-rebase-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 		const leaderHead = runGit(cleanupRoot, ["rev-parse", "HEAD"]);
 
@@ -3705,10 +3708,10 @@ describe("native gjc team runtime", () => {
 			teamName: "pure-read-team",
 			cwd: cleanupRoot,
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const config = await readTeamConfig(snapshot.state_dir);
@@ -3716,10 +3719,13 @@ describe("native gjc team runtime", () => {
 		if (!workerPath) throw new Error("missing worker worktree");
 		await Bun.write(path.join(workerPath, "unintegrated.txt"), "pending\n");
 
-		const listed = await listGjcTeams(cleanupRoot, { PATH: process.env.PATH ?? "", GJC_SESSION_ID: TEST_SESSION_ID });
+		const listed = await listGjcTeams(cleanupRoot, {
+			PATH: process.env.PATH ?? "",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+		});
 		const read = await readGjcTeamSnapshot("pure-read-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 
 		expect(listed).toHaveLength(1);
@@ -3904,7 +3910,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 				["B:\\~BUN\\bun.exe", "\\$bunfs\\root\\gjc-windows-x64.exe"],
 				"B:\\~BUN\\exec",
 			),
-		).toThrow("Set GJC_TEAM_WORKER_COMMAND");
+		).toThrow("Set WORX_TEAM_WORKER_COMMAND");
 	});
 
 	it("never emits Bun virtual paths into a PowerShell worker command", () => {
@@ -3933,10 +3939,10 @@ describe("team worker memory guard wiring", () => {
 			cwd: cleanupRoot,
 			platform: "linux",
 			env: {
-				GJC_SESSION_ID: TEST_SESSION_ID,
+				WORX_SESSION_ID: TEST_SESSION_ID,
 				PATH: process.env.PATH ?? "",
-				GJC_TEAM_WORKER_COMMAND: "true",
-				GJC_TEAM_TMUX_COMMAND: fakeTmux,
+				WORX_TEAM_WORKER_COMMAND: "true",
+				WORX_TEAM_TMUX_COMMAND: fakeTmux,
 			},
 		});
 		const ledgerPath = workerMemoryGuardLedgerPath(snapshot.state_dir, "worker-1");
@@ -3951,7 +3957,7 @@ describe("team worker memory guard wiring", () => {
 			retry_limit: 2,
 		});
 		const tmuxLog = await Bun.file(path.join(cleanupRoot, "tmux.log")).text();
-		expect(tmuxLog).toContain("GJC_TEAM_WORKER_MEMORY_GUARD_PATH");
+		expect(tmuxLog).toContain("WORX_TEAM_WORKER_MEMORY_GUARD_PATH");
 		expect(tmuxLog).toContain(ledgerPath);
 	});
 
@@ -3967,9 +3973,12 @@ describe("team worker memory guard wiring", () => {
 				cwd: cleanupRoot,
 				dryRun: true,
 				platform,
-				env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+				env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 			});
-			const before = await readGjcTeamSnapshot(teamName, cleanupRoot, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID });
+			const before = await readGjcTeamSnapshot(teamName, cleanupRoot, {
+				PATH: "",
+				WORX_SESSION_ID: TEST_SESSION_ID,
+			});
 			const result = (await executeGjcTeamApiOperation(
 				"apply-worker-memory-guard",
 				{
@@ -3980,13 +3989,13 @@ describe("team worker memory guard wiring", () => {
 					reason: "advisory-check",
 				},
 				cleanupRoot,
-				{ PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			)) as { result: string; lifecycle_mutated: boolean; ledger: { state: string; last_reason?: string } };
 			expect(result.result).toBe("advisory");
 			expect(result.lifecycle_mutated).toBe(false);
 			expect(result.ledger.state).toBe("advisory");
 			expect(result.ledger.last_reason).toContain(`unsupported_platform:${platform}`);
-			const after = await readGjcTeamSnapshot(teamName, cleanupRoot, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID });
+			const after = await readGjcTeamSnapshot(teamName, cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
 			expect(after.workers[0]?.pane_id).toBe(before.workers[0]?.pane_id);
 			expect(after.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe(
 				before.worker_lifecycle_by_id["worker-1"]?.lifecycle_state,
@@ -3998,13 +4007,13 @@ describe("team worker memory guard wiring", () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const env = {
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 			PATH: process.env.PATH ?? "",
-			GJC_TEAM_WORKER_COMMAND: "true",
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
-			GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "0",
+			WORX_TEAM_WORKER_COMMAND: "true",
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "0",
 			// Fail fast if successor ack never arrives; production default is 120s.
-			GJC_TEAM_MEMORY_GUARD_STARTUP_TIMEOUT_MS: "5000",
+			WORX_TEAM_MEMORY_GUARD_STARTUP_TIMEOUT_MS: "5000",
 		};
 		const snapshot = await startGjcTeam({
 			workerCount: 2,
@@ -4120,10 +4129,10 @@ describe("team worker memory guard wiring", () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const env = {
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 			PATH: process.env.PATH ?? "",
-			GJC_TEAM_WORKER_COMMAND: "true",
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_TEAM_WORKER_COMMAND: "true",
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		};
 		const snapshot = await startGjcTeam({
 			workerCount: 1,
@@ -4199,12 +4208,12 @@ describe("stalled worker continuation protocol", () => {
 		const dispatches: Array<{ command: string; args: string[] }> = [];
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const env = {
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 			PATH: process.env.PATH ?? "",
-			GJC_TEAM_WORKER_COMMAND: "true",
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
-			GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
-			GJC_TEAM_HEARTBEAT_STALE_MS: "60000",
+			WORX_TEAM_WORKER_COMMAND: "true",
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
+			WORX_TEAM_HEARTBEAT_STALE_MS: "60000",
 		};
 		const snapshot = await startGjcTeam({
 			workerCount: 1,
@@ -4272,12 +4281,12 @@ describe("stalled worker continuation protocol", () => {
 		});
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 		const env = {
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 			PATH: process.env.PATH ?? "",
-			GJC_TEAM_WORKER_COMMAND: "true",
-			GJC_TEAM_TMUX_COMMAND: fakeTmux,
-			GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
-			GJC_TEAM_HEARTBEAT_STALE_MS: "1000",
+			WORX_TEAM_WORKER_COMMAND: "true",
+			WORX_TEAM_TMUX_COMMAND: fakeTmux,
+			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
+			WORX_TEAM_HEARTBEAT_STALE_MS: "1000",
 		};
 		const snapshot = await startGjcTeam({
 			workerCount: 1,
@@ -4368,7 +4377,7 @@ describe("stalled worker continuation protocol", () => {
 			const fixture = await prepareContinuation(
 				`continuation-disabled-threshold-${threshold.replace("-", "negative")}-team`,
 			);
-			const env = { ...fixture.env, GJC_TEAM_HEARTBEAT_STALE_MS: threshold };
+			const env = { ...fixture.env, WORX_TEAM_HEARTBEAT_STALE_MS: threshold };
 			await monitorGjcTeam(fixture.teamName, cleanupRoot!, env);
 			expect(fixture.dispatches, threshold).toHaveLength(0);
 			const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, env);
@@ -4787,7 +4796,7 @@ describe("stalled worker continuation protocol", () => {
 		__setTmuxProviderAuthorityPlatformForTests("win32");
 		try {
 			const context = resolveGjcTmuxProviderContext({
-				env: { GJC_TMUX_COMMAND: fakePsmux, GJC_PSMUX_COMMAND: fakePsmux },
+				env: { WORX_TMUX_COMMAND: fakePsmux, WORX_PSMUX_COMMAND: fakePsmux },
 				platform: "win32",
 			});
 			const baseline = captureOwnerGenerationBaselineSync(fixture.stateDir, config.team_name);
@@ -4830,7 +4839,7 @@ describe("stalled worker continuation protocol", () => {
 		);
 		await monitorGjcTeam(fixture.teamName, cleanupRoot!, {
 			...fixture.env,
-			GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "0",
+			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "0",
 		});
 		expect(fixture.dispatches).toHaveLength(0);
 		await Bun.write(

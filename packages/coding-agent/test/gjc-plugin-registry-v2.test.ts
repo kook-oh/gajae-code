@@ -77,7 +77,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		await fs.cp(fixture, root, { recursive: true });
 		await writeLegacyEntry(cwd, root);
 		const sentinel = path.join(cwd, "imported");
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			const registry = await readRegistry("project", cwd);
 			const tool = registry.plugins[0]?.surfaces.tools[0];
@@ -94,7 +94,7 @@ describe("GJC plugin registry v2 cutover", () => {
 					.catch(() => false),
 			).toBe(false);
 		} finally {
-			delete process.env.GJC_TEST_IMPORT_SENTINEL;
+			delete process.env.WORX_TEST_IMPORT_SENTINEL;
 		}
 	});
 
@@ -161,7 +161,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		await fs.cp(fixture, root, { recursive: true });
 		await writeLegacyEntry(cwd, root);
 		const sentinel = path.join(cwd, "imported");
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			const schemas = await serveGjcPluginSchemas(cwd);
 			expect(schemas["tool:domain_note"]).toMatchObject({ $schema: "https://json-schema.org/draft/2020-12/schema" });
@@ -172,7 +172,7 @@ describe("GJC plugin registry v2 cutover", () => {
 					.catch(() => false),
 			).toBe(false);
 		} finally {
-			delete process.env.GJC_TEST_IMPORT_SENTINEL;
+			delete process.env.WORX_TEST_IMPORT_SENTINEL;
 		}
 	});
 
@@ -189,7 +189,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		registry.plugins[0]!.surfaces.tools[0]!.implementationHash = "0".repeat(64);
 		await fs.writeFile(registryPath, JSON.stringify(registry));
 		const sentinel = path.join(cwd, "imported");
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			const loaded = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: [] });
 			expect(loaded.tools).toHaveLength(0);
@@ -201,7 +201,7 @@ describe("GJC plugin registry v2 cutover", () => {
 					.catch(() => false),
 			).toBe(false);
 		} finally {
-			delete process.env.GJC_TEST_IMPORT_SENTINEL;
+			delete process.env.WORX_TEST_IMPORT_SENTINEL;
 		}
 		await expect(
 			Promise.reject(new PluginImplementationHashMismatchError("tool.ts", "a", "b")),

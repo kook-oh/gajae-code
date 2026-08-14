@@ -88,13 +88,13 @@ describe.skipIf(process.platform !== "win32")("Windows managed session directory
 		await expect(fs.access(agentDir)).rejects.toMatchObject({ code: "ENOENT" });
 	});
 
-	it.skipIf(!process.env.GJC_TEST_SUBST_WORKSPACE)(
+	it.skipIf(!process.env.WORX_TEST_SUBST_WORKSPACE)(
 		"binds a configured subst alias to its canonical volume identity",
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-session-directory-windows-"));
 			temporaryDirectories.push(root);
 			const agentDir = path.join(root, "agent");
-			const substWorkspace = process.env.GJC_TEST_SUBST_WORKSPACE;
+			const substWorkspace = process.env.WORX_TEST_SUBST_WORKSPACE;
 			if (!substWorkspace) throw new Error("Missing subst workspace");
 
 			const resolved = await resolveManagedSessionScope({ cwd: substWorkspace, agentDir });

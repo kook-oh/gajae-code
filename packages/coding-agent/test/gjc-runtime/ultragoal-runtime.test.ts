@@ -54,10 +54,10 @@ const ORIGINAL_CI_DEV_CHANGED_PATHS = process.env.CI_DEV_CHANGED_PATHS;
 const NON_COMPUTER_TEST_PATH = "packages/coding-agent/test/gjc-runtime/ultragoal-runtime.test.ts";
 
 beforeEach(() => {
-	savedSessionId = process.env.GJC_SESSION_ID;
-	savedSessionFile = process.env.GJC_SESSION_FILE;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
-	delete process.env.GJC_SESSION_FILE;
+	savedSessionId = process.env.WORX_SESSION_ID;
+	savedSessionFile = process.env.WORX_SESSION_FILE;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
+	delete process.env.WORX_SESSION_FILE;
 	process.env.CI_DEV_CHANGED_PATHS = NON_COMPUTER_TEST_PATH;
 });
 
@@ -86,10 +86,10 @@ async function batchTempDir(): Promise<string> {
 }
 
 afterEach(async () => {
-	if (savedSessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = savedSessionId;
-	if (savedSessionFile === undefined) delete process.env.GJC_SESSION_FILE;
-	else process.env.GJC_SESSION_FILE = savedSessionFile;
+	if (savedSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = savedSessionId;
+	if (savedSessionFile === undefined) delete process.env.WORX_SESSION_FILE;
+	else process.env.WORX_SESSION_FILE = savedSessionFile;
 	if (ORIGINAL_CI_DEV_CHANGED_PATHS === undefined) delete process.env.CI_DEV_CHANGED_PATHS;
 	else process.env.CI_DEV_CHANGED_PATHS = ORIGINAL_CI_DEV_CHANGED_PATHS;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
@@ -2237,8 +2237,14 @@ describe("native GJC ultragoal runtime", () => {
 		const gatePath = path.join(root, "valid-gate.json");
 		await fs.writeFile(gatePath, validGate);
 
-		const goalsPath = path.join(root, ".gjc", `_session-${process.env.GJC_SESSION_ID}`, "ultragoal", "goals.json");
-		const ledgerPath = path.join(root, ".gjc", `_session-${process.env.GJC_SESSION_ID}`, "ultragoal", "ledger.jsonl");
+		const goalsPath = path.join(root, ".gjc", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
+		const ledgerPath = path.join(
+			root,
+			".gjc",
+			`_session-${process.env.WORX_SESSION_ID}`,
+			"ultragoal",
+			"ledger.jsonl",
+		);
 		const [goalsBefore, ledgerBefore] = await Promise.all([
 			fs.readFile(goalsPath, "utf8"),
 			fs.readFile(ledgerPath, "utf8"),
@@ -2299,7 +2305,7 @@ describe("native GJC ultragoal runtime", () => {
 	it("quality-gate init: writes a multi-surface template without mutating goals", async () => {
 		const root = await batchTempDir();
 		await createUltragoalPlan({ cwd: root, brief: "Ship one boundary" });
-		const goalsPath = path.join(root, ".gjc", `_session-${process.env.GJC_SESSION_ID}`, "ultragoal", "goals.json");
+		const goalsPath = path.join(root, ".gjc", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
 		const goalsBefore = await fs.readFile(goalsPath, "utf8");
 		const out = path.join(root, "quality-gate.json");
 
@@ -6270,14 +6276,14 @@ describe("ultragoal mode-state + HUD reconciliation (#342)", () => {
 	}
 
 	async function withSessionId<T>(id: string | undefined, fn: () => Promise<T>): Promise<T> {
-		const prev = process.env.GJC_SESSION_ID;
-		if (id === undefined) delete process.env.GJC_SESSION_ID;
-		else process.env.GJC_SESSION_ID = id;
+		const prev = process.env.WORX_SESSION_ID;
+		if (id === undefined) delete process.env.WORX_SESSION_ID;
+		else process.env.WORX_SESSION_ID = id;
 		try {
 			return await fn();
 		} finally {
-			if (prev === undefined) delete process.env.GJC_SESSION_ID;
-			else process.env.GJC_SESSION_ID = prev;
+			if (prev === undefined) delete process.env.WORX_SESSION_ID;
+			else process.env.WORX_SESSION_ID = prev;
 		}
 	}
 
@@ -6300,7 +6306,7 @@ describe("ultragoal mode-state + HUD reconciliation (#342)", () => {
 		});
 	});
 
-	it("writes session-scoped state when GJC_SESSION_ID is set (AC1)", async () => {
+	it("writes session-scoped state when WORX_SESSION_ID is set (AC1)", async () => {
 		const root = await tempDir();
 		const sessionId = "sess.test.342";
 		await withSessionId(sessionId, async () => {
@@ -6322,7 +6328,7 @@ describe("ultragoal mode-state + HUD reconciliation (#342)", () => {
 			const result = await runNativeUltragoalCommand(["status"], root);
 			expect(result.status).toBe(1);
 			expect(result.stderr).toContain("a session id is required to write state");
-			expect(result.stderr).toContain("GJC_SESSION_ID");
+			expect(result.stderr).toContain("WORX_SESSION_ID");
 		});
 	});
 

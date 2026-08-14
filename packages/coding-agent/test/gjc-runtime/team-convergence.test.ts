@@ -10,15 +10,15 @@ let cleanupRoot: string | undefined;
 let previousGjcSessionId: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 });
 
@@ -38,7 +38,7 @@ describe("native gjc team mode-state convergence", () => {
 			teamName: "converge-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID },
+			env: { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		});
 		await persistGjcTeamModeStateSummary(started, cleanupRoot);
 
@@ -54,7 +54,7 @@ describe("native gjc team mode-state convergence", () => {
 
 		const status = await monitorGjcTeam(started.team_name, cleanupRoot, {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
+			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		await persistGjcTeamModeStateSummary(status, cleanupRoot);
 

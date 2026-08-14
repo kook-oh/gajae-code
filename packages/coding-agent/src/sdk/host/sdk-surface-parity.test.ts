@@ -219,8 +219,8 @@ describe("SDK surface parity", () => {
 			registerCommand() {},
 		} as any;
 		const ctx = nativeParityContext(sessionId, cwd);
-		const previousDisable = process.env.GJC_SDK_DISABLE;
-		delete process.env.GJC_SDK_DISABLE;
+		const previousDisable = process.env.WORX_SDK_DISABLE;
+		delete process.env.WORX_SDK_DISABLE;
 		const messages: string[] = [];
 		let socket: WebSocket | undefined;
 		try {
@@ -306,8 +306,8 @@ describe("SDK surface parity", () => {
 				await handlers.get("session_shutdown")?.({}, ctx);
 			} finally {
 				nativePrototype.onSdkFrame = originalOnSdkFrame;
-				if (previousDisable === undefined) delete process.env.GJC_SDK_DISABLE;
-				else process.env.GJC_SDK_DISABLE = previousDisable;
+				if (previousDisable === undefined) delete process.env.WORX_SDK_DISABLE;
+				else process.env.WORX_SDK_DISABLE = previousDisable;
 				await fs.rm(cwd, { recursive: true, force: true });
 			}
 		}

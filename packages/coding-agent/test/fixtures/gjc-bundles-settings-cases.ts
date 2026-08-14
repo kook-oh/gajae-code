@@ -127,7 +127,7 @@ const MANY_SURFACES = Array.from({ length: 14 }, (_, index) =>
 	surface(`tool:surface-${index + 1}`, `surface-${index + 1}`),
 );
 
-export const GJC_BUNDLE_SETTINGS_STATES = Object.freeze([
+export const WORX_BUNDLE_SETTINGS_STATES = Object.freeze([
 	{ id: "loading", description: "Bundle list is loading.", fixture: fixture() },
 	{ id: "error", description: "A sanitized list error is visible.", fixture: fixture() },
 	{ id: "retry", description: "A retry action is focused after an error.", fixture: fixture() },
@@ -222,13 +222,13 @@ export const GJC_BUNDLE_SETTINGS_STATES = Object.freeze([
 	},
 ] satisfies GjcBundleSettingsState[]);
 
-export const GJC_BUNDLE_SETTINGS_VIEWPORTS = Object.freeze([
+export const WORX_BUNDLE_SETTINGS_VIEWPORTS = Object.freeze([
 	{ id: "80x24", cols: 80, rows: 24 },
 	{ id: "120x36", cols: 120, rows: 36 },
 	{ id: "160x48", cols: 160, rows: 48 },
 ] satisfies GjcBundleSettingsViewport[]);
 
-export const GJC_BUNDLE_SETTINGS_VARIANTS = Object.freeze([
+export const WORX_BUNDLE_SETTINGS_VARIANTS = Object.freeze([
 	{ id: "error-ascii", stateId: "error", viewportId: "80x24", renderMode: "ascii-no-color" },
 	{ id: "detail-ascii", stateId: "detail", viewportId: "80x24", renderMode: "ascii-no-color" },
 	{ id: "quarantined-ascii", stateId: "quarantined-blocked", viewportId: "120x36", renderMode: "ascii-no-color" },
@@ -239,16 +239,16 @@ export const GJC_BUNDLE_SETTINGS_VARIANTS = Object.freeze([
 	{ id: "surfaces-narrow", stateId: "many-surfaces-scroll", viewportId: "48x36", renderMode: "unicode-color" },
 ] satisfies GjcBundleSettingsVariant[]);
 
-export const GJC_BUNDLE_SETTINGS_ENTRIES = Object.freeze([
-	...GJC_BUNDLE_SETTINGS_STATES.flatMap(state =>
-		GJC_BUNDLE_SETTINGS_VIEWPORTS.map(viewport => ({
+export const WORX_BUNDLE_SETTINGS_ENTRIES = Object.freeze([
+	...WORX_BUNDLE_SETTINGS_STATES.flatMap(state =>
+		WORX_BUNDLE_SETTINGS_VIEWPORTS.map(viewport => ({
 			entryId: `${state.id}/${viewport.id}/unicode-color`,
 			stateId: state.id,
 			viewportId: viewport.id,
 			renderMode: "unicode-color" as const,
 		})),
 	),
-	...GJC_BUNDLE_SETTINGS_VARIANTS.map(variant => ({
+	...WORX_BUNDLE_SETTINGS_VARIANTS.map(variant => ({
 		entryId: `${variant.stateId}/${variant.viewportId}/${variant.renderMode}`,
 		stateId: variant.stateId,
 		viewportId: variant.viewportId,

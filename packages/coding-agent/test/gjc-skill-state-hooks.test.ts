@@ -37,17 +37,17 @@ describe("GJC native skill-state hooks", () => {
 	let originalCiDevChangedPaths: string | undefined;
 
 	beforeAll(() => {
-		originalGjcSessionId = process.env.GJC_SESSION_ID;
+		originalGjcSessionId = process.env.WORX_SESSION_ID;
 		originalCiDevChangedPaths = process.env.CI_DEV_CHANGED_PATHS;
 		process.env.CI_DEV_CHANGED_PATHS = "packages/coding-agent/test/gjc-skill-state-hooks.test.ts";
-		process.env.GJC_SESSION_ID = "test-session";
+		process.env.WORX_SESSION_ID = "test-session";
 	});
 
 	afterAll(() => {
 		if (originalGjcSessionId === undefined) {
-			delete process.env.GJC_SESSION_ID;
+			delete process.env.WORX_SESSION_ID;
 		} else {
-			process.env.GJC_SESSION_ID = originalGjcSessionId;
+			process.env.WORX_SESSION_ID = originalGjcSessionId;
 		}
 		if (originalCiDevChangedPaths === undefined) delete process.env.CI_DEV_CHANGED_PATHS;
 		else process.env.CI_DEV_CHANGED_PATHS = originalCiDevChangedPaths;

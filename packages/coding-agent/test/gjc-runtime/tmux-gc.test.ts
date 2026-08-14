@@ -4,7 +4,7 @@ import type { GcContext } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 import { tmuxSessionsGcAdapter } from "@bworx-io/worx-code/gjc-runtime/tmux-gc";
 import { __setMutationServerProofForTests } from "@bworx-io/worx-code/gjc-runtime/tmux-sessions";
 
-const env = { GJC_TMUX_COMMAND: "tmux-test" };
+const env = { WORX_TMUX_COMMAND: "tmux-test" };
 const project = "/tmp/gjc-project";
 
 type SpawnSyncResult = Bun.SyncSubprocess<"pipe", "pipe">;

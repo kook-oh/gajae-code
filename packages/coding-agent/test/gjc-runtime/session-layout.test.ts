@@ -6,7 +6,6 @@ import {
 	activeEntryPath,
 	decodeSessionSegment,
 	encodeSessionSegment,
-	GJC_SESSION_PREFIX,
 	modeStatePath,
 	sessionActivityPath,
 	sessionIdFromDirName,
@@ -14,6 +13,7 @@ import {
 	sessionStateDir,
 	tmuxRuntimeSessionPath,
 	transactionJournalPath,
+	WORX_SESSION_PREFIX,
 } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	detectLatestSession,
@@ -69,10 +69,10 @@ describe("session-layout (pure)", () => {
 	});
 
 	it("recovers session id from a _session-* dir name and rejects invalid names", () => {
-		expect(sessionIdFromDirName(`${GJC_SESSION_PREFIX}abc`)).toBe("abc");
-		expect(sessionIdFromDirName(`${GJC_SESSION_PREFIX}a%2Eb`)).toBe("a.b");
+		expect(sessionIdFromDirName(`${WORX_SESSION_PREFIX}abc`)).toBe("abc");
+		expect(sessionIdFromDirName(`${WORX_SESSION_PREFIX}a%2Eb`)).toBe("a.b");
 		expect(sessionIdFromDirName("state")).toBeUndefined();
-		expect(sessionIdFromDirName(GJC_SESSION_PREFIX)).toBeUndefined();
+		expect(sessionIdFromDirName(WORX_SESSION_PREFIX)).toBeUndefined();
 	});
 });
 

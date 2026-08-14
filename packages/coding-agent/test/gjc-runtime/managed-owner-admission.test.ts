@@ -16,12 +16,12 @@ const admissionModule = path.join(
 	"managed-owner-admission.ts",
 );
 const managedOwnerEnvironmentKeys = [
-	"GJC_TMUX_OWNER_STATE_DIR",
-	"GJC_COORDINATOR_SESSION_ID",
-	"GJC_TMUX_OWNER_GENERATION",
-	"GJC_MANAGED_OWNER_RUN_ID",
-	"GJC_MANAGED_OWNER_INCARNATION",
-	"GJC_MANAGED_OWNER_CHILD_TOKEN",
+	"WORX_TMUX_OWNER_STATE_DIR",
+	"WORX_COORDINATOR_SESSION_ID",
+	"WORX_TMUX_OWNER_GENERATION",
+	"WORX_MANAGED_OWNER_RUN_ID",
+	"WORX_MANAGED_OWNER_INCARNATION",
+	"WORX_MANAGED_OWNER_CHILD_TOKEN",
 ] as const;
 
 function managedOwnerEnvironment(overrides: Record<string, string> = {}): NodeJS.ProcessEnv {
@@ -38,12 +38,12 @@ async function admit(stateDir: string, token?: string): Promise<{ admitted: bool
 		stderr: "pipe",
 		env: {
 			...process.env,
-			GJC_TMUX_OWNER_STATE_DIR: stateDir,
-			GJC_COORDINATOR_SESSION_ID: "session-2681",
-			GJC_TMUX_OWNER_GENERATION: "generation-2681",
-			GJC_MANAGED_OWNER_RUN_ID: "run-2681",
-			GJC_MANAGED_OWNER_INCARNATION: "incarnation-2681",
-			...(token ? { GJC_MANAGED_OWNER_CHILD_TOKEN: token } : {}),
+			WORX_TMUX_OWNER_STATE_DIR: stateDir,
+			WORX_COORDINATOR_SESSION_ID: "session-2681",
+			WORX_TMUX_OWNER_GENERATION: "generation-2681",
+			WORX_MANAGED_OWNER_RUN_ID: "run-2681",
+			WORX_MANAGED_OWNER_INCARNATION: "incarnation-2681",
+			...(token ? { WORX_MANAGED_OWNER_CHILD_TOKEN: token } : {}),
 		},
 	});
 	const [stdout, exitCode] = await Promise.all([new Response(child.stdout).text(), child.exited]);
@@ -77,17 +77,17 @@ async function recover(
 		stderr: "pipe",
 		env: {
 			...process.env,
-			GJC_TMUX_OWNER_STATE_DIR: stateDir,
-			GJC_COORDINATOR_SESSION_ID: "session-2681",
-			GJC_TMUX_OWNER_GENERATION: "replacement-generation-2681",
-			GJC_MANAGED_OWNER_RUN_ID: "replacement-run-2681",
-			GJC_MANAGED_OWNER_INCARNATION: "replacement-incarnation-2681",
-			GJC_MANAGED_OWNER_CHILD_TOKEN: "replacement-child-token",
-			GJC_MANAGED_OWNER_PREDECESSOR_TOKEN: token,
-			GJC_MANAGED_OWNER_PREDECESSOR_GENERATION: "generation-2681",
-			GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID: "run-2681",
-			GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION: "incarnation-2681",
-			GJC_MANAGED_OWNER_TRANSCRIPT_PATH: transcriptPath,
+			WORX_TMUX_OWNER_STATE_DIR: stateDir,
+			WORX_COORDINATOR_SESSION_ID: "session-2681",
+			WORX_TMUX_OWNER_GENERATION: "replacement-generation-2681",
+			WORX_MANAGED_OWNER_RUN_ID: "replacement-run-2681",
+			WORX_MANAGED_OWNER_INCARNATION: "replacement-incarnation-2681",
+			WORX_MANAGED_OWNER_CHILD_TOKEN: "replacement-child-token",
+			WORX_MANAGED_OWNER_PREDECESSOR_TOKEN: token,
+			WORX_MANAGED_OWNER_PREDECESSOR_GENERATION: "generation-2681",
+			WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID: "run-2681",
+			WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION: "incarnation-2681",
+			WORX_MANAGED_OWNER_TRANSCRIPT_PATH: transcriptPath,
 		},
 	});
 	const [stdout, exitCode] = await Promise.all([new Response(child.stdout).text(), child.exited]);
@@ -141,7 +141,7 @@ describe("managed owner admission", () => {
 			cwd: repoRoot,
 			stdout: "pipe",
 			stderr: "pipe",
-			env: managedOwnerEnvironment({ GJC_COORDINATOR_SESSION_ID: "ordinary-coordinator-session" }),
+			env: managedOwnerEnvironment({ WORX_COORDINATOR_SESSION_ID: "ordinary-coordinator-session" }),
 		});
 		const [freshStdout, freshExitCode] = await Promise.all([new Response(fresh.stdout).text(), fresh.exited]);
 		expect(freshExitCode).toBe(0);
@@ -153,8 +153,8 @@ describe("managed owner admission", () => {
 			stdout: "pipe",
 			stderr: "pipe",
 			env: managedOwnerEnvironment({
-				GJC_COORDINATOR_SESSION_ID: "ordinary-coordinator-session",
-				GJC_TMUX_OWNER_GENERATION: "partial-generation",
+				WORX_COORDINATOR_SESSION_ID: "ordinary-coordinator-session",
+				WORX_TMUX_OWNER_GENERATION: "partial-generation",
 			}),
 		});
 		const [partialStderr, partialExitCode] = await Promise.all([new Response(partial.stderr).text(), partial.exited]);

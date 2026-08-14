@@ -70,42 +70,42 @@ describe("ACP client bridge permission requests", () => {
 		expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "always-allow" } } }, false);
 	});
 
-	it("uses GJC_ACP_PERMISSION_MODE when client metadata is absent", () => {
-		const previous = process.env.GJC_ACP_PERMISSION_MODE;
+	it("uses WORX_ACP_PERMISSION_MODE when client metadata is absent", () => {
+		const previous = process.env.WORX_ACP_PERMISSION_MODE;
 		try {
-			process.env.GJC_ACP_PERMISSION_MODE = "auto";
+			process.env.WORX_ACP_PERMISSION_MODE = "auto";
 			expectPermissionPrompt(undefined, false);
-			process.env.GJC_ACP_PERMISSION_MODE = "always-allow";
+			process.env.WORX_ACP_PERMISSION_MODE = "always-allow";
 			expectPermissionPrompt({}, false);
-			process.env.GJC_ACP_PERMISSION_MODE = "prompt";
+			process.env.WORX_ACP_PERMISSION_MODE = "prompt";
 			expectPermissionPrompt({}, true);
-			process.env.GJC_ACP_PERMISSION_MODE = "invalid";
+			process.env.WORX_ACP_PERMISSION_MODE = "invalid";
 			expectPermissionPrompt({}, true);
-			process.env.GJC_ACP_PERMISSION_MODE = "AUTO";
+			process.env.WORX_ACP_PERMISSION_MODE = "AUTO";
 			expectPermissionPrompt({}, true);
-			process.env.GJC_ACP_PERMISSION_MODE = " always-allow ";
+			process.env.WORX_ACP_PERMISSION_MODE = " always-allow ";
 			expectPermissionPrompt({}, true);
 		} finally {
-			if (previous === undefined) delete process.env.GJC_ACP_PERMISSION_MODE;
-			else process.env.GJC_ACP_PERMISSION_MODE = previous;
+			if (previous === undefined) delete process.env.WORX_ACP_PERMISSION_MODE;
+			else process.env.WORX_ACP_PERMISSION_MODE = previous;
 		}
 	});
 
 	it("prefers client metadata and fails safely for invalid explicit values", () => {
-		const previous = process.env.GJC_ACP_PERMISSION_MODE;
+		const previous = process.env.WORX_ACP_PERMISSION_MODE;
 		try {
-			process.env.GJC_ACP_PERMISSION_MODE = "prompt";
+			process.env.WORX_ACP_PERMISSION_MODE = "prompt";
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "auto" } } }, false);
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "always-allow" } } }, false);
-			process.env.GJC_ACP_PERMISSION_MODE = "always-allow";
+			process.env.WORX_ACP_PERMISSION_MODE = "always-allow";
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "prompt" } } }, true);
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "invalid" } } }, true);
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "AUTO" } } }, true);
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: " always-allow " } } }, true);
 			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: null } } }, true);
 		} finally {
-			if (previous === undefined) delete process.env.GJC_ACP_PERMISSION_MODE;
-			else process.env.GJC_ACP_PERMISSION_MODE = previous;
+			if (previous === undefined) delete process.env.WORX_ACP_PERMISSION_MODE;
+			else process.env.WORX_ACP_PERMISSION_MODE = previous;
 		}
 	});
 });

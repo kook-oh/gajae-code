@@ -37,7 +37,7 @@ try {
 } finally {
 	fs.closeSync(fd);
 }
-const capturedMode = process.env.GJC_SESSION_MEMORY_GIB_CAPTURED === "1";
+const capturedMode = process.env.WORX_SESSION_MEMORY_GIB_CAPTURED === "1";
 const captured = capturedMode ? SessionManager.captureTranscriptStrict(sourceFile) : undefined;
 if (captured?.kind === "error") throw new Error(`capture_${captured.reason}`);
 

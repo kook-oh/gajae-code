@@ -111,7 +111,7 @@ describe("SDK operation inventory", () => {
 		const copy = path.join(directory, "operation-inventory.generated.json");
 		const records: unknown[] = await Bun.file(inventory).json();
 		await Bun.write(copy, `${JSON.stringify(records.slice(1), null, "\t")}\n`);
-		const result = run(["--check"], { GJC_SDK_OPERATION_INVENTORY: copy });
+		const result = run(["--check"], { WORX_SDK_OPERATION_INVENTORY: copy });
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain("Unreviewed addition: registry:C01");
 	});
@@ -294,7 +294,7 @@ describe("SDK operation inventory", () => {
 		const directory = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-seam-"));
 		tempDirs.push(directory);
 		await Bun.write(path.join(directory, "fixture.ts"), 'switch (action) { case "unmapped_action": break; }');
-		const result = run(["--check"], { GJC_SDK_SEAM_SCAN_ROOT: directory });
+		const result = run(["--check"], { WORX_SDK_SEAM_SCAN_ROOT: directory });
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain("Pending review source seam: controller:fixture.ts:unmapped_action");
 	});

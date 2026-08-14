@@ -4,12 +4,12 @@ import type { Model } from "@gajae-code/ai/types";
 
 /**
  * The provider was renamed Codex -> "OpenAI code" and the documented env names
- * followed (GJC_OPENAI_CODE_*), but the reads still used the legacy PI_CODEX_*
+ * followed (WORX_OPENAI_CODE_*), but the reads still used the legacy PI_CODEX_*
  * names. These pin the documented name working, the legacy alias still working,
  * and GJC-first precedence.
  */
 
-const KEYS = ["GJC_OPENAI_CODE_WEBSOCKET", "PI_CODEX_WEBSOCKET"] as const;
+const KEYS = ["WORX_OPENAI_CODE_WEBSOCKET", "PI_CODEX_WEBSOCKET"] as const;
 const saved = new Map<string, string | undefined>();
 
 beforeEach(() => {
@@ -49,8 +49,8 @@ describe("OpenAI code websocket env flag", () => {
 		expect(getOpenAICodexTransportDetails(envOnlyCodexModel()).websocketPreferred).toBe(false);
 	});
 
-	it("honors the documented GJC_OPENAI_CODE_WEBSOCKET", () => {
-		Bun.env.GJC_OPENAI_CODE_WEBSOCKET = "1";
+	it("honors the documented WORX_OPENAI_CODE_WEBSOCKET", () => {
+		Bun.env.WORX_OPENAI_CODE_WEBSOCKET = "1";
 		expect(getOpenAICodexTransportDetails(envOnlyCodexModel()).websocketPreferred).toBe(true);
 	});
 
@@ -60,7 +60,7 @@ describe("OpenAI code websocket env flag", () => {
 	});
 
 	it("resolves GJC-first: an explicit GJC=0 wins over legacy PI=1", () => {
-		Bun.env.GJC_OPENAI_CODE_WEBSOCKET = "0";
+		Bun.env.WORX_OPENAI_CODE_WEBSOCKET = "0";
 		Bun.env.PI_CODEX_WEBSOCKET = "1";
 		expect(getOpenAICodexTransportDetails(envOnlyCodexModel()).websocketPreferred).toBe(false);
 	});

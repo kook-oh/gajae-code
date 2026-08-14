@@ -3,15 +3,15 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@bworx-io/worx-code-natives";
 import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import { sweepResidentCacheRoot } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager, SessionManagerTestHooks } from "@bworx-io/worx-code/session/session-manager";
+import * as native from "@bworx-io/worx-code-natives";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const MiB = 1024 * 1024;
 const originalAgentDir = getAgentDir();
-const originalAgentDirOverride = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;
 const originalMaterializedCacheMaxBytesOverride = SessionManagerTestHooks.materializedCacheMaxBytesOverride;
 const originalAfterForkSnapshot = SessionManagerTestHooks.afterForkSnapshot;
 const temporaryDirectories: string[] = [];
@@ -25,8 +25,8 @@ afterEach(async () => {
 	SessionManagerTestHooks.materializedCacheMaxBytesOverride = originalMaterializedCacheMaxBytesOverride;
 	setAgentDir(originalAgentDir);
 	SessionManagerTestHooks.afterForkSnapshot = originalAfterForkSnapshot;
-	if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-	else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+	if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+	else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 	await Promise.all(
 		temporaryDirectories.splice(0).map(directory => fs.promises.rm(directory, { recursive: true, force: true })),
 	);

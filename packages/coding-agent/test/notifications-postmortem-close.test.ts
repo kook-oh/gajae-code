@@ -91,13 +91,13 @@ async function connectFrames(endpoint: string): Promise<Frame[]> {
 }
 
 async function withNotifications<T>(fn: () => Promise<T>): Promise<T> {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		return await fn();
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }
 

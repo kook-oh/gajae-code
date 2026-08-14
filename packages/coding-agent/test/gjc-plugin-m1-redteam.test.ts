@@ -140,7 +140,7 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 		await fs.mkdir(path.join(dir, "tools"), { recursive: true });
 		await fs.writeFile(
 			path.join(dir, "tools", "sentinel.ts"),
-			`import * as fs from "node:fs"; fs.writeFileSync(process.env.GJC_TEST_IMPORT_SENTINEL!, "imported");\n`,
+			`import * as fs from "node:fs"; fs.writeFileSync(process.env.WORX_TEST_IMPORT_SENTINEL!, "imported");\n`,
 		);
 		await fs.writeFile(
 			path.join(dir, "gajae-plugin.json"),
@@ -150,13 +150,13 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 				}),
 			),
 		);
-		const prev = process.env.GJC_TEST_IMPORT_SENTINEL;
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			await compileGjcPluginBundle(dir);
 		} finally {
-			if (prev === undefined) delete process.env.GJC_TEST_IMPORT_SENTINEL;
-			else process.env.GJC_TEST_IMPORT_SENTINEL = prev;
+			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
+			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;
 		}
 		await expect(fs.access(sentinel)).rejects.toThrow();
 

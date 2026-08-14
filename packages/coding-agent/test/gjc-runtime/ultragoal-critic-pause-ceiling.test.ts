@@ -24,7 +24,7 @@ import {
 } from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-critic-pause-ceiling-test-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
 const tempRoots: string[] = [];
 
 async function tempDir(): Promise<string> {
@@ -35,14 +35,14 @@ async function tempDir(): Promise<string> {
 
 async function createActiveRun(brief = "Ship the story"): Promise<string> {
 	const cwd = await tempDir();
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	await createUltragoalPlan({ cwd, brief });
 	return cwd;
 }
 
 afterEach(async () => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 

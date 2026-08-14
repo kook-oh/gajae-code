@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { ModelRegistry, type ProviderConfigInput } from "@bworx-io/worx-code/config/model-registry";
+import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { type AssistantMessageEventStream, clearCustomApis, Effort, getCustomApi } from "@gajae-code/ai";
 import { getOAuthProviders, unregisterOAuthProviders } from "@gajae-code/ai/utils/oauth";
 import type { OAuthCredentials } from "@gajae-code/ai/utils/oauth/types";
-import { ModelRegistry, type ProviderConfigInput } from "@bworx-io/worx-code/config/model-registry";
-import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { Snowflake } from "@gajae-code/utils";
 
 describe("ModelRegistry runtime provider registration", () => {
@@ -96,7 +96,7 @@ describe("ModelRegistry runtime provider registration", () => {
 	}
 
 	test("loads custom provider API keys from typed apiKeyEnv without falling back to the env var name", async () => {
-		const keyEnv = `GJC_TEST_PROVIDER_KEY_${Snowflake.next()}`;
+		const keyEnv = `WORX_TEST_PROVIDER_KEY_${Snowflake.next()}`;
 		process.env[keyEnv] = "resolved-env-secret";
 		await Bun.write(
 			modelsJsonPath,

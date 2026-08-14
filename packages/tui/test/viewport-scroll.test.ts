@@ -441,8 +441,8 @@ describe("TUI manual viewport paging", () => {
 	});
 
 	it("rebases a nested editor cursor when following a contracted manual viewport with IME reanchoring", async () => {
-		const previousImeCursor = Bun.env.GJC_TUI_IME_CURSOR;
-		Bun.env.GJC_TUI_IME_CURSOR = "1";
+		const previousImeCursor = Bun.env.WORX_TUI_IME_CURSOR;
+		Bun.env.WORX_TUI_IME_CURSOR = "1";
 		const term = new VirtualTerminal(30, 6);
 		const tui = new TUI(term);
 		const transcript = new Lines(Array.from({ length: 6 }, (_value, index) => `line-${index}`));
@@ -476,8 +476,8 @@ describe("TUI manual viewport paging", () => {
 			expect(cursorPosition(term)).toEqual({ row: 5, col: 6 });
 			expect(term.getWriteLog().at(-1)).toContain("\x1b[?25h");
 		} finally {
-			if (previousImeCursor === undefined) delete Bun.env.GJC_TUI_IME_CURSOR;
-			else Bun.env.GJC_TUI_IME_CURSOR = previousImeCursor;
+			if (previousImeCursor === undefined) delete Bun.env.WORX_TUI_IME_CURSOR;
+			else Bun.env.WORX_TUI_IME_CURSOR = previousImeCursor;
 			tui.stop();
 		}
 	});
@@ -1109,7 +1109,7 @@ describe("registered viewport anchor", () => {
 			"TMUX_PANE",
 			"STY",
 			"ZELLIJ",
-			"GJC_TMUX_LAUNCHED",
+			"WORX_TMUX_LAUNCHED",
 			"TERMUX_VERSION",
 			"PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER",
 			"PI_TUI_VIRTUAL_VIEWPORT",
@@ -1225,7 +1225,7 @@ describe("registered viewport anchor", () => {
 		container.addChild(text);
 		container.setViewportAnchorSource(text, { id: "semantic-text" });
 		const rendered = container.renderWithViewportAnchors(4);
-		expect(rendered.lines.join("")).not.toContain("GJC_ANCHOR");
+		expect(rendered.lines.join("")).not.toContain("WORX_ANCHOR");
 		expect(rendered.anchors).toEqual([
 			{ id: "semantic-text", graphemeStart: 0, graphemeEnd: 2, cellStart: 0, cellEnd: 4 },
 			{ id: "semantic-text", graphemeStart: 2, graphemeEnd: 4, cellStart: 4, cellEnd: 8 },
@@ -1257,7 +1257,7 @@ describe("registered viewport anchor", () => {
 	});
 
 	it("does not strip or trust user-supplied anchor-like APC content", () => {
-		const literalMarker = "\x1b_AGJC_ANCHOR:0:1:0:1\x1b\\";
+		const literalMarker = "\x1b_AWORX_ANCHOR:0:1:0:1\x1b\\";
 		const container = new Container();
 		const text = new Text(`${literalMarker}visible`, 0, 0);
 		container.addChild(text);
@@ -1299,7 +1299,7 @@ describe("registered viewport anchor", () => {
 			// No anchor marker (or stray Kitty prefix) leaks into the visible output.
 			const joined = rendered.lines.join("");
 			expect(joined).not.toContain(VIEWPORT_ANCHOR_PREFIX);
-			expect(joined).not.toContain("GJC_ANCHOR");
+			expect(joined).not.toContain("WORX_ANCHOR");
 			expect(joined).not.toContain(ImageProtocol.Kitty);
 
 			// A genuine Kitty graphics line is still classified as an image and bypasses
@@ -1392,7 +1392,7 @@ describe("registered viewport anchor", () => {
 			"TMUX_PANE",
 			"STY",
 			"ZELLIJ",
-			"GJC_TMUX_LAUNCHED",
+			"WORX_TMUX_LAUNCHED",
 			"TERMUX_VERSION",
 			"PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER",
 		] as const;
@@ -1773,7 +1773,7 @@ describe("registered viewport anchor", () => {
 			"TMUX_PANE",
 			"STY",
 			"ZELLIJ",
-			"GJC_TMUX_LAUNCHED",
+			"WORX_TMUX_LAUNCHED",
 			"TERMUX_VERSION",
 			"PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER",
 			"PI_TUI_VIRTUAL_VIEWPORT",

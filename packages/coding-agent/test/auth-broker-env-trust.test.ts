@@ -17,7 +17,7 @@ import * as path from "node:path";
  */
 
 const PROBE = path.join(import.meta.dir, "fixtures", "auth-broker-config-probe.ts");
-const KEYS = ["GJC_AUTH_BROKER_URL", "GJC_AUTH_BROKER_TOKEN"] as const;
+const KEYS = ["WORX_AUTH_BROKER_URL", "WORX_AUTH_BROKER_TOKEN"] as const;
 
 interface Resolved {
 	config: { url: string; token: string } | null;
@@ -50,7 +50,7 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	// Never let the outer environment leak broker settings into the child, and keep
 	// the probe away from the developer's real agent dir / config.yml.
 	for (const key of KEYS) delete env[key];
-	env.GJC_CODING_AGENT_DIR = tempDir();
+	env.WORX_CODING_AGENT_DIR = tempDir();
 	Object.assign(env, overrides);
 
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd, env, stdout: "pipe", stderr: "pipe" });
@@ -69,7 +69,7 @@ describe("auth broker configuration trust boundary", () => {
 
 	it("ignores a broker URL and token planted by the project .env", async () => {
 		const cwd = projectDir(
-			["GJC_AUTH_BROKER_URL=https://attacker.example", "GJC_AUTH_BROKER_TOKEN=attacker-token"].join("\n"),
+			["WORX_AUTH_BROKER_URL=https://attacker.example", "WORX_AUTH_BROKER_TOKEN=attacker-token"].join("\n"),
 		);
 		const resolved = await resolveIn(cwd);
 		expect(resolved.config).toBeNull();
@@ -78,7 +78,7 @@ describe("auth broker configuration trust boundary", () => {
 
 	it("ignores a planted broker URL even without a planted token", async () => {
 		// A planted URL alone must not reach the throw-on-missing-token path either.
-		const cwd = projectDir("GJC_AUTH_BROKER_URL=https://attacker.example\n");
+		const cwd = projectDir("WORX_AUTH_BROKER_URL=https://attacker.example\n");
 		const resolved = await resolveIn(cwd);
 		expect(resolved.config).toBeNull();
 		expect(resolved.error).toBeNull();
@@ -86,19 +86,19 @@ describe("auth broker configuration trust boundary", () => {
 
 	it("still honors a broker inherited from the launching shell", async () => {
 		const resolved = await resolveIn(projectDir(), {
-			GJC_AUTH_BROKER_URL: "https://broker.internal",
-			GJC_AUTH_BROKER_TOKEN: "operator-token",
+			WORX_AUTH_BROKER_URL: "https://broker.internal",
+			WORX_AUTH_BROKER_TOKEN: "operator-token",
 		});
 		expect(resolved.config).toEqual({ url: "https://broker.internal", token: "operator-token" });
 	});
 
 	it("does not let the project .env override an inherited broker", async () => {
 		const cwd = projectDir(
-			["GJC_AUTH_BROKER_URL=https://attacker.example", "GJC_AUTH_BROKER_TOKEN=attacker-token"].join("\n"),
+			["WORX_AUTH_BROKER_URL=https://attacker.example", "WORX_AUTH_BROKER_TOKEN=attacker-token"].join("\n"),
 		);
 		const resolved = await resolveIn(cwd, {
-			GJC_AUTH_BROKER_URL: "https://broker.internal",
-			GJC_AUTH_BROKER_TOKEN: "operator-token",
+			WORX_AUTH_BROKER_URL: "https://broker.internal",
+			WORX_AUTH_BROKER_TOKEN: "operator-token",
 		});
 		expect(resolved.config).toEqual({ url: "https://broker.internal", token: "operator-token" });
 	});

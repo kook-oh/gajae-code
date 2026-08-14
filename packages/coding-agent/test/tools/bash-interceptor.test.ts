@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { sessionDirName } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import type { AgentToolContext } from "@gajae-code/agent-core";
 import { validateToolArguments } from "@gajae-code/ai/utils/validation";
-import { sessionDirName } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { Settings } from "../../src/config/settings";
 import type { BashInterceptorRule } from "../../src/config/settings-schema";
 import { disposeAllShellSessions, getShellSessionCount } from "../../src/exec/bash-executor";
@@ -206,7 +206,7 @@ describe("BashTool restricted role-agent allowlist", () => {
 				"read-only bash only allows commands starting with",
 			);
 			await expect(tool.execute("tool-call", { command: "ls", env: { PATH: "/tmp/fake" } })).rejects.toThrow(
-				"Read-only bash only allows the GJC_RALPLAN_ARTIFACT env override for --artifact-env.",
+				"Read-only bash only allows the WORX_RALPLAN_ARTIFACT env override for --artifact-env.",
 			);
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
@@ -268,7 +268,7 @@ describe("BashTool restricted role-agent allowlist", () => {
 				command: "gjc ralplan --write --stage architect --stage_n 1 --artifact ok",
 				env: { PATH: "/tmp/fake" },
 			}),
-		).rejects.toThrow("only allows the GJC_RALPLAN_ARTIFACT env override");
+		).rejects.toThrow("only allows the WORX_RALPLAN_ARTIFACT env override");
 	});
 
 	it("allows the sanctioned ralplan artifact env override in restricted mode", async () => {
@@ -278,9 +278,9 @@ describe("BashTool restricted role-agent allowlist", () => {
 			const bunPath = process.execPath;
 			const tool = createRestrictedBashTool(root, [`${bunPath} ${cliPath} ralplan --write`]);
 			const result = await tool.execute("tool-call", {
-				command: `${bunPath} ${cliPath} ralplan --write --stage critic --stage_n 1 --artifact-env GJC_RALPLAN_ARTIFACT --run-id env-marker --session-id restricted-bash-test`,
+				command: `${bunPath} ${cliPath} ralplan --write --stage critic --stage_n 1 --artifact-env WORX_RALPLAN_ARTIFACT --run-id env-marker --session-id restricted-bash-test`,
 				env: {
-					GJC_RALPLAN_ARTIFACT: '# Review\n\nContains `"studio"`, `use client`, $VALUE, and C:\\tmp.\n',
+					WORX_RALPLAN_ARTIFACT: '# Review\n\nContains `"studio"`, `use client`, $VALUE, and C:\\tmp.\n',
 				},
 				timeout: 30,
 			});

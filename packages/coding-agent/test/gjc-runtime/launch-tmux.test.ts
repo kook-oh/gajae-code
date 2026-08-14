@@ -11,11 +11,11 @@ import {
 	buildDefaultTmuxLaunchPlan,
 	buildGjcTmuxProfileCommands,
 	buildGjcTmuxWindowTitle,
-	GJC_TMUX_LAUNCHED_ENV,
-	GJC_TMUX_SESSION_PREFIX,
 	launchDefaultTmuxIfNeeded as launchDefaultTmuxIfNeededRaw,
 	type TmuxLaunchContext,
 	type TmuxSpawnOptions,
+	WORX_TMUX_LAUNCHED_ENV,
+	WORX_TMUX_SESSION_PREFIX,
 } from "@bworx-io/worx-code/gjc-runtime/launch-tmux";
 import {
 	__setBinaryResolverForTests,
@@ -83,20 +83,20 @@ function launchContext(context: TmuxLaunchContext): TmuxLaunchContext {
 		ownerIsolationProbe: safeAbsentOwnerIsolationProbe(context.platform ?? "linux"),
 		...context,
 		env: {
-			GJC_COORDINATOR_SESSION_STATE_FILE: path.join(
+			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(
 				launchTestRoot,
 				context.platform === "darwin" ? "darwin" : "runtime",
 				`${launchStateSequence++}.json`,
 			),
-			GJC_TMUX_COMMAND: "tmux",
-			GJC_PSMUX_DETECTION: "off",
+			WORX_TMUX_COMMAND: "tmux",
+			WORX_PSMUX_DETECTION: "off",
 			...(context.env ?? {}),
 		},
 	};
 }
 
 function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
-	let createdSessionName = context.env?.GJC_TMUX_SESSION;
+	let createdSessionName = context.env?.WORX_TMUX_SESSION;
 	const suppliedSpawnSync = context.spawnSync;
 	const psmuxMetadata = new Map<string, string>();
 	return launchDefaultTmuxIfNeededRaw(
@@ -190,27 +190,27 @@ let previousCoordinatorSessionId: string | undefined;
 let previousCoordinatorStateFile: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
-	previousCoordinatorSessionId = process.env.GJC_COORDINATOR_SESSION_ID;
-	previousCoordinatorStateFile = process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-	delete process.env.GJC_COORDINATOR_SESSION_ID;
-	delete process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
+	previousCoordinatorSessionId = process.env.WORX_COORDINATOR_SESSION_ID;
+	previousCoordinatorStateFile = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+	delete process.env.WORX_COORDINATOR_SESSION_ID;
+	delete process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
 	__setBinaryResolverForTests(candidate => `C:\\gjc-test\\${candidate}.exe`);
 	__setExecutableIdentityResolverForTests(() => "gjc-test-psmux");
 });
 
 afterAll(() => {
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 	fs.rmSync(launchTestRoot, { recursive: true, force: true });
-	if (previousCoordinatorSessionId === undefined) delete process.env.GJC_COORDINATOR_SESSION_ID;
-	else process.env.GJC_COORDINATOR_SESSION_ID = previousCoordinatorSessionId;
-	if (previousCoordinatorStateFile === undefined) delete process.env.GJC_COORDINATOR_SESSION_STATE_FILE;
-	else process.env.GJC_COORDINATOR_SESSION_STATE_FILE = previousCoordinatorStateFile;
+	if (previousCoordinatorSessionId === undefined) delete process.env.WORX_COORDINATOR_SESSION_ID;
+	else process.env.WORX_COORDINATOR_SESSION_ID = previousCoordinatorSessionId;
+	if (previousCoordinatorStateFile === undefined) delete process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
+	else process.env.WORX_COORDINATOR_SESSION_STATE_FILE = previousCoordinatorStateFile;
 	__setBinaryResolverForTests(null);
 	__setExecutableIdentityResolverForTests(null);
 });
@@ -545,7 +545,7 @@ describe("default GJC tmux launch", () => {
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_PSMUX_DETECTION: "off" },
+			env: { WORX_PSMUX_DETECTION: "off" },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "darwin",
@@ -558,13 +558,13 @@ describe("default GJC tmux launch", () => {
 		expect(plan).toBeDefined();
 		if (!plan) throw new Error("expected tmux plan");
 
-		expect(plan.sessionName.startsWith(GJC_TMUX_SESSION_PREFIX)).toBe(true);
+		expect(plan.sessionName.startsWith(WORX_TMUX_SESSION_PREFIX)).toBe(true);
 		expect(plan.tmuxCommand).toBe("tmux");
 		expect(plan.newSessionArgs.slice(0, 6)).toEqual(["new-session", "-d", "-s", plan.sessionName, "-c", "/repo"]);
 		expect(plan?.innerCommand).toContain("'/bin/bun' '/repo/packages/coding-agent/src/cli.ts' 'hello world'");
 		expect(plan?.innerCommand).not.toContain("'--tmux'");
-		expect(plan.innerCommand).toContain("GJC_COORDINATOR_SESSION_ID=");
-		expect(plan.innerCommand).toContain("GJC_COORDINATOR_SESSION_STATE_FILE=");
+		expect(plan.innerCommand).toContain("WORX_COORDINATOR_SESSION_ID=");
+		expect(plan.innerCommand).toContain("WORX_COORDINATOR_SESSION_STATE_FILE=");
 		expect(plan.innerCommand).toContain("tmux-exit.json");
 		expect(plan.innerCommand).toContain("trap __gjc_tmux_write_exit_marker EXIT");
 		expect(plan.innerCommand).not.toStartWith("exec ");
@@ -769,7 +769,7 @@ describe("default GJC tmux launch", () => {
 					parsed: args({ messages: ["hello world"], tmux: true }),
 					rawArgs: ["--tmux", "hello world"],
 					cwd: "/repo",
-					env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 					argv: ["bun", "packages/coding-agent/src/cli.ts"],
 					execPath: "/bin/bun",
 					platform: "win32",
@@ -818,7 +818,7 @@ describe("default GJC tmux launch", () => {
 			parsed: args({ tmux: true }),
 			rawArgs: ["--tmux"],
 			cwd: "/repo",
-			env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+			env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
 			platform: "win32",
@@ -841,9 +841,9 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it.each([
-		"GJC_COORDINATOR_SESSION_BRANCH",
-		"GJC_COORDINATOR_SESSION_LAUNCH_ID",
-		"GJC_COORDINATOR_SESSION_READINESS_FILE",
+		"WORX_COORDINATOR_SESSION_BRANCH",
+		"WORX_COORDINATOR_SESSION_LAUNCH_ID",
+		"WORX_COORDINATOR_SESSION_READINESS_FILE",
 	])("manages psmux when %s is the only lifecycle marker", markerName => {
 		const calls: string[][] = [];
 		try {
@@ -853,8 +853,8 @@ describe("default GJC tmux launch", () => {
 					rawArgs: ["--tmux"],
 					cwd: "/repo",
 					env: {
-						GJC_TMUX_COMMAND: "psmux",
-						GJC_PSMUX_COMMAND: "psmux",
+						WORX_TMUX_COMMAND: "psmux",
+						WORX_PSMUX_COMMAND: "psmux",
 						[markerName]: " marker ",
 					},
 					argv: ["bun", "cli.ts"],
@@ -882,7 +882,7 @@ describe("default GJC tmux launch", () => {
 				parsed: args({ messages: ["hello"], tmux: true }),
 				rawArgs: ["--tmux", "hello"],
 				cwd: "/repo",
-				env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux", GJC_TMUX_SESSION: "continued" },
+				env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux", WORX_TMUX_SESSION: "continued" },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "win32",
@@ -916,7 +916,7 @@ describe("default GJC tmux launch", () => {
 				parsed: args({ tmux: true }),
 				rawArgs: ["--tmux"],
 				cwd: "/repo",
-				env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+				env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "win32",
@@ -946,8 +946,8 @@ describe("default GJC tmux launch", () => {
 		["print", args({ tmux: true, print: true }), ["--tmux", "--print", "hello"], {}, false],
 		["export", args({ tmux: true, export: "json" }), ["--tmux", "--export", "json"], {}, false],
 		["list models", args({ tmux: true, listModels: true }), ["--tmux", "--list-models"], {}, false],
-		["direct policy", args({ tmux: true }), ["--tmux", "hello"], { GJC_LAUNCH_POLICY: "direct" }, false],
-		["already launched", args({ tmux: true }), ["--tmux", "hello"], { [GJC_TMUX_LAUNCHED_ENV]: "1" }, false],
+		["direct policy", args({ tmux: true }), ["--tmux", "hello"], { WORX_LAUNCH_POLICY: "direct" }, false],
+		["already launched", args({ tmux: true }), ["--tmux", "hello"], { [WORX_TMUX_LAUNCHED_ENV]: "1" }, false],
 	])("leaves psmux root launch unhandled when %s", (_label, parsed, rawArgs, extraEnv, expectedHandled) => {
 		const calls: string[][] = [];
 		const diagnostics: string[] = [];
@@ -957,7 +957,7 @@ describe("default GJC tmux launch", () => {
 					parsed,
 					rawArgs,
 					cwd: "/repo",
-					env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux", ...extraEnv },
+					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux", ...extraEnv },
 					argv: ["bun", "cli.ts"],
 					execPath: "/bin/bun",
 					platform: "win32",
@@ -1018,7 +1018,7 @@ describe("default GJC tmux launch", () => {
 		if (!plan) throw new Error("expected tmux plan");
 
 		expect(plan.innerCommand).not.toContain("$bunfs");
-		expect(plan.innerCommand).toContain(`${GJC_TMUX_LAUNCHED_ENV}=1`);
+		expect(plan.innerCommand).toContain(`${WORX_TMUX_LAUNCHED_ENV}=1`);
 		expect(plan.innerCommand).toContain("'/home/me/.local/bin/gjc' 'hello world'");
 	});
 
@@ -1118,7 +1118,7 @@ describe("default GJC tmux launch", () => {
 				parsed: args({ messages: ["hello world"], tmux: true, continue: true }),
 				rawArgs: ["--tmux", "--continue", "hello world"],
 				cwd: "/repo",
-				env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+				env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				argv: ["bun", "packages/coding-agent/src/cli.ts"],
 				execPath: "/bin/bun",
 				platform: "win32",
@@ -1239,7 +1239,7 @@ describe("default GJC tmux launch", () => {
 		expect(plan?.project).toBe("/repo-b");
 	});
 
-	it("honors an explicit GJC_TMUX_SESSION override", () => {
+	it("honors an explicit WORX_TMUX_SESSION override", () => {
 		__setBinaryResolverForTests(candidate => (candidate === "tmux" ? "C:\\native\\tmux.exe" : null));
 		__setExecutableIdentityResolverForTests(() => "native-tmux");
 		spyOn(Bun, "spawnSync").mockReturnValue(
@@ -1249,7 +1249,7 @@ describe("default GJC tmux launch", () => {
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_TMUX_SESSION: "custom-gjc" },
+			env: { WORX_TMUX_SESSION: "custom-gjc" },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "darwin",
@@ -1263,9 +1263,9 @@ describe("default GJC tmux launch", () => {
 		expect(plan?.newSessionArgs.slice(0, 6)).toEqual(["new-session", "-d", "-s", "custom-gjc", "-c", "/repo"]);
 	});
 
-	it("honors explicit GJC_TMUX_COMMAND on native Windows without direct-launch fallback", () => {
+	it("honors explicit WORX_TMUX_COMMAND on native Windows without direct-launch fallback", () => {
 		// Once psmux is a supported Windows multiplexer, an explicit
-		// GJC_TMUX_COMMAND override must always produce a tmux plan. The
+		// WORX_TMUX_COMMAND override must always produce a tmux plan. The
 		// legacy direct-launch fallback only fires when no tmux provider is
 		// resolvable on PATH; the user has named a multiplexer here so the
 		// buildDefaultTmuxLaunchPlan path is authoritative. Runtime failures
@@ -1275,7 +1275,7 @@ describe("default GJC tmux launch", () => {
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "C:\\repo",
-			env: { GJC_TMUX_COMMAND: "psmux" },
+			env: { WORX_TMUX_COMMAND: "psmux" },
 			argv: ["C:\\Program Files\\GJC\\gjc.exe"],
 			execPath: "C:\\Program Files\\GJC\\gjc.exe",
 			platform: "win32",
@@ -1477,10 +1477,10 @@ describe("default GJC tmux launch", () => {
 		]);
 		expect(args.flat()).not.toContain("-g");
 		expect(
-			buildGjcTmuxProfileCommands("gjc-session:0", { GJC_TMUX_PROFILE: "false" }).map(command => command.args),
+			buildGjcTmuxProfileCommands("gjc-session:0", { WORX_TMUX_PROFILE: "false" }).map(command => command.args),
 		).toEqual([["set-option", "-t", "gjc-session:0", "@gjc-profile", "1"]]);
 		expect(
-			buildGjcTmuxProfileCommands("gjc-session:0", { GJC_MOUSE: "off" }).flatMap(command => command.args),
+			buildGjcTmuxProfileCommands("gjc-session:0", { WORX_MOUSE: "off" }).flatMap(command => command.args),
 		).not.toContain("mouse");
 	});
 
@@ -1493,7 +1493,7 @@ describe("default GJC tmux launch", () => {
 	])("applies the psmux UX profile force matrix for %p", (force, includesUxCommands) => {
 		const commands = buildGjcTmuxProfileCommands(
 			"gjc-session:0",
-			typeof force === "string" ? { GJC_PSMUX_PROFILE_FORCE: force } : {},
+			typeof force === "string" ? { WORX_PSMUX_PROFILE_FORCE: force } : {},
 			{},
 			{ tmuxCommand: "psmux" },
 		);
@@ -1532,7 +1532,7 @@ describe("default GJC tmux launch", () => {
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_SESSION_ID: TEST_SESSION_ID },
+			env: { WORX_SESSION_ID: TEST_SESSION_ID },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "darwin",
@@ -1546,21 +1546,21 @@ describe("default GJC tmux launch", () => {
 		if (!plan) throw new Error("expected tmux plan");
 		expect(plan.sessionId).toBe(plan.sessionName);
 		if (!plan.sessionId || !plan.sessionStateFile) throw new Error("expected tmux session id and state file");
-		// The runtime state path is rooted on the GJC session (GJC_SESSION_ID), not the
+		// The runtime state path is rooted on the GJC session (WORX_SESSION_ID), not the
 		// coordinator/tmux identity.
 		expect(path.dirname(plan.sessionStateFile)).toBe(
 			path.join(sessionRuntimeDir("/repo", TEST_SESSION_ID), "tmux-sessions"),
 		);
-		expect(plan.innerCommand).toContain(`GJC_COORDINATOR_SESSION_ID='${plan.sessionId}'`);
-		expect(plan.innerCommand).toContain(`GJC_COORDINATOR_SESSION_STATE_FILE='${plan.sessionStateFile}'`);
+		expect(plan.innerCommand).toContain(`WORX_COORDINATOR_SESSION_ID='${plan.sessionId}'`);
+		expect(plan.innerCommand).toContain(`WORX_COORDINATOR_SESSION_STATE_FILE='${plan.sessionStateFile}'`);
 	});
 
-	it("roots runtime state on GJC_SESSION_ID even when GJC_COORDINATOR_SESSION_ID differs", () => {
+	it("roots runtime state on WORX_SESSION_ID even when WORX_COORDINATOR_SESSION_ID differs", () => {
 		const plan = buildDefaultTmuxLaunchPlan({
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_SESSION_ID: "gjc-sess", GJC_COORDINATOR_SESSION_ID: "coord-sess" },
+			env: { WORX_SESSION_ID: "gjc-sess", WORX_COORDINATOR_SESSION_ID: "coord-sess" },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "darwin",
@@ -1618,7 +1618,7 @@ describe("default GJC tmux launch", () => {
 			buildDefaultTmuxLaunchPlan({
 				...common,
 				parsed: args({ tmux: true }),
-				env: { [GJC_TMUX_LAUNCHED_ENV]: "1" },
+				env: { [WORX_TMUX_LAUNCHED_ENV]: "1" },
 			}),
 		).toBeUndefined();
 	});
@@ -1740,7 +1740,7 @@ describe("default GJC tmux launch", () => {
 					parsed: args({ messages: ["hello world"] }),
 					rawArgs: ["hello world"],
 					cwd: "/repo",
-					env: { TMUX: tmuxEnv, TMUX_PANE: paneId, GJC_TMUX_COMMAND: tmuxCommand },
+					env: { TMUX: tmuxEnv, TMUX_PANE: paneId, WORX_TMUX_COMMAND: tmuxCommand },
 					argv: ["/usr/local/bin/gjc"],
 					execPath: "/bin/bun",
 					platform: "darwin",
@@ -1798,7 +1798,7 @@ describe("default GJC tmux launch", () => {
 			cwd: "/repo",
 			env: {
 				TMUX: "/tmp/tmux",
-				[GJC_TMUX_LAUNCHED_ENV]: "1",
+				[WORX_TMUX_LAUNCHED_ENV]: "1",
 			},
 			argv: ["/usr/local/bin/gjc"],
 			execPath: "/bin/bun",
@@ -1834,7 +1834,7 @@ describe("default GJC tmux launch", () => {
 			{
 				name: "direct launch policy",
 				parsed: args({ messages: ["hello world"] }),
-				env: { TMUX: "/tmp/tmux", GJC_LAUNCH_POLICY: "direct" },
+				env: { TMUX: "/tmp/tmux", WORX_LAUNCH_POLICY: "direct" },
 				tmuxAvailable: true,
 			},
 		];
@@ -2337,7 +2337,7 @@ describe("default GJC tmux launch", () => {
 		expect(diagnostics[0]).toContain("native Windows");
 		expect(diagnostics[0]).toContain("psmux");
 		expect(diagnostics[0]).toContain("https://github.com/psmux/psmux");
-		expect(diagnostics[0]).toContain("GJC_TMUX_COMMAND");
+		expect(diagnostics[0]).toContain("WORX_TMUX_COMMAND");
 	});
 
 	it("applies session-scoped mouse scrolling when launching tmux on WSL/Linux", () => {
@@ -2364,7 +2364,7 @@ describe("default GJC tmux launch", () => {
 		const created = calls.find(call => call.args[0] === "new-session");
 		expect(created).toBeDefined();
 		const sessionName = created?.args[3] ?? "";
-		expect(sessionName.startsWith(GJC_TMUX_SESSION_PREFIX)).toBe(true);
+		expect(sessionName.startsWith(WORX_TMUX_SESSION_PREFIX)).toBe(true);
 		// The GJC-launched tmux/profile path must not bypass mouse scrolling on WSL.
 		expect(calls.some(call => call.command === "tmux")).toBe(true);
 		expect(calls.map(call => call.args)).toContainEqual(["set-option", "-t", "$0:", "mouse", "on"]);
@@ -2373,13 +2373,13 @@ describe("default GJC tmux launch", () => {
 		expect(calls.flatMap(call => call.args)).not.toContain("-g");
 	});
 
-	it("honors GJC_MOUSE=off on WSL/Linux without disabling the rest of the profile", () => {
+	it("honors WORX_MOUSE=off on WSL/Linux without disabling the rest of the profile", () => {
 		const calls: { command: string; args: string[]; options: TmuxSpawnOptions }[] = [];
 		const handled = launchDefaultTmuxIfNeeded({
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { WSL_DISTRO_NAME: "Ubuntu", GJC_MOUSE: "off" },
+			env: { WSL_DISTRO_NAME: "Ubuntu", WORX_MOUSE: "off" },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "linux",
@@ -2402,7 +2402,7 @@ describe("default GJC tmux launch", () => {
 
 it("emits a BOM-less UTF-16LE encoded command and a direct `&` invocation for native Windows --tmux plans", () => {
 	// Regression: gjc --tmux on native Windows + psmux previously failed with
-	// the literal text "﻿$env:GJC_TMUX_LAUNCHED : The term '﻿$env:...' is not
+	// the literal text "﻿$env:WORX_TMUX_LAUNCHED : The term '﻿$env:...' is not
 	// recognized" appearing in the psmux pane, because the encoded command
 	// was prefixed with a UTF-16LE BOM (0xFF 0xFE). pwsh does not strip the
 	// BOM on -EncodedCommand input; it decodes the BOM to U+FEFF and emits
@@ -2436,7 +2436,7 @@ it("emits a BOM-less UTF-16LE encoded command and a direct `&` invocation for na
 	expect(decoded[1]).not.toBe(0xfe);
 	const script = decoded.toString("utf16le");
 	// The first character of the decoded script must be the first character
-	// of the actual PowerShell command (`$` from `$env:GJC_TMUX_LAUNCHED`).
+	// of the actual PowerShell command (`$` from `$env:WORX_TMUX_LAUNCHED`).
 	expect(script[0]).toBe("$");
 	// The inner invocation must use the PowerShell `&` call operator directly
 	// (no `& { ... }` script-block wrapper) because adjacent single-quoted
@@ -2462,7 +2462,7 @@ it("captures psmux stderr in the attach-failed diagnostic", () => {
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "win32",
@@ -2519,7 +2519,7 @@ it("surfaces a wrapper-corruption warning in the new-session diagnostic on Windo
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+			env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 			argv: ["bun", "packages/coding-agent/src/cli.ts"],
 			execPath: "/bin/bun",
 			platform: "win32",
@@ -2574,8 +2574,8 @@ it("pipes default control-command stderr while preserving interactive attach std
 		rawArgs: ["--tmux", "hello"],
 		cwd: launchTestRoot,
 		env: {
-			GJC_TMUX_COMMAND: "tmux",
-			GJC_COORDINATOR_SESSION_STATE_FILE: path.join(launchTestRoot, "default-spawn-state.json"),
+			WORX_TMUX_COMMAND: "tmux",
+			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(launchTestRoot, "default-spawn-state.json"),
 		},
 		argv: ["bun", "cli.ts"],
 		execPath: "/bin/bun",
@@ -2605,7 +2605,7 @@ it("preserves a native Linux registration probe failure without retrying or clea
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -2637,7 +2637,7 @@ it("preserves a native Linux profile failure without retrying or cleaning up", (
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -2667,7 +2667,7 @@ it("launches psmux through its managed provider namespace", () => {
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "win32",
@@ -2697,7 +2697,7 @@ it("provisions psmux authority before generation publication and verifies later 
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
-			env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+			env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
 			platform: "win32",
@@ -2752,7 +2752,7 @@ it("does not recreate a published psmux session after attach recovery finds it m
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		argv: ["bun", "cli.ts"],
 		execPath: "/bin/bun",
 		platform: "win32",
@@ -2799,7 +2799,7 @@ it("does not retry attach recovery when published psmux metadata no longer prove
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		argv: ["bun", "cli.ts"],
 		execPath: "/bin/bun",
 		platform: "win32",
@@ -2836,10 +2836,10 @@ it("keeps a failed provisional authority publication inactive and permits a retr
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
 			env: {
-				GJC_TMUX_COMMAND: "psmux",
-				GJC_PSMUX_COMMAND: "psmux",
-				GJC_COORDINATOR_SESSION_ID: TEST_SESSION_ID,
-				GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
+				WORX_TMUX_COMMAND: "psmux",
+				WORX_PSMUX_COMMAND: "psmux",
+				WORX_COORDINATOR_SESSION_ID: TEST_SESSION_ID,
+				WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
 			},
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
@@ -2880,7 +2880,7 @@ it("does not retry a native tmux attach os error 10061", () => {
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -2906,7 +2906,7 @@ it("uses the captured native session ID for every post-create target", () => {
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -2948,7 +2948,7 @@ it.each([
 		parsed: args({ messages: ["hello"], tmux: true }),
 		rawArgs: ["--tmux", "hello"],
 		cwd: launchTestRoot,
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -2991,7 +2991,7 @@ it.each([
 		parsed: args({ messages: ["hello world"], tmux: true }),
 		rawArgs: ["--tmux", "hello world"],
 		cwd: "/repo",
-		env: { GJC_TMUX_COMMAND: "tmux" },
+		env: { WORX_TMUX_COMMAND: "tmux" },
 		argv: ["bun", "packages/coding-agent/src/cli.ts"],
 		execPath: "/bin/bun",
 		platform: "linux",
@@ -3037,7 +3037,7 @@ describe("tmux owner isolation launch gate", () => {
 			rawArgs: ["--tmux", "hello"],
 			cwd: launchTestRoot,
 			env: {
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(launchTestRoot, "absent-server-state.json"),
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(launchTestRoot, "absent-server-state.json"),
 			},
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
@@ -3076,8 +3076,8 @@ describe("tmux owner isolation launch gate", () => {
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
 				env: {
-					GJC_COORDINATOR_SESSION_ID: "persisted-attempt",
-					GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
+					WORX_COORDINATOR_SESSION_ID: "persisted-attempt",
+					WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
 				},
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
@@ -3118,7 +3118,7 @@ describe("tmux owner isolation launch gate", () => {
 				parsed: args({ messages: ["hello"], tmux: true }),
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
-				env: { GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json") },
+				env: { WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json") },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "linux",
@@ -3192,7 +3192,7 @@ describe("tmux owner isolation launch gate", () => {
 			parsed: args({ messages: ["hello"], tmux: true }),
 			rawArgs: ["--tmux", "hello"],
 			cwd: launchTestRoot,
-			env: { GJC_TMUX_COMMAND: "tmux" },
+			env: { WORX_TMUX_COMMAND: "tmux" },
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
 			platform: "linux",
@@ -3251,7 +3251,7 @@ describe("tmux owner isolation launch gate", () => {
 			parsed: args({ messages: ["hello"], tmux: true }),
 			rawArgs: ["--tmux", "hello"],
 			cwd: launchTestRoot,
-			env: { GJC_TMUX_COMMAND: "tmux" },
+			env: { WORX_TMUX_COMMAND: "tmux" },
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
 			platform: "linux",
@@ -3296,7 +3296,7 @@ describe("tmux owner isolation launch gate", () => {
 			parsed: args({ messages: ["hello"], tmux: true, continue: true }),
 			rawArgs: ["--tmux", "--continue", "hello"],
 			cwd: launchTestRoot,
-			env: { GJC_TMUX_COMMAND: "tmux" },
+			env: { WORX_TMUX_COMMAND: "tmux" },
 			argv: ["bun", "cli.ts"],
 			execPath: "/bin/bun",
 			platform: "linux",
@@ -3329,10 +3329,10 @@ describe("tmux owner isolation launch gate", () => {
 			return command.includes("new-session") ? spawnResult(0, "$42\n") : spawnResult(0, "");
 		}) as unknown as typeof Bun.spawnSync);
 		const env = {
-			GJC_TMUX_COMMAND: "tmux",
-			GJC_TMUX_SESSION: "managed",
-			GJC_COORDINATOR_SESSION_ID: "managed",
-			GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
+			WORX_TMUX_COMMAND: "tmux",
+			WORX_TMUX_SESSION: "managed",
+			WORX_COORDINATOR_SESSION_ID: "managed",
+			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
 		};
 		expect(() => createGjcTmuxSession(env)).toThrow("gjc_tmux_owner_changed_after_create");
 		expect(calls.filter(call => ["set-option", "kill-session"].includes(call[1] ?? ""))).toEqual([]);
@@ -3365,10 +3365,10 @@ describe("tmux owner isolation launch gate", () => {
 			return spawnResult(0, "1\n");
 		}) as unknown as typeof Bun.spawnSync);
 		const env = {
-			GJC_TMUX_COMMAND: "tmux",
-			GJC_TMUX_SESSION: "managed",
-			GJC_COORDINATOR_SESSION_ID: "managed",
-			GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
+			WORX_TMUX_COMMAND: "tmux",
+			WORX_TMUX_SESSION: "managed",
+			WORX_COORDINATOR_SESSION_ID: "managed",
+			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
 		};
 		expect(() => createGjcTmuxSession(env)).toThrow("gjc_tmux_precommit_failed_cleanup_failed");
 		expect(calls.filter(call => call[1] === "kill-session")).toEqual([]);
@@ -3390,7 +3390,7 @@ describe("tmux owner isolation launch gate", () => {
 			if (command.includes("display-message")) return spawnResult(0, "$42\n");
 			return spawnResult(0, "1\n");
 		}) as unknown as typeof Bun.spawnSync);
-		expect(() => removeGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" })).toThrow(
+		expect(() => removeGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" })).toThrow(
 			"gjc_tmux_owner_changed:managed",
 		);
 		expect(calls.filter(call => call[1] === "kill-session")).toEqual([]);
@@ -3403,7 +3403,7 @@ describe("tmux owner isolation launch gate", () => {
 				parsed: args({ messages: ["hello"], tmux: true, continue: true }),
 				rawArgs: ["--tmux", "--continue", "hello"],
 				cwd: launchTestRoot,
-				env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+				env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "win32",
@@ -3428,7 +3428,7 @@ describe("tmux owner isolation launch gate", () => {
 				parsed: args({ messages: ["hello"], tmux: true }),
 				rawArgs: ["--tmux", "hello"],
 				cwd: launchTestRoot,
-				env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+				env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "win32",
@@ -3456,7 +3456,7 @@ describe("tmux owner isolation launch gate", () => {
 				parsed: args({ messages: ["hello"], tmux: true }),
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
-				env: { GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json") },
+				env: { WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json") },
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
 				platform: "linux",
@@ -3500,8 +3500,8 @@ describe("tmux owner isolation launch gate", () => {
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
 				env: {
-					GJC_COORDINATOR_SESSION_ID: sessionId,
-					GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
+					WORX_COORDINATOR_SESSION_ID: sessionId,
+					WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
 				},
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
@@ -3522,13 +3522,13 @@ describe("tmux owner isolation launch gate", () => {
 			) as { generation: string; session_id: string };
 			expect(generation.session_id).toBe(sessionId);
 			expect(generation.generation).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
-			expect(innerCommand).toContain(`GJC_TMUX_OWNER_GENERATION='${generation.generation}'`);
-			expect(innerCommand).toContain(`GJC_TMUX_OWNER_STATE_DIR='${root}'`);
-			expect(innerCommand).toContain("GJC_TMUX_OWNER_SERVER_KEY='tmux'");
-			expect(innerCommand).toStartWith("exec env GJC_TMUX_LAUNCHED=1");
-			expect(innerCommand).toMatch(/GJC_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
-			expect(innerCommand).toMatch(/GJC_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
-			expect(innerCommand).not.toContain("GJC_MANAGED_OWNER_PREDECESSOR_TOKEN");
+			expect(innerCommand).toContain(`WORX_TMUX_OWNER_GENERATION='${generation.generation}'`);
+			expect(innerCommand).toContain(`WORX_TMUX_OWNER_STATE_DIR='${root}'`);
+			expect(innerCommand).toContain("WORX_TMUX_OWNER_SERVER_KEY='tmux'");
+			expect(innerCommand).toStartWith("exec env WORX_TMUX_LAUNCHED=1");
+			expect(innerCommand).toMatch(/WORX_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
+			expect(innerCommand).toMatch(/WORX_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
+			expect(innerCommand).not.toContain("WORX_MANAGED_OWNER_PREDECESSOR_TOKEN");
 			expect(innerCommand).not.toContain("tmux-exit.json");
 			expect(
 				calls.some(call => call.includes("@gjc-owner-generation") && call.at(-1) === generation.generation),
@@ -3576,13 +3576,13 @@ describe("tmux owner isolation launch gate", () => {
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
 				env: {
-					GJC_COORDINATOR_SESSION_ID: sessionId,
-					GJC_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
-					GJC_TMUX_OWNER_STATE_DIR: root,
-					GJC_TMUX_OWNER_GENERATION: generation,
-					GJC_MANAGED_OWNER_RUN_ID: runId,
-					GJC_MANAGED_OWNER_INCARNATION: incarnation,
-					GJC_MANAGED_OWNER_PREDECESSOR_TOKEN: predecessorToken,
+					WORX_COORDINATOR_SESSION_ID: sessionId,
+					WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
+					WORX_TMUX_OWNER_STATE_DIR: root,
+					WORX_TMUX_OWNER_GENERATION: generation,
+					WORX_MANAGED_OWNER_RUN_ID: runId,
+					WORX_MANAGED_OWNER_INCARNATION: incarnation,
+					WORX_MANAGED_OWNER_PREDECESSOR_TOKEN: predecessorToken,
 				},
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",
@@ -3597,10 +3597,10 @@ describe("tmux owner isolation launch gate", () => {
 			});
 			expect(handled).toBe(true);
 			const innerCommand = calls.find(call => call[0] === "new-session")?.at(-1);
-			expect(innerCommand).toContain(`GJC_MANAGED_OWNER_PREDECESSOR_TOKEN='${predecessorToken}'`);
-			expect(innerCommand).toMatch(/GJC_TMUX_OWNER_GENERATION='[0-9a-f-]{36}'/i);
-			expect(innerCommand).toMatch(/GJC_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
-			expect(innerCommand).toMatch(/GJC_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
+			expect(innerCommand).toContain(`WORX_MANAGED_OWNER_PREDECESSOR_TOKEN='${predecessorToken}'`);
+			expect(innerCommand).toMatch(/WORX_TMUX_OWNER_GENERATION='[0-9a-f-]{36}'/i);
+			expect(innerCommand).toMatch(/WORX_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
+			expect(innerCommand).toMatch(/WORX_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
 		}
@@ -3619,8 +3619,8 @@ describe("tmux owner isolation launch gate", () => {
 				rawArgs: ["--tmux", "hello"],
 				cwd: root,
 				env: {
-					GJC_COORDINATOR_SESSION_ID: sessionId,
-					GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
+					WORX_COORDINATOR_SESSION_ID: sessionId,
+					WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
 				},
 				argv: ["bun", "cli.ts"],
 				execPath: "/bin/bun",

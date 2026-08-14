@@ -61,7 +61,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const registryDir = path.join(base, "reg");
 		const deadPid = await reapedPid();
 		const leaseFile = await seedDeadLease(base, registryDir, deadPid);
-		const env = { ...process.env, GJC_CODING_AGENT_DIR: base, GJC_HARNESS_ROOT_REGISTRY_DIR: registryDir };
+		const env = { ...process.env, WORX_CODING_AGENT_DIR: base, WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir };
 
 		const result = await runGjcGcCommand(["--json"], base, env, [harnessLeasesGcAdapter]);
 		const report = JSON.parse(result.stdout);
@@ -79,7 +79,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const registryDir = path.join(base, "reg");
 		const deadPid = await reapedPid();
 		const leaseFile = await seedDeadLease(base, registryDir, deadPid);
-		const env = { ...process.env, GJC_CODING_AGENT_DIR: base, GJC_HARNESS_ROOT_REGISTRY_DIR: registryDir };
+		const env = { ...process.env, WORX_CODING_AGENT_DIR: base, WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir };
 
 		const result = await runGjcGcCommand(["--prune", "--json"], base, env, [harnessLeasesGcAdapter]);
 		const report = JSON.parse(result.stdout);
@@ -94,8 +94,8 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const base = await makeTemp();
 		const env = {
 			...process.env,
-			GJC_CODING_AGENT_DIR: base,
-			GJC_HARNESS_ROOT_REGISTRY_DIR: path.join(base, "reg-empty"),
+			WORX_CODING_AGENT_DIR: base,
+			WORX_HARNESS_ROOT_REGISTRY_DIR: path.join(base, "reg-empty"),
 		};
 		const result = await runGjcGcCommand([], base, env, [harnessLeasesGcAdapter]);
 		expect(result.stdout).toContain("dry run");
@@ -118,7 +118,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const log = path.join(agentDir, "sdk", "sessions", "index.jsonl");
 		await fs.appendFile(log, "broken\n");
 
-		const repairEnv = { ...process.env, GJC_CODING_AGENT_DIR: agentDir };
+		const repairEnv = { ...process.env, WORX_CODING_AGENT_DIR: agentDir };
 		const repaired = await runGjcGcCommand(["--repair-session-index", "--json"], base, repairEnv, [
 			harnessLeasesGcAdapter,
 		]);

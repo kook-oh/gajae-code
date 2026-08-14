@@ -22,7 +22,7 @@ const canonicalBenchmarkPath = path.resolve(import.meta.dir, "../bench/perf-corp
 function runPerfCorpusBenchmark(): PerfCorpusReport {
 	const result = Bun.spawnSync([process.execPath, ...process.execArgv, canonicalBenchmarkPath], {
 		cwd: path.resolve(import.meta.dir, "../../.."),
-		env: { ...process.env, GJC_MEMORY_ITERATIONS: process.env.GJC_MEMORY_ITERATIONS ?? "1" },
+		env: { ...process.env, WORX_MEMORY_ITERATIONS: process.env.WORX_MEMORY_ITERATIONS ?? "1" },
 	});
 	if (result.exitCode !== 0) {
 		throw new Error(decoder.decode(result.stderr));
@@ -488,11 +488,11 @@ function reportFor(
 		};
 	});
 	const environment: Record<string, string> = {
-		GJC_MEMORY_PROFILE: schedule.profile,
-		GJC_MEMORY_ITERATIONS: String(profileConfig.iterationsTarget),
-		GJC_MEMORY_SURFACE_ORDER: schedule.surfaceOrder.join(","),
+		WORX_MEMORY_PROFILE: schedule.profile,
+		WORX_MEMORY_ITERATIONS: String(profileConfig.iterationsTarget),
+		WORX_MEMORY_SURFACE_ORDER: schedule.surfaceOrder.join(","),
 	};
-	if (schedule.profile === "soak") environment.GJC_MEMORY_DURATION_MS = String(profileConfig.durationTargetMs);
+	if (schedule.profile === "soak") environment.WORX_MEMORY_DURATION_MS = String(profileConfig.durationTargetMs);
 	const command = "bun packages/coding-agent/bench/perf-corpus.bench.ts";
 	const argv = ["bun", "packages/coding-agent/bench/perf-corpus.bench.ts"];
 	const closureManifest = [`packages/coding-agent/bench/perf-corpus.bench.ts:${"a".repeat(64)}`];
@@ -744,25 +744,26 @@ function invoke(
 				env: {
 					...process.env,
 					...(options.pythonPath === undefined ? {} : { PYTHONPATH: options.pythonPath }),
-					GJC_PERF_CORPUS_BUNDLE_DIR: options.bundleDir ?? bundleDirectory,
-					GJC_PERF_CORPUS_INPUT_DIR: inputDirectory,
-					GJC_PERF_CORPUS_OUTPUT_DIR: outputDirectory,
-					GJC_PERF_CORPUS_EXPECTED_GIT_SHA: options.expectedGitSha ?? gitSha,
-					GJC_PERF_CORPUS_EXPECTED_TREE_SHA: options.expectedTreeSha ?? treeSha,
-					GJC_PERF_CORPUS_EXPECTED_CLOSURE_DIGEST: options.expectedClosureDigest ?? expectedClosureDigest,
-					GJC_PERF_CORPUS_EXPECTED_WORKTREE_FINGERPRINT:
+					WORX_PERF_CORPUS_BUNDLE_DIR: options.bundleDir ?? bundleDirectory,
+					WORX_PERF_CORPUS_INPUT_DIR: inputDirectory,
+					WORX_PERF_CORPUS_OUTPUT_DIR: outputDirectory,
+					WORX_PERF_CORPUS_EXPECTED_GIT_SHA: options.expectedGitSha ?? gitSha,
+					WORX_PERF_CORPUS_EXPECTED_TREE_SHA: options.expectedTreeSha ?? treeSha,
+					WORX_PERF_CORPUS_EXPECTED_CLOSURE_DIGEST: options.expectedClosureDigest ?? expectedClosureDigest,
+					WORX_PERF_CORPUS_EXPECTED_WORKTREE_FINGERPRINT:
 						options.expectedWorktreeFingerprint ?? worktreeFingerprint,
-					GJC_PERF_CORPUS_EXPECTED_RUNTIME_CONTROL_IDENTITY:
+					WORX_PERF_CORPUS_EXPECTED_RUNTIME_CONTROL_IDENTITY:
 						options.expectedRuntimeControlIdentity ?? captureRuntimeControlIdentity,
-					GJC_PERF_CORPUS_EXPECTED_CAPTURE_ID: options.expectedCaptureId ?? captureId,
-					GJC_PERF_CORPUS_EXPECTED_SCHEDULE_DIGEST: options.expectedScheduleDigest ?? expectedScheduleDigest,
-					GJC_PERF_CORPUS_EXPECTED_PROTOCOL_DIGEST: options.expectedProtocolDigest ?? expectedProtocolDigest,
-					GJC_PERF_CORPUS_TEMPLATE_SHA256: launcher.templateSha256,
-					GJC_PERF_CORPUS_DRIVER_SHA256: options.driverDigest ?? driverSha256,
-					GJC_PERF_CORPUS_PREREGISTRATION_SHA256: options.preregistrationDigest ?? preregistrationSha256,
-					GJC_PERF_CORPUS_ATTEMPT_LEDGER_SHA256: sealedDigests.attemptLedgerSha256,
-					GJC_PERF_CORPUS_RAW_MANIFEST_SHA256: sealedDigests.rawManifestSha256,
-					GJC_PERF_CORPUS_INPUT_MOUNT_READ_ONLY: options.readOnlyAttestation ?? launcher.immutableMountAttestation,
+					WORX_PERF_CORPUS_EXPECTED_CAPTURE_ID: options.expectedCaptureId ?? captureId,
+					WORX_PERF_CORPUS_EXPECTED_SCHEDULE_DIGEST: options.expectedScheduleDigest ?? expectedScheduleDigest,
+					WORX_PERF_CORPUS_EXPECTED_PROTOCOL_DIGEST: options.expectedProtocolDigest ?? expectedProtocolDigest,
+					WORX_PERF_CORPUS_TEMPLATE_SHA256: launcher.templateSha256,
+					WORX_PERF_CORPUS_DRIVER_SHA256: options.driverDigest ?? driverSha256,
+					WORX_PERF_CORPUS_PREREGISTRATION_SHA256: options.preregistrationDigest ?? preregistrationSha256,
+					WORX_PERF_CORPUS_ATTEMPT_LEDGER_SHA256: sealedDigests.attemptLedgerSha256,
+					WORX_PERF_CORPUS_RAW_MANIFEST_SHA256: sealedDigests.rawManifestSha256,
+					WORX_PERF_CORPUS_INPUT_MOUNT_READ_ONLY:
+						options.readOnlyAttestation ?? launcher.immutableMountAttestation,
 				},
 			},
 		);
@@ -825,27 +826,27 @@ describe("trusted perf-corpus RLM analysis driver", () => {
 		const output = path.join(temporaryRoot, "producer-contract-output");
 		const surfaceOrder = preregistration.captureControls.admissionRows.short[0]!.surfaceOrder;
 		const previousEnvironment = {
-			profile: process.env.GJC_MEMORY_PROFILE,
-			duration: process.env.GJC_MEMORY_DURATION_MS,
-			iterations: process.env.GJC_MEMORY_ITERATIONS,
-			surfaceOrder: process.env.GJC_MEMORY_SURFACE_ORDER,
+			profile: process.env.WORX_MEMORY_PROFILE,
+			duration: process.env.WORX_MEMORY_DURATION_MS,
+			iterations: process.env.WORX_MEMORY_ITERATIONS,
+			surfaceOrder: process.env.WORX_MEMORY_SURFACE_ORDER,
 		};
 		let report: PerfCorpusReport;
 		try {
-			process.env.GJC_MEMORY_PROFILE = "short";
-			delete process.env.GJC_MEMORY_DURATION_MS;
-			process.env.GJC_MEMORY_ITERATIONS = String(preregistration.cohort.profiles.short.iterationsTarget);
-			process.env.GJC_MEMORY_SURFACE_ORDER = surfaceOrder.join(",");
+			process.env.WORX_MEMORY_PROFILE = "short";
+			delete process.env.WORX_MEMORY_DURATION_MS;
+			process.env.WORX_MEMORY_ITERATIONS = String(preregistration.cohort.profiles.short.iterationsTarget);
+			process.env.WORX_MEMORY_SURFACE_ORDER = surfaceOrder.join(",");
 			report = runPerfCorpusBenchmark();
 		} finally {
-			if (previousEnvironment.profile === undefined) delete process.env.GJC_MEMORY_PROFILE;
-			else process.env.GJC_MEMORY_PROFILE = previousEnvironment.profile;
-			if (previousEnvironment.duration === undefined) delete process.env.GJC_MEMORY_DURATION_MS;
-			else process.env.GJC_MEMORY_DURATION_MS = previousEnvironment.duration;
-			if (previousEnvironment.iterations === undefined) delete process.env.GJC_MEMORY_ITERATIONS;
-			else process.env.GJC_MEMORY_ITERATIONS = previousEnvironment.iterations;
-			if (previousEnvironment.surfaceOrder === undefined) delete process.env.GJC_MEMORY_SURFACE_ORDER;
-			else process.env.GJC_MEMORY_SURFACE_ORDER = previousEnvironment.surfaceOrder;
+			if (previousEnvironment.profile === undefined) delete process.env.WORX_MEMORY_PROFILE;
+			else process.env.WORX_MEMORY_PROFILE = previousEnvironment.profile;
+			if (previousEnvironment.duration === undefined) delete process.env.WORX_MEMORY_DURATION_MS;
+			else process.env.WORX_MEMORY_DURATION_MS = previousEnvironment.duration;
+			if (previousEnvironment.iterations === undefined) delete process.env.WORX_MEMORY_ITERATIONS;
+			else process.env.WORX_MEMORY_ITERATIONS = previousEnvironment.iterations;
+			if (previousEnvironment.surfaceOrder === undefined) delete process.env.WORX_MEMORY_SURFACE_ORDER;
+			else process.env.WORX_MEMORY_SURFACE_ORDER = previousEnvironment.surfaceOrder;
 		}
 
 		const baselines = report.fixtures.flatMap(fixture =>
@@ -1929,7 +1930,7 @@ describe("trusted perf-corpus RLM analysis driver", () => {
 		const driver = await fs.readFile(driverPath, "utf8");
 		expect(driver).not.toContain("--test-mode");
 		expect(driver).not.toContain("--resamples");
-		expect(driver).not.toContain("GJC_PERF_CORPUS_RLM_TEST_ONLY");
+		expect(driver).not.toContain("WORX_PERF_CORPUS_RLM_TEST_ONLY");
 	});
 
 	test("keeps ps and unavailable sampler/value combinations consistent", async () => {

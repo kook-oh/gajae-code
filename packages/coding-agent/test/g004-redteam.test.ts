@@ -4,16 +4,16 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { postmortem } from "@gajae-code/utils";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
 	persistCoordinatorRuntimeStateFromEvent,
 	persistCoordinatorRuntimeStateFromPostmortem,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 } from "../src/gjc-runtime/session-state-sidecar";
 import { WorkerIntegrationRequestScheduler } from "../src/session/agent-session";
 
 const tempDirs: string[] = [];
-const ORIGINAL_STATE_FILE = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-const ORIGINAL_SESSION_ID = process.env[GJC_COORDINATOR_SESSION_ID_ENV];
+const ORIGINAL_STATE_FILE = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+const ORIGINAL_SESSION_ID = process.env[WORX_COORDINATOR_SESSION_ID_ENV];
 
 type Deferred = { promise: Promise<void>; resolve: () => void; reject: (error: unknown) => void };
 
@@ -47,10 +47,10 @@ async function statSignature(file: string): Promise<{ mtimeMs: number; size: num
 }
 
 afterEach(async () => {
-	if (ORIGINAL_STATE_FILE === undefined) delete process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-	else process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = ORIGINAL_STATE_FILE;
-	if (ORIGINAL_SESSION_ID === undefined) delete process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-	else process.env[GJC_COORDINATOR_SESSION_ID_ENV] = ORIGINAL_SESSION_ID;
+	if (ORIGINAL_STATE_FILE === undefined) delete process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+	else process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = ORIGINAL_STATE_FILE;
+	if (ORIGINAL_SESSION_ID === undefined) delete process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+	else process.env[WORX_COORDINATOR_SESSION_ID_ENV] = ORIGINAL_SESSION_ID;
 	setSystemTime();
 	await Promise.all(tempDirs.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
@@ -59,8 +59,8 @@ describe("G004 sidecar cache and heartbeat red-team", () => {
 	it("invalidates cached previous payload after an external write with different mtime and size", async () => {
 		const root = await tempRoot();
 		const stateFile = path.join(root, "runtime-state.json");
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = "g004-external-cache";
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = "g004-external-cache";
 
 		setSystemTime(new Date("2026-02-01T00:00:00.000Z"));
 		await persistCoordinatorRuntimeStateFromEvent(
@@ -98,8 +98,8 @@ describe("G004 sidecar cache and heartbeat red-team", () => {
 	it("skips duplicate running heartbeat writes, refreshes after heartbeat, and always writes terminal transitions", async () => {
 		const root = await tempRoot();
 		const stateFile = path.join(root, "runtime-state.json");
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = "g004-heartbeat";
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = "g004-heartbeat";
 
 		setSystemTime(new Date("2026-02-01T00:00:00.000Z"));
 		await persistCoordinatorRuntimeStateFromEvent(
@@ -146,8 +146,8 @@ describe("G004 sidecar cache and heartbeat red-team", () => {
 	it("postmortem sync writer overwrites non-terminal state even when heartbeat would skip async duplicates", async () => {
 		const root = await tempRoot();
 		const stateFile = path.join(root, "runtime-state.json");
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = "g004-postmortem";
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = "g004-postmortem";
 
 		setSystemTime(new Date("2026-02-01T00:00:00.000Z"));
 		await persistCoordinatorRuntimeStateFromEvent(

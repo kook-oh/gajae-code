@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { shouldUseMapReduce } from "../src/commit/map-reduce";
 
-const KEYS = ["GJC_COMMIT_MAP_REDUCE", "PI_COMMIT_MAP_REDUCE"] as const;
+const KEYS = ["WORX_COMMIT_MAP_REDUCE", "PI_COMMIT_MAP_REDUCE"] as const;
 const original = new Map(KEYS.map(key => [key, Bun.env[key]] as const));
 const clear = (): void => {
 	for (const key of KEYS) delete Bun.env[key];
@@ -15,7 +15,7 @@ afterEach(() => {
 
 // `minFiles: 0` makes an empty diff (0 files) satisfy `fileCount >= minFiles`, so
 // shouldUseMapReduce would return true absent any env override — isolating the
-// GJC_COMMIT_MAP_REDUCE / PI_COMMIT_MAP_REDUCE gate.
+// WORX_COMMIT_MAP_REDUCE / PI_COMMIT_MAP_REDUCE gate.
 const forceEligible = { minFiles: 0 };
 
 describe("shouldUseMapReduce env gating", () => {
@@ -24,9 +24,9 @@ describe("shouldUseMapReduce env gating", () => {
 		expect(shouldUseMapReduce("", forceEligible)).toBe(true);
 	});
 
-	it("honors the documented GJC_COMMIT_MAP_REDUCE=false", () => {
+	it("honors the documented WORX_COMMIT_MAP_REDUCE=false", () => {
 		clear();
-		Bun.env.GJC_COMMIT_MAP_REDUCE = "false";
+		Bun.env.WORX_COMMIT_MAP_REDUCE = "false";
 		expect(shouldUseMapReduce("", forceEligible)).toBe(false);
 	});
 
@@ -38,7 +38,7 @@ describe("shouldUseMapReduce env gating", () => {
 
 	it("resolves GJC-first: GJC=true is not overridden by PI=false", () => {
 		clear();
-		Bun.env.GJC_COMMIT_MAP_REDUCE = "true";
+		Bun.env.WORX_COMMIT_MAP_REDUCE = "true";
 		Bun.env.PI_COMMIT_MAP_REDUCE = "false";
 		expect(shouldUseMapReduce("", forceEligible)).toBe(true);
 	});

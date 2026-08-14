@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
-	GJC_BUNDLE_SETTINGS_ENTRIES,
-	GJC_BUNDLE_SETTINGS_STATES,
-	GJC_BUNDLE_SETTINGS_VARIANTS,
-	GJC_BUNDLE_SETTINGS_VIEWPORTS,
+	WORX_BUNDLE_SETTINGS_ENTRIES,
+	WORX_BUNDLE_SETTINGS_STATES,
+	WORX_BUNDLE_SETTINGS_VARIANTS,
+	WORX_BUNDLE_SETTINGS_VIEWPORTS,
 } from "./fixtures/gjc-bundles-settings-cases";
 
 const EXPECTED_ENTRY_IDS = [
@@ -95,28 +95,28 @@ function stringsIn(value: unknown): string[] {
 
 describe("GJC bundle Settings catalog", () => {
 	test("has the fixed state, viewport, and variant counts", () => {
-		expect(GJC_BUNDLE_SETTINGS_STATES).toHaveLength(23);
-		expect(GJC_BUNDLE_SETTINGS_VIEWPORTS).toHaveLength(3);
-		expect(GJC_BUNDLE_SETTINGS_VARIANTS).toHaveLength(8);
-		expect(GJC_BUNDLE_SETTINGS_VARIANTS.filter(variant => variant.renderMode === "ascii-no-color")).toHaveLength(6);
-		const narrowVariants = GJC_BUNDLE_SETTINGS_VARIANTS.filter(variant => variant.viewportId === "48x36");
+		expect(WORX_BUNDLE_SETTINGS_STATES).toHaveLength(23);
+		expect(WORX_BUNDLE_SETTINGS_VIEWPORTS).toHaveLength(3);
+		expect(WORX_BUNDLE_SETTINGS_VARIANTS).toHaveLength(8);
+		expect(WORX_BUNDLE_SETTINGS_VARIANTS.filter(variant => variant.renderMode === "ascii-no-color")).toHaveLength(6);
+		const narrowVariants = WORX_BUNDLE_SETTINGS_VARIANTS.filter(variant => variant.viewportId === "48x36");
 		expect(narrowVariants).toHaveLength(2);
 		expect(narrowVariants.every(variant => variant.renderMode === "unicode-color")).toBe(true);
 	});
 
 	test("expands to the fixed 77-entry matrix with stable unique identifiers", () => {
-		expect(GJC_BUNDLE_SETTINGS_ENTRIES).toHaveLength(77);
+		expect(WORX_BUNDLE_SETTINGS_ENTRIES).toHaveLength(77);
 		expect(23 * 3 + 6 + 2).toBe(77);
-		const entryIds = GJC_BUNDLE_SETTINGS_ENTRIES.map(entry => entry.entryId);
+		const entryIds = WORX_BUNDLE_SETTINGS_ENTRIES.map(entry => entry.entryId);
 		expect(new Set(entryIds).size).toBe(entryIds.length);
 		expect([...entryIds].sort()).toEqual([...EXPECTED_ENTRY_IDS]);
 	});
 
 	test("references known states and contains only inert safe fixture strings", () => {
-		const stateIds = new Set(GJC_BUNDLE_SETTINGS_STATES.map(state => state.id));
-		for (const variant of GJC_BUNDLE_SETTINGS_VARIANTS) expect(stateIds.has(variant.stateId)).toBe(true);
+		const stateIds = new Set(WORX_BUNDLE_SETTINGS_STATES.map(state => state.id));
+		for (const variant of WORX_BUNDLE_SETTINGS_VARIANTS) expect(stateIds.has(variant.stateId)).toBe(true);
 
 		const forbidden = /:\/\/user:|@[^\s/]+|[?#]|token|\/Users\/|\/home\//i;
-		for (const value of stringsIn(GJC_BUNDLE_SETTINGS_STATES)) expect(value).not.toMatch(forbidden);
+		for (const value of stringsIn(WORX_BUNDLE_SETTINGS_STATES)) expect(value).not.toMatch(forbidden);
 	});
 });

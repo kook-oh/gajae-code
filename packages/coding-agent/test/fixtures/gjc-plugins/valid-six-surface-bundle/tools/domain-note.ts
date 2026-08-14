@@ -2,7 +2,7 @@
 // (Runtime activation DOES import this, which is expected.)
 import * as fs from "node:fs";
 
-const sentinel = process.env.GJC_TEST_IMPORT_SENTINEL;
+const sentinel = process.env.WORX_TEST_IMPORT_SENTINEL;
 if (sentinel) fs.writeFileSync(sentinel, "imported-tool");
 
 export default function domainNote(pi: any) {

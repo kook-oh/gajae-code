@@ -708,9 +708,9 @@ test("rich e2e: /btw Bot API outcomes fall back only after definite ok:false", a
 }, 60000);
 
 test("rich e2e: /btw deterministic lifecycle rotations", async () => {
-	const seed = process.env.GJC_RICH_LIFECYCLE_SEED ?? "29691855561";
+	const seed = process.env.WORX_RICH_LIFECYCLE_SEED ?? "29691855561";
 	expect(seed, "invalid lifecycle seed").toBe("29691855561");
-	const iterations = Number(process.env.GJC_RICH_LIFECYCLE_ITERATIONS ?? "5");
+	const iterations = Number(process.env.WORX_RICH_LIFECYCLE_ITERATIONS ?? "5");
 	expect(Number.isInteger(iterations), "invalid lifecycle iteration count").toBe(true);
 	expect(iterations, "invalid lifecycle iteration count").toBeGreaterThan(0);
 	expect(iterations, "invalid lifecycle iteration count").toBeLessThanOrEqual(25);

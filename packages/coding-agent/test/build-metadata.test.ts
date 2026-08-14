@@ -5,32 +5,32 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { formatBuildLabel, resolveBuildMetadata } from "../src/build-metadata";
 
-const originalBuildChannel = process.env.GJC_BUILD_CHANNEL;
+const originalBuildChannel = process.env.WORX_BUILD_CHANNEL;
 
 afterEach(() => {
 	if (originalBuildChannel === undefined) {
-		delete process.env.GJC_BUILD_CHANNEL;
+		delete process.env.WORX_BUILD_CHANNEL;
 	} else {
-		process.env.GJC_BUILD_CHANNEL = originalBuildChannel;
+		process.env.WORX_BUILD_CHANNEL = originalBuildChannel;
 	}
 });
 
 describe("build metadata", () => {
 	it("uses explicit release metadata instead of treating compiled release binaries as dev", () => {
-		process.env.GJC_BUILD_CHANNEL = "release";
+		process.env.WORX_BUILD_CHANNEL = "release";
 
 		expect(resolveBuildMetadata("/not/a/source/tree")).toEqual({ channel: "release", label: "release build" });
 		expect(formatBuildLabel()).toBe("release build");
 	});
 
 	it("uses neutral diagnostic wording for unknown explicit metadata", () => {
-		process.env.GJC_BUILD_CHANNEL = "surprise-channel";
+		process.env.WORX_BUILD_CHANNEL = "surprise-channel";
 
 		expect(resolveBuildMetadata("/not/a/source/tree")).toEqual({ channel: "unknown", label: "build unknown" });
 	});
 
 	it("classifies local source trees as local source without using dev wording", async () => {
-		delete process.env.GJC_BUILD_CHANNEL;
+		delete process.env.WORX_BUILD_CHANNEL;
 		const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-build-metadata-"));
 		await fs.mkdir(path.join(repoRoot, ".git"));
 		await Bun.write(path.join(repoRoot, "bun.lock"), "");
@@ -43,7 +43,7 @@ describe("build metadata", () => {
 	});
 
 	it("classifies unmarked user installs as package installs instead of dev", () => {
-		delete process.env.GJC_BUILD_CHANNEL;
+		delete process.env.WORX_BUILD_CHANNEL;
 
 		expect(resolveBuildMetadata("/opt/homebrew/lib/node_modules/@bworx-io/worx-code/src")).toEqual({
 			channel: "package-install",
@@ -52,7 +52,7 @@ describe("build metadata", () => {
 	});
 
 	it("does not classify package installs inside another Bun repo as local source", async () => {
-		delete process.env.GJC_BUILD_CHANNEL;
+		delete process.env.WORX_BUILD_CHANNEL;
 		const consumerRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-consumer-project-"));
 		await fs.mkdir(path.join(consumerRoot, ".git"));
 		await Bun.write(path.join(consumerRoot, "bun.lock"), "");

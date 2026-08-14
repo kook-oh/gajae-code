@@ -187,7 +187,7 @@ describe("SessionManager cold sidecar integration", () => {
 			`${JSON.stringify({ type: "session", version: 5, id: "large-session", timestamp: now, cwd: tempDir.path() })}\n`,
 		);
 		let priorId: string | null = null;
-		const soak = process.env.GJC_SESSION_MEMORY_SOAK === "1";
+		const soak = process.env.WORX_SESSION_MEMORY_SOAK === "1";
 		const entryCount = soak ? 1_000_000 : 120_000;
 		const firstId = soak ? "e0" : "entry-00000000";
 		for (let index = 0; index < entryCount; index++) {

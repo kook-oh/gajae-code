@@ -9,7 +9,7 @@ import {
 } from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-pause-guard-test-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
 const tempRoots: string[] = [];
 
 async function tempDir(): Promise<string> {
@@ -19,22 +19,22 @@ async function tempDir(): Promise<string> {
 }
 
 afterEach(async () => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
 describe("ultragoal pause guard", () => {
 	it("does not block pause when no durable ultragoal state exists", async () => {
 		const cwd = await tempDir();
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		const diagnostic = await isUltragoalPauseBlocked(cwd);
 		expect(diagnostic.blocked).toBe(false);
 	});
 
 	it("blocks pause when an ultragoal run is active and no blocker is classified", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const diagnostic = await isUltragoalPauseBlocked(cwd);
 		expect(diagnostic.blocked).toBe(true);
@@ -43,7 +43,7 @@ describe("ultragoal pause guard", () => {
 
 	it("allows pause after a human_blocked classification has a bound clean critic verdict", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const classification = await recordUltragoalBlockerClassification({
 			cwd,
@@ -63,7 +63,7 @@ describe("ultragoal pause guard", () => {
 
 	it("blocks pause when human_blocked has no critic verdict", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		await recordUltragoalBlockerClassification({
 			cwd,
@@ -77,7 +77,7 @@ describe("ultragoal pause guard", () => {
 
 	it("blocks pause when the bound critic verdict is REJECT", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const classification = await recordUltragoalBlockerClassification({
 			cwd,
@@ -99,7 +99,7 @@ describe("ultragoal pause guard", () => {
 
 	it("still blocks pause when the latest classification is resolvable", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		await recordUltragoalBlockerClassification({
 			cwd,
@@ -112,7 +112,7 @@ describe("ultragoal pause guard", () => {
 
 	it("rejects an empty evidence classification", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		await expect(
 			recordUltragoalBlockerClassification({ cwd, classification: "human_blocked", evidence: "   " }),

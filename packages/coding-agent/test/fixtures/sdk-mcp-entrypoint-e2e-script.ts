@@ -99,8 +99,8 @@ try {
 	});
 
 	// Default: package source under test (CI monorepo with natives).
-	// Override with GJC_MCP_E2E_BIN for local machines lacking matching natives.
-	const explicitBin = process.env.GJC_MCP_E2E_BIN?.trim();
+	// Override with WORX_MCP_E2E_BIN for local machines lacking matching natives.
+	const explicitBin = process.env.WORX_MCP_E2E_BIN?.trim();
 	const spawnCmd =
 		explicitBin && explicitBin.length > 0
 			? [explicitBin, "mcp-serve", "sdk"]
@@ -110,7 +110,7 @@ try {
 		stdin: "pipe",
 		stdout: "pipe",
 		stderr: "pipe",
-		env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir },
+		env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir },
 	});
 	child = proc;
 	proc.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize" })}\n`);

@@ -31,10 +31,10 @@ let savedSessionFile: string | undefined;
 let savedCiDevChangedPaths: string | undefined;
 
 beforeEach(() => {
-	savedSessionId = process.env.GJC_SESSION_ID;
-	savedSessionFile = process.env.GJC_SESSION_FILE;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
-	delete process.env.GJC_SESSION_FILE;
+	savedSessionId = process.env.WORX_SESSION_ID;
+	savedSessionFile = process.env.WORX_SESSION_FILE;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
+	delete process.env.WORX_SESSION_FILE;
 	// Temp dirs live outside the enclosing git work tree (os.tmpdir) so
 	// computeCheckpointChangeSet falls through to the CI_DEV_CHANGED_PATHS-only
 	// path. Pin a non-computer path so the mandatory computer red-team suite is
@@ -46,10 +46,10 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-	if (savedSessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = savedSessionId;
-	if (savedSessionFile === undefined) delete process.env.GJC_SESSION_FILE;
-	else process.env.GJC_SESSION_FILE = savedSessionFile;
+	if (savedSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = savedSessionId;
+	if (savedSessionFile === undefined) delete process.env.WORX_SESSION_FILE;
+	else process.env.WORX_SESSION_FILE = savedSessionFile;
 	if (savedCiDevChangedPaths === undefined) delete process.env.CI_DEV_CHANGED_PATHS;
 	else process.env.CI_DEV_CHANGED_PATHS = savedCiDevChangedPaths;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));

@@ -307,8 +307,8 @@ describe("keyboard input priority scheduler red-team", () => {
 	}, 30000);
 
 	it("re-anchors the macOS IME cursor after transcript repaint when the prompt draft is unchanged", async () => {
-		const previousIme = Bun.env.GJC_TUI_IME_CURSOR;
-		Bun.env.GJC_TUI_IME_CURSOR = "1";
+		const previousIme = Bun.env.WORX_TUI_IME_CURSOR;
+		Bun.env.WORX_TUI_IME_CURSOR = "1";
 		const term = new VirtualTerminal(40, 6);
 		const tui = new TUI(term, false);
 		const transcript = new MutableTranscript(Array.from({ length: 10 }, (_v, i) => `row-${i}`));
@@ -335,8 +335,8 @@ describe("keyboard input priority scheduler red-team", () => {
 			expect(writes.at(-1)).toBe("\x1b[6G\x1b[2 q\x1b[?25h");
 		} finally {
 			tui.stop();
-			if (previousIme === undefined) delete Bun.env.GJC_TUI_IME_CURSOR;
-			else Bun.env.GJC_TUI_IME_CURSOR = previousIme;
+			if (previousIme === undefined) delete Bun.env.WORX_TUI_IME_CURSOR;
+			else Bun.env.WORX_TUI_IME_CURSOR = previousIme;
 		}
 	}, 30000);
 	it("isolates disposed focus from input while a failed repaint leaves its old pixels visible", async () => {

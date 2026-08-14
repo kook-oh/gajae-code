@@ -7,12 +7,12 @@ import { getWorkflowMutationDecision } from "../../src/skill-state/workflow-muta
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-acl-gate-"));
-	const priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = "test-session";
+	const priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = "test-session";
 	try {
 		await fn(dir);
 	} finally {
-		if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
+		if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
 		await fs.rm(dir, { recursive: true, force: true });
 	}
 }

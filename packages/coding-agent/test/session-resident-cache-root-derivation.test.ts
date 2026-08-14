@@ -8,8 +8,8 @@ import { ManagedSessionDescendantStore } from "../src/session/internal/managed-s
 
 const originalAgentDir = getAgentDir();
 const environmentKeys = [
-	"GJC_CODING_AGENT_DIR",
-	"GJC_CONFIG_DIR",
+	"WORX_CODING_AGENT_DIR",
+	"WORX_CONFIG_DIR",
 	"PI_CONFIG_DIR",
 	"XDG_CACHE_HOME",
 	"XDG_DATA_HOME",
@@ -26,9 +26,9 @@ afterEach(async () => {
 	vi.restoreAllMocks();
 	restoreEnvironment();
 	setAgentDir(originalAgentDir);
-	const originalAgentDirOverride = originalEnvironment.get("GJC_CODING_AGENT_DIR");
-	if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-	else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+	const originalAgentDirOverride = originalEnvironment.get("WORX_CODING_AGENT_DIR");
+	if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+	else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 	await Promise.all(
 		temporaryDirectories.splice(0).map(directory => fs.promises.rm(directory, { recursive: true, force: true })),
 	);
@@ -90,9 +90,9 @@ describe.skipIf(process.platform === "win32")("resident cache root derivation", 
 		ensurePrivateDirectory(xdgDataRoot);
 		process.env.XDG_CACHE_HOME = xdgCacheHome;
 		process.env.XDG_DATA_HOME = xdgDataHome;
-		delete process.env.GJC_CONFIG_DIR;
+		delete process.env.WORX_CONFIG_DIR;
 		delete process.env.PI_CONFIG_DIR;
-		delete process.env.GJC_CODING_AGENT_DIR;
+		delete process.env.WORX_CODING_AGENT_DIR;
 
 		const defaultAgentDir = path.join(os.homedir(), ".gjc", "agent");
 		setAgentDir(defaultAgentDir);

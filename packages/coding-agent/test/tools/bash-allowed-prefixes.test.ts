@@ -100,7 +100,7 @@ describe("checkBashAllowedPrefixes", () => {
 	it("allows ralplan artifact env writes for role agents", () => {
 		expect(
 			checkBashAllowedPrefixes(
-				"worx ralplan --write --stage critic --stage_n 1 --artifact-env GJC_RALPLAN_ARTIFACT --json",
+				"worx ralplan --write --stage critic --stage_n 1 --artifact-env WORX_RALPLAN_ARTIFACT --json",
 				ROLE_AGENT_PREFIXES,
 			),
 		).toEqual({ allowed: true });
@@ -135,7 +135,11 @@ describe("checkBashAllowedPrefixes", () => {
 	});
 
 	it("blocks bare or unknown GJC state targets", () => {
-		const commands = ["worx state", "worx state unknown write --json", "worx state write --mode unknown --input '{}'"];
+		const commands = [
+			"worx state",
+			"worx state unknown write --json",
+			"worx state write --mode unknown --input '{}'",
+		];
 
 		for (const command of commands) {
 			const result = checkBashAllowedPrefixes(command, ROLE_AGENT_PREFIXES);

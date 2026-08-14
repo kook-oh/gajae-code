@@ -2,8 +2,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Model } from "@gajae-code/ai";
-import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	clearProviderAuthHealth,
@@ -21,12 +19,14 @@ import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/mod
 import { OAuthSelectorComponent } from "@bworx-io/worx-code/modes/components/oauth-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { AuthStorage, type AuthStorage as AuthStorageType } from "@bworx-io/worx-code/session/auth-storage";
+import type { Model } from "@gajae-code/ai";
+import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
 import type { TUI } from "@gajae-code/tui";
 
 const model = (provider: string, id: string): Model =>
 	({ provider, id, name: id, api: "openai-responses", contextWindow: 1000, maxTokens: 1000 }) as Model;
 
-const PROBE_API_KEY_ENV = "GJC_REDTEAM_PROVIDER_AUTH_HEALTH_PROBE_KEY";
+const PROBE_API_KEY_ENV = "WORX_REDTEAM_PROVIDER_AUTH_HEALTH_PROBE_KEY";
 
 let testTheme = await getThemeByName("red-claw");
 

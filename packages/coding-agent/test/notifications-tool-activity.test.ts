@@ -196,13 +196,13 @@ describe("SDK replay capability filter", () => {
 });
 
 async function withNotifications(run: () => Promise<void>): Promise<void> {
-	const previous = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const previous = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		await run();
 	} finally {
-		if (previous === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = previous;
+		if (previous === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = previous;
 	}
 }
 

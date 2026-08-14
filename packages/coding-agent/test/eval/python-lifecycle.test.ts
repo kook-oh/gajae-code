@@ -227,15 +227,15 @@ describe("python eval lifecycle", () => {
 		}
 	});
 });
-describe("python kernel env-var dual-read (GJC_* preferred, PI_* fallback)", () => {
+describe("python kernel env-var dual-read (WORX_* preferred, PI_* fallback)", () => {
 	// `checkPythonKernelAvailability` short-circuits on `isBunTestRuntime()`
 	// (NODE_ENV/BUN_ENV === "test"), which would mask the skip-check branch.
 	// These tests neutralize the test-runtime guard inside a scoped window and
 	// restore it in finally so the real GJC/PI skip-check branch is exercised.
 	const envKeys = [
-		"GJC_PYTHON_SKIP_CHECK",
+		"WORX_PYTHON_SKIP_CHECK",
 		"PI_PYTHON_SKIP_CHECK",
-		"GJC_PYTHON_IPC_TRACE",
+		"WORX_PYTHON_IPC_TRACE",
 		"PI_PYTHON_IPC_TRACE",
 		"NODE_ENV",
 		"BUN_ENV",
@@ -273,10 +273,10 @@ describe("python kernel env-var dual-read (GJC_* preferred, PI_* fallback)", () 
 			restoreEnv(envKeys, suiteEnv);
 		}
 	});
-	it("honors GJC_PYTHON_SKIP_CHECK=1 and returns ok without spawning Python", async () => {
+	it("honors WORX_PYTHON_SKIP_CHECK=1 and returns ok without spawning Python", async () => {
 		clearSkipEnv();
 		neutralizeTestRuntime();
-		Bun.env.GJC_PYTHON_SKIP_CHECK = "1";
+		Bun.env.WORX_PYTHON_SKIP_CHECK = "1";
 		using tempDir = TempDir.createSync("@gjc-python-skipcheck-gjc-");
 		const availability = await checkPythonKernelAvailability(tempDir.path());
 		expect(availability.ok).toBe(true);
@@ -294,17 +294,17 @@ describe("python kernel env-var dual-read (GJC_* preferred, PI_* fallback)", () 
 	it("OR semantics: GJC=0 with PI=1 still skips the check", async () => {
 		clearSkipEnv();
 		neutralizeTestRuntime();
-		Bun.env.GJC_PYTHON_SKIP_CHECK = "0";
+		Bun.env.WORX_PYTHON_SKIP_CHECK = "0";
 		Bun.env.PI_PYTHON_SKIP_CHECK = "1";
 		using tempDir = TempDir.createSync("@gjc-python-skipcheck-or-");
 		const availability = await checkPythonKernelAvailability(tempDir.path());
 		expect(availability.ok).toBe(true);
 	});
 
-	it("accepts truthy tokens true/yes for GJC_PYTHON_SKIP_CHECK (case-insensitive)", async () => {
+	it("accepts truthy tokens true/yes for WORX_PYTHON_SKIP_CHECK (case-insensitive)", async () => {
 		clearSkipEnv();
 		neutralizeTestRuntime();
-		Bun.env.GJC_PYTHON_SKIP_CHECK = "YES";
+		Bun.env.WORX_PYTHON_SKIP_CHECK = "YES";
 		using tempDir = TempDir.createSync("@gjc-python-skipcheck-yes-");
 		const availability = await checkPythonKernelAvailability(tempDir.path());
 		expect(availability.ok).toBe(true);

@@ -218,13 +218,13 @@ describe("GJC plugin installer", () => {
 		const sentinelDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-install-sentinel-"));
 		tempDirs.push(sentinelDir);
 		const sentinel = path.join(sentinelDir, "sentinel.txt");
-		const prev = process.env.GJC_TEST_IMPORT_SENTINEL;
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			await installGjcBundle({ cwd }, "project", sixSurface);
 		} finally {
-			if (prev === undefined) delete process.env.GJC_TEST_IMPORT_SENTINEL;
-			else process.env.GJC_TEST_IMPORT_SENTINEL = prev;
+			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
+			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;
 		}
 		expect(await exists(sentinel)).toBe(false);
 	});

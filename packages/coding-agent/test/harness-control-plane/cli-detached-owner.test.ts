@@ -136,7 +136,7 @@ async function createFakeTmuxBin(rootDir: string, options: { skipOwnerLaunch?: b
 
     printf '%s\n' "${"$"}!" > "$state"
     printf '%s\n' "${"$"}!" > ${JSON.stringify(lastServerStatePath)}
-	    native_receipt='$1'; printf '%s\n' "\${GJC_HARNESS_TEST_NATIVE_RECEIPT-$native_receipt}"
+	    native_receipt='$1'; printf '%s\n' "\${WORX_HARNESS_TEST_NATIVE_RECEIPT-$native_receipt}"
 	    exit 0
 	    ;;
 	  if-shell)
@@ -166,15 +166,15 @@ async function runHarness(
 		cwd: workspace,
 		env: {
 			...cliEnv.env,
-			GJC_HARNESS_STATE_ROOT: root,
+			WORX_HARNESS_STATE_ROOT: root,
 			// The fake tmux server is a child of this test process, not a real systemd scope.
 			// Keep normal lifecycle cases independent of the runner's caller cgroup; the scoped
 			// bootstrap failure case below explicitly overrides this fixture value.
-			GJC_HARNESS_TEST_CALLER_CGROUP: "/\n",
-			GJC_HARNESS_TEST_SERVER_CGROUP: "/\n",
+			WORX_HARNESS_TEST_CALLER_CGROUP: "/\n",
+			WORX_HARNESS_TEST_SERVER_CGROUP: "/\n",
 
-			GJC_TMUX_COMMAND: tmuxCommand,
-			...(disableSdkHost ? { GJC_SDK_DISABLE: "1" } : {}),
+			WORX_TMUX_COMMAND: tmuxCommand,
+			...(disableSdkHost ? { WORX_SDK_DISABLE: "1" } : {}),
 			...env,
 		},
 		stdout: "pipe",
@@ -360,7 +360,7 @@ describe.skipIf(process.platform !== "linux")("gjc harness start --detach (detac
 		const started = await runHarness(
 			["start", "--input", JSON.stringify({ harness: "gajae-code", workspace, sessionId: SID, detach: true })],
 			{
-				GJC_HARNESS_TEST_CALLER_CGROUP: "/system.slice/caller.service\n",
+				WORX_HARNESS_TEST_CALLER_CGROUP: "/system.slice/caller.service\n",
 				PATH: `${path.dirname(systemdRun)}:${process.env.PATH ?? ""}`,
 			},
 		);

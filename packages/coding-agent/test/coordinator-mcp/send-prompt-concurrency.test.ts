@@ -49,11 +49,11 @@ describe("send_prompt same-session concurrency", () => {
 
 			const server = await createCoordinatorMcpServer({
 				env: {
-					GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-					GJC_COORDINATOR_MCP_MUTATIONS: "sessions,questions,reports",
-					GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".state"),
-					GJC_COORDINATOR_MCP_PROFILE: "race-controller",
-					GJC_COORDINATOR_MCP_REPO: "repo-race",
+					WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+					WORX_COORDINATOR_MCP_MUTATIONS: "sessions,questions,reports",
+					WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".state"),
+					WORX_COORDINATOR_MCP_PROFILE: "race-controller",
+					WORX_COORDINATOR_MCP_REPO: "repo-race",
 				},
 				services: {
 					getAgentDir: () => agentDir,

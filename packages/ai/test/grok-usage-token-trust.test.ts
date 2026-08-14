@@ -48,7 +48,7 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	// `$credentialEnv` also consults the agent `.env`, the GJC config `.env`,
 	// `~/.env` and the login shell rc files; keep all of them neutral.
 	env.HOME = tempDir();
-	env.GJC_CODING_AGENT_DIR = tempDir();
+	env.WORX_CODING_AGENT_DIR = tempDir();
 	Object.assign(env, overrides);
 
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd, env, stdout: "pipe", stderr: "pipe" });

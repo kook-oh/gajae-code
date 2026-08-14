@@ -32,8 +32,8 @@ describe("Hermes MCP safety policy", () => {
 		expect(config.artifactByteCap).toBe(65536);
 	});
 
-	it("scopes the default state root to GJC_SESSION_ID when present", () => {
-		const config = buildCoordinatorMcpConfig({ GJC_SESSION_ID: "coordinator-policy-test-session" });
+	it("scopes the default state root to WORX_SESSION_ID when present", () => {
+		const config = buildCoordinatorMcpConfig({ WORX_SESSION_ID: "coordinator-policy-test-session" });
 
 		expect(config.stateRoot).toContain(
 			path.join(".gjc", "_session-coordinator-policy-test-session", "state", "coordinator-mcp"),
@@ -46,8 +46,8 @@ describe("Hermes MCP safety policy", () => {
 
 	it("requires startup mutation opt-in and per-call allow_mutation", () => {
 		const config = buildCoordinatorMcpConfig({
-			GJC_SESSION_ID: "coordinator-policy-test-session",
-			GJC_COORDINATOR_MCP_MUTATIONS: "sessions,reports",
+			WORX_SESSION_ID: "coordinator-policy-test-session",
+			WORX_COORDINATOR_MCP_MUTATIONS: "sessions,reports",
 		});
 
 		expect(() => requireCoordinatorMutation(config, "sessions", { allow_mutation: false })).toThrow(
@@ -63,8 +63,8 @@ describe("Hermes MCP safety policy", () => {
 		const root = await tempRoot();
 		const outside = await tempRoot();
 		const config = buildCoordinatorMcpConfig({
-			GJC_SESSION_ID: "coordinator-policy-test-session",
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_SESSION_ID: "coordinator-policy-test-session",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
 		});
 
 		await expect(assertCoordinatorWorkdir(config, path.join(root, "child"))).resolves.toBe(path.join(root, "child"));
@@ -85,9 +85,9 @@ describe("Hermes MCP safety policy", () => {
 		await Bun.write(path.join(outside, "secret.txt"), "secret");
 		await fs.symlink(path.join(outside, "secret.txt"), escapedLink);
 		const config = buildCoordinatorMcpConfig({
-			GJC_SESSION_ID: "coordinator-policy-test-session",
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP: "3",
+			WORX_SESSION_ID: "coordinator-policy-test-session",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP: "3",
 		});
 
 		const safe = await assertCoordinatorArtifactPath(config, safeFile);
@@ -107,8 +107,8 @@ describe("Hermes MCP safety policy", () => {
 		await fs.rm(parent, { recursive: true });
 		await fs.symlink(outside, parent);
 		const config = buildCoordinatorMcpConfig({
-			GJC_SESSION_ID: "coordinator-policy-test-session",
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_SESSION_ID: "coordinator-policy-test-session",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
 		});
 		await expect(assertCoordinatorArtifactPath(config, path.join(parent, "secret.txt"))).rejects.toThrow(
 			"coordinator_artifact_outside_allowed_roots",

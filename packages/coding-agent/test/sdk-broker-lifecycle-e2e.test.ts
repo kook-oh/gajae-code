@@ -166,7 +166,7 @@ async function snapshotDeleteSurface(
 test("startup diagnostics redact identifier-prefixed assignment secrets before bounded truncation", () => {
 	const secret = "credential-value";
 	const message = sanitizeSdkStartupMessage(
-		`OPENAI_API_KEY=${secret} GJC_NOTIFICATIONS_TOKEN=${secret} SERVICE-password=${secret} ${"x".repeat(600)}０`,
+		`OPENAI_API_KEY=${secret} WORX_NOTIFICATIONS_TOKEN=${secret} SERVICE-password=${secret} ${"x".repeat(600)}０`,
 	);
 	expect(message).not.toContain(secret);
 	expect(message.match(/\[redacted-secret\]/g)?.length).toBe(3);
@@ -368,11 +368,11 @@ async function liveLifecycleSession(root: string, agentDir: string, sessionId: s
 		env: {
 			...process.env,
 			HOME: root,
-			GJC_AGENT_DIR: agentDir,
-			GJC_CODING_AGENT_DIR: agentDir,
-			GJC_SESSION_ID: sessionId,
-			GJC_LIFECYCLE_REQUEST_ID: "subprocess-proof",
-			GJC_SDK_LIFECYCLE_REQUEST: JSON.stringify(request),
+			WORX_AGENT_DIR: agentDir,
+			WORX_CODING_AGENT_DIR: agentDir,
+			WORX_SESSION_ID: sessionId,
+			WORX_LIFECYCLE_REQUEST_ID: "subprocess-proof",
+			WORX_SDK_LIFECYCLE_REQUEST: JSON.stringify(request),
 		},
 		stdout: "pipe",
 		stderr: "pipe",
@@ -593,7 +593,12 @@ test("session host exact cutoff writes proven pre-session absence", async () => 
 	const sessionId = "exact-cutoff";
 	const effectMarker = "exact-cutoff-marker";
 	const deadlines = deriveLifecycleDeadlines(1_000, 4_000);
-	const names = ["GJC_AGENT_DIR", "GJC_STATE_ROOT", "GJC_LIFECYCLE_REQUEST_ID", "GJC_SDK_LIFECYCLE_REQUEST"] as const;
+	const names = [
+		"WORX_AGENT_DIR",
+		"WORX_STATE_ROOT",
+		"WORX_LIFECYCLE_REQUEST_ID",
+		"WORX_SDK_LIFECYCLE_REQUEST",
+	] as const;
 	const previous = names.map(name => process.env[name]);
 	try {
 		await fs.mkdir(path.join(stateRoot, "sdk"), { recursive: true });
@@ -601,10 +606,10 @@ test("session host exact cutoff writes proven pre-session absence", async () => 
 			path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`),
 			JSON.stringify({ pid: process.pid, effectMarker, incarnation: "test-incarnation" }),
 		);
-		process.env.GJC_AGENT_DIR = agentDir;
-		process.env.GJC_STATE_ROOT = stateRoot;
-		process.env.GJC_LIFECYCLE_REQUEST_ID = effectMarker;
-		process.env.GJC_SDK_LIFECYCLE_REQUEST = JSON.stringify({
+		process.env.WORX_AGENT_DIR = agentDir;
+		process.env.WORX_STATE_ROOT = stateRoot;
+		process.env.WORX_LIFECYCLE_REQUEST_ID = effectMarker;
+		process.env.WORX_SDK_LIFECYCLE_REQUEST = JSON.stringify({
 			operation: "session.create",
 			sessionId,
 			cwd: root,
@@ -648,15 +653,20 @@ test("session host fails closed when its lifecycle effect marker is corrupt", as
 	const sessionId = "corrupt-marker";
 	const effectMarker = "corrupt-marker-effect";
 	const deadlines = deriveLifecycleDeadlines(1_000, 4_000);
-	const names = ["GJC_AGENT_DIR", "GJC_STATE_ROOT", "GJC_LIFECYCLE_REQUEST_ID", "GJC_SDK_LIFECYCLE_REQUEST"] as const;
+	const names = [
+		"WORX_AGENT_DIR",
+		"WORX_STATE_ROOT",
+		"WORX_LIFECYCLE_REQUEST_ID",
+		"WORX_SDK_LIFECYCLE_REQUEST",
+	] as const;
 	const previous = names.map(name => process.env[name]);
 	try {
 		await fs.mkdir(path.join(stateRoot, "sdk"), { recursive: true });
 		await fs.writeFile(path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`), "{");
-		process.env.GJC_AGENT_DIR = agentDir;
-		process.env.GJC_STATE_ROOT = stateRoot;
-		process.env.GJC_LIFECYCLE_REQUEST_ID = effectMarker;
-		process.env.GJC_SDK_LIFECYCLE_REQUEST = JSON.stringify({
+		process.env.WORX_AGENT_DIR = agentDir;
+		process.env.WORX_STATE_ROOT = stateRoot;
+		process.env.WORX_LIFECYCLE_REQUEST_ID = effectMarker;
+		process.env.WORX_SDK_LIFECYCLE_REQUEST = JSON.stringify({
 			operation: "session.create",
 			sessionId,
 			cwd: root,
@@ -853,8 +863,8 @@ test("broker bounds a hanging WebSocket upgrade by the lifecycle deadline and cl
 	const fixture = path.join(agentDir, "hanging-upgrade.js");
 	const fixturePidPath = path.join(agentDir, "hanging-upgrade.pid");
 	const fixtureRequestPath = path.join(agentDir, "hanging-upgrade.request.json");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
-	const previousUrl = process.env.GJC_HANGING_UPGRADE_URL;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
+	const previousUrl = process.env.WORX_HANGING_UPGRADE_URL;
 	const hangingUpgrade = Bun.serve({
 		hostname: "127.0.0.1",
 		port: 0,
@@ -869,12 +879,12 @@ test("broker bounds a hanging WebSocket upgrade by the lifecycle deadline and cl
 			fixture,
 			`
 const fs=require('fs'), path=require('path'), crypto=require('crypto');
-const root=process.env.GJC_STATE_ROOT, id=process.env.GJC_SESSION_ID, agent=process.env.GJC_AGENT_DIR;
+const root=process.env.WORX_STATE_ROOT, id=process.env.WORX_SESSION_ID, agent=process.env.WORX_AGENT_DIR;
 fs.mkdirSync(path.join(root,'sdk'),{recursive:true});
 fs.writeFileSync(${JSON.stringify(fixturePidPath)},String(process.pid));
-fs.writeFileSync(${JSON.stringify(fixtureRequestPath)},process.env.GJC_SDK_LIFECYCLE_REQUEST);
+fs.writeFileSync(${JSON.stringify(fixtureRequestPath)},process.env.WORX_SDK_LIFECYCLE_REQUEST);
 const endpoint=path.join(root,'sdk',id+'.json');
-fs.writeFileSync(endpoint,JSON.stringify({sessionId:id,pid:process.pid,url:process.env.GJC_HANGING_UPGRADE_URL,token:'hang'}));
+fs.writeFileSync(endpoint,JSON.stringify({sessionId:id,pid:process.pid,url:process.env.WORX_HANGING_UPGRADE_URL,token:'hang'}));
 const m=fs.statSync(endpoint).mtimeMs;
 const log=path.join(agent,'sdk','sessions','index.jsonl');fs.mkdirSync(path.dirname(log),{recursive:true});const indexSeq=fs.existsSync(log)?fs.readFileSync(log,'utf8').trim().split('\\n').filter(Boolean).length+1:1;
 const event={type:'host_registered',sessionId:id,locator:{repo:agent,stateRoot:root},endpointGeneration:1,pid:process.pid,endpointMtimeMs:m,version:1,indexSeq,ts:Date.now()};
@@ -882,8 +892,8 @@ event.checksum=crypto.createHash('sha256').update(JSON.stringify(event)).digest(
 setInterval(()=>{},1000);
 `,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
-		process.env.GJC_HANGING_UPGRADE_URL = `ws://127.0.0.1:${hangingUpgrade.port}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_HANGING_UPGRADE_URL = `ws://127.0.0.1:${hangingUpgrade.port}`;
 		await broker.start();
 		const started = Date.now();
 		const lifecycle = broker.handleRequest(
@@ -918,10 +928,10 @@ setInterval(()=>{},1000);
 				process.kill(fixturePid, "SIGKILL");
 			} catch {}
 		}
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
-		if (previousUrl === undefined) delete process.env.GJC_HANGING_UPGRADE_URL;
-		else process.env.GJC_HANGING_UPGRADE_URL = previousUrl;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
+		if (previousUrl === undefined) delete process.env.WORX_HANGING_UPGRADE_URL;
+		else process.env.WORX_HANGING_UPGRADE_URL = previousUrl;
 		hangingUpgrade.stop(true);
 		await broker.stop();
 		await fs.rm(agentDir, { recursive: true, force: true });
@@ -936,10 +946,10 @@ test("broker rejects an endpoint-only lifecycle child that never authenticates s
 		fixture,
 		`
 const fs=require('fs'), path=require('path'), crypto=require('crypto');
-const root=process.env.GJC_STATE_ROOT, id=process.env.GJC_SESSION_ID, agent=process.env.GJC_AGENT_DIR;
+const root=process.env.WORX_STATE_ROOT, id=process.env.WORX_SESSION_ID, agent=process.env.WORX_AGENT_DIR;
 fs.mkdirSync(path.join(root,'sdk'),{recursive:true});
 fs.writeFileSync(path.join(agent,'fixture.pid'),String(process.pid));
-fs.writeFileSync(path.join(agent,'fixture.request.json'),process.env.GJC_SDK_LIFECYCLE_REQUEST);
+fs.writeFileSync(path.join(agent,'fixture.request.json'),process.env.WORX_SDK_LIFECYCLE_REQUEST);
 
 fs.writeFileSync(path.join(root,'sdk',id+'.json'),JSON.stringify({sessionId:id,pid:process.pid,url:'ws://127.0.0.1:1',token:'fake'}));
 const m=fs.statSync(path.join(root,'sdk',id+'.json')).mtimeMs;
@@ -949,8 +959,8 @@ event.checksum=crypto.createHash('sha256').update(JSON.stringify(event)).digest(
 setInterval(()=>{},1000);
 `,
 	);
-	const previous = process.env.GJC_SDK_SESSION_COMMAND;
-	process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+	const previous = process.env.WORX_SDK_SESSION_COMMAND;
+	process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 	const broker = new Broker({ agentDir });
 	await broker.start();
 	try {
@@ -985,8 +995,8 @@ setInterval(()=>{},1000);
 		expect(JSON.stringify(listed.result)).toContain('"terminalUncertain":true');
 	} finally {
 		await broker.stop();
-		if (previous === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previous;
+		if (previous === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previous;
 		await fs.rm(agentDir, { recursive: true, force: true });
 	}
 }, 15_000);
@@ -998,7 +1008,7 @@ test("broker rejects a cross-workspace cold fork source before spawning", async 
 	const targetCwd = path.join(root, "target");
 	const fixture = path.join(root, "spawned.js");
 	const spawnedPath = path.join(root, "spawned");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	try {
 		await fs.mkdir(sourceCwd, { recursive: true });
@@ -1011,7 +1021,7 @@ test("broker rejects a cross-workspace cold fork source before spawning", async 
 			fixture,
 			`require("fs").writeFileSync(${JSON.stringify(spawnedPath)}, "spawned"); setInterval(() => {}, 1000);`,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 		await broker.start();
 		expect(
 			await broker.handleRequest(
@@ -1033,8 +1043,8 @@ test("broker rejects a cross-workspace cold fork source before spawning", async 
 		});
 		await expect(fs.stat(spawnedPath)).rejects.toThrow();
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -1047,16 +1057,16 @@ test("broker rejects duplicate owned source candidates before spawning", async (
 	const spawnedPath = path.join(root, "spawned");
 	const command = path.join(root, "spawned.js");
 	const broker = new Broker({ agentDir });
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
-	const previousRequestId = process.env.GJC_LIFECYCLE_REQUEST_ID;
-	const previousSessionId = process.env.GJC_SESSION_ID;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
+	const previousRequestId = process.env.WORX_LIFECYCLE_REQUEST_ID;
+	const previousSessionId = process.env.WORX_SESSION_ID;
 	try {
 		const scopeResult = await resolveManagedSessionScope({ cwd: root, agentDir });
 		expect(scopeResult.kind).toBe("resolved");
 		if (scopeResult.kind !== "resolved") throw new Error(scopeResult.message);
 		const createDuplicate = async (suffix: string) => {
-			process.env.GJC_LIFECYCLE_REQUEST_ID = `duplicate-prepare-${suffix}`;
-			process.env.GJC_SESSION_ID = "duplicate-owned-source";
+			process.env.WORX_LIFECYCLE_REQUEST_ID = `duplicate-prepare-${suffix}`;
+			process.env.WORX_SESSION_ID = "duplicate-owned-source";
 			const session = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 			await session.ensureOnDisk();
 			const sourcePath = session.getSessionFile();
@@ -1067,8 +1077,8 @@ test("broker rejects duplicate owned source candidates before spawning", async (
 		};
 		const first = await createDuplicate("a");
 		const second = await createDuplicate("b");
-		delete process.env.GJC_LIFECYCLE_REQUEST_ID;
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_LIFECYCLE_REQUEST_ID;
+		delete process.env.WORX_SESSION_ID;
 		const inventory = await listManagedSessionCandidates({ scope: scopeResult.scope });
 		expect(inventory.kind).toBe("complete");
 		if (inventory.kind !== "complete") throw new Error(inventory.message);
@@ -1083,7 +1093,7 @@ test("broker rejects duplicate owned source candidates before spawning", async (
 			command,
 			`require("fs").writeFileSync(${JSON.stringify(spawnedPath)}, "spawned"); setInterval(() => {}, 1000);`,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${command}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${command}`;
 		await broker.start();
 		expect(
 			await broker.handleRequest(
@@ -1120,12 +1130,12 @@ test("broker rejects duplicate owned source candidates before spawning", async (
 			.sessions.filter(session => session.sessionId === "duplicate-owned-source");
 		expect(registrations).toHaveLength(0);
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
-		if (previousRequestId === undefined) delete process.env.GJC_LIFECYCLE_REQUEST_ID;
-		else process.env.GJC_LIFECYCLE_REQUEST_ID = previousRequestId;
-		if (previousSessionId === undefined) delete process.env.GJC_SESSION_ID;
-		else process.env.GJC_SESSION_ID = previousSessionId;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
+		if (previousRequestId === undefined) delete process.env.WORX_LIFECYCLE_REQUEST_ID;
+		else process.env.WORX_LIFECYCLE_REQUEST_ID = previousRequestId;
+		if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
+		else process.env.WORX_SESSION_ID = previousSessionId;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -2223,10 +2233,10 @@ test("broker fails closed when a lifecycle ready sibling is swapped after marker
 test("broker terminalizes default command resolver failures", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-resolver-failure-"));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		setLifecycleCommandResolverForTest(broker, () => {
 			throw new Error("SDK internal launch refused: compiled-runtime marker evidence is inconsistent.");
 		});
@@ -2260,8 +2270,8 @@ test("broker terminalizes default command resolver failures", async () => {
 		expect(terminal?.response).toEqual(response);
 	} finally {
 		setLifecycleCommandResolverForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -2271,14 +2281,14 @@ test("broker rejects invalid and oversized readiness timeouts before spawning", 
 	const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-timeout-"));
 	const fixture = path.join(agentDir, "spawned.js");
 	const spawnedPath = path.join(agentDir, "spawned");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	try {
 		await fs.writeFile(
 			fixture,
 			`require("fs").writeFileSync(${JSON.stringify(spawnedPath)}, "spawned"); setInterval(() => {}, 1000);`,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 		await broker.start();
 		for (const readinessTimeoutMs of [0, 60_001]) {
 			expect(
@@ -2297,8 +2307,8 @@ test("broker rejects invalid and oversized readiness timeouts before spawning", 
 		}
 		await expect(fs.stat(spawnedPath)).rejects.toThrow();
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(agentDir, { recursive: true, force: true });
 	}
@@ -2308,14 +2318,14 @@ test("broker propagates an owned lifecycle startup failure without semantic read
 	const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-child-exit-"));
 	const fixture = path.join(agentDir, "exit.js");
 	const sessionIdPath = path.join(agentDir, "session-id");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	try {
 		await fs.writeFile(
 			fixture,
-			`require('fs').writeFileSync(${JSON.stringify(sessionIdPath)}, process.env.GJC_SESSION_ID); setTimeout(() => process.exit(0), 100);`,
+			`require('fs').writeFileSync(${JSON.stringify(sessionIdPath)}, process.env.WORX_SESSION_ID); setTimeout(() => process.exit(0), 100);`,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 		await broker.start();
 		const started = Date.now();
 		const response = await broker.handleRequest(
@@ -2336,8 +2346,8 @@ test("broker propagates an owned lifecycle startup failure without semantic read
 			result: { sessions: [{ sessionId, terminalUncertain: true }] },
 		});
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(agentDir, { recursive: true, force: true });
 	}
@@ -2347,13 +2357,13 @@ test("broker preserves a code-less lifecycle startup failure message", async () 
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-startup-message-"));
 	const agentDir = path.join(root, "agent");
 	const fixture = path.join(root, "startup-failure.ts");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	try {
 		await fs.writeFile(
 			fixture,
 			`import { writeSessionLifecycleFailure } from ${JSON.stringify(path.resolve(import.meta.dir, "../src/sdk/broker/lifecycle.ts"))};
-const request = JSON.parse(process.env.GJC_SDK_LIFECYCLE_REQUEST!);
+const request = JSON.parse(process.env.WORX_SDK_LIFECYCLE_REQUEST!);
 await writeSessionLifecycleFailure(
 	request.stateRoot,
 	request.sessionId,
@@ -2364,7 +2374,7 @@ await writeSessionLifecycleFailure(
 await Bun.sleep(60_000);
 `,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 		await broker.start();
 		const response = await broker.handleRequest(
 			"session.create",
@@ -2376,8 +2386,8 @@ await Bun.sleep(60_000);
 			error: { code: "spawn_failed", message: "owned synthetic startup failure" },
 		});
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -2387,7 +2397,7 @@ test("broker replays immutable lifecycle cleanup after a crash immediately after
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-ledger-crash-"));
 	const agentDir = path.join(root, "agent");
 	const fixture = path.join(root, "owned-startup-failure.ts");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	let crashing: Broker | undefined;
 	let reopened: Broker | undefined;
 	let normal: Broker | undefined;
@@ -2399,11 +2409,11 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { SessionIndex } from ${JSON.stringify(path.resolve(import.meta.dir, "../src/sdk/broker/session-index.ts"))};
 import { writeSessionLifecycleFailure } from ${JSON.stringify(path.resolve(import.meta.dir, "../src/sdk/broker/lifecycle.ts"))};
-const request = JSON.parse(process.env.GJC_SDK_LIFECYCLE_REQUEST!);
+const request = JSON.parse(process.env.WORX_SDK_LIFECYCLE_REQUEST!);
 const endpoint = path.join(request.stateRoot, "sdk", request.sessionId + ".json");
 await fs.mkdir(path.dirname(endpoint), { recursive: true, mode: 0o700 });
 await fs.writeFile(endpoint, JSON.stringify({ sessionId: request.sessionId, pid: process.pid, url: "ws://127.0.0.1:1", token: "owned-startup-failure" }), { mode: 0o600 });
-const index = await new SessionIndex(process.env.GJC_AGENT_DIR!).open();
+const index = await new SessionIndex(process.env.WORX_AGENT_DIR!).open();
 const endpointGeneration = 1;
 await index.append({ type: "host_registered", sessionId: request.sessionId, locator: { repo: request.cwd, stateRoot: request.stateRoot }, endpointGeneration, pid: process.pid, endpointMtimeMs: (await fs.stat(endpoint)).mtimeMs, lifecycleRequestId: request.effectMarker });
 const source = await fs.readFile(request.sessionPath);
@@ -2414,7 +2424,7 @@ await index.append({ type: "host_unregistered", sessionId: request.sessionId, lo
 await fs.rm(endpoint);
 `,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
 		const saved = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 		await saved.ensureOnDisk();
 		const sessionId = saved.getSessionId();
@@ -2494,7 +2504,7 @@ await fs.rm(endpoint);
 			const normalSessionId = normalSaved.getSessionId();
 			await normalSaved.close();
 			await fs.copyFile(fixture, path.join(normalRoot, "owned-startup-failure.ts"));
-			process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${path.join(normalRoot, "owned-startup-failure.ts")}`;
+			process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${path.join(normalRoot, "owned-startup-failure.ts")}`;
 			normal = new Broker({ agentDir: normalAgentDir });
 			await normal.start();
 			const normalResponse = await normal.handleRequest(
@@ -2564,8 +2574,8 @@ await fs.rm(endpoint);
 			await fs.rm(normalRoot, { recursive: true, force: true });
 		}
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		await reopened?.stop();
 		await crashing?.stop();
 		await fs.rm(root, { recursive: true, force: true });
@@ -2705,8 +2715,8 @@ test("broker rejects a ready foreign host for the spawned session id", async () 
 	const stateRoot = path.join(agentDir, ".gjc", "state");
 	const fixture = path.join(agentDir, "foreign.js");
 	const foreignIdPath = path.join(agentDir, "foreign-session-id");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
-	const previousEndpoint = process.env.GJC_FOREIGN_ENDPOINT_URL;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
+	const previousEndpoint = process.env.WORX_FOREIGN_ENDPOINT_URL;
 	let replayRequests = 0;
 	const foreign = Bun.serve({
 		hostname: "127.0.0.1",
@@ -2742,11 +2752,11 @@ test("broker rejects a ready foreign host for the spawned session id", async () 
 			fixture,
 			`
 const fs=require('fs'), path=require('path'), crypto=require('crypto');
-const root=process.env.GJC_STATE_ROOT, id=process.env.GJC_SESSION_ID, agent=process.env.GJC_AGENT_DIR;
+const root=process.env.WORX_STATE_ROOT, id=process.env.WORX_SESSION_ID, agent=process.env.WORX_AGENT_DIR;
 fs.mkdirSync(path.join(root,'sdk'),{recursive:true});
 fs.writeFileSync(path.join(agent,'foreign-session-id'),id);
 const endpoint=path.join(root,'sdk',id+'.json');
-fs.writeFileSync(endpoint,JSON.stringify({sessionId:id,pid:process.ppid,url:process.env.GJC_FOREIGN_ENDPOINT_URL,token:'foreign'}));
+fs.writeFileSync(endpoint,JSON.stringify({sessionId:id,pid:process.ppid,url:process.env.WORX_FOREIGN_ENDPOINT_URL,token:'foreign'}));
 const m=fs.statSync(endpoint).mtimeMs;
 const log=path.join(agent,'sdk','sessions','index.jsonl');fs.mkdirSync(path.dirname(log),{recursive:true});const indexSeq=fs.existsSync(log)?fs.readFileSync(log,'utf8').trim().split('\\n').filter(Boolean).length+1:1;
 const event={type:'host_registered',sessionId:id,locator:{repo:'foreign',stateRoot:root},endpointGeneration:1,pid:process.ppid,endpointMtimeMs:m,version:1,indexSeq,ts:Date.now()};
@@ -2754,8 +2764,8 @@ event.checksum=crypto.createHash('sha256').update(JSON.stringify(event)).digest(
 setInterval(()=>{},1000);
 `,
 		);
-		process.env.GJC_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
-		process.env.GJC_FOREIGN_ENDPOINT_URL = `ws://127.0.0.1:${foreign.port}`;
+		process.env.WORX_SDK_SESSION_COMMAND = `${process.execPath} ${fixture}`;
+		process.env.WORX_FOREIGN_ENDPOINT_URL = `ws://127.0.0.1:${foreign.port}`;
 		await broker.start();
 		expect(
 			await broker.handleRequest(
@@ -2767,10 +2777,10 @@ setInterval(()=>{},1000);
 		expect((await fs.readFile(foreignIdPath, "utf8")).length).toBeGreaterThan(0);
 		expect(replayRequests).toBe(0);
 	} finally {
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
-		if (previousEndpoint === undefined) delete process.env.GJC_FOREIGN_ENDPOINT_URL;
-		else process.env.GJC_FOREIGN_ENDPOINT_URL = previousEndpoint;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
+		if (previousEndpoint === undefined) delete process.env.WORX_FOREIGN_ENDPOINT_URL;
+		else process.env.WORX_FOREIGN_ENDPOINT_URL = previousEndpoint;
 		foreign.stop(true);
 		await broker.stop();
 		await fs.rm(agentDir, { recursive: true, force: true });
@@ -3134,11 +3144,11 @@ test("broker records terminal uncertainty when SIGKILL re-verification fails aft
 if (process.platform === "darwin") {
 	test("broker records terminal uncertainty when a spawned child incarnation is unreadable", async () => {
 		const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-incarnation-"));
-		const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+		const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 		let incarnationReads = 0;
 		let childPid: number | undefined;
 		const broker = new Broker({ agentDir });
-		process.env.GJC_SDK_SESSION_COMMAND = "/bin/sleep 60";
+		process.env.WORX_SDK_SESSION_COMMAND = "/bin/sleep 60";
 		setProcessIncarnationForTest(broker, pid => {
 			childPid ??= pid;
 			return ++incarnationReads === 1 ? `test:${pid}` : undefined;
@@ -3158,8 +3168,8 @@ if (process.platform === "darwin") {
 				result: { sessions: [expect.objectContaining({ terminalUncertain: true })] },
 			});
 		} finally {
-			if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-			else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+			if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+			else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 			setProcessIncarnationForTest(broker, undefined);
 			const pid = childPid;
 			if (
@@ -3249,11 +3259,11 @@ test("session-host-internal exits with a sanitized startup failure before writin
 			env: {
 				...process.env,
 				HOME: root,
-				GJC_AGENT_DIR: agentDir,
-				GJC_CODING_AGENT_DIR: agentDir,
-				GJC_SESSION_ID: sessionId,
-				GJC_LIFECYCLE_REQUEST_ID: "startup-failure-proof",
-				GJC_SDK_LIFECYCLE_REQUEST: JSON.stringify({
+				WORX_AGENT_DIR: agentDir,
+				WORX_CODING_AGENT_DIR: agentDir,
+				WORX_SESSION_ID: sessionId,
+				WORX_LIFECYCLE_REQUEST_ID: "startup-failure-proof",
+				WORX_SDK_LIFECYCLE_REQUEST: JSON.stringify({
 					operation: "session.create",
 					sessionId,
 					cwd: root,
@@ -3283,13 +3293,13 @@ test("production lifecycle factory failure preserves reason and redacts collecte
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-factory-failure-"));
 	const agentDir = path.join(root, "agent");
 	const broker = new Broker({ agentDir });
-	const names = ["GJC_SDK_TEST_FACTORY_FAILURE", "GJC_SDK_TEST_FACTORY_SECRET"] as const;
+	const names = ["WORX_SDK_TEST_FACTORY_FAILURE", "WORX_SDK_TEST_FACTORY_SECRET"] as const;
 	const previous = names.map(name => process.env[name]);
 	const bare = "factory-bare-secret";
 	const overlap = `${bare}-overlap`;
 	const normalized = "factory-secret０".normalize("NFKC");
-	process.env.GJC_SDK_TEST_FACTORY_FAILURE = root;
-	process.env.GJC_SDK_TEST_FACTORY_SECRET = `${overlap} ${normalized} ${"x".repeat(600)}`;
+	process.env.WORX_SDK_TEST_FACTORY_FAILURE = root;
+	process.env.WORX_SDK_TEST_FACTORY_SECRET = `${overlap} ${normalized} ${"x".repeat(600)}`;
 	try {
 		await broker.start();
 		const response = await broker.handleRequest(
@@ -3323,8 +3333,8 @@ test("never-settling model profile startup cuts off with proven pre-registration
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-profile-cutoff-"));
 	const agentDir = path.join(root, "agent");
 	const broker = new Broker({ agentDir });
-	const previous = process.env.GJC_SDK_TEST_HANG_MODEL_PROFILE;
-	process.env.GJC_SDK_TEST_HANG_MODEL_PROFILE = root;
+	const previous = process.env.WORX_SDK_TEST_HANG_MODEL_PROFILE;
+	process.env.WORX_SDK_TEST_HANG_MODEL_PROFILE = root;
 	try {
 		await broker.start();
 		const input = { cwd: root, readinessTimeoutMs: 4_000 };
@@ -3351,8 +3361,8 @@ test("never-settling model profile startup cuts off with proven pre-registration
 		});
 		expect(await broker.handleRequest("session.create", input, "profile-cutoff")).toEqual(response);
 	} finally {
-		if (previous === undefined) delete process.env.GJC_SDK_TEST_HANG_MODEL_PROFILE;
-		else process.env.GJC_SDK_TEST_HANG_MODEL_PROFILE = previous;
+		if (previous === undefined) delete process.env.WORX_SDK_TEST_HANG_MODEL_PROFILE;
+		else process.env.WORX_SDK_TEST_HANG_MODEL_PROFILE = previous;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -3362,8 +3372,8 @@ test("production post-registration startup failure proves cleanup and exact repl
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-production-failure-"));
 	const agentDir = path.join(root, "agent");
 	const broker = new Broker({ agentDir });
-	const previousFailure = process.env.GJC_SDK_TEST_FAIL_AFTER_REGISTRATION;
-	process.env.GJC_SDK_TEST_FAIL_AFTER_REGISTRATION = root;
+	const previousFailure = process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION;
+	process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION = root;
 	try {
 		await broker.start();
 		const input = { cwd: root, readinessTimeoutMs: 10_000 };
@@ -3431,8 +3441,8 @@ test("production post-registration startup failure proves cleanup and exact repl
 		);
 		expect(retained.every(entry => entry.startsWith(".gjc-delete-"))).toBe(true);
 	} finally {
-		if (previousFailure === undefined) delete process.env.GJC_SDK_TEST_FAIL_AFTER_REGISTRATION;
-		else process.env.GJC_SDK_TEST_FAIL_AFTER_REGISTRATION = previousFailure;
+		if (previousFailure === undefined) delete process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION;
+		else process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION = previousFailure;
 		await broker.stop();
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -3553,7 +3563,7 @@ test("child profile activation failures preserve typed codes through readiness a
 			file: "/bin/sh",
 			args: [
 				"-c",
-				`printf %s ${shellQuote(scenario.replacement)} > "$GJC_AGENT_DIR/models.yml"; exec ${shellQuote(process.execPath)} run ${shellQuote(cliEntrypoint)} sdk session-host-internal`,
+				`printf %s ${shellQuote(scenario.replacement)} > "$WORX_AGENT_DIR/models.yml"; exec ${shellQuote(process.execPath)} run ${shellQuote(cliEntrypoint)} sdk session-host-internal`,
 			],
 		}));
 		try {
@@ -3922,13 +3932,13 @@ test("lifecycle cleanup receipt parser rejects hostile bounded inputs without to
 // ===========================================================================
 
 async function withElevationEnabled<T>(run: () => Promise<T>): Promise<T> {
-	const previous = process.env.GJC_SDK_ELEVATION_ENABLED;
-	process.env.GJC_SDK_ELEVATION_ENABLED = "1";
+	const previous = process.env.WORX_SDK_ELEVATION_ENABLED;
+	process.env.WORX_SDK_ELEVATION_ENABLED = "1";
 	try {
 		return await run();
 	} finally {
-		if (previous === undefined) delete process.env.GJC_SDK_ELEVATION_ENABLED;
-		else process.env.GJC_SDK_ELEVATION_ENABLED = previous;
+		if (previous === undefined) delete process.env.WORX_SDK_ELEVATION_ENABLED;
+		else process.env.WORX_SDK_ELEVATION_ENABLED = previous;
 	}
 }
 

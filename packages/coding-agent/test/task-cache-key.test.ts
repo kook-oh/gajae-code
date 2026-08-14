@@ -71,17 +71,17 @@ async function createSession(
 	return { session: result.session, authStorage };
 }
 async function withLifecycleIdentity<T>(sessionId: string, run: () => Promise<T>): Promise<T> {
-	const previousRequestId = process.env.GJC_LIFECYCLE_REQUEST_ID;
-	const previousSessionId = process.env.GJC_SESSION_ID;
+	const previousRequestId = process.env.WORX_LIFECYCLE_REQUEST_ID;
+	const previousSessionId = process.env.WORX_SESSION_ID;
 	try {
-		process.env.GJC_LIFECYCLE_REQUEST_ID = "task-provider-identity-test";
-		process.env.GJC_SESSION_ID = sessionId;
+		process.env.WORX_LIFECYCLE_REQUEST_ID = "task-provider-identity-test";
+		process.env.WORX_SESSION_ID = sessionId;
 		return await run();
 	} finally {
-		if (previousRequestId === undefined) delete process.env.GJC_LIFECYCLE_REQUEST_ID;
-		else process.env.GJC_LIFECYCLE_REQUEST_ID = previousRequestId;
-		if (previousSessionId === undefined) delete process.env.GJC_SESSION_ID;
-		else process.env.GJC_SESSION_ID = previousSessionId;
+		if (previousRequestId === undefined) delete process.env.WORX_LIFECYCLE_REQUEST_ID;
+		else process.env.WORX_LIFECYCLE_REQUEST_ID = previousRequestId;
+		if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
+		else process.env.WORX_SESSION_ID = previousSessionId;
 	}
 }
 

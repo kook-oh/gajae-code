@@ -105,7 +105,7 @@ function installPsmuxAuthorityFixture(
 	prepareManagedDirectoryRoot(stateDir);
 	__setTmuxProviderAuthorityPlatformForTests("win32");
 	const context = resolveGjcTmuxProviderContext({
-		env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		platform: "win32",
 	});
 	const sessionId = identity.sessionId ?? "psmux-session";
@@ -153,7 +153,7 @@ describe("GJC tmux session management", () => {
 		);
 
 		clearPsmuxDetectionCache();
-		const sessions = listGjcTmuxSessions({ GJC_TMUX_COMMAND: "tmux-test" });
+		const sessions = listGjcTmuxSessions({ WORX_TMUX_COMMAND: "tmux-test" });
 
 		expect(sessions.map(session => session.name)).toEqual(["gajae_code_abc"]);
 		expect(sessions[0].attached).toBe(false);
@@ -190,7 +190,7 @@ describe("GJC tmux session management", () => {
 		spyOn(Bun, "which").mockReturnValue(null);
 		const spawnSyncSpy = spyOn(Bun, "spawnSync");
 
-		expect(() => listGjcTmuxSessions({ GJC_TMUX_OWNER_STATE_DIR: stateDir })).toThrow(
+		expect(() => listGjcTmuxSessions({ WORX_TMUX_OWNER_STATE_DIR: stateDir })).toThrow(
 			"gjc_tmux_provider_unavailable — GJC searched for psmux, pmux, and tmux on PATH.",
 		);
 		expect(spawnSyncSpy).not.toHaveBeenCalled();
@@ -201,7 +201,7 @@ describe("GJC tmux session management", () => {
 		// whether the host has psmux / pmux / tmux on PATH. The shared
 		// resolveGjcTmuxCommand now picks the first available multiplexer on
 		// Windows; we explicitly opt into literal tmux for this guard test.
-		const env = { GJC_TMUX_COMMAND: "tmux" };
+		const env = { WORX_TMUX_COMMAND: "tmux" };
 		const calls: string[][] = [];
 		const spawnSyncSpy = spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy;
 		spawnSyncSpy.mockImplementation(command => {
@@ -224,7 +224,7 @@ describe("GJC tmux session management", () => {
 	}, 15_000);
 
 	it("refuses a same-name replacement before the final guarded remove", () => {
-		const env = { GJC_TMUX_COMMAND: "tmux" };
+		const env = { WORX_TMUX_COMMAND: "tmux" };
 		const calls: string[][] = [];
 		(spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy).mockImplementation(command => {
 			const commandArgv = argv(command);
@@ -294,10 +294,10 @@ describe("GJC tmux session management", () => {
 				throw new Error(proofError);
 			});
 
-			expect(() => removeGjcTmuxSession("gajae_code_work", { GJC_TMUX_COMMAND: "tmux" })).toThrow(proofError);
-			expect(() => attachGjcTmuxSession("gajae_code_work", { GJC_TMUX_COMMAND: "tmux" })).toThrow(proofError);
+			expect(() => removeGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
+			expect(() => attachGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
 			await expect(
-				forceCloseGjcTmuxSession("gajae_code_work", { GJC_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+				forceCloseGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 					resolveOwner: async () => ({
 						sessionId: "session",
 						stateDir: "/state",
@@ -346,7 +346,7 @@ describe("GJC tmux session management", () => {
 			"Recover through GJC so it reuses that persisted authority; do not retry against ambient tmux/psmux or a raw `-L` namespace",
 		);
 		expect(hint).toContain(
-			"GJC_TMUX_COMMAND and GJC_TEAM_TMUX_COMMAND are binary overrides, not shell command lines",
+			"WORX_TMUX_COMMAND and WORX_TEAM_TMUX_COMMAND are binary overrides, not shell command lines",
 		);
 	});
 
@@ -369,7 +369,7 @@ describe("GJC tmux session management", () => {
 		});
 
 		const session = statusGjcTmuxSession("win_session", {
-			GJC_TMUX_COMMAND: "tmux",
+			WORX_TMUX_COMMAND: "tmux",
 		});
 
 		expect(session.name).toBe("win_session");
@@ -392,7 +392,7 @@ describe("GJC tmux session management", () => {
 
 	it("queries the profile option with a window-qualified exact target", () => {
 		// Pin the resolved command to tmux so this test is platform-agnostic.
-		const env = { GJC_TMUX_COMMAND: "tmux" };
+		const env = { WORX_TMUX_COMMAND: "tmux" };
 		const calls: string[][] = [];
 		const spawnSyncSpy = spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy;
 		spawnSyncSpy.mockImplementation((rawSpawn: unknown) => {
@@ -424,17 +424,17 @@ describe("GJC tmux session management", () => {
 		try {
 			expect(
 				buildGjcTmuxExactSessionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "tmux" },
+					env: { WORX_TMUX_COMMAND: "tmux" },
 				}),
 			).toBe("=work");
 			expect(
 				buildGjcTmuxExactSessionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				}),
 			).toBe("work");
 			expect(
 				buildGjcTmuxExactSessionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "pmux", GJC_PSMUX_COMMAND: "pmux" },
+					env: { WORX_TMUX_COMMAND: "pmux", WORX_PSMUX_COMMAND: "pmux" },
 				}),
 			).toBe("work");
 		} finally {
@@ -449,7 +449,7 @@ describe("GJC tmux session management", () => {
 		// but tmux 3.6a needs the window-qualified `=NAME:` to resolve the
 		// session for option/display commands. The shared resolver should
 		// pick the right shape for the active multiplexer. Use the
-		// BinaryResolver test seam + GJC_PSMUX_COMMAND override so the
+		// BinaryResolver test seam + WORX_PSMUX_COMMAND override so the
 		// detection layer agrees on the multiplexer identity without
 		// needing a real psmux binary on PATH.
 		__setBinaryResolverForTests(candidate =>
@@ -459,17 +459,17 @@ describe("GJC tmux session management", () => {
 		try {
 			expect(
 				buildGjcTmuxExactOptionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "tmux" },
+					env: { WORX_TMUX_COMMAND: "tmux" },
 				}),
 			).toBe("=work:");
 			expect(
 				buildGjcTmuxExactOptionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				}),
 			).toBe("work");
 			expect(
 				buildGjcTmuxExactOptionTarget("work", {
-					env: { GJC_TMUX_COMMAND: "pmux", GJC_PSMUX_COMMAND: "pmux" },
+					env: { WORX_TMUX_COMMAND: "pmux", WORX_PSMUX_COMMAND: "pmux" },
 				}),
 			).toBe("work");
 		} finally {
@@ -510,9 +510,9 @@ describe("GJC tmux session management", () => {
 			});
 
 			const sessions = listGjcTmuxSessions({
-				GJC_TMUX_COMMAND: "psmux",
-				GJC_PSMUX_COMMAND: "psmux",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+				WORX_TMUX_COMMAND: "psmux",
+				WORX_PSMUX_COMMAND: "psmux",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			});
 
 			expect(sessions).toHaveLength(1);
@@ -558,9 +558,9 @@ describe("GJC tmux session management", () => {
 			});
 			expect(() =>
 				listGjcTmuxSessions({
-					GJC_TMUX_COMMAND: "psmux",
-					GJC_PSMUX_COMMAND: "psmux",
-					GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+					WORX_TMUX_COMMAND: "psmux",
+					WORX_PSMUX_COMMAND: "psmux",
+					WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 				}),
 			).toThrow("gjc_tmux_provider_authority_ambiguous:psmux_session");
 		} finally {
@@ -580,7 +580,7 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 
-		expect(() => createGjcTmuxSession({ GJC_TMUX_COMMAND: "tmux" })).toThrow(
+		expect(() => createGjcTmuxSession({ WORX_TMUX_COMMAND: "tmux" })).toThrow(
 			"gjc_tmux_owner_isolation_native_session_identity_unavailable",
 		);
 		expect(calls.some(cmd => cmd.includes("new-session"))).toBe(true);
@@ -606,10 +606,10 @@ describe("GJC tmux session management", () => {
 			expect(() =>
 				createGjcTmuxSession(
 					{
-						GJC_TMUX_COMMAND: "psmux",
-						GJC_PSMUX_COMMAND: "psmux",
-						GJC_TMUX_SESSION: "psmux_session",
-						GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+						WORX_TMUX_COMMAND: "psmux",
+						WORX_PSMUX_COMMAND: "psmux",
+						WORX_TMUX_SESSION: "psmux_session",
+						WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 					} as NodeJS.ProcessEnv,
 					{ platform: "win32" },
 				),
@@ -626,8 +626,8 @@ describe("GJC tmux session management", () => {
 			command: ["C:\\Program Files\\GJC\\O'Brien\\gjc.exe"],
 			args: ["--resume", "operator's session", "--label=O'Brien"],
 			environment: {
-				GJC_PSMUX_COMMAND: "C:\\Program Files\\O'Brien\\psmux.exe",
-				GJC_TEST_VALUE: "operator's value",
+				WORX_PSMUX_COMMAND: "C:\\Program Files\\O'Brien\\psmux.exe",
+				WORX_TEST_VALUE: "operator's value",
 			},
 		});
 		const encodedMatch = encoded.match(/-EncodedCommand\s+(\S+)/);
@@ -639,8 +639,8 @@ describe("GJC tmux session management", () => {
 		expect(decoded[1]).not.toBe(0xfe);
 		const script = decoded.toString("utf16le");
 		expect(script[0]).toBe("$");
-		expect(script).toContain("$env:GJC_PSMUX_COMMAND = 'C:\\Program Files\\O''Brien\\psmux.exe'");
-		expect(script).toContain("$env:GJC_TEST_VALUE = 'operator''s value'");
+		expect(script).toContain("$env:WORX_PSMUX_COMMAND = 'C:\\Program Files\\O''Brien\\psmux.exe'");
+		expect(script).toContain("$env:WORX_TEST_VALUE = 'operator''s value'");
 		expect(script).toContain(
 			"& 'C:\\Program Files\\GJC\\O''Brien\\gjc.exe' '--resume' 'operator''s session' '--label=O''Brien'",
 		);
@@ -659,11 +659,11 @@ describe("GJC tmux session management", () => {
 		expect(() =>
 			createGjcTmuxSession(
 				{
-					GJC_PSMUX_DETECTION: "off",
-					GJC_TMUX_COMMAND: "tmux",
-					GJC_TMUX_SESSION: "psmux-session",
-					GJC_COORDINATOR_SESSION_ID: "operators-session",
-					GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
+					WORX_PSMUX_DETECTION: "off",
+					WORX_TMUX_COMMAND: "tmux",
+					WORX_TMUX_SESSION: "psmux-session",
+					WORX_COORDINATOR_SESSION_ID: "operators-session",
+					WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
 				},
 				{ platform: "win32" },
 			),
@@ -675,19 +675,19 @@ describe("GJC tmux session management", () => {
 		expect(encodedMatch).not.toBeNull();
 		if (!encodedMatch) throw new Error("expected session new-command encoded command");
 		const script = Buffer.from(encodedMatch[1], "base64").toString("utf16le");
-		const generation = script.match(/\$env:GJC_TMUX_OWNER_GENERATION = '([^']+)'/)?.[1];
+		const generation = script.match(/\$env:WORX_TMUX_OWNER_GENERATION = '([^']+)'/)?.[1];
 		expect(generation).toBeDefined();
 		if (!generation) throw new Error("expected generated owner identity");
 		expect(innerCommand).toBe(
 			buildWindowsPowerShellInnerCommand({
 				command: ["gjc"],
 				environment: {
-					GJC_TMUX_LAUNCHED: "1",
-					GJC_TMUX_OWNER_GENERATION: generation,
-					GJC_TMUX_OWNER_STATE_DIR: "C:\\Users\\O'Brien",
-					GJC_TMUX_OWNER_SERVER_KEY: "tmux",
-					GJC_COORDINATOR_SESSION_ID: "operators-session",
-					GJC_COORDINATOR_SESSION_STATE_FILE: stateFile,
+					WORX_TMUX_LAUNCHED: "1",
+					WORX_TMUX_OWNER_GENERATION: generation,
+					WORX_TMUX_OWNER_STATE_DIR: "C:\\Users\\O'Brien",
+					WORX_TMUX_OWNER_SERVER_KEY: "tmux",
+					WORX_COORDINATOR_SESSION_ID: "operators-session",
+					WORX_COORDINATOR_SESSION_STATE_FILE: stateFile,
 				},
 			}),
 		);
@@ -704,8 +704,8 @@ describe("GJC tmux session management", () => {
 			});
 			expect(() =>
 				attachGjcTmuxSession("managed", {
-					GJC_TMUX_COMMAND: "psmux",
-					GJC_PSMUX_COMMAND: "psmux",
+					WORX_TMUX_COMMAND: "psmux",
+					WORX_PSMUX_COMMAND: "psmux",
 				}),
 			).toThrow("gjc_tmux_provider_authority_unavailable");
 			expect(calls.some(cmd => cmd.includes("attach-session"))).toBe(false);
@@ -759,9 +759,9 @@ describe("GJC tmux session management", () => {
 		});
 		expect(() =>
 			createGjcTmuxSession({
-				GJC_TMUX_COMMAND: "tmux",
-				GJC_TMUX_SESSION: "managed",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-unbound-${crypto.randomUUID()}.json`),
+				WORX_TMUX_COMMAND: "tmux",
+				WORX_TMUX_SESSION: "managed",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-unbound-${crypto.randomUUID()}.json`),
 			}),
 		).toThrow("gjc_tmux_owner_changed_after_create");
 		expect(calls.some(cmd => cmd.includes("set-option") || cmd.includes("set-window-option"))).toBe(false);
@@ -828,10 +828,10 @@ describe("GJC tmux session management", () => {
 		});
 		expect(() =>
 			createGjcTmuxSession({
-				GJC_TMUX_COMMAND: "tmux",
-				GJC_TMUX_SESSION: "managed",
-				GJC_COORDINATOR_SESSION_ID: "managed",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+				WORX_TMUX_COMMAND: "tmux",
+				WORX_TMUX_SESSION: "managed",
+				WORX_COORDINATOR_SESSION_ID: "managed",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			}),
 		).toThrow("gjc_tmux_created_metadata_mismatch");
 		expect(calls.flat().includes("kill-session")).toBe(false);
@@ -896,10 +896,10 @@ describe("GJC tmux session management", () => {
 		let failure: unknown;
 		try {
 			createGjcTmuxSession({
-				GJC_TMUX_COMMAND: "tmux",
-				GJC_TMUX_SESSION: "managed",
-				GJC_COORDINATOR_SESSION_ID: "managed",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+				WORX_TMUX_COMMAND: "tmux",
+				WORX_TMUX_SESSION: "managed",
+				WORX_COORDINATOR_SESSION_ID: "managed",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			});
 		} catch (error) {
 			failure = error;
@@ -957,10 +957,10 @@ describe("GJC tmux session management", () => {
 		});
 		expect(() =>
 			createGjcTmuxSession({
-				GJC_TMUX_COMMAND: "tmux",
-				GJC_TMUX_SESSION: "managed",
-				GJC_COORDINATOR_SESSION_ID: "managed",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
+				WORX_TMUX_COMMAND: "tmux",
+				WORX_TMUX_SESSION: "managed",
+				WORX_COORDINATOR_SESSION_ID: "managed",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			}),
 		).toThrow("gjc_tmux_created_metadata_mismatch");
 		expect(calls.flat().includes("kill-session")).toBe(false);
@@ -997,9 +997,9 @@ describe("GJC tmux session management", () => {
 		});
 		expect(() =>
 			createGjcTmuxSession({
-				GJC_TMUX_COMMAND: "tmux",
-				GJC_TMUX_SESSION: "managed",
-				GJC_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-replacement-${crypto.randomUUID()}.json`),
+				WORX_TMUX_COMMAND: "tmux",
+				WORX_TMUX_SESSION: "managed",
+				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-replacement-${crypto.randomUUID()}.json`),
 			}),
 		).toThrow("gjc_tmux_precommit_failed_cleanup_failed");
 		expect(calls.filter(command => command[1] === "set-option" || command[1] === "kill-session")).toEqual([]);
@@ -1066,9 +1066,9 @@ describe("GJC tmux session management", () => {
 		expect(() =>
 			createGjcTmuxSession(
 				{
-					GJC_TMUX_COMMAND: "tmux",
-					GJC_TMUX_SESSION: "managed",
-					GJC_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-unproven-${crypto.randomUUID()}.json`),
+					WORX_TMUX_COMMAND: "tmux",
+					WORX_TMUX_SESSION: "managed",
+					WORX_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-unproven-${crypto.randomUUID()}.json`),
 				},
 				{ platform: "darwin" },
 			),
@@ -1088,7 +1088,7 @@ describe("GJC tmux session management", () => {
 			await expect(
 				forceCloseGjcTmuxSession(
 					"managed",
-					{ GJC_TMUX_COMMAND: "psmux", GJC_PSMUX_COMMAND: "psmux" },
+					{ WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 					undefined,
 					undefined,
 					{
@@ -1146,11 +1146,11 @@ describe("GJC tmux session management", () => {
 			forceCloseGjcTmuxSession(
 				"managed",
 				{
-					GJC_TMUX_COMMAND: "psmux",
-					GJC_PSMUX_COMMAND: "psmux",
-					GJC_TMUX_OWNER_STATE_DIR: stateDir,
-					GJC_COORDINATOR_SESSION_ID: sessionId,
-					GJC_TMUX_OWNER_GENERATION: generation,
+					WORX_TMUX_COMMAND: "psmux",
+					WORX_PSMUX_COMMAND: "psmux",
+					WORX_TMUX_OWNER_STATE_DIR: stateDir,
+					WORX_COORDINATOR_SESSION_ID: sessionId,
+					WORX_TMUX_OWNER_GENERATION: generation,
 				},
 				sessionId,
 				marker,
@@ -1245,7 +1245,7 @@ describe("GJC tmux session management", () => {
 		void failedOwnerExitVerdict.catch(() => {});
 		await forceCloseGjcTmuxSession(
 			"managed",
-			{ GJC_TMUX_COMMAND: "tmux" },
+			{ WORX_TMUX_COMMAND: "tmux" },
 			sessionId,
 			path.join(stateDir, "marker"),
 			{
@@ -1358,7 +1358,7 @@ describe("GJC tmux session management", () => {
 		let cleaned = false;
 		const hangingOwnerExitVerdict = Promise.withResolvers<never>();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1438,7 +1438,7 @@ describe("GJC tmux session management", () => {
 		});
 		injectSafeMutationProof();
 		try {
-			await forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, sessionId, marker);
+			await forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker);
 			await owner.exited;
 			expect(owner.signalCode).toBe("SIGTERM");
 		} finally {
@@ -1490,7 +1490,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1590,7 +1590,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1666,7 +1666,7 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 				resolveOwner: async () => ({
 					sessionId: "session",
 					stateDir: "/state",
@@ -1714,7 +1714,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 				resolveOwner: async () => ({
 					sessionId: "session",
 					stateDir: "/missing",
@@ -1776,7 +1776,7 @@ describe("GJC tmux session management", () => {
 		injectSafeMutationProof();
 		let startTimeRead = 0;
 		await expect(
-			forceCloseGjcTmuxSession("managed", { GJC_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,

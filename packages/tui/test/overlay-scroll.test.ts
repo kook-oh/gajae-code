@@ -103,16 +103,16 @@ describe("TUI overlays", () => {
 		previousZellij = Bun.env.ZELLIJ;
 		previousLegacyFullRender = Bun.env.PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER;
 		previousTmuxPane = Bun.env.TMUX_PANE;
-		previousGjcTmuxLaunched = Bun.env.GJC_TMUX_LAUNCHED;
+		previousGjcTmuxLaunched = Bun.env.WORX_TMUX_LAUNCHED;
 		previousTerm = Bun.env.TERM;
-		previousImeCursor = Bun.env.GJC_TUI_IME_CURSOR;
+		previousImeCursor = Bun.env.WORX_TUI_IME_CURSOR;
 		delete Bun.env.TMUX;
 		delete Bun.env.STY;
 		delete Bun.env.ZELLIJ;
 		delete Bun.env.PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER;
 		delete Bun.env.TMUX_PANE;
-		delete Bun.env.GJC_TMUX_LAUNCHED;
-		delete Bun.env.GJC_TUI_IME_CURSOR;
+		delete Bun.env.WORX_TMUX_LAUNCHED;
+		delete Bun.env.WORX_TUI_IME_CURSOR;
 		Bun.env.TERM = "xterm-256color";
 	});
 
@@ -143,9 +143,9 @@ describe("TUI overlays", () => {
 			Bun.env.TMUX_PANE = previousTmuxPane;
 		}
 		if (previousGjcTmuxLaunched === undefined) {
-			delete Bun.env.GJC_TMUX_LAUNCHED;
+			delete Bun.env.WORX_TMUX_LAUNCHED;
 		} else {
-			Bun.env.GJC_TMUX_LAUNCHED = previousGjcTmuxLaunched;
+			Bun.env.WORX_TMUX_LAUNCHED = previousGjcTmuxLaunched;
 		}
 		if (previousTerm === undefined) {
 			delete Bun.env.TERM;
@@ -153,9 +153,9 @@ describe("TUI overlays", () => {
 			Bun.env.TERM = previousTerm;
 		}
 		if (previousImeCursor === undefined) {
-			delete Bun.env.GJC_TUI_IME_CURSOR;
+			delete Bun.env.WORX_TUI_IME_CURSOR;
 		} else {
-			Bun.env.GJC_TUI_IME_CURSOR = previousImeCursor;
+			Bun.env.WORX_TUI_IME_CURSOR = previousImeCursor;
 		}
 	});
 
@@ -377,7 +377,7 @@ describe("TUI overlays", () => {
 	});
 
 	it("anchors macOS IME cursor-only updates with a steady block cursor in soft-cursor mode", async () => {
-		Bun.env.GJC_TUI_IME_CURSOR = "1";
+		Bun.env.WORX_TUI_IME_CURSOR = "1";
 		const term = new VirtualTerminal(40, 6);
 		const tui = new TUI(term, false);
 		const component = new CursorOnlyComponent();

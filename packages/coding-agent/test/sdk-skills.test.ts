@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { DEFAULT_GJC_DEFINITION_NAMES } from "@bworx-io/worx-code/defaults/gjc-defaults";
+import { DEFAULT_WORX_DEFINITION_NAMES } from "@bworx-io/worx-code/defaults/gjc-defaults";
 import type { Skill } from "@bworx-io/worx-code/sdk";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
@@ -78,7 +78,7 @@ Loaded via symbolic link.
 			sessionManager: SessionManager.inMemory(),
 			settings: Settings.isolated({ "skills.enabled": false }),
 		});
-		const expected = [...DEFAULT_GJC_DEFINITION_NAMES].sort();
+		const expected = [...DEFAULT_WORX_DEFINITION_NAMES].sort();
 
 		expect(session.skills.map(skill => skill.name).sort()).toEqual(expected);
 		expect(session.skills.every(skill => skill.filePath.startsWith("embedded:gjc/skills/"))).toBe(true);
@@ -131,7 +131,7 @@ Loaded via symbolic link.
 			settings: createIsolatedSkillsSettings(),
 		});
 
-		expect(session.skills.map(skill => skill.name).sort()).toEqual([...DEFAULT_GJC_DEFINITION_NAMES].sort());
+		expect(session.skills.map(skill => skill.name).sort()).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
 		expect(session.skillWarnings).toEqual([]);
 	});
 
@@ -153,7 +153,7 @@ Loaded via symbolic link.
 		});
 
 		expect(session.skills).toContainEqual(customSkill);
-		for (const name of DEFAULT_GJC_DEFINITION_NAMES) {
+		for (const name of DEFAULT_WORX_DEFINITION_NAMES) {
 			expect(session.skills.some(skill => skill.name === name)).toBe(true);
 		}
 		expect(session.skillWarnings).toEqual([]);

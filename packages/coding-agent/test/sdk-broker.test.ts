@@ -121,7 +121,7 @@ it("isolates source SDK children and preserves compiled self-spawn", () => {
 		...process.env,
 		BUN_OPTIONS: "--inspect",
 		PI_COMPILED: "1",
-		GJC_COMPILED: "1",
+		WORX_COMPILED: "1",
 	};
 	const source = resolveSdkInternalSpawnCommandForTest("broker-internal", { environment: sourceEnvironment });
 	expect(source.kind).toBe("bun-source");
@@ -135,7 +135,7 @@ it("isolates source SDK children and preserves compiled self-spawn", () => {
 	]);
 	expect(source.env.BUN_OPTIONS).toBeUndefined();
 	expect(source.env.PI_COMPILED).toBeUndefined();
-	expect(source.env.GJC_COMPILED).toBeUndefined();
+	expect(source.env.WORX_COMPILED).toBeUndefined();
 	expect(source.cwd).toBe(path.resolve(import.meta.dir, "../src/sdk/broker"));
 	expect(resolveSdkInternalSpawnCommand("broker-internal")).toMatchObject({
 		kind: "bun-source",
@@ -182,7 +182,7 @@ it("treats explicit broker env as a complete allowlist and still scrubs runtime 
 		OWNED_SENTINEL: "kept",
 		BUN_OPTIONS: "--inspect",
 		PI_COMPILED: "spoofed",
-		GJC_COMPILED: "spoofed",
+		WORX_COMPILED: "spoofed",
 	});
 	expect(environment).toEqual({ PATH: process.env.PATH, OWNED_SENTINEL: "kept" });
 	expect(environment.AMBIENT_SENTINEL).toBeUndefined();
@@ -284,7 +284,7 @@ it("SDK lifecycle launch requests preserve validated ACP MCP transports", async 
 					mcpServers: [{ name: "Air", command: "relative-command", args: [] }],
 				}),
 			),
-		).toThrow("GJC_SDK_LIFECYCLE_REQUEST is invalid.");
+		).toThrow("WORX_SDK_LIFECYCLE_REQUEST is invalid.");
 	} finally {
 		await fs.rm(agentDir, { recursive: true, force: true });
 	}
@@ -345,7 +345,7 @@ it("SDK lifecycle launch requests require a worktree identity", () => {
 		readSessionLifecycleLaunchRequest(
 			JSON.stringify({ operation: "session.create", sessionId: "session-1", stateRoot: "/state" }),
 		),
-	).toThrow("GJC_SDK_LIFECYCLE_REQUEST is invalid.");
+	).toThrow("WORX_SDK_LIFECYCLE_REQUEST is invalid.");
 });
 it("SDK lifecycle transcript authority requires and preserves a full sha256 identity", () => {
 	const cwd = "/workspace/repo";
@@ -369,7 +369,7 @@ it("SDK lifecycle transcript authority requires and preserves a full sha256 iden
 	const { sha256: _sha256, ...withoutHash } = request.sessionIdentity;
 	expect(() =>
 		readSessionLifecycleLaunchRequest(JSON.stringify({ ...request, sessionIdentity: withoutHash })),
-	).toThrow("GJC_SDK_LIFECYCLE_REQUEST is invalid.");
+	).toThrow("WORX_SDK_LIFECYCLE_REQUEST is invalid.");
 });
 
 async function waitForDiscovery(agentDir: string, children?: Bun.Subprocess[]) {

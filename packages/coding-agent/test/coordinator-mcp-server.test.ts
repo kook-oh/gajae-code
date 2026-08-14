@@ -160,10 +160,10 @@ function testBrokerDiscovery(): BrokerDiscovery {
 function createBrokerTestServer(root: string, services: BrokerTestServices) {
 	return createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
 		},
 		services: { ...services, getAgentDir: () => path.join(root, "agent-global") },
 	});
@@ -171,10 +171,10 @@ function createBrokerTestServer(root: string, services: BrokerTestServices) {
 function createRealBrokerServer(root: string, agentDir: string) {
 	return createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
 		},
 		services: { getAgentDir: () => agentDir },
 	});
@@ -225,15 +225,15 @@ async function createSdkControlServer(
 	let createdSessions = 0;
 	const server = createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: stateRoot,
-			GJC_COORDINATOR_MCP_MUTATIONS: "sessions,questions,reports",
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
-			...(sessionCommand ? { GJC_COORDINATOR_MCP_SESSION_COMMAND: sessionCommand } : {}),
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: stateRoot,
+			WORX_COORDINATOR_MCP_MUTATIONS: "sessions,questions,reports",
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
+			...(sessionCommand ? { WORX_COORDINATOR_MCP_SESSION_COMMAND: sessionCommand } : {}),
 			...(serverOptions.promptAckTimeoutMs === undefined
 				? {}
-				: { GJC_COORDINATOR_MCP_PROMPT_ACK_TIMEOUT_MS: String(serverOptions.promptAckTimeoutMs) }),
+				: { WORX_COORDINATOR_MCP_PROMPT_ACK_TIMEOUT_MS: String(serverOptions.promptAckTimeoutMs) }),
 		},
 		platform: serverOptions.platform,
 		services: {
@@ -2462,11 +2462,11 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const server = createCoordinatorMcpServer({
 			env: {
-				GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-				GJC_COORDINATOR_MCP_MUTATIONS: "sessions",
-				GJC_COORDINATOR_MCP_PROFILE: "local",
-				GJC_COORDINATOR_MCP_REPO: "repo",
+				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
+				WORX_COORDINATOR_MCP_PROFILE: "local",
+				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
 		});
 		await registerSdkSession(server, root);

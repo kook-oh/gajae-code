@@ -66,7 +66,7 @@ async function withAgentDir<T>(agentDir: string, run: () => Promise<T>): Promise
 describe("canonical SDK coordinator compatibility handler", () => {
 	it("serves initialization and the canonical tool inventory", async () => {
 		await withTempRoot(async root => {
-			const env = { GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root };
+			const env = { WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root };
 			const initialized = await handleCoordinatorMcpRequest(
 				{ jsonrpc: "2.0", id: 1, method: "initialize" },
 				{ env },
@@ -95,7 +95,7 @@ describe("canonical SDK coordinator compatibility handler", () => {
 		await withTempRoot(async root => {
 			const response = await handleCoordinatorMcpRequest(
 				{ jsonrpc: "2.0", id: 3, method: "tools/list" },
-				{ env: { GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root } },
+				{ env: { WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root } },
 			);
 			const tool = response.result.tools.find(
 				(candidate: { name: string }) => candidate.name === "worx_coordinator_submit_question_answer",
@@ -120,8 +120,8 @@ describe("canonical SDK coordinator compatibility handler", () => {
 			await Bun.write(artifact, "coordinator artifact");
 			const server = createCoordinatorMcpServer({
 				env: {
-					GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-					GJC_COORDINATOR_MCP_MUTATIONS: "sessions",
+					WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+					WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
 				},
 			});
 			expect(

@@ -61,13 +61,13 @@ afterEach(() => {
 });
 
 async function withNotifications<T>(fn: () => Promise<T>): Promise<T> {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		return await fn();
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 }
 
@@ -389,8 +389,8 @@ test("accepted turn.prompt submission failures emit a correlated terminal event"
 });
 
 test("session_switch rotates SDK authority while preserving topic identity", async () => {
-	const prevEnv = process.env.GJC_NOTIFICATIONS;
-	process.env.GJC_NOTIFICATIONS = "1";
+	const prevEnv = process.env.WORX_NOTIFICATIONS;
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const handlers = new Map<string, Handler>();
 		const api = {
@@ -456,8 +456,8 @@ test("session_switch rotates SDK authority while preserving topic identity", asy
 		);
 		expect(frames.some(f => f.type === "activity" && f.sessionId === sid)).toBe(false);
 	} finally {
-		if (prevEnv === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = prevEnv;
+		if (prevEnv === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = prevEnv;
 	}
 });
 
@@ -823,8 +823,8 @@ test("session_switch reason=resume starts a fresh runtime for the resumed sessio
 });
 
 test("session_switch keeps notification resources inactive until notify on rebinds them to the new id", async () => {
-	const previous = process.env.GJC_NOTIFICATIONS;
-	delete process.env.GJC_NOTIFICATIONS;
+	const previous = process.env.WORX_NOTIFICATIONS;
+	delete process.env.WORX_NOTIFICATIONS;
 	try {
 		const harness = createHarness("gjc-notif-switch-off-");
 		const originalId = harness.sid;
@@ -850,7 +850,7 @@ test("session_switch keeps notification resources inactive until notify on rebin
 		expect(getAskAnswerSource(newId)).toBeUndefined();
 		expect(getTelegramFileSink(newId)).toBeUndefined();
 
-		process.env.GJC_NOTIFICATIONS = "1";
+		process.env.WORX_NOTIFICATIONS = "1";
 		await harness.commands
 			.get("notify")!
 			.handler("on", { ...(harness.ctx as Record<string, unknown>), ui: { notify: () => {} } });
@@ -859,7 +859,7 @@ test("session_switch keeps notification resources inactive until notify on rebin
 		expect(getAskAnswerSource(newId)).toBeDefined();
 		expect(getTelegramFileSink(newId)).toBeDefined();
 	} finally {
-		if (previous === undefined) delete process.env.GJC_NOTIFICATIONS;
-		else process.env.GJC_NOTIFICATIONS = previous;
+		if (previous === undefined) delete process.env.WORX_NOTIFICATIONS;
+		else process.env.WORX_NOTIFICATIONS = previous;
 	}
 });

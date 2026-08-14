@@ -54,13 +54,13 @@ describe("GJC plugin compiler", () => {
 	test("never imports plugin tool/hook code during compile", async () => {
 		const sentinel = path.join(await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sentinel-")), "sentinel.txt");
 		tempDirs.push(path.dirname(sentinel));
-		const prev = process.env.GJC_TEST_IMPORT_SENTINEL;
-		process.env.GJC_TEST_IMPORT_SENTINEL = sentinel;
+		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
+		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
 			await compileGjcPluginBundle(sixSurface);
 		} finally {
-			if (prev === undefined) delete process.env.GJC_TEST_IMPORT_SENTINEL;
-			else process.env.GJC_TEST_IMPORT_SENTINEL = prev;
+			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
+			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;
 		}
 		await expect(fs.access(sentinel)).rejects.toThrow();
 	});

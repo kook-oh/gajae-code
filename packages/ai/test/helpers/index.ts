@@ -75,7 +75,7 @@ export interface AuthGatewayE2EStatus {
 	reason?: string;
 }
 
-export const AUTH_GATEWAY_E2E_URL = Bun.env.GJC_E2E_GATEWAY_URL ?? "http://127.0.0.1:4000";
+export const AUTH_GATEWAY_E2E_URL = Bun.env.WORX_E2E_GATEWAY_URL ?? "http://127.0.0.1:4000";
 
 const AUTH_GATEWAY_TOKEN_PATH = path.join(os.homedir(), ".gjc", "auth-gateway.token");
 const AUTH_GATEWAY_HEALTH_TIMEOUT_MS = 500;

@@ -17,14 +17,14 @@ import {
 } from "@bworx-io/worx-code/tools/implementations";
 
 const PY_ENV_KEYS = [
-	"GJC_PY",
+	"WORX_PY",
 	"PI_PY",
 	"PI_JS",
-	"GJC_PYTHON_SKIP_CHECK",
+	"WORX_PYTHON_SKIP_CHECK",
 	"PI_PYTHON_SKIP_CHECK",
-	"GJC_PYTHON_IPC_TRACE",
+	"WORX_PYTHON_IPC_TRACE",
 	"PI_PYTHON_IPC_TRACE",
-	"GJC_PYTHON_INTEGRATION",
+	"WORX_PYTHON_INTEGRATION",
 	"PI_PYTHON_INTEGRATION",
 ] as const;
 
@@ -173,10 +173,7 @@ describe("createTools", () => {
 
 	it("still exposes eval when python kernel is unavailable (dispatches to js)", async () => {
 		const session = createTestSession();
-		vi.spyOn(
-			await import("@bworx-io/worx-code/eval/py/kernel"),
-			"checkPythonKernelAvailability",
-		).mockResolvedValue({
+		vi.spyOn(await import("@bworx-io/worx-code/eval/py/kernel"), "checkPythonKernelAvailability").mockResolvedValue({
 			ok: false,
 			reason: "missing python",
 		});
@@ -375,44 +372,44 @@ function clearPyEnvKeys(): void {
 }
 
 describe("parseGjcPy", () => {
-	it("returns null when GJC_PY is unset", () => {
+	it("returns null when WORX_PY is unset", () => {
 		expect(parseGjcPy({})).toBeNull();
 	});
 
-	it("returns null when GJC_PY is empty or whitespace", () => {
-		expect(parseGjcPy({ GJC_PY: "" })).toBeNull();
-		expect(parseGjcPy({ GJC_PY: "   " })).toBeNull();
+	it("returns null when WORX_PY is empty or whitespace", () => {
+		expect(parseGjcPy({ WORX_PY: "" })).toBeNull();
+		expect(parseGjcPy({ WORX_PY: "   " })).toBeNull();
 	});
 
 	it("returns null for unrecognized tokens (invalid values are ignored)", () => {
-		expect(parseGjcPy({ GJC_PY: "python" })).toBeNull();
-		expect(parseGjcPy({ GJC_PY: "yes" })).toBeNull();
-		expect(parseGjcPy({ GJC_PY: "2" })).toBeNull();
+		expect(parseGjcPy({ WORX_PY: "python" })).toBeNull();
+		expect(parseGjcPy({ WORX_PY: "yes" })).toBeNull();
+		expect(parseGjcPy({ WORX_PY: "2" })).toBeNull();
 	});
 
 	it("parses 0/bash as JavaScript only", () => {
-		expect(parseGjcPy({ GJC_PY: "0" })).toEqual({ py: false, js: true });
-		expect(parseGjcPy({ GJC_PY: "bash" })).toEqual({ py: false, js: true });
+		expect(parseGjcPy({ WORX_PY: "0" })).toEqual({ py: false, js: true });
+		expect(parseGjcPy({ WORX_PY: "bash" })).toEqual({ py: false, js: true });
 	});
 
 	it("parses 1/py as Python only", () => {
-		expect(parseGjcPy({ GJC_PY: "1" })).toEqual({ py: true, js: false });
-		expect(parseGjcPy({ GJC_PY: "py" })).toEqual({ py: true, js: false });
+		expect(parseGjcPy({ WORX_PY: "1" })).toEqual({ py: true, js: false });
+		expect(parseGjcPy({ WORX_PY: "py" })).toEqual({ py: true, js: false });
 	});
 
 	it("parses js as JavaScript only", () => {
-		expect(parseGjcPy({ GJC_PY: "js" })).toEqual({ py: false, js: true });
+		expect(parseGjcPy({ WORX_PY: "js" })).toEqual({ py: false, js: true });
 	});
 
 	it("parses mix/both as both backends", () => {
-		expect(parseGjcPy({ GJC_PY: "mix" })).toEqual({ py: true, js: true });
-		expect(parseGjcPy({ GJC_PY: "both" })).toEqual({ py: true, js: true });
+		expect(parseGjcPy({ WORX_PY: "mix" })).toEqual({ py: true, js: true });
+		expect(parseGjcPy({ WORX_PY: "both" })).toEqual({ py: true, js: true });
 	});
 
 	it("is case-insensitive", () => {
-		expect(parseGjcPy({ GJC_PY: "PY" })).toEqual({ py: true, js: false });
-		expect(parseGjcPy({ GJC_PY: "Both" })).toEqual({ py: true, js: true });
-		expect(parseGjcPy({ GJC_PY: "  Js  " })).toEqual({ py: false, js: true });
+		expect(parseGjcPy({ WORX_PY: "PY" })).toEqual({ py: true, js: false });
+		expect(parseGjcPy({ WORX_PY: "Both" })).toEqual({ py: true, js: true });
+		expect(parseGjcPy({ WORX_PY: "  Js  " })).toEqual({ py: false, js: true });
 	});
 });
 
@@ -421,18 +418,18 @@ describe("resolveEvalBackendsFromEnv", () => {
 		expect(resolveEvalBackendsFromEnv({})).toBeNull();
 	});
 
-	it("prefers GJC_PY over legacy PI_PY/PI_JS", () => {
-		// GJC_PY=py (python only) wins even though PI_JS would enable js.
-		expect(resolveEvalBackendsFromEnv({ GJC_PY: "py", PI_JS: "1" })).toEqual({ python: true, js: false });
+	it("prefers WORX_PY over legacy PI_PY/PI_JS", () => {
+		// WORX_PY=py (python only) wins even though PI_JS would enable js.
+		expect(resolveEvalBackendsFromEnv({ WORX_PY: "py", PI_JS: "1" })).toEqual({ python: true, js: false });
 	});
 
-	it("falls back to legacy PI_PY/PI_JS when GJC_PY is unset", () => {
+	it("falls back to legacy PI_PY/PI_JS when WORX_PY is unset", () => {
 		expect(resolveEvalBackendsFromEnv({ PI_PY: "1", PI_JS: "0" })).toEqual({ python: true, js: false });
 		expect(resolveEvalBackendsFromEnv({ PI_PY: "0", PI_JS: "1" })).toEqual({ python: false, js: true });
 	});
 
-	it("falls back to legacy flags when GJC_PY is an unrecognized token", () => {
-		expect(resolveEvalBackendsFromEnv({ GJC_PY: "bogus", PI_PY: "1" })).toEqual({ python: true, js: true });
+	it("falls back to legacy flags when WORX_PY is an unrecognized token", () => {
+		expect(resolveEvalBackendsFromEnv({ WORX_PY: "bogus", PI_PY: "1" })).toEqual({ python: true, js: true });
 	});
 
 	it("treats an unset legacy flag as true (defer-to-settings semantics)", () => {
@@ -483,27 +480,27 @@ describe("resolveEvalBackends (session integration)", () => {
 		expect(resolveEvalBackends(session)).toEqual({ python: false, js: true });
 	});
 
-	it("GJC_PY=py overrides settings to python only", () => {
+	it("WORX_PY=py overrides settings to python only", () => {
 		clearPyEnvKeys();
-		Bun.env.GJC_PY = "py";
+		Bun.env.WORX_PY = "py";
 		const session = createTestSession({
 			settings: createSettingsWithOverrides({ "eval.py": true, "eval.js": true }),
 		});
 		expect(resolveEvalBackends(session)).toEqual({ python: true, js: false });
 	});
 
-	it("GJC_PY=0 disables python and enables js regardless of settings", () => {
+	it("WORX_PY=0 disables python and enables js regardless of settings", () => {
 		clearPyEnvKeys();
-		Bun.env.GJC_PY = "0";
+		Bun.env.WORX_PY = "0";
 		const session = createTestSession({
 			settings: createSettingsWithOverrides({ "eval.py": true, "eval.js": false }),
 		});
 		expect(resolveEvalBackends(session)).toEqual({ python: false, js: true });
 	});
 
-	it("GJC_PY wins over legacy PI_PY/PI_JS when both are set", () => {
+	it("WORX_PY wins over legacy PI_PY/PI_JS when both are set", () => {
 		clearPyEnvKeys();
-		Bun.env.GJC_PY = "js";
+		Bun.env.WORX_PY = "js";
 		Bun.env.PI_PY = "1";
 		Bun.env.PI_JS = "0";
 		const session = createTestSession();
@@ -511,7 +508,7 @@ describe("resolveEvalBackends (session integration)", () => {
 		expect(resolveEvalBackends(session)).toEqual({ python: false, js: true });
 	});
 
-	it("legacy PI_PY/PI_JS still apply when GJC_PY is unset", () => {
+	it("legacy PI_PY/PI_JS still apply when WORX_PY is unset", () => {
 		clearPyEnvKeys();
 		Bun.env.PI_PY = "1";
 		Bun.env.PI_JS = "0";
@@ -527,10 +524,10 @@ describe("resolvePythonSkipCheck", () => {
 		expect(resolvePythonSkipCheck({})).toBe(false);
 	});
 
-	it("honors GJC_PYTHON_SKIP_CHECK truthy values", () => {
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "1" })).toBe(true);
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "true" })).toBe(true);
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "yes" })).toBe(true);
+	it("honors WORX_PYTHON_SKIP_CHECK truthy values", () => {
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "1" })).toBe(true);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "true" })).toBe(true);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "yes" })).toBe(true);
 	});
 
 	it("falls back to PI_PYTHON_SKIP_CHECK", () => {
@@ -538,17 +535,17 @@ describe("resolvePythonSkipCheck", () => {
 	});
 
 	it("prefers GJC over PI but either truthy wins (OR)", () => {
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "1", PI_PYTHON_SKIP_CHECK: "0" })).toBe(true);
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "0", PI_PYTHON_SKIP_CHECK: "1" })).toBe(true);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "1", PI_PYTHON_SKIP_CHECK: "0" })).toBe(true);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "0", PI_PYTHON_SKIP_CHECK: "1" })).toBe(true);
 	});
 
 	it("is case-insensitive and ignores whitespace", () => {
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "  YES  " })).toBe(true);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "  YES  " })).toBe(true);
 	});
 
 	it("treats non-truthy values as false", () => {
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "no" })).toBe(false);
-		expect(resolvePythonSkipCheck({ GJC_PYTHON_SKIP_CHECK: "0" })).toBe(false);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "no" })).toBe(false);
+		expect(resolvePythonSkipCheck({ WORX_PYTHON_SKIP_CHECK: "0" })).toBe(false);
 	});
 });
 
@@ -557,10 +554,10 @@ describe("resolvePythonIpcTrace", () => {
 		expect(resolvePythonIpcTrace({})).toBe(false);
 	});
 
-	it("honors GJC_PYTHON_IPC_TRACE first, then PI_PYTHON_IPC_TRACE", () => {
-		expect(resolvePythonIpcTrace({ GJC_PYTHON_IPC_TRACE: "1" })).toBe(true);
+	it("honors WORX_PYTHON_IPC_TRACE first, then PI_PYTHON_IPC_TRACE", () => {
+		expect(resolvePythonIpcTrace({ WORX_PYTHON_IPC_TRACE: "1" })).toBe(true);
 		expect(resolvePythonIpcTrace({ PI_PYTHON_IPC_TRACE: "true" })).toBe(true);
-		expect(resolvePythonIpcTrace({ GJC_PYTHON_IPC_TRACE: "0", PI_PYTHON_IPC_TRACE: "1" })).toBe(true);
+		expect(resolvePythonIpcTrace({ WORX_PYTHON_IPC_TRACE: "0", PI_PYTHON_IPC_TRACE: "1" })).toBe(true);
 	});
 });
 
@@ -569,8 +566,8 @@ describe("resolvePythonIntegrationGate (OR semantics)", () => {
 		expect(resolvePythonIntegrationGate({})).toBe(false);
 	});
 
-	it("is true when GJC_PYTHON_INTEGRATION=1", () => {
-		expect(resolvePythonIntegrationGate({ GJC_PYTHON_INTEGRATION: "1" })).toBe(true);
+	it("is true when WORX_PYTHON_INTEGRATION=1", () => {
+		expect(resolvePythonIntegrationGate({ WORX_PYTHON_INTEGRATION: "1" })).toBe(true);
 	});
 
 	it("is true when PI_PYTHON_INTEGRATION=1", () => {
@@ -578,15 +575,15 @@ describe("resolvePythonIntegrationGate (OR semantics)", () => {
 	});
 
 	it("GJC=0, PI=1 is still true (OR semantics, not GJC-gated)", () => {
-		expect(resolvePythonIntegrationGate({ GJC_PYTHON_INTEGRATION: "0", PI_PYTHON_INTEGRATION: "1" })).toBe(true);
+		expect(resolvePythonIntegrationGate({ WORX_PYTHON_INTEGRATION: "0", PI_PYTHON_INTEGRATION: "1" })).toBe(true);
 	});
 
 	it("both 0 is false", () => {
-		expect(resolvePythonIntegrationGate({ GJC_PYTHON_INTEGRATION: "0", PI_PYTHON_INTEGRATION: "0" })).toBe(false);
+		expect(resolvePythonIntegrationGate({ WORX_PYTHON_INTEGRATION: "0", PI_PYTHON_INTEGRATION: "0" })).toBe(false);
 	});
 
 	it("accepts truthy tokens true/yes case-insensitively", () => {
-		expect(resolvePythonIntegrationGate({ GJC_PYTHON_INTEGRATION: "TRUE" })).toBe(true);
+		expect(resolvePythonIntegrationGate({ WORX_PYTHON_INTEGRATION: "TRUE" })).toBe(true);
 		expect(resolvePythonIntegrationGate({ PI_PYTHON_INTEGRATION: "yes" })).toBe(true);
 	});
 });

@@ -20,8 +20,8 @@ function chromiumAvailable(): boolean {
 	try {
 		available = fs.existsSync(cache) && fs.readdirSync(cache).length > 0;
 	} catch {}
-	if (!available && process.env.GJC_REQUIRE_CHROMIUM === "1") {
-		throw new Error("GJC_REQUIRE_CHROMIUM=1 requires a resolvable Chromium executable");
+	if (!available && process.env.WORX_REQUIRE_CHROMIUM === "1") {
+		throw new Error("WORX_REQUIRE_CHROMIUM=1 requires a resolvable Chromium executable");
 	}
 	return available;
 }

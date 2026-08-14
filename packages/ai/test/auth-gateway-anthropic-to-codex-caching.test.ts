@@ -19,7 +19,7 @@
  * implicit session reuse). If that path breaks, this test catches it.
  *
  * Skips unless a local gateway is reachable at the default `127.0.0.1:4000`
- * (override via `GJC_E2E_GATEWAY_URL`) AND the bearer token file exists at
+ * (override via `WORX_E2E_GATEWAY_URL`) AND the bearer token file exists at
  * `~/.gjc/auth-gateway.token`.
  *
  * To run: `bun --cwd packages/ai test test/auth-gateway-anthropic-to-OpenAI code backend-caching.test.ts`
@@ -42,7 +42,7 @@ interface AnthropicResponse {
 	error?: { type: string; message: string };
 }
 
-const MODEL = Bun.env.GJC_E2E_CODEX_MODEL ?? "gpt-5.3-codex";
+const MODEL = Bun.env.WORX_E2E_CODEX_MODEL ?? "gpt-5.3-codex";
 
 const gateway = await checkAuthGatewayE2EAvailable();
 

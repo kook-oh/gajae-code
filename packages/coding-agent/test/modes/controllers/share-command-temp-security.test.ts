@@ -8,7 +8,7 @@ import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { getAgentDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();
-const originalAgentDirOverride = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;
 const originalPath = process.env.PATH;
 
 function createContainer() {
@@ -56,8 +56,8 @@ describe("/share temporary export security", () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 		setAgentDir(originalAgentDir);
-		if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-		else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+		if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+		else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 		process.env.PATH = originalPath;
 	});
 

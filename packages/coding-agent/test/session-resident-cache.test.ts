@@ -2,15 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
-
 import { exportFromFile, exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import { BlobStore, EphemeralBlobStore, externalizeImageDataSync } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
+import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
 import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
 
 const originalAgentDir = getAgentDir();
-const originalAgentDirOverride = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;
 const tempDirs: string[] = [];
 beforeEach(() => {
 	setAgentDir(path.join(makeTempDir(), "agent"));
@@ -18,8 +17,8 @@ beforeEach(() => {
 afterEach(async () => {
 	vi.restoreAllMocks();
 	setAgentDir(originalAgentDir);
-	if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-	else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+	if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+	else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 	for (const dir of tempDirs.splice(0)) await fs.promises.rm(dir, { recursive: true, force: true });
 });
 

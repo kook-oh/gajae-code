@@ -82,11 +82,11 @@ afterEach(async () => {
 		await Bun.sleep(50);
 	}
 	for (const dir of dirs.splice(0)) await removeTempDir(dir);
-	delete process.env.GJC_SDK_DISABLE;
-	delete process.env.GJC_NOTIFICATIONS;
-	delete process.env.GJC_LIFECYCLE_TEST_TOKEN;
-	delete process.env.GJC_LIFECYCLE_TEST_SECRET;
-	delete process.env.GJC_LIFECYCLE_TEST_API_KEY;
+	delete process.env.WORX_SDK_DISABLE;
+	delete process.env.WORX_NOTIFICATIONS;
+	delete process.env.WORX_LIFECYCLE_TEST_TOKEN;
+	delete process.env.WORX_LIFECYCLE_TEST_SECRET;
+	delete process.env.WORX_LIFECYCLE_TEST_API_KEY;
 });
 
 async function waitFor(predicate: () => boolean, label: string): Promise<void> {
@@ -331,12 +331,12 @@ test("lifecycle startup production secret collection redacts before normalizatio
 	const bare = "bare-secret-value";
 	const overlap = "bare-secret-value-plus";
 	const nfkc = "secret０";
-	const names = ["GJC_LIFECYCLE_TEST_TOKEN", "GJC_LIFECYCLE_TEST_SECRET", "GJC_LIFECYCLE_TEST_API_KEY"] as const;
+	const names = ["WORX_LIFECYCLE_TEST_TOKEN", "WORX_LIFECYCLE_TEST_SECRET", "WORX_LIFECYCLE_TEST_API_KEY"] as const;
 	const previous = names.map(name => process.env[name]);
 	try {
-		process.env.GJC_LIFECYCLE_TEST_TOKEN = bare;
-		process.env.GJC_LIFECYCLE_TEST_SECRET = overlap;
-		process.env.GJC_LIFECYCLE_TEST_API_KEY = nfkc;
+		process.env.WORX_LIFECYCLE_TEST_TOKEN = bare;
+		process.env.WORX_LIFECYCLE_TEST_SECRET = overlap;
+		process.env.WORX_LIFECYCLE_TEST_API_KEY = nfkc;
 		const failure = new SdkStartupCapability().normalizeFailure(
 			"startup",
 			"failed",
@@ -1061,7 +1061,7 @@ test("SDK broker registration records an absolute lifecycle scope", async () => 
 	const agentDir = path.join(root, "agent");
 	const sessionId = `locator-${Date.now()}`;
 	dirs.push(root);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(context(cwd, sessionId), {
 		get: () => undefined,
 		getAgentDir: () => agentDir,
@@ -1272,7 +1272,7 @@ test("startup records identity before an early lifecycle event and publishes it 
 		}
 		pushFrame.call(this, frame);
 	};
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const sessionContext = context(cwd, sessionId);
 	const handlers = start(sessionContext);
 	emitEarlyLifecycle = () => {
@@ -1331,7 +1331,7 @@ test("serializes concurrent /notify on across cancelled and replacement startups
 		return await startServer.call(this);
 	};
 	const handlers = start(sessionContext, undefined, () => {}, false, commands);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const notify = commands.get("notify");
 		expect(notify).toBeDefined();
@@ -1379,7 +1379,7 @@ test("/notify on refuses a startup result for a rotated runtime identity", async
 		return await startServer.call(this);
 	};
 	const handlers = start(sessionContext, undefined, () => {}, false, commands);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const enabling = commands.get("notify")!.handler("on", sessionContext);
 		await startReached.promise;
@@ -1421,7 +1421,7 @@ test("/notify on fences teardown and permits a later same-ID replacement runtime
 		return await startServer.call(this);
 	};
 	const handlers = start(sessionContext, undefined, () => {}, false, commands);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	try {
 		const enabling = commands.get("notify")!.handler("on", sessionContext);
 		await startReached.promise;
@@ -1459,7 +1459,7 @@ test("SDK host replays file attachment data as base64 while passing raw bytes to
 	const bytes = Buffer.from([0, 1, 2, 253, 254, 255]);
 	const attachmentPath = path.join(cwd, "replay.bin");
 	fs.writeFileSync(attachmentPath, bytes);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const handlers = start(context(cwd, sessionId));
 	const nativePrototype = NotificationServer.prototype as unknown as {
 		pushFileAttachmentUnchecked?: (
@@ -1526,7 +1526,7 @@ test("SDK host replays event frames over direct v3 ingress and routes queries th
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-host-"));
 	dirs.push(cwd);
 	const sessionId = `sdk-${Date.now()}`;
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const handlers = start(context(cwd, sessionId));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -2909,7 +2909,7 @@ test("SDK host routes pure ACP permission prompts through a live reverse provide
 			permissionProvider = provider;
 		},
 	};
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(ctx);
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -3033,7 +3033,7 @@ test("ACP permission attachment normalizes decisions through the registered prov
 			agentSession.setSdkPermissionProvider(provider);
 		},
 	};
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(ctx);
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -3136,7 +3136,7 @@ test("SDK host routes AskUserQuestion through a live ACP form elicitation provid
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-ui-provider-"));
 	dirs.push(cwd);
 	const sessionId = `sdk-ui-provider-${Date.now()}`;
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(context(cwd, sessionId));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -3317,7 +3317,7 @@ test("rejects malformed provider definitions without replacing a valid tools reg
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-provider-validation-"));
 	dirs.push(cwd);
 	const sessionId = `sdk-provider-validation-${Date.now()}`;
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(context(cwd, sessionId));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -3729,11 +3729,11 @@ test("diff queries return a bounded error for oversized diffs", async () => {
 test("SDK host honors disable opt-out and excludes subagent sessions", async () => {
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-host-gate-"));
 	dirs.push(cwd);
-	process.env.GJC_SDK_DISABLE = "1";
+	process.env.WORX_SDK_DISABLE = "1";
 	start(context(cwd, "disabled"));
 	await Bun.sleep(100);
 	expect(fs.existsSync(path.join(cwd, ".gjc", "state", "sdk", "disabled.json"))).toBe(false);
-	delete process.env.GJC_SDK_DISABLE;
+	delete process.env.WORX_SDK_DISABLE;
 	start(context(cwd, "subagent", "sub"));
 	await Bun.sleep(100);
 	expect(fs.existsSync(path.join(cwd, ".gjc", "state", "sdk", "subagent.json"))).toBe(false);
@@ -3858,7 +3858,7 @@ test("SDK endpoint applies typed skill, plan, goal, and config controls with obs
 		set: (key: string, value: unknown) => configWrites.push([key, value]),
 	} as unknown as Settings;
 
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(ctx, settings);
 
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
@@ -4059,7 +4059,7 @@ test("workflow gate recommendation projection marks only one exact hint without 
 			return { status: "accepted" };
 		},
 	} as unknown as WorkflowGateEmitter;
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const handlers = start(context(cwd, sessionId, "main", {}, workflowGate));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -4125,7 +4125,7 @@ test("SDK host discovers, answers, and advances a durable workflow gate", async 
 	const sessionId = `workflow-gate-${Date.now()}`;
 	const gateStore = new FileGateStore(path.join(cwd, ".gjc", "state", "workflow-gates.json"));
 	const emitter = new BrokerWorkflowGateEmitter(sessionId, gateStore);
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(context(cwd, sessionId, "main", {}, emitter));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -4371,7 +4371,7 @@ test("session teardown drains admitted direct gate resolution before detaching i
 		}
 		return delivered;
 	});
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const sessionContext = context(cwd, sessionId, "main", {}, emitter);
 	const handlers = start(sessionContext);
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
@@ -4514,7 +4514,7 @@ test("SDK host omits direct workflow controls for a legacy workflow-gate emitter
 			resolved_at: new Date().toISOString(),
 		}),
 	} as WorkflowGateEmitter;
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(context(cwd, sessionId, "main", {}, legacyEmitter));
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
@@ -5609,7 +5609,7 @@ test("AC2/AC8: SDK host completes successful session mutations over its live Web
 		},
 		getConfigItems: () => ({ "theme.dark": "light" }),
 	};
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	start(ctx, settings);
 	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");

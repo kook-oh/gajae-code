@@ -6,7 +6,7 @@ import { activeStateDir, modeStatePath } from "../src/gjc-runtime/session-layout
 import { removeActiveEntry, writeActiveEntry, writeGuardedJsonAtomic } from "../src/gjc-runtime/state-writer";
 import {
 	applyHandoffToActiveState,
-	CANONICAL_GJC_WORKFLOW_SKILLS,
+	CANONICAL_WORX_WORKFLOW_SKILLS,
 	getSkillActiveStatePaths,
 	invalidateVisibleSkillActiveStateCache,
 	listActiveSkills,
@@ -822,6 +822,6 @@ describe("GJC skill-active state", () => {
 	});
 
 	it("keeps the canonical GJC workflow skill set intentionally small", () => {
-		expect(CANONICAL_GJC_WORKFLOW_SKILLS).toEqual(["deep-interview", "ralplan", "ultragoal", "team"]);
+		expect(CANONICAL_WORX_WORKFLOW_SKILLS).toEqual(["deep-interview", "ralplan", "ultragoal", "team"]);
 	});
 });

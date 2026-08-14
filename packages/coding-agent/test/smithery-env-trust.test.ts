@@ -73,7 +73,7 @@ function buildProbeEnv(overrides: Record<string, string>): Record<string, string
 	const env: Record<string, string> = {
 		PATH: process.env.PATH ?? "/usr/bin:/bin",
 		HOME: tempDir(),
-		GJC_CODING_AGENT_DIR: tempDir(),
+		WORX_CODING_AGENT_DIR: tempDir(),
 		TMPDIR: process.env.TMPDIR ?? os.tmpdir(),
 		LANG: process.env.LANG ?? "C",
 	};

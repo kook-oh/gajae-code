@@ -6,10 +6,7 @@ import { collectFileLocksForGc, fileLocksGcAdapter } from "@bworx-io/worx-code/c
 import type { GcContext, GcPidProbe } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 import { collectGcReport, computeExitCode } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 import { teamWorkersGcAdapter } from "@bworx-io/worx-code/gjc-runtime/team-gc";
-import {
-	harnessLeasesGcAdapter,
-	registryEntriesGcAdapter,
-} from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
+import { harnessLeasesGcAdapter, registryEntriesGcAdapter } from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
 
 const DEAD_PID = 4242;
 const ALIVE_PID = 4243;
@@ -32,7 +29,7 @@ async function makeTemp(): Promise<string> {
 const splitProbe: GcPidProbe = pid => (pid === DEAD_PID ? { status: "dead" } : { status: "keep", reason: "alive" });
 
 function ctxFor(base: string, registryDir: string, probe: GcPidProbe = splitProbe): GcContext {
-	return { probe, force: false, env: { ...process.env, GJC_HARNESS_ROOT_REGISTRY_DIR: registryDir }, cwd: base };
+	return { probe, force: false, env: { ...process.env, WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir }, cwd: base };
 }
 
 async function writeJson(file: string, value: unknown): Promise<void> {
@@ -147,7 +144,7 @@ describe("fileLocksGcAdapter", () => {
 		const ctx: GcContext = {
 			probe: splitProbe,
 			force: false,
-			env: { ...process.env, GJC_RECEIPT_SPOOL_DIR: spoolDir },
+			env: { ...process.env, WORX_RECEIPT_SPOOL_DIR: spoolDir },
 			cwd: base,
 		};
 		const { records, errors, warnings } = await collectFileLocksForGc(ctx, { roots: [spoolDir] });
@@ -184,7 +181,7 @@ describe("fileLocksGcAdapter", () => {
 		const ctx: GcContext = {
 			probe: splitProbe,
 			force: false,
-			env: { ...process.env, GJC_RECEIPT_SPOOL_DIR: spoolDir },
+			env: { ...process.env, WORX_RECEIPT_SPOOL_DIR: spoolDir },
 			cwd: base,
 		};
 		// Budget of 3 is enough to start agent root but not exhaust its flood,

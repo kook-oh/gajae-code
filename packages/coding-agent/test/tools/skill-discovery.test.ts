@@ -296,17 +296,17 @@ describe("SkillDiscoveryTool", () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-root-cwd-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-root-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.GJC_CONFIG_DIR;
+		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
-		const originalCodingAgentDir = process.env.GJC_CODING_AGENT_DIR;
+		const originalCodingAgentDir = process.env.WORX_CODING_AGENT_DIR;
 		const originalPiCodingAgentDir = process.env.PI_CODING_AGENT_DIR;
 		const originalXdgConfigHome = process.env.XDG_CONFIG_HOME;
 
 		try {
 			process.env.HOME = home;
-			process.env.GJC_CONFIG_DIR = "/absolute-looking-gjc";
+			process.env.WORX_CONFIG_DIR = "/absolute-looking-gjc";
 			process.env.PI_CONFIG_DIR = ".decoy-pi";
-			process.env.GJC_CODING_AGENT_DIR = path.join(home, ".decoy-agent");
+			process.env.WORX_CODING_AGENT_DIR = path.join(home, ".decoy-agent");
 			process.env.PI_CODING_AGENT_DIR = path.join(home, ".decoy-pi-agent");
 			process.env.XDG_CONFIG_HOME = path.join(home, ".xdg-decoy");
 
@@ -354,12 +354,12 @@ describe("SkillDiscoveryTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = originalGjcConfigDir;
+			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
-			if (originalCodingAgentDir === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-			else process.env.GJC_CODING_AGENT_DIR = originalCodingAgentDir;
+			if (originalCodingAgentDir === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+			else process.env.WORX_CODING_AGENT_DIR = originalCodingAgentDir;
 			if (originalPiCodingAgentDir === undefined) delete process.env.PI_CODING_AGENT_DIR;
 			else process.env.PI_CODING_AGENT_DIR = originalPiCodingAgentDir;
 			if (originalXdgConfigHome === undefined) delete process.env.XDG_CONFIG_HOME;
@@ -373,11 +373,11 @@ describe("SkillDiscoveryTool", () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-canonical-cwd-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-canonical-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.GJC_CONFIG_DIR;
+		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
 		try {
 			process.env.HOME = home;
-			delete process.env.GJC_CONFIG_DIR;
+			delete process.env.WORX_CONFIG_DIR;
 			delete process.env.PI_CONFIG_DIR;
 			await makeSkill(
 				path.join(home, ".gjc", "agent", "skills"),
@@ -410,8 +410,8 @@ describe("SkillDiscoveryTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = originalGjcConfigDir;
+			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
 			await fs.rm(cwd, { recursive: true, force: true });

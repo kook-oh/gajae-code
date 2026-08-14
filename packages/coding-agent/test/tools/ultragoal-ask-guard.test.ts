@@ -1,13 +1,8 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AgentTool, AgentToolContext } from "@gajae-code/agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import {
-	activeSnapshotPath,
-	modeStatePath,
-	sessionActivityPath,
-} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { activeSnapshotPath, modeStatePath, sessionActivityPath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { isUltragoalAskBlocked } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	computeUltragoalPlanGeneration,
@@ -20,9 +15,10 @@ import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { AskTool } from "@bworx-io/worx-code/tools/ask";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
 import { guardToolForUltragoalAsk } from "@bworx-io/worx-code/tools/ultragoal-ask-guard";
+import type { AgentTool, AgentToolContext } from "@gajae-code/agent-core";
 
 const TEST_SESSION_ID = "ultragoal-ask-guard-test-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
 const tempRoots: string[] = [];
 
 async function tempDir(): Promise<string> {
@@ -36,8 +32,8 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
@@ -131,26 +127,26 @@ class StubExtensionWrappedAskTool {
 }
 
 describe("ultragoal ask guard", () => {
-	it("allows ask when durable ultragoal state is absent without requiring ambient GJC_SESSION_ID", async () => {
+	it("allows ask when durable ultragoal state is absent without requiring ambient WORX_SESSION_ID", async () => {
 		const cwd = await tempDir();
-		const previousSessionId = process.env.GJC_SESSION_ID;
-		delete process.env.GJC_SESSION_ID;
+		const previousSessionId = process.env.WORX_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const diagnostic = await isUltragoalAskBlocked(cwd);
 			expect(diagnostic.active).toBe(false);
 			expect(diagnostic.source).toBe("absent");
 			expect(diagnostic.goalsPath).toBe(path.join(cwd, ".gjc", "ultragoal", "goals.json"));
 		} finally {
-			if (previousSessionId === undefined) delete process.env.GJC_SESSION_ID;
-			else process.env.GJC_SESSION_ID = previousSessionId;
+			if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
+			else process.env.WORX_SESSION_ID = previousSessionId;
 		}
 	});
 
-	it("blocks latest session-scoped ultragoal ask when GJC_SESSION_ID is absent", async () => {
+	it("blocks latest session-scoped ultragoal ask when WORX_SESSION_ID is absent", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 
 		const diagnostic = await isUltragoalAskBlocked(cwd);
 
@@ -162,7 +158,7 @@ describe("ultragoal ask guard", () => {
 
 	it("blocks SDK-initial-path style wrapped ask while ultragoal is active", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const execute = vi.fn(async () => {});
 		const guarded = guardToolForUltragoalAsk(stubAskTool(execute), () => cwd);
@@ -188,7 +184,7 @@ describe("ultragoal ask guard", () => {
 
 	it("blocks an unwrapped AskTool before prompting while ultragoal is active", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const select = vi.fn(async () => "Yes");
 		const tool = new AskTool(createSession(cwd));
@@ -211,11 +207,11 @@ describe("ultragoal ask guard", () => {
 		const ultragoalSessionB = "ultragoal-ambiguous-b";
 		const tiedActivity = "2026-06-29T00:00:00.000Z";
 
-		process.env.GJC_SESSION_ID = ultragoalSessionA;
+		process.env.WORX_SESSION_ID = ultragoalSessionA;
 		await createUltragoalPlan({ cwd, brief: "Implement the first stale story" });
-		process.env.GJC_SESSION_ID = ultragoalSessionB;
+		process.env.WORX_SESSION_ID = ultragoalSessionB;
 		await createUltragoalPlan({ cwd, brief: "Implement the second stale story" });
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 
 		await writeActivityMarker(cwd, ultragoalSessionA, tiedActivity);
 		await writeActivityMarker(cwd, ultragoalSessionB, tiedActivity);
@@ -245,9 +241,9 @@ describe("ultragoal ask guard", () => {
 		const cwd = await tempDir();
 		const sessionId = "deep-interview-with-ultragoal-state";
 
-		process.env.GJC_SESSION_ID = sessionId;
+		process.env.WORX_SESSION_ID = sessionId;
 		await createUltragoalPlan({ cwd, brief: "Implement the same-session story" });
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		await writeActiveDeepInterviewState(cwd, sessionId);
 
 		const select = vi.fn(async () => "Continue");
@@ -272,7 +268,7 @@ describe("ultragoal ask guard", () => {
 
 	it("allows ask when the ultragoal run is verified complete", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: "Implement the story" });
 		const paths = getUltragoalPaths(cwd);
 		const now = new Date().toISOString();
@@ -322,8 +318,8 @@ describe("ultragoal ask guard", () => {
 
 	it("allows ask when no GJC session resolves even if a stale global ultragoal plan exists", async () => {
 		const cwd = await tempDir();
-		const previousSessionId = process.env.GJC_SESSION_ID;
-		delete process.env.GJC_SESSION_ID;
+		const previousSessionId = process.env.WORX_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			// Legacy/global .gjc/ultragoal with an incomplete plan, but no resolvable
 			// session (no env, no _session-* activity marker). Must not block ask.
@@ -344,8 +340,8 @@ describe("ultragoal ask guard", () => {
 			expect(diagnostic.active).toBe(false);
 			expect(diagnostic.source).toBe("absent");
 		} finally {
-			if (previousSessionId === undefined) delete process.env.GJC_SESSION_ID;
-			else process.env.GJC_SESSION_ID = previousSessionId;
+			if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
+			else process.env.WORX_SESSION_ID = previousSessionId;
 		}
 	});
 });

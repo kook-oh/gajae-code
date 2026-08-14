@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 /**
- * `GJC_CODING_AGENT_DIR` selects the agent directory, and the agent's own `.env`
+ * `WORX_CODING_AGENT_DIR` selects the agent directory, and the agent's own `.env`
  * is one of the trusted sources `$credentialEnv` consults. Bun loads `cwd/.env`
  * into `process.env` before any module runs, so a repository that plants this
  * variable can point the agent directory at a directory it ships — making its
@@ -16,7 +16,7 @@ import * as path from "node:path";
  */
 
 const PROBE = path.join(import.meta.dir, "fixtures", "agent-dir-trust-probe.ts");
-const PROBE_VAR = "GJC_TRUST_PROBE_VALUE";
+const PROBE_VAR = "WORX_TRUST_PROBE_VALUE";
 
 interface Resolved {
 	agentDir: string;
@@ -53,8 +53,8 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	for (const [key, value] of Object.entries(process.env)) {
 		if (value !== undefined) env[key] = value;
 	}
-	delete env.GJC_CODING_AGENT_DIR;
-	delete env.GJC_CONFIG_DIR;
+	delete env.WORX_CODING_AGENT_DIR;
+	delete env.WORX_CONFIG_DIR;
 	delete env.PI_CONFIG_DIR;
 	delete env[PROBE_VAR];
 	// Keep the other trusted file sources neutral.
@@ -71,14 +71,14 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 describe("agent directory trust boundary", () => {
 	it("honors an agent directory inherited from the launching shell", async () => {
 		const agentDir = agentDirWith("from-operator-agent-env");
-		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), { GJC_CODING_AGENT_DIR: agentDir });
+		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), { WORX_CODING_AGENT_DIR: agentDir });
 		expect(resolved.agentDir).toBe(agentDir);
 		expect(resolved.probeValue).toBe("from-operator-agent-env");
 	});
 
 	it("ignores an agent directory planted by the project .env", async () => {
 		const agentDir = agentDirWith("from-attacker-agent-env");
-		const resolved = await resolveIn(projectDir(`GJC_CODING_AGENT_DIR=${agentDir}\n`));
+		const resolved = await resolveIn(projectDir(`WORX_CODING_AGENT_DIR=${agentDir}\n`));
 		expect(resolved.agentDir).not.toBe(agentDir);
 		expect(resolved.probeValue).toBeNull();
 	});
@@ -86,21 +86,21 @@ describe("agent directory trust boundary", () => {
 	it("does not let the project .env redirect an inherited agent directory", async () => {
 		const operatorDir = agentDirWith("from-operator-agent-env");
 		const attackerDir = agentDirWith("from-attacker-agent-env");
-		const resolved = await resolveIn(projectDir(`GJC_CODING_AGENT_DIR=${attackerDir}\n`), {
-			GJC_CODING_AGENT_DIR: operatorDir,
+		const resolved = await resolveIn(projectDir(`WORX_CODING_AGENT_DIR=${attackerDir}\n`), {
+			WORX_CODING_AGENT_DIR: operatorDir,
 		});
 		expect(resolved.agentDir).toBe(operatorDir);
 		expect(resolved.probeValue).toBe("from-operator-agent-env");
 	});
 
 	it("ignores a config directory planted by the project .env", async () => {
-		// GJC_CONFIG_DIR builds the config root, whose `.env` is another trusted source.
+		// WORX_CONFIG_DIR builds the config root, whose `.env` is another trusted source.
 		const configDir = tempDir();
 		fs.mkdirSync(path.join(configDir, "agent"), { recursive: true });
 		fs.writeFileSync(path.join(configDir, ".env"), `${PROBE_VAR}=from-attacker-config-env\n`);
 		const home = tempDir();
 		const relative = path.relative(home, configDir);
-		const resolved = await resolveIn(projectDir(`GJC_CONFIG_DIR=${relative}\n`), { HOME: home });
+		const resolved = await resolveIn(projectDir(`WORX_CONFIG_DIR=${relative}\n`), { HOME: home });
 		expect(resolved.probeValue).toBeNull();
 	});
 
@@ -109,13 +109,13 @@ describe("agent directory trust boundary", () => {
 		const configDir = path.join(home, ".custom");
 		fs.mkdirSync(path.join(configDir, "agent"), { recursive: true });
 		fs.writeFileSync(path.join(configDir, ".env"), `${PROBE_VAR}=from-operator-config-env\n`);
-		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), { HOME: home, GJC_CONFIG_DIR: ".custom" });
+		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), { HOME: home, WORX_CONFIG_DIR: ".custom" });
 		expect(resolved.probeValue).toBe("from-operator-config-env");
 	});
 
 	it("honors the PI_CODING_AGENT_DIR alias from the launching shell", async () => {
 		// The module header documents the legacy alias, and gc-runtime/deep-interview
-		// already resolve it. Reading only the GJC_ spelling split the agent directory
+		// already resolve it. Reading only the WORX_ spelling split the agent directory
 		// in two: `gjc gc` followed the alias while getAgentDir() stayed on the default.
 		const agentDir = agentDirWith("from-operator-pi-alias");
 		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), { PI_CODING_AGENT_DIR: agentDir });
@@ -130,11 +130,11 @@ describe("agent directory trust boundary", () => {
 		expect(resolved.probeValue).toBeNull();
 	});
 
-	it("prefers the GJC_ spelling when both are set", async () => {
+	it("prefers the WORX_ spelling when both are set", async () => {
 		const gjcDir = agentDirWith("from-gjc-spelling");
 		const piDir = agentDirWith("from-pi-spelling");
 		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), {
-			GJC_CODING_AGENT_DIR: gjcDir,
+			WORX_CODING_AGENT_DIR: gjcDir,
 			PI_CODING_AGENT_DIR: piDir,
 		});
 		expect(resolved.agentDir).toBe(gjcDir);

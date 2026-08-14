@@ -11,7 +11,7 @@ type CapturedRequest = {
 };
 
 const originalCodexSearchModel = process.env.PI_CODEX_WEB_SEARCH_MODEL;
-const originalDocumentedCodexSearchModel = process.env.GJC_OPENAI_CODE_WEB_SEARCH_MODEL;
+const originalDocumentedCodexSearchModel = process.env.WORX_OPENAI_CODE_WEB_SEARCH_MODEL;
 
 function makeSseResponse(model: string): string {
 	return [
@@ -221,9 +221,9 @@ describe("searchCodex model selection", () => {
 			process.env.PI_CODEX_WEB_SEARCH_MODEL = originalCodexSearchModel;
 		}
 		if (originalDocumentedCodexSearchModel === undefined) {
-			delete process.env.GJC_OPENAI_CODE_WEB_SEARCH_MODEL;
+			delete process.env.WORX_OPENAI_CODE_WEB_SEARCH_MODEL;
 		} else {
-			process.env.GJC_OPENAI_CODE_WEB_SEARCH_MODEL = originalDocumentedCodexSearchModel;
+			process.env.WORX_OPENAI_CODE_WEB_SEARCH_MODEL = originalDocumentedCodexSearchModel;
 		}
 	});
 
@@ -298,8 +298,8 @@ describe("searchCodex model selection", () => {
 		expect(result.model).toBe("gpt-5.4-mini");
 	});
 
-	it("uses the documented GJC_OPENAI_CODE_WEB_SEARCH_MODEL when provided", async () => {
-		process.env.GJC_OPENAI_CODE_WEB_SEARCH_MODEL = "gpt-5.4-mini";
+	it("uses the documented WORX_OPENAI_CODE_WEB_SEARCH_MODEL when provided", async () => {
+		process.env.WORX_OPENAI_CODE_WEB_SEARCH_MODEL = "gpt-5.4-mini";
 		using _hook = mockCodexFetch("gpt-5.4-mini");
 
 		const result = await searchCodex(makeSearchParams("documented codex model override"));
@@ -309,8 +309,8 @@ describe("searchCodex model selection", () => {
 		expect(result.model).toBe("gpt-5.4-mini");
 	});
 
-	it("resolves GJC-first: GJC_OPENAI_CODE_WEB_SEARCH_MODEL wins over legacy PI_CODEX_WEB_SEARCH_MODEL", async () => {
-		process.env.GJC_OPENAI_CODE_WEB_SEARCH_MODEL = "gpt-5.4-mini";
+	it("resolves GJC-first: WORX_OPENAI_CODE_WEB_SEARCH_MODEL wins over legacy PI_CODEX_WEB_SEARCH_MODEL", async () => {
+		process.env.WORX_OPENAI_CODE_WEB_SEARCH_MODEL = "gpt-5.4-mini";
 		process.env.PI_CODEX_WEB_SEARCH_MODEL = "gpt-5.4";
 		using _hook = mockCodexFetch("gpt-5.4-mini");
 

@@ -2,17 +2,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import {
-	type Api,
-	type Context,
-	Effort,
-	type Model,
-	type OpenAICompat,
-	readModelCache,
-	type ThinkingConfig,
-	writeModelCache,
-} from "@gajae-code/ai";
-import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
 import { kNoAuth, MODEL_ROLE_IDS, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	type ModelLookupRegistry,
@@ -27,6 +16,17 @@ import {
 import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { addApiCompatibleProvider } from "@bworx-io/worx-code/setup/provider-onboarding";
+import {
+	type Api,
+	type Context,
+	Effort,
+	type Model,
+	type OpenAICompat,
+	readModelCache,
+	type ThinkingConfig,
+	writeModelCache,
+} from "@gajae-code/ai";
+import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
 import { $credentialEnv, hookFetch, Snowflake } from "@gajae-code/utils";
 
 describe("model roles", () => {
@@ -1152,7 +1152,7 @@ describe("ModelRegistry", () => {
 			}
 		});
 		test("refresh reloads custom apiKeyEnv presence changes without a models file change", async () => {
-			const keyEnv = `GJC_TEST_REFRESH_PROVIDER_KEY_${Snowflake.next()}`;
+			const keyEnv = `WORX_TEST_REFRESH_PROVIDER_KEY_${Snowflake.next()}`;
 			const restoreKey = unsetEnvForTest(keyEnv);
 			try {
 				writeRawModelsJson({
@@ -1180,7 +1180,7 @@ describe("ModelRegistry", () => {
 			}
 		});
 		test("refresh reloads custom apiKey environment-name values without a models file change", async () => {
-			const keyEnv = `GJC_TEST_REFRESH_PROVIDER_API_KEY_${Snowflake.next()}`;
+			const keyEnv = `WORX_TEST_REFRESH_PROVIDER_API_KEY_${Snowflake.next()}`;
 			const restoreKey = setEnvForTest(keyEnv, "initial-env-key");
 			try {
 				writeRawModelsJson({
@@ -1504,7 +1504,7 @@ describe("ModelRegistry", () => {
 				demo: {
 					baseUrl: "https://demo.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_AUTH_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_AUTH_KEY",
 					models: [{ id: "anthropic/claude-sonnet-4.5" }],
 				},
 			});
@@ -1533,7 +1533,7 @@ describe("ModelRegistry", () => {
 				beta: {
 					baseUrl: "https://beta.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_BETA_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_BETA_KEY",
 					models: [{ id: "anthropic/claude-sonnet-4.5" }],
 				},
 			});
@@ -1566,7 +1566,7 @@ describe("ModelRegistry", () => {
 				beta: {
 					baseUrl: "https://beta.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_BETA_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_BETA_KEY",
 					models: [{ id: "anthropic/claude-sonnet-4.5" }],
 				},
 				alpha: providerConfig("https://alpha.example.com/v1", [{ id: "anthropic/claude-sonnet-4.5" }]),
@@ -1649,7 +1649,7 @@ describe("ModelRegistry", () => {
 				beta: {
 					baseUrl: "https://beta.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_BETA_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_BETA_KEY",
 					models: [{ id: "team/conflict-model" }],
 				},
 			});
@@ -1685,7 +1685,7 @@ describe("ModelRegistry", () => {
 				beta: {
 					baseUrl: "https://beta.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_BETA_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_BETA_KEY",
 					models: [{ id: "team/conflict-model" }],
 				},
 			});
@@ -1822,7 +1822,7 @@ describe("ModelRegistry", () => {
 				oauthOnly: {
 					baseUrl: "https://oauth.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_ALIAS_OAUTH_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ALIAS_OAUTH_KEY",
 					models: [{ id: "other/conflict-model" }],
 				},
 			});
@@ -1884,13 +1884,13 @@ describe("ModelRegistry", () => {
 				zhipu: {
 					baseUrl: "https://zhipu.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_GLM_ZCODE_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_GLM_ZCODE_KEY",
 					models: [{ id: "zai/glm-zcode" }],
 				},
 				moonshot: {
 					baseUrl: "https://moonshot.example.com/v1",
 					api: "anthropic-messages",
-					apiKeyEnv: "GJC_TEST_MISSING_KIMI_CODE_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_KIMI_CODE_KEY",
 					models: [{ id: "moonshot/kimi-code" }],
 				},
 			});
@@ -5481,7 +5481,7 @@ describe("ModelRegistry", () => {
 	});
 
 	test("restores resolved runtime provider keys ahead of stored OAuth after a static reload", async () => {
-		const envName = "GJC_TEST_RUNTIME_PROVIDER_RELOAD_KEY";
+		const envName = "WORX_TEST_RUNTIME_PROVIDER_RELOAD_KEY";
 		const restoreKey = setEnvForTest(envName, "resolved-runtime-provider-key");
 		try {
 			await authStorage.set("runtime-proxy", [
@@ -5911,7 +5911,7 @@ describe("ModelRegistry", () => {
 				"tracked-provider": {
 					baseUrl: "https://tracked.example.com/v1",
 					api: "openai-responses",
-					apiKeyEnv: "GJC_TEST_MISSING_TRACKED_PROVIDER_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_TRACKED_PROVIDER_KEY",
 					models: [{ id: "tracked-model" }],
 				},
 			});
@@ -6416,7 +6416,7 @@ describe("ModelRegistry", () => {
 			expect(registry.getProviderDiscoveryState("first-discovery-provider")).toBeUndefined();
 		});
 		test("invalidates a completed discovery state after an aggregate environment credential change", async () => {
-			const restoreFirstKey = setEnvForTest("GJC_TEST_FIRST_DISCOVERY_KEY", "credential-a");
+			const restoreFirstKey = setEnvForTest("WORX_TEST_FIRST_DISCOVERY_KEY", "credential-a");
 			try {
 				writeRawModelsJson({
 					"first-discovery-provider": {
@@ -6431,7 +6431,7 @@ describe("ModelRegistry", () => {
 					},
 				});
 				await authStorage.set("first-discovery-provider", [
-					{ type: "api_key", key: "GJC_TEST_FIRST_DISCOVERY_KEY" },
+					{ type: "api_key", key: "WORX_TEST_FIRST_DISCOVERY_KEY" },
 				]);
 				authStorage.setRuntimeApiKey("second-discovery-provider", "credential-b");
 				const { promise: secondResponse, resolve: resolveSecondResponse } = Promise.withResolvers<Response>();
@@ -6452,7 +6452,7 @@ describe("ModelRegistry", () => {
 
 				const refresh = registry.refresh();
 				await Bun.sleep(0);
-				process.env.GJC_TEST_FIRST_DISCOVERY_KEY = "credential-a-rotated";
+				process.env.WORX_TEST_FIRST_DISCOVERY_KEY = "credential-a-rotated";
 				resolveSecondResponse(
 					new Response(JSON.stringify({ data: [{ id: "second-model" }] }), {
 						status: 200,
@@ -7340,7 +7340,7 @@ describe("ModelRegistry", () => {
 				"unauthenticated-provider": {
 					baseUrl: "https://unauthenticated.example.com/v1",
 					api: "openai-responses",
-					apiKeyEnv: "GJC_TEST_MISSING_ACTIVE_PROVIDER_KEY",
+					apiKeyEnv: "WORX_TEST_MISSING_ACTIVE_PROVIDER_KEY",
 					discovery: { type: "openai-models-list" },
 				},
 			});

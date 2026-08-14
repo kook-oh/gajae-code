@@ -39,11 +39,11 @@ function createServer(
 	const control = typeof status === "string" ? { status } : status;
 	return createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
-			GJC_COORDINATOR_MCP_MUTATIONS: "sessions",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
+			WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
 		},
 		services: {
 			codexTransportFactory: async () => {
@@ -434,10 +434,10 @@ describe("Coordinator Codex resume bridge", () => {
 		const secondStarted = Promise.withResolvers<void>();
 		createCoordinatorMcpServer({
 			env: {
-				GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-				GJC_COORDINATOR_MCP_PROFILE: "local",
-				GJC_COORDINATOR_MCP_REPO: "repo",
+				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_PROFILE: "local",
+				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
 			services: {
 				codexTransportFactory: async endpoint => ({
@@ -517,10 +517,10 @@ describe("Coordinator Codex resume bridge", () => {
 		let startCount = 0;
 		createCoordinatorMcpServer({
 			env: {
-				GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-				GJC_COORDINATOR_MCP_PROFILE: "local",
-				GJC_COORDINATOR_MCP_REPO: "repo",
+				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_PROFILE: "local",
+				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
 			services: {
 				codexTransportFactory: async () => ({
@@ -596,10 +596,10 @@ describe("Coordinator Codex resume bridge", () => {
 		let threadBusy = true;
 		createCoordinatorMcpServer({
 			env: {
-				GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-				GJC_COORDINATOR_MCP_PROFILE: "local",
-				GJC_COORDINATOR_MCP_REPO: "repo",
+				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_PROFILE: "local",
+				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
 			services: {
 				codexTransportFactory: async () => ({

@@ -10,13 +10,13 @@ const TEST_SESSION_ID = "test-session";
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-state-migration-"));
-	const priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	const priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	try {
 		await fn(dir);
 	} finally {
-		if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-		else delete process.env.GJC_SESSION_ID;
+		if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+		else delete process.env.WORX_SESSION_ID;
 		await fs.rm(dir, { recursive: true, force: true });
 	}
 }

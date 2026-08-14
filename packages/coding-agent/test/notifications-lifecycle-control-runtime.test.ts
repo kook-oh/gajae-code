@@ -3,7 +3,6 @@ import { describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@bworx-io/worx-code-natives";
 import { parseLaunchWorktreeMode } from "@bworx-io/worx-code/gjc-runtime/launch-worktree";
 import type { SessionCloseFrame, SessionCreateFrame } from "@bworx-io/worx-code/sdk/bus/index";
 import {
@@ -22,6 +21,7 @@ import {
 } from "@bworx-io/worx-code/sdk/bus/lifecycle-control-runtime";
 import type { LedgerEntry, OrchestratorDeps } from "@bworx-io/worx-code/sdk/bus/lifecycle-orchestrator";
 import { startDaemonLifecycleControl } from "@bworx-io/worx-code/sdk/bus/telegram-daemon";
+import * as native from "@bworx-io/worx-code-natives";
 import { getConfigRootDir, logger } from "@gajae-code/utils";
 import { Settings } from "../src/config/settings";
 import { tokenFingerprint } from "../src/sdk/bus/config";
@@ -1460,7 +1460,7 @@ describe("lifecycle control runtime", () => {
 		const resume = daemonResumeSession(
 			{
 				...process.env,
-				GJC_TMUX_COMMAND: tmux,
+				WORX_TMUX_COMMAND: tmux,
 				TMUX_CALLS: callsFile,
 				TMUX_SERVER_STATE: serverState,
 				TMUX_SERVER_PID: String(process.pid),
@@ -1490,15 +1490,15 @@ describe("lifecycle control runtime", () => {
 		const calls = fs.readFileSync(callsFile, "utf8");
 		expect(probeCalls).toBe(8);
 		expect(calls).toContain("new-session -d -P -F #{session_id} -s gjc_lc_abc123 sh -c");
-		expect(calls).toContain("GJC_TMUX_LAUNCHED='1' GJC_NOTIFICATIONS='1'");
-		expect(calls).toContain("GJC_COORDINATOR_SESSION_ID='abc123'");
-		expect(calls).toContain("GJC_TMUX_OWNER_GENERATION=");
-		expect(calls).toContain("GJC_TMUX_OWNER_STATE_DIR=");
-		expect(calls).toContain("GJC_TMUX_OWNER_SERVER_KEY='default'");
+		expect(calls).toContain("WORX_TMUX_LAUNCHED='1' WORX_NOTIFICATIONS='1'");
+		expect(calls).toContain("WORX_COORDINATOR_SESSION_ID='abc123'");
+		expect(calls).toContain("WORX_TMUX_OWNER_GENERATION=");
+		expect(calls).toContain("WORX_TMUX_OWNER_STATE_DIR=");
+		expect(calls).toContain("WORX_TMUX_OWNER_SERVER_KEY='default'");
 		expect(calls).toContain("@gjc-owner-generation");
 		expect(calls).toContain("@gjc-owner-server-key");
-		expect(calls).not.toContain("GJC_OWNER_");
-		expect(calls).toContain("GJC_MANAGED_OWNER_COMMAND_JSON=");
+		expect(calls).not.toContain("WORX_OWNER_");
+		expect(calls).toContain("WORX_MANAGED_OWNER_COMMAND_JSON=");
 		expect(calls).toContain("abc123");
 		expect(calls).not.toContain("gjc-lifecycle-owner-isolation");
 		expect(calls).toContain("@gjc-project");
@@ -1526,7 +1526,7 @@ describe("lifecycle control runtime", () => {
 
 		await expect(
 			daemonResumeSession(
-				{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+				{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 				{
 					listSessions: () => [liveSession],
 					platform: "linux",
@@ -1610,7 +1610,7 @@ describe("lifecycle control runtime", () => {
 			fs.chmodSync(tmux, 0o755);
 			let probeCalls = 0;
 			const result = await daemonSpawnCreate(
-				{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+				{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 				{
 					platform: "linux",
 					ownerIsolationProbe: {
@@ -1644,15 +1644,15 @@ describe("lifecycle control runtime", () => {
 			).generation;
 			expect(generation).toMatch(/^[0-9a-f-]{36}$/);
 			const calls = fs.readFileSync(callsFile, "utf8");
-			expect(calls).toContain(`GJC_TMUX_OWNER_GENERATION='${generation}'`);
-			expect(calls).toContain(`GJC_TMUX_OWNER_STATE_DIR='${path.dirname(result.sessionStateFile!)}'`);
-			expect(calls).toContain("GJC_TMUX_OWNER_SERVER_KEY='default'");
-			expect(calls).toMatch(/GJC_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
-			expect(calls).toMatch(/GJC_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
+			expect(calls).toContain(`WORX_TMUX_OWNER_GENERATION='${generation}'`);
+			expect(calls).toContain(`WORX_TMUX_OWNER_STATE_DIR='${path.dirname(result.sessionStateFile!)}'`);
+			expect(calls).toContain("WORX_TMUX_OWNER_SERVER_KEY='default'");
+			expect(calls).toMatch(/WORX_MANAGED_OWNER_RUN_ID='[0-9a-f-]{36}'/i);
+			expect(calls).toMatch(/WORX_MANAGED_OWNER_INCARNATION='[0-9a-f-]{36}'/i);
 			expect(calls).toContain("@gjc-owner-generation");
 			expect(calls).toContain("@gjc-owner-server-key");
-			expect(calls).not.toContain("GJC_OWNER_");
-			expect(calls).toContain(`GJC_COORDINATOR_SESSION_STATE_FILE='${result.sessionStateFile}'`);
+			expect(calls).not.toContain("WORX_OWNER_");
+			expect(calls).toContain(`WORX_COORDINATOR_SESSION_STATE_FILE='${result.sessionStateFile}'`);
 			expect(calls).not.toContain("gjc-lifecycle-owner-isolation");
 			fs.rmSync(root, { recursive: true, force: true });
 		},
@@ -1701,7 +1701,7 @@ describe("lifecycle control runtime", () => {
 				daemonSpawnCreate(
 					{
 						...process.env,
-						GJC_TMUX_COMMAND: tmux,
+						WORX_TMUX_COMMAND: tmux,
 						TMUX_CALLS: callsFile,
 						GENERATION_FILE: generationFile,
 					},
@@ -1763,7 +1763,7 @@ describe("lifecycle control runtime", () => {
 
 		await expect(
 			daemonSpawnCreate(
-				{ ...process.env, GJC_TMUX_COMMAND: tmux },
+				{ ...process.env, WORX_TMUX_COMMAND: tmux },
 				{
 					platform: "linux",
 					ownerIsolationProbe: {
@@ -1809,7 +1809,7 @@ describe("lifecycle control runtime", () => {
 					};
 					await expect(
 						daemonSpawnCreate(
-							{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+							{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 							{ platform: "linux", ownerIsolationProbe: probe },
 						)(createFrame({ target: { kind: "existing_path", path: project } }), {
 							lifecycleRequestId: `create-${state}`,
@@ -1819,7 +1819,7 @@ describe("lifecycle control runtime", () => {
 					const uncreatedPlainDir = path.join(root, `plain-${state}`);
 					await expect(
 						daemonSpawnCreate(
-							{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+							{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 							{ platform: "linux", ownerIsolationProbe: probe },
 						)(createFrame({ target: { kind: "plain_dir", path: uncreatedPlainDir } }), {
 							lifecycleRequestId: `plain-${state}`,
@@ -1829,7 +1829,7 @@ describe("lifecycle control runtime", () => {
 					expect(fs.existsSync(uncreatedPlainDir)).toBe(false);
 					await expect(
 						daemonResumeSession(
-							{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+							{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 							{ platform: "linux", sessionsRoot: root, listSessions: () => [], ownerIsolationProbe: probe },
 						)({ sessionIdOrPrefix: "resume-123", path: project }),
 					).rejects.toThrow(`gjc_lifecycle_owner_server_${state}`);
@@ -1866,7 +1866,7 @@ describe("lifecycle control runtime", () => {
 			try {
 				await expect(
 					daemonSpawnCreate(
-						{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+						{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 						{
 							platform: "linux",
 							ownerIsolationProbe: {
@@ -1929,7 +1929,7 @@ describe("lifecycle control runtime", () => {
 			try {
 				await expect(
 					daemonResumeSession(
-						{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
+						{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 						{
 							sessionsRoot: root,
 							listSessions: () => [],
@@ -1973,7 +1973,7 @@ describe("lifecycle control runtime", () => {
 		await writeManagedSession(root, project, "resume-123");
 		fs.writeFileSync(psmux, "#!/usr/bin/env bash\nexit 99\n");
 		fs.chmodSync(psmux, 0o755);
-		const env = { ...process.env, GJC_TMUX_COMMAND: psmux, GJC_PSMUX_COMMAND: psmux };
+		const env = { ...process.env, WORX_TMUX_COMMAND: psmux, WORX_PSMUX_COMMAND: psmux };
 		try {
 			await expect(
 				daemonSpawnCreate(env)(createFrame({ target: { kind: "plain_dir", path: plain } }), {
@@ -2040,7 +2040,7 @@ describe("lifecycle control runtime", () => {
 					fs.rmSync(calls, { force: true });
 					await expect(
 						daemonSpawnCreate(
-							{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: calls, RECEIPT: receipt },
+							{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: calls, RECEIPT: receipt },
 							{
 								platform: "linux",
 								ownerIsolationProbe: {
@@ -2099,7 +2099,7 @@ describe("lifecycle control runtime", () => {
 					daemonSpawnCreate(
 						{
 							...process.env,
-							GJC_TMUX_COMMAND: tmux,
+							WORX_TMUX_COMMAND: tmux,
 							TMUX_CALLS: calls,
 							KILL_FAIL: cleanup === "kill" ? "1" : "0",
 						},
@@ -2165,7 +2165,7 @@ describe("lifecycle control runtime", () => {
 			try {
 				await expect(
 					daemonSpawnCreate(
-						{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: calls },
+						{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: calls },
 						{
 							platform: "linux",
 							ownerIsolationProbe: {
@@ -2219,7 +2219,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux },
 					{
 						platform: "linux",
 						ownerIsolationProbe: {
@@ -2262,7 +2262,7 @@ describe("lifecycle control runtime", () => {
 
 	it("forwards exact daemon force-close provenance without defaulting a target", async () => {
 		const received: unknown[][] = [];
-		const env = { TEST_OWNER: "private", GJC_TMUX_SESSION: "not-a-default" };
+		const env = { TEST_OWNER: "private", WORX_TMUX_SESSION: "not-a-default" };
 		await daemonCloseSession(env, {
 			forceClose: async (...args) => {
 				received.push(args);
@@ -2308,21 +2308,21 @@ describe("lifecycle control runtime", () => {
 			const result = await daemonSpawnCreate(
 				{
 					...process.env,
-					GJC_TMUX_COMMAND: tmux,
+					WORX_TMUX_COMMAND: tmux,
 					TMUX_CALLS: calls,
 					TMUX_SESSION: session,
-					GJC_TMUX_OWNER_GENERATION: "stale-generation",
-					GJC_TMUX_OWNER_STATE_DIR: "/stale/state",
-					GJC_TMUX_OWNER_SERVER_KEY: "stale-server",
-					GJC_MANAGED_OWNER_COMMAND_JSON: '["stale"]',
-					GJC_MANAGED_OWNER_RUN_ID: "stale-run",
-					GJC_MANAGED_OWNER_INCARNATION: "stale-incarnation",
-					GJC_MANAGED_OWNER_CHILD_TOKEN: "stale-child",
-					GJC_MANAGED_OWNER_PREDECESSOR_TOKEN: "stale-predecessor",
-					GJC_MANAGED_OWNER_PREDECESSOR_GENERATION: "stale-predecessor-generation",
-					GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID: "stale-predecessor-run",
-					GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION: "stale-predecessor-incarnation",
-					GJC_MANAGED_OWNER_TRANSCRIPT_PATH: "/stale/transcript",
+					WORX_TMUX_OWNER_GENERATION: "stale-generation",
+					WORX_TMUX_OWNER_STATE_DIR: "/stale/state",
+					WORX_TMUX_OWNER_SERVER_KEY: "stale-server",
+					WORX_MANAGED_OWNER_COMMAND_JSON: '["stale"]',
+					WORX_MANAGED_OWNER_RUN_ID: "stale-run",
+					WORX_MANAGED_OWNER_INCARNATION: "stale-incarnation",
+					WORX_MANAGED_OWNER_CHILD_TOKEN: "stale-child",
+					WORX_MANAGED_OWNER_PREDECESSOR_TOKEN: "stale-predecessor",
+					WORX_MANAGED_OWNER_PREDECESSOR_GENERATION: "stale-predecessor-generation",
+					WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID: "stale-predecessor-run",
+					WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION: "stale-predecessor-incarnation",
+					WORX_MANAGED_OWNER_TRANSCRIPT_PATH: "/stale/transcript",
 				},
 				{
 					platform: "darwin",
@@ -2340,26 +2340,26 @@ describe("lifecycle control runtime", () => {
 			expect(recorded).toContain("gjc_lc_darwin-session sh -c");
 			expect(recorded).toContain("display-message -p -t $42 #{pid}");
 			expect(recorded).toContain("if-shell -t $42 -F");
-			expect(recorded).toContain("GJC_SESSION_ID='darwin-session'");
-			expect(recorded).toContain("GJC_LIFECYCLE_REQUEST_ID='darwin-request'");
-			expect(recorded).toContain("GJC_COORDINATOR_SESSION_STATE_FILE=");
-			expect(recorded).toContain("GJC_STARTUP_PROMPT_REF='darwin-prompt'");
+			expect(recorded).toContain("WORX_SESSION_ID='darwin-session'");
+			expect(recorded).toContain("WORX_LIFECYCLE_REQUEST_ID='darwin-request'");
+			expect(recorded).toContain("WORX_COORDINATOR_SESSION_STATE_FILE=");
+			expect(recorded).toContain("WORX_STARTUP_PROMPT_REF='darwin-prompt'");
 			expect(recorded).toContain("@gjc-session-id");
 			expect(recorded).not.toContain("@gjc-owner-generation");
 			expect(recorded).not.toContain("@gjc-owner-server-key");
 			for (const name of [
-				"GJC_TMUX_OWNER_GENERATION",
-				"GJC_TMUX_OWNER_STATE_DIR",
-				"GJC_TMUX_OWNER_SERVER_KEY",
-				"GJC_MANAGED_OWNER_COMMAND_JSON",
-				"GJC_MANAGED_OWNER_RUN_ID",
-				"GJC_MANAGED_OWNER_INCARNATION",
-				"GJC_MANAGED_OWNER_CHILD_TOKEN",
-				"GJC_MANAGED_OWNER_PREDECESSOR_TOKEN",
-				"GJC_MANAGED_OWNER_PREDECESSOR_GENERATION",
-				"GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID",
-				"GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION",
-				"GJC_MANAGED_OWNER_TRANSCRIPT_PATH",
+				"WORX_TMUX_OWNER_GENERATION",
+				"WORX_TMUX_OWNER_STATE_DIR",
+				"WORX_TMUX_OWNER_SERVER_KEY",
+				"WORX_MANAGED_OWNER_COMMAND_JSON",
+				"WORX_MANAGED_OWNER_RUN_ID",
+				"WORX_MANAGED_OWNER_INCARNATION",
+				"WORX_MANAGED_OWNER_CHILD_TOKEN",
+				"WORX_MANAGED_OWNER_PREDECESSOR_TOKEN",
+				"WORX_MANAGED_OWNER_PREDECESSOR_GENERATION",
+				"WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID",
+				"WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION",
+				"WORX_MANAGED_OWNER_TRANSCRIPT_PATH",
 			])
 				expect(recorded).toContain(`-u '${name}'`);
 			expect(recorded).not.toContain("--internal-managed-owner-supervisor");
@@ -2405,21 +2405,21 @@ describe("lifecycle control runtime", () => {
 			const result = await daemonResumeSession(
 				{
 					...process.env,
-					GJC_TMUX_COMMAND: tmux,
+					WORX_TMUX_COMMAND: tmux,
 					TMUX_CALLS: calls,
 					TMUX_SESSION: session,
-					GJC_TMUX_OWNER_GENERATION: "stale-generation",
-					GJC_TMUX_OWNER_STATE_DIR: "/stale/state",
-					GJC_TMUX_OWNER_SERVER_KEY: "stale-server",
-					GJC_MANAGED_OWNER_COMMAND_JSON: '["stale"]',
-					GJC_MANAGED_OWNER_RUN_ID: "stale-run",
-					GJC_MANAGED_OWNER_INCARNATION: "stale-incarnation",
-					GJC_MANAGED_OWNER_CHILD_TOKEN: "stale-child",
-					GJC_MANAGED_OWNER_PREDECESSOR_TOKEN: "stale-predecessor",
-					GJC_MANAGED_OWNER_PREDECESSOR_GENERATION: "stale-predecessor-generation",
-					GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID: "stale-predecessor-run",
-					GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION: "stale-predecessor-incarnation",
-					GJC_MANAGED_OWNER_TRANSCRIPT_PATH: "/stale/transcript",
+					WORX_TMUX_OWNER_GENERATION: "stale-generation",
+					WORX_TMUX_OWNER_STATE_DIR: "/stale/state",
+					WORX_TMUX_OWNER_SERVER_KEY: "stale-server",
+					WORX_MANAGED_OWNER_COMMAND_JSON: '["stale"]',
+					WORX_MANAGED_OWNER_RUN_ID: "stale-run",
+					WORX_MANAGED_OWNER_INCARNATION: "stale-incarnation",
+					WORX_MANAGED_OWNER_CHILD_TOKEN: "stale-child",
+					WORX_MANAGED_OWNER_PREDECESSOR_TOKEN: "stale-predecessor",
+					WORX_MANAGED_OWNER_PREDECESSOR_GENERATION: "stale-predecessor-generation",
+					WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID: "stale-predecessor-run",
+					WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION: "stale-predecessor-incarnation",
+					WORX_MANAGED_OWNER_TRANSCRIPT_PATH: "/stale/transcript",
 				},
 				{
 					platform: "darwin",
@@ -2433,21 +2433,21 @@ describe("lifecycle control runtime", () => {
 			const recorded = fs.readFileSync(calls, "utf8");
 			expect(recorded).toContain("display-message -p -t $42");
 			expect(recorded).toContain("if-shell -t $42 -F");
-			expect(recorded).toContain("GJC_COORDINATOR_SESSION_ID='darwin-resume'");
+			expect(recorded).toContain("WORX_COORDINATOR_SESSION_ID='darwin-resume'");
 			expect(recorded).toContain("gjc '--resume' 'darwin-resume'");
 			for (const name of [
-				"GJC_TMUX_OWNER_GENERATION",
-				"GJC_TMUX_OWNER_STATE_DIR",
-				"GJC_TMUX_OWNER_SERVER_KEY",
-				"GJC_MANAGED_OWNER_COMMAND_JSON",
-				"GJC_MANAGED_OWNER_RUN_ID",
-				"GJC_MANAGED_OWNER_INCARNATION",
-				"GJC_MANAGED_OWNER_CHILD_TOKEN",
-				"GJC_MANAGED_OWNER_PREDECESSOR_TOKEN",
-				"GJC_MANAGED_OWNER_PREDECESSOR_GENERATION",
-				"GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID",
-				"GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION",
-				"GJC_MANAGED_OWNER_TRANSCRIPT_PATH",
+				"WORX_TMUX_OWNER_GENERATION",
+				"WORX_TMUX_OWNER_STATE_DIR",
+				"WORX_TMUX_OWNER_SERVER_KEY",
+				"WORX_MANAGED_OWNER_COMMAND_JSON",
+				"WORX_MANAGED_OWNER_RUN_ID",
+				"WORX_MANAGED_OWNER_INCARNATION",
+				"WORX_MANAGED_OWNER_CHILD_TOKEN",
+				"WORX_MANAGED_OWNER_PREDECESSOR_TOKEN",
+				"WORX_MANAGED_OWNER_PREDECESSOR_GENERATION",
+				"WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID",
+				"WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION",
+				"WORX_MANAGED_OWNER_TRANSCRIPT_PATH",
 			])
 				expect(recorded).toContain(`-u '${name}'`);
 			expect(recorded).not.toContain("--internal-managed-owner-supervisor");
@@ -2481,7 +2481,7 @@ describe("lifecycle control runtime", () => {
 			try {
 				try {
 					await daemonSpawnCreate(
-						{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
+						{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
 						{
 							platform: "darwin",
 							processIncarnation: pid =>
@@ -2532,7 +2532,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_SESSION: session },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_SESSION: session },
 					{
 						platform: "darwin",
 						processIncarnation: pid =>
@@ -2576,7 +2576,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_SESSION: session, TMUX_PROBES: probes },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_SESSION: session, TMUX_PROBES: probes },
 					{
 						platform: "darwin",
 						processIncarnation: pid =>
@@ -2623,7 +2623,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
 					{
 						platform: "darwin",
 						processIncarnation: pid =>
@@ -2667,7 +2667,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_SESSION: session },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_SESSION: session },
 					{
 						platform: "darwin",
 						processIncarnation: pid =>
@@ -2707,7 +2707,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			try {
 				await daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: calls, TMUX_SESSION: session },
 					{
 						platform: "darwin",
 						processIncarnation: pid =>
@@ -2751,7 +2751,7 @@ describe("lifecycle control runtime", () => {
 		try {
 			await expect(
 				daemonSpawnCreate(
-					{ ...process.env, GJC_TMUX_COMMAND: tmux },
+					{ ...process.env, WORX_TMUX_COMMAND: tmux },
 					{ platform: "darwin", processIncarnation: pid => (pid === 4242 ? "darwin:server" : undefined) },
 				)(createFrame({ target: { kind: "existing_path", path: root } }), {
 					lifecycleRequestId: "failed-request",

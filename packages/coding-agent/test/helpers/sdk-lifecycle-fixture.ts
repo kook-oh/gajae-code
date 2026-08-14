@@ -56,12 +56,12 @@ async function managedWorkspace(
 	if (resolved.kind !== "resolved") throw new Error(resolved.message);
 	const scopeDir = SessionManager.getDefaultSessionDir(cwd, agentDir);
 	expect(scopeDir).toBe(resolved.scope.directoryPath);
-	const previousRequestId = process.env.GJC_LIFECYCLE_REQUEST_ID;
-	const previousSessionId = process.env.GJC_SESSION_ID;
+	const previousRequestId = process.env.WORX_LIFECYCLE_REQUEST_ID;
+	const previousSessionId = process.env.WORX_SESSION_ID;
 	try {
 		// This is setup only: parallel ingress requests never inherit these variables.
-		process.env.GJC_LIFECYCLE_REQUEST_ID = `prepare-${name.toLowerCase()}-${sessionId}`;
-		process.env.GJC_SESSION_ID = sessionId;
+		process.env.WORX_LIFECYCLE_REQUEST_ID = `prepare-${name.toLowerCase()}-${sessionId}`;
+		process.env.WORX_SESSION_ID = sessionId;
 		const session = SessionManager.create(cwd, SessionManager.managedDestination(cwd, agentDir));
 		await session.ensureOnDisk();
 		const sourcePath = session.getSessionFile();
@@ -85,10 +85,10 @@ async function managedWorkspace(
 			source: { id: sessionId, path: sourcePath, bytes: await fs.readFile(sourcePath) },
 		};
 	} finally {
-		if (previousRequestId === undefined) delete process.env.GJC_LIFECYCLE_REQUEST_ID;
-		else process.env.GJC_LIFECYCLE_REQUEST_ID = previousRequestId;
-		if (previousSessionId === undefined) delete process.env.GJC_SESSION_ID;
-		else process.env.GJC_SESSION_ID = previousSessionId;
+		if (previousRequestId === undefined) delete process.env.WORX_LIFECYCLE_REQUEST_ID;
+		else process.env.WORX_LIFECYCLE_REQUEST_ID = previousRequestId;
+		if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
+		else process.env.WORX_SESSION_ID = previousSessionId;
 	}
 }
 

@@ -10,10 +10,7 @@ import { migrateAndPersistLegacyState } from "@bworx-io/worx-code/gjc-runtime/st
 import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 import { RequiredOnWriteEnvelopeSchema } from "@bworx-io/worx-code/gjc-runtime/state-schema";
 import { writeWorkflowEnvelopeAtomic } from "@bworx-io/worx-code/gjc-runtime/state-writer";
-import {
-	type GjcTeamSnapshot,
-	persistGjcTeamModeStateSummary,
-} from "@bworx-io/worx-code/gjc-runtime/team-runtime";
+import { type GjcTeamSnapshot, persistGjcTeamModeStateSummary } from "@bworx-io/worx-code/gjc-runtime/team-runtime";
 import { WORKFLOW_STATE_VERSION } from "@bworx-io/worx-code/skill-state/workflow-state-contract";
 
 const TEST_SESSION_ID = "test-session";
@@ -22,8 +19,8 @@ const tempRoots: string[] = [];
 
 let priorSessionId: string | undefined;
 beforeAll(() => {
-	priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 async function tempDir(): Promise<string> {
@@ -33,8 +30,8 @@ async function tempDir(): Promise<string> {
 }
 
 afterAll(async () => {
-	if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+	else delete process.env.WORX_SESSION_ID;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 

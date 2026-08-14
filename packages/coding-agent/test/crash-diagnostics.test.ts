@@ -25,8 +25,8 @@ afterEach(async () => {
 	for (const dir of tempDirs.splice(0)) {
 		await fs.rm(dir, { recursive: true, force: true });
 	}
-	delete process.env.GJC_CRASH_DIAGNOSTICS;
-	delete process.env.GJC_CRASH_DIAGNOSTICS_DIR;
+	delete process.env.WORX_CRASH_DIAGNOSTICS;
+	delete process.env.WORX_CRASH_DIAGNOSTICS_DIR;
 });
 
 describe("crash diagnostics", () => {
@@ -42,7 +42,7 @@ describe("crash diagnostics", () => {
 
 	it("writes opt-in structured reports only for crashed classes", async () => {
 		const dir = await makeTempDir();
-		const env = { GJC_CRASH_DIAGNOSTICS: "1", GJC_CRASH_DIAGNOSTICS_DIR: dir } as NodeJS.ProcessEnv;
+		const env = { WORX_CRASH_DIAGNOSTICS: "1", WORX_CRASH_DIAGNOSTICS_DIR: dir } as NodeJS.ProcessEnv;
 		const clean = await writeCrashReport({ kind: "bash", exitCode: 0 }, { env, cwd: dir });
 		expect(clean.path).toBeNull();
 
@@ -62,7 +62,7 @@ describe("crash diagnostics", () => {
 	it("creates private diagnostics directories and reports under umask 022", async () => {
 		const dir = await makeTempDir();
 		await fs.chmod(dir, 0o755);
-		const env = { GJC_CRASH_DIAGNOSTICS: "1", GJC_CRASH_DIAGNOSTICS_DIR: dir } as NodeJS.ProcessEnv;
+		const env = { WORX_CRASH_DIAGNOSTICS: "1", WORX_CRASH_DIAGNOSTICS_DIR: dir } as NodeJS.ProcessEnv;
 		const previousUmask = process.umask(0o022);
 		try {
 			const crashed = await writeCrashReport(
@@ -84,7 +84,7 @@ describe("crash diagnostics", () => {
 		const previousUmask = process.umask(0o022);
 		process.env.TMPDIR = tempRoot;
 		try {
-			const env = { GJC_CRASH_DIAGNOSTICS: "1" } as NodeJS.ProcessEnv;
+			const env = { WORX_CRASH_DIAGNOSTICS: "1" } as NodeJS.ProcessEnv;
 			const crashed = await writeCrashReport(
 				{ kind: "worker", exitCode: 1, stderr: "secret-token" },
 				{ env, cwd: tempRoot, now: new Date("2026-06-04T00:00:02.000Z") },
@@ -107,8 +107,8 @@ describe("crash diagnostics", () => {
 
 	it("appends a bash crash notice and artifact when diagnostics are enabled", async () => {
 		const dir = await makeTempDir();
-		process.env.GJC_CRASH_DIAGNOSTICS = "1";
-		process.env.GJC_CRASH_DIAGNOSTICS_DIR = dir;
+		process.env.WORX_CRASH_DIAGNOSTICS = "1";
+		process.env.WORX_CRASH_DIAGNOSTICS_DIR = dir;
 
 		const result = await executeBash("echo boom >&2; exit 7", { cwd: dir, timeout: 5000 });
 		expect(result.exitCode).toBe(7);

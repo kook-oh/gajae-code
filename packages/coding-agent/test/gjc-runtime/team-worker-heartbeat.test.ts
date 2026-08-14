@@ -26,13 +26,13 @@ const heartbeatFile = (root: string, teamName: string, worker: string) =>
 	path.join(teamStateDir(root, teamName), "workers", worker, "heartbeat.json");
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = previousGjcSessionId;
+	if (previousGjcSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = previousGjcSessionId;
 });
 
 afterEach(async () => {
@@ -50,7 +50,7 @@ async function startDryRunTeam(teamName: string): Promise<string> {
 		teamName,
 		cwd: root,
 		dryRun: true,
-		env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "" },
+		env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 	});
 	return root;
 }
@@ -74,38 +74,38 @@ async function until(predicate: () => boolean, timeoutMs = 2_000): Promise<void>
 describe("team worker identity and heartbeat cadence", () => {
 	it("resolves worker identity only when both team and worker are known", () => {
 		expect(resolveGjcTeamWorkerIdentity({})).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ GJC_TEAM_NAME: "alpha" })).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ GJC_TEAM_WORKER_ID: "worker-2" })).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ GJC_TEAM_NAME: "alpha", GJC_TEAM_WORKER_ID: "worker-2" })).toEqual({
+		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha" })).toBeUndefined();
+		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_WORKER_ID: "worker-2" })).toBeUndefined();
+		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_WORKER_ID: "worker-2" })).toEqual({
 			teamName: "alpha",
 			workerId: "worker-2",
 		});
 		expect(
-			resolveGjcTeamWorkerIdentity({ GJC_TEAM_NAME: "alpha", GJC_TEAM_INTERNAL_WORKER: "alpha/worker-3" }),
+			resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_INTERNAL_WORKER: "alpha/worker-3" }),
 		).toEqual({ teamName: "alpha", workerId: "worker-3" });
 	});
 
 	it("publishes several times per stale window and stays inside the clamp", () => {
 		// Default 120s stale window: the 40s third would exceed the 30s ceiling.
 		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({})).toBe(30_000);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "30000" })).toBe(10_000);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "1500" })).toBe(500);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "500" })).toBe(166);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "30000" })).toBe(10_000);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1500" })).toBe(500);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "500" })).toBe(166);
 		// The leader and reporter both clamp pathological positive windows to 3ms,
 		// leaving a 1ms publish cadence strictly below the effective threshold.
-		expect(parseHeartbeatStaleMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(3);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(1);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "not-a-number" })).toBe(30_000);
+		expect(parseHeartbeatStaleMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(3);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(1);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "not-a-number" })).toBe(30_000);
 	});
 
 	it("disables publishing when the leader disabled the stale window", () => {
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "0" })).toBe(0);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ GJC_TEAM_HEARTBEAT_STALE_MS: "-5" })).toBe(0);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "0" })).toBe(0);
+		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "-5" })).toBe(0);
 		expect(
 			GjcTeamWorkerHeartbeatReporter.forProcess(() => ".", {
-				GJC_TEAM_NAME: "alpha",
-				GJC_TEAM_WORKER_ID: "worker-1",
-				GJC_TEAM_HEARTBEAT_STALE_MS: "0",
+				WORX_TEAM_NAME: "alpha",
+				WORX_TEAM_WORKER_ID: "worker-1",
+				WORX_TEAM_HEARTBEAT_STALE_MS: "0",
 			}),
 		).toBeUndefined();
 	});
@@ -202,9 +202,9 @@ describe("runtime-owned heartbeat records", () => {
 		const root = await startDryRunTeam("runtime-heartbeat-team");
 		const env = {
 			PATH: "",
-			GJC_SESSION_ID: TEST_SESSION_ID,
-			GJC_TEAM_NAME: "runtime-heartbeat-team",
-			GJC_TEAM_WORKER_ID: "worker-1",
+			WORX_SESSION_ID: TEST_SESSION_ID,
+			WORX_TEAM_NAME: "runtime-heartbeat-team",
+			WORX_TEAM_WORKER_ID: "worker-1",
 		};
 		await writeHeartbeat(root, "runtime-heartbeat-team", {
 			pid: process.pid,
@@ -230,7 +230,7 @@ describe("runtime-owned heartbeat records", () => {
 	it("is a no-op outside a team worker pane", async () => {
 		const root = await startDryRunTeam("non-worker-team");
 		expect(
-			await writeGjcTeamWorkerRuntimeHeartbeat(root, { PATH: "", GJC_SESSION_ID: TEST_SESSION_ID }),
+			await writeGjcTeamWorkerRuntimeHeartbeat(root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID }),
 		).toBeUndefined();
 	});
 });
@@ -249,10 +249,10 @@ describe("gjc team launch to reporter contract", () => {
 		// hand-written fixture: if launch ever stops exporting one of these, the
 		// worker silently publishes no heartbeat and the old defect returns.
 		const paneEnv: NodeJS.ProcessEnv = {};
-		for (const [, key, value] of command.matchAll(/(GJC_[A-Z_]+)='([^']*)'/g)) paneEnv[key] = value;
+		for (const [, key, value] of command.matchAll(/(WORX_[A-Z_]+)='([^']*)'/g)) paneEnv[key] = value;
 
-		expect(paneEnv.GJC_TEAM_NAME).toBe("launch-contract-team");
-		expect(paneEnv.GJC_TEAM_WORKER_ID).toBe(worker.id);
+		expect(paneEnv.WORX_TEAM_NAME).toBe("launch-contract-team");
+		expect(paneEnv.WORX_TEAM_WORKER_ID).toBe(worker.id);
 		expect(resolveGjcTeamWorkerIdentity(paneEnv)).toEqual({
 			teamName: "launch-contract-team",
 			workerId: worker.id,
@@ -273,14 +273,14 @@ describe("gjc team launch to reporter contract", () => {
 		// window is not exported, it polices at 15s while the worker still publishes on
 		// the 120s default cadence — reported stale while working.
 		const command = buildWorkerCommand(config, worker, "darwin", undefined, {
-			GJC_TEAM_HEARTBEAT_STALE_MS: "15000",
+			WORX_TEAM_HEARTBEAT_STALE_MS: "15000",
 		});
 		const paneEnv: NodeJS.ProcessEnv = {};
-		for (const [, key, value] of command.matchAll(/(GJC_[A-Z_]+)='([^']*)'/g)) paneEnv[key] = value;
+		for (const [, key, value] of command.matchAll(/(WORX_[A-Z_]+)='([^']*)'/g)) paneEnv[key] = value;
 
-		expect(paneEnv.GJC_TEAM_HEARTBEAT_STALE_MS).toBe("15000");
+		expect(paneEnv.WORX_TEAM_HEARTBEAT_STALE_MS).toBe("15000");
 		expect(resolveGjcTeamWorkerHeartbeatIntervalMs(paneEnv)).toBe(5_000);
 		// Unset stays unset: the default cadence is implicit on both sides.
-		expect(buildWorkerCommand(config, worker, "darwin", undefined, {})).not.toContain("GJC_TEAM_HEARTBEAT_STALE_MS");
+		expect(buildWorkerCommand(config, worker, "darwin", undefined, {})).not.toContain("WORX_TEAM_HEARTBEAT_STALE_MS");
 	});
 });

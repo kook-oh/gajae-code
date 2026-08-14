@@ -225,7 +225,7 @@ describe("shouldProbeSixelCapability", () => {
 		delete Bun.env.PI_FORCE_IMAGE_PROTOCOL;
 		expect(shouldProbeSixelCapability({ WT_SESSION: "s", TMUX: "/tmp/t,1,0" }, "win32")).toBe(false);
 		expect(shouldProbeSixelCapability({ WT_SESSION: "s", TERM: "tmux-256color" }, "win32")).toBe(false);
-		expect(shouldProbeSixelCapability({ WT_SESSION: "s", GJC_TMUX_LAUNCHED: "1" }, "win32")).toBe(false);
+		expect(shouldProbeSixelCapability({ WT_SESSION: "s", WORX_TMUX_LAUNCHED: "1" }, "win32")).toBe(false);
 	});
 
 	it("treats an explicit PI_FORCE_IMAGE_PROTOCOL as authoritative", () => {
@@ -243,8 +243,8 @@ describe("isUnderTerminalMultiplexer", () => {
 		expect(isUnderTerminalMultiplexer({ STY: "1234.pts-0.host" })).toBe(true);
 		expect(isUnderTerminalMultiplexer({ ZELLIJ: "0" })).toBe(false);
 		expect(isUnderTerminalMultiplexer({ ZELLIJ: "session" })).toBe(true);
-		expect(isUnderTerminalMultiplexer({ GJC_TMUX_LAUNCHED: "1" })).toBe(true);
-		expect(isUnderTerminalMultiplexer({ GJC_TMUX_LAUNCHED: "0" })).toBe(false);
+		expect(isUnderTerminalMultiplexer({ WORX_TMUX_LAUNCHED: "1" })).toBe(true);
+		expect(isUnderTerminalMultiplexer({ WORX_TMUX_LAUNCHED: "0" })).toBe(false);
 		expect(isUnderTerminalMultiplexer({ TERM: "tmux-256color" })).toBe(true);
 		expect(isUnderTerminalMultiplexer({ TERM: "screen-256color" })).toBe(true);
 	});

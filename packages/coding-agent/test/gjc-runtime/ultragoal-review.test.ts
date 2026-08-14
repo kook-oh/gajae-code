@@ -28,12 +28,12 @@ async function runGit(cwd: string, args: string[]): Promise<void> {
 }
 
 beforeAll(() => {
-	savedSessionId = process.env.GJC_SESSION_ID;
+	savedSessionId = process.env.WORX_SESSION_ID;
 	savedCiDevChangedPaths = process.env.CI_DEV_CHANGED_PATHS;
 });
 
 beforeEach(() => {
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	// Temp dirs live outside the enclosing git work tree (os.tmpdir) and each
 	// inits its own standalone git repo. computeCheckpointChangeSet still
 	// merges CI_DEV_CHANGED_PATHS into the computed change set. Pin a
@@ -59,8 +59,8 @@ afterEach(async () => {
 });
 
 afterAll(() => {
-	if (savedSessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = savedSessionId;
+	if (savedSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = savedSessionId;
 	if (savedCiDevChangedPaths === undefined) delete process.env.CI_DEV_CHANGED_PATHS;
 	else process.env.CI_DEV_CHANGED_PATHS = savedCiDevChangedPaths;
 });

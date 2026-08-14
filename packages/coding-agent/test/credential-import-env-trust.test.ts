@@ -95,8 +95,8 @@ async function discoverIn(cwd: string, homeDir: string, overrides: Record<string
 	// `$credentialEnv` also consults the agent `.env`, the GJC config `.env`,
 	// `~/.env` and the login shell rc files; keep all of them neutral.
 	env.HOME = tempDir();
-	env.GJC_CODING_AGENT_DIR = tempDir();
-	env.GJC_PROBE_HOME_DIR = homeDir;
+	env.WORX_CODING_AGENT_DIR = tempDir();
+	env.WORX_PROBE_HOME_DIR = homeDir;
 	Object.assign(env, overrides);
 
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd, env, stdout: "pipe", stderr: "pipe" });

@@ -49,7 +49,7 @@ describe("plugin MCP live connection", () => {
 		expect(configs.domain_docs.noInheritEnv).toBe(true);
 		expect(configs.domain_docs.env).toBeUndefined();
 
-		const secretKey = "GJC_PLUGIN_TEST_SECRET";
+		const secretKey = "WORX_PLUGIN_TEST_SECRET";
 		process.env[secretKey] = "top-secret-value";
 		try {
 			const manager = new MCPManager(cwd);

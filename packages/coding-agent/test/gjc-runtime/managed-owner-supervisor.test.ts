@@ -39,12 +39,12 @@ function startSupervisor(
 		stderr: "pipe",
 		env: {
 			...process.env,
-			GJC_TMUX_OWNER_STATE_DIR: stateDir,
-			GJC_COORDINATOR_SESSION_ID: "session-2681",
-			GJC_TMUX_OWNER_GENERATION: "generation-2681",
-			GJC_MANAGED_OWNER_RUN_ID: "run-2681",
-			GJC_MANAGED_OWNER_INCARNATION: "incarnation-2681",
-			GJC_MANAGED_OWNER_COMMAND_JSON: JSON.stringify(command),
+			WORX_TMUX_OWNER_STATE_DIR: stateDir,
+			WORX_COORDINATOR_SESSION_ID: "session-2681",
+			WORX_TMUX_OWNER_GENERATION: "generation-2681",
+			WORX_MANAGED_OWNER_RUN_ID: "run-2681",
+			WORX_MANAGED_OWNER_INCARNATION: "incarnation-2681",
+			WORX_MANAGED_OWNER_COMMAND_JSON: JSON.stringify(command),
 			...env,
 		},
 	});
@@ -226,14 +226,14 @@ setInterval(() => {}, 1_000);`;
 			);
 			const childScript = `import { admitManagedOwnerBeforeCli, completeManagedOwnerRecovery } from ${JSON.stringify(admissionModule)}; process.chdir(${JSON.stringify(cwd)}); const admission = await admitManagedOwnerBeforeCli(); const terminal = admission.kind === "recovery" ? await completeManagedOwnerRecovery(admission.context) : admission; console.log(JSON.stringify({ kind: terminal.kind }));`;
 			const replacement = await runSupervisor(stateDir, [process.execPath, "-e", childScript], {
-				GJC_TMUX_OWNER_GENERATION: "replacement-generation-2681",
-				GJC_MANAGED_OWNER_RUN_ID: "replacement-run-2681",
-				GJC_MANAGED_OWNER_INCARNATION: "replacement-incarnation-2681",
-				GJC_MANAGED_OWNER_PREDECESSOR_TOKEN: predecessorToken,
-				GJC_MANAGED_OWNER_PREDECESSOR_GENERATION: "generation-2681",
-				GJC_MANAGED_OWNER_PREDECESSOR_RUN_ID: "run-2681",
-				GJC_MANAGED_OWNER_PREDECESSOR_INCARNATION: "incarnation-2681",
-				GJC_MANAGED_OWNER_TRANSCRIPT_PATH: transcript,
+				WORX_TMUX_OWNER_GENERATION: "replacement-generation-2681",
+				WORX_MANAGED_OWNER_RUN_ID: "replacement-run-2681",
+				WORX_MANAGED_OWNER_INCARNATION: "replacement-incarnation-2681",
+				WORX_MANAGED_OWNER_PREDECESSOR_TOKEN: predecessorToken,
+				WORX_MANAGED_OWNER_PREDECESSOR_GENERATION: "generation-2681",
+				WORX_MANAGED_OWNER_PREDECESSOR_RUN_ID: "run-2681",
+				WORX_MANAGED_OWNER_PREDECESSOR_INCARNATION: "incarnation-2681",
+				WORX_MANAGED_OWNER_TRANSCRIPT_PATH: transcript,
 			});
 			expect(replacement.exitCode).toBe(75);
 			expect(replacement.stdout).toContain('"kind":"handoff"');

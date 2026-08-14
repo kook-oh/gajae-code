@@ -16,7 +16,7 @@ interface CliResult {
 function runDaemon(args: string[], agentDir: string): CliResult {
 	const result = Bun.spawnSync([process.execPath, cliEntry, "daemon", ...args], {
 		cwd: packageRoot,
-		env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir },
+		env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir },
 		stdout: "pipe",
 		stderr: "pipe",
 	});

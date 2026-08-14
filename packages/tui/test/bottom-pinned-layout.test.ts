@@ -66,10 +66,10 @@ describe("TUI bottom-pinned layout", () => {
 		beforeEach(() => {
 			origTmux = process.env.TMUX;
 			origTmuxPane = process.env.TMUX_PANE;
-			origLaunched = process.env.GJC_TMUX_LAUNCHED;
+			origLaunched = process.env.WORX_TMUX_LAUNCHED;
 			delete process.env.TMUX;
 			delete process.env.TMUX_PANE;
-			process.env.GJC_TMUX_LAUNCHED = "1";
+			process.env.WORX_TMUX_LAUNCHED = "1";
 		});
 
 		afterEach(() => {
@@ -77,8 +77,8 @@ describe("TUI bottom-pinned layout", () => {
 			else process.env.TMUX = origTmux;
 			if (origTmuxPane === undefined) delete process.env.TMUX_PANE;
 			else process.env.TMUX_PANE = origTmuxPane;
-			if (origLaunched === undefined) delete process.env.GJC_TMUX_LAUNCHED;
-			else process.env.GJC_TMUX_LAUNCHED = origLaunched;
+			if (origLaunched === undefined) delete process.env.WORX_TMUX_LAUNCHED;
+			else process.env.WORX_TMUX_LAUNCHED = origLaunched;
 		});
 
 		it("keeps the pinned group on the last row after a viewport resize", async () => {

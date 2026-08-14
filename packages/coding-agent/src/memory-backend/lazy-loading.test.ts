@@ -31,7 +31,7 @@ async function runOffProbe(): Promise<{ stdout: string; records: Array<Record<st
 
 	const child = Bun.spawn(["bun", "--preload", traceLoader, probePath], {
 		cwd: repoRoot,
-		env: { ...process.env, GJC_TRACE_OUT: tracePath },
+		env: { ...process.env, WORX_TRACE_OUT: tracePath },
 		stdout: "pipe",
 		stderr: "pipe",
 	});

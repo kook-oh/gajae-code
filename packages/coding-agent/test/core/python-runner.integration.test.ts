@@ -1,7 +1,7 @@
 /**
  * End-to-end exercise of the new subprocess-backed Python runner.
  *
- * Gated by `GJC_PYTHON_INTEGRATION=1` (or legacy `PI_PYTHON_INTEGRATION=1`)
+ * Gated by `WORX_PYTHON_INTEGRATION=1` (or legacy `PI_PYTHON_INTEGRATION=1`)
  * so CI without a real Python interpreter (or sandboxes where subprocess
  * spawning is restricted) does not fail. Either truthy name opts the tests in.
  */

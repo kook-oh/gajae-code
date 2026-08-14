@@ -26,9 +26,9 @@ beforeEach(async () => {
 	root = await mkdtemp(path.join(tmpdir(), "harness-cli-root-"));
 	workspace = realpathSync(await mkdtemp(path.join(tmpdir(), "harness-cli-ws-")));
 	cliEnv = createHarnessCliEnv(repoRoot);
-	originalGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = "test-session";
-	cliEnv.env.GJC_SESSION_ID = "test-session";
+	originalGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = "test-session";
+	cliEnv.env.WORX_SESSION_ID = "test-session";
 });
 
 afterEach(async () => {
@@ -36,9 +36,9 @@ afterEach(async () => {
 	await rm(root, { recursive: true, force: true });
 	await rm(workspace, { recursive: true, force: true });
 	if (originalGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = originalGjcSessionId;
+		process.env.WORX_SESSION_ID = originalGjcSessionId;
 	}
 });
 
@@ -51,7 +51,7 @@ interface HarnessResult {
 function runHarness(args: string[]): HarnessResult {
 	const proc = Bun.spawnSync(["bun", cliEntry, "harness", ...args], {
 		cwd: workspace,
-		env: { ...cliEnv.env, GJC_HARNESS_STATE_ROOT: root },
+		env: { ...cliEnv.env, WORX_HARNESS_STATE_ROOT: root },
 		stdout: "pipe",
 		stderr: "pipe",
 	});
@@ -82,7 +82,7 @@ function runHarnessInCwd(args: string[], cwd: string, env: NodeJS.ProcessEnv = p
 }
 function harnessEnvWithoutStateRoot(): NodeJS.ProcessEnv {
 	const env = { ...cliEnv.env };
-	delete env.GJC_HARNESS_STATE_ROOT;
+	delete env.WORX_HARNESS_STATE_ROOT;
 	return env;
 }
 

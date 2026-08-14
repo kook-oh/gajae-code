@@ -1,10 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import {
-	assertUltragoalPauseAllowed,
-	isUltragoalPauseBlocked,
-} from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
+import { assertUltragoalPauseAllowed, isUltragoalPauseBlocked } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
 import {
 	createUltragoalPlan,
 	recordUltragoalBlockerClassification,
@@ -12,7 +9,7 @@ import {
 } from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-pause-guard-redteam-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
 const tempRoots: string[] = [];
 
 async function tempDir(): Promise<string> {
@@ -23,7 +20,7 @@ async function tempDir(): Promise<string> {
 
 async function createActiveRun(): Promise<string> {
 	const cwd = await tempDir();
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	// Disable the pre-gate try-harder nudge so these tests isolate the underlying
 	// human_blocked pause gate (the nudge layer has its own dedicated coverage in
 	// ultragoal-nudge-guard.test.ts).
@@ -38,8 +35,8 @@ function ultragoalPath(cwd: string, file: "goals.json" | "ledger.jsonl"): string
 }
 
 afterEach(async () => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
@@ -146,7 +143,7 @@ describe("ultragoal pause guard red-team coverage", () => {
 	});
 	it("does not throw when no active ultragoal run exists", async () => {
 		const cwd = await tempDir();
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		await expect(assertUltragoalPauseAllowed(cwd)).resolves.toBeUndefined();
 	});
 });

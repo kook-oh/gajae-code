@@ -24,8 +24,8 @@ import { listCanonicalBlobs, removeCanonicalBlob } from "../src/session/blob-sto
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
- * Every test runs against a private state root. `GJC_CODING_AGENT_DIR` pins the
- * agent dir, `GJC_HARNESS_ROOT_REGISTRY_DIR` pins the harness registry and
+ * Every test runs against a private state root. `WORX_CODING_AGENT_DIR` pins the
+ * agent dir, `WORX_HARNESS_ROOT_REGISTRY_DIR` pins the harness registry and
  * `TMPDIR` pins the `local://` root parent, so nothing here can reach ~/.gjc.
  */
 interface TestRoot {
@@ -52,8 +52,8 @@ async function makeTestRoot(): Promise<TestRoot> {
 		nativesDir: path.join(root, "natives"),
 		backupsDir: path.join(root, "backups"),
 		env: {
-			GJC_CODING_AGENT_DIR: agentDir,
-			GJC_HARNESS_ROOT_REGISTRY_DIR: path.join(root, "harness-roots"),
+			WORX_CODING_AGENT_DIR: agentDir,
+			WORX_HARNESS_ROOT_REGISTRY_DIR: path.join(root, "harness-roots"),
 			TMPDIR: path.join(root, "tmp"),
 		},
 	};
@@ -133,7 +133,7 @@ async function writeNativesVersion(fixture: TestRoot, version: string): Promise<
 }
 
 async function writeHarnessRegistry(fixture: TestRoot, sessionId: string): Promise<void> {
-	const dir = fixture.env.GJC_HARNESS_ROOT_REGISTRY_DIR!;
+	const dir = fixture.env.WORX_HARNESS_ROOT_REGISTRY_DIR!;
 	await fsp.mkdir(dir, { recursive: true });
 	await Bun.write(
 		path.join(dir, `${sessionId}.json`),
@@ -324,7 +324,7 @@ describe("gjc gc --disk --prune (sessions)", () => {
 			const referenced = requireDisk(await runDisk(fixture, ["--disk", "--json"], { sessions_max_total_bytes: 1 }));
 			expect(referenced.surfaces.sessions.reclaimable).toBe(0);
 
-			await fsp.rm(path.join(fixture.env.GJC_HARNESS_ROOT_REGISTRY_DIR!, "older-recent.json"));
+			await fsp.rm(path.join(fixture.env.WORX_HARNESS_ROOT_REGISTRY_DIR!, "older-recent.json"));
 			const unreferenced = requireDisk(
 				await runDisk(fixture, ["--disk", "--json"], { sessions_max_total_bytes: 1 }),
 			);

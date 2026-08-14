@@ -29,7 +29,7 @@ const SDK_REQUEST_TIMEOUT_MS = 10_000;
 setDefaultTimeout(30_000);
 
 afterEach(async () => {
-	delete process.env.GJC_NOTIFICATIONS;
+	delete process.env.WORX_NOTIFICATIONS;
 	resetSettingsForTest();
 	vi.restoreAllMocks();
 	if (fixtureCleanup) await cleanupFixtureRoot(fixtureCleanup);
@@ -137,7 +137,7 @@ test("model.set executes every Q10-advertised selection and persists the public 
 		maxReasoningModel,
 	]);
 
-	process.env.GJC_NOTIFICATIONS = "1";
+	process.env.WORX_NOTIFICATIONS = "1";
 	const { session } = await createAgentSession({
 		cwd: tempDir,
 		agentDir,
@@ -841,7 +841,7 @@ test("selecting a synthetic gajae-code profile remains session-scoped across con
 	// A fresh launch must not inherit a profile selected through ACP. The fresh
 	// session does not need an SDK endpoint, so disable hosting to avoid an
 	// async discovery-file write racing fixture-root removal during cleanup.
-	process.env.GJC_SDK_DISABLE = "1";
+	process.env.WORX_SDK_DISABLE = "1";
 	const { session: freshSession } = await createAgentSession({
 		cwd: tempDir,
 		agentDir,

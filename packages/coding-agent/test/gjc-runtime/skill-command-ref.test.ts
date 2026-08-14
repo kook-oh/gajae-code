@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { renderCommandRefBlock } from "@bworx-io/worx-code/gjc-runtime/workflow-command-ref";
-import { CANONICAL_GJC_WORKFLOW_SKILLS } from "@bworx-io/worx-code/skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "@bworx-io/worx-code/skill-state/canonical-skills";
 
 interface FileSnapshot {
 	bytes: Buffer;
@@ -11,7 +11,7 @@ interface FileSnapshot {
 }
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");
-const skillFiles = CANONICAL_GJC_WORKFLOW_SKILLS.map(skill =>
+const skillFiles = CANONICAL_WORX_WORKFLOW_SKILLS.map(skill =>
 	path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", skill, "SKILL.md"),
 );
 
@@ -65,9 +65,9 @@ describe("workflow command-reference proof spike", () => {
 		const parsed = JSON.parse(result.stdout) as {
 			results: Array<{ skill: string; blockId: string; status: string; reason?: string }>;
 		};
-		expect(parsed.results).toHaveLength(CANONICAL_GJC_WORKFLOW_SKILLS.length);
+		expect(parsed.results).toHaveLength(CANONICAL_WORX_WORKFLOW_SKILLS.length);
 		for (const item of parsed.results) {
-			expect([...CANONICAL_GJC_WORKFLOW_SKILLS] as string[]).toContain(item.skill);
+			expect([...CANONICAL_WORX_WORKFLOW_SKILLS] as string[]).toContain(item.skill);
 			expect(item.blockId).toBe("state");
 			expect(["BYTE-EQUAL", "GAP"]).toContain(item.status);
 		}
@@ -83,9 +83,9 @@ describe("workflow command-reference proof spike", () => {
 		const parsed = JSON.parse(result.stdout) as {
 			skills: Array<{ skill: string; bytes: number; approxTokens: number; sections: unknown[] }>;
 		};
-		expect(parsed.skills).toHaveLength(CANONICAL_GJC_WORKFLOW_SKILLS.length);
+		expect(parsed.skills).toHaveLength(CANONICAL_WORX_WORKFLOW_SKILLS.length);
 		for (const item of parsed.skills) {
-			expect([...CANONICAL_GJC_WORKFLOW_SKILLS] as string[]).toContain(item.skill);
+			expect([...CANONICAL_WORX_WORKFLOW_SKILLS] as string[]).toContain(item.skill);
 			expect(item.bytes).toBeGreaterThan(0);
 			expect(item.approxTokens).toBeGreaterThan(0);
 			expect(Array.isArray(item.sections)).toBe(true);

@@ -101,10 +101,10 @@ describe("non-TTY CLI startup", () => {
 		try {
 			const result = await runCliWithIgnoredStdin(["--no-session"], {
 				...process.env,
-				GJC_CODING_AGENT_DIR: root,
+				WORX_CODING_AGENT_DIR: root,
 				PI_CODING_AGENT_DIR: root,
-				GJC_NOTIFICATIONS: "0",
-				GJC_CLEANUP_DEADLINE_MS: "250",
+				WORX_NOTIFICATIONS: "0",
+				WORX_CLEANUP_DEADLINE_MS: "250",
 				NO_COLOR: "1",
 			});
 
@@ -118,10 +118,10 @@ describe("non-TTY CLI startup", () => {
 	it("routes a positional prompt without waiting for ignored stdin", async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-non-tty-prompt-"));
 		const env = { ...process.env };
-		delete env.GJC_SDK_DISABLE;
-		delete env.GJC_SESSION_ID;
-		delete env.GJC_SESSION_FILE;
-		delete env.GJC_SESSION_CWD;
+		delete env.WORX_SDK_DISABLE;
+		delete env.WORX_SESSION_ID;
+		delete env.WORX_SESSION_FILE;
+		delete env.WORX_SESSION_CWD;
 		delete env.GJCCODE;
 		delete env.CLAUDECODE;
 		delete env.ANTHROPIC_AUTH_TOKEN;
@@ -133,9 +133,9 @@ describe("non-TTY CLI startup", () => {
 				HOME: root,
 				XDG_CONFIG_HOME: root,
 				XDG_DATA_HOME: root,
-				GJC_CODING_AGENT_DIR: root,
+				WORX_CODING_AGENT_DIR: root,
 				PI_CODING_AGENT_DIR: root,
-				GJC_NOTIFICATIONS: "0",
+				WORX_NOTIFICATIONS: "0",
 				ANTHROPIC_API_KEY: "",
 				ANTHROPIC_OAUTH_TOKEN: "",
 				OPENAI_API_KEY: "",

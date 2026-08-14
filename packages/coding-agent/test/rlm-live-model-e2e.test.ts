@@ -1,14 +1,14 @@
 /**
  * Live, model-driven RLM end-to-end test.
  *
- * Gated behind GJC_RLM_LIVE=1 because it makes real LLM calls (creds + network)
+ * Gated behind WORX_RLM_LIVE=1 because it makes real LLM calls (creds + network)
  * and is therefore not part of the default CI suite. When enabled, it builds a
  * real RLM session via the same SDK path the `gjc rlm` command uses (research
  * preset: distinct system prompt + hard-gated python/read/web_search/read-only bash/goal toolset),
  * lets the real model drive the `python` tool over a real CSV, and asserts the
  * notebook + report capture genuine, model-computed results.
  *
- * Run: GJC_RLM_LIVE=1 [RLM_MODEL=layofflabs/gpt-5.5] bun test test/rlm-live-model-e2e.test.ts
+ * Run: WORX_RLM_LIVE=1 [RLM_MODEL=layofflabs/gpt-5.5] bun test test/rlm-live-model-e2e.test.ts
  */
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
@@ -17,11 +17,7 @@ import * as path from "node:path";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
 import { disposeKernelSessionsByOwner } from "@bworx-io/worx-code/eval/py/executor";
-import {
-	ensureRlmSessionDir,
-	generateRlmSessionId,
-	resolveRlmArtifactPaths,
-} from "@bworx-io/worx-code/rlm/artifacts";
+import { ensureRlmSessionDir, generateRlmSessionId, resolveRlmArtifactPaths } from "@bworx-io/worx-code/rlm/artifacts";
 import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
 import { createRlmPreset } from "@bworx-io/worx-code/rlm/index";
 import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
@@ -30,7 +26,7 @@ import { createRlmPythonTool } from "@bworx-io/worx-code/rlm/python-tool";
 import { synthesizeRlmReport } from "@bworx-io/worx-code/rlm/report";
 import { type CreateAgentSessionOptions, createAgentSession } from "@bworx-io/worx-code/sdk";
 
-const LIVE = process.env.GJC_RLM_LIVE === "1";
+const LIVE = process.env.WORX_RLM_LIVE === "1";
 const SALES_CSV = "region,amount\nnorth,100\nnorth,150\nsouth,200\nsouth,50\neast,300\n";
 
 let cwd: string;

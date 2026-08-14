@@ -34,7 +34,7 @@ async function runCli(repo: string, agentDir: string, args: string[]): Promise<C
 	try {
 		const child = Bun.spawn([process.execPath, "run", cliEntrypoint, ...args], {
 			cwd: repo,
-			env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir },
+			env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir },
 			stdout: stdoutFd,
 			stderr: stderrFd,
 		});

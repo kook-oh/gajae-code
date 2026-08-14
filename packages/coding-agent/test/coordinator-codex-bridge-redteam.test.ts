@@ -28,7 +28,7 @@ import {
 	persistMcpDelegateHostContext,
 } from "../src/hooks/mcp-delegate-host-context";
 import { dispatchGjcNativeSkillHook } from "../src/hooks/native-skill-hook";
-import { GJC_SKILL_KEYWORD_DEFINITIONS } from "../src/hooks/skill-keywords";
+import { WORX_SKILL_KEYWORD_DEFINITIONS } from "../src/hooks/skill-keywords";
 import { readVisibleSkillActiveState } from "../src/hooks/skill-state";
 
 const tempDirs: string[] = [];
@@ -97,11 +97,11 @@ function createServer(
 ) {
 	return createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
-			GJC_COORDINATOR_MCP_MUTATIONS: "sessions",
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
+			WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
 		},
 		services: {
 			codexTransportFactory: async (): Promise<CodexAppServerTransport> => ({
@@ -339,7 +339,7 @@ describe("Codex resume bridge red-team", () => {
 	});
 
 	it("does not activate a workflow for delegate-flow spoofing and preserves exactly four workflow skills", async () => {
-		expect(new Set(GJC_SKILL_KEYWORD_DEFINITIONS.map(definition => definition.skill))).toEqual(
+		expect(new Set(WORX_SKILL_KEYWORD_DEFINITIONS.map(definition => definition.skill))).toEqual(
 			new Set(["deep-interview", "ralplan", "ultragoal", "team"]),
 		);
 		const root = await tempRoot();

@@ -541,16 +541,16 @@ describe("notifications config", () => {
 		expect(genericNotificationStreamingEnabled({ cfg: inactiveTelegram, env: {} })).toBe(false);
 		expect(genericNotificationStreamingEnabled({ cfg: blockedTelegram, env: {} })).toBe(false);
 		expect(genericNotificationStreamingEnabled({ cfg: genericOnly, env: {} })).toBe(false);
-		expect(genericNotificationStreamingEnabled({ cfg: genericOnly, env: { GJC_NOTIFICATIONS_STREAM: "1" } })).toBe(
+		expect(genericNotificationStreamingEnabled({ cfg: genericOnly, env: { WORX_NOTIFICATIONS_STREAM: "1" } })).toBe(
 			true,
 		);
 		for (const value of ["0", "off", "false"]) {
 			expect(
-				genericNotificationStreamingEnabled({ cfg: activeTelegram, env: { GJC_NOTIFICATIONS_STREAM: value } }),
+				genericNotificationStreamingEnabled({ cfg: activeTelegram, env: { WORX_NOTIFICATIONS_STREAM: value } }),
 			).toBe(false);
 		}
 		expect(
-			genericNotificationStreamingEnabled({ cfg: activeTelegram, env: { GJC_NOTIFICATIONS_STREAM: "unknown" } }),
+			genericNotificationStreamingEnabled({ cfg: activeTelegram, env: { WORX_NOTIFICATIONS_STREAM: "unknown" } }),
 		).toBe(true);
 	});
 	test("full Settings and lightweight daemon share global fail-closed and provider quarantine semantics", () => {
@@ -1359,7 +1359,7 @@ describe("notifications config", () => {
 		expect(
 			isGenericNotificationSessionEnabled({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "0", GJC_NOTIFICATIONS_TOKEN: "token" },
+				env: { WORX_NOTIFICATIONS: "0", WORX_NOTIFICATIONS_TOKEN: "token" },
 				sessionDisabled: false,
 			}),
 		).toBe(false);
@@ -1367,7 +1367,7 @@ describe("notifications config", () => {
 		expect(
 			isGenericNotificationSessionEnabled({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				sessionDisabled: true,
 			}),
 		).toBe(false);
@@ -1375,14 +1375,14 @@ describe("notifications config", () => {
 		expect(
 			isGenericNotificationSessionEnabled({
 				cfg: BASE_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				sessionDisabled: false,
 			}),
 		).toBe(true);
 		expect(
 			isGenericNotificationSessionEnabled({
 				cfg: BASE_CFG,
-				env: { GJC_NOTIFICATIONS_TOKEN: "legacy-token" },
+				env: { WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
 				sessionDisabled: false,
 			}),
 		).toBe(true);
@@ -1400,7 +1400,7 @@ describe("notifications config", () => {
 		expect(
 			isGenericNotificationSessionEnabled({
 				cfg: PRIMARY_GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				sessionDisabled: false,
 				spawnedByGjc: true,
 			}),
@@ -1411,16 +1411,16 @@ describe("notifications config", () => {
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "0", GJC_NOTIFICATIONS_TOKEN: "token" },
+				env: { WORX_NOTIFICATIONS: "0", WORX_NOTIFICATIONS_TOKEN: "token" },
 			}),
 		).toBe(false);
-		expect(shouldRegisterGenericNotificationsExtension({ cfg: BASE_CFG, env: { GJC_NOTIFICATIONS: "1" } })).toBe(
+		expect(shouldRegisterGenericNotificationsExtension({ cfg: BASE_CFG, env: { WORX_NOTIFICATIONS: "1" } })).toBe(
 			true,
 		);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: BASE_CFG,
-				env: { GJC_NOTIFICATIONS_TOKEN: "legacy-token" },
+				env: { WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
 			}),
 		).toBe(true);
 		expect(shouldRegisterGenericNotificationsExtension({ cfg: GLOBAL_CFG, env: {} })).toBe(true);
@@ -1429,34 +1429,34 @@ describe("notifications config", () => {
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFY: "off" },
+				env: { WORX_NOTIFY: "off" },
 			}),
 		).toBe(false);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: BASE_CFG,
-				env: { GJC_NOTIFY: "FALSE", GJC_NOTIFICATIONS: "1", GJC_NOTIFICATIONS_TOKEN: "legacy-token" },
+				env: { WORX_NOTIFY: "FALSE", WORX_NOTIFICATIONS: "1", WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
 			}),
 		).toBe(false);
-		expect(completionNotifyDisabledByEnv({ GJC_NOTIFY: " 0 " })).toBe(true);
+		expect(completionNotifyDisabledByEnv({ WORX_NOTIFY: " 0 " })).toBe(true);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1", GJC_NOTIFICATIONS_TOKEN: "legacy-token" },
+				env: { WORX_NOTIFICATIONS: "1", WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
 				taskDepth: 1,
 			}),
 		).toBe(false);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				parentTaskPrefix: "0-Sub",
 			}),
 		).toBe(false);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				currentAgentType: "executor",
 			}),
 		).toBe(false);
@@ -1464,23 +1464,23 @@ describe("notifications config", () => {
 
 	test("isGenericNotificationHostEligible preserves hard-off, subagent, and primary-scope precedence", () => {
 		const primary = { ...PRIMARY_GLOBAL_CFG, sessionScope: "primary" as const };
-		expect(isGenericNotificationHostEligible({ env: { GJC_NOTIFY: "off", GJC_NOTIFICATIONS: "1" } })).toBe(false);
-		expect(isGenericNotificationHostEligible({ env: { GJC_NOTIFICATIONS: "1" }, taskDepth: 1 })).toBe(false);
-		expect(isGenericNotificationHostEligible({ env: { GJC_NOTIFICATIONS: "0" } })).toBe(false);
+		expect(isGenericNotificationHostEligible({ env: { WORX_NOTIFY: "off", WORX_NOTIFICATIONS: "1" } })).toBe(false);
+		expect(isGenericNotificationHostEligible({ env: { WORX_NOTIFICATIONS: "1" }, taskDepth: 1 })).toBe(false);
+		expect(isGenericNotificationHostEligible({ env: { WORX_NOTIFICATIONS: "0" } })).toBe(false);
 		expect(isGenericNotificationHostEligible({ env: {}, hostModeSupported: false })).toBe(false);
 		expect(
 			isGenericNotificationHostEligible({ env: {}, sessionScope: primary.sessionScope, spawnedByGjc: true }),
 		).toBe(false);
 		expect(
 			isGenericNotificationHostEligible({
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				sessionScope: primary.sessionScope,
 				spawnedByGjc: true,
 			}),
 		).toBe(true);
 		expect(
 			isGenericNotificationHostEligible({
-				env: { GJC_NOTIFICATIONS_TOKEN: "explicit-token" },
+				env: { WORX_NOTIFICATIONS_TOKEN: "explicit-token" },
 				sessionScope: primary.sessionScope,
 				spawnedByGjc: true,
 			}),
@@ -1514,19 +1514,19 @@ describe("notifications config", () => {
 	});
 
 	test("explicit /session_create opt-in outranks sessionScope=primary suppression", () => {
-		// GJC_NOTIFICATIONS=1 is exactly what Telegram /session_create and cold
+		// WORX_NOTIFICATIONS=1 is exactly what Telegram /session_create and cold
 		// /session_resume launch with, so their bidirectional topic survives.
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "1" },
+				env: { WORX_NOTIFICATIONS: "1" },
 				spawnedByGjc: true,
 			}),
 		).toBe(true);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS_TOKEN: "legacy-token" },
+				env: { WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
 				spawnedByGjc: true,
 			}),
 		).toBe(true);
@@ -1534,14 +1534,14 @@ describe("notifications config", () => {
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
-				env: { GJC_NOTIFICATIONS: "0" },
+				env: { WORX_NOTIFICATIONS: "0" },
 				spawnedByGjc: true,
 			}),
 		).toBe(false);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
-				env: { GJC_NOTIFY: "off" },
+				env: { WORX_NOTIFY: "off" },
 				spawnedByGjc: true,
 			}),
 		).toBe(false);
@@ -1562,8 +1562,8 @@ describe("notifications config", () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-subagent-"));
 		const agentDir = path.join(cwd, ".gjc", "agent");
 		const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
-		const previous = process.env.GJC_NOTIFICATIONS;
-		delete process.env.GJC_NOTIFICATIONS;
+		const previous = process.env.WORX_NOTIFICATIONS;
+		delete process.env.WORX_NOTIFICATIONS;
 		const settings = isolatedNotificationSettings(agentDir, {
 			"notifications.enabled": true,
 			"notifications.telegram.botToken": " ",
@@ -1736,9 +1736,9 @@ describe("notifications config", () => {
 		} finally {
 			await cleanupFixtureRoot(cleanup);
 			if (previous === undefined) {
-				delete process.env.GJC_NOTIFICATIONS;
+				delete process.env.WORX_NOTIFICATIONS;
 			} else {
-				process.env.GJC_NOTIFICATIONS = previous;
+				process.env.WORX_NOTIFICATIONS = previous;
 			}
 			resetSettingsForTest();
 		}
@@ -2149,14 +2149,14 @@ describe("notifications config", () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-notif-spawned-"));
 		const agentDir = path.join(cwd, ".gjc", "agent");
 		const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
-		const previousNotif = process.env.GJC_NOTIFICATIONS;
-		const previousSpawn = process.env.GJC_SPAWNED_BY_SESSION;
-		const previousToken = process.env.GJC_NOTIFICATIONS_TOKEN;
-		const previousCompletionNotify = process.env.GJC_NOTIFY;
-		delete process.env.GJC_NOTIFICATIONS;
-		delete process.env.GJC_SPAWNED_BY_SESSION;
-		delete process.env.GJC_NOTIFICATIONS_TOKEN;
-		delete process.env.GJC_NOTIFY;
+		const previousNotif = process.env.WORX_NOTIFICATIONS;
+		const previousSpawn = process.env.WORX_SPAWNED_BY_SESSION;
+		const previousToken = process.env.WORX_NOTIFICATIONS_TOKEN;
+		const previousCompletionNotify = process.env.WORX_NOTIFY;
+		delete process.env.WORX_NOTIFICATIONS;
+		delete process.env.WORX_SPAWNED_BY_SESSION;
+		delete process.env.WORX_NOTIFICATIONS_TOKEN;
+		delete process.env.WORX_NOTIFY;
 		const adapterSettings = (scope: "all" | "primary"): Settings =>
 			isolatedNotificationSettings(agentDir, {
 				"notifications.enabled": true,
@@ -2192,7 +2192,7 @@ describe("notifications config", () => {
 
 			// 1. A spawned child under primary keeps the mandatory SDK endpoint,
 			// while the session-scoped delivery guard above suppresses notifications.
-			process.env.GJC_SPAWNED_BY_SESSION = "parent-abc";
+			process.env.WORX_SPAWNED_BY_SESSION = "parent-abc";
 			const suppressed = await spawn(primarySettings);
 			registerNotificationRuntime(cleanup, {
 				key: "suppressed",
@@ -2201,10 +2201,10 @@ describe("notifications config", () => {
 				},
 				dispose: () => suppressed.session.dispose(),
 			});
-			expect(process.env.GJC_SPAWNED_BY_SESSION).toBeUndefined();
+			expect(process.env.WORX_SPAWNED_BY_SESSION).toBeUndefined();
 
 			// 2. Spawned child under the default "all" scope still registers.
-			process.env.GJC_SPAWNED_BY_SESSION = "parent-abc";
+			process.env.WORX_SPAWNED_BY_SESSION = "parent-abc";
 			const preserved = await spawn(allSettings);
 			registerNotificationRuntime(cleanup, {
 				key: "preserved",
@@ -2215,8 +2215,8 @@ describe("notifications config", () => {
 			});
 
 			// 3. Spawned child under primary WITH explicit opt-in keeps its endpoint.
-			process.env.GJC_SPAWNED_BY_SESSION = "parent-abc";
-			process.env.GJC_NOTIFICATIONS = "1";
+			process.env.WORX_SPAWNED_BY_SESSION = "parent-abc";
+			process.env.WORX_NOTIFICATIONS = "1";
 			const optedIn = await spawn(primarySettings);
 			registerNotificationRuntime(cleanup, {
 				key: "opted-in",
@@ -2225,11 +2225,11 @@ describe("notifications config", () => {
 				},
 				dispose: () => optedIn.session.dispose(),
 			});
-			delete process.env.GJC_NOTIFICATIONS;
+			delete process.env.WORX_NOTIFICATIONS;
 
 			// 4. The legacy explicit token has the same primary-scope override.
-			process.env.GJC_SPAWNED_BY_SESSION = "parent-abc";
-			process.env.GJC_NOTIFICATIONS_TOKEN = "legacy-token";
+			process.env.WORX_SPAWNED_BY_SESSION = "parent-abc";
+			process.env.WORX_NOTIFICATIONS_TOKEN = "legacy-token";
 			const tokenOptedIn = await spawn(primarySettings);
 			registerNotificationRuntime(cleanup, {
 				key: "token-opted-in",
@@ -2238,10 +2238,10 @@ describe("notifications config", () => {
 				},
 				dispose: () => tokenOptedIn.session.dispose(),
 			});
-			delete process.env.GJC_NOTIFICATIONS_TOKEN;
+			delete process.env.WORX_NOTIFICATIONS_TOKEN;
 
 			// 5. Notification hard-offs suppress delivery but keep the canonical SDK endpoint.
-			process.env.GJC_NOTIFY = "off";
+			process.env.WORX_NOTIFY = "off";
 			const completionOptedOut = await spawn(allSettings);
 			registerNotificationRuntime(cleanup, {
 				key: "completion-opted-out",
@@ -2250,8 +2250,8 @@ describe("notifications config", () => {
 				},
 				dispose: () => completionOptedOut.session.dispose(),
 			});
-			delete process.env.GJC_NOTIFY;
-			process.env.GJC_NOTIFICATIONS = "0";
+			delete process.env.WORX_NOTIFY;
+			process.env.WORX_NOTIFICATIONS = "0";
 			const notificationsOptedOut = await spawn(allSettings);
 			registerNotificationRuntime(cleanup, {
 				key: "notifications-opted-out",
@@ -2260,7 +2260,7 @@ describe("notifications config", () => {
 				},
 				dispose: () => notificationsOptedOut.session.dispose(),
 			});
-			delete process.env.GJC_NOTIFICATIONS;
+			delete process.env.WORX_NOTIFICATIONS;
 
 			await suppressed.session.extensionRunner?.emit({ type: "session_start" });
 			await preserved.session.extensionRunner?.emit({ type: "session_start" });
@@ -2277,14 +2277,14 @@ describe("notifications config", () => {
 			expect(fs.existsSync(endpointFor(notificationsOptedOut.session.sessionId))).toBe(true);
 		} finally {
 			await cleanupFixtureRoot(cleanup);
-			if (previousNotif === undefined) delete process.env.GJC_NOTIFICATIONS;
-			else process.env.GJC_NOTIFICATIONS = previousNotif;
-			if (previousSpawn === undefined) delete process.env.GJC_SPAWNED_BY_SESSION;
-			else process.env.GJC_SPAWNED_BY_SESSION = previousSpawn;
-			if (previousToken === undefined) delete process.env.GJC_NOTIFICATIONS_TOKEN;
-			else process.env.GJC_NOTIFICATIONS_TOKEN = previousToken;
-			if (previousCompletionNotify === undefined) delete process.env.GJC_NOTIFY;
-			else process.env.GJC_NOTIFY = previousCompletionNotify;
+			if (previousNotif === undefined) delete process.env.WORX_NOTIFICATIONS;
+			else process.env.WORX_NOTIFICATIONS = previousNotif;
+			if (previousSpawn === undefined) delete process.env.WORX_SPAWNED_BY_SESSION;
+			else process.env.WORX_SPAWNED_BY_SESSION = previousSpawn;
+			if (previousToken === undefined) delete process.env.WORX_NOTIFICATIONS_TOKEN;
+			else process.env.WORX_NOTIFICATIONS_TOKEN = previousToken;
+			if (previousCompletionNotify === undefined) delete process.env.WORX_NOTIFY;
+			else process.env.WORX_NOTIFY = previousCompletionNotify;
 			resetSettingsForTest();
 		}
 	}, 60000);

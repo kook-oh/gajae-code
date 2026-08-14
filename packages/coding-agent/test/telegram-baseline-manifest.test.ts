@@ -71,14 +71,14 @@ async function fakeBun(directory: string): Promise<{ binDirectory: string; log: 
 		const source = path.join(directory, "fake-bun.ts");
 		await Bun.write(
 			source,
-			'import { appendFile } from "node:fs/promises";\n\nconst args = process.argv.slice(2);\nawait appendFile(process.env.GJC_MANIFEST_RECEIPT_LOG!, args.join(" ") + "\\n");\nif (args.includes("fail-command.test.ts")) {\n\tconsole.log("1 fail");\n\tprocess.exit(1);\n}\nconsole.log("1 pass");\n',
+			'import { appendFile } from "node:fs/promises";\n\nconst args = process.argv.slice(2);\nawait appendFile(process.env.WORX_MANIFEST_RECEIPT_LOG!, args.join(" ") + "\\n");\nif (args.includes("fail-command.test.ts")) {\n\tconsole.log("1 fail");\n\tprocess.exit(1);\n}\nconsole.log("1 pass");\n',
 		);
 		const build = Bun.spawnSync([process.execPath, "build", source, "--compile", "--outfile", command]);
 		if (build.exitCode !== 0) throw new Error(`failed to compile fake Bun: ${build.stderr?.toString() ?? ""}`);
 	} else {
 		await Bun.write(
 			command,
-			'#!/bin/sh\nprintf "%s\\n" "$*" >> "$GJC_MANIFEST_RECEIPT_LOG"\ncase "$*" in\n*fail-command.test.ts*) echo "1 fail"; exit 1 ;;\n*) echo "1 pass" ;;\nesac\n',
+			'#!/bin/sh\nprintf "%s\\n" "$*" >> "$WORX_MANIFEST_RECEIPT_LOG"\ncase "$*" in\n*fail-command.test.ts*) echo "1 fail"; exit 1 ;;\n*) echo "1 pass" ;;\nesac\n',
 		);
 		await fs.chmod(command, 0o755);
 	}
@@ -97,7 +97,7 @@ describe("telegram baseline manifest generator", () => {
 			if (version === undefined) delete (manifest as { version?: unknown }).version;
 			else (manifest as { version: unknown }).version = version;
 			const manifestPath = await writeManifest(directory, manifest);
-			const result = run(generator, ["--check"], { GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath });
+			const result = run(generator, ["--check"], { WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath });
 			expect(result.exitCode, output(result)).toBe(1);
 			expect(output(result)).toContain("Manifest version must be 1");
 		}
@@ -140,7 +140,7 @@ describe("telegram baseline manifest generator", () => {
 			const manifest = await baselineManifest();
 			mutate(manifest);
 			const manifestPath = await writeManifest(directory, manifest);
-			const result = run(generator, ["--check"], { GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath });
+			const result = run(generator, ["--check"], { WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath });
 			expect(result.exitCode, output(result)).toBe(1);
 			expect(output(result)).toContain(message);
 		}
@@ -151,7 +151,7 @@ describe("telegram baseline manifest generator", () => {
 		const manifest = await baselineManifest();
 		manifest.commands.push({ argv: ["bun", "test", "packages/coding-agent/test/stale-telegram-baseline.test.ts"] });
 		const manifestPath = await writeManifest(directory, manifest);
-		const result = run(generator, ["--check"], { GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath });
+		const result = run(generator, ["--check"], { WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath });
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain(
 			"stale command: bun test packages/coding-agent/test/stale-telegram-baseline.test.ts",
@@ -167,7 +167,7 @@ describe("telegram baseline manifest generator", () => {
 			reason: "Covered by the dedicated notification integration baseline.",
 		});
 		const manifestPath = await writeManifest(directory, manifest);
-		const result = run(generator, ["--check"], { GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath });
+		const result = run(generator, ["--check"], { WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath });
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain("unapproved exclusion: packages/coding-agent/test/telegram-send-tool.test.ts");
 	});
@@ -175,7 +175,7 @@ describe("telegram baseline manifest generator", () => {
 	it("rejects an empty commands array in a checked manifest", async () => {
 		const directory = await tempDir();
 		const manifestPath = await writeManifest(directory, { version: 1, commands: [], excluded: [] });
-		const result = run(generator, ["--check"], { GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath });
+		const result = run(generator, ["--check"], { WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath });
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain("Manifest must contain at least one command.");
 	});
@@ -186,8 +186,8 @@ describe("telegram baseline manifest generator", () => {
 		await fs.mkdir(emptyTestDir, { recursive: true });
 		const manifestPath = path.join(directory, "generated.json");
 		const result = run(generator, [], {
-			GJC_TELEGRAM_BASELINE_MANIFEST: manifestPath,
-			GJC_TELEGRAM_BASELINE_TEST_DIR: emptyTestDir,
+			WORX_TELEGRAM_BASELINE_MANIFEST: manifestPath,
+			WORX_TELEGRAM_BASELINE_TEST_DIR: emptyTestDir,
 		});
 		expect(result.exitCode, output(result)).not.toBe(0);
 		expect(output(result)).toContain("Manifest must contain at least one command.");
@@ -311,7 +311,7 @@ describe("test manifest runner", () => {
 		const manifestPath = await writeManifest(directory, manifest);
 		const fake = await fakeBun(directory);
 		const result = run(runner, [manifestPath], {
-			GJC_MANIFEST_RECEIPT_LOG: fake.log,
+			WORX_MANIFEST_RECEIPT_LOG: fake.log,
 			PATH: `${fake.binDirectory}${path.delimiter}${process.env.PATH ?? ""}`,
 		});
 
@@ -326,8 +326,8 @@ describe("test manifest runner", () => {
 		const manifestPath = await writeManifest(directory, manifest);
 		const fake = await fakeBun(directory);
 		const result = run(runner, [manifestPath], {
-			GJC_MANIFEST_RECEIPT_LOG: fake.log,
-			GJC_MANIFEST_RECEIPT_CONCURRENCY: "8",
+			WORX_MANIFEST_RECEIPT_LOG: fake.log,
+			WORX_MANIFEST_RECEIPT_CONCURRENCY: "8",
 			PATH: `${fake.binDirectory}${path.delimiter}${process.env.PATH ?? ""}`,
 		});
 
@@ -367,7 +367,7 @@ describe("gjc-sdk rename scanner", () => {
 		git("commit", "-m", "initial");
 		await fs.chmod(path.join(scanRoot, "clean.txt"), 0o000);
 		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
-		const result = run(scanner, [], { GJC_SDK_RENAME_SCAN_ROOT: scanRoot });
+		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 		await fs.chmod(path.join(scanRoot, "clean.txt"), 0o644);
 		expect(result.exitCode, output(result)).toBe(2);
 		expect(output(result)).toContain("Unable to scan tracked file clean.txt");
@@ -384,12 +384,12 @@ describe("gjc-sdk rename scanner", () => {
 		git("config", "user.name", "Test");
 		await Bun.write(
 			path.join(scanRoot, "clean.txt"),
-			"GJC_NOTIFICATIONS configures the notification daemon; gjc-notif-switch- is a temporary prefix.\n",
+			"WORX_NOTIFICATIONS configures the notification daemon; gjc-notif-switch- is a temporary prefix.\n",
 		);
 		git("add", "clean.txt");
 		git("commit", "-m", "initial");
 		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
-		const result = run(scanner, [], { GJC_SDK_RENAME_SCAN_ROOT: scanRoot });
+		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 
 		expect(result.exitCode, output(result)).toBe(0);
 	});
@@ -415,7 +415,7 @@ describe("gjc-sdk rename scanner", () => {
 		await fs.mkdir(path.join(scanRoot, path.dirname(legacyPath)), { recursive: true });
 		await Bun.write(path.join(scanRoot, legacyPath), `${["use", ["gjc", "notifications"].join("_")].join(" ")}\n`);
 		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
-		const result = run(scanner, [], { GJC_SDK_RENAME_SCAN_ROOT: scanRoot });
+		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 
 		expect(result.exitCode, output(result)).toBe(1);
 		expect(output(result)).toContain(`clean.txt:1: forbidden ${JSON.stringify(["notifications", "SDK"].join(" "))}`);

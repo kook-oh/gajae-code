@@ -4,11 +4,11 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 /**
- * `GJC_CONFIG_DIR` is documented as "Config root dirname under home", and
+ * `WORX_CONFIG_DIR` is documented as "Config root dirname under home", and
  * `dirs.ts` implements it that way (`path.join(os.homedir(), getConfigDirName())`).
  *
  * These three workflow settings readers used the value as a *full path*
- * (`GJC_CONFIG_DIR?.trim() || path.join(os.homedir(), ".gjc")`), so a user who
+ * (`WORX_CONFIG_DIR?.trim() || path.join(os.homedir(), ".gjc")`), so a user who
  * set it per the documented meaning had their settings looked up at a
  * cwd-relative path instead of under home, and silently got the built-in
  * defaults.
@@ -35,7 +35,7 @@ function scenario(settings: Record<string, unknown>, dirName = ".myconfig"): { h
 }
 
 async function resolveIn(home: string, repo: string, configDir: string | undefined): Promise<Record<string, unknown>> {
-	const env: Record<string, string | undefined> = { ...process.env, HOME: home, GJC_CONFIG_DIR: configDir };
+	const env: Record<string, string | undefined> = { ...process.env, HOME: home, WORX_CONFIG_DIR: configDir };
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd: repo, env, stdout: "pipe", stderr: "pipe" });
 	const [out, err] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
 	if ((await proc.exited) !== 0) throw new Error(`probe failed: ${err}`);
@@ -43,7 +43,7 @@ async function resolveIn(home: string, repo: string, configDir: string | undefin
 }
 
 describe("config root is resolved under home", () => {
-	it("reads ralplan settings from <home>/<GJC_CONFIG_DIR>", async () => {
+	it("reads ralplan settings from <home>/<WORX_CONFIG_DIR>", async () => {
 		const { home, repo } = scenario({ "gjc.ralplan.maxIterations": 9 });
 		const result = (await resolveIn(home, repo, ".myconfig")).ralplan as { maxIterations: number; source: string };
 
@@ -51,7 +51,7 @@ describe("config root is resolved under home", () => {
 		expect(result.source).toBe(path.join(home, ".myconfig", "settings.json"));
 	});
 
-	it("reads ultragoal settings from <home>/<GJC_CONFIG_DIR>", async () => {
+	it("reads ultragoal settings from <home>/<WORX_CONFIG_DIR>", async () => {
 		const { home, repo } = scenario({ "gjc.ultragoal.nudgeBudget": 7 });
 		const result = (await resolveIn(home, repo, ".myconfig")).ultragoal as { budget: number; source: string };
 

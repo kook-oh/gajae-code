@@ -457,7 +457,7 @@ globalThis.fetch = async (input, init) => {
 			cwd: output,
 			env: {
 				...process.env,
-				GJC_CODING_AGENT_DIR: output,
+				WORX_CODING_AGENT_DIR: output,
 				BUN_OPTIONS: manifest.runtimeEnvironment.BUN_OPTIONS.replace("{transportShim}", transportShimSpecifier),
 			},
 
@@ -513,7 +513,7 @@ globalThis.fetch = async (input, init) => {
 					.digest("hex"),
 			).toBe(artifactSha256);
 			const shutdown = await command(shutdownCommand, output, {
-				GJC_CODING_AGENT_DIR: output,
+				WORX_CODING_AGENT_DIR: output,
 				BUN_OPTIONS: manifest.runtimeEnvironment.BUN_OPTIONS.replace("{transportShim}", transportShimSpecifier),
 			});
 			expect(shutdown.exitCode, shutdown.output).toBe(0);

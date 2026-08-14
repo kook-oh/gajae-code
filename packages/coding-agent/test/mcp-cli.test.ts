@@ -10,7 +10,7 @@ let tmpDir = "";
 let agentDir = "";
 let projectDir = "";
 
-const originalAgentDir = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDir = process.env.WORX_CODING_AGENT_DIR;
 const fallbackAgentDir = path.join(getConfigRootDir(), "agent");
 
 function stdoutText(spy: { mock: { calls: Array<[unknown, ...unknown[]]> } }): string {
@@ -33,7 +33,7 @@ describe("gjc mcp CLI helpers", () => {
 			setAgentDir(originalAgentDir);
 		} else {
 			setAgentDir(fallbackAgentDir);
-			delete process.env.GJC_CODING_AGENT_DIR;
+			delete process.env.WORX_CODING_AGENT_DIR;
 		}
 		process.exitCode = 0;
 		await fs.rm(tmpDir, { recursive: true, force: true });

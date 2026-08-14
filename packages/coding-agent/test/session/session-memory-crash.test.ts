@@ -16,8 +16,8 @@ function runWorker(worker: string, root: string, mode: string) {
 		cmd: [process.execPath, worker],
 		env: {
 			...process.env,
-			GJC_SESSION_MEMORY_CRASH_MODE: mode,
-			GJC_SESSION_MEMORY_CRASH_ROOT: root,
+			WORX_SESSION_MEMORY_CRASH_MODE: mode,
+			WORX_SESSION_MEMORY_CRASH_ROOT: root,
 		},
 		stdout: "pipe",
 		stderr: "pipe",

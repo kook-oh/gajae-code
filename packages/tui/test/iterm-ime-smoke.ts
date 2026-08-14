@@ -7,7 +7,7 @@ import { ProcessTerminal } from "@gajae-code/tui/terminal";
 import { TUI } from "@gajae-code/tui/tui";
 import { defaultEditorTheme } from "./test-themes";
 
-Bun.env.GJC_TUI_IME_CURSOR ??= "1";
+Bun.env.WORX_TUI_IME_CURSOR ??= "1";
 
 function readNumberFlag(name: string, fallback: number): number {
 	const args = process.argv.slice(2);
@@ -77,7 +77,7 @@ const instructions = new Text(
 		"iTerm Hangul IME smoke",
 		"Compose Hangul in the prompt while transcript repaint continues above.",
 		`Ctrl+S pause/resume stream · Ctrl+B append ${burstSize} lines · Ctrl+C exit`,
-		`soft-cursor IME mode: GJC_TUI_IME_CURSOR=${Bun.env.GJC_TUI_IME_CURSOR ?? "0"}`,
+		`soft-cursor IME mode: WORX_TUI_IME_CURSOR=${Bun.env.WORX_TUI_IME_CURSOR ?? "0"}`,
 	].join("\n"),
 	1,
 	0,

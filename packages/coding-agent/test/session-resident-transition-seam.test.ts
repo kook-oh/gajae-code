@@ -2,9 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
-import * as native from "@bworx-io/worx-code-natives";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { EphemeralBlobStore, MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
 import type {
 	MemoryGuardParticipantDescriptorV1,
@@ -17,11 +14,14 @@ import {
 	SessionManagerTestHooks,
 } from "@bworx-io/worx-code/session/session-manager";
 import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
+import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
+import * as native from "@bworx-io/worx-code-natives";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { getAgentDir, getResidentCacheRootDir, getTerminalSessionsDir, setAgentDir } from "@gajae-code/utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 
 const originalAgentDir = getAgentDir();
-const originalAgentDirOverride = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;
 const originalTmux = process.env.TMUX;
 const originalTmuxPane = process.env.TMUX_PANE;
 const tempDirs: string[] = [];
@@ -39,8 +39,8 @@ beforeEach(() => {
 afterEach(async () => {
 	vi.restoreAllMocks();
 	setAgentDir(originalAgentDir);
-	if (originalAgentDirOverride === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-	else process.env.GJC_CODING_AGENT_DIR = originalAgentDirOverride;
+	if (originalAgentDirOverride === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+	else process.env.WORX_CODING_AGENT_DIR = originalAgentDirOverride;
 	if (originalTmux === undefined) delete process.env.TMUX;
 	else process.env.TMUX = originalTmux;
 	if (originalTmuxPane === undefined) delete process.env.TMUX_PANE;

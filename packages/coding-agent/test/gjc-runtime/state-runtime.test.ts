@@ -2,11 +2,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { deepInterviewCharacterCount } from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
-import {
-	activeSnapshotPath,
-	modeStatePath,
-	sessionStateDir,
-} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { activeSnapshotPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 
 const TEST_SESSION_ID = "test-session";
@@ -27,12 +23,12 @@ afterEach(async () => {
 // the session-scoped state layout regardless of the host shell environment.
 let priorSessionId: string | undefined;
 beforeAll(() => {
-	priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 afterAll(() => {
-	if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 function parseStdout(stdout: string | undefined): Record<string, unknown> {
@@ -334,8 +330,8 @@ describe("native gjc state runtime", () => {
 
 	it("rejects write when no session id is resolvable", async () => {
 		const root = await tempDir();
-		const prior = process.env.GJC_SESSION_ID;
-		delete process.env.GJC_SESSION_ID;
+		const prior = process.env.WORX_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const result = await runNativeStateCommand(
 				["write", "--input", JSON.stringify({ active: true }), "--mode", "deep-interview"],
@@ -344,15 +340,15 @@ describe("native gjc state runtime", () => {
 			expect(result.status).toBe(2);
 			expect(result.stderr).toContain("a session id is required to write state");
 		} finally {
-			if (prior !== undefined) process.env.GJC_SESSION_ID = prior;
-			else process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+			if (prior !== undefined) process.env.WORX_SESSION_ID = prior;
+			else process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		}
 	});
 
 	it("errors read/status when no session directories exist", async () => {
 		const root = await tempDir();
-		const prior = process.env.GJC_SESSION_ID;
-		delete process.env.GJC_SESSION_ID;
+		const prior = process.env.WORX_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const read = await runNativeStateCommand(["read", "--mode", "deep-interview", "--json"], root);
 			expect(read.status).toBe(2);
@@ -361,14 +357,14 @@ describe("native gjc state runtime", () => {
 			expect(status.status).toBe(2);
 			expect(status.stderr).toContain("no active GJC session found");
 		} finally {
-			if (prior !== undefined) process.env.GJC_SESSION_ID = prior;
-			else process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+			if (prior !== undefined) process.env.WORX_SESSION_ID = prior;
+			else process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		}
 	});
 
 	it("clear resolves the latest session via activity marker when no --session-id/env", async () => {
 		const root = await tempDir();
-		const prior = process.env.GJC_SESSION_ID;
+		const prior = process.env.WORX_SESSION_ID;
 		// Seed one active session (with state + activity marker) via a normal write.
 		await runNativeStateCommand(
 			[
@@ -382,7 +378,7 @@ describe("native gjc state runtime", () => {
 			],
 			root,
 		);
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const cleared = await runNativeStateCommand(["clear", "--mode", "deep-interview", "--force", "--json"], root);
 			expect(cleared.status).toBe(0);
@@ -390,14 +386,14 @@ describe("native gjc state runtime", () => {
 			expect(file.active).toBe(false);
 			expect(file.current_phase).toBe("complete");
 		} finally {
-			if (prior !== undefined) process.env.GJC_SESSION_ID = prior;
-			else process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+			if (prior !== undefined) process.env.WORX_SESSION_ID = prior;
+			else process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		}
 	});
 
 	it("clear errors on an ambiguous (near-tie) latest session", async () => {
 		const root = await tempDir();
-		const prior = process.env.GJC_SESSION_ID;
+		const prior = process.env.WORX_SESSION_ID;
 		await runNativeStateCommand(
 			["write", "--input", JSON.stringify({ active: true }), "--mode", "deep-interview", "--session-id", "sess-a"],
 			root,
@@ -406,14 +402,14 @@ describe("native gjc state runtime", () => {
 			["write", "--input", JSON.stringify({ active: true }), "--mode", "deep-interview", "--session-id", "sess-b"],
 			root,
 		);
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		try {
 			const cleared = await runNativeStateCommand(["clear", "--mode", "deep-interview", "--force", "--json"], root);
 			expect(cleared.status).toBe(2);
 			expect(cleared.stderr).toContain("ambiguous latest session");
 		} finally {
-			if (prior !== undefined) process.env.GJC_SESSION_ID = prior;
-			else process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+			if (prior !== undefined) process.env.WORX_SESSION_ID = prior;
+			else process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		}
 	});
 

@@ -819,10 +819,10 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 		});
 	});
 
-	it.skipIf(!process.env.GJC_TEST_SUBST_WORKSPACE)(
+	it.skipIf(!process.env.WORX_TEST_SUBST_WORKSPACE)(
 		"resolves a configured subst workspace through the local volume",
 		() => {
-			const substWorkspace = process.env.GJC_TEST_SUBST_WORKSPACE;
+			const substWorkspace = process.env.WORX_TEST_SUBST_WORKSPACE;
 			if (!substWorkspace) throw new Error("Missing subst workspace");
 
 			const resolved = canonicalExistingDirectoryIdentity(substWorkspace);
@@ -937,10 +937,10 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 		await fs.rm(first);
 		expect(exactRemoveDirectoryTree(detached, snapshot.snapshot)).toEqual({ ok: true });
 	});
-	it.skipIf(!process.env.GJC_TEST_CASE_SENSITIVE_DIRECTORY)(
+	it.skipIf(!process.env.WORX_TEST_CASE_SENSITIVE_DIRECTORY)(
 		"preserves case-distinct direct children in a configured case-sensitive directory",
 		async () => {
-			const detached = process.env.GJC_TEST_CASE_SENSITIVE_DIRECTORY!;
+			const detached = process.env.WORX_TEST_CASE_SENSITIVE_DIRECTORY!;
 			await fs.writeFile(path.join(detached, "State.jsonl"), "upper");
 			await fs.writeFile(path.join(detached, "state.jsonl"), "lower");
 			const snapshot = snapshotDirectoryTree(detached);

@@ -1,5 +1,4 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
@@ -12,6 +11,7 @@ import {
 	associateSessionMessageViewportAnchorId,
 	getSessionMessageViewportAnchorId,
 } from "@bworx-io/worx-code/session/session-manager";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { Container, shouldUseViewportRepaintForHost, Text, TUI } from "@gajae-code/tui";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 
@@ -44,7 +44,7 @@ afterAll(() => resetSettingsForTest());
 
 describe("EventController completion viewport", () => {
 	const envKeys = [
-		"GJC_NOTIFY",
+		"WORX_NOTIFY",
 		"SSH_CONNECTION",
 		"TERM",
 		"COLORTERM",
@@ -54,7 +54,7 @@ describe("EventController completion viewport", () => {
 		"TMUX_PANE",
 		"STY",
 		"ZELLIJ",
-		"GJC_TMUX_LAUNCHED",
+		"WORX_TMUX_LAUNCHED",
 		"TERMUX_VERSION",
 		"PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER",
 		"PI_CLEAR_ON_SHRINK",
@@ -99,7 +99,7 @@ describe("EventController completion viewport", () => {
 				const scenarioEnv = new Map(envKeys.map(key => [key, Bun.env[key]]));
 				for (const key of envKeys) delete Bun.env[key];
 				Object.assign(Bun.env, testCase.env);
-				Bun.env.GJC_NOTIFY = "off";
+				Bun.env.WORX_NOTIFY = "off";
 				try {
 					if (testCase.nativeWindows) {
 						expect(shouldUseViewportRepaintForHost({}, "win32", { includeNativeWindows: true })).toBe(true);

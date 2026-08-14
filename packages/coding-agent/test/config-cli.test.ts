@@ -7,7 +7,7 @@ import { inspectConfigFile, runConfigCommand } from "../src/cli/config-cli";
 import { resetSettingsForTest } from "../src/config/settings";
 
 let testAgentDir = "";
-const originalAgentDir = process.env.GJC_CODING_AGENT_DIR;
+const originalAgentDir = process.env.WORX_CODING_AGENT_DIR;
 const fallbackAgentDir = path.join(getConfigRootDir(), "agent");
 
 beforeEach(async () => {
@@ -23,7 +23,7 @@ afterEach(async () => {
 		setAgentDir(originalAgentDir);
 	} else {
 		setAgentDir(fallbackAgentDir);
-		delete process.env.GJC_CODING_AGENT_DIR;
+		delete process.env.WORX_CODING_AGENT_DIR;
 	}
 	await fs.rm(testAgentDir, { recursive: true, force: true });
 });

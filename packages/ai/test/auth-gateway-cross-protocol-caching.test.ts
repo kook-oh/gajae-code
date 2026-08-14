@@ -20,7 +20,7 @@
  * mutates the cached prefix bytes.
  *
  * Skips unless a local gateway is reachable at the default `127.0.0.1:4000`
- * (override via `GJC_E2E_GATEWAY_URL`) AND the bearer token file exists at
+ * (override via `WORX_E2E_GATEWAY_URL`) AND the bearer token file exists at
  * `~/.gjc/auth-gateway.token`.
  *
  * To run: `bun --cwd packages/ai test test/auth-gateway-cross-protocol-caching.test.ts`
@@ -47,7 +47,7 @@ interface OpenAIResponse {
 	error?: { type?: string; message: string };
 }
 
-const MODEL = Bun.env.GJC_E2E_ANTHROPIC_MODEL ?? "claude-sonnet-4-5";
+const MODEL = Bun.env.WORX_E2E_ANTHROPIC_MODEL ?? "claude-sonnet-4-5";
 
 const gateway = await checkAuthGatewayE2EAvailable();
 

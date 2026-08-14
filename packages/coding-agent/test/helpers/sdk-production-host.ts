@@ -47,11 +47,11 @@ export async function startProductionSdkHost(
 			// Suppress the session's auto-added SDK host during construction so that
 			// ONLY this fixture's explicitly-provided (instrumented) notifications
 			// extension hosts a server. The auto-add is decided at construction time
-			// under GJC_SDK_DISABLE=1; the explicit extension hosts later at
+			// under WORX_SDK_DISABLE=1; the explicit extension hosts later at
 			// session_start with the guard already restored, so there is exactly one
 			// endpoint and onSdkRequest instrumentation is never overwritten.
-			const priorSdkDisable = process.env.GJC_SDK_DISABLE;
-			process.env.GJC_SDK_DISABLE = "1";
+			const priorSdkDisable = process.env.WORX_SDK_DISABLE;
+			process.env.WORX_SDK_DISABLE = "1";
 			let session: Awaited<ReturnType<typeof createAgentSession>>["session"];
 			try {
 				({ session } = await createAgentSession({
@@ -79,8 +79,8 @@ export async function startProductionSdkHost(
 					enableLsp: false,
 				}));
 			} finally {
-				if (priorSdkDisable === undefined) delete process.env.GJC_SDK_DISABLE;
-				else process.env.GJC_SDK_DISABLE = priorSdkDisable;
+				if (priorSdkDisable === undefined) delete process.env.WORX_SDK_DISABLE;
+				else process.env.WORX_SDK_DISABLE = priorSdkDisable;
 			}
 			registerFixtureRuntime(cleanup, {
 				key: `session:${session.sessionId}`,
@@ -96,16 +96,16 @@ export async function startProductionSdkHost(
 					else promptOptions?.onPreflightAccepted?.();
 				};
 			}
-			const priorNotifications = process.env.GJC_NOTIFICATIONS;
-			process.env.GJC_NOTIFICATIONS = "1";
+			const priorNotifications = process.env.WORX_NOTIFICATIONS;
+			process.env.WORX_NOTIFICATIONS = "1";
 			try {
 				await initializeExtensions(session, {
 					reportSendError: () => {},
 					reportRuntimeError: () => {},
 				});
 			} finally {
-				if (priorNotifications === undefined) delete process.env.GJC_NOTIFICATIONS;
-				else process.env.GJC_NOTIFICATIONS = priorNotifications;
+				if (priorNotifications === undefined) delete process.env.WORX_NOTIFICATIONS;
+				else process.env.WORX_NOTIFICATIONS = priorNotifications;
 			}
 			const file = path.join(cwd, ".gjc", "state", "sdk", `${session.sessionId}.json`);
 			const deadline = Date.now() + 4_000;

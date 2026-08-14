@@ -9,6 +9,6 @@ console.log(
 	JSON.stringify({
 		enabled: notificationsEnabled(),
 		// telegram-cli resolves its bot token through the same resolver
-		botToken: $credentialEnv("GJC_TG_BOT_TOKEN") ?? null,
+		botToken: $credentialEnv("WORX_TG_BOT_TOKEN") ?? null,
 	}),
 );

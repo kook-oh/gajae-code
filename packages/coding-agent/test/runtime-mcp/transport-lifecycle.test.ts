@@ -82,7 +82,7 @@ async function waitForPid(childPidFile: string, rootPidFile: string): Promise<nu
 }
 
 const servers: Bun.Server<unknown>[] = [];
-const STDIO_LIFECYCLE_ISOLATION = "GJC_TEST_MCP_STDIO_LIFECYCLE_ISOLATED";
+const STDIO_LIFECYCLE_ISOLATION = "WORX_TEST_MCP_STDIO_LIFECYCLE_ISOLATED";
 
 async function runIsolatedStdioLifecycleTest(): Promise<void> {
 	const child = Bun.spawn(

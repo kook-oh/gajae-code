@@ -15,13 +15,13 @@ const TEST_SESSION_ID = "test-session";
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-state-integrity-"));
-	const priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	const priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	try {
 		await fn(dir);
 	} finally {
-		if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-		else delete process.env.GJC_SESSION_ID;
+		if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+		else delete process.env.WORX_SESSION_ID;
 		await fs.rm(dir, { recursive: true, force: true });
 	}
 }
@@ -110,16 +110,16 @@ describe("gjc state integrity", () => {
 				["write", "--mode", "deep-interview", "--input", JSON.stringify({ current_phase: "interviewing" })],
 				cwd,
 			);
-			process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER = "__never__";
+			process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER = "__never__";
 			const originalNow = Date.prototype.toISOString;
 			Date.prototype.toISOString = () => "2026-06-03T00:00:00.000Z";
-			process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER = "deep-interview:handoff:ralplan:2026-06-03T00:00:00.000Z";
+			process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER = "deep-interview:handoff:ralplan:2026-06-03T00:00:00.000Z";
 			try {
 				const failed = await runNativeStateCommand(["handoff", "--mode", "deep-interview", "--to", "ralplan"], cwd);
 				expect(failed.status).toBe(1);
 			} finally {
 				Date.prototype.toISOString = originalNow;
-				delete process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER;
+				delete process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER;
 			}
 
 			const journals = await fs.readdir(path.join(sessionStateDir(cwd, TEST_SESSION_ID), "transactions"));

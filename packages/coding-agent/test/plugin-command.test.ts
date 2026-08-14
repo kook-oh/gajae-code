@@ -27,7 +27,7 @@ async function runPluginCommand(
 	const proc = Bun.spawn({
 		cmd: [process.execPath, path.join(import.meta.dir, "../src/cli.ts"), "plugin", ...args],
 		cwd,
-		env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir },
+		env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir },
 		stdout: "pipe",
 		stderr: "pipe",
 	});

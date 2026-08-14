@@ -3,13 +3,13 @@ import * as fs from "node:fs/promises";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Model } from "@gajae-code/ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { Skill } from "@bworx-io/worx-code/extensibility/skills";
 import { SKILL_PROMPT_MESSAGE_TYPE } from "@bworx-io/worx-code/session/messages";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { SkillTool } from "@bworx-io/worx-code/tools/skill";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
+import type { Model } from "@gajae-code/ai";
 
 async function makeSkill(name: string, content: string): Promise<Skill> {
 	const dir = await mkdtemp(path.join(os.tmpdir(), `skill-tool-${name}-`));
@@ -214,13 +214,13 @@ describe("SkillTool", () => {
 		const cwd = await makeTempCwd();
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "skill-tool-runtime-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.GJC_CONFIG_DIR;
+		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
 		let unrelated: Skill | undefined;
 		let preloaded: Skill | undefined;
 		try {
 			process.env.HOME = home;
-			process.env.GJC_CONFIG_DIR = ".gjc";
+			process.env.WORX_CONFIG_DIR = ".gjc";
 			delete process.env.PI_CONFIG_DIR;
 			const runtimePath = await makeRuntimeSkill(
 				path.join(home, ".gjc", "agent", "skills"),
@@ -253,8 +253,8 @@ describe("SkillTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = originalGjcConfigDir;
+			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
 			if (unrelated) await fs.rm(unrelated.baseDir, { recursive: true, force: true });
@@ -268,20 +268,20 @@ describe("SkillTool", () => {
 		const cwd = await makeTempCwd();
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "skill-tool-runtime-precedence-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.GJC_CONFIG_DIR;
+		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
-		const originalCodingAgentDir = process.env.GJC_CODING_AGENT_DIR;
+		const originalCodingAgentDir = process.env.WORX_CODING_AGENT_DIR;
 		const originalPiCodingAgentDir = process.env.PI_CODING_AGENT_DIR;
 		const originalXdgConfigHome = process.env.XDG_CONFIG_HOME;
 		let loaded: Skill | undefined;
 		try {
 			process.env.HOME = home;
-			delete process.env.GJC_CONFIG_DIR;
+			delete process.env.WORX_CONFIG_DIR;
 			delete process.env.PI_CONFIG_DIR;
 			const gjcAgentDecoyDir = path.join(home, "gjc-agent-decoy");
 			const piAgentDecoyDir = path.join(home, "pi-agent-decoy");
 			const xdgConfigHome = path.join(home, "xdg-decoy");
-			process.env.GJC_CODING_AGENT_DIR = gjcAgentDecoyDir;
+			process.env.WORX_CODING_AGENT_DIR = gjcAgentDecoyDir;
 			process.env.PI_CODING_AGENT_DIR = piAgentDecoyDir;
 			process.env.XDG_CONFIG_HOME = xdgConfigHome;
 			const defaultCanonicalPath = await makeRuntimeSkill(
@@ -297,7 +297,7 @@ describe("SkillTool", () => {
 			expect(captured.at(-1)?.message.content).toContain("Default canonical body.");
 			expect(defaultResult.details?.path).toBe(defaultCanonicalPath);
 
-			process.env.GJC_CONFIG_DIR = ".configured-gjc";
+			process.env.WORX_CONFIG_DIR = ".configured-gjc";
 			process.env.PI_CONFIG_DIR = ".configured-pi";
 			const configuredRoot = path.join(home, ".configured-gjc");
 			const canonicalPath = await makeRuntimeSkill(
@@ -392,7 +392,7 @@ describe("SkillTool", () => {
 				expect(captured.at(-1)?.message.content).toContain(body);
 				expect(result.details?.path).toBe(expectedPath);
 			}
-			delete process.env.GJC_CONFIG_DIR;
+			delete process.env.WORX_CONFIG_DIR;
 			const piCanonicalPath = await makeRuntimeSkill(
 				path.join(home, ".configured-pi", "agent", "skills"),
 				"pi-canonical",
@@ -411,12 +411,12 @@ describe("SkillTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.GJC_CONFIG_DIR;
-			else process.env.GJC_CONFIG_DIR = originalGjcConfigDir;
+			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
-			if (originalCodingAgentDir === undefined) delete process.env.GJC_CODING_AGENT_DIR;
-			else process.env.GJC_CODING_AGENT_DIR = originalCodingAgentDir;
+			if (originalCodingAgentDir === undefined) delete process.env.WORX_CODING_AGENT_DIR;
+			else process.env.WORX_CODING_AGENT_DIR = originalCodingAgentDir;
 			if (originalPiCodingAgentDir === undefined) delete process.env.PI_CODING_AGENT_DIR;
 			else process.env.PI_CODING_AGENT_DIR = originalPiCodingAgentDir;
 			if (originalXdgConfigHome === undefined) delete process.env.XDG_CONFIG_HOME;

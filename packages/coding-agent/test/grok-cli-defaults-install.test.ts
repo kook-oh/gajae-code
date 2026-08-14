@@ -33,8 +33,8 @@ describe("bundled Grok CLI defaults", () => {
 	});
 
 	it("registers Grok 4.5 with verified model metadata and documented effort cap", async () => {
-		const previousGrokCliModels = process.env.GJC_GROK_CLI_MODELS;
-		delete process.env.GJC_GROK_CLI_MODELS;
+		const previousGrokCliModels = process.env.WORX_GROK_CLI_MODELS;
+		delete process.env.WORX_GROK_CLI_MODELS;
 		try {
 			const model = resolveModels().find(candidate => candidate.id === "grok-4.5");
 
@@ -59,17 +59,17 @@ describe("bundled Grok CLI defaults", () => {
 			});
 		} finally {
 			if (previousGrokCliModels === undefined) {
-				delete process.env.GJC_GROK_CLI_MODELS;
+				delete process.env.WORX_GROK_CLI_MODELS;
 			} else {
-				process.env.GJC_GROK_CLI_MODELS = previousGrokCliModels;
+				process.env.WORX_GROK_CLI_MODELS = previousGrokCliModels;
 			}
 		}
 	});
 
 	it("maps official Grok 4.5 aliases to canonical metadata and effort limits", async () => {
-		const previousGrokCliModels = process.env.GJC_GROK_CLI_MODELS;
+		const previousGrokCliModels = process.env.WORX_GROK_CLI_MODELS;
 		const aliases = ["grok-4.5-latest", "grok-build-latest"];
-		process.env.GJC_GROK_CLI_MODELS = aliases.join(",");
+		process.env.WORX_GROK_CLI_MODELS = aliases.join(",");
 		try {
 			const expectedMetadata = {
 				name: "Grok 4.5",
@@ -103,9 +103,9 @@ describe("bundled Grok CLI defaults", () => {
 			);
 		} finally {
 			if (previousGrokCliModels === undefined) {
-				delete process.env.GJC_GROK_CLI_MODELS;
+				delete process.env.WORX_GROK_CLI_MODELS;
 			} else {
-				process.env.GJC_GROK_CLI_MODELS = previousGrokCliModels;
+				process.env.WORX_GROK_CLI_MODELS = previousGrokCliModels;
 			}
 		}
 	});

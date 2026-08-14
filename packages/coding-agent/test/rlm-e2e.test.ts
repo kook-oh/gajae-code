@@ -14,11 +14,7 @@ import * as path from "node:path";
 import { readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
 import { disposeKernelSessionsByOwner } from "@bworx-io/worx-code/eval/py/executor";
 import type { CustomToolContext } from "@bworx-io/worx-code/extensibility/custom-tools/types";
-import {
-	ensureRlmSessionDir,
-	generateRlmSessionId,
-	resolveRlmArtifactPaths,
-} from "@bworx-io/worx-code/rlm/artifacts";
+import { ensureRlmSessionDir, generateRlmSessionId, resolveRlmArtifactPaths } from "@bworx-io/worx-code/rlm/artifacts";
 import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
 import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
 import { createRlmPythonTool } from "@bworx-io/worx-code/rlm/python-tool";
@@ -39,16 +35,16 @@ let previousGjcSessionId: string | undefined;
 beforeEach(async () => {
 	cwd = await fs.mkdtemp(path.join(os.tmpdir(), "rlm-e2e-"));
 	sessionId = generateRlmSessionId();
-	previousGjcSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = "rlm-e2e-test-session";
+	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = "rlm-e2e-test-session";
 });
 
 afterEach(async () => {
 	await disposeKernelSessionsByOwner(`rlm:${sessionId}`);
 	if (previousGjcSessionId === undefined) {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.GJC_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousGjcSessionId;
 	}
 	await fs.rm(cwd, { recursive: true, force: true });
 });

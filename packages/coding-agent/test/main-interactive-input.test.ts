@@ -8,10 +8,10 @@ import type { InteractiveMode } from "@bworx-io/worx-code/modes/interactive-mode
 import type { SubmittedUserInput } from "@bworx-io/worx-code/modes/types";
 import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV,
-	GJC_COORDINATOR_SESSION_READINESS_FILE_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV,
+	WORX_COORDINATOR_SESSION_READINESS_FILE_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 } from "../src/gjc-runtime/session-state-sidecar";
 
 function createInput(overrides: Partial<SubmittedUserInput> = {}): SubmittedUserInput {
@@ -259,15 +259,15 @@ describe("interactive startup input ordering", () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-interactive-readiness-"));
 		const readinessFile = path.join(root, "runtime-input-ready.json");
 		const env = {
-			stateFile: process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV],
-			sessionId: process.env[GJC_COORDINATOR_SESSION_ID_ENV],
-			launchId: process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV],
-			readinessFile: process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV],
+			stateFile: process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV],
+			sessionId: process.env[WORX_COORDINATOR_SESSION_ID_ENV],
+			launchId: process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV],
+			readinessFile: process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV],
 		};
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = path.join(root, "state.json");
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = "interactive-session";
-		process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV] = "interactive-launch";
-		process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV] = readinessFile;
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = path.join(root, "state.json");
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = "interactive-session";
+		process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV] = "interactive-launch";
+		process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV] = readinessFile;
 		const events: string[] = [];
 		const stop = new Error("stop interactive input");
 		const session = {
@@ -314,14 +314,14 @@ describe("interactive startup input ordering", () => {
 			).rejects.toBe(stop);
 			expect(events).toEqual(["init", "render", "prompt:startup prompt"]);
 		} finally {
-			if (env.stateFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = env.stateFile;
-			if (env.sessionId === undefined) delete process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_ID_ENV] = env.sessionId;
-			if (env.launchId === undefined) delete process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV] = env.launchId;
-			if (env.readinessFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV] = env.readinessFile;
+			if (env.stateFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = env.stateFile;
+			if (env.sessionId === undefined) delete process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_ID_ENV] = env.sessionId;
+			if (env.launchId === undefined) delete process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV] = env.launchId;
+			if (env.readinessFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV] = env.readinessFile;
 			await fs.rm(root, { recursive: true, force: true });
 		}
 	});
@@ -330,15 +330,15 @@ describe("interactive startup input ordering", () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-interactive-readiness-conflict-"));
 		const readinessFile = path.join(root, "runtime-input-ready.json");
 		const previous = {
-			stateFile: process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV],
-			sessionId: process.env[GJC_COORDINATOR_SESSION_ID_ENV],
-			launchId: process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV],
-			readinessFile: process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV],
+			stateFile: process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV],
+			sessionId: process.env[WORX_COORDINATOR_SESSION_ID_ENV],
+			launchId: process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV],
+			readinessFile: process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV],
 		};
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = path.join(root, "state.json");
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = "interactive-session";
-		process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV] = "interactive-launch";
-		process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV] = readinessFile;
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = path.join(root, "state.json");
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = "interactive-session";
+		process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV] = "interactive-launch";
+		process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV] = readinessFile;
 		await Bun.write(readinessFile, "not-json");
 		const events: string[] = [];
 		const session = {
@@ -377,14 +377,14 @@ describe("interactive startup input ordering", () => {
 			).rejects.toMatchObject({ code: "runtime_readiness_marker_conflict" });
 			expect(events).toEqual(["init"]);
 		} finally {
-			if (previous.stateFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = previous.stateFile;
-			if (previous.sessionId === undefined) delete process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_ID_ENV] = previous.sessionId;
-			if (previous.launchId === undefined) delete process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV] = previous.launchId;
-			if (previous.readinessFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV] = previous.readinessFile;
+			if (previous.stateFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = previous.stateFile;
+			if (previous.sessionId === undefined) delete process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_ID_ENV] = previous.sessionId;
+			if (previous.launchId === undefined) delete process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV] = previous.launchId;
+			if (previous.readinessFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV] = previous.readinessFile;
 			await fs.rm(root, { recursive: true, force: true });
 		}
 	});

@@ -105,14 +105,14 @@ async function runGuidesCli(
 const NOW = Date.UTC(2026, 3, 1);
 
 beforeEach(() => {
-	process.env.GJC_TEST_GUIDE_KEYS = "1";
+	process.env.WORX_TEST_GUIDE_KEYS = "1";
 	addTestGuidePinnedKey({ keyId: TEST_KEY_ID, spkiDerHex: TEST_PUBLIC_DER_HEX, source: "bundled" });
 });
 
 afterEach(() => {
 	FileLockTestHooks.afterParentMkdir = undefined;
 	removeTestGuidePinnedKey(TEST_KEY_ID);
-	delete process.env.GJC_TEST_GUIDE_KEYS;
+	delete process.env.WORX_TEST_GUIDE_KEYS;
 });
 
 describe("guide manifest verification", () => {

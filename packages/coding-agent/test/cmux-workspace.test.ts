@@ -106,10 +106,10 @@ describe("cmux workspace title sync", () => {
 		expect(spawned).toBe(false);
 	});
 
-	it("does not spawn when GJC_NO_CMUX_RENAME is set", async () => {
+	it("does not spawn when WORX_NO_CMUX_RENAME is set", async () => {
 		let spawned = false;
 		await syncCmuxWorkspaceTitle("Investigate Resolver", {
-			env: cmuxEnv("ws-optout", { GJC_NO_CMUX_RENAME: "1" }),
+			env: cmuxEnv("ws-optout", { WORX_NO_CMUX_RENAME: "1" }),
 			isTty: true,
 			which: () => "/usr/local/bin/cmux",
 			readOwnership: async () => ({ hasCustomTitle: false, title: "default" }),

@@ -13,7 +13,7 @@ interface PackageManifest {
 	name?: unknown;
 }
 
-const WORKSPACE_NODE_MODULES_ENV = "GJC_HARNESS_TEST_NODE_MODULES";
+const WORKSPACE_NODE_MODULES_ENV = "WORX_HARNESS_TEST_NODE_MODULES";
 
 interface LinkedWorkspacePackage {
 	name: string;
@@ -96,7 +96,7 @@ export async function createHarnessCliEnvWithFixtureBroker(
 ): Promise<HarnessCliBrokerFixture> {
 	const agentDir = path.join(fixtureRoot, "agent");
 	const linked = createHarnessCliEnv(repoRoot, createFixtureBrokerEnvironment(fixtureRoot, agentDir));
-	linked.env.GJC_HARNESS_ROOT_REGISTRY_DIR = path.join(fixtureRoot, "root-registry");
+	linked.env.WORX_HARNESS_ROOT_REGISTRY_DIR = path.join(fixtureRoot, "root-registry");
 	try {
 		const started = await withFixtureBrokerEnvironment(() =>
 			startFixtureBrokerWithLeaseForTest({ agentDir, env: linked.env }),

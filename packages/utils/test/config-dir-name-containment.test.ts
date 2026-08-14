@@ -11,7 +11,7 @@ import { CONFIG_DIR_NAME, getConfigAgentDirName, getConfigDirName } from "../src
  * config root. `path.join` neutralizes a leading separator but not `..`.
  */
 
-const KEYS = ["GJC_CONFIG_DIR", "PI_CONFIG_DIR"] as const;
+const KEYS = ["WORX_CONFIG_DIR", "PI_CONFIG_DIR"] as const;
 const saved = new Map<string, string | undefined>();
 
 for (const key of KEYS) saved.set(key, process.env[key]);
@@ -40,7 +40,7 @@ describe("config directory name containment", () => {
 	});
 
 	it("honors an ordinary configured name", () => {
-		setOnly("GJC_CONFIG_DIR", ".gjc-alt");
+		setOnly("WORX_CONFIG_DIR", ".gjc-alt");
 		expect(getConfigDirName()).toBe(".gjc-alt");
 		expect(userAgentDirUnderHome()).toBe(path.join(os.homedir(), ".gjc-alt", "agent"));
 	});
@@ -51,7 +51,7 @@ describe("config directory name containment", () => {
 	});
 
 	it("keeps an absolute-looking name beneath home, as documented", () => {
-		setOnly("GJC_CONFIG_DIR", "/etc/gjc");
+		setOnly("WORX_CONFIG_DIR", "/etc/gjc");
 		const resolved = userAgentDirUnderHome();
 		expect(resolved.startsWith(`${os.homedir()}${path.sep}`)).toBe(true);
 	});
@@ -62,7 +62,7 @@ describe("config directory name containment", () => {
 		".gjc/../../tmp/evil",
 		"a/b/../../../../tmp/evil",
 	])("rejects the escaping name %p and falls back to the default", value => {
-		setOnly("GJC_CONFIG_DIR", value);
+		setOnly("WORX_CONFIG_DIR", value);
 		expect(getConfigDirName()).toBe(CONFIG_DIR_NAME);
 		expect(userAgentDirUnderHome().startsWith(`${os.homedir()}${path.sep}`)).toBe(true);
 	});
@@ -74,13 +74,13 @@ describe("config directory name containment", () => {
 
 	it("falls through to the legacy name when the primary one escapes", () => {
 		for (const key of KEYS) delete process.env[key];
-		process.env.GJC_CONFIG_DIR = "../../tmp/evil";
+		process.env.WORX_CONFIG_DIR = "../../tmp/evil";
 		process.env.PI_CONFIG_DIR = ".pi-alt";
 		expect(getConfigDirName()).toBe(".pi-alt");
 	});
 
 	it("ignores a blank configured name", () => {
-		setOnly("GJC_CONFIG_DIR", "   ");
+		setOnly("WORX_CONFIG_DIR", "   ");
 		expect(getConfigDirName()).toBe(CONFIG_DIR_NAME);
 	});
 });

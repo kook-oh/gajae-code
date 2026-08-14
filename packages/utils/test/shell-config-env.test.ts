@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { getShellConfig, resetShellConfigCache } from "../src/procmgr";
 
 /**
- * `docs/environment-variables.md` documents `GJC_BASH_NO_CI` / `GJC_BASH_NO_LOGIN`,
+ * `docs/environment-variables.md` documents `WORX_BASH_NO_CI` / `WORX_BASH_NO_LOGIN`,
  * but the shell config only read the legacy `PI_*` / `CLAUDE_*` names, so the
  * documented names were silent no-ops.
  *
@@ -14,10 +14,10 @@ import { getShellConfig, resetShellConfigCache } from "../src/procmgr";
  */
 
 const KEYS = [
-	"GJC_BASH_NO_CI",
+	"WORX_BASH_NO_CI",
 	"PI_BASH_NO_CI",
 	"CLAUDE_BASH_NO_CI",
-	"GJC_BASH_NO_LOGIN",
+	"WORX_BASH_NO_LOGIN",
 	"PI_BASH_NO_LOGIN",
 	"CLAUDE_BASH_NO_LOGIN",
 	// Inherited into the spawn env otherwise, which would confound the CI assertions.
@@ -49,13 +49,13 @@ function configWith(env: Record<string, string>): ReturnType<typeof getShellConf
 	return getShellConfig();
 }
 
-describe("spawn env CI suppression (GJC_BASH_NO_CI)", () => {
+describe("spawn env CI suppression (WORX_BASH_NO_CI)", () => {
 	it("injects CI=true when no knob is set", () => {
 		expect(getShellConfig().env.CI).toBe("true");
 	});
 
-	it("honors the documented GJC_BASH_NO_CI", () => {
-		expect(configWith({ GJC_BASH_NO_CI: "1" }).env.CI).toBeUndefined();
+	it("honors the documented WORX_BASH_NO_CI", () => {
+		expect(configWith({ WORX_BASH_NO_CI: "1" }).env.CI).toBeUndefined();
 	});
 
 	it("honors the legacy PI_BASH_NO_CI alias", () => {
@@ -66,26 +66,26 @@ describe("spawn env CI suppression (GJC_BASH_NO_CI)", () => {
 		expect(configWith({ CLAUDE_BASH_NO_CI: "1" }).env.CI).toBeUndefined();
 	});
 
-	it.each(["0", "false", "off", "no"])("treats GJC_BASH_NO_CI=%s as not set", value => {
-		expect(configWith({ GJC_BASH_NO_CI: value }).env.CI).toBe("true");
+	it.each(["0", "false", "off", "no"])("treats WORX_BASH_NO_CI=%s as not set", value => {
+		expect(configWith({ WORX_BASH_NO_CI: value }).env.CI).toBe("true");
 	});
 
-	it("resolves GJC-first: an explicit GJC_BASH_NO_CI=0 beats a truthy legacy alias", () => {
-		expect(configWith({ GJC_BASH_NO_CI: "0", PI_BASH_NO_CI: "1" }).env.CI).toBe("true");
+	it("resolves GJC-first: an explicit WORX_BASH_NO_CI=0 beats a truthy legacy alias", () => {
+		expect(configWith({ WORX_BASH_NO_CI: "0", PI_BASH_NO_CI: "1" }).env.CI).toBe("true");
 	});
 
-	it("skips a blank GJC_BASH_NO_CI and falls through to the legacy alias", () => {
-		expect(configWith({ GJC_BASH_NO_CI: "   ", PI_BASH_NO_CI: "1" }).env.CI).toBeUndefined();
+	it("skips a blank WORX_BASH_NO_CI and falls through to the legacy alias", () => {
+		expect(configWith({ WORX_BASH_NO_CI: "   ", PI_BASH_NO_CI: "1" }).env.CI).toBeUndefined();
 	});
 });
 
-describe("login shell args (GJC_BASH_NO_LOGIN)", () => {
+describe("login shell args (WORX_BASH_NO_LOGIN)", () => {
 	it("uses a login shell when no knob is set", () => {
 		expect(getShellConfig().args).toEqual(["-l", "-c"]);
 	});
 
-	it("honors the documented GJC_BASH_NO_LOGIN", () => {
-		expect(configWith({ GJC_BASH_NO_LOGIN: "1" }).args).toEqual(["-c"]);
+	it("honors the documented WORX_BASH_NO_LOGIN", () => {
+		expect(configWith({ WORX_BASH_NO_LOGIN: "1" }).args).toEqual(["-c"]);
 	});
 
 	it("honors the legacy PI_BASH_NO_LOGIN alias", () => {
@@ -96,18 +96,18 @@ describe("login shell args (GJC_BASH_NO_LOGIN)", () => {
 		expect(configWith({ CLAUDE_BASH_NO_LOGIN: "1" }).args).toEqual(["-c"]);
 	});
 
-	it.each(["0", "false", "off", "no"])("treats GJC_BASH_NO_LOGIN=%s as not set", value => {
-		expect(configWith({ GJC_BASH_NO_LOGIN: value }).args).toEqual(["-l", "-c"]);
+	it.each(["0", "false", "off", "no"])("treats WORX_BASH_NO_LOGIN=%s as not set", value => {
+		expect(configWith({ WORX_BASH_NO_LOGIN: value }).args).toEqual(["-l", "-c"]);
 	});
 
-	it("resolves GJC-first: an explicit GJC_BASH_NO_LOGIN=0 beats a truthy legacy alias", () => {
-		expect(configWith({ GJC_BASH_NO_LOGIN: "0", PI_BASH_NO_LOGIN: "1" }).args).toEqual(["-l", "-c"]);
+	it("resolves GJC-first: an explicit WORX_BASH_NO_LOGIN=0 beats a truthy legacy alias", () => {
+		expect(configWith({ WORX_BASH_NO_LOGIN: "0", PI_BASH_NO_LOGIN: "1" }).args).toEqual(["-l", "-c"]);
 	});
 
 	it("accepts case-insensitive truthy spellings", () => {
-		expect(configWith({ GJC_BASH_NO_LOGIN: "true" }).args).toEqual(["-c"]);
-		expect(configWith({ GJC_BASH_NO_LOGIN: "YES" }).args).toEqual(["-c"]);
-		expect(configWith({ GJC_BASH_NO_LOGIN: "on" }).args).toEqual(["-c"]);
+		expect(configWith({ WORX_BASH_NO_LOGIN: "true" }).args).toEqual(["-c"]);
+		expect(configWith({ WORX_BASH_NO_LOGIN: "YES" }).args).toEqual(["-c"]);
+		expect(configWith({ WORX_BASH_NO_LOGIN: "on" }).args).toEqual(["-c"]);
 	});
 });
 
@@ -116,7 +116,7 @@ describe("shell config memoization", () => {
 		expect(getShellConfig().args).toEqual(["-l", "-c"]);
 
 		// Same process, new env, no reset: the memoized config must not change.
-		Bun.env.GJC_BASH_NO_LOGIN = "1";
+		Bun.env.WORX_BASH_NO_LOGIN = "1";
 		expect(getShellConfig().args).toEqual(["-l", "-c"]);
 
 		resetShellConfigCache();

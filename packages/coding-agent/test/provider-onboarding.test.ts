@@ -678,7 +678,7 @@ describe("provider onboarding setup core", () => {
 			"--base-url",
 			"https://api.example.test/v1",
 			"--api-key-env",
-			"GJC_TEST_PROVIDER_KEY",
+			"WORX_TEST_PROVIDER_KEY",
 			"--model",
 			"gpt-one",
 			"--models",
@@ -688,7 +688,7 @@ describe("provider onboarding setup core", () => {
 		expect(parsed?.component).toBe("provider");
 		expect(parsed?.flags.compat).toBe("openai");
 		expect(parsed?.flags.provider).toBe("local-openai");
-		expect(parsed?.flags.apiKeyEnv).toBe("GJC_TEST_PROVIDER_KEY");
+		expect(parsed?.flags.apiKeyEnv).toBe("WORX_TEST_PROVIDER_KEY");
 		expect(parsed?.flags.model).toEqual(["gpt-one", "gpt-two,gpt-three"]);
 	});
 

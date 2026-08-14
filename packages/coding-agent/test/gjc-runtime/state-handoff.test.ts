@@ -7,19 +7,15 @@ import {
 	createDeepInterviewIntentManifest,
 	reviewDeepInterviewIntent,
 } from "@bworx-io/worx-code/gjc-runtime/deep-interview-state";
-import {
-	activeSnapshotPath,
-	modeStatePath,
-	sessionStateDir,
-} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { activeSnapshotPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { runNativeStateCommand } from "../../src/gjc-runtime/state-runtime";
 import { WORKFLOW_STATE_VERSION } from "../../src/skill-state/workflow-state-contract";
 
 const TEST_SESSION_ID = "test-session";
 
 function restoreSessionId(sessionId: string | undefined): void {
-	if (sessionId === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = sessionId;
+	if (sessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = sessionId;
 }
 
 function restoreEnvironmentValue(name: string, value: string | undefined): void {
@@ -43,8 +39,8 @@ async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	// Most tests use an isolated session id so the runtime's env-default lookup
 	// cannot select a host-shell session. Tests targeting that lookup set and
 	// restore their own session id exactly.
-	const priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	const priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	try {
 		await fn(dir);
 	} finally {
@@ -386,10 +382,10 @@ describe("gjc state handoff", () => {
 				current_phase: "interviewing",
 			});
 
-			const priorFailpoint = process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER;
+			const priorFailpoint = process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER;
 			const originalToISOString = Date.prototype.toISOString;
 			Date.prototype.toISOString = () => handoffAt;
-			process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER = mutationId;
+			process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER = mutationId;
 			try {
 				const result = await runNativeStateCommand(
 					["handoff", "--mode", "deep-interview", "--to", "ralplan", "--json"],
@@ -399,7 +395,7 @@ describe("gjc state handoff", () => {
 				expect(result.stderr).toContain(`injected handoff failure after caller write for ${mutationId}`);
 			} finally {
 				Date.prototype.toISOString = originalToISOString;
-				restoreEnvironmentValue("GJC_STATE_HANDOFF_FAIL_AFTER_CALLER", priorFailpoint);
+				restoreEnvironmentValue("WORX_STATE_HANDOFF_FAIL_AFTER_CALLER", priorFailpoint);
 			}
 
 			// The failpoint executes only after the caller write. Its observable state
@@ -738,7 +734,7 @@ describe("gjc state handoff", () => {
 			expect(finalUltragoal?.handoff_from).toBe("ralplan");
 		});
 	});
-	it("defaults session-id from GJC_SESSION_ID env var when no --session-id flag is passed", async () => {
+	it("defaults session-id from WORX_SESSION_ID env var when no --session-id flag is passed", async () => {
 		await withTempCwd(async cwd => {
 			const sessionId = "session-env-default";
 			await writeJson(modeStatePath(cwd, sessionId, "deep-interview"), {
@@ -749,8 +745,8 @@ describe("gjc state handoff", () => {
 				session_id: sessionId,
 			});
 
-			const prior = process.env.GJC_SESSION_ID;
-			process.env.GJC_SESSION_ID = sessionId;
+			const prior = process.env.WORX_SESSION_ID;
+			process.env.WORX_SESSION_ID = sessionId;
 			try {
 				// No --session-id flag; runtime must pick the env var.
 				const result = await runNativeStateCommand(
@@ -783,8 +779,8 @@ describe("gjc state handoff", () => {
 				session_id: sessionId,
 			});
 
-			const prior = process.env.GJC_SESSION_ID;
-			process.env.GJC_SESSION_ID = sessionId;
+			const prior = process.env.WORX_SESSION_ID;
+			process.env.WORX_SESSION_ID = sessionId;
 			try {
 				// Step 1 (agent shell): documented prep write — no --session-id flag, env picks it up.
 				const writeResult = await runNativeStateCommand(

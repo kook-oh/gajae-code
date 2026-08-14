@@ -881,9 +881,9 @@ describe("commit-marker checked create/replace", () => {
 				cmd: [process.execPath, worker],
 				env: {
 					...process.env,
-					GJC_MARKER_RACE_ROOT: dir,
-					GJC_MARKER_RACE_PUBLISHER: publisher,
-					GJC_MARKER_RACE_GENERATION: String(generation),
+					WORX_MARKER_RACE_ROOT: dir,
+					WORX_MARKER_RACE_PUBLISHER: publisher,
+					WORX_MARKER_RACE_GENERATION: String(generation),
 				},
 				stdout: "pipe",
 				stderr: "pipe",

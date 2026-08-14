@@ -55,8 +55,8 @@ test("ACP registers the permission channel for form-less clients regardless of p
 	// be answered even in auto/always-allow mode (the mode only gates tools).
 	expect(providerNames({ _meta: { gjc: { permissionHandling: "auto" } } })).toContain("permission");
 	expect(providerNames({ _meta: { gjc: { permissionHandling: "always-allow" } } })).toContain("permission");
-	expect(providerNames(undefined, { GJC_ACP_PERMISSION_MODE: "prompt" })).toContain("permission");
-	expect(providerNames(undefined, { GJC_ACP_PERMISSION_MODE: "auto" })).toContain("permission");
+	expect(providerNames(undefined, { WORX_ACP_PERMISSION_MODE: "prompt" })).toContain("permission");
+	expect(providerNames(undefined, { WORX_ACP_PERMISSION_MODE: "auto" })).toContain("permission");
 	expect(providerNames({ _meta: { gjc: { permissionHandling: "invalid" } } })).toContain("permission");
 	// A form-eliciting client in allow mode keeps only the ui channel.
 	expect(providerNames({ _meta: { gjc: { permissionHandling: "auto" } }, elicitation: { form: {} } })).not.toContain(

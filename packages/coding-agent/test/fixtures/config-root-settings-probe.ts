@@ -1,6 +1,6 @@
 /**
  * Prints the workflow settings resolved for the current working directory.
- * `GJC_CONFIG_DIR` is read at module load, so this must be a child process.
+ * `WORX_CONFIG_DIR` is read at module load, so this must be a child process.
  */
 import { resolveRalplanAutoHandoff, resolveRalplanMaxIterations } from "../../src/gjc-runtime/ralplan-runtime";
 import { resolveUltragoalNudgeBudget } from "../../src/gjc-runtime/ultragoal-runtime";

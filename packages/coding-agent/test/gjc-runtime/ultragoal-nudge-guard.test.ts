@@ -28,8 +28,8 @@ import {
 import { assertUltragoalAskAllowed } from "@bworx-io/worx-code/tools/ultragoal-ask-guard";
 
 const TEST_SESSION_ID = "ultragoal-nudge-guard-test-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
-const ORIGINAL_GJC_CONFIG_DIR = process.env.GJC_CONFIG_DIR;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
+const ORIGINAL_WORX_CONFIG_DIR = process.env.WORX_CONFIG_DIR;
 const tempRoots: string[] = [];
 
 async function tempDir(): Promise<string> {
@@ -53,17 +53,17 @@ const DEFAULT_OBJECTIVE_GOAL = {
 };
 
 afterEach(async () => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
-	if (ORIGINAL_GJC_CONFIG_DIR === undefined) delete process.env.GJC_CONFIG_DIR;
-	else process.env.GJC_CONFIG_DIR = ORIGINAL_GJC_CONFIG_DIR;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
+	if (ORIGINAL_WORX_CONFIG_DIR === undefined) delete process.env.WORX_CONFIG_DIR;
+	else process.env.WORX_CONFIG_DIR = ORIGINAL_WORX_CONFIG_DIR;
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
 describe("ultragoal nudge guard", () => {
 	it("links a reworded goal to its ultragoal run through provenance", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 
 		const diagnostic = await readUltragoalVerificationState({
@@ -80,7 +80,7 @@ describe("ultragoal nudge guard", () => {
 
 	it("preserves legacy objective matching when goal provenance is absent", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 
 		const diagnostic = await readUltragoalVerificationState({
@@ -103,7 +103,7 @@ describe("ultragoal nudge guard", () => {
 	// AC1 (pause) + one-row-per-attempt + correct surface despite the ask diagnostic dependency.
 	it("AC1: pause is refused with an escalating nudge and appends exactly one surface=pause row", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await expect(assertUltragoalPauseAllowed(cwd)).rejects.toThrow(/try-harder nudge \(1\/10\)/);
 		const ledger = await readUltragoalLedger(cwd, TEST_SESSION_ID);
@@ -120,7 +120,7 @@ describe("ultragoal nudge guard", () => {
 	// after exhaustion does the old human_blocked allowance let the pause through.
 	it("AC1/F6: human_blocked pause is nudged while budget remains, then allowed after exhaustion", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await setProjectBudget(cwd, 1);
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		// Budget 1: the first pause attempt is nudged before the human-only blocker is classified.
@@ -144,7 +144,7 @@ describe("ultragoal nudge guard", () => {
 	// AC2: after the budget is spent, pause falls back to today's gate (blocked, no infinite loop).
 	it("AC2: exhausted pause falls back to today's gate and appends no further nudges", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await setProjectBudget(cwd, 1);
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await expect(assertUltragoalPauseAllowed(cwd)).rejects.toThrow(/try-harder nudge/);
@@ -156,7 +156,7 @@ describe("ultragoal nudge guard", () => {
 	// AC1 (premature complete): incomplete story is nudged before the strict completion gate.
 	it("AC1: premature complete is nudged while budget remains", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await expect(
 			assertCanCompleteCurrentGoal({ cwd, currentGoal: DEFAULT_OBJECTIVE_GOAL, sessionId: TEST_SESSION_ID }),
@@ -170,7 +170,7 @@ describe("ultragoal nudge guard", () => {
 	// Adversarial: once the nudge budget is exhausted, premature completion must still hit the strict receipt gate.
 	it("AC2: exhausted premature complete still requires a valid completion receipt", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await setProjectBudget(cwd, 1);
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await expect(
@@ -186,7 +186,7 @@ describe("ultragoal nudge guard", () => {
 	// AC1 (ask): the ask assert is refused with a nudge while budget remains.
 	it("AC1: ask is nudged while budget remains, then falls back to the ask block", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await setProjectBudget(cwd, 1);
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await expect(assertUltragoalAskAllowed(cwd)).rejects.toThrow(/try-harder nudge/);
@@ -199,7 +199,7 @@ describe("ultragoal nudge guard", () => {
 	// AC1 (drop): a real give-up drop is nudged while budget remains.
 	it("AC1/AC7: a real give-up drop is nudged but a legitimate reset drop is not", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		// Mid-run aggregate with an incomplete required story is a real give-up.
 		await expect(
@@ -239,7 +239,7 @@ describe("ultragoal nudge guard", () => {
 	// AC7: an unreadable durable state cannot be classified, so the drop fails closed.
 	it("AC7: drop classification fails closed when goals.json is corrupt", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		const { paths } = await getUltragoalStatus(cwd, TEST_SESSION_ID);
 		await fs.writeFile(paths.goalsPath, "{ not valid json");
@@ -251,7 +251,7 @@ describe("ultragoal nudge guard", () => {
 	// AC2: the atomic writer cannot overshoot the budget under concurrency.
 	it("AC2: concurrent nudge attempts cannot overshoot a budget of 1", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		const target = { goalId: "G001", targetKind: "story" as const };
 		const outcomes = await Promise.all(
@@ -274,7 +274,7 @@ describe("ultragoal nudge guard", () => {
 	// AC3: counts are per-story and ledger-derived; a ledger reset zeroes them with no goals.json counter.
 	it("AC3: per-story isolation and ledger-reset zeroing", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: MULTI_BRIEF, gjcGoalMode: "per-story" });
 		await recordUltragoalNudgeIfBudgetRemaining({
 			cwd,
@@ -315,7 +315,7 @@ describe("ultragoal nudge guard", () => {
 
 	// AC4: default budget is 10 and a project setting takes precedence over the user setting.
 	//
-	// The user-settings half runs in a child process. `GJC_CONFIG_DIR` is a config
+	// The user-settings half runs in a child process. `WORX_CONFIG_DIR` is a config
 	// root *dirname under home* (PR #3327), not a full path, and `getConfigRootDir()`
 	// joins it onto `os.homedir()` — which an in-process test cannot redirect. Setting
 	// it to an absolute path here silently resolved nothing and the assertion only
@@ -331,7 +331,7 @@ describe("ultragoal nudge guard", () => {
 		const probe = path.join(import.meta.dir, "..", "fixtures", "config-root-settings-probe.ts");
 		const userOnly = Bun.spawn([process.execPath, probe], {
 			cwd,
-			env: { ...process.env, HOME: home, GJC_CONFIG_DIR: ".gjc" },
+			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".gjc" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -343,7 +343,7 @@ describe("ultragoal nudge guard", () => {
 		await setProjectBudget(cwd, 7);
 		const projectWins = Bun.spawn([process.execPath, probe], {
 			cwd,
-			env: { ...process.env, HOME: home, GJC_CONFIG_DIR: ".gjc" },
+			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".gjc" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -355,7 +355,7 @@ describe("ultragoal nudge guard", () => {
 	// AC4: budget 0 is an opt-out — the writer never appends and reports exhausted.
 	it("AC4: budget 0 disables the pre-gate nudge", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		const outcome = await recordUltragoalNudgeIfBudgetRemaining({
 			cwd,
@@ -373,7 +373,7 @@ describe("ultragoal nudge guard", () => {
 	// AC6: status surfaces the same target/count the guard consumes.
 	it("AC6: gjc ultragoal status reports the consumed nudge target and count", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		const plan = await readUltragoalPlan(cwd, TEST_SESSION_ID);
 		expect(plan).not.toBeNull();
@@ -392,7 +392,7 @@ describe("ultragoal nudge guard", () => {
 	// Pure diagnostics must never append a nudge row.
 	it("read-style diagnostics do not append nudges", async () => {
 		const cwd = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });
 		await isUltragoalPauseBlocked(cwd);
 		await isUltragoalAskBlocked(cwd);

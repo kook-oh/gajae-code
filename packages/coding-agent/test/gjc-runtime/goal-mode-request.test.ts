@@ -3,10 +3,10 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
 	consumePendingGoalModeRequest,
-	GJC_SESSION_FILE_ENV,
-	GJC_SESSION_ID_ENV,
 	isUltragoalCreateGoalsInvocation,
 	readUltragoalGjcObjective,
+	WORX_SESSION_FILE_ENV,
+	WORX_SESSION_ID_ENV,
 	writeCurrentSessionGoalModeState,
 	writePendingGoalModeRequest,
 } from "@bworx-io/worx-code/gjc-runtime/goal-mode-request";
@@ -23,13 +23,13 @@ const tempRoots: string[] = [];
 let priorSessionId: string | undefined;
 
 beforeAll(() => {
-	priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 async function tempDir(): Promise<string> {
@@ -277,7 +277,7 @@ describe("GJC ultragoal goal mode request", () => {
 
 		const result = Bun.spawnSync(["bun", cliPath, "ultragoal", "create-goals", "--brief", "Ship native goal"], {
 			cwd: root,
-			env: { ...process.env, [GJC_SESSION_FILE_ENV]: sessionFile, [GJC_SESSION_ID_ENV]: "session-owner" },
+			env: { ...process.env, [WORX_SESSION_FILE_ENV]: sessionFile, [WORX_SESSION_ID_ENV]: "session-owner" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});

@@ -20,12 +20,12 @@ describe("issue #3857 nested gjc models chain", () => {
 				env: {
 					...process.env,
 					HOME: home,
-					GJC_CODING_AGENT_DIR: agentDir,
+					WORX_CODING_AGENT_DIR: agentDir,
 					// Simulate a bash-tool child inheriting the parent agent session id.
-					GJC_SESSION_ID: "session-issue-3857-nested-models",
+					WORX_SESSION_ID: "session-issue-3857-nested-models",
 					// Keep listing offline/local so the test does not hang on network discovery.
-					GJC_NO_PTY: "1",
-					GJC_NO_TITLE: "1",
+					WORX_NO_PTY: "1",
+					WORX_NO_TITLE: "1",
 				},
 				stdout: "pipe",
 				stderr: "pipe",
@@ -61,10 +61,10 @@ describe("issue #3857 nested gjc models chain", () => {
 				env: {
 					...process.env,
 					HOME: home,
-					GJC_CODING_AGENT_DIR: agentDir,
-					GJC_SESSION_ID: "session-issue-3857-grandchild-guard",
-					GJC_NO_PTY: "1",
-					GJC_NO_TITLE: "1",
+					WORX_CODING_AGENT_DIR: agentDir,
+					WORX_SESSION_ID: "session-issue-3857-grandchild-guard",
+					WORX_NO_PTY: "1",
+					WORX_NO_TITLE: "1",
 				},
 				stdout: "pipe",
 				stderr: "pipe",

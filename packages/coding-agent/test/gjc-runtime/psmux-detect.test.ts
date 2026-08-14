@@ -8,13 +8,13 @@ import {
 	__setExecutableIdentityResolverForTests,
 	clearPsmuxDetectionCache,
 	detectPsmux,
-	GJC_PSMUX_COMMAND_ENV,
-	GJC_PSMUX_DETECTION_ENV,
-	GJC_PSMUX_FORCE_DETECT_ENV,
 	PSMUX_BINARY_NAMES,
 	probePsmux,
 	resolveGjcTmuxBinary,
 	resolveGjcTmuxExecutableIdentity,
+	WORX_PSMUX_COMMAND_ENV,
+	WORX_PSMUX_DETECTION_ENV,
+	WORX_PSMUX_FORCE_DETECT_ENV,
 } from "@bworx-io/worx-code/gjc-runtime/psmux-detect";
 import {
 	assertGjcTmuxMutationAuthoritySync,
@@ -155,7 +155,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 				const authority = bindGjcTmuxProviderAuthority(
 					resolveGjcTmuxProviderContext({
 						platform: "win32",
-						env: { GJC_TMUX_COMMAND: "psmux" },
+						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
@@ -256,7 +256,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 				__setExecutableIdentityResolverForTests(() => "volume:42");
 				const context = resolveGjcTmuxProviderContext({
 					platform: "win32",
-					env: { GJC_TMUX_COMMAND: "psmux" },
+					env: { WORX_TMUX_COMMAND: "psmux" },
 					runner: buildRunner(psmuxVersionOutput()),
 				});
 				const first = bindGjcTmuxProviderAuthority(context, {
@@ -296,7 +296,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 				__setExecutableIdentityResolverForTests(() => "volume:42");
 				const context = resolveGjcTmuxProviderContext({
 					platform: "win32",
-					env: { GJC_TMUX_COMMAND: "psmux" },
+					env: { WORX_TMUX_COMMAND: "psmux" },
 					runner: buildRunner(psmuxVersionOutput()),
 				});
 				const first = bindGjcTmuxProviderAuthority(context, {
@@ -347,7 +347,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 				const authority = bindGjcTmuxProviderAuthority(
 					resolveGjcTmuxProviderContext({
 						platform: "win32",
-						env: { GJC_TMUX_COMMAND: "psmux" },
+						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
@@ -370,7 +370,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 				const authority = bindGjcTmuxProviderAuthority(
 					resolveGjcTmuxProviderContext({
 						platform: "win32",
-						env: { GJC_TMUX_COMMAND: "psmux" },
+						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
@@ -439,28 +439,28 @@ describe("detectPsmux", () => {
 		expect(detected).toBe(false);
 	});
 
-	it("honors GJC_PSMUX_DETECTION=off and never reports psmux", () => {
+	it("honors WORX_PSMUX_DETECTION=off and never reports psmux", () => {
 		const detected = detectPsmux("psmux", {
-			env: { [GJC_PSMUX_DETECTION_ENV]: "off" },
+			env: { [WORX_PSMUX_DETECTION_ENV]: "off" },
 			runner: buildRunner(psmuxVersionOutput()),
 			force: true,
 		});
 		expect(detected).toBe(false);
 	});
 
-	it("re-probes every call when GJC_PSMUX_FORCE_DETECT is set", () => {
+	it("re-probes every call when WORX_PSMUX_FORCE_DETECT is set", () => {
 		let calls = 0;
 		const runner = (_command: string, _args: string[]) => {
 			calls += 1;
 			return { exitCode: 0, stdout: calls === 1 ? "tmux 3.3\n" : "psmux 3.3.0\n", stderr: "" };
 		};
 		detectPsmux("psmux", {
-			env: { [GJC_PSMUX_FORCE_DETECT_ENV]: "1" },
+			env: { [WORX_PSMUX_FORCE_DETECT_ENV]: "1" },
 			runner,
 			force: true,
 		});
 		detectPsmux("psmux", {
-			env: { [GJC_PSMUX_FORCE_DETECT_ENV]: "1" },
+			env: { [WORX_PSMUX_FORCE_DETECT_ENV]: "1" },
 			runner,
 			force: true,
 		});
@@ -481,12 +481,12 @@ describe("detectPsmux", () => {
 		expect(calls).toBe(callsAfterFirst);
 	});
 
-	it("treats an explicit GJC_PSMUX_COMMAND override as authoritative", () => {
+	it("treats an explicit WORX_PSMUX_COMMAND override as authoritative", () => {
 		// Override path must NOT consult the resolver at all; the host binary
 		// resolver can be left as a no-op stub and detection still wins.
 		__setBinaryResolverForTests(() => null);
 		const detected = detectPsmux("psmux", {
-			env: { [GJC_PSMUX_COMMAND_ENV]: "psmux" },
+			env: { [WORX_PSMUX_COMMAND_ENV]: "psmux" },
 			runner: failingRunner(),
 			force: true,
 		});
@@ -495,10 +495,10 @@ describe("detectPsmux", () => {
 });
 
 describe("resolveGjcTmuxBinary", () => {
-	it("returns the explicit GJC_TMUX_COMMAND override when set", () => {
+	it("returns the explicit WORX_TMUX_COMMAND override when set", () => {
 		const resolved = resolveGjcTmuxBinary({
 			platform: "linux",
-			env: { GJC_TMUX_COMMAND: "/custom/tmux" },
+			env: { WORX_TMUX_COMMAND: "/custom/tmux" },
 			runner: failingRunner(),
 		});
 		expect(resolved.command).toBe("/custom/tmux");
@@ -506,10 +506,10 @@ describe("resolveGjcTmuxBinary", () => {
 		expect(resolved.isPsmux).toBe(false);
 	});
 
-	it("falls back to GJC_TEAM_TMUX_COMMAND when GJC_TMUX_COMMAND is unset", () => {
+	it("falls back to WORX_TEAM_TMUX_COMMAND when WORX_TMUX_COMMAND is unset", () => {
 		const resolved = resolveGjcTmuxBinary({
 			platform: "linux",
-			env: { GJC_TEAM_TMUX_COMMAND: "team-tmux" },
+			env: { WORX_TEAM_TMUX_COMMAND: "team-tmux" },
 			runner: failingRunner(),
 		});
 		expect(resolved.command).toBe("team-tmux");
@@ -652,7 +652,7 @@ describe("resolveGjcTmuxBinary", () => {
 
 		const resolved = resolveGjcTmuxBinary({
 			platform: "win32",
-			env: { GJC_TMUX_COMMAND: "tmux" },
+			env: { WORX_TMUX_COMMAND: "tmux" },
 			runner: buildRunner(tmuxVersionOutput()),
 		});
 
@@ -666,7 +666,7 @@ describe("resolveGjcTmuxBinary", () => {
 		expect(() =>
 			resolveGjcTmuxBinary({
 				platform: "win32",
-				env: { GJC_TMUX_COMMAND: "tmux" },
+				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
 		).toThrow("gjc_tmux_provider_ambiguous");
@@ -678,7 +678,7 @@ describe("resolveGjcTmuxBinary", () => {
 
 		const resolved = resolveGjcTmuxBinary({
 			platform: "win32",
-			env: { GJC_TMUX_COMMAND: "tmux" },
+			env: { WORX_TMUX_COMMAND: "tmux" },
 			runner: buildRunner(tmuxVersionOutput()),
 		});
 
@@ -695,23 +695,23 @@ describe("resolveGjcTmuxBinary", () => {
 		expect(() =>
 			resolveGjcTmuxBinary({
 				platform: "win32",
-				env: { GJC_TMUX_COMMAND: "tmux" },
+				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
 		).toThrow("companion identities conflict");
 	});
 
-	it("fails closed when GJC_PSMUX_COMMAND selects a different executable", () => {
+	it("fails closed when WORX_PSMUX_COMMAND selects a different executable", () => {
 		__setBinaryResolverForTests(candidate => `C:\\tools\\${candidate}.exe`);
 		__setExecutableIdentityResolverForTests(path => path.toLowerCase());
 
 		expect(() =>
 			resolveGjcTmuxBinary({
 				platform: "win32",
-				env: { GJC_TMUX_COMMAND: "tmux", GJC_PSMUX_COMMAND: "C:\\other\\psmux-wrapper.exe" },
+				env: { WORX_TMUX_COMMAND: "tmux", WORX_PSMUX_COMMAND: "C:\\other\\psmux-wrapper.exe" },
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
-		).toThrow("GJC_PSMUX_COMMAND selects a different executable");
+		).toThrow("WORX_PSMUX_COMMAND selects a different executable");
 	});
 
 	it("fails closed when Windows alias resolution throws", () => {
@@ -723,13 +723,13 @@ describe("resolveGjcTmuxBinary", () => {
 		expect(() =>
 			resolveGjcTmuxBinary({
 				platform: "win32",
-				env: { GJC_TMUX_COMMAND: "tmux" },
+				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
 		).toThrow("selected Windows tmux command resolution failed");
 	});
 
-	it("classifies a generic wrapper when GJC_PSMUX_COMMAND matches its executable identity", () => {
+	it("classifies a generic wrapper when WORX_PSMUX_COMMAND matches its executable identity", () => {
 		__setBinaryResolverForTests(candidate => {
 			if (candidate === "wrapper-tmux") return "C:\\tools\\wrapper-tmux.exe";
 			if (candidate === "wrapper-psmux") return "C:\\tools\\wrapper-psmux.exe";
@@ -739,7 +739,7 @@ describe("resolveGjcTmuxBinary", () => {
 
 		const resolved = resolveGjcTmuxBinary({
 			platform: "win32",
-			env: { GJC_TMUX_COMMAND: "wrapper-tmux", GJC_PSMUX_COMMAND: "wrapper-psmux" },
+			env: { WORX_TMUX_COMMAND: "wrapper-tmux", WORX_PSMUX_COMMAND: "wrapper-psmux" },
 			runner: buildRunner(tmuxVersionOutput()),
 		});
 
@@ -748,7 +748,7 @@ describe("resolveGjcTmuxBinary", () => {
 	it("treats an explicit Windows psmux path as psmux without relying on the version banner", () => {
 		const resolved = resolveGjcTmuxBinary({
 			platform: "win32",
-			env: { GJC_TEAM_TMUX_COMMAND: "C:\\tools\\psmux.exe" },
+			env: { WORX_TEAM_TMUX_COMMAND: "C:\\tools\\psmux.exe" },
 			runner: buildRunner(tmuxVersionOutput()),
 		});
 		expect(resolved.command).toBe("C:\\tools\\psmux.exe");
@@ -806,9 +806,9 @@ describe("resolveGjcTmuxCommand (shared session/team resolver)", () => {
 		expect(command).toBe("tmux");
 	});
 
-	it("honors GJC_TMUX_COMMAND override on every platform", () => {
+	it("honors WORX_TMUX_COMMAND override on every platform", () => {
 		__setBinaryResolverForTests(() => null);
-		const command = resolveGjcTmuxCommand({ GJC_TMUX_COMMAND: "psmux" }, "win32");
+		const command = resolveGjcTmuxCommand({ WORX_TMUX_COMMAND: "psmux" }, "win32");
 		expect(command).toBe("psmux");
 	});
 

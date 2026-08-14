@@ -2,8 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Shell } from "@bworx-io/worx-code-natives";
-import * as piNatives from "@bworx-io/worx-code-natives";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { getRuntimeResourceCounts } from "@bworx-io/worx-code/debug/runtime-gauges";
 import {
@@ -14,6 +12,8 @@ import {
 } from "@bworx-io/worx-code/exec/bash-executor";
 import { DEFAULT_MAX_BYTES } from "@bworx-io/worx-code/session/streaming-output";
 import * as shellSnapshot from "@bworx-io/worx-code/utils/shell-snapshot";
+import type { Shell } from "@bworx-io/worx-code-natives";
+import * as piNatives from "@bworx-io/worx-code-natives";
 
 const BACKGROUND_COMPLETION_RACE_MS = 750;
 // Direct executor callers retain the shared 20 KiB head alongside the 50 KiB tail.
@@ -63,14 +63,14 @@ describe("executeBash", () => {
 	});
 
 	it("scrubs inherited managed transcript paths from shell sessions", async () => {
-		const previousSessionFile = process.env.GJC_SESSION_FILE;
-		const previousOwnerPath = process.env.GJC_MANAGED_OWNER_TRANSCRIPT_PATH;
-		process.env.GJC_SESSION_FILE = "/managed/session.jsonl";
-		process.env.GJC_MANAGED_OWNER_TRANSCRIPT_PATH = "/managed/owner.jsonl";
+		const previousSessionFile = process.env.WORX_SESSION_FILE;
+		const previousOwnerPath = process.env.WORX_MANAGED_OWNER_TRANSCRIPT_PATH;
+		process.env.WORX_SESSION_FILE = "/managed/session.jsonl";
+		process.env.WORX_MANAGED_OWNER_TRANSCRIPT_PATH = "/managed/owner.jsonl";
 		try {
 			await disposeAllShellSessions();
 			const result = await executeBash(
-				'printf "%s|%s" "$(printenv GJC_SESSION_FILE || printf unset)" "$(printenv GJC_MANAGED_OWNER_TRANSCRIPT_PATH || printf unset)"',
+				'printf "%s|%s" "$(printenv WORX_SESSION_FILE || printf unset)" "$(printenv WORX_MANAGED_OWNER_TRANSCRIPT_PATH || printf unset)"',
 				{
 					cwd: tempDir,
 					timeout: 5000,
@@ -79,10 +79,10 @@ describe("executeBash", () => {
 			);
 			expect(result.output).toBe("unset|unset");
 		} finally {
-			if (previousSessionFile === undefined) delete process.env.GJC_SESSION_FILE;
-			else process.env.GJC_SESSION_FILE = previousSessionFile;
-			if (previousOwnerPath === undefined) delete process.env.GJC_MANAGED_OWNER_TRANSCRIPT_PATH;
-			else process.env.GJC_MANAGED_OWNER_TRANSCRIPT_PATH = previousOwnerPath;
+			if (previousSessionFile === undefined) delete process.env.WORX_SESSION_FILE;
+			else process.env.WORX_SESSION_FILE = previousSessionFile;
+			if (previousOwnerPath === undefined) delete process.env.WORX_MANAGED_OWNER_TRANSCRIPT_PATH;
+			else process.env.WORX_MANAGED_OWNER_TRANSCRIPT_PATH = previousOwnerPath;
 			await disposeAllShellSessions();
 		}
 	});

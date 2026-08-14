@@ -9,7 +9,7 @@ import type { SlashCommandRuntime } from "../src/slash-commands/types";
 
 let tempAgentDir: string | undefined;
 const originalAgentDir = getAgentDir();
-const TEST_PROVIDER_KEY_ENV = "GJC_PROVIDER_SLASH_TEST_KEY";
+const TEST_PROVIDER_KEY_ENV = "WORX_PROVIDER_SLASH_TEST_KEY";
 
 afterEach(async () => {
 	setAgentDir(originalAgentDir);
@@ -109,7 +109,7 @@ describe("provider slash command", () => {
 		expect(parsed.providers["local-claude"]?.apiKey).toBeUndefined();
 		expect(parsed.providers["local-claude"]?.apiKeyEnv).toBe(TEST_PROVIDER_KEY_ENV);
 		expect(parsed.providers["local-claude"]?.models.map(model => model.id)).toEqual(["claude-proxy"]);
-		expect(outputs.join("\n")).toContain("GJC_…_KEY");
+		expect(outputs.join("\n")).toContain("WORX_…_KEY");
 		expect(refreshedMode).toBe("offline");
 		expect(configChanged).toBe(true);
 	});

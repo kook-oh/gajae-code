@@ -279,7 +279,7 @@ describe("fatal handler process fixtures", () => {
 		const script = path.join(dir, "fixture.ts");
 		fs.writeFileSync(script, `import ${JSON.stringify(POSTMORTEM_SOURCE)};\n${body}\n`);
 		const result = spawnBun(script, {
-			env: { GJC_CODING_AGENT_DIR: path.join(dir, "agent") },
+			env: { WORX_CODING_AGENT_DIR: path.join(dir, "agent") },
 		});
 		return { ...result, crashLog: path.join(dir, "agent", "gjc-crash.log") };
 	}

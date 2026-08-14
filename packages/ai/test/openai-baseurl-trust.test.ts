@@ -48,7 +48,7 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	const home = path.join(cwd, ".home");
 	fs.mkdirSync(home, { recursive: true });
 	env.HOME = home;
-	delete env.GJC_CONFIG_DIR;
+	delete env.WORX_CONFIG_DIR;
 	delete env.PI_CONFIG_DIR;
 	Object.assign(env, overrides);
 

@@ -28,7 +28,7 @@ describe("installed ooo bridge flow", () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 		delete process.env.OUROBOROS_CLI;
-		delete process.env.GJC_NO_TITLE;
+		delete process.env.WORX_NO_TITLE;
 	});
 
 	it("renders the first question, correlates the next answer, and renders termination", async () => {
@@ -189,7 +189,7 @@ describe("installed ooo bridge flow", () => {
 	});
 
 	it("drops queued explicit starts across AgentSession switch and InputController clear resets", async () => {
-		process.env.GJC_NO_TITLE = "1";
+		process.env.WORX_NO_TITLE = "1";
 		const connection = { name: "session-controls" } as MCPServerConnection;
 		vi.spyOn(runtimeMcpModule, "connectToServer").mockResolvedValue(connection);
 		const pendingBeforeSwitch = Promise.withResolvers<MCPToolCallResult>();

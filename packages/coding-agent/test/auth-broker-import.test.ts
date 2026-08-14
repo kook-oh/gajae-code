@@ -23,7 +23,7 @@ describe("auth-broker import (CLIProxyAPI)", () => {
 	let originalAgentDir: string | undefined;
 
 	beforeEach(async () => {
-		originalAgentDir = process.env.GJC_AGENT_DIR;
+		originalAgentDir = process.env.WORX_AGENT_DIR;
 		agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-import-agent-"));
 		cliproxyDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-import-cliproxy-"));
 		setAgentDir(agentDir);
@@ -31,8 +31,8 @@ describe("auth-broker import (CLIProxyAPI)", () => {
 
 	afterEach(async () => {
 		process.stdout.write = ORIGINAL_STDOUT_WRITE;
-		if (originalAgentDir === undefined) delete process.env.GJC_AGENT_DIR;
-		else process.env.GJC_AGENT_DIR = originalAgentDir;
+		if (originalAgentDir === undefined) delete process.env.WORX_AGENT_DIR;
+		else process.env.WORX_AGENT_DIR = originalAgentDir;
 		await fs.rm(agentDir, { recursive: true, force: true });
 		await fs.rm(cliproxyDir, { recursive: true, force: true });
 	});
@@ -197,8 +197,8 @@ describe("auth-broker import (broker-routed)", () => {
 	const savedEnv: Record<string, string | undefined> = {};
 
 	beforeEach(async () => {
-		savedEnv.GJC_AUTH_BROKER_URL = process.env.GJC_AUTH_BROKER_URL;
-		savedEnv.GJC_AUTH_BROKER_TOKEN = process.env.GJC_AUTH_BROKER_TOKEN;
+		savedEnv.WORX_AUTH_BROKER_URL = process.env.WORX_AUTH_BROKER_URL;
+		savedEnv.WORX_AUTH_BROKER_TOKEN = process.env.WORX_AUTH_BROKER_TOKEN;
 		agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-import-client-"));
 		brokerAgentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-import-broker-"));
 		cliproxyDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-import-cliproxy-broker-"));
@@ -213,8 +213,8 @@ describe("auth-broker import (broker-routed)", () => {
 			bearerTokens: [token],
 			disableRefresher: true,
 		});
-		process.env.GJC_AUTH_BROKER_URL = handle.url;
-		process.env.GJC_AUTH_BROKER_TOKEN = token;
+		process.env.WORX_AUTH_BROKER_URL = handle.url;
+		process.env.WORX_AUTH_BROKER_TOKEN = token;
 	});
 
 	afterEach(async () => {
@@ -224,7 +224,7 @@ describe("auth-broker import (broker-routed)", () => {
 		await fs.rm(agentDir, { recursive: true, force: true });
 		await fs.rm(brokerAgentDir, { recursive: true, force: true });
 		await fs.rm(cliproxyDir, { recursive: true, force: true });
-		for (const key of ["GJC_AUTH_BROKER_URL", "GJC_AUTH_BROKER_TOKEN"] as const) {
+		for (const key of ["WORX_AUTH_BROKER_URL", "WORX_AUTH_BROKER_TOKEN"] as const) {
 			if (savedEnv[key] === undefined) delete process.env[key];
 			else process.env[key] = savedEnv[key];
 		}

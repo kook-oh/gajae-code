@@ -65,7 +65,7 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	// files. Point HOME and the agent dir at empty temp dirs so a contributor who
 	// exports one of these names from a shell rc still sees a hermetic result.
 	env.HOME = tempDir();
-	env.GJC_CODING_AGENT_DIR = tempDir();
+	env.WORX_CODING_AGENT_DIR = tempDir();
 	Object.assign(env, overrides);
 
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd, env, stdout: "pipe", stderr: "pipe" });

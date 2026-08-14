@@ -79,12 +79,12 @@ async function createServer(
 	});
 	const server = createCoordinatorMcpServer({
 		env: {
-			GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			GJC_COORDINATOR_MCP_STATE_ROOT: stateRoot,
-			GJC_COORDINATOR_MCP_MUTATIONS: "sessions",
-			GJC_COORDINATOR_MCP_PROFILE: "local",
-			GJC_COORDINATOR_MCP_REPO: "repo",
-			...(options.forceStop ? { GJC_COORDINATOR_MCP_FORCE_STOP: "1" } : {}),
+			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
+			WORX_COORDINATOR_MCP_STATE_ROOT: stateRoot,
+			WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
+			WORX_COORDINATOR_MCP_PROFILE: "local",
+			WORX_COORDINATOR_MCP_REPO: "repo",
+			...(options.forceStop ? { WORX_COORDINATOR_MCP_FORCE_STOP: "1" } : {}),
 		},
 		services: {
 			getAgentDir: () => agentDir,

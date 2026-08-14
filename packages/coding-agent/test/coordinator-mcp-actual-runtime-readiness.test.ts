@@ -13,8 +13,8 @@ import {
 	COORDINATOR_RUNTIME_PROMPT_ACK_TIMEOUT_MAX_MS,
 } from "../src/coordinator-mcp/server";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 } from "../src/gjc-runtime/session-state-sidecar";
 import { AgentSession } from "../src/session/agent-session";
 import { AuthStorage } from "../src/session/auth-storage";
@@ -79,10 +79,10 @@ describe("Coordinator MCP runtime readiness", () => {
 			modelRegistry: new ModelRegistry(authStorage, path.join(cwd, "models.yml")),
 			extensionRunner: extensionRunner as never,
 		});
-		const previousStateFile = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-		const previousSessionId = process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-		process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
-		process.env[GJC_COORDINATOR_SESSION_ID_ENV] = session.sessionId;
+		const previousStateFile = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+		const previousSessionId = process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
+		process.env[WORX_COORDINATOR_SESSION_ID_ENV] = session.sessionId;
 		try {
 			const prompt = session.prompt("hold open");
 			await waitFor(() => session.isStreaming && fs.existsSync(stateFile), "running runtime state");
@@ -107,10 +107,10 @@ describe("Coordinator MCP runtime readiness", () => {
 			}, "terminal runtime state");
 		} finally {
 			messageEndBarrier.resolve();
-			if (previousStateFile === undefined) delete process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] = previousStateFile;
-			if (previousSessionId === undefined) delete process.env[GJC_COORDINATOR_SESSION_ID_ENV];
-			else process.env[GJC_COORDINATOR_SESSION_ID_ENV] = previousSessionId;
+			if (previousStateFile === undefined) delete process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = previousStateFile;
+			if (previousSessionId === undefined) delete process.env[WORX_COORDINATOR_SESSION_ID_ENV];
+			else process.env[WORX_COORDINATOR_SESSION_ID_ENV] = previousSessionId;
 			await session.dispose();
 			authStorage.close();
 			await fsp.rm(cwd, { recursive: true, force: true });

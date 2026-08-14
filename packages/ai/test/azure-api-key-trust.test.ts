@@ -48,7 +48,7 @@ async function resolveIn(cwd: string, overrides: Record<string, string> = {}): P
 	// directory. Keep those trusted sources neutral so developer configuration
 	// cannot change the expected no-key case or mask project-env rejection.
 	env.HOME = projectDir();
-	env.GJC_CODING_AGENT_DIR = projectDir();
+	env.WORX_CODING_AGENT_DIR = projectDir();
 	Object.assign(env, overrides);
 
 	const proc = Bun.spawn([process.execPath, PROBE], { cwd, env, stdout: "pipe", stderr: "pipe" });

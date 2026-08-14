@@ -39,7 +39,7 @@ rl.on("line", line => {
 	} else if (method === "tools/call") {
 		// Echo whether the host secret leaked into the child environment so tests
 		// can prove no-env isolation for plugin stdio MCP servers.
-		const secret = process.env.GJC_PLUGIN_TEST_SECRET ?? "<absent>";
+		const secret = process.env.WORX_PLUGIN_TEST_SECRET ?? "<absent>";
 		send({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text: `secret=${secret}` }] } });
 	} else if (id !== undefined) {
 		send({ jsonrpc: "2.0", id, result: {} });

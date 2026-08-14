@@ -518,12 +518,12 @@ describe("autoresearch slash command", () => {
 	beforeEach(() => {
 		dbOverride = path.join(os.tmpdir(), `pi-autoresearch-cmd-${Snowflake.next()}`);
 		fs.mkdirSync(dbOverride, { recursive: true });
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 		cleanups.push(dbOverride);
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		for (const dir of cleanups.splice(0)) {
 			fs.rmSync(dir, { recursive: true, force: true });
 		}
@@ -585,12 +585,12 @@ describe("autoresearch tool-call hook", () => {
 	beforeEach(() => {
 		dbOverride = path.join(os.tmpdir(), `pi-autoresearch-hook-${Snowflake.next()}`);
 		fs.mkdirSync(dbOverride, { recursive: true });
-		process.env.GJC_AUTORESEARCH_DB_DIR = dbOverride;
+		process.env.WORX_AUTORESEARCH_DB_DIR = dbOverride;
 		cleanups.push(dbOverride);
 	});
 
 	afterEach(() => {
-		delete process.env.GJC_AUTORESEARCH_DB_DIR;
+		delete process.env.WORX_AUTORESEARCH_DB_DIR;
 		for (const dir of cleanups.splice(0)) {
 			fs.rmSync(dir, { recursive: true, force: true });
 		}

@@ -29,7 +29,7 @@ describe("model profile schema", () => {
 		expect(result.success).toBe(true);
 	});
 
-	// Runtime defaulting treats any non-"long" GJC_CACHE_RETENTION value as short;
+	// Runtime defaulting treats any non-"long" WORX_CACHE_RETENTION value as short;
 	// config is stricter so typos fail before dispatch.
 	test("invalid cacheRetention config values are rejected", () => {
 		const result = ModelsConfigSchema.safeParse({

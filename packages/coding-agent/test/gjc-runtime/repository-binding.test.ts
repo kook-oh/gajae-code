@@ -179,8 +179,8 @@ describe("repository binding (#2901)", () => {
 		await initGitRepo(right);
 
 		const sessionId = "test-session-2901";
-		const envSession = process.env.GJC_SESSION_ID;
-		process.env.GJC_SESSION_ID = sessionId;
+		const envSession = process.env.WORX_SESSION_ID;
+		process.env.WORX_SESSION_ID = sessionId;
 		try {
 			const seed = await runNativeRalplanCommand(["--json", "binding enforce dogfood"], left);
 			expect(seed.status).toBe(0);
@@ -213,8 +213,8 @@ describe("repository binding (#2901)", () => {
 			expect(siblingWrite.status).toBe(2);
 			expect(siblingWrite.stderr).toMatch(/repository binding rejected|identity_mismatch|does not match/i);
 		} finally {
-			if (envSession === undefined) delete process.env.GJC_SESSION_ID;
-			else process.env.GJC_SESSION_ID = envSession;
+			if (envSession === undefined) delete process.env.WORX_SESSION_ID;
+			else process.env.WORX_SESSION_ID = envSession;
 		}
 	});
 });

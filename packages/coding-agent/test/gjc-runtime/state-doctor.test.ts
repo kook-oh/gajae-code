@@ -25,12 +25,12 @@ afterEach(async () => {
 
 let priorSessionId: string | undefined;
 beforeAll(() => {
-	priorSessionId = process.env.GJC_SESSION_ID;
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	priorSessionId = process.env.WORX_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 afterAll(() => {
-	if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 async function writeJson(filePath: string, value: unknown): Promise<void> {
@@ -118,7 +118,7 @@ describe("gjc state doctor", () => {
 		});
 	});
 
-	it("uses GJC_SESSION_ID for session-scoped active state when --session-id is absent", async () => {
+	it("uses WORX_SESSION_ID for session-scoped active state when --session-id is absent", async () => {
 		const root = await tempDir();
 		const sessionId = "doctor-env-default";
 		const write = await runNativeStateCommand(
@@ -141,8 +141,8 @@ describe("gjc state doctor", () => {
 		);
 		expect(handoff.status).toBe(0);
 
-		const prior = process.env.GJC_SESSION_ID;
-		process.env.GJC_SESSION_ID = sessionId;
+		const prior = process.env.WORX_SESSION_ID;
+		process.env.WORX_SESSION_ID = sessionId;
 		try {
 			const result = await runDoctorUnchanged(root, ["doctor", "--json"]);
 			expect(result.status).toBe(0);
@@ -155,8 +155,8 @@ describe("gjc state doctor", () => {
 			);
 			expect(result.stdout).not.toContain("gjc state ralplan clear");
 		} finally {
-			if (prior === undefined) process.env.GJC_SESSION_ID = TEST_SESSION_ID;
-			else process.env.GJC_SESSION_ID = prior;
+			if (prior === undefined) process.env.WORX_SESSION_ID = TEST_SESSION_ID;
+			else process.env.WORX_SESSION_ID = prior;
 		}
 	});
 

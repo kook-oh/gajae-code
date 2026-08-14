@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getBundledModel } from "@gajae-code/ai/models";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createEmptyNotebook, readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
 import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
@@ -37,6 +36,7 @@ import {
 	checkBashAllowedPrefixes,
 	normalizeReadOnlyBashCommand,
 } from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
+import { getBundledModel } from "@gajae-code/ai/models";
 import * as z from "zod/v4";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
@@ -61,12 +61,12 @@ const okCell = (output: string): RlmCellResult => ({
 describe("rlm artifacts", () => {
 	describe("RLM command parsing", () => {
 		test("rejects unknown startup flags before creating research artifacts", async () => {
-			const priorSessionId = process.env.GJC_SESSION_ID;
+			const priorSessionId = process.env.WORX_SESSION_ID;
 			try {
 				await expect(runRlmCommand(["--modle", "opus"])).rejects.toThrow("Unknown option: --modle");
 			} finally {
-				if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-				else delete process.env.GJC_SESSION_ID;
+				if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+				else delete process.env.WORX_SESSION_ID;
 			}
 		});
 	});
@@ -86,8 +86,8 @@ describe("rlm artifacts", () => {
 	});
 
 	test("resolves artifact paths under the session-scoped rlm dir and creates the dir", async () => {
-		const prior = process.env.GJC_SESSION_ID;
-		process.env.GJC_SESSION_ID = "test-session";
+		const prior = process.env.WORX_SESSION_ID;
+		process.env.WORX_SESSION_ID = "test-session";
 		try {
 			const paths = resolveRlmArtifactPaths(tmp, "sess1");
 			expect(paths.dir).toBe(rlmArtifactRoot(tmp, "test-session", "sess1"));
@@ -96,8 +96,8 @@ describe("rlm artifacts", () => {
 			await ensureRlmSessionDir(paths);
 			expect((await fs.stat(paths.dir)).isDirectory()).toBe(true);
 		} finally {
-			if (prior !== undefined) process.env.GJC_SESSION_ID = prior;
-			else delete process.env.GJC_SESSION_ID;
+			if (prior !== undefined) process.env.WORX_SESSION_ID = prior;
+			else delete process.env.WORX_SESSION_ID;
 		}
 	});
 	test("rejects invalid session ids when resolving paths", () => {
@@ -109,45 +109,45 @@ describe("rlm gjc session resolution (regression: standalone `gjc rlm`)", () => 
 	let priorSessionId: string | undefined;
 
 	beforeEach(() => {
-		priorSessionId = process.env.GJC_SESSION_ID;
+		priorSessionId = process.env.WORX_SESSION_ID;
 	});
 
 	afterEach(() => {
-		if (priorSessionId !== undefined) process.env.GJC_SESSION_ID = priorSessionId;
-		else delete process.env.GJC_SESSION_ID;
+		if (priorSessionId !== undefined) process.env.WORX_SESSION_ID = priorSessionId;
+		else delete process.env.WORX_SESSION_ID;
 	});
 
 	// Regression for `gjc rlm "..."` crashing with
 	// `SessionResolutionError: a session id is required to write state` when no
-	// GJC session is established (no parent agent / GJC_SESSION_ID unset).
+	// GJC session is established (no parent agent / WORX_SESSION_ID unset).
 	test("resolveRlmArtifactPaths throws missing_for_write when no session is set", () => {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		expect(() => resolveRlmArtifactPaths(tmp, "sess1")).toThrow(/session id is required to write state/);
 	});
 
 	test("ensureRlmGjcSessionId generates and pins a session id when none is set", () => {
-		delete process.env.GJC_SESSION_ID;
+		delete process.env.WORX_SESSION_ID;
 		const resolved = ensureRlmGjcSessionId();
 		expect(resolved.startsWith("rlm-")).toBe(true);
 		expect(isValidRlmSessionId(resolved)).toBe(true);
-		expect(String(process.env.GJC_SESSION_ID)).toBe(resolved);
+		expect(String(process.env.WORX_SESSION_ID)).toBe(resolved);
 		// After establishing the session, artifact-path resolution no longer throws.
 		const paths = resolveRlmArtifactPaths(tmp, "sess1");
 		expect(paths.dir).toBe(rlmArtifactRoot(tmp, resolved, "sess1"));
 	});
 
 	test("ensureRlmGjcSessionId treats a blank session id as unset", () => {
-		process.env.GJC_SESSION_ID = "   ";
+		process.env.WORX_SESSION_ID = "   ";
 		const resolved = ensureRlmGjcSessionId();
 		expect(resolved.startsWith("rlm-")).toBe(true);
-		expect(process.env.GJC_SESSION_ID).toBe(resolved);
+		expect(process.env.WORX_SESSION_ID).toBe(resolved);
 	});
 
 	test("ensureRlmGjcSessionId preserves an existing session id", () => {
-		process.env.GJC_SESSION_ID = "parent-session";
+		process.env.WORX_SESSION_ID = "parent-session";
 		const resolved = ensureRlmGjcSessionId();
 		expect(resolved).toBe("parent-session");
-		expect(process.env.GJC_SESSION_ID).toBe("parent-session");
+		expect(process.env.WORX_SESSION_ID).toBe("parent-session");
 		expect(resolveRlmArtifactPaths(tmp, "sess1").dir).toBe(rlmArtifactRoot(tmp, "parent-session", "sess1"));
 	});
 });

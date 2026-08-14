@@ -13,8 +13,8 @@ import { isProjectControlledPath } from "../../src/lsp/path-trust";
 import type { ToolSession } from "../../src/tools";
 
 const ORIGINAL_DISABLE_LSPMUX = Bun.env.PI_DISABLE_LSPMUX;
-const ORIGINAL_GJC_DISABLE_LSPMUX = Bun.env.GJC_DISABLE_LSPMUX;
-const ORIGINAL_CONFIG_DIR = process.env.GJC_CONFIG_DIR;
+const ORIGINAL_WORX_DISABLE_LSPMUX = Bun.env.WORX_DISABLE_LSPMUX;
+const ORIGINAL_CONFIG_DIR = process.env.WORX_CONFIG_DIR;
 
 async function writeCanaryLspServer(directory: string): Promise<string> {
 	const scriptPath = path.join(directory, "canary-lsp.ts");
@@ -91,15 +91,15 @@ afterEach(async () => {
 	} else {
 		Bun.env.PI_DISABLE_LSPMUX = ORIGINAL_DISABLE_LSPMUX;
 	}
-	if (ORIGINAL_GJC_DISABLE_LSPMUX === undefined) {
-		delete Bun.env.GJC_DISABLE_LSPMUX;
+	if (ORIGINAL_WORX_DISABLE_LSPMUX === undefined) {
+		delete Bun.env.WORX_DISABLE_LSPMUX;
 	} else {
-		Bun.env.GJC_DISABLE_LSPMUX = ORIGINAL_GJC_DISABLE_LSPMUX;
+		Bun.env.WORX_DISABLE_LSPMUX = ORIGINAL_WORX_DISABLE_LSPMUX;
 	}
 	if (ORIGINAL_CONFIG_DIR === undefined) {
-		delete process.env.GJC_CONFIG_DIR;
+		delete process.env.WORX_CONFIG_DIR;
 	} else {
-		process.env.GJC_CONFIG_DIR = ORIGINAL_CONFIG_DIR;
+		process.env.WORX_CONFIG_DIR = ORIGINAL_CONFIG_DIR;
 	}
 });
 
@@ -267,9 +267,9 @@ describe("LSP repository command trust", () => {
 				args: [],
 			});
 
-			Bun.env.GJC_DISABLE_LSPMUX = "1";
+			Bun.env.WORX_DISABLE_LSPMUX = "1";
 			expect((await detectLspmux(cwd)).available).toBe(false);
-			delete Bun.env.GJC_DISABLE_LSPMUX;
+			delete Bun.env.WORX_DISABLE_LSPMUX;
 			resetLspmuxStateForTesting();
 			expect((await detectLspmux(cwd)).available).toBe(true);
 			Bun.env.PI_DISABLE_LSPMUX = "1";
@@ -530,7 +530,7 @@ describe("LSP repository command trust", () => {
 		fs.mkdirSync(userAgentDir, { recursive: true });
 		fs.writeFileSync(trustedServer, "#!/bin/sh\nexit 0\n");
 		fs.chmodSync(trustedServer, 0o755);
-		process.env.GJC_CONFIG_DIR = configDirName;
+		process.env.WORX_CONFIG_DIR = configDirName;
 		await Bun.write(
 			path.join(userAgentDir, "lsp.json"),
 			JSON.stringify({

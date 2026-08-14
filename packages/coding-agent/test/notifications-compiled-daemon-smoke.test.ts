@@ -122,8 +122,8 @@ describe("compiled daemon smoke coverage", () => {
 				cwd,
 				env: {
 					...process.env,
-					GJC_CODING_AGENT_DIR: agentDir,
-					GJC_TG_BOT_TOKEN: token,
+					WORX_CODING_AGENT_DIR: agentDir,
+					WORX_TG_BOT_TOKEN: token,
 				},
 				stdout: "pipe",
 				stderr: "pipe",

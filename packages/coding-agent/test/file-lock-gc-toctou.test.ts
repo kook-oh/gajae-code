@@ -41,7 +41,7 @@ function ctxWith(spoolDir: string, probe: GcPidProbe): GcContext {
 	return {
 		probe,
 		force: false,
-		env: { ...process.env, GJC_RECEIPT_SPOOL_DIR: spoolDir },
+		env: { ...process.env, WORX_RECEIPT_SPOOL_DIR: spoolDir },
 		cwd: spoolDir,
 	};
 }

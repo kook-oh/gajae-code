@@ -70,7 +70,7 @@ test("shipped MCP stdio advertises confirm and forwards confirmed destructive co
 		});
 		const child = Bun.spawn(["bun", "run", path.join(packageRoot, "src", "cli.ts"), "mcp-serve", "sdk"], {
 			cwd: repo,
-			env: { ...process.env, GJC_CODING_AGENT_DIR: agentDir },
+			env: { ...process.env, WORX_CODING_AGENT_DIR: agentDir },
 			stdin: "pipe",
 			stdout: "pipe",
 			stderr: "pipe",

@@ -24,8 +24,8 @@ const tempRoots: string[] = [];
 const codingAgentRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "../..");
 
 const TEST_SESSION_ID = "test-session";
-const originalSessionId = process.env.GJC_SESSION_ID;
-const originalAgentDir = process.env.GJC_CODING_AGENT_DIR;
+const originalSessionId = process.env.WORX_SESSION_ID;
+const originalAgentDir = process.env.WORX_CODING_AGENT_DIR;
 const fallbackAgentDir = path.join(getConfigRootDir(), "agent");
 async function tempDir(): Promise<string> {
 	const dir = await fs.mkdtemp(path.join(process.cwd(), ".tmp-deep-interview-runtime-"));
@@ -34,7 +34,7 @@ async function tempDir(): Promise<string> {
 }
 
 beforeAll(() => {
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 beforeEach(async () => {
@@ -48,14 +48,14 @@ afterEach(async () => {
 		setAgentDir(originalAgentDir);
 	} else {
 		setAgentDir(fallbackAgentDir);
-		delete process.env.GJC_CODING_AGENT_DIR;
+		delete process.env.WORX_CODING_AGENT_DIR;
 	}
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
 afterAll(() => {
-	if (originalSessionId !== undefined) process.env.GJC_SESSION_ID = originalSessionId;
-	else delete process.env.GJC_SESSION_ID;
+	if (originalSessionId !== undefined) process.env.WORX_SESSION_ID = originalSessionId;
+	else delete process.env.WORX_SESSION_ID;
 });
 
 describe("native gjc deep-interview runtime", () => {

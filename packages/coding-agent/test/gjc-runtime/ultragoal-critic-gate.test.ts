@@ -27,7 +27,7 @@ import {
 } from "@bworx-io/worx-code/gjc-runtime/ultragoal-runtime";
 
 const TEST_SESSION_ID = "ultragoal-critic-gate-test-session";
-const ORIGINAL_GJC_SESSION_ID = process.env.GJC_SESSION_ID;
+const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;
 // Temp dirs live outside the enclosing git work tree (os.tmpdir) so
 // computeCheckpointChangeSet falls through to the CI_DEV_CHANGED_PATHS-only
 // path. Pin a non-computer path so the mandatory computer red-team suite is
@@ -43,7 +43,7 @@ async function tempDir(): Promise<string> {
 }
 
 beforeEach(() => {
-	process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	process.env.CI_DEV_CHANGED_PATHS = "packages/coding-agent/test/gjc-runtime/ultragoal-critic-gate.test.ts";
 });
 
@@ -52,8 +52,8 @@ afterEach(async () => {
 });
 
 afterAll(() => {
-	if (ORIGINAL_GJC_SESSION_ID === undefined) delete process.env.GJC_SESSION_ID;
-	else process.env.GJC_SESSION_ID = ORIGINAL_GJC_SESSION_ID;
+	if (ORIGINAL_WORX_SESSION_ID === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = ORIGINAL_WORX_SESSION_ID;
 	if (ORIGINAL_CI_DEV_CHANGED_PATHS === undefined) delete process.env.CI_DEV_CHANGED_PATHS;
 	else process.env.CI_DEV_CHANGED_PATHS = ORIGINAL_CI_DEV_CHANGED_PATHS;
 });
@@ -239,7 +239,7 @@ async function checkpoint(root: string, gate: Record<string, unknown>) {
 describe("ultragoal terminal critic gate", () => {
 	it("requires a clean OKAY criticReview for a single-goal final aggregate", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await writeStructuralArtifacts(root);
 		const cases: Array<[string, (gate: Record<string, unknown>) => void]> = [
 			[
@@ -291,7 +291,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("counts run-level non-OKAY critic verdicts independently from nudges", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		await recordUltragoalCriticVerdict({
 			cwd: root,
@@ -329,7 +329,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("accumulates completion verdicts across reopened plan generations and hard-stops on the fifth", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		const generations: string[] = [];
 		for (let attempt = 1; attempt <= TERMINAL_CRITIC_CEILING; attempt++) {
@@ -369,7 +369,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("rejects final aggregate completion at the hard stop until a gate override is recorded", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await writeStructuralArtifacts(root);
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		await startNextUltragoalGoal({ cwd: root });
@@ -398,7 +398,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("revalidates the terminal critic ceiling before honoring a durable final receipt", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await writeStructuralArtifacts(root);
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		await startNextUltragoalGoal({ cwd: root });
@@ -433,7 +433,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("stales a pause critic verdict after add_subgoal changes the required-goal set", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		const classification = await recordUltragoalBlockerClassification({
 			cwd: root,
@@ -476,7 +476,7 @@ describe("ultragoal terminal critic gate", () => {
 
 	it("records a well-formed critic verdict ledger event", async () => {
 		const root = await tempDir();
-		process.env.GJC_SESSION_ID = TEST_SESSION_ID;
+		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd: root, brief: "Ship the story" });
 		const event = await recordUltragoalCriticVerdict({
 			cwd: root,

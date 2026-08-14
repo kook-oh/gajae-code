@@ -22,7 +22,7 @@ async function runCoreTrace(tracePath: string): Promise<TraceRecord[]> {
 		env: {
 			HOME: Bun.env.HOME ?? "",
 			PATH: Bun.env.PATH ?? "",
-			GJC_TRACE_OUT: tracePath,
+			WORX_TRACE_OUT: tracePath,
 		},
 		stderr: "pipe",
 		stdout: "pipe",

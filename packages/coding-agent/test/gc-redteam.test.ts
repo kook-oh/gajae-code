@@ -48,8 +48,8 @@ function ctxFor(base: string, registryDir: string, probe: GcPidProbe): GcContext
 		force: false,
 		env: {
 			...process.env,
-			GJC_HARNESS_ROOT_REGISTRY_DIR: registryDir,
-			GJC_RECEIPT_SPOOL_DIR: path.join(base, "spool"),
+			WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir,
+			WORX_RECEIPT_SPOOL_DIR: path.join(base, "spool"),
 		},
 		cwd: base,
 	};
@@ -250,7 +250,7 @@ describe("gc red-team invariants", () => {
 			base,
 			{
 				...process.env,
-				GJC_HARNESS_ROOT_REGISTRY_DIR: registryDir,
+				WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir,
 			},
 			[harnessLeasesGcAdapter],
 		);

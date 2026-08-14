@@ -5,9 +5,9 @@ import * as path from "node:path";
 
 import { persistCoordinatorLaunchFailure } from "@bworx-io/worx-code/commands/launch";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
 } from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
 
 describe("persistCoordinatorLaunchFailure", () => {
@@ -17,15 +17,15 @@ describe("persistCoordinatorLaunchFailure", () => {
 			const stateFile = path.join(root, "runtime.json");
 			const generation = "owner-generation-9c5542";
 			await persistCoordinatorLaunchFailure(new Error("launch_failed: detail"), root, {
-				[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: stateFile,
-				[GJC_COORDINATOR_SESSION_ID_ENV]: "coordinator-123",
-				[GJC_TMUX_OWNER_GENERATION_ENV]: generation,
+				[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: stateFile,
+				[WORX_COORDINATOR_SESSION_ID_ENV]: "coordinator-123",
+				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
 			});
 			const state = JSON.parse(await fs.readFile(stateFile, "utf8")) as Record<string, unknown>;
 			expect(state.owner_generation).toBe(generation);
 			await persistCoordinatorLaunchFailure(new Error("launch_failed"), root, {
-				[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: stateFile,
-				[GJC_COORDINATOR_SESSION_ID_ENV]: "coordinator-123",
+				[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: stateFile,
+				[WORX_COORDINATOR_SESSION_ID_ENV]: "coordinator-123",
 			});
 			const missing = JSON.parse(await fs.readFile(stateFile, "utf8")) as Record<string, unknown>;
 			expect(Object.hasOwn(missing, "owner_generation")).toBe(true);

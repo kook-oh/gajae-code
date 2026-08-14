@@ -16,7 +16,7 @@ const TERMINAL_TRANSPORT_ENV_KEYS = [
 	"TMUX_PANE",
 	"STY",
 	"ZELLIJ",
-	"GJC_TMUX_LAUNCHED",
+	"WORX_TMUX_LAUNCHED",
 	// TERM feeds the multiplexer predicate: tmux-*/screen-* values count as
 	// multiplexed and would route animated loaders back to the 80ms bucket.
 	"TERM",

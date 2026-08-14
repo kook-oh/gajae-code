@@ -54,7 +54,7 @@ function validateClaudeRegistryFormat(content: string): Record<string, unknown> 
 // Matches getConfigDirName() — single source of truth is in @gajae-code/utils,
 // but we know the value is ".gjc" and hardcoding it here keeps tests free of
 // native-addon transitive imports.
-const GJC_CONFIG_DIR = ".gjc";
+const WORX_CONFIG_DIR = ".gjc";
 
 function makeEntry(installPath: string, version = "1.0.0"): InstalledPluginEntry {
 	return {
@@ -74,7 +74,7 @@ let gjcRegistryPath: string;
 
 beforeEach(() => {
 	tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-discovery-test-"));
-	gjcRegistryPath = path.join(tmpHome, GJC_CONFIG_DIR, "plugins", "installed_plugins.json");
+	gjcRegistryPath = path.join(tmpHome, WORX_CONFIG_DIR, "plugins", "installed_plugins.json");
 	fs.mkdirSync(path.dirname(gjcRegistryPath), { recursive: true });
 });
 
@@ -96,7 +96,7 @@ describe("GJC registry path contract", () => {
 		// Validate our hardcoded constant matches getConfigDirName().
 		// If getConfigDirName() ever changes, this assertion will fail and
 		// we'll know the path constant here must be updated too.
-		expect(GJC_CONFIG_DIR).toBe(".gjc");
+		expect(WORX_CONFIG_DIR).toBe(".gjc");
 	});
 });
 

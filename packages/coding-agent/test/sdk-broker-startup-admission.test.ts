@@ -278,14 +278,14 @@ test("closing after grant but before task execution refuses the admitted startup
 async function expectGraceWindowFenceRefusesQueuedStartup(observation: "replaced" | "ambiguous"): Promise<void> {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", `gjc-${observation}-fence-admission-`));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir, heartbeatTtlMs: 300 });
 	const release = Promise.withResolvers<void>();
 	const parked: StartupAdmissionTiming = { now: Date.now, sleep: () => Promise.withResolvers<void>().promise };
 	const queuedInAdmission = Promise.withResolvers<void>();
 	let spawnCalls = 0;
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		await broker.start();
 		if (observation === "ambiguous") setAmbiguityGraceForTest(broker, 60_000);
 		setLifecycleCommandResolverForTest(broker, () => {
@@ -336,8 +336,8 @@ async function expectGraceWindowFenceRefusesQueuedStartup(observation: "replaced
 		setLifecycleTimingForTest(broker, undefined);
 		setPublicationObservationForTest(broker, undefined);
 		setAmbiguityGraceForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		release.resolve();
 		await broker.stop().catch(() => undefined);
 		await fs.rm(root, { recursive: true, force: true });
@@ -374,14 +374,14 @@ test("publication replacement during heartbeat persistence cannot reopen startup
 test("an admitted startup fenced during ledger persistence cannot reach synchronous spawn", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-admitted-ledger-fence-"));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir, heartbeatTtlMs: 300 });
 	const transitionEntered = Promise.withResolvers<void>();
 	const releaseTransition = Promise.withResolvers<void>();
 	let spawnCalls = 0;
 	let paused = false;
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		await broker.start();
 		const transition = broker.ledger.transition.bind(broker.ledger);
 		const transitionSpy = spyOn(broker.ledger, "transition").mockImplementation(async (identity, state, fields) => {
@@ -426,8 +426,8 @@ test("an admitted startup fenced during ledger persistence cannot reach synchron
 	} finally {
 		setLifecycleCommandResolverForTest(broker, undefined);
 		setPublicationObservationForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		releaseTransition.resolve();
 		await broker.stop().catch(() => undefined);
 		await fs.rm(root, { recursive: true, force: true });
@@ -437,7 +437,7 @@ test("an admitted startup fenced during ledger persistence cannot reach synchron
 test("a broker that lost the root refuses queued startups instead of spawning children", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-lost-root-admission-"));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	// A short TTL drives the publication watchdog at `ttl/3`, so the fence lands fast.
 	const broker = new Broker({ agentDir, heartbeatTtlMs: 300 });
 	const release = Promise.withResolvers<void>();
@@ -446,7 +446,7 @@ test("a broker that lost the root refuses queued startups instead of spawning ch
 	let brokerCompleted = false;
 	let spawnPathEnteredAfterCompletion = 0;
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		await broker.start();
 		setLifecycleCommandResolverForTest(broker, () => {
 			if (brokerCompleted) spawnPathEnteredAfterCompletion += 1;
@@ -497,8 +497,8 @@ test("a broker that lost the root refuses queued startups instead of spawning ch
 		setLifecycleTimingForTest(broker, undefined);
 		setPublicationObservationForTest(broker, undefined);
 		setAmbiguityGraceForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		release.resolve();
 		await broker.stop().catch(() => undefined);
 		await fs.rm(root, { recursive: true, force: true });
@@ -508,14 +508,14 @@ test("a broker that lost the root refuses queued startups instead of spawning ch
 test("a stop that cannot prove it still owns the root drains the queued startups", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-unproven-stop-"));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	const release = Promise.withResolvers<void>();
 	const parked: StartupAdmissionTiming = { now: Date.now, sleep: () => Promise.withResolvers<void>().promise };
 	const queuedInAdmission = Promise.withResolvers<void>();
 	let spawnCalls = 0;
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		await broker.start();
 		setLifecycleCommandResolverForTest(broker, () => {
 			spawnCalls += 1;
@@ -576,8 +576,8 @@ test("a stop that cannot prove it still owns the root drains the queued startups
 		setLifecycleCommandResolverForTest(broker, undefined);
 		setLifecycleTimingForTest(broker, undefined);
 		setPublicationObservationForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		release.resolve();
 		await broker.stop().catch(() => undefined);
 		await fs.rm(root, { recursive: true, force: true });
@@ -623,7 +623,7 @@ test("a default startup admitted late by the production broker stays inside the 
 
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-late-admission-"));
 	const agentDir = path.join(root, "agent");
-	const previousCommand = process.env.GJC_SDK_SESSION_COMMAND;
+	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
 	const broker = new Broker({ agentDir });
 	const release = Promise.withResolvers<void>();
 	const parked: StartupAdmissionTiming = { now: Date.now, sleep: () => Promise.withResolvers<void>().promise };
@@ -633,7 +633,7 @@ test("a default startup admitted late by the production broker stays inside the 
 	let observedQueueWaitMs: number | undefined;
 	let spawnCalls = 0;
 	try {
-		delete process.env.GJC_SDK_SESSION_COMMAND;
+		delete process.env.WORX_SDK_SESSION_COMMAND;
 		await broker.start();
 		setLifecycleCommandResolverForTest(broker, () => {
 			spawnCalls += 1;
@@ -683,8 +683,8 @@ test("a default startup admitted late by the production broker stays inside the 
 	} finally {
 		setLifecycleCommandResolverForTest(broker, undefined);
 		setLifecycleTimingForTest(broker, undefined);
-		if (previousCommand === undefined) delete process.env.GJC_SDK_SESSION_COMMAND;
-		else process.env.GJC_SDK_SESSION_COMMAND = previousCommand;
+		if (previousCommand === undefined) delete process.env.WORX_SDK_SESSION_COMMAND;
+		else process.env.WORX_SDK_SESSION_COMMAND = previousCommand;
 		release.resolve();
 		await broker.stop().catch(() => undefined);
 		await fs.rm(root, { recursive: true, force: true });

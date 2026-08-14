@@ -184,7 +184,7 @@ describe("markdown viewport anchors across topology-changing reflow (#2031)", ()
 				expect(rendered.anchors.length).toBe(rendered.lines.length);
 				const joined = rendered.lines.join("");
 				expect(joined).not.toContain(VIEWPORT_ANCHOR_PREFIX);
-				expect(joined).not.toContain("GJC_ANCHOR");
+				expect(joined).not.toContain("WORX_ANCHOR");
 				assertAnchorContract(rendered.anchors);
 			}
 		}

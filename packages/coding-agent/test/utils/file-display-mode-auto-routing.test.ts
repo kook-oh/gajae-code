@@ -9,15 +9,15 @@ let savedGjcVariant: string | undefined;
 let savedPiVariant: string | undefined;
 
 beforeEach(() => {
-	savedGjcVariant = Bun.env.GJC_EDIT_VARIANT;
+	savedGjcVariant = Bun.env.WORX_EDIT_VARIANT;
 	savedPiVariant = Bun.env.PI_EDIT_VARIANT;
-	delete Bun.env.GJC_EDIT_VARIANT;
+	delete Bun.env.WORX_EDIT_VARIANT;
 	delete Bun.env.PI_EDIT_VARIANT;
 });
 
 afterEach(() => {
-	if (savedGjcVariant === undefined) delete Bun.env.GJC_EDIT_VARIANT;
-	else Bun.env.GJC_EDIT_VARIANT = savedGjcVariant;
+	if (savedGjcVariant === undefined) delete Bun.env.WORX_EDIT_VARIANT;
+	else Bun.env.WORX_EDIT_VARIANT = savedGjcVariant;
 	if (savedPiVariant === undefined) delete Bun.env.PI_EDIT_VARIANT;
 	else Bun.env.PI_EDIT_VARIANT = savedPiVariant;
 	resetSettingsForTest();
@@ -94,8 +94,8 @@ describe("resolveFileDisplayMode under edit.mode auto routing", () => {
 		expect(mode.lineNumbers).toBe(true);
 	});
 
-	test("GJC_EDIT_VARIANT=hashline restores the hashline read/search display (emergency rollback)", () => {
-		Bun.env.GJC_EDIT_VARIANT = "hashline";
+	test("WORX_EDIT_VARIANT=hashline restores the hashline read/search display (emergency rollback)", () => {
+		Bun.env.WORX_EDIT_VARIANT = "hashline";
 		for (const model of ["openai/gpt-5.4", "anthropic/claude-sonnet-4-6"]) {
 			const mode = resolveFileDisplayMode(makeSession({ model }));
 			expect(mode.hashLines).toBe(true);

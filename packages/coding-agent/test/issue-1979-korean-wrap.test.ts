@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { HookSelectorComponent } from "@bworx-io/worx-code/modes/components/hook-selector";
 import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
 import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
 import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { Container, Text, TUI, visibleWidth } from "@gajae-code/tui";
 import { VirtualTerminal } from "../../tui/test/virtual-terminal";
 
@@ -13,7 +13,7 @@ const WIDTH = 20;
 const CONTENT_WIDTH = WIDTH - 2; // Assistant Markdown's left and right padding.
 const SUFFIX = "끝-ISSUE-1979-SUFFIX";
 const OPTION_LABELS = ["계속 진행", "다른 선택지를 입력"];
-const MULTIPLEXER_ENV_KEYS = ["TMUX", "TMUX_PANE", "STY", "ZELLIJ", "GJC_TMUX_LAUNCHED"] as const;
+const MULTIPLEXER_ENV_KEYS = ["TMUX", "TMUX_PANE", "STY", "ZELLIJ", "WORX_TMUX_LAUNCHED"] as const;
 let previousMultiplexerEnv: Map<string, string | undefined>;
 beforeAll(async () => {
 	resetSettingsForTest();

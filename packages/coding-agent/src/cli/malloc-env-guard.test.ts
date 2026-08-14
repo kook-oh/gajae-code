@@ -99,6 +99,6 @@ describe("module constants", () => {
 	});
 
 	it("uses a namespaced loop-guard variable", () => {
-		expect(MALLOC_ENV_REEXEC_GUARD).toBe("GJC_MALLOC_ENV_REEXEC");
+		expect(MALLOC_ENV_REEXEC_GUARD).toBe("WORX_MALLOC_ENV_REEXEC");
 	});
 });
