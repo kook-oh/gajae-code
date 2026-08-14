@@ -136,7 +136,7 @@ export const GJC_TEAM_MAX_WORKERS = 20;
 const GJC_TEAM_WORKER_CLI_ENV = "GJC_TEAM_WORKER_CLI";
 const GJC_TEAM_WORKER_CLI_MAP_ENV = "GJC_TEAM_WORKER_CLI_MAP";
 
-export type GjcTeamWorkerCli = "gjc";
+export type GjcTeamWorkerCli = "worx";
 type GjcTeamWorkerCliMode = "auto" | GjcTeamWorkerCli;
 
 export interface GjcTeamLeader {
@@ -381,16 +381,16 @@ function normalizeGjcTeamWorkerCliMode(
 		.trim()
 		.toLowerCase();
 	if (normalized === "" || normalized === "auto") return "auto";
-	if (normalized === "gjc") return "gjc";
+	if (normalized === "worx") return "worx";
 	if (normalized === "codex" || normalized === "claude" || normalized === "gemini") {
-		throw new Error(`Unsupported ${sourceEnv} value "${raw}". GJC team launches GJC teammate sessions only.`);
+		throw new Error(`Unsupported ${sourceEnv} value "${raw}". WORX team launches WORX teammate sessions only.`);
 	}
-	throw new Error(`Invalid ${sourceEnv} value "${raw}". Expected: auto or gjc`);
+	throw new Error(`Invalid ${sourceEnv} value "${raw}". Expected: auto or worx`);
 }
 
 export function resolveGjcTeamWorkerCli(env: NodeJS.ProcessEnv = process.env): GjcTeamWorkerCli {
 	const mode = normalizeGjcTeamWorkerCliMode(env[GJC_TEAM_WORKER_CLI_ENV]);
-	return mode === "auto" ? "gjc" : mode;
+	return mode === "auto" ? "worx" : mode;
 }
 
 export function resolveGjcTeamWorkerCliPlan(
@@ -409,7 +409,7 @@ export function resolveGjcTeamWorkerCliPlan(
 	const entries = rawMap.split(",").map(entry => entry.trim());
 	if (entries.length === 0 || entries.every(entry => entry.length === 0)) {
 		throw new Error(
-			`Invalid ${GJC_TEAM_WORKER_CLI_MAP_ENV} value "${env[GJC_TEAM_WORKER_CLI_MAP_ENV]}". Expected: auto or gjc`,
+			`Invalid ${GJC_TEAM_WORKER_CLI_MAP_ENV} value "${env[GJC_TEAM_WORKER_CLI_MAP_ENV]}". Expected: auto or worx`,
 		);
 	}
 	if (entries.some(entry => entry.length === 0)) {
@@ -425,13 +425,13 @@ export function resolveGjcTeamWorkerCliPlan(
 	const expanded = entries.length === 1 ? Array.from({ length: workerCount }, () => entries[0] ?? "") : entries;
 	return expanded.map(entry => {
 		const mode = normalizeGjcTeamWorkerCliMode(entry, GJC_TEAM_WORKER_CLI_MAP_ENV);
-		return mode === "auto" ? "gjc" : mode;
+		return mode === "auto" ? "worx" : mode;
 	});
 }
 
 export function translateGjcWorkerLaunchArgsForCli(workerCli: GjcTeamWorkerCli, args: string[]): string[] {
-	if (workerCli !== "gjc") {
-		throw new Error(`Unsupported team worker CLI "${workerCli}". GJC team launches GJC teammate sessions only.`);
+	if (workerCli !== "worx") {
+		throw new Error(`Unsupported team worker CLI "${workerCli}". WORX team launches WORX teammate sessions only.`);
 	}
 	return [...args];
 }
@@ -590,7 +590,7 @@ export class UnknownGjcTeamApiOperationError extends Error {
 		const guidance =
 			suggestions.length > 0
 				? `did you mean ${suggestions.join(" or ")}?`
-				: "run gjc team api --help for supported operations";
+				: "run worx team api --help for supported operations";
 		super(`unknown_team_api_operation:${operation}; ${guidance}`);
 		this.name = "UnknownGjcTeamApiOperationError";
 		this.operation = operation;
@@ -1280,7 +1280,7 @@ async function readConfig(dir: string): Promise<GjcTeamConfig> {
 		dry_run: config.dry_run ?? config.tmux_session_name === "dry-run",
 		leader_cwd: config.leader_cwd ?? config.leader.cwd,
 		team_state_root: config.team_state_root ?? config.state_root,
-		worker_cli_plan: config.worker_cli_plan ?? Array.from({ length: config.worker_count }, () => "gjc"),
+		worker_cli_plan: config.worker_cli_plan ?? Array.from({ length: config.worker_count }, () => "worx"),
 	};
 }
 const WORKER_INTEGRATION_CONFIG_CACHE_TTL_MS = 100;
@@ -1575,7 +1575,7 @@ async function relaunchWorkerPaneForMemoryGuard(input: {
 		input.config,
 		input.worker,
 		input.platform,
-		`Send startup ACK before resuming: gjc team api worker-startup-ack --input '{"team_name":"${input.config.team_name}","worker_id":"${input.worker.id}","protocol_version":"1","replacement_token":"${input.replacementToken}"}' --json. ${GJC_TEAM_CONTINUATION_PROMPT}`,
+		`Send startup ACK before resuming: worx team api worker-startup-ack --input '{"team_name":"${input.config.team_name}","worker_id":"${input.worker.id}","protocol_version":"1","replacement_token":"${input.replacementToken}"}' --json. ${GJC_TEAM_CONTINUATION_PROMPT}`,
 		input.env,
 	);
 	const workerCwd = input.worker.worktree_path ?? input.config.leader.cwd;

@@ -35,7 +35,7 @@ describe("external controller integration docs", () => {
 		expect(guide).not.toContain("gjc --mode " + "rpc");
 		expect(guide).not.toContain("docs/rpc.md");
 		expect(guide).not.toContain("docs/bridge.md");
-		expect(guide).toContain("gjc_coordinator_register_session");
+		expect(guide).toContain("worx_coordinator_register_session");
 		expect(guide).toContain("SDK-discoverable session");
 		expect(guide).toContain("advisory process metadata only");
 		expect(guide).not.toContain("visible tmux fallback");
@@ -123,8 +123,8 @@ describe("external controller integration docs", () => {
 			expect(readiness).toContain(smoke);
 		}
 
-		expect(cliArgs).toContain('export type Mode = "text" | "json" | "acp"');
-		expect(cliArgs).toContain("was removed; external control now uses the Gajae-Code SDK");
+		expect(cliArgs).toContain('export type Mode = "text" | "json" | "rpc" | "acp"');
+		expect(cliArgs).toContain("was removed; external control now uses the WORX Code SDK");
 		expect(cli).toContain('{ name: "acp", load: () => import("./commands/acp").then(m => m.default) }');
 		expect(acpCommand).toContain("Run Gajae Code as an ACP (Agent Client Protocol) server over stdio");
 		expect(mcpCommand).toContain('server !== "coordinator" && server !== "hermes"');
@@ -136,7 +136,7 @@ describe("external controller integration docs", () => {
 		expect(guide).toContain("Forward finish/stop lifecycle notifications");
 		expect(guide).toContain("turn_end");
 		expect(guide).toContain("agent_end");
-		expect(guide).toContain("gjc_coordinator_watch_events");
+		expect(guide).toContain("worx_coordinator_watch_events");
 		expect(guide).toContain("waiting_for_answer");
 		expect(guide).toContain("metadata-only");
 		expect(guide).toContain("caller-supplied sanitized summary");

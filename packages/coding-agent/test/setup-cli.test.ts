@@ -194,7 +194,7 @@ describe("setup CLI parsing", () => {
 			const configPreview = parsed.previews.find(preview => preview.path.endsWith(".yaml"))?.content ?? "";
 			expect(configPreview).not.toContain("openai/gpt-5.5");
 			expect(configPreview).not.toContain("--model");
-			expect(configPreview).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: gjc --worktree");
+			expect(configPreview).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
 			expect(output).toContain("owns worktree creation and resume identity");
 		});
 
@@ -246,9 +246,9 @@ describe("setup CLI parsing", () => {
 				mcp_servers: Record<string, { command: string; env?: Record<string, string> }>;
 			};
 			expect(parsed.mcp_servers.other?.command).toBe("other");
-			expect(parsed.mcp_servers.gjc_coordinator?.command).toBe("gjc");
-			expect(parsed.mcp_servers.gjc_coordinator?.env?.GJC_COORDINATOR_MCP_MUTATIONS).toBe("sessions,questions");
-			expect(parsed.mcp_servers.gjc_coordinator?.env?.GJC_COORDINATOR_MCP_SESSION_COMMAND).toBe("gjc --worktree");
+			expect(parsed.mcp_servers.worx_coordinator?.command).toBe("worx");
+			expect(parsed.mcp_servers.worx_coordinator?.env?.GJC_COORDINATOR_MCP_MUTATIONS).toBe("sessions,questions");
+			expect(parsed.mcp_servers.worx_coordinator?.env?.GJC_COORDINATOR_MCP_SESSION_COMMAND).toBe("worx --worktree");
 		});
 
 		it("renders named Hermes worktree commands and allows explicit opt-out", async () => {
@@ -265,7 +265,7 @@ describe("setup CLI parsing", () => {
 			});
 
 			const namedOutput = named.mock.calls.map(call => String(call[0])).join("");
-			expect(namedOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: gjc --worktree hermes-gajae-code");
+			expect(namedOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree hermes-gajae-code");
 			named.mockRestore();
 			const noWorktree = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 
@@ -279,8 +279,8 @@ describe("setup CLI parsing", () => {
 			});
 
 			const noWorktreeOutput = noWorktree.mock.calls.map(call => String(call[0])).join("");
-			expect(noWorktreeOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: gjc");
-			expect(noWorktreeOutput).not.toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: gjc --worktree");
+			expect(noWorktreeOutput).toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx");
+			expect(noWorktreeOutput).not.toContain("GJC_COORDINATOR_MCP_SESSION_COMMAND: worx --worktree");
 		});
 
 		it("rejects unmanaged Hermes server conflicts unless forced", async () => {
@@ -290,7 +290,7 @@ describe("setup CLI parsing", () => {
 				configPath,
 				YAML.stringify({
 					mcp_servers: {
-						gjc_coordinator: {
+						worx_coordinator: {
 							command: "custom",
 						},
 					},
@@ -340,8 +340,8 @@ describe("setup CLI parsing", () => {
 
 			const output = stdout.mock.calls.map(call => String(call[0])).join("");
 			const parsed = JSON.parse(output) as { smoke: { requiredTools: string[] } };
-			expect(parsed.smoke.requiredTools).toContain("gjc_coordinator_send_prompt");
-			expect(parsed.smoke.requiredTools).toContain("gjc_coordinator_submit_question_answer");
+			expect(parsed.smoke.requiredTools).toContain("worx_coordinator_send_prompt");
+			expect(parsed.smoke.requiredTools).toContain("worx_coordinator_submit_question_answer");
 			expect(output).not.toContain("OPENAI");
 			expect(output).not.toContain("ANTHROPIC");
 		});

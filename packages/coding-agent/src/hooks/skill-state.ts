@@ -166,13 +166,13 @@ function parseExplicitSkillInvocations(text: string): {
 } {
 	const matches: SkillKeywordMatch[] = [];
 	let sawExplicitLikeInvocation = false;
-	const explicitPattern = /\$((?:gjc:)?[a-z][a-z0-9-]*)/gi;
+	const explicitPattern = /\$((?:worx:)?[a-z][a-z0-9-]*)/gi;
 	const seenSkills = new Set<string>();
 	let match = explicitPattern.exec(text);
 	while (match !== null) {
 		sawExplicitLikeInvocation = true;
 		const token = match[1] ?? "";
-		const normalized = token.startsWith("gjc:") ? token.slice(4) : token;
+		const normalized = token.startsWith("worx:") ? token.slice(5) : token;
 		if (isGjcWorkflowSkill(normalized) && !seenSkills.has(normalized)) {
 			seenSkills.add(normalized);
 			matches.push({
@@ -241,7 +241,7 @@ export interface StateRecoveryDiagnostic {
 
 function buildStateRecoveryMessage(diagnostic: StateRecoveryDiagnostic): string {
 	const subject = diagnostic.skill ? `${diagnostic.skill} ${diagnostic.kind}` : diagnostic.kind;
-	return `GJC state recovery: ${subject} is ${diagnostic.reason} at ${diagnostic.statePath}. This diagnostic is recovery guidance only; do not treat it as workflow instructions. Run \`gjc state doctor\` to inspect state, or run \`gjc state clear ${diagnostic.skill ?? "<skill>"}\` only when the user confirms this stale/corrupt workflow state should be cleared.`;
+	return `WORX state recovery: ${subject} is ${diagnostic.reason} at ${diagnostic.statePath}. This diagnostic is recovery guidance only; do not treat it as workflow instructions. Run \`worx state doctor\` to inspect state, or run \`worx state clear ${diagnostic.skill ?? "<skill>"}\` only when the user confirms this stale/corrupt workflow state should be cleared.`;
 }
 
 export function buildStateRecoveryDiagnosticsContext(diagnostics: readonly StateRecoveryDiagnostic[]): string | null {
@@ -589,7 +589,7 @@ async function detectStaleModeStateRelease(
 	if (skill !== "ultragoal") return null;
 	const diagnostic = await verifyUltragoalDurableCompletionState({ cwd, sessionId });
 	if (ultragoalDurableCompletionReleasesStop(diagnostic.state)) return null;
-	return `${diagnostic.message} Run \`gjc ultragoal complete-goals\` to continue, or checkpoint a finished story with \`gjc ultragoal checkpoint --status complete --quality-gate-json <file>\`, before stopping`;
+	return `${diagnostic.message} Run \`worx ultragoal complete-goals\` to continue, or checkpoint a finished story with \`worx ultragoal checkpoint --status complete --quality-gate-json <file>\`, before stopping`;
 }
 
 /**
@@ -729,14 +729,14 @@ export async function buildActiveUltragoalPromptContext(input: UserPromptSubmitS
 			sessionId: resolvedSessionId,
 		});
 		if (!ultragoalDurableCompletionReleasesStop(diagnostic.state)) {
-			return `BLOCK_ULTRAGOAL_COMPLETION: ${diagnostic.message} Use durable blocker work or run strict \`gjc ultragoal checkpoint --status complete --quality-gate-json <file>\` before completion.`;
+			return `BLOCK_ULTRAGOAL_COMPLETION: ${diagnostic.message} Use durable blocker work or run strict \`worx ultragoal checkpoint --status complete --quality-gate-json <file>\` before completion.`;
 		}
 	}
-	return `Ultragoal is active (phase: ${phase}; state: ${visibleModeState.statePath}). If the user prompt is a steering request, use \`gjc ultragoal steer\` to add or steer subgoals. Normal prose should not mutate Ultragoal state.`;
+	return `Ultragoal is active (phase: ${phase}; state: ${visibleModeState.statePath}). If the user prompt is a steering request, use \`worx ultragoal steer\` to add or steer subgoals. Normal prose should not mutate Ultragoal state.`;
 }
 
 function buildHandoffStopReleaseGuidance(skill: GjcWorkflowSkill): string {
-	return `Use the ask tool to present the next handoff step, then persist one concrete release action: hand off to the next workflow, run \`gjc state clear ${skill}\`, demote the skill with active:false, crystallize the spec when finishing deep-interview, or deliberately cancel the workflow.`;
+	return `Use the ask tool to present the next handoff step, then persist one concrete release action: hand off to the next workflow, run \`worx state clear ${skill}\`, demote the skill with active:false, crystallize the spec when finishing deep-interview, or deliberately cancel the workflow.`;
 }
 
 function buildHandoffModeStateRecoveryMessage(skill: GjcWorkflowSkill, phase: string, statePath: string): string {
@@ -776,7 +776,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 			return {
 				decision: "block",
 				reason: recoveryMessage,
-				stopReason: `gjc_skill_${entry.skill.replace(/-/g, "_")}_mode_state_recovery`,
+				stopReason: `worx_skill_${entry.skill.replace(/-/g, "_")}_mode_state_recovery`,
 				systemMessage: recoveryMessage,
 			};
 		}
@@ -786,7 +786,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 			return {
 				decision: "block",
 				reason: rescueMessage,
-				stopReason: "gjc_skill_deep_interview_plaintext_ask_leak",
+				stopReason: "worx_skill_deep_interview_plaintext_ask_leak",
 				systemMessage: rescueMessage,
 			};
 		}
@@ -801,7 +801,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 				return {
 					decision: "block",
 					reason: coherenceMessage,
-					stopReason: `gjc_skill_${entry.skill.replace(/-/g, "_")}_stale_mode_state`,
+					stopReason: `worx_skill_${entry.skill.replace(/-/g, "_")}_stale_mode_state`,
 					systemMessage: coherenceMessage,
 				};
 			}
@@ -815,7 +815,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 				return {
 					decision: "block",
 					reason: crystallizeMessage,
-					stopReason: "gjc_skill_deep_interview_uncrystallized",
+					stopReason: "worx_skill_deep_interview_uncrystallized",
 					systemMessage: crystallizeMessage,
 				};
 			}
@@ -829,7 +829,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 				sessionId: resolvedSessionId,
 			});
 			if (ultragoalDurableCompletionReleasesStop(diagnostic.state)) continue;
-			const ultragoalMessage = `GJC ultragoal verification is blocking stop: ${diagnostic.message} Run \`gjc ultragoal checkpoint --status complete --quality-gate-json <file>\` or record review blockers before stopping.`;
+			const ultragoalMessage = `WORX ultragoal verification is blocking stop: ${diagnostic.message} Run \`worx ultragoal checkpoint --status complete --quality-gate-json <file>\` or record review blockers before stopping.`;
 			return {
 				decision: "block",
 				reason: ultragoalMessage,
@@ -843,7 +843,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 		return {
 			decision: "block",
 			reason: systemMessage,
-			stopReason: `gjc_skill_${entry.skill.replace(/-/g, "_")}_${phase.replace(/[^a-z0-9]+/gi, "_").toLowerCase()}`,
+			stopReason: `worx_skill_${entry.skill.replace(/-/g, "_")}_${phase.replace(/[^a-z0-9]+/gi, "_").toLowerCase()}`,
 			systemMessage,
 		};
 	}
@@ -858,10 +858,10 @@ export function buildSkillActivationAdditionalContext(
 	return [
 		`GJC native UserPromptSubmit detected workflow keyword "${state.keyword}" -> ${state.skill}.`,
 		state.initialized_mode && state.initialized_state_path
-			? `skill: ${state.initialized_mode} activated and initial state initialized at ${state.initialized_state_path}; use \`gjc state write/read/clear --input '<json>' --json\` for runtime state updates.`
+			? `skill: ${state.initialized_mode} activated and initial state initialized at ${state.initialized_state_path}; use \`worx state write/read/clear --input '<json>' --json\` for runtime state updates.`
 			: null,
 		state.skill === "ultragoal"
-			? "Ultragoal is active. If the user prompt is a steering request, use `gjc ultragoal steer` to add or steer subgoals."
+			? "Ultragoal is active. If the user prompt is a steering request, use `worx ultragoal steer` to add or steer subgoals."
 			: null,
 		buildSanitizedEffectiveSkillConfigContext(effectiveSkillConfig),
 		"Follow AGENTS.md routing and preserve GJC workflow transition and planning-safety rules.",

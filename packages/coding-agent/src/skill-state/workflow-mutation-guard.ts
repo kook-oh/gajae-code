@@ -21,7 +21,7 @@ import {
 export const DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE =
 	"Deep-interview phase boundary: continue gathering context/questions/risks and emit a handoff/spec before code edits. Mutation tools and patch execution are blocked while deep-interview is active; finalize specs through `gjc deep-interview --write --stage final` or hand off to an execution phase.";
 export const WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE =
-	".gjc workflow state and artifacts are runtime-owned. Agent mutation tools cannot edit `.gjc/**`; use the sanctioned `gjc` CLI instead.";
+	".gjc workflow state and artifacts are runtime-owned. Agent mutation tools cannot edit `.gjc/**`; use the sanctioned `worx` CLI instead.";
 export const RALPLAN_MUTATION_BLOCK_MESSAGE =
 	"Ralplan planning phase boundary: keep refining the consensus plan and persist plan artifacts through `gjc ralplan --write` (stage scratch files under a temp dir if needed). Product-code mutation tools and patch execution are blocked while ralplan is active; mutate only after the plan is approved and execution begins.";
 export const ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE =
@@ -1180,7 +1180,7 @@ export async function assertWorkflowMutationRawPathsAllowed(input: {
 	// A deferred ast_edit apply must not reach `.gjc/**` either.
 	if (hasBlockedGjcTarget(input.cwd, targets)) {
 		const stateSkill = firstBlockedWorkflowStateSkill(input.cwd, targets);
-		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "gjc <workflow-command>";
+		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "worx <workflow-command>";
 		throw new ToolError(`${WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE}\nUse: ${command}`);
 	}
 	if (input.forceOverride) return;
@@ -1200,12 +1200,12 @@ export async function getWorkflowMutationDecision(
 	const targets = extractTargets(input.tool, input.args);
 	if (input.tool.name !== "bash" && input.enforceWorkflowState !== false && hasBlockedGjcTarget(input.cwd, targets)) {
 		const stateSkill = firstBlockedWorkflowStateSkill(input.cwd, targets);
-		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "gjc <workflow-command>";
+		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "worx <workflow-command>";
 		return {
 			blocked: true,
 			message: `${WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE}\nUse: ${command}`,
 			targets: targets.paths,
-			reason: stateSkill ? "workflow-state-target" : "gjc-target",
+			reason: stateSkill ? "workflow-state-target" : "worx-target",
 			command,
 		};
 	}

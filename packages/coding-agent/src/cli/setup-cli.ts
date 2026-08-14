@@ -743,7 +743,7 @@ ${chalk.bold("Hermes example:")}
   ${APP_NAME} setup hermes --root /path/to/repo
   ${APP_NAME} setup hermes --root /path/to/repo --profile my-bot --repo gajae-code --profile-dir /path/to/hermes/profile --install
   ${APP_NAME} setup hermes --root /path/to/repo --worktree-name hermes-gajae-code
-  ${APP_NAME} setup hermes --root /path/to/repo --session-command "gjc --worktree hermes-custom --model <provider/model>"
+  ${APP_NAME} setup hermes --root /path/to/repo --session-command "worx --worktree hermes-custom --model <provider/model>"
 
 ${chalk.bold("Options:")}
   -c, --check       Check if dependencies are installed without installing

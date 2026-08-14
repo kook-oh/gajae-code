@@ -73,7 +73,7 @@ async function createSession(root: string): Promise<void> {
 async function registerHandoff(server: ReturnType<typeof createCoordinatorMcpServer>, root: string) {
 	const tokenFile = path.join(root, "codex-token");
 	await Bun.write(tokenFile, "test-token");
-	return server.callTool("gjc_coordinator_register_codex_handoff", {
+	return server.callTool("worx_coordinator_register_codex_handoff", {
 		session_id: "session-1",
 		thread_id: "thread-1",
 		endpoint: { kind: "unix", path: "/tmp/codex-app-server.sock" },
@@ -100,7 +100,7 @@ describe("Coordinator Codex resume bridge", () => {
 			heartbeat: { supported: false, reason: "automation_update_unavailable" },
 		});
 		await expect(
-			server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" }),
+			server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" }),
 		).resolves.toMatchObject({
 			ok: true,
 			handoff: { thread_id: "thread-1", token_file: path.join(root, "codex-token") },
@@ -118,7 +118,7 @@ describe("Coordinator Codex resume bridge", () => {
 			pending_wake_events: [],
 		});
 		await expect(
-			server.callTool("gjc_coordinator_register_codex_handoff", {
+			server.callTool("worx_coordinator_register_codex_handoff", {
 				session_id: "session-1",
 				thread_id: "thread-1",
 				endpoint: { kind: "tcp", host: "10.0.0.1", port: 8123 },
@@ -127,7 +127,7 @@ describe("Coordinator Codex resume bridge", () => {
 			}),
 		).resolves.toEqual({ ok: false, error: { code: "codex_endpoint_not_loopback" } });
 		await expect(
-			server.callTool("gjc_coordinator_register_codex_handoff", {
+			server.callTool("worx_coordinator_register_codex_handoff", {
 				session_id: "session-1",
 				thread_id: "thread-1",
 				endpoint: { kind: "unix", path: "/tmp/codex-app-server.sock" },
@@ -143,7 +143,7 @@ describe("Coordinator Codex resume bridge", () => {
 		const server = createServer(root, "idle", requests);
 		await createSession(root);
 		await expect(
-			server.callTool("gjc_coordinator_register_codex_handoff", {
+			server.callTool("worx_coordinator_register_codex_handoff", {
 				session_id: "session-1",
 				thread_id: "thread-1",
 				endpoint: { kind: "unix", path: "/tmp/codex-app-server.sock" },
@@ -154,7 +154,7 @@ describe("Coordinator Codex resume bridge", () => {
 		).resolves.toEqual({ ok: false, error: { code: "token_material_not_allowed" } });
 
 		const tokenFile = path.join(root, "codex-token");
-		const response = await server.callTool("gjc_coordinator_register_codex_handoff", {
+		const response = await server.callTool("worx_coordinator_register_codex_handoff", {
 			session_id: "session-1",
 			thread_id: "thread-1",
 			endpoint: { kind: "unix", path: "/tmp/codex-app-server.sock", ignored: "ignored" },
@@ -217,7 +217,7 @@ describe("Coordinator Codex resume bridge", () => {
 			summary: "Terminal coordinator event",
 		});
 		await awaitCodexWakePublishesForTest(namespaceDir(root));
-		const read = await server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" });
+		const read = await server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" });
 		expect(read).toMatchObject({
 			wake_events: [
 				{
@@ -247,7 +247,7 @@ describe("Coordinator Codex resume bridge", () => {
 		});
 		expect(duplicate.created).toBe(false);
 		await expect(
-			restarted.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" }),
+			restarted.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" }),
 		).resolves.toMatchObject({
 			handoff: { thread_id: "thread-1" },
 			wake_events: [{ key: `session-1:${event.seq}` }],
@@ -270,7 +270,7 @@ describe("Coordinator Codex resume bridge", () => {
 		});
 		await awaitCodexWakePublishesForTest(namespaceDir(root));
 		await expect(
-			server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" }),
+			server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" }),
 		).resolves.toMatchObject({
 			pending_wake_events: [
 				{ key: `session-1:${event.seq}`, status: "pending", lifecycle: "requested", attempts: 1 },
@@ -278,7 +278,7 @@ describe("Coordinator Codex resume bridge", () => {
 		});
 		expect(requests.map(request => request.method)).toEqual(["initialize", "thread/resume"]);
 		await expect(
-			server.callTool("gjc_coordinator_ack_codex_handoff", {
+			server.callTool("worx_coordinator_ack_codex_handoff", {
 				session_id: "session-1",
 				wake_key: `session-1:${event.seq}`,
 				idempotency_key: "ack-codex-wake",
@@ -286,7 +286,7 @@ describe("Coordinator Codex resume bridge", () => {
 			}),
 		).resolves.toMatchObject({ ok: true, wake_event: { status: "acked", lifecycle: "acknowledged" } });
 		await expect(
-			server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" }),
+			server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" }),
 		).resolves.toMatchObject({
 			pending_wake_events: [],
 		});
@@ -311,7 +311,7 @@ describe("Coordinator Codex resume bridge", () => {
 		await awaitCodexWakePublishesForTest(namespaceDir(root));
 
 		await expect(
-			server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" }),
+			server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" }),
 		).resolves.toMatchObject({
 			wake_events: [
 				{
@@ -372,7 +372,7 @@ describe("Coordinator Codex resume bridge", () => {
 		});
 		await awaitCodexWakePublishesForTest(namespaceDir(root));
 
-		const read = (await server.callTool("gjc_coordinator_read_codex_handoff", {
+		const read = (await server.callTool("worx_coordinator_read_codex_handoff", {
 			session_id: "session-1",
 		})) as { wake_events: Array<{ key: string; status: string; attempts: number }> };
 		expect(read.wake_events.find(event => event.key === `session-1:${pending.seq}`)).toMatchObject({
@@ -404,7 +404,7 @@ describe("Coordinator Codex resume bridge", () => {
 		});
 		await awaitCodexWakePublishesForTest(namespaceDir(root));
 		expect(requests.filter(request => request.method === "turn/start")).toHaveLength(2);
-		const read = (await server.callTool("gjc_coordinator_read_codex_handoff", {
+		const read = (await server.callTool("worx_coordinator_read_codex_handoff", {
 			session_id: "session-1",
 		})) as { wake_events: Array<{ key: string; status: string; attempts: number }> };
 		expect(read.wake_events.find(event => event.key === `session-1:${failed.seq}`)).toMatchObject({
@@ -412,7 +412,7 @@ describe("Coordinator Codex resume bridge", () => {
 			attempts: 2,
 		});
 
-		await server.callTool("gjc_coordinator_ack_codex_handoff", {
+		await server.callTool("worx_coordinator_ack_codex_handoff", {
 			session_id: "session-1",
 			wake_key: `session-1:${published.seq}`,
 			idempotency_key: "ack-published-wake",

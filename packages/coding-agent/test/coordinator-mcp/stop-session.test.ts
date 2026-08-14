@@ -143,14 +143,14 @@ async function writeSession(
 	);
 }
 
-describe("gjc_coordinator_stop_session SDK lifecycle", () => {
+describe("worx_coordinator_stop_session SDK lifecycle", () => {
 	it("refuses a non-ephemeral session without force and never invokes lifecycle close", async () => {
 		const root = await tempRoot();
 		const { server, controls, sessionFile } = await createServer(root);
 		await writeSession(sessionFile("registered"), root, "registered");
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", { session_id: "registered", allow_mutation: true }),
+			await server.callTool("worx_coordinator_stop_session", { session_id: "registered", allow_mutation: true }),
 		).toMatchObject({ ok: false, reason: "not_ephemeral", closed: false });
 		expect(controls).toEqual([]);
 	});
@@ -161,7 +161,7 @@ describe("gjc_coordinator_stop_session SDK lifecycle", () => {
 		await writeSession(sessionFile("registered"), root, "registered");
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", {
+			await server.callTool("worx_coordinator_stop_session", {
 				session_id: "registered",
 				force: true,
 				allow_mutation: true,
@@ -176,7 +176,7 @@ describe("gjc_coordinator_stop_session SDK lifecycle", () => {
 		await writeSession(sessionFile("ephemeral"), root, "ephemeral", { ephemeral: true });
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", { session_id: "ephemeral", allow_mutation: true }),
+			await server.callTool("worx_coordinator_stop_session", { session_id: "ephemeral", allow_mutation: true }),
 		).toMatchObject({ ok: true, closed: true, session_id: "ephemeral" });
 		expect(controls.filter(control => control.operation === "session.close")).toEqual([
 			expect.objectContaining({
@@ -197,7 +197,7 @@ describe("gjc_coordinator_stop_session SDK lifecycle", () => {
 		await writeSession(sessionFile("wedged"), root, "wedged", { ephemeral: true });
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", { session_id: "wedged", allow_mutation: true }),
+			await server.callTool("worx_coordinator_stop_session", { session_id: "wedged", allow_mutation: true }),
 		).toMatchObject({ ok: false, reason: "close_failed", detail: "close_refused", closed: false });
 		expect(await Bun.file(sessionFile("wedged")).exists()).toBe(true);
 	});
@@ -221,7 +221,7 @@ describe("gjc_coordinator_stop_session SDK lifecycle", () => {
 		);
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", { session_id: sessionId, allow_mutation: true }),
+			await server.callTool("worx_coordinator_stop_session", { session_id: sessionId, allow_mutation: true }),
 		).toMatchObject({ ok: false, reason: "active_turn", active_turn_id: turnId, closed: false });
 		expect(controls).toEqual([]);
 	});

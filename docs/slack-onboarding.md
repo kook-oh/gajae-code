@@ -127,14 +127,14 @@ readiness or handing back a prepared session that could activate with no
 binding at all.
 
 Through the Coordinator MCP surface the same three phases are
-`gjc_coordinator_start_session` with `prepare_existing_thread: true` (which
+`worx_coordinator_start_session` with `prepare_existing_thread: true` (which
 rejects an initial prompt and returns the session at state `prepared`), the
 unchanged `gjc notify bind-thread` command, and
-`gjc_coordinator_activate_session`. The Coordinator never writes the mapping
+`worx_coordinator_activate_session`. The Coordinator never writes the mapping
 store: it proves exact endpoint authority and delegates to the same activation
 exchange the CLI uses, and durable session state only becomes ready once the
 session itself proves `activated`/`already`. A prepared session refuses
-`gjc_coordinator_send_prompt` until it is activated.
+`worx_coordinator_send_prompt` until it is activated.
 
 ### Trust boundary
 

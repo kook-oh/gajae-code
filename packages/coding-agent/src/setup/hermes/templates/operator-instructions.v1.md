@@ -19,9 +19,9 @@ These instructions teach a Hermes-style coordinator how to operate GJC through t
 
 When the goal is to hand GJC a whole workflow rather than micro-manage one prompt, prefer the first-class delegate tools over manual `{{TOOL_PREFIX}}_start_session` + `{{TOOL_PREFIX}}_send_prompt` sequencing:
 
-- `gjc_delegate_plan` — run consensus planning (`/skill:ralplan`) to a pending-approval plan.
-- `gjc_delegate_execute` — run execution (`/skill:ultragoal`) to completion with verification.
-- `gjc_delegate_team` — run parallel team execution (`/skill:team`) with internal tmux workers.
+- `worx_delegate_plan` — run consensus planning (`/skill:ralplan`) to a pending-approval plan.
+- `worx_delegate_execute` — run execution (`/skill:ultragoal`) to completion with verification.
+- `worx_delegate_team` — run parallel team execution (`/skill:team`) with internal tmux workers.
 
 Each delegate starts (or reuses) a session, sends one workflow-tagged turn, and returns a durable `turn_id`. Pass `cwd` and `task`; set `allow_mutation: true` only when the bridge startup mutation class is enabled and the user has approved changes. Poll the returned `turn_id` with `{{TOOL_PREFIX}}_await_turn` or watch for the `delegation.started` event, exactly as with `send_prompt`. Drop to the manual start/send tools only for fine-grained control the delegate tools do not cover.
 
@@ -35,7 +35,7 @@ Coordinator MCP is a durable polling/await bridge, not a push subscription strea
 
 ## Worktree, model, and provider policy
 
-The Hermes bridge does not choose a model/provider. Generated setup configures `GJC_COORDINATOR_MCP_SESSION_COMMAND` to `gjc --worktree` by default, so GJC creates and tracks the worktree while still using normal local model/provider resolution. Keep worktree creation inside GJC rather than creating unmanaged Hermes-side git worktrees; this preserves the original project identity for session listing and resume. If the operator config supplies a different `GJC_COORDINATOR_MCP_SESSION_COMMAND`, preserve it as explicit user intent.
+The Hermes bridge does not choose a model/provider. Generated setup configures `GJC_COORDINATOR_MCP_SESSION_COMMAND` to `worx --worktree` by default, so WORX creates and tracks the worktree while still using normal local model/provider resolution. Keep worktree creation inside WORX rather than creating unmanaged Hermes-side git worktrees; this preserves the original project identity for session listing and resume. If the operator config supplies a different `GJC_COORDINATOR_MCP_SESSION_COMMAND`, preserve it as explicit user intent.
 
 Provider-specific commands are examples only, never product defaults.
 

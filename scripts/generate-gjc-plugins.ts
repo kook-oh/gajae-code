@@ -21,7 +21,7 @@ import { COORDINATOR_MCP_TOOL_NAMES } from "../packages/coding-agent/src/coordin
 const repoRoot = path.join(import.meta.dir, "..");
 const pluginsDir = path.join(repoRoot, "plugins");
 
-const DELEGATE_TOOLS = COORDINATOR_MCP_TOOL_NAMES.filter(name => name.startsWith("gjc_delegate_"));
+const DELEGATE_TOOLS = COORDINATOR_MCP_TOOL_NAMES.filter(name => name.startsWith("worx_delegate_"));
 
 const PLUGIN_NAME = "gajae-code";
 const NAMESPACE_LABEL = "gajae-code-plugin";
@@ -35,19 +35,19 @@ interface DelegateMeta {
 
 const DELEGATE_META: DelegateMeta[] = [
 	{
-		tool: "gjc_delegate_plan",
+		tool: "worx_delegate_plan",
 		workflow: "plan",
 		skill: "ralplan",
 		summary: "Delegate consensus planning to GJC (runs /skill:ralplan to a pending-approval plan).",
 	},
 	{
-		tool: "gjc_delegate_execute",
+		tool: "worx_delegate_execute",
 		workflow: "execute",
 		skill: "ultragoal",
 		summary: "Delegate execution to GJC (runs /skill:ultragoal to completion with verification).",
 	},
 	{
-		tool: "gjc_delegate_team",
+		tool: "worx_delegate_team",
 		workflow: "team",
 		skill: "team",
 		summary: "Delegate parallel team execution to GJC (runs /skill:team with internal tmux workers).",
@@ -80,13 +80,13 @@ function json(value: unknown): string {
 
 function coordinatorServer(projectDirToken: string): Record<string, unknown> {
 	return {
-		"gjc-coordinator": {
-			command: "gjc",
+		"worx-coordinator": {
+			command: "worx",
 			args: ["mcp-serve", "coordinator"],
 			env: {
 				GJC_COORDINATOR_MCP_WORKDIR_ROOTS: projectDirToken,
 				GJC_COORDINATOR_MCP_REPO: NAMESPACE_LABEL,
-				GJC_COORDINATOR_MCP_SESSION_COMMAND: "gjc --worktree",
+				GJC_COORDINATOR_MCP_SESSION_COMMAND: "worx --worktree",
 			},
 		},
 	};
@@ -121,12 +121,12 @@ Call the \`${meta.tool}\` coordinator MCP tool to delegate this work to gajae-co
 
 GJC starts a session and runs \`/skill:${meta.skill}\` to completion, returning a
 durable \`turn_id\`, status, and artifact references. Poll with
-\`gjc_coordinator_await_turn\` or \`gjc_coordinator_watch_events\`.
+\`worx_coordinator_await_turn\` or \`worx_coordinator_watch_events\`.
 Codex resume bridge correlation: after registering an app-server handoff with
-\`gjc_coordinator_register_codex_handoff\`, pass the same \`session_id\` as
+\`worx_coordinator_register_codex_handoff\`, pass the same \`session_id\` as
 \`codex_host_session_id\` on delegate calls so the new GJC session auto-binds to
 the Codex thread for wake-on-completion and questions. Acknowledge durable wakes
-by \`wake_key\` with \`gjc_coordinator_ack_codex_handoff\`; heartbeats are unsupported
+by \`wake_key\` with \`worx_coordinator_ack_codex_handoff\`; heartbeats are unsupported
 (\`automation_update_unavailable\`), so delivery is event-driven with startup drain.
 `;
 }
@@ -160,16 +160,16 @@ passes \`allow_mutation: true\` per call. \`GJC_COORDINATOR_MCP_REPO\` is a
 namespace label only, never a filesystem path.
 ## Codex resume bridge correlation
 
-After registering an app-server handoff with \`gjc_coordinator_register_codex_handoff\`,
+After registering an app-server handoff with \`worx_coordinator_register_codex_handoff\`,
 pass the same \`session_id\` as \`codex_host_session_id\` on delegate calls so new GJC
 sessions auto-bind to the Codex thread for wake-on-completion and questions. Acknowledge
-durable wakes by \`wake_key\` with \`gjc_coordinator_ack_codex_handoff\`; heartbeats are
+durable wakes by \`wake_key\` with \`worx_coordinator_ack_codex_handoff\`; heartbeats are
 unsupported (\`automation_update_unavailable\`), so delivery is event-driven with startup drain.
 
 ## Polling
 
-Each delegate returns a \`turn_id\`. Poll \`gjc_coordinator_await_turn\` (bounded)
-or \`gjc_coordinator_watch_events\` for the \`delegation.started\` event and the
+Each delegate returns a \`turn_id\`. Poll \`worx_coordinator_await_turn\` (bounded)
+or \`worx_coordinator_watch_events\` for the \`delegation.started\` event and the
 terminal turn state. Turn state is the source of truth, not terminal scrollback.
 `;
 }

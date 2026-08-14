@@ -13986,8 +13986,8 @@ export class AgentSession {
 		}
 		const stopReason = typeof output?.stopReason === "string" ? output.stopReason : "";
 		if (output?.decision !== "block") return "not_applicable";
-		if (stopReason !== "gjc_skill_deep_interview_interviewing") {
-			if (!stopReason.startsWith("gjc_skill_deep_interview_")) return "not_applicable";
+		if (stopReason !== "worx_skill_deep_interview_interviewing") {
+			if (!stopReason.startsWith("worx_skill_deep_interview_")) return "not_applicable";
 			this.#handledDeepInterviewAssistantIds.add(identity);
 			return "already_handled";
 		}

@@ -447,10 +447,10 @@ describe("GJC native skill-state hooks", () => {
 					"",
 			);
 			expect(result.outputJson).not.toMatchObject({ decision: "block" });
-			expect(context).toContain("GJC state recovery");
+			expect(context).toContain("WORX state recovery");
 			expect(context).toContain(statePath);
-			expect(context).toContain("gjc state doctor");
-			expect(context).toContain("gjc state clear");
+			expect(context).toContain("worx state doctor");
+			expect(context).toContain("worx state clear");
 			expect(context).not.toContain("do not expose");
 			expect(context).not.toContain('{"active"');
 			expect(warn).toHaveBeenCalledTimes(1);
@@ -579,7 +579,7 @@ describe("GJC native skill-state hooks", () => {
 			expect(blocked.outputJson).toMatchObject({ decision: "block" });
 			expect(message).toContain("mode-state is missing or corrupt");
 			expect(message).toContain("Use the ask tool");
-			expect(message).toContain("gjc state clear");
+			expect(message).toContain("worx state clear");
 			expect(message).toContain("demote");
 			expect(message).toContain(modeStatePath(root, "session-handoff-corrupt", "ralplan"));
 			expect(warn).toHaveBeenCalledTimes(1);
@@ -620,7 +620,7 @@ describe("GJC native skill-state hooks", () => {
 			expect(blocked.outputJson).toMatchObject({ decision: "block" });
 			expect(message).toContain("Use the ask tool");
 			expect(message).toContain("handoff");
-			expect(message).toContain("gjc state clear");
+			expect(message).toContain("worx state clear");
 			expect(message).toContain("demote");
 			expect(message).toContain("cancel");
 		}
@@ -669,7 +669,7 @@ describe("GJC native skill-state hooks", () => {
 		const leakedMessage = String(blocked.outputJson?.systemMessage ?? "");
 		expect(blocked.outputJson).toMatchObject({
 			decision: "block",
-			stopReason: "gjc_skill_deep_interview_plaintext_ask_leak",
+			stopReason: "worx_skill_deep_interview_plaintext_ask_leak",
 		});
 		expect(leakedMessage).toContain("ask tool");
 		expect(leakedMessage).toContain("Restate gate");
@@ -714,7 +714,7 @@ describe("GJC native skill-state hooks", () => {
 				sessionFile,
 			});
 			expect(genericBlocked.outputJson).toMatchObject({ decision: "block" });
-			expect(genericBlocked.outputJson?.stopReason).not.toBe("gjc_skill_deep_interview_plaintext_ask_leak");
+			expect(genericBlocked.outputJson?.stopReason).not.toBe("worx_skill_deep_interview_plaintext_ask_leak");
 			expect(String(genericBlocked.outputJson?.systemMessage ?? "")).not.toContain(
 				"emitted a Deep Interview question/options block as plain text",
 			);
@@ -804,7 +804,7 @@ describe("GJC native skill-state hooks", () => {
 			sessionFile: leakedSessionFile,
 		});
 		expect(ralplanBlocked.outputJson).toMatchObject({ decision: "block" });
-		expect(ralplanBlocked.outputJson?.stopReason).not.toBe("gjc_skill_deep_interview_plaintext_ask_leak");
+		expect(ralplanBlocked.outputJson?.stopReason).not.toBe("worx_skill_deep_interview_plaintext_ask_leak");
 	});
 
 	it("UserPromptSubmit treats schema-invalid active ultragoal mode state as inactive and logs", async () => {
@@ -828,7 +828,7 @@ describe("GJC native skill-state hooks", () => {
 			expect(allowed.outputJson).toMatchObject({ hookSpecificOutput: { hookEventName: "UserPromptSubmit" } });
 			expect(
 				String((allowed.outputJson?.hookSpecificOutput as { additionalContext?: unknown }).additionalContext ?? ""),
-			).toContain("GJC state recovery");
+			).toContain("WORX state recovery");
 			expect(warn).toHaveBeenCalledTimes(2);
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid mode-state at");
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("current_phase");
@@ -858,10 +858,10 @@ describe("GJC native skill-state hooks", () => {
 					"",
 			);
 			expect(result.outputJson).not.toMatchObject({ decision: "block" });
-			expect(context).toContain("GJC state recovery");
+			expect(context).toContain("WORX state recovery");
 			expect(context).toContain(statePath);
-			expect(context).toContain("gjc state doctor");
-			expect(context).toContain("gjc state clear");
+			expect(context).toContain("worx state doctor");
+			expect(context).toContain("worx state clear");
 			expect(context).not.toContain("do not expose");
 			expect(context).not.toContain('{"active"');
 			expect(warn).toHaveBeenCalledTimes(2);
@@ -897,10 +897,10 @@ describe("GJC native skill-state hooks", () => {
 				(result.outputJson?.hookSpecificOutput as { additionalContext?: unknown } | undefined)?.additionalContext ??
 					"",
 			);
-			expect(context).toContain("GJC state recovery");
+			expect(context).toContain("WORX state recovery");
 			expect(context).toContain(activeStatePath);
 			expect(context).toContain("Ultragoal is active");
-			expect(context).toContain("gjc ultragoal steer");
+			expect(context).toContain("worx ultragoal steer");
 			expect(context).not.toContain("do not expose");
 			expect(warn).toHaveBeenCalledTimes(1);
 		} finally {
@@ -950,7 +950,7 @@ describe("GJC native skill-state hooks", () => {
 			args: { path: ".gjc/specs/deep-interview-sample.md", content: "spec" },
 		});
 		expect(blockedSpec.blocked).toBe(true);
-		expect(blockedSpec.reason).toBe("gjc-target");
+		expect(blockedSpec.reason).toBe("worx-target");
 		expect(blockedSpec.message).toContain("runtime-owned");
 
 		// Per #951 the mutation guard never blocks `bash`, even for `.gjc/**` targets;
@@ -982,7 +982,7 @@ describe("GJC native skill-state hooks", () => {
 		});
 		expect(blocked.blocked).toBe(true);
 		expect(blocked.reason).toBe("workflow-state-target");
-		expect(blocked.message).toContain("gjc state ralplan");
+		expect(blocked.message).toContain("worx state ralplan");
 
 		const allowedSpec = await getWorkflowMutationDecision({
 			cwd: root,
@@ -1132,7 +1132,7 @@ describe("GJC native skill-state hooks", () => {
 			expect(context).toContain("includeSkills.count=1");
 			expect(context).toContain("ignoredSkills.count=1");
 			expect(context).toContain("disabledSkillExtensions.count=1");
-			expect(context).toContain("GJC state recovery");
+			expect(context).toContain("WORX state recovery");
 			expect(context).toContain(statePath);
 			expect(context).not.toContain(malicious);
 			expect(context).not.toContain("ignore prior instructions");
@@ -1266,7 +1266,7 @@ disabledExtensions:
 			sessionId: "session-2",
 			threadId: "thread-2",
 		});
-		expect(blocked.outputJson).toMatchObject({ decision: "block", stopReason: "gjc_skill_ralplan_planner" });
+		expect(blocked.outputJson).toMatchObject({ decision: "block", stopReason: "worx_skill_ralplan_planner" });
 
 		await Bun.write(
 			modeStatePath(root, "session-2", "ralplan"),
@@ -1383,7 +1383,7 @@ disabledExtensions:
 
 		expect(blocked.outputJson).toMatchObject({
 			decision: "block",
-			stopReason: "gjc_skill_deep_interview_uncrystallized",
+			stopReason: "worx_skill_deep_interview_uncrystallized",
 		});
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("crystalliz");
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("gjc deep-interview --write");
@@ -1458,7 +1458,7 @@ disabledExtensions:
 		});
 		expect(blocked.outputJson).toMatchObject({
 			decision: "block",
-			stopReason: "gjc_skill_deep_interview_uncrystallized",
+			stopReason: "worx_skill_deep_interview_uncrystallized",
 		});
 	});
 
@@ -1518,7 +1518,7 @@ disabledExtensions:
 				"",
 		);
 		expect(context).toContain("Ultragoal is active");
-		expect(context).toContain("gjc ultragoal steer");
+		expect(context).toContain("worx ultragoal steer");
 		expect(context).toContain("add or steer subgoals");
 	});
 
@@ -1624,7 +1624,7 @@ disabledExtensions:
 		expect(blocked.outputJson).toMatchObject({ decision: "block" });
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("Ultragoal has incomplete required goals: G002");
 		expect(String(blocked.outputJson?.reason ?? "")).toContain(
-			"gjc ultragoal checkpoint --status complete --quality-gate-json <file>",
+			"worx ultragoal checkpoint --status complete --quality-gate-json <file>",
 		);
 	});
 
@@ -1662,7 +1662,7 @@ disabledExtensions:
 
 		expect(blocked.outputJson).toMatchObject({
 			decision: "block",
-			stopReason: "gjc_skill_ultragoal_stale_mode_state",
+			stopReason: "worx_skill_ultragoal_stale_mode_state",
 		});
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("G001");
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("complete-goals");
@@ -1698,7 +1698,7 @@ disabledExtensions:
 
 		expect(blocked.outputJson).toMatchObject({
 			decision: "block",
-			stopReason: "gjc_skill_ultragoal_stale_mode_state",
+			stopReason: "worx_skill_ultragoal_stale_mode_state",
 		});
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("G001");
 	});
@@ -1775,7 +1775,7 @@ disabledExtensions:
 		expect(result.outputJson).toMatchObject({ decision: "block" });
 		expect(String(result.outputJson?.reason ?? "")).toContain("Ultragoal has incomplete required goals: G002");
 		expect(String(result.outputJson?.reason ?? "")).toContain(
-			"gjc ultragoal checkpoint --status complete --quality-gate-json <file>",
+			"worx ultragoal checkpoint --status complete --quality-gate-json <file>",
 		);
 	});
 	it("UserPromptSubmit includes steer guidance when activating Ultragoal", async () => {
@@ -1795,7 +1795,7 @@ disabledExtensions:
 				"",
 		);
 		expect(context).toContain("Ultragoal is active");
-		expect(context).toContain("gjc ultragoal steer");
+		expect(context).toContain("worx ultragoal steer");
 	});
 
 	it("merges managed Codex UserPromptSubmit/Stop hooks without dropping user hooks", () => {

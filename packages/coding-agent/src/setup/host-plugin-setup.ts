@@ -61,7 +61,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 	const env: Record<string, string> = {
 		GJC_COORDINATOR_MCP_WORKDIR_ROOTS: projectRoot,
 		GJC_COORDINATOR_MCP_REPO: repo,
-		GJC_COORDINATOR_MCP_SESSION_COMMAND: "gjc --worktree",
+		GJC_COORDINATOR_MCP_SESSION_COMMAND: "worx --worktree",
 	};
 
 	if (host === "claude") {
@@ -78,9 +78,9 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 			installGuidance: [
 				`Add the local marketplace: /plugin marketplace add ${marketplaceRoot}`,
 				"Install the plugin: /plugin install gajae-code",
-				"Then call gjc_delegate_plan / gjc_delegate_execute / gjc_delegate_team from Claude Code.",
+				"Then call worx_delegate_plan / worx_delegate_execute / worx_delegate_team from Claude Code.",
 			],
-			coordinatorConfigPreview: { command: "gjc", args: ["mcp-serve", "coordinator"], env },
+			coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },
 			mutationPolicy:
 				"Fail-closed: delegation is read-only until you set GJC_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
 			notes: [],
@@ -104,9 +104,9 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 		installGuidance: [
 			`Add the local marketplace: codex plugin marketplace add ${marketplaceRoot}`,
 			"Install the plugin: codex plugin add gajae-code@gajae-code-local",
-			"Then call gjc_delegate_plan / gjc_delegate_execute / gjc_delegate_team from Codex.",
+			"Then call worx_delegate_plan / worx_delegate_execute / worx_delegate_team from Codex.",
 		],
-		coordinatorConfigPreview: { command: "gjc", args: ["mcp-serve", "coordinator"], env },
+		coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },
 		mutationPolicy:
 			"Fail-closed: delegation is read-only until you set GJC_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
 		notes: [

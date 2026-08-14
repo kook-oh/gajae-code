@@ -117,7 +117,7 @@ function createServer(
 }
 
 async function registerViaServer(server: ReturnType<typeof createCoordinatorMcpServer>, root: string): Promise<void> {
-	const response = await server.callTool("gjc_coordinator_register_codex_handoff", {
+	const response = await server.callTool("worx_coordinator_register_codex_handoff", {
 		session_id: "session-1",
 		thread_id: "thread-1",
 		endpoint: { kind: "unix", path: "/tmp/codex-redteam.sock" },
@@ -211,7 +211,7 @@ describe("Codex resume bridge red-team", () => {
 		await createSession(serverRoot);
 		const server = createServer(serverRoot, [], { type: "idle" });
 		await expect(
-			server.callTool("gjc_coordinator_register_codex_handoff", {
+			server.callTool("worx_coordinator_register_codex_handoff", {
 				session_id: "session-1",
 				thread_id: "thread-1",
 				endpoint: { kind: "unix", path: "/tmp/codex-redteam.sock" },
@@ -331,7 +331,7 @@ describe("Codex resume bridge red-team", () => {
 			summary: "failure",
 		});
 		await awaitCodexWakePublishesForTest(namespace);
-		const response = await server.callTool("gjc_coordinator_read_codex_handoff", { session_id: "session-1" });
+		const response = await server.callTool("worx_coordinator_read_codex_handoff", { session_id: "session-1" });
 		expect(response).toMatchObject({
 			wake_events: [{ key: `session-1:${event.seq}`, status: "failed", last_error: "codex_wake_publish_failed" }],
 		});

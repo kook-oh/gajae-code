@@ -91,7 +91,7 @@ describe("send_prompt same-session concurrency", () => {
 				},
 			});
 
-			const started = await server.callTool("gjc_coordinator_start_session", {
+			const started = await server.callTool("worx_coordinator_start_session", {
 				cwd: root,
 				idempotency_key: "start-session",
 				allow_mutation: true,
@@ -101,13 +101,13 @@ describe("send_prompt same-session concurrency", () => {
 
 			// The exact race the maintainer reproduced 25/25: two same-session prompts at once.
 			const results = await Promise.all([
-				server.callTool("gjc_coordinator_send_prompt", {
+				server.callTool("worx_coordinator_send_prompt", {
 					session_id: sessionId,
 					prompt: "first concurrent prompt",
 					idempotency_key: "first-prompt",
 					allow_mutation: true,
 				}),
-				server.callTool("gjc_coordinator_send_prompt", {
+				server.callTool("worx_coordinator_send_prompt", {
 					session_id: sessionId,
 					prompt: "second concurrent prompt",
 					idempotency_key: "second-prompt",

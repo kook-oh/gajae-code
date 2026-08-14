@@ -3,7 +3,7 @@ import { logger } from "@gajae-code/utils";
 /**
  * Idle reaper for coordinator-managed GJC worker sessions.
  *
- * Every `gjc_delegate_*` call that omits `session_id` starts a fresh tmux worker
+ * Every `worx_delegate_*` call that omits `session_id` starts a fresh tmux worker
  * session. Nothing in the coordinator ever tore those down, so completed/crashed
  * sessions accumulated (RAM + worktrees) until something killed them by hand.
  *

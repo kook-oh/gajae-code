@@ -384,7 +384,7 @@ function toolSchema(name: CoordinatorToolName): {
 		description: "Caller-provided idempotency key for durable coordinator mutation replay.",
 	};
 
-	if (name === "gjc_coordinator_register_session") {
+	if (name === "worx_coordinator_register_session") {
 		return {
 			name,
 			description:
@@ -407,7 +407,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_start_session") {
+	if (name === "worx_coordinator_start_session") {
 		return {
 			name,
 			description:
@@ -420,7 +420,7 @@ function toolSchema(name: CoordinatorToolName): {
 					prepare_existing_thread: {
 						type: "boolean",
 						description:
-							"Create the session prepared instead of ready: no readiness is published and no initial prompt is accepted until gjc_coordinator_activate_session proves activation.",
+							"Create the session prepared instead of ready: no readiness is published and no initial prompt is accepted until worx_coordinator_activate_session proves activation.",
 					},
 					mpreset,
 					idempotency_key: idempotencyKey,
@@ -430,7 +430,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_activate_session") {
+	if (name === "worx_coordinator_activate_session") {
 		return {
 			name,
 			description:
@@ -446,7 +446,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_stop_session") {
+	if (name === "worx_coordinator_stop_session") {
 		return {
 			name,
 			description:
@@ -466,7 +466,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_send_prompt") {
+	if (name === "worx_coordinator_send_prompt") {
 		return {
 			name,
 			description:
@@ -485,7 +485,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_read_turn") {
+	if (name === "worx_coordinator_read_turn") {
 		return {
 			name,
 			description: "Read authoritative durable turn state without terminal-pane inspection.",
@@ -496,7 +496,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_await_turn") {
+	if (name === "worx_coordinator_await_turn") {
 		return {
 			name,
 			description: "Poll a durable turn for a bounded time and return the same shape as read_turn.",
@@ -518,7 +518,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_submit_question_answer") {
+	if (name === "worx_coordinator_submit_question_answer") {
 		return {
 			name,
 			description: "Submit a bounded structured answer by question id.",
@@ -545,7 +545,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_report_status") {
+	if (name === "worx_coordinator_report_status") {
 		return {
 			name,
 			description: "Write a bounded coordinator coordination status report.",
@@ -566,28 +566,28 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_read_artifact") {
+	if (name === "worx_coordinator_read_artifact") {
 		return {
 			name,
 			description: "Read one bounded artifact from configured safe roots.",
 			inputSchema: { type: "object", properties: { path: pathField }, required: ["path"] },
 		};
 	}
-	if (name === "gjc_coordinator_read_status") {
+	if (name === "worx_coordinator_read_status") {
 		return {
 			name,
 			description: "Read selected broker-indexed GJC session status from SDK discovery.",
 			inputSchema: { type: "object", properties: { session_id: sessionId } },
 		};
 	}
-	if (name === "gjc_coordinator_read_tail") {
+	if (name === "worx_coordinator_read_tail") {
 		return {
 			name,
 			description: "Read bounded last-assistant output through the session SDK, never terminal scrollback.",
 			inputSchema: { type: "object", properties: { session_id: sessionId, lines: { type: "number" } } },
 		};
 	}
-	if (name === "gjc_coordinator_list_questions") {
+	if (name === "worx_coordinator_list_questions") {
 		return {
 			name,
 			description: "List bounded structured questions for coordinator coordination.",
@@ -599,13 +599,13 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_list_artifacts") {
+	if (name === "worx_coordinator_list_artifacts") {
 		return { name, description: "List known safe artifact roots for coordinator coordination.", inputSchema: common };
 	}
-	if (name === "gjc_coordinator_read_coordination_status") {
+	if (name === "worx_coordinator_read_coordination_status") {
 		return { name, description: "Read coordinator coordination reports.", inputSchema: common };
 	}
-	if (name === "gjc_coordinator_watch_events") {
+	if (name === "worx_coordinator_watch_events") {
 		return {
 			name,
 			description: "Long-poll the durable coordinator event journal for new bounded event records.",
@@ -624,7 +624,7 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_register_codex_handoff") {
+	if (name === "worx_coordinator_register_codex_handoff") {
 		return {
 			name,
 			description: "Register a Codex app-server resume handoff using only unix or loopback TCP endpoints.",
@@ -648,14 +648,14 @@ function toolSchema(name: CoordinatorToolName): {
 			},
 		};
 	}
-	if (name === "gjc_coordinator_read_codex_handoff") {
+	if (name === "worx_coordinator_read_codex_handoff") {
 		return {
 			name,
 			description: "Read a Codex app-server resume handoff and durable wake events.",
 			inputSchema: { type: "object", properties: { session_id: sessionId }, required: ["session_id"] },
 		};
 	}
-	if (name === "gjc_coordinator_ack_codex_handoff") {
+	if (name === "worx_coordinator_ack_codex_handoff") {
 		return {
 			name,
 			description: "Acknowledge a durable Codex app-server resume wake event.",
@@ -695,7 +695,7 @@ function toolSchema(name: CoordinatorToolName): {
 					codex_host_session_id: {
 						type: "string",
 						description:
-							"Optional Codex resume-bridge correlation: the session_id previously passed to gjc_coordinator_register_codex_handoff. When set, the new delegate session auto-binds to that registration's Codex thread; ambient host-context inference is skipped.",
+							"Optional Codex resume-bridge correlation: the session_id previously passed to worx_coordinator_register_codex_handoff. When set, the new delegate session auto-binds to that registration's Codex thread; ambient host-context inference is skipped.",
 					},
 					queue: {
 						type: "boolean",
@@ -715,7 +715,7 @@ function toolSchema(name: CoordinatorToolName): {
 					timeout_ms: {
 						type: "number",
 						description:
-							"Bounded await timeout in milliseconds, capped at 30 minutes like gjc_coordinator_await_turn.",
+							"Bounded await timeout in milliseconds, capped at 30 minutes like worx_coordinator_await_turn.",
 					},
 					poll_interval_ms: { type: "number", description: "Bounded await polling interval." },
 				},
@@ -730,11 +730,11 @@ type DelegateWorkflow = "plan" | "execute" | "team";
 
 function workflowForDelegateTool(name: string): DelegateWorkflow | null {
 	switch (name) {
-		case "gjc_delegate_plan":
+		case "worx_delegate_plan":
 			return "plan";
-		case "gjc_delegate_execute":
+		case "worx_delegate_execute":
 			return "execute";
-		case "gjc_delegate_team":
+		case "worx_delegate_team":
 			return "team";
 		default:
 			return null;
@@ -823,10 +823,10 @@ function normalizeSession(session: Record<string, unknown>): Record<string, unkn
 function coordinatorLifecycleTarget(sessionCommand: string | null, cwd: string): Record<string, unknown> {
 	if (!sessionCommand) return { path: cwd };
 	const [executable, ...args] = sessionCommand.trim().split(/\s+/);
-	if (executable !== "gjc")
+	if (executable !== "worx")
 		throw new SdkClientError(
 			"invalid_input",
-			"GJC_COORDINATOR_MCP_SESSION_COMMAND must be exactly gjc with an optional --worktree [name] selector.",
+			"GJC_COORDINATOR_MCP_SESSION_COMMAND must be exactly worx with an optional --worktree [name] selector.",
 		);
 	if (args.length === 0) return { path: cwd };
 	if (
@@ -836,7 +836,7 @@ function coordinatorLifecycleTarget(sessionCommand: string | null, cwd: string):
 	)
 		throw new SdkClientError(
 			"invalid_input",
-			"GJC_COORDINATOR_MCP_SESSION_COMMAND supports only gjc or gjc --worktree [name] under SDK lifecycle control.",
+			"GJC_COORDINATOR_MCP_SESSION_COMMAND supports only worx or worx --worktree [name] under SDK lifecycle control.",
 		);
 	return {
 		path: cwd,
@@ -1039,7 +1039,7 @@ function boundedCodexHandoffResponse(response: Record<string, unknown>): Record<
 }
 
 function boundedToolResponse(tool: string, response: Record<string, unknown>): Record<string, unknown> {
-	if (tool === "gjc_coordinator_register_codex_handoff") return boundedCodexHandoffResponse(response);
+	if (tool === "worx_coordinator_register_codex_handoff") return boundedCodexHandoffResponse(response);
 	return boundedPublicResponse(response);
 }
 
@@ -3470,7 +3470,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 				const now = new Date().toISOString();
 				transaction.requests.operations[deletionId] = {
 					operation_id: deletionId,
-					tool: "gjc_coordinator_stop_session",
+					tool: "worx_coordinator_stop_session",
 					key_digest: deletionKey,
 					request_digest: deletionKey,
 					local_id: id,
@@ -4143,9 +4143,9 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 
 	async function callTool(name: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
 		try {
-			if (name === "gjc_coordinator_list_sessions")
+			if (name === "worx_coordinator_list_sessions")
 				return { ok: true, sessions: (await listSessions()).map(publicBrokerSession) };
-			if (name === "gjc_coordinator_register_session") {
+			if (name === "worx_coordinator_register_session") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -4220,7 +4220,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					isUnobservedCompensation,
 				);
 			}
-			if (name === "gjc_coordinator_register_codex_handoff") {
+			if (name === "worx_coordinator_register_codex_handoff") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -4269,7 +4269,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					},
 				);
 			}
-			if (name === "gjc_coordinator_read_codex_handoff") {
+			if (name === "worx_coordinator_read_codex_handoff") {
 				const sessionId = safeExternalId("session", args.session_id);
 				const wakeEvents = (await listCodexWakeEvents(namespaceDir, sessionId))
 					.slice(-100)
@@ -4294,7 +4294,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					pending_wake_events: pendingWakeEvents,
 				};
 			}
-			if (name === "gjc_coordinator_ack_codex_handoff") {
+			if (name === "worx_coordinator_ack_codex_handoff") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -4332,7 +4332,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					},
 				);
 			}
-			if (name === "gjc_coordinator_read_status") {
+			if (name === "worx_coordinator_read_status") {
 				const sessionId = args.session_id;
 				if (sessionId) {
 					const canonicalSessionId = safeExternalId("session", sessionId);
@@ -4374,7 +4374,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					return sdkError(error);
 				}
 			}
-			if (name === "gjc_coordinator_read_tail") {
+			if (name === "worx_coordinator_read_tail") {
 				const sessionId = safeExternalId("session", args.session_id);
 				const session = asRecord(await readJsonFile(sessionFile(sessionId)));
 				if (!session)
@@ -4393,11 +4393,11 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					return sdkError(error);
 				}
 			}
-			if (name === "gjc_coordinator_list_questions") return await listQuestions(args);
-			if (name === "gjc_coordinator_list_artifacts") return { ok: true, roots: config.allowedRoots };
-			if (name === "gjc_coordinator_read_artifact")
+			if (name === "worx_coordinator_list_questions") return await listQuestions(args);
+			if (name === "worx_coordinator_list_artifacts") return { ok: true, roots: config.allowedRoots };
+			if (name === "worx_coordinator_read_artifact")
 				return await readCoordinatorArtifact(config, { path: args.path });
-			if (name === "gjc_coordinator_read_coordination_status") {
+			if (name === "worx_coordinator_read_coordination_status") {
 				await reconcileActiveTurnAcknowledgements();
 				const brokerSessions = await listSessions();
 				const sessionStates = jsonRecords(await listJsonFiles(path.join(namespaceDir, "session-states")));
@@ -4443,7 +4443,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					recent_events: eventSummaries(events.slice(-10)),
 				}) as Record<string, unknown>;
 			}
-			if (name === "gjc_coordinator_watch_events") {
+			if (name === "worx_coordinator_watch_events") {
 				await reconcileActiveTurnAcknowledgements();
 				if (args.session_id != null) await reconcileQuestions(safeExternalId("session", args.session_id));
 				const limit = boundedEventLimit(args.limit);
@@ -4734,7 +4734,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					true,
 				);
 			}
-			if (name === "gjc_coordinator_stop_session") {
+			if (name === "worx_coordinator_stop_session") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const sessionId = safeExternalId("session", args.session_id);
 				const forceRequested = args.force === true;
@@ -4756,7 +4756,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					...(result.detail ? { detail: result.detail } : {}),
 				};
 			}
-			if (name === "gjc_coordinator_start_session") {
+			if (name === "worx_coordinator_start_session") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const cwd = await canonicalBrokerWorkspace(await assertCoordinatorWorkdir(config, args.cwd));
@@ -4959,7 +4959,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					isUnobservedCompensation,
 				);
 			}
-			if (name === "gjc_coordinator_activate_session") {
+			if (name === "worx_coordinator_activate_session") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -5058,7 +5058,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					isUnknownActivationOutcome,
 				);
 			}
-			if (name === "gjc_coordinator_send_prompt") {
+			if (name === "worx_coordinator_send_prompt") {
 				requireCoordinatorMutation(config, "sessions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -5147,13 +5147,13 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 						}),
 				);
 			}
-			if (name === "gjc_coordinator_read_turn") {
+			if (name === "worx_coordinator_read_turn") {
 				return await readTurnPayload(args.turn_id, args.session_id);
 			}
-			if (name === "gjc_coordinator_await_turn") {
+			if (name === "worx_coordinator_await_turn") {
 				return await awaitTurnPayload(args.turn_id, args.session_id, args.timeout_ms, args.poll_interval_ms);
 			}
-			if (name === "gjc_coordinator_submit_question_answer") {
+			if (name === "worx_coordinator_submit_question_answer") {
 				requireCoordinatorMutation(config, "questions", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const sessionId = safeExternalId("session", args.session_id);
@@ -5536,7 +5536,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 					true,
 				);
 			}
-			if (name === "gjc_coordinator_report_status") {
+			if (name === "worx_coordinator_report_status") {
 				requireCoordinatorMutation(config, "reports", args);
 				const idempotencyKey = requiredIdempotencyKey(args);
 				const evidence = await validateEvidencePaths(args.evidence_paths);
@@ -5770,7 +5770,7 @@ export interface PumpCoordinatorOptions {
 /**
  * Pump a newline-delimited JSON-RPC stream with BOUNDED concurrent dispatch.
  *
- * A long-running tool call (e.g. gjc_coordinator_await_turn, which polls for
+ * A long-running tool call (e.g. worx_coordinator_await_turn, which polls for
  * minutes) must not block the read loop from answering keepalive pings on the
  * same stdio channel. But naive unbounded concurrency reintroduces its own
  * hazards, so this pump enforces the safety envelope the coordinator needs:

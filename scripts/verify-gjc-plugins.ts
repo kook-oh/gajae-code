@@ -49,12 +49,12 @@ function record(value: unknown): Record<string, unknown> | undefined {
 
 function coordinatorMcpServer(config: Record<string, unknown>): Record<string, unknown> | undefined {
 	const servers = record(config.mcpServers) ?? record(config.mcp_servers) ?? config;
-	return record(servers["gjc-coordinator"]);
+	return record(servers["worx-coordinator"]);
 }
 
 function hasCanonicalCoordinatorMcpCommand(server: Record<string, unknown> | undefined): boolean {
 	return (
-		server?.command === "gjc" &&
+		server?.command === "worx" &&
 		Array.isArray(server.args) &&
 		server.args.length === 2 &&
 		server.args[0] === "mcp-serve" &&
@@ -62,12 +62,12 @@ function hasCanonicalCoordinatorMcpCommand(server: Record<string, unknown> | und
 	);
 }
 
-const delegateTools = COORDINATOR_MCP_TOOL_NAMES.filter(name => name.startsWith("gjc_delegate_"));
+const delegateTools = COORDINATOR_MCP_TOOL_NAMES.filter(name => name.startsWith("worx_delegate_"));
 const delegateToolSet = new Set<string>(delegateTools);
 gate(
 	"delegate tools in contract",
 	delegateTools.length === 3 &&
-		["gjc_delegate_plan", "gjc_delegate_execute", "gjc_delegate_team"].every(tool =>
+		["worx_delegate_plan", "worx_delegate_execute", "worx_delegate_team"].every(tool =>
 			delegateToolSet.has(tool),
 		),
 	`found: ${delegateTools.join(", ") || "none"}`,
@@ -136,7 +136,7 @@ gate(
 // The Codex .mcp.json FILE uses a Codex-accepted shape: mcp_servers wrapper or a
 // direct server map. The Claude .mcp.json FILE uses the mcpServers wrapper.
 const codexMcpObj = readJson(codexMcp);
-const codexMcpOk = "mcp_servers" in codexMcpObj || "gjc-coordinator" in codexMcpObj;
+const codexMcpOk = "mcp_servers" in codexMcpObj || "worx-coordinator" in codexMcpObj;
 gate("Codex .mcp.json uses mcp_servers or direct map", codexMcpOk && !("mcpServers" in codexMcpObj), Object.keys(codexMcpObj).join(", "));
 const claudeMcpObj = readJson(claudeMcp);
 gate("Claude .mcp.json uses mcpServers wrapper", "mcpServers" in claudeMcpObj, Object.keys(claudeMcpObj).join(", "));

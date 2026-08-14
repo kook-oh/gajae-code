@@ -89,43 +89,43 @@ A public bot integration change should at least preserve the contract smoke and 
 
 Read-only tools:
 
-- `gjc_coordinator_list_sessions`
-- `gjc_coordinator_read_status`
-- `gjc_coordinator_read_tail`
-- `gjc_coordinator_read_turn`
-- `gjc_coordinator_await_turn`
-- `gjc_coordinator_list_questions`
-- `gjc_coordinator_list_artifacts`
-- `gjc_coordinator_read_artifact`
-- `gjc_coordinator_read_coordination_status`
-- `gjc_coordinator_watch_events`
-- `gjc_coordinator_read_codex_handoff` — reads the Codex app-server resume bridge registration and durable wake state; endpoints are unix sockets or loopback TCP only, and token-file references only. Returned wake events expose lifecycle schema version 1 (`pending` → `requested`, `published` → `delivered`, `acked` → `acknowledged`, `failed` → `failed`); durable `attempts` and `last_error` are its failure/retry metadata. Heartbeats are unsupported (`automation_update_unavailable`), so delivery remains event-driven with startup drain.
+- `worx_coordinator_list_sessions`
+- `worx_coordinator_read_status`
+- `worx_coordinator_read_tail`
+- `worx_coordinator_read_turn`
+- `worx_coordinator_await_turn`
+- `worx_coordinator_list_questions`
+- `worx_coordinator_list_artifacts`
+- `worx_coordinator_read_artifact`
+- `worx_coordinator_read_coordination_status`
+- `worx_coordinator_watch_events`
+- `worx_coordinator_read_codex_handoff` — reads the Codex app-server resume bridge registration and durable wake state; endpoints are unix sockets or loopback TCP only, and token-file references only. Returned wake events expose lifecycle schema version 1 (`pending` → `requested`, `published` → `delivered`, `acked` → `acknowledged`, `failed` → `failed`); durable `attempts` and `last_error` are its failure/retry metadata. Heartbeats are unsupported (`automation_update_unavailable`), so delivery remains event-driven with startup drain.
 
 Mutating tools:
 
-- `gjc_coordinator_start_session`
-- `gjc_coordinator_activate_session`
-- `gjc_coordinator_register_session`
-- `gjc_coordinator_send_prompt`
-- `gjc_coordinator_submit_question_answer`
-- `gjc_coordinator_report_status`
-- `gjc_coordinator_stop_session`
-- `gjc_coordinator_register_codex_handoff` — registers the Codex app-server resume bridge with a unix/loopback endpoint and token-file reference only.
-- `gjc_coordinator_ack_codex_handoff` — acknowledges a Codex resume wake by durable `wake_key`; wake prompts never include GJC final responses.
+- `worx_coordinator_start_session`
+- `worx_coordinator_activate_session`
+- `worx_coordinator_register_session`
+- `worx_coordinator_send_prompt`
+- `worx_coordinator_submit_question_answer`
+- `worx_coordinator_report_status`
+- `worx_coordinator_stop_session`
+- `worx_coordinator_register_codex_handoff` — registers the Codex app-server resume bridge with a unix/loopback endpoint and token-file reference only.
+- `worx_coordinator_ack_codex_handoff` — acknowledges a Codex resume wake by durable `wake_key`; wake prompts never include GJC final responses.
 
-`gjc_coordinator_stop_session` closes a coordinator delegate-created (ephemeral) session through canonical SDK broker lifecycle control, then removes its coordinator metadata only after the broker reports success. It refuses sessions with an active turn. User-registered sessions require both `force: true` and the `GJC_COORDINATOR_MCP_FORCE_STOP` capability; the same SDK lifecycle path reaps abandoned ephemeral delegate sessions after the configured idle TTL.
+`worx_coordinator_stop_session` closes a coordinator delegate-created (ephemeral) session through canonical SDK broker lifecycle control, then removes its coordinator metadata only after the broker reports success. It refuses sessions with an active turn. User-registered sessions require both `force: true` and the `GJC_COORDINATOR_MCP_FORCE_STOP` capability; the same SDK lifecycle path reaps abandoned ephemeral delegate sessions after the configured idle TTL.
 
 High-level delegation tools:
 
-- `gjc_delegate_plan`
-- `gjc_delegate_execute`
-- `gjc_delegate_team`
+- `worx_delegate_plan`
+- `worx_delegate_execute`
+- `worx_delegate_team`
 
-The `gjc_delegate_*` tools package common GJC workflows for hosts that want to delegate an entire planning, execution, or team turn without manually composing `start_session` and `send_prompt`. They use the same coordinator mutation gates and workdir allowlists as the lower-level session tools.
+The `worx_delegate_*` tools package common GJC workflows for hosts that want to delegate an entire planning, execution, or team turn without manually composing `start_session` and `send_prompt`. They use the same coordinator mutation gates and workdir allowlists as the lower-level session tools.
 
 ### Start a managed GJC session
 
-Call `gjc_coordinator_start_session` with a canonical workdir inside `GJC_COORDINATOR_MCP_WORKDIR_ROOTS`:
+Call `worx_coordinator_start_session` with a canonical workdir inside `GJC_COORDINATOR_MCP_WORKDIR_ROOTS`:
 
 ```json
 {
@@ -151,7 +151,7 @@ A stock session publishes readiness immediately, so a running chat daemon surfac
 }
 ```
 
-A prepared session is live and endpoint-addressable but withholds its readiness signal, so no root is claimed. The response carries `session_id` and `state: "prepared"`, and `session_state.ready_for_input` is `false`. `prepare_existing_thread` refuses an initial `prompt`, and `gjc_coordinator_send_prompt` refuses the session with `session_not_activated` until it is activated.
+A prepared session is live and endpoint-addressable but withholds its readiness signal, so no root is claimed. The response carries `session_id` and `state: "prepared"`, and `session_state.ready_for_input` is `false`. `prepare_existing_thread` refuses an initial `prompt`, and `worx_coordinator_send_prompt` refuses the session with `session_not_activated` until it is activated.
 
 Preparation requires a configured, session-enabled Slack target in the selected workdir: that target plus the agent directory is what supplies the daemon-owned bind/activation authority. Without it the start fails closed with a lifecycle startup failure instead of returning a prepared session that could be activated before any thread is bound.
 
@@ -171,7 +171,7 @@ Then activate the session so it publishes the readiness it withheld:
 }
 ```
 
-`gjc_coordinator_activate_session` proves the exact endpoint generation and asks the session itself to activate; the session's own gate refuses activation with `not_bound` while no binding exists at that generation. It is idempotent: an exact replay answers `already` without a second readiness signal, and durable state moves from `prepared` to `ready_for_input` only after the session proves `activated` or `already`.
+`worx_coordinator_activate_session` proves the exact endpoint generation and asks the session itself to activate; the session's own gate refuses activation with `not_bound` while no binding exists at that generation. It is idempotent: an exact replay answers `already` without a second readiness signal, and durable state moves from `prepared` to `ready_for_input` only after the session proves `activated` or `already`.
 
 ### Register an SDK-discoverable session
 
@@ -186,7 +186,7 @@ Register an already-running GJC session only after its endpoint is discoverable 
 }
 ```
 
-`gjc_coordinator_register_session` validates the session id and workdir allowlist, then verifies SDK endpoint discovery before writing coordinator state. Optional `tmux_session` and `tmux_target` fields are advisory process metadata only.
+`worx_coordinator_register_session` validates the session id and workdir allowlist, then verifies SDK endpoint discovery before writing coordinator state. Optional `tmux_session` and `tmux_target` fields are advisory process metadata only.
 
 ### Send work as turns
 
@@ -208,7 +208,7 @@ A session may have one active turn by default. A second prompt returns `active_t
 
 ### Wait or watch for completion
 
-Use `gjc_coordinator_read_turn` for polling or `gjc_coordinator_await_turn` for bounded waiting:
+Use `worx_coordinator_read_turn` for polling or `worx_coordinator_await_turn` for bounded waiting:
 
 ```json
 {
@@ -222,7 +222,7 @@ Use `gjc_coordinator_read_turn` for polling or `gjc_coordinator_await_turn` for 
 
 Terminal turn statuses are `completed`, `failed`, `cancelled`, and `superseded`. Non-terminal statuses include `queued`, `delivering`, `active`, `waiting_for_answer`, and `completing`.
 
-When the work is done, your bot must call `gjc_coordinator_report_status` with the turn id. This writes the final response/error, evidence paths, and coordinator report that later reads consume:
+When the work is done, your bot must call `worx_coordinator_report_status` with the turn id. This writes the final response/error, evidence paths, and coordinator report that later reads consume:
 
 ```json
 {
@@ -243,7 +243,7 @@ Use `status: "cancelled"` when the coordinator policy intentionally stops tracki
 
 Discord, Hermes, Clawhip, and similar external notifiers should be opt-in and should forward only the public lifecycle surface. Use one of these supported paths:
 
-- Coordinator controllers: watch or poll turn state with `gjc_coordinator_watch_events`, `gjc_coordinator_await_turn`, or `gjc_coordinator_read_turn`, then notify from the terminal turn status your controller records with `gjc_coordinator_report_status`.
+- Coordinator controllers: watch or poll turn state with `worx_coordinator_watch_events`, `worx_coordinator_await_turn`, or `worx_coordinator_read_turn`, then notify from the terminal turn status your controller records with `worx_coordinator_report_status`.
 - In-process extensions or hooks: subscribe to the public lifecycle events `turn_end` and `agent_end` from the shared hook/extension event contract.
 
 Recommended notification mapping:
@@ -303,19 +303,19 @@ Submit the exact identifiers and binding from one pending row. `answer` uses pub
 }
 ```
 
-`gjc_coordinator_submit_question_answer` requires `session_id`, `turn_id`, `question_id`, `answer_binding`, `answer`, `idempotency_key`, and `allow_mutation: true`; it resolves through `workflow.gate_answer`, never generic `ask.answer`. It revalidates against a complete fresh snapshot after restart and before resolution. Incomplete reconciliation returns `terminal_uncertain`; stale, terminal, absent, or ownership-mismatched rows are not answerable. Retry only an identical request with the same idempotency key: it replays the accepted result; reusing that key with conflicting arguments returns `idempotency_conflict`. Always answer the advertised shape; do not synthesize destructive approvals unless bot policy permits them.
+`worx_coordinator_submit_question_answer` requires `session_id`, `turn_id`, `question_id`, `answer_binding`, `answer`, `idempotency_key`, and `allow_mutation: true`; it resolves through `workflow.gate_answer`, never generic `ask.answer`. It revalidates against a complete fresh snapshot after restart and before resolution. Incomplete reconciliation returns `terminal_uncertain`; stale, terminal, absent, or ownership-mismatched rows are not answerable. Retry only an identical request with the same idempotency key: it replays the accepted result; reusing that key with conflicting arguments returns `idempotency_conflict`. Always answer the advertised shape; do not synthesize destructive approvals unless bot policy permits them.
 
 This Coordinator MCP pull loop is separate from #2549/#2551 and unattended plain-CLI behavior; those paths do not gain coordinator gate access.
 
 ### Read artifacts and reports
 
-Use `gjc_coordinator_list_artifacts` to inspect safe roots and `gjc_coordinator_read_artifact` to read a bounded artifact:
+Use `worx_coordinator_list_artifacts` to inspect safe roots and `worx_coordinator_read_artifact` to read a bounded artifact:
 
 ```json
 { "path": "/path/to/repo/.gjc/ultragoal/ledger.jsonl" }
 ```
 
-Artifact paths are canonicalized, symlink escapes are rejected, and output is byte-capped. Use `gjc_coordinator_read_coordination_status` for status reports written through `gjc_coordinator_report_status`.
+Artifact paths are canonicalized, symlink escapes are rejected, and output is byte-capped. Use `worx_coordinator_read_coordination_status` for status reports written through `worx_coordinator_report_status`.
 
 ## SDK WebSocket integration
 
@@ -353,7 +353,7 @@ for exact wire examples, Q12 tags/lifecycle diagnostics, and control payloads.
 | `unknown_session` | Re-list sessions; start a new managed session or register a session after its SDK endpoint is discoverable. |
 | `active_turn_exists` | Poll the active turn, send with `queue: true`, or use `force: true` only when supersession is intentional. |
 | `timeout` from `await_turn` | Treat as non-terminal. Poll again or inspect `read_status`; do not mark failure solely from a bounded wait timeout. |
-| Coordinator cancellation | Use `gjc_coordinator_report_status` with `status: "cancelled"` for an intentionally stopped turn, or send replacement work with `force: true` when supersession is policy-approved. This is coordinator state, not process control. |
+| Coordinator cancellation | Use `worx_coordinator_report_status` with `status: "cancelled"` for an intentionally stopped turn, or send replacement work with `force: true` when supersession is policy-approved. This is coordinator state, not process control. |
 | Stale session state | Check `read_status.session_state` and SDK endpoint discovery. Register a new discoverable session or report the turn failed with a recoverable blocker. |
 | Provider/auth failure | Capture the model/provider error in `report_status` with `status: "failed"`; do not retry forever without a policy budget. |
 | Artifact denied | Keep the artifact inside allowlisted roots and avoid symlink escapes. |
@@ -367,7 +367,7 @@ Generic MCP controller config:
 ```json
 {
   "mcp_servers": {
-    "gjc_coordinator": {
+    "worx_coordinator": {
       "command": "gjc",
       "args": ["mcp-serve", "coordinator"],
       "env": {
@@ -387,9 +387,9 @@ Example controller loop:
 
 ```text
 1. Start `gjc mcp-serve coordinator` with repo/worktree roots allowlisted.
-2. Call `gjc_coordinator_start_session` for a GJC-managed worktree session.
+2. Call `worx_coordinator_start_session` for a GJC-managed worktree session.
 3. Send `/skill:deep-interview`, `/skill:ralplan`, or an approved `gjc ultragoal ...` task as one turn.
-4. Await the turn; answer `gjc_coordinator_list_questions` entries using bot policy.
+4. Await the turn; answer `worx_coordinator_list_questions` entries using bot policy.
 5. Report terminal status with evidence paths.
 6. Read artifacts/reports for the user-facing bot response.
 ```

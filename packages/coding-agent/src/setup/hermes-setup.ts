@@ -93,10 +93,10 @@ class HermesSetupError extends Error {
 }
 
 const MUTATION_CLASSES: HermesMutationClass[] = ["sessions", "questions", "reports"];
-const MANAGED_BY = "gjc";
+const MANAGED_BY = "worx";
 const SETUP_SCHEMA_VERSION = "1";
-const DEFAULT_SERVER_KEY = "gjc_coordinator";
-const DEFAULT_GJC_COMMAND = "gjc";
+const DEFAULT_SERVER_KEY = "worx_coordinator";
+const DEFAULT_GJC_COMMAND = "worx";
 const DEFAULT_TIMEOUT = 180;
 const DEFAULT_CONNECT_TIMEOUT = 60;
 
@@ -306,7 +306,7 @@ function renderConfigYaml(spec: CoordinatorSetupSpec): string {
 function renderOperatorTemplate(spec: CoordinatorSetupSpec): string {
 	return operatorInstructionsTemplate
 		.replaceAll("{{SERVER_KEY}}", spec.serverKey)
-		.replaceAll("{{TOOL_PREFIX}}", "gjc_coordinator")
+		.replaceAll("{{TOOL_PREFIX}}", "worx_coordinator")
 		.replaceAll("{{TEMPLATE_VERSION}}", String(spec.operatorTemplateVersion));
 }
 
@@ -453,10 +453,10 @@ export async function runHermesSetup(flags: HermesSetupFlags): Promise<HermesSet
 					]
 				: spec.worktree.enabled
 					? [
-							`GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to '${spec.sessionCommand}' so GJC owns worktree creation and resume identity.`,
+							`GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to '${spec.sessionCommand}' so WORX owns worktree creation and resume identity.`,
 						]
 					: [
-							"GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to the configured gjc command with worktree isolation disabled by user request.",
+							"GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to the configured worx command with worktree isolation disabled by user request.",
 						],
 		smoke,
 	};

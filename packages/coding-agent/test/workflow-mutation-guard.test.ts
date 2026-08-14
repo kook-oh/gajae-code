@@ -159,7 +159,7 @@ describe("workflow mutation guard", () => {
 				args: { path: rawPath, content: "x" },
 			});
 			expect(decision.blocked).toBe(true);
-			expect(decision.reason).toBe("gjc-target");
+			expect(decision.reason).toBe("worx-target");
 			expect(decision.message).toContain("runtime-owned");
 		}
 
@@ -218,7 +218,7 @@ describe("workflow mutation guard", () => {
 				args,
 			});
 			expect(decision.blocked).toBe(true);
-			if (decision.reason === "workflow-state-target" || decision.reason === "gjc-target") {
+			if (decision.reason === "workflow-state-target" || decision.reason === "worx-target") {
 				expect(decision.message).toContain("runtime-owned");
 			} else {
 				expect(decision.message).toBe(DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE);

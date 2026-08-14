@@ -171,7 +171,7 @@ describe("AgentSession deep-interview continuation", () => {
 
 		expect(continueSpy).toHaveBeenCalledTimes(1);
 		const [reminder] = developerReminders();
-		expect(reminder).toContain("stop gate: gjc_skill_deep_interview_");
+		expect(reminder).toContain("stop gate: worx_skill_deep_interview_");
 		expect(reminder).toContain("score and persist the answered round");
 		expect(reminder).toContain("use the ask tool for the next question");
 	});
@@ -574,7 +574,7 @@ describe("AgentSession deep-interview continuation", () => {
 		vi.spyOn(skillState, "buildSkillStopOutput").mockImplementation(async () => {
 			if (++reads === 3) threeReads.resolve();
 			await gate.promise;
-			return { decision: "block", stopReason: "gjc_skill_deep_interview_interviewing" };
+			return { decision: "block", stopReason: "worx_skill_deep_interview_interviewing" };
 		});
 		const twoContinues = Promise.withResolvers<void>();
 		let continuations = 0;

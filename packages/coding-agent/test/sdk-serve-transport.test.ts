@@ -342,9 +342,9 @@ describe("SDK socket serve", () => {
 		const handle = await startSocketServe({ url: fake.url, token, pendingCeilingBytes: 256 * 1024, socketPath });
 		try {
 			for (const preface of [
-				"gjc-sdk-transport/1 token=wrong\n",
+				"worx-sdk-transport/1 token=wrong\n",
 				"garbage\n",
-				"gjc-sdk-transport/2 token=test-token\n",
+				"worx-sdk-transport/2 token=test-token\n",
 				`${"x".repeat(4097)}\n`,
 			] as const) {
 				const client = await socketConnect(socketPath);
@@ -375,7 +375,7 @@ describe("SDK socket serve", () => {
 			});
 			const client = await socketConnect(socketPath);
 			try {
-				client.write(`gjc-sdk-transport/1 token=${token}\n`);
+				client.write(`worx-sdk-transport/1 token=${token}\n`);
 				const ws = await waitFor(() => StalledWebSocket.latest, "upstream dial");
 				client.write('{"received":"during-dial"}\n');
 				ws.open();
@@ -399,7 +399,7 @@ describe("SDK socket serve", () => {
 				webSocketFactory: () => new StalledWebSocket(""),
 			});
 			const client = await socketConnect(socketPath);
-			client.write(`gjc-sdk-transport/1 token=${token}\n`);
+			client.write(`worx-sdk-transport/1 token=${token}\n`);
 			const ws = await waitFor(() => StalledWebSocket.latest, "stalled upstream dial");
 			await handle.close();
 			await handle.done;
@@ -418,8 +418,8 @@ describe("SDK socket serve", () => {
 			expect((await fs.stat(socketPath)).mode & 0o777).toBe(0o600);
 			const a = await socketConnect(socketPath);
 			const b = await socketConnect(socketPath);
-			a.write(`gjc-sdk-transport/1 token=${token}\n{ "client": "a" }\n`);
-			b.write(`gjc-sdk-transport/1 token=${token}\n{ "client": "b" }\n`);
+			a.write(`worx-sdk-transport/1 token=${token}\n{ "client": "a" }\n`);
+			b.write(`worx-sdk-transport/1 token=${token}\n{ "client": "b" }\n`);
 			await waitFor(
 				() =>
 					fake.connections.length === 2 &&
@@ -437,7 +437,7 @@ describe("SDK socket serve", () => {
 			b.write('{"still":"running"}\n');
 			expect(await waitFor(() => fake.connections[1]?.messages[1], "remaining pair")).toBe('{"still":"running"}');
 			const c = await socketConnect(socketPath);
-			c.write(`gjc-sdk-transport/1 token=${token}\n`);
+			c.write(`worx-sdk-transport/1 token=${token}\n`);
 			await waitFor(() => (fake.connections.length === 3 ? fake.connections : undefined), "listener remains active");
 			await closeSocket(c);
 			await closeSocket(b);

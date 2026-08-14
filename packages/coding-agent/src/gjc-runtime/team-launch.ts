@@ -58,13 +58,13 @@ export function buildWorkerCommand(
 	const initialPrompt =
 		promptOverride ??
 		[
-			`You are ${worker.id} in gjc team ${config.team_name}.`,
+			`You are ${worker.id} in worx team ${config.team_name}.`,
 			`Team state root: ${config.state_root}.`,
 			workspace,
 			`Team brief (context only): ${config.task}`,
 			"Before implementation, claim your worker-owned task and treat the claimed task record as the source of truth. Do not implement directly from the broad team brief.",
-			`Before claiming work, send startup ACK: gjc team api worker-startup-ack --input '{"team_name":"${config.team_name}","worker_id":"${worker.id}","protocol_version":"1"}' --json.`,
-			"Use gjc team api update-worker-status to report task-local activity, then claim-task/transition-task-status with this worker id; keep heartbeat current during long work, record completion_evidence (summary plus a passed command or verified inspection/artifact item) before completed, and do not mutate leader-owned goal state.",
+			`Before claiming work, send startup ACK: worx team api worker-startup-ack --input '{"team_name":"${config.team_name}","worker_id":"${worker.id}","protocol_version":"1"}' --json.`,
+			"Use worx team api update-worker-status to report task-local activity, then claim-task/transition-task-status with this worker id; keep heartbeat current during long work, record completion_evidence (summary plus a passed command or verified inspection/artifact item) before completed, and do not mutate leader-owned goal state.",
 		].join("\n");
 	const prompt =
 		initialPrompt

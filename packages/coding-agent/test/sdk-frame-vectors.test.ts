@@ -115,7 +115,7 @@ describe("SDK frame conformance vectors", () => {
 					for (const frame of requireArray(vector.frames)) expect(typeof requireObject(frame).type).toBe("string");
 				if (vector.lines !== undefined) {
 					const lines = requireObject(vector.lines);
-					expect(lines.authSuccess).toBe("gjc-sdk-transport/1 token=discovery-token-required\n");
+					expect(lines.authSuccess).toBe("worx-sdk-transport/1 token=discovery-token-required\n");
 					expect(requireObject(JSON.parse(requireString(lines.authFailure).trim()))).toMatchObject({
 						type: "transport_error",
 						code: "auth_failed",

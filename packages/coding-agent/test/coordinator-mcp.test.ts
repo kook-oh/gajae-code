@@ -28,7 +28,7 @@ import { UnsupportedStateVersionError } from "../src/sdk/broker/state-version";
 import { SDK_MCP_TOOL_NAMES } from "../src/sdk/mcp/server";
 
 async function withTempRoot(run: (root: string) => Promise<void>): Promise<void> {
-	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-coordinator-mcp-"));
+	const root = await fs.mkdtemp(path.join(os.tmpdir(), "worx-coordinator-mcp-"));
 	try {
 		await run(root);
 	} finally {
@@ -85,7 +85,7 @@ describe("canonical SDK coordinator compatibility handler", () => {
 				...COORDINATOR_MCP_TOOL_NAMES,
 			]);
 			const promptTool = listed.result.tools.find(
-				(tool: { name: string }) => tool.name === "gjc_coordinator_send_prompt",
+				(tool: { name: string }) => tool.name === "worx_coordinator_send_prompt",
 			);
 			expect(promptTool.inputSchema.required).toEqual(expect.arrayContaining(["idempotency_key", "allow_mutation"]));
 		});
@@ -98,7 +98,7 @@ describe("canonical SDK coordinator compatibility handler", () => {
 				{ env: { GJC_COORDINATOR_MCP_WORKDIR_ROOTS: root } },
 			);
 			const tool = response.result.tools.find(
-				(candidate: { name: string }) => candidate.name === "gjc_coordinator_submit_question_answer",
+				(candidate: { name: string }) => candidate.name === "worx_coordinator_submit_question_answer",
 			);
 			expect(tool.inputSchema.required).toEqual(
 				expect.arrayContaining([
@@ -125,16 +125,18 @@ describe("canonical SDK coordinator compatibility handler", () => {
 				},
 			});
 			expect(
-				await server.callTool("gjc_coordinator_start_session", { cwd: root, idempotency_key: "start-1" }),
+				await server.callTool("worx_coordinator_start_session", { cwd: root, idempotency_key: "start-1" }),
 			).toEqual({ ok: false, reason: "coordinator_mutation_call_not_allowed:sessions" });
-			expect(await server.callTool("gjc_coordinator_read_artifact", { path: artifact })).toMatchObject({
-				ok: true,
-				text: "coordinator artifact",
-			});
-			expect(await server.callTool("gjc_coordinator_read_artifact", { path: os.tmpdir() })).toEqual({
-				ok: false,
-				reason: "artifact_outside_allowed_roots",
-			});
+			expect(await server.callTool("worx_coordinator_read_artifact", { path: artifact })).toMatchObject(
+				process.platform === "linux"
+					? { ok: true, text: "coordinator artifact" }
+					: { ok: false, reason: "artifact_identity_unavailable" },
+			);
+			expect(await server.callTool("worx_coordinator_read_artifact", { path: os.tmpdir() })).toEqual(
+				process.platform === "linux"
+					? { ok: false, reason: "artifact_outside_allowed_roots" }
+					: { ok: false, reason: "artifact_identity_unavailable" },
+			);
 		});
 	});
 });

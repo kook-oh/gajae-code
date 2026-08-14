@@ -80,7 +80,7 @@
 - `benchmark-system|benchmark-task|benchmark-retry` in `['packages/typescript-edit-benchmark/src']`
 - `benchmarkSystemPrompt|benchmarkTaskPrompt|benchmarkRetryPrompt|guided_context|task_prompt|retry_context|multiFile|instructions` in `['packages/typescript-edit-benchmark/src/runner.ts']`
 - `## Behavior|## Planning/Execution Boundary|## What This Skill Must Do|## GPT-5.5 Guidance Alignment|Follow the Plan skill|the next the|`execution`, `execution`` in `['packages/coding-agent/src/defaults/gjc/skills']`
-- `gjc_delegate_plan|gjc_coordinator_await_turn|gjc_coordinator_watch_events|GJC_COORDINATOR_MCP_MUTATIONS|GJC_COORDINATOR_MCP_WORKDIR_ROOTS` in `['packages', 'plugins']`
+- `worx_delegate_plan|worx_coordinator_await_turn|worx_coordinator_watch_events|GJC_COORDINATOR_MCP_MUTATIONS|GJC_COORDINATOR_MCP_WORKDIR_ROOTS` in `['packages', 'plugins']`
 - `read-teaming|e2e/read|oh-my-codex` in `['packages/coding-agent/src/defaults/gjc/skills']`
 - `expandPromptTemplate` in `['packages/coding-agent/src']`
 - `topLevelTags` in `['packages/utils/src/prompt.ts']`

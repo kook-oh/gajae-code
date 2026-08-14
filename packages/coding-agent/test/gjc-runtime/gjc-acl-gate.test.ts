@@ -42,20 +42,20 @@ describe("G2 gjc ACL gate", () => {
 				expect(decision.blocked).toBe(true);
 				expect(decision.message).toContain("runtime-owned");
 				if (decision.reason !== "unknown-target") {
-					expect(["gjc-target", "workflow-state-target"]).toContain(decision.reason as string);
+					expect(["worx-target", "workflow-state-target"]).toContain(decision.reason as string);
 				}
 			}
 		});
 	});
 
-	it("allows sanctioned gjc bash commands, bash mutations, and non-.gjc writes", async () => {
+	it("allows sanctioned worx bash commands, bash mutations, and non-.gjc writes", async () => {
 		await withTempCwd(async cwd => {
-			const gjcCommand = await getWorkflowMutationDecision({
+			const worxCommand = await getWorkflowMutationDecision({
 				cwd,
 				tool: tool("bash"),
-				args: { command: "gjc state ralplan write --input '{}'" },
+				args: { command: "worx state ralplan write --input '{}'" },
 			});
-			expect(gjcCommand.blocked).toBe(false);
+			expect(worxCommand.blocked).toBe(false);
 
 			const bashMutation = await getWorkflowMutationDecision({
 				cwd,

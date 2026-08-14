@@ -371,7 +371,7 @@ async function createSdkControlServer(
 }
 
 async function registerSdkSession(server: ReturnType<typeof createCoordinatorMcpServer>, root: string) {
-	return await server.callTool("gjc_coordinator_register_session", {
+	return await server.callTool("worx_coordinator_register_session", {
 		session_id: "visible-session",
 		cwd: root,
 		tmux_session: "visible-session",
@@ -426,7 +426,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				active_tool_calls: { "private-tool-id": { tool_name: "bash", started_at: "2026-08-11T00:00:00.000Z" } },
 			}),
 		);
-		const status = await server.callTool("gjc_coordinator_read_status", { session_id: "visible-session" });
+		const status = await server.callTool("worx_coordinator_read_status", { session_id: "visible-session" });
 		expect(status).toMatchObject({
 			ok: true,
 			session: { session_id: "visible-session" },
@@ -460,7 +460,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			{ operation: "session.list", input: { cwd: root }, idempotencyKey: undefined },
 		]);
 		await expect(
-			server.callTool("gjc_coordinator_register_session", {
+			server.callTool("worx_coordinator_register_session", {
 				session_id: "visible-session",
 				cwd: root,
 				tmux_session: "visible-session",
@@ -481,7 +481,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			active_tools: [{ tool_name: "bash", started_at: "2026-08-11T00:00:00.000Z" }],
 			active_tool_calls: { "private-tool-id": { tool_name: "bash", started_at: "2026-08-11T00:00:00.000Z" } },
 		});
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "complete and repair projections",
 			idempotency_key: "repair-activity-turn",
@@ -490,7 +490,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const turnId = (sent as { turn_id?: unknown }).turn_id;
 		if (typeof turnId !== "string") throw new Error("expected turn id");
 		await expect(
-			server.callTool("gjc_coordinator_report_status", {
+			server.callTool("worx_coordinator_report_status", {
 				session_id: "visible-session",
 				turn_id: turnId,
 				status: "completed",
@@ -518,7 +518,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
 
-		const started = await server.callTool("gjc_coordinator_start_session", {
+		const started = await server.callTool("worx_coordinator_start_session", {
 			cwd: root,
 			idempotency_key: "ready-after-binding",
 			allow_mutation: true,
@@ -543,7 +543,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 		const task = "first line\n\n  exact indentation\nlast line";
 
-		const delegated = await server.callTool("gjc_delegate_execute", {
+		const delegated = await server.callTool("worx_delegate_execute", {
 			cwd: root,
 			session_id: "visible-session",
 			task,
@@ -574,7 +574,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		await registerSdkSession(server, root);
 
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "acknowledged work",
 			idempotency_key: "camel-ack",
@@ -630,12 +630,12 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		);
 		const registered = await registerSdkSession(server, root);
 		expect(registered).toMatchObject({ ok: true, session: { cwd: canonicalWorkspace } });
-		expect(await server.callTool("gjc_coordinator_read_status", { session_id: "visible-session" })).toMatchObject({
+		expect(await server.callTool("worx_coordinator_read_status", { session_id: "visible-session" })).toMatchObject({
 			ok: true,
 			status: { live: true },
 		});
 		expect(
-			await server.callTool("gjc_coordinator_send_prompt", {
+			await server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "case-safe workspace",
 				idempotency_key: "windows-case-safe",
@@ -699,7 +699,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			["follow-up-without-turn", true],
 		] as const) {
 			expect(
-				await server.callTool("gjc_coordinator_send_prompt", {
+				await server.callTool("worx_coordinator_send_prompt", {
 					session_id: "visible-session",
 					prompt: "must not be recorded",
 					idempotency_key: idempotencyKey,
@@ -728,7 +728,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 
 		expect(
-			await server.callTool("gjc_coordinator_send_prompt", {
+			await server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "bounded timeout",
 				idempotency_key: "bounded-timeout",
@@ -757,7 +757,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			});
 			await registerSdkSession(server, root);
 			expect(
-				await server.callTool("gjc_coordinator_send_prompt", {
+				await server.callTool("worx_coordinator_send_prompt", {
 					session_id: "visible-session",
 					prompt: "bounded prompt acknowledgement",
 					idempotency_key: `prompt-timeout-${expectedTimeoutMs}`,
@@ -783,7 +783,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			},
 			{ sessionId: "other-workdir", locator: { repo: path.join(root, "other") }, live: true },
 		]);
-		const status = await server.callTool("gjc_coordinator_read_status");
+		const status = await server.callTool("worx_coordinator_read_status");
 		expect(status).toEqual({
 			ok: true,
 			sessions: [
@@ -818,7 +818,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			},
 		});
 
-		const status = await server.callTool("gjc_coordinator_read_status");
+		const status = await server.callTool("worx_coordinator_read_status");
 		expect(status).toMatchObject({
 			ok: true,
 			sessions: [
@@ -845,7 +845,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			},
 		});
 
-		await expect(server.callTool("gjc_coordinator_read_status")).resolves.toMatchObject({
+		await expect(server.callTool("worx_coordinator_read_status")).resolves.toMatchObject({
 			ok: false,
 			error: { code: "continuation_failed", message: "page two failed" },
 		});
@@ -862,7 +862,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 
 		await expect(
-			server.callTool("gjc_coordinator_read_tail", { session_id: "visible-session", lines: 1 }),
+			server.callTool("worx_coordinator_read_tail", { session_id: "visible-session", lines: 1 }),
 		).resolves.toEqual({ ok: true, source: "sdk", lines: ["latest assistant line"] });
 		expect(queries).toEqual(["session.last_assistant"]);
 	});
@@ -879,7 +879,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 
 		await expect(
-			server.callTool("gjc_coordinator_read_tail", { session_id: "visible-session" }),
+			server.callTool("worx_coordinator_read_tail", { session_id: "visible-session" }),
 		).resolves.toMatchObject({
 			ok: false,
 			error: { code: "unavailable" },
@@ -892,14 +892,14 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const queries: string[] = [];
 		const server = await createSdkControlServer(root, controls, queries);
 		await registerSdkSession(server, root);
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "work",
 			idempotency_key: "prompt-1",
 			allow_mutation: true,
 		});
 
-		await expect(server.callTool("gjc_coordinator_read_turn", { turn_id: sent.turn_id })).resolves.toMatchObject({
+		await expect(server.callTool("worx_coordinator_read_turn", { turn_id: sent.turn_id })).resolves.toMatchObject({
 			ok: true,
 			advisory_status: { authority: "sdk", live: true, is_streaming: true },
 		});
@@ -911,7 +911,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const queries: string[] = [];
 		const server = await createSdkControlServer(root, controls, queries);
 		await registerSdkSession(server, root);
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "work",
 			idempotency_key: "prompt-1",
@@ -919,7 +919,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		await fs.rm(path.join(root, ".gjc", "state", "sdk", "visible-session.json"));
 
-		await expect(server.callTool("gjc_coordinator_read_turn", { turn_id: sent.turn_id })).resolves.toMatchObject({
+		await expect(server.callTool("worx_coordinator_read_turn", { turn_id: sent.turn_id })).resolves.toMatchObject({
 			ok: true,
 			advisory_status: { authority: "sdk", live: true, is_streaming: true },
 		});
@@ -930,7 +930,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const started = await server.callTool("gjc_coordinator_start_session", {
+		const started = await server.callTool("worx_coordinator_start_session", {
 			cwd: root,
 			mpreset: "codex-eco",
 			idempotency_key: "preset-start",
@@ -961,7 +961,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
 
-		const started = await server.callTool("gjc_coordinator_start_session", {
+		const started = await server.callTool("worx_coordinator_start_session", {
 			cwd: root,
 			idempotency_key: "credential-free-start",
 			allow_mutation: true,
@@ -984,10 +984,10 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			undefined,
 			undefined,
 			undefined,
-			"gjc --worktree hermes",
+			"worx --worktree hermes",
 		);
 
-		const started = await server.callTool("gjc_coordinator_start_session", {
+		const started = await server.callTool("worx_coordinator_start_session", {
 			cwd: root,
 			idempotency_key: "worktree-start",
 			allow_mutation: true,
@@ -1025,11 +1025,11 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			undefined,
 			undefined,
 			undefined,
-			"gjc --worktree --model provider/model",
+			"worx --worktree --model provider/model",
 		);
 
 		await expect(
-			server.callTool("gjc_coordinator_start_session", {
+			server.callTool("worx_coordinator_start_session", {
 				cwd: root,
 				idempotency_key: "invalid-worktree-command",
 				allow_mutation: true,
@@ -1046,11 +1046,11 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			undefined,
 			undefined,
 			undefined,
-			"wrapper gjc --worktree",
+			"wrapper worx --worktree",
 		);
 
 		await expect(
-			server.callTool("gjc_coordinator_start_session", {
+			server.callTool("worx_coordinator_start_session", {
 				cwd: root,
 				idempotency_key: "wrapper-command",
 				allow_mutation: true,
@@ -1063,13 +1063,13 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
 		await registerSdkSession(server, root);
-		const first = await server.callTool("gjc_coordinator_send_prompt", {
+		const first = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "retry-safe prompt",
 			idempotency_key: "same-prompt-key",
 			allow_mutation: true,
 		});
-		const replay = await server.callTool("gjc_coordinator_send_prompt", {
+		const replay = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "retry-safe prompt",
 			idempotency_key: "same-prompt-key",
@@ -1078,7 +1078,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		expect(replay).toEqual(first);
 		expect(lifecycleControls(controls).filter(control => control.operation === "turn.prompt")).toHaveLength(1);
 		await expect(
-			server.callTool("gjc_coordinator_send_prompt", {
+			server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "different prompt",
 				idempotency_key: "same-prompt-key",
@@ -1099,8 +1099,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			allow_mutation: true,
 		};
 		const [first, replay] = await Promise.all([
-			server.callTool("gjc_coordinator_send_prompt", request),
-			server.callTool("gjc_coordinator_send_prompt", request),
+			server.callTool("worx_coordinator_send_prompt", request),
+			server.callTool("worx_coordinator_send_prompt", request),
 		]);
 		expect(replay).toEqual(first);
 		expect(lifecycleControls(controls).filter(control => control.operation === "turn.prompt")).toHaveLength(1);
@@ -1115,8 +1115,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			idempotency_key: "composite-start",
 			allow_mutation: true,
 		};
-		const started = await server.callTool("gjc_coordinator_start_session", startArgs);
-		const replayedStart = await server.callTool("gjc_coordinator_start_session", startArgs);
+		const started = await server.callTool("worx_coordinator_start_session", startArgs);
+		const replayedStart = await server.callTool("worx_coordinator_start_session", startArgs);
 		expect(replayedStart).toEqual(started);
 		expect(lifecycleControls(controls).filter(control => control.operation === "session.create")).toHaveLength(1);
 		expect(lifecycleControls(controls).filter(control => control.operation === "turn.prompt")).toHaveLength(1);
@@ -1126,8 +1126,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			idempotency_key: "composite-delegate",
 			allow_mutation: true,
 		};
-		const delegated = await server.callTool("gjc_delegate_execute", delegateArgs);
-		const replayedDelegate = await server.callTool("gjc_delegate_execute", delegateArgs);
+		const delegated = await server.callTool("worx_delegate_execute", delegateArgs);
+		const replayedDelegate = await server.callTool("worx_delegate_execute", delegateArgs);
 		expect(replayedDelegate).toEqual(delegated);
 		expect(lifecycleControls(controls).filter(control => control.operation === "session.create")).toHaveLength(2);
 		expect(lifecycleControls(controls).filter(control => control.operation === "turn.prompt")).toHaveLength(2);
@@ -1138,10 +1138,10 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			idempotency_key: "composite-report",
 			allow_mutation: true,
 		};
-		const report = await server.callTool("gjc_coordinator_report_status", reportArgs);
-		const replayedReport = await server.callTool("gjc_coordinator_report_status", reportArgs);
+		const report = await server.callTool("worx_coordinator_report_status", reportArgs);
+		const replayedReport = await server.callTool("worx_coordinator_report_status", reportArgs);
 		expect(replayedReport).toEqual(report);
-		await expect(server.callTool("gjc_coordinator_read_coordination_status")).resolves.toMatchObject({
+		await expect(server.callTool("worx_coordinator_read_coordination_status")).resolves.toMatchObject({
 			summary: { reports: 1 },
 		});
 	});
@@ -1177,7 +1177,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		sessions[0]!.endpointMtimeMs = 2;
 
 		await expect(
-			server.callTool("gjc_coordinator_send_prompt", {
+			server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "stale successor",
 				idempotency_key: "stale-incarnation-prompt",
@@ -1185,7 +1185,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			}),
 		).resolves.toMatchObject({ ok: false, error: { code: "endpoint_stale" } });
 		await expect(
-			server.callTool("gjc_coordinator_stop_session", {
+			server.callTool("worx_coordinator_stop_session", {
 				session_id: "visible-session",
 				allow_mutation: true,
 			}),
@@ -1232,7 +1232,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 		rotateAtEndpointRetrieval = true;
 
-		const result = await server.callTool("gjc_coordinator_send_prompt", {
+		const result = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "must not reach successor",
 			idempotency_key: "same-generation-restart",
@@ -1266,7 +1266,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await fs.mkdir(path.dirname(corruptFile), { recursive: true });
 		await Bun.write(corruptFile, "{not-json");
 		await expect(
-			server.callTool("gjc_coordinator_report_status", {
+			server.callTool("worx_coordinator_report_status", {
 				status: "running",
 				summary: "must not write",
 				idempotency_key: corruptKey,
@@ -1319,7 +1319,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			endpointMtimeMs: 2,
 		});
 		await expect(
-			server.callTool("gjc_coordinator_register_session", {
+			server.callTool("worx_coordinator_register_session", {
 				session_id: "foreign-session",
 				cwd: root,
 				idempotency_key: "foreign-workspace",
@@ -1328,7 +1328,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		).resolves.toMatchObject({ ok: false, error: { code: "not_found" } });
 		sessions[0]!.endpointGeneration = 2;
 		await expect(
-			server.callTool("gjc_coordinator_send_prompt", {
+			server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "stale generation",
 				idempotency_key: "stale-generation",
@@ -1337,7 +1337,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		).resolves.toMatchObject({ ok: false, error: { code: "endpoint_stale" } });
 		expect(lifecycleControls(controls).filter(control => control.operation === "turn.prompt")).toHaveLength(0);
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: otherWorkspace,
 				session_id: "visible-session",
 				task: "wrong workspace",
@@ -1387,7 +1387,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				sessions[0]!.endpointGeneration = endpointMtimeMs;
 			}
 			await expect(
-				server.callTool("gjc_coordinator_register_session", {
+				server.callTool("worx_coordinator_register_session", {
 					session_id: "visible-session",
 					cwd: root,
 					idempotency_key: registrationKey,
@@ -1404,7 +1404,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				}),
 			);
 			await expect(
-				server.callTool("gjc_coordinator_stop_session", { session_id: "visible-session", allow_mutation: true }),
+				server.callTool("worx_coordinator_stop_session", { session_id: "visible-session", allow_mutation: true }),
 			).resolves.toMatchObject({ ok: true, closed: true });
 		}
 		const closes = controls.filter(control => control.operation === "session.close");
@@ -1440,7 +1440,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				credentials: { nested: "reused-session-secret" },
 			}),
 		);
-		const delegated = await server.callTool("gjc_delegate_plan", {
+		const delegated = await server.callTool("worx_delegate_plan", {
 			cwd: root,
 			session_id: "visible-session",
 			task: "sanitize session",
@@ -1461,14 +1461,14 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			controlOptions,
 		});
 		await registerSdkSession(server, root);
-		const first = await server.callTool("gjc_coordinator_send_prompt", {
+		const first = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "first",
 			idempotency_key: "prompt-1",
 			allow_mutation: true,
 		});
 		expect(first).toMatchObject({ ok: true, operation: "turn.prompt", turn: { status: "active" } });
-		const queued = await server.callTool("gjc_coordinator_send_prompt", {
+		const queued = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "follow up",
 			queue: true,
@@ -1498,7 +1498,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			runtime_turn_id: queuedAcknowledgement.turn_id,
 		});
 		expect(
-			await server.callTool("gjc_coordinator_send_prompt", {
+			await server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "replace",
 				force: true,
@@ -1564,7 +1564,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			},
 		);
 		await registerSdkSession(server, root);
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "open gate",
 			idempotency_key: "gate-owner",
@@ -1573,7 +1573,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const runtimeAcknowledgement = sent.result as { turn_id?: unknown };
 		if (typeof runtimeAcknowledgement.turn_id !== "string") throw new Error("missing runtime turn id");
 		runtimeTurnId = runtimeAcknowledgement.turn_id;
-		const listed = await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+		const listed = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		expect(listed).toMatchObject({ ok: true, reconciliation: { complete: true, revision: "q12-r1" } });
 		expect(q12Calls).toEqual([undefined, "page-2"]);
 		const question = (listed.questions as Array<Record<string, unknown>>)[0]!;
@@ -1588,7 +1588,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		expect(question.answer_binding).toMatch(/^[A-Za-z0-9_-]{43}$/);
 		expect(controls.filter(control => control.operation === "workflow.gate_answer")).toEqual([]);
 
-		const answer = await server.callTool("gjc_coordinator_submit_question_answer", {
+		const answer = await server.callTool("worx_coordinator_submit_question_answer", {
 			session_id: "visible-session",
 			turn_id: sent.turn_id,
 			question_id: "gate-q12",
@@ -1608,7 +1608,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				input: { id: "gate-q12", response: { selected: ["Continue"] }, expectedSessionId: "visible-session" },
 			}),
 		]);
-		const replay = await server.callTool("gjc_coordinator_submit_question_answer", {
+		const replay = await server.callTool("worx_coordinator_submit_question_answer", {
 			session_id: "visible-session",
 			turn_id: sent.turn_id,
 			question_id: "gate-q12",
@@ -1619,7 +1619,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		expect(replay).toMatchObject({ ok: true, status: "accepted", replayed: false });
 		expect(
-			await server.callTool("gjc_coordinator_submit_question_answer", {
+			await server.callTool("worx_coordinator_submit_question_answer", {
 				session_id: "visible-session",
 				turn_id: sent.turn_id,
 				question_id: "gate-q12",
@@ -1645,7 +1645,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				: { ok: true, page: { items: [], complete: true, revision: "context" } },
 		);
 		await registerSdkSession(server, root);
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "owner",
 			idempotency_key: "owner-bad",
@@ -1654,8 +1654,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const runtimeAcknowledgement = sent.result as { turn_id?: unknown };
 		if (typeof runtimeAcknowledgement.turn_id !== "string") throw new Error("missing runtime turn id");
 		runtimeTurnId = runtimeAcknowledgement.turn_id;
-		const first = await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
-		const second = await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+		const first = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
+		const second = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		expect(first).toMatchObject({
 			questions: [],
 			diagnostics: expect.arrayContaining([
@@ -1688,7 +1688,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			};
 		});
 		await registerSdkSession(server, root);
-		const listed = await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+		const listed = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		expect(listed).toMatchObject({
 			ok: true,
 			schema_version: 1,
@@ -1704,9 +1704,9 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
 		for (const [tool, key] of [
-			["gjc_delegate_plan", "plan"],
-			["gjc_delegate_execute", "execute"],
-			["gjc_delegate_team", "team"],
+			["worx_delegate_plan", "plan"],
+			["worx_delegate_execute", "execute"],
+			["worx_delegate_team", "team"],
 		] as const) {
 			const result = await server.callTool(tool, {
 				cwd: root,
@@ -1767,7 +1767,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const sourceBefore = await fs.readFile(sourceFile, "utf8");
 		const results = await Promise.all(
 			["auto-bind-one", "auto-bind-two"].map(idempotency_key =>
-				server.callTool("gjc_delegate_execute", {
+				server.callTool("worx_delegate_execute", {
 					cwd: root,
 					task: idempotency_key,
 					idempotency_key,
@@ -1829,7 +1829,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			endpoint: { kind: "unix", path: "/tmp/codex-explicit-one.sock" },
 		});
 
-		const result = await server.callTool("gjc_delegate_execute", {
+		const result = await server.callTool("worx_delegate_execute", {
 			cwd: root,
 			task: "bind explicit Codex handoff",
 			idempotency_key: "explicit-codex-handoff",
@@ -1870,7 +1870,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		]);
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "prefer explicit Codex handoff",
 				idempotency_key: "explicit-over-ambient",
@@ -1889,7 +1889,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "skip missing explicit Codex handoff",
 				idempotency_key: "missing-explicit-codex-handoff",
@@ -1908,7 +1908,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "reject malformed explicit Codex handoff",
 				idempotency_key: "malformed-explicit-codex-handoff",
@@ -1929,7 +1929,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await fs.writeFile(path.join(namespace, "codex-handoffs", "corrupt-codex-host.json"), "{ not json", "utf8");
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "skip corrupt explicit Codex handoff",
 				idempotency_key: "corrupt-explicit-codex-handoff",
@@ -1959,7 +1959,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		}
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "reject conflicting host contexts",
 				idempotency_key: "conflicting-host-contexts",
@@ -1985,7 +1985,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		}
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "bind matching host contexts",
 				idempotency_key: "matching-host-contexts",
@@ -2031,7 +2031,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "ignore invalid host evidence",
 				idempotency_key: "ignore-invalid-host-evidence",
@@ -2069,7 +2069,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		const results = await Promise.all(
 			["wake-bind-one", "wake-bind-two"].map(idempotency_key =>
-				server.callTool("gjc_delegate_execute", {
+				server.callTool("worx_delegate_execute", {
 					cwd: root,
 					task: idempotency_key,
 					idempotency_key,
@@ -2121,7 +2121,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		]);
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "ambiguous handoff",
 				idempotency_key: "ambiguous-handoff",
@@ -2163,7 +2163,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			endpoint: { kind: "unix", path: "/tmp/host-source.sock" },
 		});
 
-		const result = await server.callTool("gjc_delegate_execute", {
+		const result = await server.callTool("worx_delegate_execute", {
 			cwd: root,
 			task: "select host fallback",
 			idempotency_key: "select-host-fallback",
@@ -2197,7 +2197,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await fs.writeFile(sourceFile, JSON.stringify(stale), "utf8");
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "reject stale source",
 				idempotency_key: "reject-stale-source",
@@ -2240,7 +2240,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			endpoint: { kind: "unix", path: "/tmp/fresh-host.sock" },
 		});
 
-		const delegated = await server.callTool("gjc_delegate_execute", {
+		const delegated = await server.callTool("worx_delegate_execute", {
 			cwd: root,
 			task: "bind to the fresh source",
 			idempotency_key: "mixed-stale-fresh",
@@ -2278,7 +2278,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		}
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "all sources stale",
 				idempotency_key: "all-stale-threads",
@@ -2311,7 +2311,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "direct source wins",
 				idempotency_key: "direct-source-wins",
@@ -2342,7 +2342,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "record corrupt context",
 				idempotency_key: "record-corrupt-context",
@@ -2363,7 +2363,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await fs.writeFile(contextPath, "{", "utf8");
 
 		await expect(
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				task: "reject unreadable-only context",
 				idempotency_key: "reject-unreadable-only-context",
@@ -2381,14 +2381,14 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 
 		const results = await Promise.all([
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				session_id: "visible-session",
 				task: "first delegated task",
 				idempotency_key: "delegate-first",
 				allow_mutation: true,
 			}),
-			server.callTool("gjc_delegate_execute", {
+			server.callTool("worx_delegate_execute", {
 				cwd: root,
 				session_id: "visible-session",
 				task: "second delegated task",
@@ -2411,7 +2411,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const immediate = await server.callTool("gjc_delegate_plan", {
+		const immediate = await server.callTool("worx_delegate_plan", {
 			cwd: root,
 			task: "immediate",
 			idempotency_key: "immediate",
@@ -2419,7 +2419,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		expect(immediate).toMatchObject({ ok: true, delivered: true, turn: { status: "active" } });
 		expect(immediate.completion).toBeUndefined();
-		const awaited = await server.callTool("gjc_delegate_execute", {
+		const awaited = await server.callTool("worx_delegate_execute", {
 			cwd: root,
 			task: "timeout",
 			idempotency_key: "timeout",
@@ -2441,14 +2441,14 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const server = await createSdkControlServer(root, controls);
 		await registerSdkSession(server, root);
 		expect(
-			await server.callTool("gjc_coordinator_send_prompt", {
+			await server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "work",
 				allow_mutation: true,
 			}),
 		).toMatchObject({ ok: false, error: { code: "invalid_request" } });
 		expect(
-			await server.callTool("gjc_coordinator_submit_question_answer", {
+			await server.callTool("worx_coordinator_submit_question_answer", {
 				session_id: "visible-session",
 				question_id: "ask-1",
 				answer: "yes",
@@ -2471,7 +2471,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		await registerSdkSession(server, root);
 		expect(
-			await server.callTool("gjc_coordinator_send_prompt", {
+			await server.callTool("worx_coordinator_send_prompt", {
 				session_id: "visible-session",
 				prompt: "work",
 				idempotency_key: "key-1",
@@ -2485,7 +2485,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
 		await registerSdkSession(server, root);
-		const report = await server.callTool("gjc_coordinator_report_status", {
+		const report = await server.callTool("worx_coordinator_report_status", {
 			session_id: "visible-session",
 			status: "blocked",
 			summary: "Awaiting SDK turn completion.",
@@ -2493,7 +2493,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			allow_mutation: true,
 		});
 		expect(report).toMatchObject({ ok: true, report: { status: "blocked", session_id: "visible-session" } });
-		const events = await server.callTool("gjc_coordinator_watch_events", { after_seq: 0 });
+		const events = await server.callTool("worx_coordinator_watch_events", { after_seq: 0 });
 		expect((events.events as Array<{ kind: string }>).map(event => event.kind)).toEqual([
 			"session.state_changed",
 			"session.registered",
@@ -2522,7 +2522,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		);
 
 		expect(
-			await server.callTool("gjc_coordinator_stop_session", {
+			await server.callTool("worx_coordinator_stop_session", {
 				session_id: "visible-session",
 				allow_mutation: true,
 			}),
@@ -2555,7 +2555,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		];
 		const server = await createSdkControlServer(root, controls, undefined, undefined, brokerSessions);
 		await expect(
-			server.callTool("gjc_coordinator_register_session", {
+			server.callTool("worx_coordinator_register_session", {
 				session_id: "idle-session",
 				cwd: root,
 				idempotency_key: "register-idle",
@@ -2639,7 +2639,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 					}
 
 					const result = await createRealBrokerServer(root, agentDir).callTool(
-						"gjc_coordinator_list_sessions",
+						"worx_coordinator_list_sessions",
 						{},
 					);
 					expect(result).toMatchObject({ ok: true, sessions: [] });
@@ -2667,7 +2667,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				cleanup.lease = started.lease;
 				const owner = brokerOwnerForTest(agentDir);
 				expect(owner).toBeDefined();
-				const result = await createRealBrokerServer(root, agentDir).callTool("gjc_coordinator_list_sessions", {});
+				const result = await createRealBrokerServer(root, agentDir).callTool("worx_coordinator_list_sessions", {});
 				expect(result).toMatchObject({ ok: true, sessions: [] });
 				const reused = await readBrokerDiscovery(agentDir);
 				expect(reused).toMatchObject({
@@ -2690,8 +2690,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			try {
 				const server = createRealBrokerServer(root, agentDir);
 				const results = await Promise.all([
-					server.callTool("gjc_coordinator_list_sessions", {}),
-					server.callTool("gjc_coordinator_list_sessions", {}),
+					server.callTool("worx_coordinator_list_sessions", {}),
+					server.callTool("worx_coordinator_list_sessions", {}),
 				]);
 				expect(results).toEqual([
 					{ ok: true, sessions: [] },
@@ -2701,7 +2701,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				expect(owner).toBeDefined();
 				const discovery = await readBrokerDiscovery(agentDir);
 				expect(discovery).not.toBeNull();
-				await expect(server.callTool("gjc_coordinator_list_sessions", {})).resolves.toMatchObject({
+				await expect(server.callTool("worx_coordinator_list_sessions", {})).resolves.toMatchObject({
 					ok: true,
 					sessions: [],
 				});
@@ -2733,7 +2733,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				} as unknown as SdkClient;
 			},
 		});
-		await expect(server.callTool("gjc_coordinator_list_sessions", {})).resolves.toMatchObject({
+		await expect(server.callTool("worx_coordinator_list_sessions", {})).resolves.toMatchObject({
 			ok: true,
 			sessions: [],
 		});
@@ -2765,8 +2765,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		});
 		await expect(
 			Promise.all([
-				server.callTool("gjc_coordinator_list_sessions", {}),
-				server.callTool("gjc_coordinator_list_sessions", {}),
+				server.callTool("worx_coordinator_list_sessions", {}),
+				server.callTool("worx_coordinator_list_sessions", {}),
 			]),
 		).resolves.toEqual([
 			{ ok: true, sessions: [] },
@@ -2886,7 +2886,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 					return client;
 				},
 			});
-			const result = await server.callTool("gjc_coordinator_list_sessions", {});
+			const result = await server.callTool("worx_coordinator_list_sessions", {});
 			expect(result).toMatchObject({ ok: false, error: { code: testCase.code } });
 			if (testCase.message) expect(result).toMatchObject({ error: { message: testCase.message } });
 			expect(JSON.stringify(result)).not.toContain("token-secret");
@@ -2898,7 +2898,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			connectSdk: async () =>
 				({ global: async () => ({ ok: true }), close: async () => {} }) as unknown as SdkClient,
 		});
-		await expect(nullServer.callTool("gjc_coordinator_list_sessions", {})).resolves.toMatchObject({
+		await expect(nullServer.callTool("worx_coordinator_list_sessions", {})).resolves.toMatchObject({
 			ok: false,
 			error: { code: "broker_unavailable", message: "SDK broker is unavailable after bootstrap." },
 		});
@@ -2925,7 +2925,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 						},
 					}) as unknown as SdkClient,
 			});
-			const result = await server.callTool("gjc_coordinator_list_sessions", {});
+			const result = await server.callTool("worx_coordinator_list_sessions", {});
 			expect(result).toMatchObject({
 				ok: false,
 				error: { code: requestError instanceof SdkClientError ? "request_failed" : "broker_request_unavailable" },
@@ -2945,7 +2945,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 					},
 				}) as unknown as SdkClient,
 		});
-		await expect(closeFailureServer.callTool("gjc_coordinator_list_sessions", {})).resolves.toMatchObject({
+		await expect(closeFailureServer.callTool("worx_coordinator_list_sessions", {})).resolves.toMatchObject({
 			ok: false,
 			error: { code: "broker_transport_unavailable", message: "SDK broker transport is unavailable." },
 		});
@@ -2977,27 +2977,27 @@ it("repairs one terminal session without deleting another session's projections"
 	const server = await createSdkControlServer(root, controls, undefined, undefined, sessions);
 	await registerSdkSession(server, root);
 	await expect(
-		server.callTool("gjc_coordinator_register_session", {
+		server.callTool("worx_coordinator_register_session", {
 			session_id: "other-session",
 			cwd: root,
 			idempotency_key: "register-other",
 			allow_mutation: true,
 		}),
 	).resolves.toMatchObject({ ok: true });
-	const first = await server.callTool("gjc_coordinator_send_prompt", {
+	const first = await server.callTool("worx_coordinator_send_prompt", {
 		session_id: "visible-session",
 		prompt: "first",
 		idempotency_key: "prompt-first-session",
 		allow_mutation: true,
 	});
-	const second = await server.callTool("gjc_coordinator_send_prompt", {
+	const second = await server.callTool("worx_coordinator_send_prompt", {
 		session_id: "other-session",
 		prompt: "second",
 		idempotency_key: "prompt-second-session",
 		allow_mutation: true,
 	});
 	await expect(
-		server.callTool("gjc_coordinator_report_status", {
+		server.callTool("worx_coordinator_report_status", {
 			session_id: "visible-session",
 			turn_id: first.turn_id,
 			status: "completed",
@@ -3074,7 +3074,7 @@ async function callActivate(
 	server: { callTool: (name: string, args: Record<string, unknown>) => Promise<Record<string, unknown>> },
 	idempotencyKey: string,
 ): Promise<Record<string, unknown>> {
-	return await server.callTool("gjc_coordinator_activate_session", {
+	return await server.callTool("worx_coordinator_activate_session", {
 		session_id: "visible-session",
 		idempotency_key: idempotencyKey,
 		allow_mutation: true,
@@ -3274,7 +3274,7 @@ describe("Coordinator MCP prepared session activation", () => {
 				: { ok: true, page: { items: [], complete: true, revision: "context" } },
 		);
 		await registerSdkSession(server, root);
-		const sent = await server.callTool("gjc_coordinator_send_prompt", {
+		const sent = await server.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "gate prompt text must not enter the event",
 			idempotency_key: "opened-prompt",
@@ -3284,7 +3284,7 @@ describe("Coordinator MCP prepared session activation", () => {
 		if (typeof runtimeAcknowledgement.turn_id !== "string") throw new Error("missing runtime turn id");
 		runtimeTurnId = runtimeAcknowledgement.turn_id;
 		await expect(
-			server.callTool("gjc_coordinator_register_codex_handoff", {
+			server.callTool("worx_coordinator_register_codex_handoff", {
 				session_id: "visible-session",
 				thread_id: "thread-opened",
 				endpoint: { kind: "unix", path: "/tmp/question-opened.sock" },
@@ -3293,7 +3293,7 @@ describe("Coordinator MCP prepared session activation", () => {
 			}),
 		).resolves.toMatchObject({ ok: true });
 
-		const first = await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+		const first = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		const question = (first.questions as Array<Record<string, unknown>>)[0]!;
 		const journal = path.join(root, ".gjc", "coordinator-state", "local", "repo", "events", "event-journal.jsonl");
 		const opened = (await fs.readFile(journal, "utf8"))
@@ -3308,7 +3308,7 @@ describe("Coordinator MCP prepared session activation", () => {
 			question_id: "gate-opened",
 		});
 		expect(String(opened[0]?.summary)).not.toContain("gate prompt text must not enter the event");
-		await server.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+		await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		const openedAfterReplay = (await fs.readFile(journal, "utf8"))
 			.trim()
 			.split("\n")
@@ -3367,13 +3367,13 @@ it("keeps parallel pending questions isolated when one answer is submitted", asy
 	);
 	await Promise.all([registerSdkSession(serverA, rootA), registerSdkSession(serverB, rootB)]);
 	const [sentA, sentB] = await Promise.all([
-		serverA.callTool("gjc_coordinator_send_prompt", {
+		serverA.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "open A",
 			idempotency_key: "isolation-prompt-a",
 			allow_mutation: true,
 		}),
-		serverB.callTool("gjc_coordinator_send_prompt", {
+		serverB.callTool("worx_coordinator_send_prompt", {
 			session_id: "visible-session",
 			prompt: "open B",
 			idempotency_key: "isolation-prompt-b",
@@ -3387,14 +3387,14 @@ it("keeps parallel pending questions isolated when one answer is submitted", asy
 	runtimeTurnA = acknowledgementA.turn_id;
 	runtimeTurnB = acknowledgementB.turn_id;
 	const [listedA, listedB] = await Promise.all([
-		serverA.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" }),
-		serverB.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" }),
+		serverA.callTool("worx_coordinator_list_questions", { session_id: "visible-session" }),
+		serverB.callTool("worx_coordinator_list_questions", { session_id: "visible-session" }),
 	]);
 	const questionA = (listedA.questions as Array<Record<string, unknown>>)[0]!;
 	const questionBBefore = (listedB.questions as Array<Record<string, unknown>>)[0]!;
 	expect(questionA.answer_binding).not.toBe(questionBBefore.answer_binding);
 	await expect(
-		serverA.callTool("gjc_coordinator_submit_question_answer", {
+		serverA.callTool("worx_coordinator_submit_question_answer", {
 			session_id: "visible-session",
 			turn_id: sentA.turn_id,
 			question_id: "gate-isolated-a",
@@ -3404,7 +3404,7 @@ it("keeps parallel pending questions isolated when one answer is submitted", asy
 			allow_mutation: true,
 		}),
 	).resolves.toMatchObject({ ok: true, status: "accepted" });
-	const listedBAfter = await serverB.callTool("gjc_coordinator_list_questions", { session_id: "visible-session" });
+	const listedBAfter = await serverB.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 	const questionBAfter = (listedBAfter.questions as Array<Record<string, unknown>>)[0]!;
 	expect(questionBAfter).toMatchObject({
 		question_id: "gate-isolated-b",

@@ -694,7 +694,7 @@ describe("native gjc team runtime", () => {
 			max_workers: 1,
 			state_root: "C:\\state",
 			worker_command: "'C:\\Program Files\\gjc\\gjc.exe'",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
 			tmux_session: "win-session",
 			tmux_session_name: "win-session",
@@ -723,7 +723,7 @@ describe("native gjc team runtime", () => {
 
 		expect(command).toContain("; & 'C:\\Program Files\\gjc\\gjc.exe'");
 		expect(command).not.toContain("; 'C:\\Program Files\\gjc\\gjc.exe' ");
-		expect(command).toContain("'You are worker-1 in gjc team win-team.");
+		expect(command).toContain("'You are worker-1 in worx team win-team.");
 	});
 
 	it("marks worker commands with the canonical GJC spawn-provenance env var", () => {
@@ -737,7 +737,7 @@ describe("native gjc team runtime", () => {
 			max_workers: 1,
 			state_root: "/state",
 			worker_command: "gjc",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
 			tmux_session_name: "sess",
@@ -787,7 +787,7 @@ describe("native gjc team runtime", () => {
 			state_root: "/state",
 			gjc_session_id: "owner-'$(echo hostile)",
 			worker_command: "gjc",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
 			tmux_session_name: "sess",
@@ -832,7 +832,7 @@ describe("native gjc team runtime", () => {
 			max_workers: 1,
 			state_root: "/state",
 			worker_command: "gjc",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
 			tmux_session_name: "sess",
@@ -876,7 +876,7 @@ describe("native gjc team runtime", () => {
 			state_root: "/state",
 			worker_command:
 				"bun -e \"process.stdout.write((process.env.GJC_SESSION_ID ?? '<unset>') + '|' + (process.env.GJC_TEAM_WORKER ?? '<missing>'))\"",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
 			tmux_session_name: "sess",
@@ -966,12 +966,12 @@ describe("native gjc team runtime", () => {
 	});
 
 	it("keeps worker CLI selection limited to GJC teammate sessions", async () => {
-		expect(resolveGjcTeamWorkerCli({})).toBe("gjc");
-		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "auto" })).toBe("gjc");
-		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "gjc" })).toBe("gjc");
-		expect(resolveGjcTeamWorkerCliPlan(3, { GJC_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["gjc", "gjc", "gjc"]);
-		expect(resolveGjcTeamWorkerCliPlan(2, { GJC_TEAM_WORKER_CLI_MAP: "gjc,auto" })).toEqual(["gjc", "gjc"]);
-		expect(translateGjcWorkerLaunchArgsForCli("gjc", ["--model", "frontier"])).toEqual(["--model", "frontier"]);
+		expect(resolveGjcTeamWorkerCli({})).toBe("worx");
+		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "auto" })).toBe("worx");
+		expect(resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: "worx" })).toBe("worx");
+		expect(resolveGjcTeamWorkerCliPlan(3, { GJC_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["worx", "worx", "worx"]);
+		expect(resolveGjcTeamWorkerCliPlan(2, { GJC_TEAM_WORKER_CLI_MAP: "worx,auto" })).toEqual(["worx", "worx"]);
+		expect(translateGjcWorkerLaunchArgsForCli("worx", ["--model", "frontier"])).toEqual(["--model", "frontier"]);
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const snapshot = await startGjcTeam({
 			workerCount: 2,
@@ -980,25 +980,25 @@ describe("native gjc team runtime", () => {
 			teamName: "gjc-worker-cli-team",
 			cwd: cleanupRoot,
 			dryRun: true,
-			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "", GJC_TEAM_WORKER_CLI_MAP: "gjc,auto" },
+			env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "", GJC_TEAM_WORKER_CLI_MAP: "worx,auto" },
 		});
 		const config = await Bun.file(path.join(snapshot.state_dir, "config.json")).json();
 		const manifest = await Bun.file(path.join(snapshot.state_dir, "manifest.v2.json")).json();
 		const telemetry = await Bun.file(path.join(snapshot.state_dir, "telemetry.jsonl")).text();
-		expect(config.worker_cli_plan).toEqual(["gjc", "gjc"]);
-		expect(manifest.worker_cli_plan).toEqual(["gjc", "gjc"]);
-		expect(telemetry).toContain('"worker_cli_plan":["gjc","gjc"]');
+		expect(config.worker_cli_plan).toEqual(["worx", "worx"]);
+		expect(manifest.worker_cli_plan).toEqual(["worx", "worx"]);
+		expect(telemetry).toContain('"worker_cli_plan":["worx","worx"]');
 
 		for (const provider of ["codex", "claude", "gemini"]) {
 			expect(() => resolveGjcTeamWorkerCli({ GJC_TEAM_WORKER_CLI: provider })).toThrow(
-				/GJC team launches GJC teammate sessions only/,
+				/WORX team launches WORX teammate sessions only/,
 			);
 			expect(() => resolveGjcTeamWorkerCliPlan(1, { GJC_TEAM_WORKER_CLI_MAP: provider })).toThrow(
-				/GJC team launches GJC teammate sessions only/,
+				/WORX team launches WORX teammate sessions only/,
 			);
 			expect(() =>
-				resolveGjcTeamWorkerCliPlan(1, { GJC_TEAM_WORKER_CLI: provider, GJC_TEAM_WORKER_CLI_MAP: "gjc" }),
-			).toThrow(/GJC team launches GJC teammate sessions only/);
+				resolveGjcTeamWorkerCliPlan(1, { GJC_TEAM_WORKER_CLI: provider, GJC_TEAM_WORKER_CLI_MAP: "worx" }),
+			).toThrow(/WORX team launches WORX teammate sessions only/);
 			if (!cleanupRoot) cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 			await expect(
 				startGjcTeam({
@@ -1010,7 +1010,7 @@ describe("native gjc team runtime", () => {
 					dryRun: true,
 					env: { GJC_SESSION_ID: TEST_SESSION_ID, PATH: "", GJC_TEAM_WORKER_CLI: provider },
 				}),
-			).rejects.toThrow(/GJC team launches GJC teammate sessions only/);
+			).rejects.toThrow(/WORX team launches WORX teammate sessions only/);
 		}
 	});
 
@@ -1093,7 +1093,7 @@ describe("native gjc team runtime", () => {
 				? "$env:GJC_TEAM_WORKER = 'worktree-team/worker-1'"
 				: "GJC_TEAM_WORKER='worktree-team/worker-1'",
 		);
-		expect(tmuxLog).toContain("true 'You are worker-1 in gjc team worktree-team.");
+		expect(tmuxLog).toContain("true 'You are worker-1 in worx team worktree-team.");
 		expect(tmuxLog).not.toContain("send-keys -l");
 		expect(tmuxLog).toContain("select-layout -t test-session:0 main-vertical");
 		expect(tmuxLog).not.toContain("select-layout -t test-session:0 c464,120x40,0,0{59x40,0,0,1,60x40,60,0,2}");
@@ -2739,7 +2739,7 @@ describe("native gjc team runtime", () => {
 			"unknown_team_api_operation:get-task; did you mean read-task?",
 		);
 		await expect(executeGjcTeamApiOperation("wat", {})).rejects.toThrow(
-			"unknown_team_api_operation:wat; run gjc team api --help for supported operations",
+			"unknown_team_api_operation:wat; run worx team api --help for supported operations",
 		);
 		await expect(executeGjcTeamApiOperation("read-task", {})).rejects.toThrow("missing_team_name");
 
@@ -3755,7 +3755,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			max_workers: 1,
 			state_root: "C:\\repo\\.gjc\\team",
 			worker_command: "bun cli.ts",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
 			tmux_session: "test",
 			tmux_session_name: "test",
@@ -3812,7 +3812,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			max_workers: 1,
 			state_root: "C:\\repo\\.gjc\\team",
 			worker_command: "bun cli.ts",
-			worker_cli_plan: ["gjc"],
+			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
 			tmux_session: "test",
 			tmux_session_name: "test",
