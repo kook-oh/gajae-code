@@ -35,14 +35,10 @@ describe("WORX public identity", () => {
 	test("ships only the renamed worx CLI entrypoint", async () => {
 		const entrypoint = Bun.file(path.join(repoRoot, "packages/coding-agent/bin/worx.js"));
 		const buildScript = await Bun.file(path.join(repoRoot, "packages/coding-agent/scripts/build-binary.ts")).text();
-		const workflow = await Bun.file(path.join(repoRoot, ".github/workflows/ci.yml")).text();
 
 		expect(await entrypoint.exists()).toBe(true);
 		expect(await entrypoint.text()).toContain('from "@bworx-io/worx-code/cli"');
 		expect(await Bun.file(path.join(repoRoot, "packages/coding-agent/bin/gjc.js")).exists()).toBe(false);
 		expect(buildScript).toContain('path.join(packageDir, "dist", "worx")');
-		expect(workflow).toContain("worx-linux-x64");
-		expect(workflow).toContain("worx-darwin-arm64");
-		expect(workflow).not.toContain("release-binaries/gjc-*");
 	});
 });

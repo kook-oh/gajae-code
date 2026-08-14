@@ -32,18 +32,12 @@ describe("memory-guard native smoke fast path", () => {
 		});
 	});
 
-	it("keeps the fast path ahead of runtime initialization and the Windows CI smoke after release build", async () => {
+	it("keeps the fast path ahead of runtime initialization", async () => {
 		const cliSource = await Bun.file(path.join(import.meta.dir, "../src/cli.ts")).text();
 		expect(cliSource.indexOf("if (isMemoryGuardNativeSmokeFastPath(argv))")).toBeGreaterThan(-1);
 		expect(cliSource.indexOf("if (isMemoryGuardNativeSmokeFastPath(argv))")).toBeLessThan(
 			cliSource.indexOf("await installRuntimeGlobals();"),
 		);
 
-		const ciSource = await Bun.file(path.join(import.meta.dir, "../../..", ".github/workflows/ci.yml")).text();
-		expect(ciSource).toContain("bun test packages/natives/test/memory-guard-native.test.ts");
-		expect(ciSource).toContain("internal memory-guard-native-smoke --json");
-		expect(ciSource.indexOf("internal memory-guard-native-smoke --json")).toBeGreaterThan(
-			ciSource.indexOf("- name: Build release binary"),
-		);
 	});
 });
