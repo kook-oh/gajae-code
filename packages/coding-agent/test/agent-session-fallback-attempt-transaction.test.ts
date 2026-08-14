@@ -1,11 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { scheduler } from "node:timers/promises";
-import { Agent, type AgentOptions, type AgentTool } from "@gajae-code/agent-core";
-import * as compactionModule from "@gajae-code/agent-core/compaction";
-import { type AssistantMessage, getBundledModel, type Model, type ToolCall } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions/runner";
@@ -13,6 +8,11 @@ import type { Extension } from "@bworx-io/worx-code/extensibility/extensions/typ
 import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent, type AgentOptions, type AgentTool } from "@gajae-code/agent-core";
+import * as compactionModule from "@gajae-code/agent-core/compaction";
+import { type AssistantMessage, getBundledModel, type Model, type ToolCall } from "@gajae-code/ai";
+import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 
 import { TempDir } from "@gajae-code/utils";
 import { z } from "zod";

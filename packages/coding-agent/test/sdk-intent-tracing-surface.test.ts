@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, expect, setDefaultTimeout, test } from
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { INTENT_FIELD, normalizeTools } from "@gajae-code/agent-core";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { INTENT_FIELD, normalizeTools } from "@gajae-code/agent-core";
 import { Snowflake } from "@gajae-code/utils";
 
 setDefaultTimeout(30_000);

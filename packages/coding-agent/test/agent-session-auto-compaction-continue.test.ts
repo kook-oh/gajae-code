@@ -2,10 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { scheduler } from "node:timers/promises";
-import * as native from "@bworx-io/worx-code-natives";
-import { Agent, AgentBusyError } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
@@ -14,6 +10,10 @@ import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/sessio
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { FallbackChainController } from "@bworx-io/worx-code/session/fallback-chain-controller";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import * as native from "@bworx-io/worx-code-natives";
+import { Agent, AgentBusyError } from "@gajae-code/agent-core";
+import type { AssistantMessage } from "@gajae-code/ai";
+import { getBundledModel } from "@gajae-code/ai/models";
 import { getProjectAgentDir, logger, TempDir, withTimeout } from "@gajae-code/utils";
 
 const runtimeSignalStoreKey = "__gjcAutoContinueSignals";

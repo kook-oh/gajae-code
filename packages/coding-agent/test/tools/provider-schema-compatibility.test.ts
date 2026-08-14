@@ -1,4 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, HIDDEN_TOOLS, type ToolSession } from "@bworx-io/worx-code/tools";
 import {
 	adaptSchemaForStrict,
 	normalizeSchemaForCCA,
@@ -9,8 +11,6 @@ import {
 	validateSchemaCompatibility,
 	validateStrictSchemaEnforcement,
 } from "@gajae-code/ai/utils/schema";
-import { Settings } from "@bworx-io/worx-code/config/settings";
-import { createTools, HIDDEN_TOOLS, type ToolSession } from "@bworx-io/worx-code/tools";
 
 interface ToolSchemaEntry {
 	name: string;

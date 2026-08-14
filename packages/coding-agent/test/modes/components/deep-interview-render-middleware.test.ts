@@ -1,5 +1,4 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	formatDeepInterviewSelectorPrompt,
@@ -9,6 +8,7 @@ import {
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { initTheme, theme } from "@bworx-io/worx-code/modes/theme/theme";
 import { askToolRenderer } from "@bworx-io/worx-code/tools/ask";
+import type { AssistantMessage } from "@gajae-code/ai";
 
 function createAssistantMessage(text: string): AssistantMessage {
 	return {

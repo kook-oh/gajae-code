@@ -2,19 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Shell } from "@bworx-io/worx-code-natives";
-import * as piNatives from "@bworx-io/worx-code-natives";
 import { AsyncJobManager } from "@bworx-io/worx-code/async";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
-import {
-	disposeAllShellSessions,
-	executeBash,
-	getShellSessionCount,
-} from "@bworx-io/worx-code/exec/bash-executor";
+import { disposeAllShellSessions, executeBash, getShellSessionCount } from "@bworx-io/worx-code/exec/bash-executor";
 import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
 import { DEFAULT_ARTIFACT_MAX_BYTES, OutputSink } from "@bworx-io/worx-code/session/streaming-output";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { BashTool } from "@bworx-io/worx-code/tools/implementations";
+import type { Shell } from "@bworx-io/worx-code-natives";
+import * as piNatives from "@bworx-io/worx-code-natives";
 
 function makeTempDir(): string {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gjc-bash-lifecycle-"));

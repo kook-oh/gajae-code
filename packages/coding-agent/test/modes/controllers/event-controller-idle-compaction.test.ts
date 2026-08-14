@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import type { AssistantMessage } from "@gajae-code/ai";
 
 function createAssistantMessage(): AssistantMessage {
 	return {

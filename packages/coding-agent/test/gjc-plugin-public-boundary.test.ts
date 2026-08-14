@@ -95,11 +95,7 @@ describe("GJC plugin public boundary", () => {
 
 		for (const suffix of ["loader", "loader.js"]) {
 			const child = Bun.spawnSync(
-				[
-					"bun",
-					"-e",
-					`await import(${JSON.stringify(`@bworx-io/worx-code/extensibility/gjc-plugins/${suffix}`)})`,
-				],
+				["bun", "-e", `await import(${JSON.stringify(`@bworx-io/worx-code/extensibility/gjc-plugins/${suffix}`)})`],
 				{ cwd: path.join(import.meta.dir, ".."), stdout: "pipe", stderr: "pipe" },
 			);
 			expect(child.exitCode).not.toBe(0);

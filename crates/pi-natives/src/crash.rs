@@ -7,10 +7,10 @@ use std::{
 use napi_derive::napi;
 
 static INIT: Once = Once::new();
-const ENABLE_ENV: &str = "GJC_NATIVE_CRASH_DIAGNOSTICS";
-const DIR_ENV: &str = "GJC_CRASH_DIAGNOSTICS_DIR";
+const ENABLE_ENV: &str = "WORX_NATIVE_CRASH_DIAGNOSTICS";
+const DIR_ENV: &str = "WORX_CRASH_DIAGNOSTICS_DIR";
 
-/// Installs a Rust panic hook only when `GJC_NATIVE_CRASH_DIAGNOSTICS` is set.
+/// Installs a Rust panic hook only when `WORX_NATIVE_CRASH_DIAGNOSTICS` is set.
 ///
 /// This is an opt-in structured panic report, not a minidump/signal handler.
 /// It intentionally avoids always-on work and does not attempt to recover from

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AssistantMessage } from "@gajae-code/ai";
 import {
 	CURRENT_SESSION_VERSION,
 	SessionManager,
 	type SessionMessageEntry,
 } from "@bworx-io/worx-code/session/session-manager";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { getBlobsDir, TempDir } from "@gajae-code/utils";
 
 function isAssistantSessionEntry(entry: unknown): entry is SessionMessageEntry & { message: AssistantMessage } {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
+import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 import * as nativesModule from "@bworx-io/worx-code-natives";
 import { MacOSAppearance } from "@bworx-io/worx-code-natives";
-import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 
 const originalPlatform = process.platform;
 const originalColorfgbg = Bun.env.COLORFGBG;

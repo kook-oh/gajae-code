@@ -3720,12 +3720,12 @@ mod tests {
 
 	/// Opt-in check that the `linkat(2)` no-replace fallback is atomic on a real
 	/// filesystem whose `renameat2` rejects `RENAME_NOREPLACE` (e.g. an `NFSv4`
-	/// home directory). Point `GJC_TEST_NFS_DIR` at a writable directory on such
-	/// a mount. Exercises the raw fallback helper directly so it is independent
-	/// of the owner-only ACL probe.
+	/// home directory). Point `WORX_TEST_NFS_DIR` at a writable directory on
+	/// such a mount. Exercises the raw fallback helper directly so it is
+	/// independent of the owner-only ACL probe.
 	#[test]
 	fn linkat_no_replace_is_atomic_on_a_real_filesystem() {
-		let Some(base) = std::env::var_os("GJC_TEST_NFS_DIR") else {
+		let Some(base) = std::env::var_os("WORX_TEST_NFS_DIR") else {
 			return;
 		};
 		let dir = PathBuf::from(base).join(format!(
@@ -3793,8 +3793,9 @@ mod tests {
 	}
 
 	/// Opt-in end-to-end regression for the managed publish path on a filesystem
-	/// whose `renameat2` rejects `RENAME_NOREPLACE`. Point `GJC_TEST_NFS_DIR` at
-	/// a writable directory on such a mount (e.g. an `NFSv4` home directory).
+	/// whose `renameat2` rejects `RENAME_NOREPLACE`. Point `WORX_TEST_NFS_DIR`
+	/// at a writable directory on such a mount (e.g. an `NFSv4` home
+	/// directory).
 	///
 	/// Unlike `linkat_no_replace_is_atomic_on_a_real_filesystem`, which
 	/// exercises the raw helper with no descriptor open, this drives the whole
@@ -3806,7 +3807,7 @@ mod tests {
 	/// `rollback_unavailable` — crashing startup on every NFS home.
 	#[test]
 	fn managed_publish_commits_on_a_filesystem_without_rename_flags() {
-		let Some(base) = std::env::var_os("GJC_TEST_NFS_DIR") else {
+		let Some(base) = std::env::var_os("WORX_TEST_NFS_DIR") else {
 			return;
 		};
 		let dir = PathBuf::from(base).join(format!(
@@ -3836,11 +3837,11 @@ mod tests {
 			&CString::new("probe-destination").expect("probe destination name"),
 		)
 		.expect_err(
-			"GJC_TEST_NFS_DIR must point at a filesystem whose renameat2 rejects RENAME_NOREPLACE",
+			"WORX_TEST_NFS_DIR must point at a filesystem whose renameat2 rejects RENAME_NOREPLACE",
 		);
 		assert!(
 			rename_flags_unsupported(probe_error.raw_os_error()),
-			"GJC_TEST_NFS_DIR must point at a filesystem without renameat2 rename flags (errno {:?})",
+			"WORX_TEST_NFS_DIR must point at a filesystem without renameat2 rename flags (errno {:?})",
 			probe_error.raw_os_error()
 		);
 		fs::remove_file(dir.join("probe-source")).expect("remove probe source");
@@ -3894,7 +3895,7 @@ mod tests {
 	/// startup on every launch after the first in a given scope.
 	#[test]
 	fn managed_remove_detaches_on_a_filesystem_without_rename_flags() {
-		let Some(base) = std::env::var_os("GJC_TEST_NFS_DIR") else {
+		let Some(base) = std::env::var_os("WORX_TEST_NFS_DIR") else {
 			return;
 		};
 		let dir = PathBuf::from(base).join(format!(
@@ -3921,11 +3922,11 @@ mod tests {
 			&CString::new("probe-destination").expect("probe destination name"),
 		)
 		.expect_err(
-			"GJC_TEST_NFS_DIR must point at a filesystem whose renameat2 rejects RENAME_NOREPLACE",
+			"WORX_TEST_NFS_DIR must point at a filesystem whose renameat2 rejects RENAME_NOREPLACE",
 		);
 		assert!(
 			rename_flags_unsupported(probe_error.raw_os_error()),
-			"GJC_TEST_NFS_DIR must point at a filesystem without renameat2 rename flags (errno {:?})",
+			"WORX_TEST_NFS_DIR must point at a filesystem without renameat2 rename flags (errno {:?})",
 			probe_error.raw_os_error()
 		);
 		fs::remove_file(dir.join("probe-source")).expect("remove probe source");

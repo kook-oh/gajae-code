@@ -1,8 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent, type AgentEvent, type AgentToolContext } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
@@ -14,6 +11,9 @@ import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { AskTool } from "@bworx-io/worx-code/tools/ask";
+import { Agent, type AgentEvent, type AgentToolContext } from "@gajae-code/agent-core";
+import type { AssistantMessage } from "@gajae-code/ai";
+import { getBundledModel } from "@gajae-code/ai/models";
 import { logger, TempDir } from "@gajae-code/utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

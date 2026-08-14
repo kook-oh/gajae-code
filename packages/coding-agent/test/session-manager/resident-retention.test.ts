@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ImageContent, Message, ProviderPayload, TextContent } from "@gajae-code/ai";
 import { MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
 import { type PreparedNewSession, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import {
@@ -10,6 +9,7 @@ import {
 	type SessionStorage,
 	type SessionStorageWriter,
 } from "@bworx-io/worx-code/session/session-storage";
+import type { ImageContent, Message, ProviderPayload, TextContent } from "@gajae-code/ai";
 import { getAgentDir, getBlobsDir, setAgentDir } from "@gajae-code/utils";
 
 const LARGE_TEXT = "T".repeat(700_000);

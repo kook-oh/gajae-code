@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent, type AgentOptions } from "@gajae-code/agent-core";
-import { type AssistantMessage, getBundledModel, type Model } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent, type AgentOptions } from "@gajae-code/agent-core";
+import { type AssistantMessage, getBundledModel, type Model } from "@gajae-code/ai";
+import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { TempDir } from "@gajae-code/utils";
 
 function selector(model: Model): string {

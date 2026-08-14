@@ -1,4 +1,9 @@
 import { afterEach, describe, expect, it, type Mock, vi } from "bun:test";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
+import { BTW_STREAM_IDLE_TIMEOUT_MS } from "@bworx-io/worx-code/session/btw-contract";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
+import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { Agent, type AgentMessage } from "@gajae-code/agent-core";
 import {
 	type AssistantMessage,
@@ -12,11 +17,6 @@ import {
 } from "@gajae-code/ai";
 import { createMockModel, type MockModel, registerMockApi } from "@gajae-code/ai/providers/mock";
 import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { Settings } from "@bworx-io/worx-code/config/settings";
-import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
-import { BTW_STREAM_IDLE_TIMEOUT_MS } from "@bworx-io/worx-code/session/btw-contract";
-import { convertToLlm } from "@bworx-io/worx-code/session/messages";
-import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 
 registerMockApi();
 const CONTROLLED_BTW_API = "controlled-btw-test";

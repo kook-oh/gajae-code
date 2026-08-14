@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import type { AuthStorage } from "@gajae-code/ai";
 import {
 	buildRequestBody,
 	searchTavily,
 	type TavilySearchParams,
 } from "@bworx-io/worx-code/web/search/providers/tavily";
+import type { AuthStorage } from "@gajae-code/ai";
 import { hookFetch } from "@gajae-code/utils";
 
 describe("Tavily buildRequestBody", () => {

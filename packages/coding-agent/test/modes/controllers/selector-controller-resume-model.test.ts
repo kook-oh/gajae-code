@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
-import type { Model } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import type { Model } from "@gajae-code/ai";
+import { getBundledModel } from "@gajae-code/ai";
 
 type TestContext = InteractiveModeContext & {
 	editorContainer: {

@@ -1,15 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { EDIT_MODE_STRATEGIES, type PerFileDiffPreview } from "@bworx-io/worx-code/edit";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
-import type {
-	ToolExecutionComponent,
-	ToolExecutionHandle,
-} from "@bworx-io/worx-code/modes/components/tool-execution";
+import type { ToolExecutionComponent, ToolExecutionHandle } from "@bworx-io/worx-code/modes/components/tool-execution";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { type Component, Container, Text } from "@gajae-code/tui";
 
 function createContext(handle: ToolExecutionHandle): {

@@ -83,8 +83,8 @@ def test_vector_semantics_and_tolerance(tmp_path: Path) -> None:
 
 
 def test_real_session_enabled_guard() -> None:
-    if os.environ.get("GJC_REAL_SESSION_TESTS") != "1":
+    if os.environ.get("WORX_REAL_SESSION_TESTS") != "1":
         return
-    assert shutil.which("bun"), "GJC_REAL_SESSION_TESTS=1 requires bun on PATH"
+    assert shutil.which("bun"), "WORX_REAL_SESSION_TESTS=1 requires bun on PATH"
     has_native = NATIVE.exists() and (any(NATIVE.glob("*.node")) or (NATIVE / "embedded-addon.js").exists())
-    assert has_native, "GJC_REAL_SESSION_TESTS=1 requires a downloaded or embedded native addon"
+    assert has_native, "WORX_REAL_SESSION_TESTS=1 requires a downloaded or embedded native addon"

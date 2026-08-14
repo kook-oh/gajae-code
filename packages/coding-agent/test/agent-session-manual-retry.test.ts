@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { type AssistantMessage, getBundledModel } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent, type AgentMessage } from "@gajae-code/agent-core";
+import { type AssistantMessage, getBundledModel } from "@gajae-code/ai";
+import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { TempDir } from "@gajae-code/utils";
 
 function lastAgentMessage(session: AgentSession): AssistantMessage {

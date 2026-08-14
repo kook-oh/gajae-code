@@ -3,7 +3,6 @@ import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as native from "@bworx-io/worx-code-natives";
 import {
 	loadEntriesFromFile,
 	type SessionHeader,
@@ -11,6 +10,7 @@ import {
 	syncSessionMoveDirectory,
 } from "@bworx-io/worx-code/session/session-manager";
 import { stripOuterDoubleQuotes } from "@bworx-io/worx-code/tools/path-utils";
+import * as native from "@bworx-io/worx-code-natives";
 import { getConfigRootDir, getSessionsDir, setAgentDir } from "@gajae-code/utils";
 import { resolveManagedScope } from "../../src/session/internal/managed-session-scope";
 import { makeAssistantMessage } from "./helpers";

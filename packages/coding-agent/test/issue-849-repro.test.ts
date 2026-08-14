@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
 import {
 	buildSessionContext,
 	type ModelChangeEntry,
 	type SessionEntry,
 	type SessionMessageEntry,
 } from "@bworx-io/worx-code/session/session-manager";
+import type { AssistantMessage } from "@gajae-code/ai";
 
 /**
  * Issue #849: After a user explicitly switches to gpt-5.5, the session reverts

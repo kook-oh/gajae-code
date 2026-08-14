@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import type { ImageContent } from "@gajae-code/ai";
 import type { ExecResult } from "@bworx-io/worx-code/exec/exec";
 import {
 	createExactPrefixCommandBridge,
@@ -15,6 +14,7 @@ import {
 	OOO_BRIDGE_TIMEOUT_ENV,
 	testSetExtensionHandlerTimeoutMs,
 } from "@bworx-io/worx-code/extensibility/extensions";
+import type { ImageContent } from "@gajae-code/ai";
 import type { MCPRequestOptions, MCPServerConnection, MCPToolCallResult } from "../src/runtime-mcp";
 
 function extensionWith(handler: ExtensionHandler<InputEvent, InputEventResult>): Extension {

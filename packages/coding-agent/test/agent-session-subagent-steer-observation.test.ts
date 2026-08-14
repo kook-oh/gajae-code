@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { Agent } from "@gajae-code/agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentRegistry, MAIN_AGENT_ID } from "@bworx-io/worx-code/registry/agent-registry";
 import {
@@ -8,6 +7,7 @@ import {
 	type AgentSessionEvent,
 } from "@bworx-io/worx-code/session/agent-session";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent } from "@gajae-code/agent-core";
 
 type SteerDetails = {
 	observationId?: string;

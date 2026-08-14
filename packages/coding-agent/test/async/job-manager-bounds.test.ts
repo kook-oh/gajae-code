@@ -1,9 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-	AsyncJobManager,
-	type ResumeDescriptor,
-	type SubagentRecord,
-} from "@bworx-io/worx-code/async/job-manager";
+import { AsyncJobManager, type ResumeDescriptor, type SubagentRecord } from "@bworx-io/worx-code/async/job-manager";
 
 function subagentRecord(subagentId: string, currentJobId: string, status: SubagentRecord["status"]): SubagentRecord {
 	return {

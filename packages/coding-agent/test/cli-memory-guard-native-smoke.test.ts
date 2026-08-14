@@ -38,6 +38,5 @@ describe("memory-guard native smoke fast path", () => {
 		expect(cliSource.indexOf("if (isMemoryGuardNativeSmokeFastPath(argv))")).toBeLessThan(
 			cliSource.indexOf("await installRuntimeGlobals();"),
 		);
-
 	});
 });

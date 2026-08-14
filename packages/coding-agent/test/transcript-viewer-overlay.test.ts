@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as path from "node:path";
+import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { Agent } from "@gajae-code/agent-core";
 import type { AssistantMessage } from "@gajae-code/ai";
-import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { TempDir } from "@gajae-code/utils";
 import { ModelRegistry } from "../src/config/model-registry";
 import { createToolTranscriptRenderDescriptor } from "../src/modes/components/tool-transcript-format";

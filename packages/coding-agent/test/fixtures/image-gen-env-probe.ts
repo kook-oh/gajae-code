@@ -2,11 +2,9 @@
 // Spawned with a controlled cwd so the caller can plant a project `.env`: the env
 // module parses `projectEnv` at load time from `process.cwd()`, so the trust
 // boundary can only be exercised from a separate process.
+
+import { getOpenAIImageBaseUrlForTest, googleImageApiKeyFromEnvForTest } from "@bworx-io/worx-code/tools/image-gen";
 import type { Model } from "@gajae-code/ai";
-import {
-	getOpenAIImageBaseUrlForTest,
-	googleImageApiKeyFromEnvForTest,
-} from "@bworx-io/worx-code/tools/image-gen";
 
 const model = {
 	id: "gpt-image-1",

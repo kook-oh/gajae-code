@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { Agent, type AgentMessage, type AgentTool } from "@gajae-code/agent-core";
-import { type AssistantMessage, getBundledModel, type TextContent, type ToolCall } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { initializeLocalRoot } from "@bworx-io/worx-code/internal-urls";
@@ -15,6 +12,9 @@ import { FileSessionStorage, type SessionStorageWriter } from "@bworx-io/worx-co
 import { buildVolatileProjectContext } from "@bworx-io/worx-code/system-prompt";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { TodoWriteTool } from "@bworx-io/worx-code/tools/implementations";
+import { Agent, type AgentMessage, type AgentTool } from "@gajae-code/agent-core";
+import { type AssistantMessage, getBundledModel, type TextContent, type ToolCall } from "@gajae-code/ai";
+import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { TempDir } from "@gajae-code/utils";
 import * as z from "zod/v4";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";

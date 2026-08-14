@@ -22,10 +22,7 @@ import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loa
 import { TempDir } from "@gajae-code/utils";
 
 const canonicalCodingAgent = Bun.resolveSync("@bworx-io/worx-code", import.meta.dir);
-const canonicalCodingAgentExtensions = Bun.resolveSync(
-	"@bworx-io/worx-code/extensibility/extensions",
-	import.meta.dir,
-);
+const canonicalCodingAgentExtensions = Bun.resolveSync("@bworx-io/worx-code/extensibility/extensions", import.meta.dir);
 const canonicalUtils = Bun.resolveSync("@gajae-code/utils", import.meta.dir);
 const canonicalTui = Bun.resolveSync("@gajae-code/tui", import.meta.dir);
 // Subpath remap: upstream `pi-ai/oauth` re-exported `utils/oauth/index`; the

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "bun:test";
+import { buildNamedToolChoiceResult } from "@bworx-io/worx-code/utils/tool-choice";
 import type { Api, Model } from "@gajae-code/ai";
 import { clearToolChoiceIncapabilityRegistryForTests, markToolChoiceIncapability } from "@gajae-code/ai";
-import { buildNamedToolChoiceResult } from "@bworx-io/worx-code/utils/tool-choice";
 
 function model<TApi extends Api>(api: TApi, compat?: Model<TApi>["compat"]): Model<TApi> {
 	return {

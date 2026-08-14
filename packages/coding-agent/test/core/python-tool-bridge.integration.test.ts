@@ -1,14 +1,10 @@
 import { afterAll, describe, expect, it } from "bun:test";
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
 import { executePythonWithKernel } from "@bworx-io/worx-code/eval/py/executor";
 import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
-import {
-	disposePyToolBridge,
-	ensurePyToolBridge,
-	registerPyToolBridge,
-} from "@bworx-io/worx-code/eval/py/tool-bridge";
+import { disposePyToolBridge, ensurePyToolBridge, registerPyToolBridge } from "@bworx-io/worx-code/eval/py/tool-bridge";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { resolvePythonIntegrationGate } from "@bworx-io/worx-code/tools/implementations";
+import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
 import { TempDir } from "@gajae-code/utils";
 
 const SHOULD_RUN = resolvePythonIntegrationGate(Bun.env);

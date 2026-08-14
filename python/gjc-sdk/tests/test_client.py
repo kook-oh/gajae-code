@@ -88,12 +88,12 @@ def test_explicit_session_selection_fails_closed(
         SdkClient._endpoint(Path("repo"), endpoint.session_id)
 
 
-ROOT = Path(os.environ.get("GJC_REPO_ROOT", Path(__file__).resolve().parents[3])).resolve()
+ROOT = Path(os.environ.get("WORX_REPO_ROOT", Path(__file__).resolve().parents[3])).resolve()
 FIXTURE = ROOT / "packages" / "coding-agent" / "test" / "helpers" / "sdk-python-fixture.ts"
 CLI = ROOT / "packages" / "coding-agent" / "src" / "cli.ts"
 BUN = shutil.which("bun")
 NATIVE = ROOT / "packages" / "natives" / "native"
-REAL_SESSION_ENABLED = os.environ.get("GJC_REAL_SESSION_TESTS") == "1" and BUN is not None and NATIVE.exists()
+REAL_SESSION_ENABLED = os.environ.get("WORX_REAL_SESSION_TESTS") == "1" and BUN is not None and NATIVE.exists()
 
 
 def test_non_canonical_vector_is_parse_tolerant() -> None:
@@ -192,7 +192,7 @@ async def _exercise(client: SdkClient, fixture: asyncio.subprocess.Process, *, g
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not REAL_SESSION_ENABLED, reason="requires GJC_REAL_SESSION_TESTS=1, bun, and native addon")
+@pytest.mark.skipif(not REAL_SESSION_ENABLED, reason="requires WORX_REAL_SESSION_TESTS=1, bun, and native addon")
 async def test_real_session_all_transports_cleanup() -> None:
     process, metadata = await _start_fixture()
     socket_dir = Path(tempfile.mkdtemp(prefix="gjc-sdk-", dir="/tmp"))

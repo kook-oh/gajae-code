@@ -2,9 +2,9 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { supportsLanguage } from "@bworx-io/worx-code-natives";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
+import { supportsLanguage } from "@bworx-io/worx-code-natives";
 
 function createTestSession(cwd = "/tmp/test", overrides: Partial<ToolSession> = {}): ToolSession {
 	return {

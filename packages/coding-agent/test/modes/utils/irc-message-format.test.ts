@@ -9,10 +9,7 @@ import {
 	parseIrcMessage,
 } from "@bworx-io/worx-code/modes/utils/irc-message";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
-import {
-	associateSessionMessageObservationId,
-	buildSessionContext,
-} from "@bworx-io/worx-code/session/session-manager";
+import { associateSessionMessageObservationId, buildSessionContext } from "@bworx-io/worx-code/session/session-manager";
 import { Container } from "@gajae-code/tui";
 
 beforeEach(async () => {

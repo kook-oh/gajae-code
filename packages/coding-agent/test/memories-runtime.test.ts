@@ -2,8 +2,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Model } from "@gajae-code/ai";
-import * as ai from "@gajae-code/ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
 	buildMemoryToolDeveloperInstructions,
@@ -12,6 +10,8 @@ import {
 } from "@bworx-io/worx-code/memories";
 import * as memoryStorage from "@bworx-io/worx-code/memories/storage";
 import { localBackend } from "@bworx-io/worx-code/memory-backend";
+import type { Model } from "@gajae-code/ai";
+import * as ai from "@gajae-code/ai";
 import { getAgentDbPath, Snowflake } from "@gajae-code/utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentToolResult } from "@gajae-code/agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { ClientBridge } from "@bworx-io/worx-code/session/client-bridge";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import type { ReadToolDetails } from "@bworx-io/worx-code/tools/read";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import type { AgentToolResult } from "@gajae-code/agent-core";
 import { getFileReadCache } from "../src/edit/file-read-cache";
 
 function textOutput(result: AgentToolResult<ReadToolDetails>): string {

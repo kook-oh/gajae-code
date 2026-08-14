@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai";
 import {
 	applyPreparedModelProfileActivation,
 	prepareModelProfileActivation,
@@ -11,6 +9,8 @@ import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent } from "@gajae-code/agent-core";
+import type { Model } from "@gajae-code/ai";
 import { TempDir } from "@gajae-code/utils";
 
 // Regression coverage for the combo-preset resume bug: activating a model

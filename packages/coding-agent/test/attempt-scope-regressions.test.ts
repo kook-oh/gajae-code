@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { createAttemptScopeAuthority } from "@gajae-code/agent-core/attempt-scope";
 import { AttemptRecordStore } from "@bworx-io/worx-code/session/attempt-record-store";
+import { createAttemptScopeAuthority } from "@gajae-code/agent-core/attempt-scope";
 
 describe("AttemptScope facility regressions (#3592)", () => {
 	describe("AttemptRecordStore state machine", () => {

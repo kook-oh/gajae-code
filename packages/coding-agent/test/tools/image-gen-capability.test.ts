@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import type { Api, Model } from "@gajae-code/ai";
 import { isOpenAIHostedImageModel } from "@bworx-io/worx-code/tools/image-gen";
+import type { Api, Model } from "@gajae-code/ai";
 
 function model<TApi extends Api>(
 	overrides: Partial<Model<TApi>> & Pick<Model<TApi>, "id" | "api" | "provider">,

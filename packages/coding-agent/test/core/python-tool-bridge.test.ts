@@ -1,11 +1,7 @@
 import { afterAll, describe, expect, it } from "bun:test";
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
-import {
-	disposePyToolBridge,
-	ensurePyToolBridge,
-	registerPyToolBridge,
-} from "@bworx-io/worx-code/eval/py/tool-bridge";
+import { disposePyToolBridge, ensurePyToolBridge, registerPyToolBridge } from "@bworx-io/worx-code/eval/py/tool-bridge";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
+import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
 
 interface FakeCall {
 	id: string;

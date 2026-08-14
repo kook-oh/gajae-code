@@ -2,9 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { createMockModel, type MockModelHandle } from "@gajae-code/ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
@@ -13,6 +10,9 @@ import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { queueResolveHandler } from "@bworx-io/worx-code/tools/resolve";
 import { buildNamedToolChoice } from "@bworx-io/worx-code/utils/tool-choice";
+import { Agent } from "@gajae-code/agent-core";
+import { getBundledModel } from "@gajae-code/ai";
+import { createMockModel, type MockModelHandle } from "@gajae-code/ai/providers/mock";
 import { Snowflake } from "@gajae-code/utils";
 
 describe("AgentSession resolve reminder", () => {

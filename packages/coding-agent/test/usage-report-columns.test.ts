@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "bun:test";
-import type { UsageLimit, UsageReport } from "@gajae-code/ai";
 import { renderUsageReports } from "@bworx-io/worx-code/modes/controllers/command-controller";
 import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
+import type { UsageLimit, UsageReport } from "@gajae-code/ai";
 
 function stripAnsi(text: string): string {
 	return text.replace(/\x1b\[[0-9;]*m/g, "");

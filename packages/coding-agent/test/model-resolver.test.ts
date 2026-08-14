@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { Effort, type Model } from "@gajae-code/ai";
 import {
 	expandRoleAlias,
 	findInitialModel,
@@ -17,6 +16,7 @@ import {
 	restoreModelFromSession,
 } from "@bworx-io/worx-code/config/model-resolver";
 import { Settings } from "@bworx-io/worx-code/config/settings";
+import { Effort, type Model } from "@gajae-code/ai";
 
 test("rejects Cursor transports from retryable managed fallback chains at resolution", () => {
 	const cursor = { ...mockModels[0], api: "cursor-agent", provider: "cursor" } as Model;

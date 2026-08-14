@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import { validateToolArguments } from "@gajae-code/ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { applyOpsToPhases, type TodoPhase, TodoWriteTool } from "@bworx-io/worx-code/tools/implementations";
+import { validateToolArguments } from "@gajae-code/ai";
 import { todoWriteToolRenderer } from "../../src/tools/todo-write";
 
 function captureValidationError(run: () => void): string {

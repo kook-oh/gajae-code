@@ -22,7 +22,7 @@ TEMPLATE = ROOT / "sdk-skills" / "gjc-sdk-author" / "templates" / "direct-sdk.py
 FIXTURE = ROOT / "packages" / "coding-agent" / "test" / "helpers" / "sdk-python-fixture.ts"
 BUN = shutil.which("bun")
 NATIVE = ROOT / "packages" / "natives" / "native"
-REAL_SESSION_ENABLED = os.environ.get("GJC_REAL_SESSION_TESTS") == "1" and BUN is not None and NATIVE.exists()
+REAL_SESSION_ENABLED = os.environ.get("WORX_REAL_SESSION_TESTS") == "1" and BUN is not None and NATIVE.exists()
 
 
 class FakeClient:
@@ -236,7 +236,7 @@ async def _stop_fixture(process: asyncio.subprocess.Process) -> None:
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not REAL_SESSION_ENABLED, reason="requires GJC_REAL_SESSION_TESTS=1, bun, and native addon")
+@pytest.mark.skipif(not REAL_SESSION_ENABLED, reason="requires WORX_REAL_SESSION_TESTS=1, bun, and native addon")
 async def test_python_template_control_stdout_is_pure_json() -> None:
     """The actual contract an external consumer depends on: after a successful
     control, the template's stdout parses directly as JSON. The approval

@@ -14,9 +14,6 @@
  */
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage, TextContent } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { SecretObfuscator } from "@bworx-io/worx-code/secrets/obfuscator";
@@ -24,6 +21,9 @@ import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/sessio
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SILENT_ABORT_MARKER } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent } from "@gajae-code/agent-core";
+import type { AssistantMessage, TextContent } from "@gajae-code/ai";
+import { getBundledModel } from "@gajae-code/ai/models";
 import { TempDir } from "@gajae-code/utils";
 
 function makeAbortedAssistantMessage(text = "partial draft"): AssistantMessage {

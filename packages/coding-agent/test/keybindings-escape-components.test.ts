@@ -1,5 +1,4 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai";
 import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
 import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
@@ -7,6 +6,7 @@ import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/mod
 import { SessionSelectorComponent } from "@bworx-io/worx-code/modes/components/session-selector";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { SessionInfo } from "@bworx-io/worx-code/session/session-manager";
+import { getBundledModel } from "@gajae-code/ai";
 import { setKeybindings, type TUI } from "@gajae-code/tui";
 
 beforeAll(() => {

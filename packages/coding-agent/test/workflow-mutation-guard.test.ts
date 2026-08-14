@@ -2,12 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentTool } from "@gajae-code/agent-core";
-import {
-	activeSnapshotPath,
-	modeStatePath,
-	sessionStateDir,
-} from "@bworx-io/worx-code/gjc-runtime/session-layout";
+import { activeSnapshotPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 import {
 	assertWorkflowMutationRawPathsAllowed,
@@ -18,6 +13,7 @@ import {
 	ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE,
 } from "@bworx-io/worx-code/skill-state/workflow-mutation-guard";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
+import type { AgentTool } from "@gajae-code/agent-core";
 import { logger } from "@gajae-code/utils";
 
 const tempRoots: string[] = [];
@@ -1007,9 +1003,7 @@ describe("workflow mutation guard", () => {
 		// Mirrors the agent-session bash wrapper: assertWorkflowMutationAllowed runs
 		// before BashTool.execute. A blocked mutation must not touch product or
 		// workflow state bytes — decision-only tests alone do not prove that.
-		const { assertWorkflowMutationAllowed } = await import(
-			"@bworx-io/worx-code/skill-state/workflow-mutation-guard"
-		);
+		const { assertWorkflowMutationAllowed } = await import("@bworx-io/worx-code/skill-state/workflow-mutation-guard");
 		const cwd = await makeTempRoot();
 		await writeActiveDeepInterview(cwd);
 		await fs.mkdir(path.join(cwd, "src"), { recursive: true });

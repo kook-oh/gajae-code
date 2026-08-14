@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import type { ExtensionUIContext } from "../src/extensibility/extensions/types";
-import { runRpcMode, type RpcAgentSession, type RpcOutboundFrame } from "../src/modes/rpc-mode";
+import { type RpcAgentSession, type RpcOutboundFrame, runRpcMode } from "../src/modes/rpc-mode";
 import type { AgentSessionEvent, AgentSessionEventListener } from "../src/session/agent-session";
 
 class RpcInputDriver implements AsyncIterable<string> {
@@ -111,29 +111,28 @@ describe("headless RPC mode", () => {
 			},
 		} as unknown as RpcAgentSession;
 
-		await runRpcMode(session, (context, hasUI) => {
-			expect(hasUI).toBe(true);
-			ui = context;
-		}, {
-			input,
-			output(frame) {
-				frames.push(frame);
-				if (frame.type === "ready") input.push({ type: "prompt", message: "review this" });
-				if (frame.type === "extension_ui_request") {
-					input.push({ type: "extension_ui_response", id: frame.id, cancelled: true });
-				}
-				if (frame.type === "agent_end") input.close();
+		await runRpcMode(
+			session,
+			(context, hasUI) => {
+				expect(hasUI).toBe(true);
+				ui = context;
 			},
-		});
+			{
+				input,
+				output(frame) {
+					frames.push(frame);
+					if (frame.type === "ready") input.push({ type: "prompt", message: "review this" });
+					if (frame.type === "extension_ui_request") {
+						input.push({ type: "extension_ui_response", id: frame.id, cancelled: true });
+					}
+					if (frame.type === "agent_end") input.close();
+				},
+			},
+		);
 
 		expect(promptMessages).toEqual(["review this"]);
 		expect(confirmation).toBe(false);
-		expect(frames.map(frame => frame.type)).toEqual([
-			"ready",
-			"message_update",
-			"extension_ui_request",
-			"agent_end",
-		]);
+		expect(frames.map(frame => frame.type)).toEqual(["ready", "message_update", "extension_ui_request", "agent_end"]);
 		expect(frames[1]).toMatchObject({ type: "message_update", assistantMessageEvent: { content: "done" } });
 		expect(frames[1]).not.toHaveProperty("payload");
 		expect(unsubscribed).toBe(true);

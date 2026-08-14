@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import * as contextManager from "@bworx-io/worx-code/eval/js/context-manager";
@@ -10,6 +8,8 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import * as tabSupervisor from "@bworx-io/worx-code/tools/browser/tab-supervisor";
+import { Agent } from "@gajae-code/agent-core";
+import { getBundledModel } from "@gajae-code/ai";
 import { TempDir } from "@gajae-code/utils";
 
 describe("AgentSession.disposeChildSubprocesses (#698 signal teardown)", () => {

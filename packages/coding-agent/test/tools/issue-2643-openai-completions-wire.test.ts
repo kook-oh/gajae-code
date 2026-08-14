@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
+import { Settings } from "@bworx-io/worx-code/config/settings";
+import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 import { type Context, getBundledModel, type Model, validateToolArguments } from "@gajae-code/ai";
 import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
 import { isJsonSchemaValueValid, toolWireSchema } from "@gajae-code/ai/utils/schema";
-import { Settings } from "@bworx-io/worx-code/config/settings";
-import { createTools, type ToolSession } from "@bworx-io/worx-code/tools";
 
 type JsonObject = Record<string, unknown>;
 

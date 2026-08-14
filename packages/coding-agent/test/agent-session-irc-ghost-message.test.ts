@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { Agent } from "@gajae-code/agent-core";
-import type { Message } from "@gajae-code/ai";
-import { createMockModel, type MockModel, registerMockApi } from "@gajae-code/ai/providers/mock";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentRegistry, MAIN_AGENT_ID } from "@bworx-io/worx-code/registry/agent-registry";
 import { AgentSession, type AgentSessionConfig } from "@bworx-io/worx-code/session/agent-session";
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent } from "@gajae-code/agent-core";
+import type { Message } from "@gajae-code/ai";
+import { createMockModel, type MockModel, registerMockApi } from "@gajae-code/ai/providers/mock";
 
 registerMockApi();
 

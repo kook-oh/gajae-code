@@ -5,11 +5,7 @@ import * as path from "node:path";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import {
-	buildSystemPrompt,
-	loadProjectContextFiles,
-	loadSystemPromptFiles,
-} from "@bworx-io/worx-code/system-prompt";
+import { buildSystemPrompt, loadProjectContextFiles, loadSystemPromptFiles } from "@bworx-io/worx-code/system-prompt";
 import { cleanupTempHome } from "./helpers/temp-home-cleanup";
 
 function escapeRegExp(text: string): string {

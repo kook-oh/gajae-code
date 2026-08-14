@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import type { ToolChoice } from "@gajae-code/ai";
 import { ToolChoiceQueue } from "@bworx-io/worx-code/session/tool-choice-queue";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { queueResolveHandler } from "@bworx-io/worx-code/tools/resolve";
+import type { ToolChoice } from "@gajae-code/ai";
 
 const forcedResolve = { type: "tool", name: "resolve" } as const satisfies ToolChoice;
 

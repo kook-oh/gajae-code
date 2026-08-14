@@ -1,7 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import type { Message, Model, SimpleStreamOptions } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { AsyncJobManager } from "@bworx-io/worx-code/async";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { __sessionStateSidecarPerfCounters } from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
@@ -12,6 +9,9 @@ import {
 	type AgentSessionEvent,
 } from "@bworx-io/worx-code/session/agent-session";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { Agent, type AgentMessage } from "@gajae-code/agent-core";
+import type { Message, Model, SimpleStreamOptions } from "@gajae-code/ai";
+import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 function eventDelta(event: AgentSessionEvent): string {

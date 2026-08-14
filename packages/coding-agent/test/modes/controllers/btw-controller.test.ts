@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it, type Mock, vi } from "bun:test";
-import type { AssistantMessage, Usage } from "@gajae-code/ai";
 import { BtwController } from "@bworx-io/worx-code/modes/controllers/btw-controller";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { BTW_MAX_QUESTION_UTF8_BYTES, type BtwTextExchange } from "@bworx-io/worx-code/session/btw-contract";
+import type { AssistantMessage, Usage } from "@gajae-code/ai";
 import { Container, type TUI } from "@gajae-code/tui";
 
 const usage: Usage = {

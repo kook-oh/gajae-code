@@ -1,6 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import type { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions";
@@ -11,6 +10,7 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { createTools, type Tool, type ToolSession } from "@bworx-io/worx-code/tools";
+import { Agent } from "@gajae-code/agent-core";
 import { TempDir } from "@gajae-code/utils";
 
 function createToolSession(cwd: string, settings: Settings, overrides: Partial<ToolSession> = {}): ToolSession {

@@ -41,9 +41,6 @@ import { spawnSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Agent, type AgentMessage, type AgentTool } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { createMockModel, type MockResponse } from "@gajae-code/ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
@@ -52,6 +49,9 @@ import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { BashTool } from "@bworx-io/worx-code/tools/implementations";
+import { Agent, type AgentMessage, type AgentTool } from "@gajae-code/agent-core";
+import { getBundledModel } from "@gajae-code/ai";
+import { createMockModel, type MockResponse } from "@gajae-code/ai/providers/mock";
 import { Snowflake } from "@gajae-code/utils";
 
 /** Scripted assistant turn that issues a single `bash` tool call. */

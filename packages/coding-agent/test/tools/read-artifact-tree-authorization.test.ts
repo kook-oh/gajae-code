@@ -3,13 +3,13 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentToolContext } from "@gajae-code/agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { InternalUrlRouter } from "@bworx-io/worx-code/internal-urls";
 import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
+import type { AgentToolContext } from "@gajae-code/agent-core";
 
 // Tool-boundary regression coverage for gajae-code#3302.
 //

@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Effort } from "@gajae-code/ai";
 import { onAppendOnlyModeChanged, resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
+import { Effort } from "@gajae-code/ai";
 import {
 	getCustomThemesDir,
 	getDefaultTabWidth,

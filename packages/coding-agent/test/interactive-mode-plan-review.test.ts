@@ -1,13 +1,13 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { Agent, type AgentTool } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { resolveLocalUrlToPath } from "@bworx-io/worx-code/internal-urls";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { SILENT_ABORT_MARKER } from "@bworx-io/worx-code/session/messages";
+import { Agent, type AgentTool } from "@gajae-code/agent-core";
+import type { AssistantMessage } from "@gajae-code/ai";
 import { Text } from "@gajae-code/tui";
 import { TempDir } from "@gajae-code/utils";
 import * as z from "zod/v4";

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
+import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import type { AgentMessage } from "@gajae-code/agent-core";
 import type { Message } from "@gajae-code/ai";
 import { inferCopilotInitiator } from "@gajae-code/ai/providers/github-copilot-headers";
-import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 
 function expectAttribution(message: Message | undefined, expected: "user" | "agent" | undefined): void {
 	expect(message).toBeDefined();

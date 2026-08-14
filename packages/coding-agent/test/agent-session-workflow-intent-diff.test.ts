@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import { Agent, AgentBusyError } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { type CustomEntry, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { WorkflowIntentDiff } from "@bworx-io/worx-code/workflow/workflow-intent-diff";
+import { Agent, AgentBusyError } from "@gajae-code/agent-core";
+import { getBundledModel } from "@gajae-code/ai";
+import { createMockModel } from "@gajae-code/ai/providers/mock";
 import { TempDir } from "@gajae-code/utils";
 
 type WorkflowIntentDiffEntry = CustomEntry<WorkflowIntentDiff>;

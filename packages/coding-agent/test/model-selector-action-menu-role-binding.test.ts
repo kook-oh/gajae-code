@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { getBundledModel, type Model } from "@gajae-code/ai";
 import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
+import { ThinkingLevel } from "@gajae-code/agent-core";
+import { getBundledModel, type Model } from "@gajae-code/ai";
 import type { TUI } from "@gajae-code/tui";
 
 function normalizeRenderedText(text: string): string {

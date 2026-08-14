@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import * as path from "node:path";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import { Agent } from "@gajae-code/agent-core";
-import { getBundledModel, type TextContent } from "@gajae-code/ai";
-import { createMockModel, type MockHandler } from "@gajae-code/ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import type { AgentMessage } from "@gajae-code/agent-core";
+import { Agent } from "@gajae-code/agent-core";
+import { getBundledModel, type TextContent } from "@gajae-code/ai";
+import { createMockModel, type MockHandler } from "@gajae-code/ai/providers/mock";
 import { TempDir } from "@gajae-code/utils";
 
 function isRetryableRemoveError(error: unknown): boolean {

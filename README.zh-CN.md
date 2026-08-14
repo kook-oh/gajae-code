@@ -208,11 +208,11 @@ Set up Gajae-Code (gjc) as your coding-agent backend on this machine. gjc is alr
 
 3. Register the MCP server from the installed config. It is equivalent to:
    command: gjc, args: ["mcp-serve", "coordinator"]
-   env: GJC_COORDINATOR_MCP_WORKDIR_ROOTS=<ABS_REPO_PATH>,
-        GJC_COORDINATOR_MCP_PROFILE=<PROFILE_NAME>,
-        GJC_COORDINATOR_MCP_REPO=<REPO_NAME>,
-        GJC_COORDINATOR_MCP_SESSION_COMMAND="gjc --worktree",
-        GJC_COORDINATOR_MCP_MUTATIONS=sessions,questions,reports
+   env: WORX_COORDINATOR_MCP_WORKDIR_ROOTS=<ABS_REPO_PATH>,
+        WORX_COORDINATOR_MCP_PROFILE=<PROFILE_NAME>,
+        WORX_COORDINATOR_MCP_REPO=<REPO_NAME>,
+        WORX_COORDINATOR_MCP_SESSION_COMMAND="gjc --worktree",
+        WORX_COORDINATOR_MCP_MUTATIONS=sessions,questions,reports
 
 4. To delegate coding work, prefer one call per workflow:
    gjc_delegate_plan / gjc_delegate_execute / gjc_delegate_team
