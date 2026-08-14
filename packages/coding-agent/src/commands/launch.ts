@@ -11,9 +11,9 @@ import { ROOT_LAUNCH_FLAGS } from "../cli/root-flags";
 import { launchDefaultTmuxIfNeeded } from "../gjc-runtime/launch-tmux";
 import { type PreparedLaunchWorktree, prepareLaunchWorktree } from "../gjc-runtime/launch-worktree";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
 } from "../gjc-runtime/session-state-sidecar";
 import { runRootCommand } from "../main";
 import { prepareAcpTerminalAuthArgs } from "../modes/acp/terminal-auth";
@@ -23,14 +23,14 @@ export async function persistCoordinatorLaunchFailure(
 	cwd: string,
 	env: NodeJS.ProcessEnv = process.env,
 ): Promise<void> {
-	const stateFile = env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
+	const stateFile = env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
 	if (!stateFile) return;
 	const message = error instanceof Error ? error.message : String(error);
 	const code = message.split(":", 1)[0] || "launch_failed";
 	const now = new Date().toISOString();
 	const payload = {
 		schema_version: 1,
-		session_id: env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim() || null,
+		session_id: env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || null,
 		state: "errored",
 		ready_for_input: false,
 		updated_at: now,
@@ -50,8 +50,8 @@ export async function persistCoordinatorLaunchFailure(
 			truncated: false,
 		},
 		error: { code, message, recoverable: true },
-		...(env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim()
-			? { owner_generation: env[GJC_TMUX_OWNER_GENERATION_ENV] ?? null }
+		...(env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim()
+			? { owner_generation: env[WORX_TMUX_OWNER_GENERATION_ENV] ?? null }
 			: {}),
 	};
 	await fs.mkdir(path.dirname(stateFile), { recursive: true });

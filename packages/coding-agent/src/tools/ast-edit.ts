@@ -205,7 +205,7 @@ export class AstEditTool implements AgentTool<typeof astEditSchema, AstEditToolD
 				seenPatterns.add(pat);
 			}
 			const normalizedRewrites = Object.fromEntries(ops);
-			const maxFiles = $pickenvpos(["GJC_MAX_AST_FILES", "PI_MAX_AST_FILES"], 1000);
+			const maxFiles = $pickenvpos(["WORX_MAX_AST_FILES", "PI_MAX_AST_FILES"], 1000);
 
 			const scope = await resolveToolSearchScope({
 				rawPaths: params.paths,

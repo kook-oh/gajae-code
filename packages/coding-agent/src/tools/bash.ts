@@ -10,8 +10,8 @@ import { type BashArtifactSaveResult, type BashResult, executeBash } from "../ex
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
 import { buildGjcRuntimeSessionEnv } from "../gjc-runtime/goal-mode-request";
 import {
-	GJC_RALPLAN_ARTIFACT_ENV,
-	GJC_RESTRICTED_ROLE_AGENT_BASH_ENV,
+	WORX_RALPLAN_ARTIFACT_ENV,
+	WORX_RESTRICTED_ROLE_AGENT_BASH_ENV,
 } from "../gjc-runtime/restricted-role-agent-bash";
 import { InternalUrlRouter } from "../internal-urls";
 import { truncateToVisualLines } from "../modes/components/visual-truncate";
@@ -937,8 +937,8 @@ export class BashTool implements AgentTool<BashToolSchema, BashToolDetails> {
 			this.session.bashRestrictionProfile !== "read-only" &&
 			env &&
 			Object.keys(env).length === 1 &&
-			Object.hasOwn(env, GJC_RALPLAN_ARTIFACT_ENV) &&
-			rawCommand.includes(`--artifact-env ${GJC_RALPLAN_ARTIFACT_ENV}`);
+			Object.hasOwn(env, WORX_RALPLAN_ARTIFACT_ENV) &&
+			rawCommand.includes(`--artifact-env ${WORX_RALPLAN_ARTIFACT_ENV}`);
 		if (
 			(this.session.bashRestrictionProfile === "read-only" || (allowedPrefixes && allowedPrefixes.length > 0)) &&
 			env &&
@@ -947,7 +947,7 @@ export class BashTool implements AgentTool<BashToolSchema, BashToolDetails> {
 		) {
 			const mode = this.session.bashRestrictionProfile === "read-only" ? "Read-only" : "Restricted role-agent";
 			throw new ToolError(
-				`${mode} bash only allows the ${GJC_RALPLAN_ARTIFACT_ENV} env override for --artifact-env.`,
+				`${mode} bash only allows the ${WORX_RALPLAN_ARTIFACT_ENV} env override for --artifact-env.`,
 			);
 		}
 		if (allowedPrefixes && allowedPrefixes.length > 0) {
@@ -1011,7 +1011,7 @@ export class BashTool implements AgentTool<BashToolSchema, BashToolDetails> {
 					await Promise.all(
 						Object.entries(env).map(async ([key, value]) => [
 							key,
-							key === GJC_RALPLAN_ARTIFACT_ENV
+							key === WORX_RALPLAN_ARTIFACT_ENV
 								? value
 								: await expandInternalUrls(value, {
 										...internalUrlOptions,
@@ -1030,7 +1030,7 @@ export class BashTool implements AgentTool<BashToolSchema, BashToolDetails> {
 			}),
 			...expandedEnv,
 			...(this.session.bashRestrictionProfile === "read-only" ? READ_ONLY_BASH_ENV : {}),
-			...(allowedPrefixes && allowedPrefixes.length > 0 ? { [GJC_RESTRICTED_ROLE_AGENT_BASH_ENV]: "1" } : {}),
+			...(allowedPrefixes && allowedPrefixes.length > 0 ? { [WORX_RESTRICTED_ROLE_AGENT_BASH_ENV]: "1" } : {}),
 		};
 
 		if (cwd?.includes("://") || cwd?.includes("local:/")) {

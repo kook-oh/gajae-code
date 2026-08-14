@@ -42,7 +42,7 @@ import type {
 	GjcUpdateApplyResult,
 	GjcUpdatePreview,
 } from "./types";
-import { GJC_PLUGIN_MANIFEST_FILENAME, GjcPluginLoadError } from "./types";
+import { GjcPluginLoadError, WORX_PLUGIN_MANIFEST_FILENAME } from "./types";
 
 /**
  * GJC bundle lifecycle service.
@@ -509,7 +509,7 @@ async function declaredBundleName(source: string): Promise<string | undefined> {
 	try {
 		const dir = await fs.stat(source);
 		if (!dir.isDirectory()) return undefined;
-		const manifestPath = path.join(source, GJC_PLUGIN_MANIFEST_FILENAME);
+		const manifestPath = path.join(source, WORX_PLUGIN_MANIFEST_FILENAME);
 		// Open without following a final symlink, then stat the OPEN handle so a
 		// concurrent rename cannot swap in a symlink or an oversized file between
 		// the check and the read.

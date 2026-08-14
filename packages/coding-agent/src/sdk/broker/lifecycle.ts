@@ -29,9 +29,9 @@ import {
 	planLaunchWorktree,
 } from "../../gjc-runtime/launch-worktree";
 import {
-	GJC_COORDINATOR_SESSION_BRANCH_ENV,
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_COORDINATOR_SESSION_BRANCH_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 } from "../../gjc-runtime/session-state-sidecar";
 import { validateManagedArtifactTree } from "../../session/internal/managed-session-storage";
 import {
@@ -359,7 +359,7 @@ export function readSessionLifecycleLaunchRequest(
 	value: string | undefined,
 	now = Date.now(),
 ): SessionLifecycleLaunchRequest {
-	if (!value) throw new Error("GJC_SDK_LIFECYCLE_REQUEST is required.");
+	if (!value) throw new Error("WORX_SDK_LIFECYCLE_REQUEST is required.");
 	const request = JSON.parse(value) as Partial<SessionLifecycleLaunchRequest>;
 	if (
 		(request.operation !== "session.create" &&
@@ -412,7 +412,7 @@ export function readSessionLifecycleLaunchRequest(
 		(request.coordinatorSessionBranch !== undefined &&
 			(typeof request.coordinatorSessionBranch !== "string" || request.coordinatorSessionBranch.length > 512))
 	)
-		throw new Error("GJC_SDK_LIFECYCLE_REQUEST is invalid.");
+		throw new Error("WORX_SDK_LIFECYCLE_REQUEST is invalid.");
 	return request as SessionLifecycleLaunchRequest;
 }
 
@@ -762,7 +762,7 @@ async function reconcileReadyScope(broker: Broker, id: string, scope: string | u
  * GJC/user-owned `.env` files, never the project `.env`).
  */
 function sdkSessionCommandOverride(): { file: string; args: string[] } | undefined {
-	const configured = $credentialEnv("GJC_SDK_SESSION_COMMAND");
+	const configured = $credentialEnv("WORX_SDK_SESSION_COMMAND");
 	if (!configured) return undefined;
 	const [file, ...args] = configured.trim().split(/\s+/);
 	return file ? { file, args } : undefined;
@@ -3297,12 +3297,12 @@ async function executeLifecycleResponse(
 					stdio: "ignore",
 					env: {
 						...("kind" in cmd ? cmd.env : process.env),
-						GJC_AGENT_DIR: broker.settings.agentDir,
-						GJC_CODING_AGENT_DIR: broker.settings.agentDir,
-						GJC_SESSION_ID: launch.id,
-						GJC_STATE_ROOT: launch.root,
-						GJC_LIFECYCLE_REQUEST_ID: effectMarker,
-						GJC_SDK_LIFECYCLE_REQUEST: JSON.stringify(request),
+						WORX_AGENT_DIR: broker.settings.agentDir,
+						WORX_CODING_AGENT_DIR: broker.settings.agentDir,
+						WORX_SESSION_ID: launch.id,
+						WORX_STATE_ROOT: launch.root,
+						WORX_LIFECYCLE_REQUEST_ID: effectMarker,
+						WORX_SDK_LIFECYCLE_REQUEST: JSON.stringify(request),
 						// Coordinator-correlation env scoped to this designated launch only (#2549).
 						// The runtime sidecar reads these to write terminal state to the
 						// coordinator-shared file instead of an unread session-local fallback.
@@ -3310,7 +3310,7 @@ async function executeLifecycleResponse(
 						// because the session ID is generated at spawn time.
 						...(launch.coordinatorStateDir
 							? {
-									[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: path.join(
+									[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: path.join(
 										launch.coordinatorStateDir,
 										"session-states",
 										`${launch.id}.json`,
@@ -3318,10 +3318,10 @@ async function executeLifecycleResponse(
 								}
 							: {}),
 						...(launch.coordinatorSessionId
-							? { [GJC_COORDINATOR_SESSION_ID_ENV]: launch.coordinatorSessionId }
+							? { [WORX_COORDINATOR_SESSION_ID_ENV]: launch.coordinatorSessionId }
 							: {}),
 						...(launch.coordinatorSessionBranch
-							? { [GJC_COORDINATOR_SESSION_BRANCH_ENV]: launch.coordinatorSessionBranch }
+							? { [WORX_COORDINATOR_SESSION_BRANCH_ENV]: launch.coordinatorSessionBranch }
 							: {}),
 					},
 				});

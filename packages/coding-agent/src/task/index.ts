@@ -562,7 +562,7 @@ export class TaskTool implements AgentTool<TaskToolSchemaInstance, TaskToolDetai
 		discoveredAgents: AgentDefinition[],
 		sessionRepositoryBinding: RepositoryBinding,
 	) {
-		this.#blockedAgent = $pickenv("GJC_BLOCKED_AGENT", "PI_BLOCKED_AGENT");
+		this.#blockedAgent = $pickenv("WORX_BLOCKED_AGENT", "PI_BLOCKED_AGENT");
 		this.#discoveredAgents = discoveredAgents;
 		this.#sessionRepositoryBinding = sessionRepositoryBinding;
 	}

@@ -9,9 +9,9 @@ import { jobElapsedMs } from "../async";
 import { activateModelProfile, materializeActiveModelProfileAssignments } from "../config/model-profile-activation";
 import { formatModelProfileDisplayLabel } from "../config/model-profiles";
 import {
-	GJC_MODEL_ASSIGNMENT_TARGET_IDS,
-	GJC_MODEL_ASSIGNMENT_TARGETS,
 	type GjcModelAssignmentTargetId,
+	WORX_MODEL_ASSIGNMENT_TARGET_IDS,
+	WORX_MODEL_ASSIGNMENT_TARGETS,
 } from "../config/model-registry";
 
 import {
@@ -89,13 +89,13 @@ type ParsedModelCommandArgs =
 	| { kind: "summary" }
 	| { kind: "assign"; targetId: GjcModelAssignmentTargetId | GjcModelBatchAssignmentTargetId; selector: string };
 
-const GJC_MODEL_ROLE_AGENT_TARGET_IDS: GjcModelAssignmentTargetId[] = ["executor", "architect", "planner", "critic"];
+const WORX_MODEL_ROLE_AGENT_TARGET_IDS: GjcModelAssignmentTargetId[] = ["executor", "architect", "planner", "critic"];
 
 function fastStatusRoleTargets(): Array<{ id: GjcModelAssignmentTargetId; label: string; isSubagentRole: boolean }> {
-	return GJC_MODEL_ASSIGNMENT_TARGET_IDS.map(id => ({
+	return WORX_MODEL_ASSIGNMENT_TARGET_IDS.map(id => ({
 		id,
-		label: GJC_MODEL_ASSIGNMENT_TARGETS[id].tag ?? id.toUpperCase(),
-		isSubagentRole: GJC_MODEL_ASSIGNMENT_TARGETS[id].settingsPath === "task.agentModelOverrides",
+		label: WORX_MODEL_ASSIGNMENT_TARGETS[id].tag ?? id.toUpperCase(),
+		isSubagentRole: WORX_MODEL_ASSIGNMENT_TARGETS[id].settingsPath === "task.agentModelOverrides",
 	}));
 }
 
@@ -203,8 +203,8 @@ function providerSetupUsage(): string {
 function formatModelAssignmentSummary(runtime: SlashCommandRuntime): string {
 	const agentModelOverrides = runtime.settings.get("task.agentModelOverrides");
 	const lines = ["Model assignments:"];
-	for (const targetId of GJC_MODEL_ASSIGNMENT_TARGET_IDS) {
-		const target = GJC_MODEL_ASSIGNMENT_TARGETS[targetId];
+	for (const targetId of WORX_MODEL_ASSIGNMENT_TARGET_IDS) {
+		const target = WORX_MODEL_ASSIGNMENT_TARGETS[targetId];
 		const modelSelector =
 			target.settingsPath === "modelRoles" ? runtime.settings.getModelRole(targetId) : agentModelOverrides[targetId];
 		lines.push(`  ${target.tag ?? target.id.toUpperCase()} (${target.name}): ${modelSelector ?? "(unset)"}`);
@@ -221,7 +221,7 @@ function parseModelCommandArgs(args: string): ParsedModelCommandArgs {
 		token: string | undefined,
 	): GjcModelAssignmentTargetId | GjcModelBatchAssignmentTargetId | undefined => {
 		const normalized = token?.toLowerCase();
-		if (GJC_MODEL_ASSIGNMENT_TARGET_IDS.includes(normalized as GjcModelAssignmentTargetId)) {
+		if (WORX_MODEL_ASSIGNMENT_TARGET_IDS.includes(normalized as GjcModelAssignmentTargetId)) {
 			return normalized as GjcModelAssignmentTargetId;
 		}
 		if (normalized === "all-role-agents" || normalized === "all-targets") return normalized;
@@ -427,8 +427,8 @@ async function resolveModelCommandSelection(
 function getModelAssignmentTargetIds(
 	targetId: GjcModelAssignmentTargetId | GjcModelBatchAssignmentTargetId,
 ): GjcModelAssignmentTargetId[] {
-	if (targetId === "all-role-agents") return [...GJC_MODEL_ROLE_AGENT_TARGET_IDS];
-	if (targetId === "all-targets") return [...GJC_MODEL_ASSIGNMENT_TARGET_IDS];
+	if (targetId === "all-role-agents") return [...WORX_MODEL_ROLE_AGENT_TARGET_IDS];
+	if (targetId === "all-targets") return [...WORX_MODEL_ASSIGNMENT_TARGET_IDS];
 	return [targetId];
 }
 
@@ -882,7 +882,7 @@ const BUILTIN_SLASH_COMMAND_REGISTRY: ReadonlyArray<SlashCommandSpec> = [
 					});
 					if (!materializedProfile) {
 						for (const [targetId, selector] of assignments) {
-							const target = GJC_MODEL_ASSIGNMENT_TARGETS[targetId];
+							const target = WORX_MODEL_ASSIGNMENT_TARGETS[targetId];
 							if (target.settingsPath === "modelRoles") {
 								runtime.settings.setModelRole(targetId, selector);
 							} else {

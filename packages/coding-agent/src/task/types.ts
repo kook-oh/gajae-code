@@ -27,13 +27,13 @@ const parsePositiveIntegerEnvironment = (keys: string[], defaultValue: number): 
 
 /** Maximum output bytes per agent */
 export const MAX_OUTPUT_BYTES = parsePositiveIntegerEnvironment(
-	["GJC_TASK_MAX_OUTPUT_BYTES", "PI_TASK_MAX_OUTPUT_BYTES"],
+	["WORX_TASK_MAX_OUTPUT_BYTES", "PI_TASK_MAX_OUTPUT_BYTES"],
 	500_000,
 );
 
 /** Maximum output lines per agent */
 export const MAX_OUTPUT_LINES = parsePositiveIntegerEnvironment(
-	["GJC_TASK_MAX_OUTPUT_LINES", "PI_TASK_MAX_OUTPUT_LINES"],
+	["WORX_TASK_MAX_OUTPUT_LINES", "PI_TASK_MAX_OUTPUT_LINES"],
 	5000,
 );
 

@@ -59,9 +59,9 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 
 	// Concrete, fail-closed env: workdir allowlist is the project root, no mutations.
 	const env: Record<string, string> = {
-		GJC_COORDINATOR_MCP_WORKDIR_ROOTS: projectRoot,
-		GJC_COORDINATOR_MCP_REPO: repo,
-		GJC_COORDINATOR_MCP_SESSION_COMMAND: "worx --worktree",
+		WORX_COORDINATOR_MCP_WORKDIR_ROOTS: projectRoot,
+		WORX_COORDINATOR_MCP_REPO: repo,
+		WORX_COORDINATOR_MCP_SESSION_COMMAND: "worx --worktree",
 	};
 
 	if (host === "claude") {
@@ -82,7 +82,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 			],
 			coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },
 			mutationPolicy:
-				"Fail-closed: delegation is read-only until you set GJC_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
+				"Fail-closed: delegation is read-only until you set WORX_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
 			notes: [],
 			...(flags.check
 				? { check: verifyBundleFiles([manifestPath, marketplacePath, path.join(pluginDir, ".mcp.json")]) }
@@ -108,7 +108,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 		],
 		coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },
 		mutationPolicy:
-			"Fail-closed: delegation is read-only until you set GJC_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
+			"Fail-closed: delegation is read-only until you set WORX_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
 		notes: [
 			"Verified on Codex CLI 0.139.0: marketplace add + plugin add install the plugin (enabled) and `codex mcp list` registers gjc-coordinator with the fail-closed env.",
 			"The bundled .codex.mcp.json workdir root is host-neutral; `gjc setup codex` renders a concrete root, and operators should re-run the local marketplace smoke on their target Codex version.",
@@ -134,7 +134,7 @@ export function formatHostPluginSetup(result: HostPluginSetupResult): string {
 	for (const step of result.installGuidance) lines.push(`  - ${step}`);
 	lines.push(`mcp: ${result.coordinatorConfigPreview.command} ${result.coordinatorConfigPreview.args.join(" ")}`);
 	lines.push(
-		`  GJC_COORDINATOR_MCP_WORKDIR_ROOTS=${result.coordinatorConfigPreview.env.GJC_COORDINATOR_MCP_WORKDIR_ROOTS}`,
+		`  WORX_COORDINATOR_MCP_WORKDIR_ROOTS=${result.coordinatorConfigPreview.env.WORX_COORDINATOR_MCP_WORKDIR_ROOTS}`,
 	);
 	lines.push(result.mutationPolicy);
 	for (const note of result.notes) lines.push(`note: ${note}`);

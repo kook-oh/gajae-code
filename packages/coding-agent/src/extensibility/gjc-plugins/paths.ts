@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import * as path from "node:path";
 import { getAgentDir, pathIsWithin } from "@gajae-code/utils";
-import { GJC_PLUGIN_MANIFEST_FILENAME, GjcPluginLoadError } from "./types";
+import { GjcPluginLoadError, WORX_PLUGIN_MANIFEST_FILENAME } from "./types";
 
 export function gjcPluginUserRoot(): string {
 	return path.join(getAgentDir(), "gjc-plugins");
@@ -17,7 +17,7 @@ function isEnoent(error: unknown): boolean {
 
 export async function rootContainsGjcManifest(dir: string): Promise<boolean> {
 	try {
-		await fs.access(path.join(dir, GJC_PLUGIN_MANIFEST_FILENAME));
+		await fs.access(path.join(dir, WORX_PLUGIN_MANIFEST_FILENAME));
 		return true;
 	} catch (error) {
 		if (isEnoent(error)) return false;

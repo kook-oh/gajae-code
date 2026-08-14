@@ -2,23 +2,23 @@ import { isKnownWorkflowState } from "../../gjc-runtime/workflow-manifest";
 import type { CanonicalGjcWorkflowSkill } from "../../skill-state/active-state";
 import { assertMcpInstallPolicy } from "./mcp-policy";
 import {
-	GJC_AGENT_SUBSKILL_PHASES,
-	GJC_SUBSKILL_PARENT_AGENTS,
-	GJC_SUBSKILL_PARENT_SKILLS,
 	GjcPluginLoadError,
 	type GjcPluginRegistryEntry,
 	type GjcSubskillParentAgent,
 	type LoadedSubskillBinding,
 	type NormalizedGjcPluginBundle,
 	type SubskillFrontmatter,
+	WORX_AGENT_SUBSKILL_PHASES,
+	WORX_SUBSKILL_PARENT_AGENTS,
+	WORX_SUBSKILL_PARENT_SKILLS,
 } from "./types";
 
 function isParentSkill(value: string): value is CanonicalGjcWorkflowSkill {
-	return (GJC_SUBSKILL_PARENT_SKILLS as readonly string[]).includes(value);
+	return (WORX_SUBSKILL_PARENT_SKILLS as readonly string[]).includes(value);
 }
 
 function isParentAgent(value: string): value is GjcSubskillParentAgent {
-	return (GJC_SUBSKILL_PARENT_AGENTS as readonly string[]).includes(value);
+	return (WORX_SUBSKILL_PARENT_AGENTS as readonly string[]).includes(value);
 }
 
 export function validateBinding(fm: SubskillFrontmatter): void {
@@ -31,7 +31,7 @@ export function validateBinding(fm: SubskillFrontmatter): void {
 	}
 
 	if (isParentAgent(parent)) {
-		if (!GJC_AGENT_SUBSKILL_PHASES[parent].includes(fm.phase)) {
+		if (!WORX_AGENT_SUBSKILL_PHASES[parent].includes(fm.phase)) {
 			throw new GjcPluginLoadError("invalid_phase", `Invalid GJC sub-skill phase for ${parent}: ${fm.phase}`);
 		}
 		return;

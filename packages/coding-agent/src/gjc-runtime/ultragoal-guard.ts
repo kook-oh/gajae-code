@@ -88,10 +88,10 @@ async function ultragoalReadPaths(
 	cwd: string,
 	options: { sessionId?: string | null } = {},
 ): Promise<{ paths: UltragoalPaths; sessionId: string | null }> {
-	const explicitSessionId = options.sessionId?.trim() || process.env.GJC_SESSION_ID?.trim();
+	const explicitSessionId = options.sessionId?.trim() || process.env.WORX_SESSION_ID?.trim();
 	if (explicitSessionId) return { paths: getUltragoalPaths(cwd, explicitSessionId), sessionId: explicitSessionId };
 	try {
-		const session = await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID });
+		const session = await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
 		return { paths: getUltragoalPaths(cwd, session.gjcSessionId), sessionId: session.gjcSessionId };
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") {

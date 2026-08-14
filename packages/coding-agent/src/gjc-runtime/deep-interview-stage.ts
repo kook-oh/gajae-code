@@ -33,7 +33,7 @@ import { CommandError, flagValue, hasFlag, isPlainObject } from "./workflow-cli-
  *   merged into current state through the same lossless envelope merge every other
  *   sanctioned deep-interview writer uses. There is no per-field flag grammar.
  * - Exactly one pending draft exists per session at a fixed session-scoped path,
- *   so no `--draft-id` is needed; the session resolves from `GJC_SESSION_ID` (or
+ *   so no `--draft-id` is needed; the session resolves from `WORX_SESSION_ID` (or
  *   payload `session_id`), so no identity flags are needed.
  * - The draft records the `state_revision` it was staged against; `apply` enforces
  *   that runtime-side (CAS). A stale draft is auto-invalidated with typed recovery
@@ -498,14 +498,14 @@ function deriveRuntimeAmbiguity(
 
 /**
  * One explicit session boundary for every staged verb: `--session-id` flag,
- * payload `session_id` (stage only), or `GJC_SESSION_ID`. Mutating verbs never
+ * payload `session_id` (stage only), or `WORX_SESSION_ID`. Mutating verbs never
  * fall back to latest-session auto-detect.
  */
 function resolveStageSession(args: readonly string[], cwd: string, payloadSessionId?: unknown): string {
 	const session = resolveGjcSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		payloadSessionId,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	return session.gjcSessionId;
 }
@@ -1001,7 +1001,7 @@ export async function runDeepInterviewStageCommand(
 					? new DeepInterviewStageError(
 							"DI_STAGE_SESSION_REQUIRED",
 							error.message,
-							"pass --session-id, set GJC_SESSION_ID, or include session_id in the staged payload, then retry",
+							"pass --session-id, set WORX_SESSION_ID, or include session_id in the staged payload, then retry",
 						)
 					: undefined;
 		if (staged) {

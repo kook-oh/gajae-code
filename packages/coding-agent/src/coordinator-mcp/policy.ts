@@ -36,10 +36,10 @@ export function coordinatorNamespaceIdentity(env: NodeJS.ProcessEnv = process.en
 	return `ns1_${createHash("sha256")
 		.update(
 			canonicalJson({
-				profile_exact: env.GJC_COORDINATOR_MCP_PROFILE ?? null,
-				profile_present: env.GJC_COORDINATOR_MCP_PROFILE !== undefined,
-				repo_exact: env.GJC_COORDINATOR_MCP_REPO ?? null,
-				repo_present: env.GJC_COORDINATOR_MCP_REPO !== undefined,
+				profile_exact: env.WORX_COORDINATOR_MCP_PROFILE ?? null,
+				profile_present: env.WORX_COORDINATOR_MCP_PROFILE !== undefined,
+				repo_exact: env.WORX_COORDINATOR_MCP_REPO ?? null,
+				repo_present: env.WORX_COORDINATOR_MCP_REPO !== undefined,
 			}),
 		)
 		.digest("hex")
@@ -131,35 +131,35 @@ function defaultCoordinatorMcpStateRoot(cwd: string, gjcSessionId?: string): str
 }
 
 export function buildCoordinatorMcpConfig(env: NodeJS.ProcessEnv = process.env): CoordinatorMcpConfig {
-	const stateRootOverride = env.GJC_COORDINATOR_MCP_STATE_ROOT?.trim();
-	const gjcSessionId = env.GJC_SESSION_ID?.trim();
+	const stateRootOverride = env.WORX_COORDINATOR_MCP_STATE_ROOT?.trim();
+	const gjcSessionId = env.WORX_SESSION_ID?.trim();
 	const stateRoot = stateRootOverride || defaultCoordinatorMcpStateRoot(process.cwd(), gjcSessionId);
 	return {
-		allowedRoots: parseRootList(env.GJC_COORDINATOR_MCP_WORKDIR_ROOTS).map(root => path.resolve(root)),
+		allowedRoots: parseRootList(env.WORX_COORDINATOR_MCP_WORKDIR_ROOTS).map(root => path.resolve(root)),
 		mutationClasses: parseMutationClasses(
-			env.GJC_COORDINATOR_MCP_MUTATIONS ?? env.GJC_COORDINATOR_MCP_ENABLE_MUTATION_CLASSES,
+			env.WORX_COORDINATOR_MCP_MUTATIONS ?? env.WORX_COORDINATOR_MCP_ENABLE_MUTATION_CLASSES,
 		),
 		artifactByteCap: parseByteCap(
-			env.GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP ?? env.GJC_COORDINATOR_MCP_ARTIFACT_MAX_BYTES,
+			env.WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP ?? env.WORX_COORDINATOR_MCP_ARTIFACT_MAX_BYTES,
 		),
 		namespace: {
-			profile: cleanScope(env.GJC_COORDINATOR_MCP_PROFILE),
-			repo: cleanScope(env.GJC_COORDINATOR_MCP_REPO),
+			profile: cleanScope(env.WORX_COORDINATOR_MCP_PROFILE),
+			repo: cleanScope(env.WORX_COORDINATOR_MCP_REPO),
 			identity: coordinatorNamespaceIdentity(env),
 		},
 		stateRoot: path.resolve(stateRoot),
-		sessionCommand: env.GJC_COORDINATOR_MCP_SESSION_COMMAND?.trim() || null,
+		sessionCommand: env.WORX_COORDINATOR_MCP_SESSION_COMMAND?.trim() || null,
 		sessionIdleTtlMs: parsePositiveIntMs(
-			env.GJC_COORDINATOR_MCP_SESSION_IDLE_TTL_MS,
+			env.WORX_COORDINATOR_MCP_SESSION_IDLE_TTL_MS,
 			DEFAULT_SESSION_IDLE_TTL_MS,
 			MIN_SESSION_IDLE_TTL_MS,
 		),
 		sessionSweepIntervalMs: parsePositiveIntMs(
-			env.GJC_COORDINATOR_MCP_SESSION_SWEEP_INTERVAL_MS,
+			env.WORX_COORDINATOR_MCP_SESSION_SWEEP_INTERVAL_MS,
 			DEFAULT_SESSION_SWEEP_INTERVAL_MS,
 			MIN_SESSION_SWEEP_INTERVAL_MS,
 		),
-		forceStopEnabled: parseBool(env.GJC_COORDINATOR_MCP_FORCE_STOP),
+		forceStopEnabled: parseBool(env.WORX_COORDINATOR_MCP_FORCE_STOP),
 	};
 }
 

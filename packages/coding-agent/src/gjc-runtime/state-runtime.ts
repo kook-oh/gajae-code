@@ -7,7 +7,7 @@ import * as logger from "@gajae-code/utils/logger";
 import type { WorkflowHudSummary } from "../skill-state/active-state";
 import {
 	applyHandoffToActiveState,
-	CANONICAL_GJC_WORKFLOW_SKILLS,
+	CANONICAL_WORX_WORKFLOW_SKILLS,
 	type CanonicalGjcWorkflowSkill,
 	listActiveSkills,
 	readVisibleSkillActiveState,
@@ -97,7 +97,7 @@ export interface StateCommandResult {
 }
 
 const SKILL_ACTIVE_STATE_FILE = "skill-active-state.json";
-const KNOWN_MODES: readonly string[] = CANONICAL_GJC_WORKFLOW_SKILLS;
+const KNOWN_MODES: readonly string[] = CANONICAL_WORX_WORKFLOW_SKILLS;
 
 class StateCommandError extends CommandError {
 	constructor(exitStatus: number, message: string) {
@@ -185,7 +185,7 @@ async function resolveSelectors(args: readonly string[], cwd: string, action: St
 	const sessionSources = {
 		flagValue: flagValue(args, "--session-id"),
 		payloadSessionId: payload?.session_id,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	};
 	const session = WRITE_SESSION_ACTIONS.has(action)
 		? resolveGjcSessionForWrite(cwd, sessionSources)
@@ -426,7 +426,7 @@ async function collectDoctorSummary(
 	sessionId: string,
 ): Promise<DoctorSummary> {
 	const root = sessionStateDir(cwd, sessionId);
-	const skills = skill ? [skill] : [...CANONICAL_GJC_WORKFLOW_SKILLS];
+	const skills = skill ? [skill] : [...CANONICAL_WORX_WORKFLOW_SKILLS];
 	const problems: DoctorProblem[] = [];
 	let filesScanned = 0;
 	let journalsScanned = 0;
@@ -633,7 +633,7 @@ async function handleDoctor(
 	const session = await resolveGjcSessionForRead(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		payloadSessionId: payload?.session_id,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	const summary = await collectDoctorSummary(
 		cwd,
@@ -1004,7 +1004,7 @@ export async function reconcileWorkflowSkillState(options: {
 }): Promise<{ stateFile: string }> {
 	const { gjcSessionId: sessionId } = resolveGjcSessionForWrite(options.cwd, {
 		payloadSessionId: options.sessionId,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	return withWorkflowStateLock(
 		path.relative(options.cwd, modeStateFile(options.cwd, options.mode, sessionId)),
@@ -1127,7 +1127,7 @@ export async function readWorkflowStateJson(
 ): Promise<Record<string, unknown>> {
 	const session = await resolveGjcSessionForRead(cwd, {
 		payloadSessionId: sessionId,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	return (await readJsonFile(modeStateFile(cwd, skill, session.gjcSessionId), onWarning)) ?? {};
 }
@@ -1784,7 +1784,7 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 	const stampedCallerReceipt = isPlainObject(callerWrite.stamped.receipt) ? callerWrite.stamped.receipt : {};
 	const stampedCalleeReceipt = isPlainObject(calleeWrite.stamped.receipt) ? calleeWrite.stamped.receipt : {};
 	for (const warning of warnings) emitStateWarning(warning);
-	if (process.env.GJC_STATE_HANDOFF_FAIL_AFTER_CALLER === mutationId) {
+	if (process.env.WORX_STATE_HANDOFF_FAIL_AFTER_CALLER === mutationId) {
 		throw new StateCommandError(1, `injected handoff failure after caller write for ${mutationId}`);
 	}
 	await applyHandoffToActiveState({
@@ -2038,10 +2038,10 @@ async function buildGcSummary(
 	const rawSkill =
 		flagValue(args, "--skill")?.trim() || flagValue(args, "--mode")?.trim() || positionalSkill?.trim() || "all";
 	if (rawSkill !== "all") assertKnownMode(rawSkill);
-	const skills = rawSkill === "all" ? CANONICAL_GJC_WORKFLOW_SKILLS : [rawSkill as CanonicalGjcWorkflowSkill];
+	const skills = rawSkill === "all" ? CANONICAL_WORX_WORKFLOW_SKILLS : [rawSkill as CanonicalGjcWorkflowSkill];
 	const session = await resolveGjcSessionForRead(cwd, {
 		flagValue: flagValue(args, "--session-id"),
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	const eligible = selectRetentionEligible(await collectRetentionCandidates(cwd, session.gjcSessionId, skills));
 	const counts: Record<string, number> = {};
@@ -2082,7 +2082,7 @@ async function handleGraph(
 	if (hasFlag(args, "--history")) {
 		const session = await resolveGjcSessionForRead(_cwd, {
 			flagValue: flagValue(args, "--session-id"),
-			envSessionId: process.env.GJC_SESSION_ID,
+			envSessionId: process.env.WORX_SESSION_ID,
 		});
 		const history = await readAuditWindow(_cwd, args, session.gjcSessionId);
 		return {

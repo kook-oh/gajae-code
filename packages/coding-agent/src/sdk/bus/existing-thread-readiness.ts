@@ -29,7 +29,7 @@ import type { SlackConversation } from "./slack-conversation";
 import { resolveSessionBindingAuthority } from "./slack-thread-binding";
 
 /** Explicit, session-scoped opt-in for withholding readiness until a root is bound. */
-export const EXISTING_THREAD_BIND_ENV = "GJC_NOTIFY_BIND_EXISTING_THREAD";
+export const EXISTING_THREAD_BIND_ENV = "WORX_NOTIFY_BIND_EXISTING_THREAD";
 
 /**
  * Existing-thread binding is opt-in, and only the exact value `1` opts in.

@@ -8,13 +8,13 @@ import { assertSafePathComponent } from "./session-layout";
 import { lifecyclePaths, type OwnerIntent, observeOwnerTerminal } from "./tmux-owner-isolation";
 
 export const MANAGED_OWNER_SUPERVISOR_ARG = "--internal-managed-owner-supervisor";
-export const MANAGED_OWNER_CHILD_TOKEN_ENV = "GJC_MANAGED_OWNER_CHILD_TOKEN";
-export const MANAGED_OWNER_COMMAND_ENV = "GJC_MANAGED_OWNER_COMMAND_JSON";
-export const MANAGED_OWNER_SESSION_ID_ENV = "GJC_COORDINATOR_SESSION_ID";
-export const MANAGED_OWNER_GENERATION_ENV = "GJC_TMUX_OWNER_GENERATION";
-export const MANAGED_OWNER_STATE_DIR_ENV = "GJC_TMUX_OWNER_STATE_DIR";
-export const MANAGED_OWNER_RUN_ID_ENV = "GJC_MANAGED_OWNER_RUN_ID";
-export const MANAGED_OWNER_INCARNATION_ENV = "GJC_MANAGED_OWNER_INCARNATION";
+export const MANAGED_OWNER_CHILD_TOKEN_ENV = "WORX_MANAGED_OWNER_CHILD_TOKEN";
+export const MANAGED_OWNER_COMMAND_ENV = "WORX_MANAGED_OWNER_COMMAND_JSON";
+export const MANAGED_OWNER_SESSION_ID_ENV = "WORX_COORDINATOR_SESSION_ID";
+export const MANAGED_OWNER_GENERATION_ENV = "WORX_TMUX_OWNER_GENERATION";
+export const MANAGED_OWNER_STATE_DIR_ENV = "WORX_TMUX_OWNER_STATE_DIR";
+export const MANAGED_OWNER_RUN_ID_ENV = "WORX_MANAGED_OWNER_RUN_ID";
+export const MANAGED_OWNER_INCARNATION_ENV = "WORX_MANAGED_OWNER_INCARNATION";
 
 let bootstrapSigtermPending = false;
 const captureBootstrapSigterm = () => {
@@ -235,7 +235,7 @@ export async function runManagedOwnerSupervisor(): Promise<void> {
 			session_id: sessionId,
 			owner_generation: generation,
 			state_dir: stateDir,
-			socket_key: process.env.GJC_TMUX_OWNER_SERVER_KEY ?? "",
+			socket_key: process.env.WORX_TMUX_OWNER_SERVER_KEY ?? "",
 			observer: "raw_monitor",
 			observed_at: terminalObservedAt,
 			signal: "SIGTERM",

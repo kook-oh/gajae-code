@@ -17,14 +17,14 @@ import {
 } from "./tmux-owner-isolation";
 
 /** Managed tmux owner provenance propagated only to the launched child process. */
-export const GJC_TMUX_OWNER_GENERATION_ENV = "GJC_TMUX_OWNER_GENERATION";
-export const GJC_TMUX_OWNER_STATE_DIR_ENV = "GJC_TMUX_OWNER_STATE_DIR";
-export const GJC_TMUX_OWNER_SERVER_KEY_ENV = "GJC_TMUX_OWNER_SERVER_KEY";
-export const GJC_COORDINATOR_SESSION_STATE_FILE_ENV = "GJC_COORDINATOR_SESSION_STATE_FILE";
-export const GJC_COORDINATOR_SESSION_ID_ENV = "GJC_COORDINATOR_SESSION_ID";
-export const GJC_COORDINATOR_SESSION_BRANCH_ENV = "GJC_COORDINATOR_SESSION_BRANCH";
-export const GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV = "GJC_COORDINATOR_SESSION_LAUNCH_ID";
-export const GJC_COORDINATOR_SESSION_READINESS_FILE_ENV = "GJC_COORDINATOR_SESSION_READINESS_FILE";
+export const WORX_TMUX_OWNER_GENERATION_ENV = "WORX_TMUX_OWNER_GENERATION";
+export const WORX_TMUX_OWNER_STATE_DIR_ENV = "WORX_TMUX_OWNER_STATE_DIR";
+export const WORX_TMUX_OWNER_SERVER_KEY_ENV = "WORX_TMUX_OWNER_SERVER_KEY";
+export const WORX_COORDINATOR_SESSION_STATE_FILE_ENV = "WORX_COORDINATOR_SESSION_STATE_FILE";
+export const WORX_COORDINATOR_SESSION_ID_ENV = "WORX_COORDINATOR_SESSION_ID";
+export const WORX_COORDINATOR_SESSION_BRANCH_ENV = "WORX_COORDINATOR_SESSION_BRANCH";
+export const WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV = "WORX_COORDINATOR_SESSION_LAUNCH_ID";
+export const WORX_COORDINATOR_SESSION_READINESS_FILE_ENV = "WORX_COORDINATOR_SESSION_READINESS_FILE";
 
 export type RuntimeInputReadyMarker = Readonly<{
 	schema_version: 1;
@@ -37,8 +37,8 @@ export type RuntimeInputReadyMarker = Readonly<{
 	created_at: string;
 }>;
 
-const GJC_SESSION_PROMPT_ACCEPTED_JSON_ENV = "GJC_SESSION_PROMPT_ACCEPTED_JSON";
-const GJC_SESSION_WORKTREE_BASELINE_DIRTY_ENV = "GJC_SESSION_WORKTREE_BASELINE_DIRTY";
+const WORX_SESSION_PROMPT_ACCEPTED_JSON_ENV = "WORX_SESSION_PROMPT_ACCEPTED_JSON";
+const WORX_SESSION_WORKTREE_BASELINE_DIRTY_ENV = "WORX_SESSION_WORKTREE_BASELINE_DIRTY";
 
 export type RuntimeState = "ready_for_input" | "running" | "needs_user_input" | "completed" | "errored";
 
@@ -171,10 +171,10 @@ async function readRuntimeInputReadyMarker(readinessFile: string): Promise<Runti
 }
 
 export async function persistCoordinatorRuntimeInputReady(): Promise<RuntimeInputReadyMarker | null> {
-	const stateFile = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
-	const sessionId = process.env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim();
-	const launchId = process.env[GJC_COORDINATOR_SESSION_LAUNCH_ID_ENV]?.trim();
-	const readinessFile = process.env[GJC_COORDINATOR_SESSION_READINESS_FILE_ENV]?.trim();
+	const stateFile = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
+	const sessionId = process.env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim();
+	const launchId = process.env[WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV]?.trim();
+	const readinessFile = process.env[WORX_COORDINATOR_SESSION_READINESS_FILE_ENV]?.trim();
 	if (!stateFile || !sessionId || !launchId || !readinessFile) return null;
 
 	const expected = { sessionId, launchId };
@@ -224,9 +224,9 @@ function sameResolvedPath(left: string, right: string, platform: NodeJS.Platform
 function normalizedIdentity(
 	context: Pick<RuntimeStateContext, "sessionId" | "cwd" | "sessionFile" | "platform">,
 ): RuntimeStateIdentity {
-	const explicitStateFile = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
+	const explicitStateFile = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
 	const sessionId = explicitStateFile
-		? process.env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim() || context.sessionId.trim()
+		? process.env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || context.sessionId.trim()
 		: context.sessionId.trim();
 	const cwd = context.cwd.trim();
 	const platform = context.platform ?? process.platform;
@@ -640,13 +640,13 @@ function assertPreviousRuntimeStateIdentity(previous: Record<string, unknown>, i
 }
 
 function runtimeStateFileForContext(context: RuntimeStateContext): string | null {
-	const explicit = process.env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
+	const explicit = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim();
 	if (explicit) return explicit;
 	if (!context.sessionId.trim()) return null;
 	return path.join(sessionRuntimeDir(context.cwd, context.sessionId), "runtime-state.json");
 }
 function branchForContext(context: RuntimeStateContext): string | null {
-	return context.branch ?? (process.env[GJC_COORDINATOR_SESSION_BRANCH_ENV]?.trim() || null);
+	return context.branch ?? (process.env[WORX_COORDINATOR_SESSION_BRANCH_ENV]?.trim() || null);
 }
 
 function basePayload(input: {
@@ -701,7 +701,7 @@ function booleanFromUnknown(value: unknown): boolean | null {
 }
 
 function promptAcceptedFromEnv(): boolean {
-	const promptAcceptedJson = process.env[GJC_SESSION_PROMPT_ACCEPTED_JSON_ENV]?.trim();
+	const promptAcceptedJson = process.env[WORX_SESSION_PROMPT_ACCEPTED_JSON_ENV]?.trim();
 	if (!promptAcceptedJson) return false;
 	try {
 		return fsSync.statSync(promptAcceptedJson).size > 0;
@@ -719,13 +719,13 @@ function readJsonFileSync(file: string): Record<string, unknown> | null {
 }
 
 function worktreeBaselineDirtyFromEnvOrMarker(): boolean | null {
-	const promptAcceptedJson = process.env[GJC_SESSION_PROMPT_ACCEPTED_JSON_ENV]?.trim();
+	const promptAcceptedJson = process.env[WORX_SESSION_PROMPT_ACCEPTED_JSON_ENV]?.trim();
 	if (promptAcceptedJson) {
 		const promptAccepted = readJsonFileSync(promptAcceptedJson);
 		const promptBaseline = booleanFromUnknown(promptAccepted?.worktreeBaselineDirty);
 		if (promptBaseline !== null) return promptBaseline;
 	}
-	const envValue = booleanFromUnknown(process.env[GJC_SESSION_WORKTREE_BASELINE_DIRTY_ENV]);
+	const envValue = booleanFromUnknown(process.env[WORX_SESSION_WORKTREE_BASELINE_DIRTY_ENV]);
 	if (envValue !== null) return envValue;
 	return null;
 }
@@ -953,11 +953,11 @@ function ownerTerminalPayload(verdict: OwnerVerdict, _owner: OwnerTerminalContex
 }
 
 export function ownerTerminalContextFromEnvironment(): OwnerTerminalContext | "invalid" | null {
-	const generation = process.env[GJC_TMUX_OWNER_GENERATION_ENV];
-	const stateDir = process.env[GJC_TMUX_OWNER_STATE_DIR_ENV];
-	const socketKey = process.env[GJC_TMUX_OWNER_SERVER_KEY_ENV];
+	const generation = process.env[WORX_TMUX_OWNER_GENERATION_ENV];
+	const stateDir = process.env[WORX_TMUX_OWNER_STATE_DIR_ENV];
+	const socketKey = process.env[WORX_TMUX_OWNER_SERVER_KEY_ENV];
 	const supplied = [generation, stateDir, socketKey].some(value => value !== undefined);
-	const managedLaunch = process.platform === "linux" && process.env.GJC_TMUX_LAUNCHED === "1";
+	const managedLaunch = process.platform === "linux" && process.env.WORX_TMUX_LAUNCHED === "1";
 	if (!supplied) return managedLaunch ? "invalid" : null;
 	const normalizedGeneration = generation?.trim();
 	const normalizedStateDir = stateDir?.trim();

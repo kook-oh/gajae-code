@@ -2,7 +2,7 @@ import type { ClientCapabilities } from "@agentclientprotocol/sdk";
 
 export type AcpPermissionMode = "auto" | "prompt" | "always-allow";
 
-const ACP_PERMISSION_MODE_ENV = "GJC_ACP_PERMISSION_MODE";
+const ACP_PERMISSION_MODE_ENV = "WORX_ACP_PERMISSION_MODE";
 
 function parseAcpPermissionMode(value: unknown): AcpPermissionMode {
 	if (value === "auto" || value === "prompt" || value === "always-allow") return value;

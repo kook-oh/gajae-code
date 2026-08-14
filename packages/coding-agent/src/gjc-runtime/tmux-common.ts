@@ -14,24 +14,24 @@ export {
 	type TmuxProviderKind,
 } from "./tmux-provider-context";
 
-export const GJC_DEFAULT_TMUX_SESSION = "gajae_code";
-export const GJC_TMUX_SESSION_PREFIX = `${GJC_DEFAULT_TMUX_SESSION}_`;
-export const GJC_TMUX_COMMAND_ENV = "GJC_TMUX_COMMAND";
-export const GJC_TMUX_ACTIVE_SESSION_ENV = "GJC_TMUX_ACTIVE_SESSION";
-export const GJC_TMUX_PROFILE_ENV = "GJC_TMUX_PROFILE";
-export const GJC_TMUX_MOUSE_ENV = "GJC_MOUSE";
-export const GJC_TMUX_PROFILE_OPTION = "@gjc-profile";
-export const GJC_TMUX_PROFILE_VALUE = "1";
-export const GJC_TMUX_BRANCH_OPTION = "@gjc-branch";
-export const GJC_TMUX_BRANCH_SLUG_OPTION = "@gjc-branch-slug";
-export const GJC_TMUX_PROJECT_OPTION = "@gjc-project";
-export const GJC_TMUX_SESSION_ID_OPTION = "@gjc-session-id";
-export const GJC_TMUX_SESSION_STATE_FILE_OPTION = "@gjc-session-state-file";
-export const GJC_TMUX_OWNER_GENERATION_OPTION = "@gjc-owner-generation";
-export const GJC_TMUX_OWNER_SERVER_KEY_OPTION = "@gjc-owner-server-key";
+export const WORX_DEFAULT_TMUX_SESSION = "gajae_code";
+export const WORX_TMUX_SESSION_PREFIX = `${WORX_DEFAULT_TMUX_SESSION}_`;
+export const WORX_TMUX_COMMAND_ENV = "WORX_TMUX_COMMAND";
+export const WORX_TMUX_ACTIVE_SESSION_ENV = "WORX_TMUX_ACTIVE_SESSION";
+export const WORX_TMUX_PROFILE_ENV = "WORX_TMUX_PROFILE";
+export const WORX_TMUX_MOUSE_ENV = "WORX_MOUSE";
+export const WORX_TMUX_PROFILE_OPTION = "@gjc-profile";
+export const WORX_TMUX_PROFILE_VALUE = "1";
+export const WORX_TMUX_BRANCH_OPTION = "@gjc-branch";
+export const WORX_TMUX_BRANCH_SLUG_OPTION = "@gjc-branch-slug";
+export const WORX_TMUX_PROJECT_OPTION = "@gjc-project";
+export const WORX_TMUX_SESSION_ID_OPTION = "@gjc-session-id";
+export const WORX_TMUX_SESSION_STATE_FILE_OPTION = "@gjc-session-state-file";
+export const WORX_TMUX_OWNER_GENERATION_OPTION = "@gjc-owner-generation";
+export const WORX_TMUX_OWNER_SERVER_KEY_OPTION = "@gjc-owner-server-key";
 
-export const GJC_TMUX_VERSION_OPTION = "@gjc-version";
-export const GJC_PSMUX_PROFILE_FORCE_ENV = "GJC_PSMUX_PROFILE_FORCE";
+export const WORX_TMUX_VERSION_OPTION = "@gjc-version";
+export const WORX_PSMUX_PROFILE_FORCE_ENV = "WORX_PSMUX_PROFILE_FORCE";
 
 export interface GjcTmuxProfileCommand {
 	description: string;
@@ -58,12 +58,12 @@ export function envDisabled(value: string | undefined): boolean {
  * This is the shared entry point used by every GJC code path that needs to talk
  * to a multiplexer: `gjc --tmux` planning, `gjc session ...`, `gjc team ...`,
  * the lifecycle controller, and the harness resident owner. Routing all of
- * them through the same resolver means a single `GJC_TMUX_COMMAND` override or
+ * them through the same resolver means a single `WORX_TMUX_COMMAND` override or
  * a single Windows psmux / pmux detection wins for the whole process — the
  * failure mode where `gjc --tmux` creates a psmux-backed session and then
  * `gjc session status` fails because it queries literal `tmux` is closed off.
  *
- * Explicit `GJC_TMUX_COMMAND` / `GJC_TEAM_TMUX_COMMAND` overrides are honored on
+ * Explicit `WORX_TMUX_COMMAND` / `WORX_TEAM_TMUX_COMMAND` overrides are honored on
  * every platform. On native Windows without an override the resolver walks
  * `psmux`, then `pmux`, then `tmux` and uses the first binary present on PATH.
  * On POSIX the resolver returns `tmux` (the historical default) and only
@@ -119,20 +119,20 @@ export function buildGjcTmuxExactSessionTarget(
 	return `=${sessionName}`;
 }
 
-export const GJC_TMUX_UNTAGGED_REASON = "gjc_tmux_session_untagged";
+export const WORX_TMUX_UNTAGGED_REASON = "gjc_tmux_session_untagged";
 
 export function buildGjcTmuxUntaggedSessionHint(tmuxCommand: string): string {
 	return (
-		`the active multiplexer "${tmuxCommand}" lists this session but did not return GJC's ${GJC_TMUX_PROFILE_OPTION} ownership tag; ` +
+		`the active multiplexer "${tmuxCommand}" lists this session but did not return GJC's ${WORX_TMUX_PROFILE_OPTION} ownership tag; ` +
 		"GJC-managed sessions and `gjc team` require a tmux provider that round-trips tmux user options. " +
 		"On Windows psmux, GJC persists a ProviderAuthority that binds the exact executable identity and an isolated `-L <namespace>` server namespace for the owner generation. " +
 		"Recover through GJC so it reuses that persisted authority; do not retry against ambient tmux/psmux or a raw `-L` namespace. " +
-		"GJC_TMUX_COMMAND and GJC_TEAM_TMUX_COMMAND are binary overrides, not shell command lines."
+		"WORX_TMUX_COMMAND and WORX_TEAM_TMUX_COMMAND are binary overrides, not shell command lines."
 	);
 }
 
 export function buildGjcTmuxUntaggedSessionError(sessionName: string, tmuxCommand: string): string {
-	return `${GJC_TMUX_UNTAGGED_REASON}:${sessionName} — ${buildGjcTmuxUntaggedSessionHint(tmuxCommand)}`;
+	return `${WORX_TMUX_UNTAGGED_REASON}:${sessionName} — ${buildGjcTmuxUntaggedSessionHint(tmuxCommand)}`;
 }
 
 export function sanitizeTmuxToken(value: string): string {
@@ -157,12 +157,12 @@ export function buildGjcTmuxSessionName(
 	env: NodeJS.ProcessEnv = process.env,
 	context: { branch?: string | null; now?: number; id?: string } = {},
 ): string {
-	const explicit = env.GJC_TMUX_SESSION?.trim();
+	const explicit = env.WORX_TMUX_SESSION?.trim();
 	if (explicit) return explicit;
 	const timestamp = (context.now ?? Date.now()).toString(36);
 	const id = context.id ?? randomTmuxSessionSuffix();
 	const branchSlug = context.branch ? `${buildGjcTmuxSessionSlug(context.branch)}_` : "";
-	return `${GJC_TMUX_SESSION_PREFIX}${branchSlug}${timestamp}_${id}`;
+	return `${WORX_TMUX_SESSION_PREFIX}${branchSlug}${timestamp}_${id}`;
 }
 
 export function buildGjcTmuxRequiredProfileCommands(
@@ -183,47 +183,47 @@ export function buildGjcTmuxRequiredProfileCommands(
 	if (metadata.branch)
 		commands.push({
 			description: "record GJC branch identity",
-			args: ["set-option", "-t", target, GJC_TMUX_BRANCH_OPTION, metadata.branch],
+			args: ["set-option", "-t", target, WORX_TMUX_BRANCH_OPTION, metadata.branch],
 		});
 	if (metadata.branchSlug)
 		commands.push({
 			description: "record GJC branch slug",
-			args: ["set-option", "-t", target, GJC_TMUX_BRANCH_SLUG_OPTION, metadata.branchSlug],
+			args: ["set-option", "-t", target, WORX_TMUX_BRANCH_SLUG_OPTION, metadata.branchSlug],
 		});
 	if (metadata.project)
 		commands.push({
 			description: "record GJC project identity",
-			args: ["set-option", "-t", target, GJC_TMUX_PROJECT_OPTION, metadata.project],
+			args: ["set-option", "-t", target, WORX_TMUX_PROJECT_OPTION, metadata.project],
 		});
 	if (metadata.sessionId)
 		commands.push({
 			description: "record GJC session identity",
-			args: ["set-option", "-t", target, GJC_TMUX_SESSION_ID_OPTION, metadata.sessionId],
+			args: ["set-option", "-t", target, WORX_TMUX_SESSION_ID_OPTION, metadata.sessionId],
 		});
 	if (metadata.sessionStateFile)
 		commands.push({
 			description: "record GJC session state marker",
-			args: ["set-option", "-t", target, GJC_TMUX_SESSION_STATE_FILE_OPTION, metadata.sessionStateFile],
+			args: ["set-option", "-t", target, WORX_TMUX_SESSION_STATE_FILE_OPTION, metadata.sessionStateFile],
 		});
 	if (metadata.ownerGeneration)
 		commands.push({
 			description: "record GJC owner generation",
-			args: ["set-option", "-t", target, GJC_TMUX_OWNER_GENERATION_OPTION, metadata.ownerGeneration],
+			args: ["set-option", "-t", target, WORX_TMUX_OWNER_GENERATION_OPTION, metadata.ownerGeneration],
 		});
 	if (metadata.ownerServerKey)
 		commands.push({
 			description: "record GJC owner server key",
-			args: ["set-option", "-t", target, GJC_TMUX_OWNER_SERVER_KEY_OPTION, metadata.ownerServerKey],
+			args: ["set-option", "-t", target, WORX_TMUX_OWNER_SERVER_KEY_OPTION, metadata.ownerServerKey],
 		});
 
 	if (metadata.version)
 		commands.push({
 			description: "record GJC version identity",
-			args: ["set-option", "-t", target, GJC_TMUX_VERSION_OPTION, metadata.version],
+			args: ["set-option", "-t", target, WORX_TMUX_VERSION_OPTION, metadata.version],
 		});
 	commands.push({
 		description: "mark GJC tmux ownership",
-		args: ["set-option", "-t", target, GJC_TMUX_PROFILE_OPTION, GJC_TMUX_PROFILE_VALUE],
+		args: ["set-option", "-t", target, WORX_TMUX_PROFILE_OPTION, WORX_TMUX_PROFILE_VALUE],
 	});
 	return commands;
 }
@@ -254,7 +254,7 @@ export function buildGjcTmuxProfileCommands(
 	opts: { platform?: NodeJS.Platform; tmuxCommand?: string } = {},
 ): GjcTmuxProfileCommand[] {
 	const commands = buildGjcTmuxRequiredProfileCommands(target, metadata);
-	if (envDisabled(env[GJC_TMUX_PROFILE_ENV])) return commands;
+	if (envDisabled(env[WORX_TMUX_PROFILE_ENV])) return commands;
 	commands.push(
 		{ description: "enable tmux clipboard integration", args: ["set-option", "-t", target, "set-clipboard", "on"] },
 		{
@@ -262,7 +262,7 @@ export function buildGjcTmuxProfileCommands(
 			args: ["set-window-option", "-t", target, "mode-style", "fg=colour231,bg=colour60"],
 		},
 	);
-	if (!envDisabled(env[GJC_TMUX_MOUSE_ENV]))
+	if (!envDisabled(env[WORX_TMUX_MOUSE_ENV]))
 		commands.unshift({
 			description: "enable tmux mouse scrolling",
 			args: ["set-option", "-t", target, "mouse", "on"],
@@ -271,7 +271,7 @@ export function buildGjcTmuxProfileCommands(
 	// mouse / set-clipboard / mode-style. Filter the UX profile commands
 	// centrally so every code path that tags a session (gjc --tmux planning,
 	// gjc session create, gjc team bootstrap) drops the same set. The
-	// GJC_PSMUX_PROFILE_FORCE override lets the operator opt back in when
+	// WORX_PSMUX_PROFILE_FORCE override lets the operator opt back in when
 	// running on a psmux build that has caught up. The ownership-tag
 	// round-trip (set-option @gjc-*) is never filtered, since gjc session /
 	// gjc team rely on it.
@@ -280,7 +280,7 @@ export function buildGjcTmuxProfileCommands(
 	// profile filtered. Auto-detect on Windows hosts where psmux happens
 	// to be on PATH would silently change the test output for every caller
 	// that does not pin the multiplexer, so we require the caller to opt
-	// in by naming the multiplexer. GJC_PSMUX_PROFILE_FORCE re-enables
+	// in by naming the multiplexer. WORX_PSMUX_PROFILE_FORCE re-enables
 	// the UX profile commands when a psmux build catches up.
 	const tmuxName = (opts.tmuxCommand ?? "").toLowerCase();
 	const isPsmuxClass =
@@ -290,7 +290,7 @@ export function buildGjcTmuxProfileCommands(
 		tmuxName.endsWith("/pmux") ||
 		tmuxName.endsWith("\\psmux") ||
 		tmuxName.endsWith("\\pmux");
-	const forcePsmuxProfile = env[GJC_PSMUX_PROFILE_FORCE_ENV] === "true" || env[GJC_PSMUX_PROFILE_FORCE_ENV] === "1";
+	const forcePsmuxProfile = env[WORX_PSMUX_PROFILE_FORCE_ENV] === "true" || env[WORX_PSMUX_PROFILE_FORCE_ENV] === "1";
 	const dropUx = isPsmuxClass && !forcePsmuxProfile;
 	if (dropUx) {
 		return commands.filter(command => {

@@ -1,8 +1,8 @@
 import { sanitizeText } from "@gajae-code/utils";
 import { type ModelSelectorValue, normalizeModelSelectorValue } from "./model-selector-value";
-import type { GJC_MODEL_ASSIGNMENT_TARGET_IDS, ModelsConfig } from "./models-config-schema";
+import type { ModelsConfig, WORX_MODEL_ASSIGNMENT_TARGET_IDS } from "./models-config-schema";
 
-export type ModelProfileRole = (typeof GJC_MODEL_ASSIGNMENT_TARGET_IDS)[number];
+export type ModelProfileRole = (typeof WORX_MODEL_ASSIGNMENT_TARGET_IDS)[number];
 
 export interface ModelProfileDefinition {
 	name: string;

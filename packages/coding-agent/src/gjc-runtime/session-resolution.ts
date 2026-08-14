@@ -9,7 +9,7 @@
  * Resolution order:
  *   1. explicit `--session-id` flag (blank is invalid, never suppressed)
  *   2. payload `session_id`
- *   3. `GJC_SESSION_ID` env var
+ *   3. `WORX_SESSION_ID` env var
  *   4. latest-activity-marker auto-detect (READ/STATUS/CLEAR only)
  *
  * Writes require one of (1)-(3). Auto-detect fails closed on zero candidates or
@@ -18,12 +18,12 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
-	GJC_SESSION_ACTIVITY_FILE,
 	type GjcSessionContext,
 	type GjcSessionSource,
 	gjcRoot,
 	sessionIdFromDirName,
 	sessionRoot,
+	WORX_SESSION_ACTIVITY_FILE,
 } from "./session-layout";
 
 /** Window within which two activity timestamps are treated as an ambiguous tie. */
@@ -95,7 +95,7 @@ export function resolveGjcSessionForWrite(cwd: string, sources: SessionIdSources
 	const resolved = resolveSessionIdFromSources(sources);
 	if (!resolved) {
 		throw new SessionResolutionError(
-			"a session id is required to write state: pass --session-id, payload session_id, or set GJC_SESSION_ID",
+			"a session id is required to write state: pass --session-id, payload session_id, or set WORX_SESSION_ID",
 			"missing_for_write",
 		);
 	}
@@ -138,7 +138,7 @@ export async function detectLatestSession(cwd: string): Promise<GjcSessionContex
 	const candidates = await collectActiveSessionCandidates(cwd);
 	if (candidates.length === 0) {
 		throw new SessionResolutionError(
-			"no active GJC session found: pass --session-id or set GJC_SESSION_ID",
+			"no active GJC session found: pass --session-id or set WORX_SESSION_ID",
 			"no_session",
 		);
 	}
@@ -149,7 +149,7 @@ export async function detectLatestSession(cwd: string): Promise<GjcSessionContex
 			.filter(c => first.activityMs - c.activityMs <= LATEST_SESSION_TIE_WINDOW_MS)
 			.map(c => c.gjcSessionId);
 		throw new SessionResolutionError(
-			`ambiguous latest session among [${tied.join(", ")}]: pass --session-id or set GJC_SESSION_ID`,
+			`ambiguous latest session among [${tied.join(", ")}]: pass --session-id or set WORX_SESSION_ID`,
 			"ambiguous",
 		);
 	}
@@ -171,7 +171,7 @@ async function collectActiveSessionCandidates(cwd: string): Promise<SessionCandi
 		if (!gjcSessionId) continue;
 		assertSafeResolvedSessionId(gjcSessionId);
 		const dir = path.join(root, entry.name);
-		const activityMs = await readActivityMs(path.join(dir, GJC_SESSION_ACTIVITY_FILE));
+		const activityMs = await readActivityMs(path.join(dir, WORX_SESSION_ACTIVITY_FILE));
 		// Sessions with no readable activity marker are considered inactive and
 		// are not selected for auto-detect.
 		if (activityMs === undefined) continue;
@@ -220,7 +220,7 @@ export async function writeSessionActivityMarker(
 	gjcSessionId: string,
 	info: ActivityMarkerInfo,
 ): Promise<void> {
-	const markerPath = path.join(sessionRoot(cwd, gjcSessionId), GJC_SESSION_ACTIVITY_FILE);
+	const markerPath = path.join(sessionRoot(cwd, gjcSessionId), WORX_SESSION_ACTIVITY_FILE);
 	await fs.mkdir(path.dirname(markerPath), { recursive: true });
 	const payload = {
 		session_id: gjcSessionId,

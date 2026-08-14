@@ -1,4 +1,4 @@
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
 
 export type CommandRefVisibility = "public" | "hidden" | "planned";
 export type CommandRefIncludeWhen = "implemented-only" | "planned";
@@ -234,5 +234,5 @@ export function renderCommandRefBlock(skill: CanonicalGjcWorkflowSkill, blockId 
 }
 
 export function isCanonicalGjcWorkflowSkill(value: string): value is CanonicalGjcWorkflowSkill {
-	return (CANONICAL_GJC_WORKFLOW_SKILLS as readonly string[]).includes(value);
+	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(value);
 }

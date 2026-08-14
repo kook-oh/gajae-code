@@ -70,7 +70,6 @@ import {
 	mergeModelProfiles,
 } from "./model-profiles";
 import {
-	GJC_MODEL_ASSIGNMENT_TARGET_IDS,
 	type ModelOverride,
 	type ModelProfileConfig,
 	type ModelsConfig,
@@ -78,6 +77,7 @@ import {
 	ProfileDefinitionSchema,
 	type ProviderAuthMode,
 	type ProviderDiscovery,
+	WORX_MODEL_ASSIGNMENT_TARGET_IDS,
 } from "./models-config-schema";
 import {
 	buildProviderSelectionCatalog,
@@ -135,16 +135,16 @@ export const MODEL_ROLES: Record<ModelRole, ModelRoleInfo> = {
 export const MODEL_ROLE_IDS: ModelRole[] = ["default"];
 export const MODEL_PROFILE_NAME_PATTERN = /^[a-z0-9][a-z0-9._-]*$/;
 export const MODEL_PROFILE_NAME_PATTERN_DESCRIPTION = "lowercase letters, numbers, dots, underscores, or hyphens";
-export type GjcModelAssignmentTargetId = (typeof GJC_MODEL_ASSIGNMENT_TARGET_IDS)[number];
+export type GjcModelAssignmentTargetId = (typeof WORX_MODEL_ASSIGNMENT_TARGET_IDS)[number];
 
 export interface GjcModelAssignmentTargetInfo extends ModelRoleInfo {
 	id: GjcModelAssignmentTargetId;
 	settingsPath: "modelRoles" | "task.agentModelOverrides";
 }
 
-export { GJC_MODEL_ASSIGNMENT_TARGET_IDS };
+export { WORX_MODEL_ASSIGNMENT_TARGET_IDS };
 
-export const GJC_MODEL_ASSIGNMENT_TARGETS: Record<GjcModelAssignmentTargetId, GjcModelAssignmentTargetInfo> = {
+export const WORX_MODEL_ASSIGNMENT_TARGETS: Record<GjcModelAssignmentTargetId, GjcModelAssignmentTargetInfo> = {
 	default: { id: "default", tag: "DEFAULT", name: "Default", color: "success", settingsPath: "modelRoles" },
 	executor: {
 		id: "executor",

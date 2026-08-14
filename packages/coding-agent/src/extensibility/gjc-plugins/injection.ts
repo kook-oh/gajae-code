@@ -4,7 +4,7 @@ async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promis
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") return undefined;
 		throw error;
@@ -16,7 +16,7 @@ import { initialPhaseForSkill } from "../../skill-state/initial-phase";
 import { sanitizePromptBody } from "./prompt-appendix";
 import { readActiveSubskillsForParent } from "./state";
 import { resolveValidatedActiveSubskill } from "./subskill-authority";
-import { GJC_SUBSKILL_PARENT_AGENTS, type LoadedSubskillActivation } from "./types";
+import { type LoadedSubskillActivation, WORX_SUBSKILL_PARENT_AGENTS } from "./types";
 
 function escapeAttribute(value: string): string {
 	return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -103,7 +103,7 @@ export async function buildAgentSubskillInjection(input: {
 	/** Test seam runs after validation; injection uses exact verified bytes. */
 	beforeInject?: (filePath: string) => Promise<void>;
 }): Promise<string> {
-	if (!(GJC_SUBSKILL_PARENT_AGENTS as readonly string[]).includes(input.agentName)) return "";
+	if (!(WORX_SUBSKILL_PARENT_AGENTS as readonly string[]).includes(input.agentName)) return "";
 	const resolvedSessionId = await resolveBoundarySessionId(input.cwd, input.sessionId);
 	if (!resolvedSessionId) return "";
 	const entries = await readActiveSubskillsForParent({

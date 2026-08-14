@@ -83,7 +83,7 @@ import type { EventBus } from "./utils/event-bus";
 import { fetchLatestPackageVersion } from "./utils/npm-registry";
 
 const MANAGED_OWNER_SUPERVISOR_ARG = "--internal-managed-owner-supervisor";
-const MANAGED_OWNER_CHILD_TOKEN_ENV = "GJC_MANAGED_OWNER_CHILD_TOKEN";
+const MANAGED_OWNER_CHILD_TOKEN_ENV = "WORX_MANAGED_OWNER_CHILD_TOKEN";
 const TMUX_OWNER_ISOLATION_ARG = "--internal-tmux-owner-isolation";
 
 async function checkForNewVersion(
@@ -986,13 +986,13 @@ export async function createSessionManager(
 		return SessionManager.create(cwd, SessionManager.explicitDestination(parsed.sessionDir));
 	}
 	// A lifecycle `/session_create` child must start a FRESH session that adopts
-	// the pre-allocated id (GJC_SESSION_ID), never auto-resume existing history in
+	// the pre-allocated id (WORX_SESSION_ID), never auto-resume existing history in
 	// the target cwd — otherwise the daemon/tmux id and the session header id
 	// diverge and close/resume-by-create-id break. Resume children are launched
-	// with `--resume <id>` (handled above) and carry no GJC_LIFECYCLE_REQUEST_ID.
+	// with `--resume <id>` (handled above) and carry no WORX_LIFECYCLE_REQUEST_ID.
 	if (
-		process.env.GJC_LIFECYCLE_REQUEST_ID &&
-		/^[A-Za-z0-9._-]{1,128}$/.test(process.env.GJC_SESSION_ID?.trim() ?? "")
+		process.env.WORX_LIFECYCLE_REQUEST_ID &&
+		/^[A-Za-z0-9._-]{1,128}$/.test(process.env.WORX_SESSION_ID?.trim() ?? "")
 	) {
 		return undefined;
 	}
@@ -1276,7 +1276,7 @@ export interface ModelRoleOverrides {
 /**
  * Resolve the ephemeral `smol`/`slow`/`plan` model-role overrides.
  *
- * Precedence per role is CLI flag > documented `GJC_*_MODEL` > legacy
+ * Precedence per role is CLI flag > documented `WORX_*_MODEL` > legacy
  * `PI_*_MODEL`, matching the repo-wide GJC-first/PI-fallback convention.
  * Resolution reads the process environment via `$pickenv`, which trims values
  * and treats empty/whitespace as unset; it is deliberately kept separate from
@@ -1286,9 +1286,9 @@ export interface ModelRoleOverrides {
  */
 export function resolveModelRoleOverrides(parsed: Pick<Args, "smol" | "slow" | "plan">): ModelRoleOverrides {
 	const overrides: ModelRoleOverrides = {};
-	const smol = parsed.smol ?? $pickenv("GJC_SMOL_MODEL", "PI_SMOL_MODEL");
-	const slow = parsed.slow ?? $pickenv("GJC_SLOW_MODEL", "PI_SLOW_MODEL");
-	const plan = parsed.plan ?? $pickenv("GJC_PLAN_MODEL", "PI_PLAN_MODEL");
+	const smol = parsed.smol ?? $pickenv("WORX_SMOL_MODEL", "PI_SMOL_MODEL");
+	const slow = parsed.slow ?? $pickenv("WORX_SLOW_MODEL", "PI_SLOW_MODEL");
+	const plan = parsed.plan ?? $pickenv("WORX_PLAN_MODEL", "PI_PLAN_MODEL");
 	if (smol) overrides.smol = smol;
 	if (slow) overrides.slow = slow;
 	if (plan) overrides.plan = plan;
@@ -1298,8 +1298,8 @@ export function resolveModelRoleOverrides(parsed: Pick<Args, "smol" | "slow" | "
 /**
  * Apply the `--no-pty` / `--no-title` terminal-control flags to the environment.
  *
- * Sets the canonical `GJC_*` name (so an explicit flag wins over a user-set
- * `GJC_*` value under the GJC-first resolver — CLI authority) and the legacy
+ * Sets the canonical `WORX_*` name (so an explicit flag wins over a user-set
+ * `WORX_*` value under the GJC-first resolver — CLI authority) and the legacy
  * `PI_*` name for backward compatibility. `--acp` mode implies `--no-title`.
  */
 export function applyTerminalControlFlagsToEnv(
@@ -1307,11 +1307,11 @@ export function applyTerminalControlFlagsToEnv(
 	env: NodeJS.ProcessEnv = Bun.env,
 ): void {
 	if (parsed.noPty) {
-		env.GJC_NO_PTY = "1";
+		env.WORX_NO_PTY = "1";
 		env.PI_NO_PTY = "1";
 	}
 	if (parsed.noTitle || parsed.mode === "acp") {
-		env.GJC_NO_TITLE = "1";
+		env.WORX_NO_TITLE = "1";
 		env.PI_NO_TITLE = "1";
 	}
 }
@@ -1504,7 +1504,7 @@ export async function runRootCommand(
 	logger.time("initializeWithSettings", initializeWithSettings, settingsInstance);
 
 	// Apply model role overrides from CLI args or env vars (ephemeral, not persisted).
-	// Precedence per role: CLI flag > documented GJC_*_MODEL > legacy PI_*_MODEL.
+	// Precedence per role: CLI flag > documented WORX_*_MODEL > legacy PI_*_MODEL.
 	const roleOverrides = resolveModelRoleOverrides(parsedArgs);
 	if (roleOverrides.smol || roleOverrides.slow || roleOverrides.plan) {
 		settingsInstance.overrideModelRoles({
@@ -1734,7 +1734,7 @@ export async function runRootCommand(
 	}
 	// Register a resumed direct session before constructing the agent: GC holds the
 	// same index lock while deleting artifacts, so startup and deletion are fenced.
-	const directSessionId = process.env.GJC_LIFECYCLE_REQUEST_ID ? undefined : sessionManager?.getSessionId();
+	const directSessionId = process.env.WORX_LIFECYCLE_REQUEST_ID ? undefined : sessionManager?.getSessionId();
 	if (directSessionId) {
 		const sessionIndex = new SessionIndex(settingsInstance.getAgentDir());
 		const locator = { repo: sessionManager?.getCwd() ?? cwd, stateRoot: settingsInstance.getAgentDir() };
@@ -1904,9 +1904,9 @@ export async function runRootCommand(
 					process.stdout.write(`${chalk.dim(`Model scope: ${modelList} ${chalk.gray("(Alt+N to cycle)")}`)}\n`);
 				}
 
-				if ($pickenv("GJC_TIMING", "PI_TIMING")) {
+				if ($pickenv("WORX_TIMING", "PI_TIMING")) {
 					logger.printTimings();
-					exitForTiming = $pickenv("GJC_TIMING", "PI_TIMING") === "x";
+					exitForTiming = $pickenv("WORX_TIMING", "PI_TIMING") === "x";
 				}
 
 				if (!exitForTiming) {
@@ -1949,7 +1949,7 @@ export async function runRootCommand(
 		} else if (mode === "rpc") {
 			try {
 				await (deps.runRpcMode ?? runRpcMode)(session, setToolUIContext);
-				if ($pickenv("GJC_TIMING", "PI_TIMING")) {
+				if ($pickenv("WORX_TIMING", "PI_TIMING")) {
 					logger.printTimings();
 				}
 			} finally {
@@ -1967,7 +1967,7 @@ export async function runRootCommand(
 					initialImages,
 					suppressProcessExit: deps.suppressProcessExit,
 				});
-				if ($pickenv("GJC_TIMING", "PI_TIMING")) {
+				if ($pickenv("WORX_TIMING", "PI_TIMING")) {
 					logger.printTimings();
 				}
 			} finally {

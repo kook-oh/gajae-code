@@ -369,7 +369,7 @@ export async function writeGjcWorkerStartupAck(
 	});
 	return ack;
 }
-export const GJC_TEAM_CONTINUATION_ACK_POLL_MS = 50;
+export const WORX_TEAM_CONTINUATION_ACK_POLL_MS = 50;
 export function isValidGjcContinuationAck(
 	value: unknown,
 	reservation: Record<string, unknown>,
@@ -645,7 +645,7 @@ function isContinuationLifecycleEligible(lifecycle: GjcTeamWorkerLifecycle, stat
 	);
 }
 
-export const GJC_TEAM_CONTINUATION_PROMPT =
+export const WORX_TEAM_CONTINUATION_PROMPT =
 	"Continue only your current claimed GJC team task. Re-read current GJC team state; do not replay prior output; report status.";
 
 export function buildGjcContinuationPrompt(reservation: Record<string, unknown>): string {
@@ -660,7 +660,7 @@ export function buildGjcContinuationPrompt(reservation: Record<string, unknown>)
 		incident_hash: incident,
 		attempt,
 	});
-	return `${GJC_TEAM_CONTINUATION_PROMPT} ACK now: gjc team api worker-continuation-ack --input '${input}' --json.`;
+	return `${WORX_TEAM_CONTINUATION_PROMPT} ACK now: gjc team api worker-continuation-ack --input '${input}' --json.`;
 }
 
 function canonicalJson(value: unknown): string {

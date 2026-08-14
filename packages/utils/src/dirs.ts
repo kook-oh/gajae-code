@@ -1,8 +1,8 @@
 /**
  * Centralized path helpers for gajae-code config directories.
  *
- * Uses GJC_CONFIG_DIR (legacy alias PI_CONFIG_DIR, default ".gjc") for the
- * config root and GJC_CODING_AGENT_DIR (legacy alias PI_CODING_AGENT_DIR) to
+ * Uses WORX_CONFIG_DIR (legacy alias PI_CONFIG_DIR, default ".gjc") for the
+ * config root and WORX_CODING_AGENT_DIR (legacy alias PI_CODING_AGENT_DIR) to
  * override the agent directory.
  *
  * On Linux, if XDG_DATA_HOME / XDG_STATE_HOME / XDG_CACHE_HOME environment
@@ -182,9 +182,9 @@ function sanitizeConfigDirName(value: string | undefined): string | undefined {
  *
  * `env.ts` imports this module, so the check cannot go through `$credentialEnv`;
  * it applies the same conservative ambiguity rule directly, matching how
- * `GJC_CODING_AGENT_DIR` is treated.
+ * `WORX_CODING_AGENT_DIR` is treated.
  */
-function trustedConfigDirName(name: "GJC_CONFIG_DIR" | "PI_CONFIG_DIR"): string | undefined {
+function trustedConfigDirName(name: "WORX_CONFIG_DIR" | "PI_CONFIG_DIR"): string | undefined {
 	const value = process.env[name];
 	if (!value) return undefined;
 	if (parseEnvFile(path.join(process.cwd(), ".env"))[name] === value) return undefined;
@@ -196,7 +196,7 @@ export function getConfigDirName(): string {
 	// caller's project `.env`), and it must still be a single name that stays
 	// beneath home once joined.
 	return (
-		sanitizeConfigDirName(trustedConfigDirName("GJC_CONFIG_DIR")) ??
+		sanitizeConfigDirName(trustedConfigDirName("WORX_CONFIG_DIR")) ??
 		sanitizeConfigDirName(trustedConfigDirName("PI_CONFIG_DIR")) ??
 		CONFIG_DIR_NAME
 	);
@@ -314,7 +314,7 @@ class DirResolver {
  * happens to carry the identical value loses the override, which is the same
  * trade-off `resolveLiveCredentialEnvValue` already makes.
  */
-function trustedAgentDirOverrideFor(name: "GJC_CODING_AGENT_DIR" | "PI_CODING_AGENT_DIR"): string | undefined {
+function trustedAgentDirOverrideFor(name: "WORX_CODING_AGENT_DIR" | "PI_CODING_AGENT_DIR"): string | undefined {
 	const value = process.env[name];
 	if (!value) return undefined;
 	if (parseEnvFile(path.join(process.cwd(), ".env"))[name] === value) return undefined;
@@ -326,12 +326,12 @@ function trustedAgentDirOverrideFor(name: "GJC_CODING_AGENT_DIR" | "PI_CODING_AG
  *
  * `PI_CODING_AGENT_DIR` is the legacy alias this module's own header documents,
  * and parts of the product already resolve it (`gc-runtime.ts:370`,
- * `deep-interview-runtime.ts:384`). Reading only the `GJC_` spelling here split
+ * `deep-interview-runtime.ts:384`). Reading only the `WORX_` spelling here split
  * the agent directory in two: `gjc gc` operated on the aliased directory while
  * everything reaching `getAgentDir()` stayed on the default.
  */
 function trustedAgentDirOverride(): string | undefined {
-	return trustedAgentDirOverrideFor("GJC_CODING_AGENT_DIR") ?? trustedAgentDirOverrideFor("PI_CODING_AGENT_DIR");
+	return trustedAgentDirOverrideFor("WORX_CODING_AGENT_DIR") ?? trustedAgentDirOverrideFor("PI_CODING_AGENT_DIR");
 }
 
 let dirs = new DirResolver(trustedAgentDirOverride());
@@ -354,7 +354,7 @@ export function getConfigRootDir(): string {
 /** Set the coding agent directory. Creates a fresh resolver, invalidating all cached paths. */
 export function setAgentDir(dir: string): void {
 	dirs = new DirResolver(dir);
-	process.env.GJC_CODING_AGENT_DIR = dir;
+	process.env.WORX_CODING_AGENT_DIR = dir;
 }
 
 /** Get the agent config directory (~/.gjc/agent). */
@@ -478,11 +478,11 @@ export function getGpuCachePath(): string {
 
 /**
  * Get the GitHub view cache database path (~/.gjc/cache/github-cache.db).
- * Honors the `GJC_GITHUB_CACHE_DB` env var when set so tests can isolate the
+ * Honors the `WORX_GITHUB_CACHE_DB` env var when set so tests can isolate the
  * cache file without touching the rest of the config root.
  */
 export function getGithubCacheDbPath(): string {
-	const override = process.env.GJC_GITHUB_CACHE_DB;
+	const override = process.env.WORX_GITHUB_CACHE_DB;
 	if (override) return override;
 	return dirs.rootSubdir(path.join("cache", "github-cache.db"), "cache");
 }

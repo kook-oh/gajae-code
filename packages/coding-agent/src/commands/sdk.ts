@@ -381,18 +381,18 @@ export async function runSessionHost(
 	const now = timing.now ?? Date.now;
 	const sleep = timing.sleep ?? (async ms => await Bun.sleep(ms));
 	const readIncarnation = timing.processIncarnation ?? processIncarnation;
-	const request = readSessionLifecycleLaunchRequest(process.env.GJC_SDK_LIFECYCLE_REQUEST, now());
-	const agentDir = process.env.GJC_AGENT_DIR;
-	if (!agentDir) throw new Error("GJC_AGENT_DIR is required for sdk session-host-internal.");
+	const request = readSessionLifecycleLaunchRequest(process.env.WORX_SDK_LIFECYCLE_REQUEST, now());
+	const agentDir = process.env.WORX_AGENT_DIR;
+	if (!agentDir) throw new Error("WORX_AGENT_DIR is required for sdk session-host-internal.");
 	const cwd = timing.cwd ?? process.cwd();
 	if ((await fs.realpath(request.cwd)) !== (await fs.realpath(cwd)))
 		throw new Error(`Lifecycle worktree mismatch: expected ${request.cwd}, got ${cwd}.`);
 	if (
-		process.env.GJC_STATE_ROOT !== undefined &&
-		path.resolve(process.env.GJC_STATE_ROOT) !== path.resolve(request.stateRoot)
+		process.env.WORX_STATE_ROOT !== undefined &&
+		path.resolve(process.env.WORX_STATE_ROOT) !== path.resolve(request.stateRoot)
 	)
 		throw new Error("Lifecycle state root does not match the broker-issued request.");
-	if (request.effectMarker && process.env.GJC_LIFECYCLE_REQUEST_ID !== request.effectMarker)
+	if (request.effectMarker && process.env.WORX_LIFECYCLE_REQUEST_ID !== request.effectMarker)
 		throw new Error("Lifecycle effect marker does not match the broker-issued request.");
 	if (!request.effectMarker) throw new Error("Lifecycle effect marker is required.");
 	const effectMarker = request.effectMarker;
@@ -634,7 +634,7 @@ export async function runSessionHost(
 
 	try {
 		const modelProfileStartup =
-			process.env.GJC_SDK_TEST_HANG_MODEL_PROFILE === cwd
+			process.env.WORX_SDK_TEST_HANG_MODEL_PROFILE === cwd
 				? new Promise<void>(() => {})
 				: applyStartupModelProfiles({
 						session,
@@ -659,7 +659,7 @@ export async function runSessionHost(
 		const startup = await beforeCutoff(capability.promise);
 		if (startup.status !== "started") throw startup.failure;
 		throwIfCutoff();
-		if (process.env.GJC_SDK_TEST_FAIL_AFTER_REGISTRATION === cwd)
+		if (process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION === cwd)
 			throw new Error("Lifecycle test failure after SDK host registration.");
 
 		await session.sessionManager.ensureOnDisk();

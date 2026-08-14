@@ -17,7 +17,7 @@ All deep-interview state operations go through this command — no gjc state nee
 
 Ambiguity is runtime-owned: apply/write derive current_ambiguity from the latest valid scored
 round and clamp it to the deterministic floor. Sessions resolve from --session-id, payload
-session_id, or GJC_SESSION_ID.`;
+session_id, or WORX_SESSION_ID.`;
 	static strict = false;
 	static flags = {
 		quick: Flags.boolean({ description: "Seed a quick deep-interview run" }),

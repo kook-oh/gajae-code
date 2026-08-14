@@ -3,7 +3,7 @@
  *
  * Worker liveness used to be published only when the model remembered to call
  * `gjc team api update-worker-heartbeat` between turns. A worker inside a
- * single tool call longer than `GJC_TEAM_HEARTBEAT_STALE_MS` (default 120s) was
+ * single tool call longer than `WORX_TEAM_HEARTBEAT_STALE_MS` (default 120s) was
  * therefore reported as stale and had its task claim requeued mid-flight — even
  * though the claim lease it invalidated is 30 minutes long. This module makes
  * the worker process itself publish liveness while a turn is in flight, so the
@@ -28,8 +28,8 @@ export interface GjcTeamWorkerIdentity {
 
 /** Resolves the team identity injected into a worker pane by `gjc team` startup. */
 export function resolveGjcTeamWorkerIdentity(env: NodeJS.ProcessEnv = process.env): GjcTeamWorkerIdentity | undefined {
-	const teamName = env.GJC_TEAM_NAME?.trim();
-	const workerId = env.GJC_TEAM_WORKER_ID?.trim() || env.GJC_TEAM_INTERNAL_WORKER?.split("/").pop()?.trim();
+	const teamName = env.WORX_TEAM_NAME?.trim();
+	const workerId = env.WORX_TEAM_WORKER_ID?.trim() || env.WORX_TEAM_INTERNAL_WORKER?.split("/").pop()?.trim();
 	return teamName && workerId ? { teamName, workerId } : undefined;
 }
 

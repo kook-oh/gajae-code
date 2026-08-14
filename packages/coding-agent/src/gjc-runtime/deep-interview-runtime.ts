@@ -143,7 +143,7 @@ function defaultSpecSlug(now: Date = new Date()): string {
 }
 
 export function deepInterviewStatePath(cwd: string, sessionId?: string): string {
-	const resolvedSessionId = sessionId?.trim() || process.env.GJC_SESSION_ID?.trim();
+	const resolvedSessionId = sessionId?.trim() || process.env.WORX_SESSION_ID?.trim();
 	if (!resolvedSessionId) throw new Error("deep-interview state path requires a session id");
 	return modeStatePath(cwd, resolvedSessionId, "deep-interview");
 }
@@ -372,7 +372,7 @@ async function readSettingsAmbiguityThreshold(
 }
 
 function modernSettingsPath(): string {
-	const configDir = process.env.GJC_CODING_AGENT_DIR?.trim() || process.env.PI_CODING_AGENT_DIR?.trim();
+	const configDir = process.env.WORX_CODING_AGENT_DIR?.trim() || process.env.PI_CODING_AGENT_DIR?.trim();
 	if (configDir) return path.join(configDir, "config.yml");
 	return path.join(getConfigRootDir(), "agent", "config.yml");
 }
@@ -454,7 +454,7 @@ async function resolveSpecWriteArgs(args: readonly string[], cwd: string): Promi
 
 	const session = resolveGjcSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	const sessionId = session.gjcSessionId;
 	assertSafePathComponent(sessionId, "session-id");
@@ -505,7 +505,7 @@ async function resolveSpecWriteArgs(args: readonly string[], cwd: string): Promi
 async function resolveDeepInterviewArgs(args: readonly string[], cwd: string): Promise<ResolvedDeepInterviewArgs> {
 	const session = resolveGjcSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	const sessionId = session.gjcSessionId;
 	assertSafePathComponent(sessionId, "session-id");

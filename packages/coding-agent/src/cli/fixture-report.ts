@@ -146,7 +146,7 @@ async function resolveFixtureLogs(fixtureId: string): Promise<ResolvedFixtureLog
 	try {
 		session = await resolveGjcSessionForRead(process.cwd(), {
 			flagValue: fixtureId,
-			envSessionId: process.env.GJC_SESSION_ID,
+			envSessionId: process.env.WORX_SESSION_ID,
 		});
 	} catch (error) {
 		if (error instanceof SessionResolutionError) return { kind: "unknown" };

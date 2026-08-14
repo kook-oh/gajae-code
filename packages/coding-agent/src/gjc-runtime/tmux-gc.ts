@@ -10,12 +10,12 @@ import * as path from "node:path";
 import { GitCommandError, worktree } from "../utils/git";
 import type { GcCollectResult, GcContext, GcPruneOutcome, GcRecord, GcStoreAdapter } from "./gc-runtime";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
 	readTerminalRuntimeStateMarker,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
-import { GJC_TMUX_PROFILE_VALUE, GJC_TMUX_SESSION_PREFIX, hasGjcTmuxProviderAuthoritySync } from "./tmux-common";
+import { hasGjcTmuxProviderAuthoritySync, WORX_TMUX_PROFILE_VALUE, WORX_TMUX_SESSION_PREFIX } from "./tmux-common";
 import {
 	type GjcTmuxSessionStatus,
 	type GjcTmuxSessionsForGc,
@@ -77,10 +77,10 @@ function authorityEnv(identity: CollectedTmuxIdentity, env: NodeJS.ProcessEnv): 
 	if (identity.providerKind !== "windows-psmux") return env;
 	return {
 		...env,
-		GJC_TMUX_COMMAND: identity.providerCommand,
-		[GJC_COORDINATOR_SESSION_ID_ENV]: identity.sessionId,
-		[GJC_TMUX_OWNER_GENERATION_ENV]: identity.ownerGeneration,
-		[GJC_TMUX_OWNER_STATE_DIR_ENV]: path.dirname(identity.sessionStateFile),
+		WORX_TMUX_COMMAND: identity.providerCommand,
+		[WORX_COORDINATOR_SESSION_ID_ENV]: identity.sessionId,
+		[WORX_TMUX_OWNER_GENERATION_ENV]: identity.ownerGeneration,
+		[WORX_TMUX_OWNER_STATE_DIR_ENV]: path.dirname(identity.sessionStateFile),
 	};
 }
 
@@ -192,7 +192,7 @@ function isOldEnoughForOrphanGc(session: GjcTmuxSessionStatus): boolean {
 }
 
 function isGjcOwnedOrphan(session: GjcTmuxSessionStatus): boolean {
-	return session.name.startsWith(GJC_TMUX_SESSION_PREFIX) || session.name === "gajae_code";
+	return session.name.startsWith(WORX_TMUX_SESSION_PREFIX) || session.name === "gajae_code";
 }
 
 async function classifyTaggedSession(session: GjcTmuxSessionStatus): Promise<GcRecord> {
@@ -247,7 +247,7 @@ async function revalidateRemovable(
 	)
 		return false;
 	if (tags.attached || (tags.panePids?.length ?? 0) > 0) return false;
-	if (tags.profile !== GJC_TMUX_PROFILE_VALUE) return false;
+	if (tags.profile !== WORX_TMUX_PROFILE_VALUE) return false;
 	return await hasTerminalRuntimeMarker(tags);
 }
 

@@ -13,11 +13,11 @@ import {
 export { resolveModelProfileName } from "./model-profile-contract";
 
 import {
-	GJC_MODEL_ASSIGNMENT_TARGETS,
 	type GjcModelAssignmentTargetId,
 	isAuthenticated,
 	kNoAuth,
 	type ModelRegistry,
+	WORX_MODEL_ASSIGNMENT_TARGETS,
 } from "./model-registry";
 import {
 	formatModelSelectorValue,
@@ -392,7 +392,7 @@ export function materializeActiveModelProfileAssignment(options: MaterializeMode
 
 	const nextModelRoles = { ...options.settings.get("modelRoles") };
 	const nextAgentModelOverrides = { ...options.settings.get("task.agentModelOverrides") };
-	const target = GJC_MODEL_ASSIGNMENT_TARGETS[options.role];
+	const target = WORX_MODEL_ASSIGNMENT_TARGETS[options.role];
 
 	if (options.role === "default") {
 		nextModelRoles.default = options.selector;
@@ -429,7 +429,7 @@ export function materializeActiveModelProfileAssignments(options: MaterializeMod
 	}
 
 	for (const [role, selector] of materializedAssignments) {
-		const target = GJC_MODEL_ASSIGNMENT_TARGETS[role];
+		const target = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 		if (target.settingsPath === "modelRoles") {
 			nextModelRoles[role] = selector;
 		} else {

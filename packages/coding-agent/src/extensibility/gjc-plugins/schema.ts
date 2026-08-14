@@ -1,6 +1,4 @@
 import {
-	GJC_PLUGIN_KIND,
-	GJC_SUBSKILL_PARENT_AGENTS,
 	type GjcPluginAgentAppendixManifestEntry,
 	type GjcPluginAppendixManifestEntry,
 	type GjcPluginHookManifestEntry,
@@ -12,6 +10,8 @@ import {
 	type GjcPluginToolManifestEntry,
 	type GjcSubskillParentAgent,
 	type SubskillFrontmatter,
+	WORX_PLUGIN_KIND,
+	WORX_SUBSKILL_PARENT_AGENTS,
 } from "./types";
 
 /**
@@ -304,10 +304,10 @@ function parseAgentAppendix(value: unknown, manifestPath: string): GjcPluginAgen
 	return raw.map((entry, index) => {
 		const base = parseAppendixEntry(entry, `agent-appendix[${index}]`, manifestPath);
 		const agent = (entry as Record<string, unknown>).agent;
-		if (typeof agent !== "string" || !GJC_SUBSKILL_PARENT_AGENTS.includes(agent as GjcSubskillParentAgent)) {
+		if (typeof agent !== "string" || !WORX_SUBSKILL_PARENT_AGENTS.includes(agent as GjcSubskillParentAgent)) {
 			throw new GjcPluginLoadError(
 				"invalid_parent",
-				`Invalid GJC plugin manifest at ${manifestPath}: agent-appendix[${index}].agent must be one of ${GJC_SUBSKILL_PARENT_AGENTS.join(", ")}`,
+				`Invalid GJC plugin manifest at ${manifestPath}: agent-appendix[${index}].agent must be one of ${WORX_SUBSKILL_PARENT_AGENTS.join(", ")}`,
 			);
 		}
 		return { ...base, agent: agent as GjcSubskillParentAgent };
@@ -346,10 +346,10 @@ export function parseManifest(raw: unknown, manifestPath: string): GjcPluginMani
 		}
 	}
 
-	if (raw.kind !== GJC_PLUGIN_KIND) {
+	if (raw.kind !== WORX_PLUGIN_KIND) {
 		throw new GjcPluginLoadError(
 			"invalid_kind",
-			`Invalid GJC plugin kind in ${manifestPath}: expected ${GJC_PLUGIN_KIND}`,
+			`Invalid GJC plugin kind in ${manifestPath}: expected ${WORX_PLUGIN_KIND}`,
 		);
 	}
 
@@ -359,7 +359,7 @@ export function parseManifest(raw: unknown, manifestPath: string): GjcPluginMani
 	return {
 		name,
 		version,
-		kind: GJC_PLUGIN_KIND,
+		kind: WORX_PLUGIN_KIND,
 		subskills: optionalStringArray(raw.subskills, "subskills", manifestPath),
 		tools: parseTools(raw.tools, manifestPath),
 		hooks: parseHooks(raw.hooks, manifestPath),

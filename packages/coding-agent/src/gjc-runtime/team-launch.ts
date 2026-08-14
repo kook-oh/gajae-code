@@ -3,9 +3,9 @@ import * as path from "node:path";
 import { SPAWN_PROVENANCE_ENV } from "../sdk/bus/config";
 import { resolveSessionIdFromSources } from "./session-resolution";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
 import type {
 	GjcTeamConfig,
@@ -72,34 +72,34 @@ export function buildWorkerCommand(
 			.replace(/\r?\n+/g, " ")
 			.trim() || `Worker ${worker.id} ready.`;
 	const envLines = [
-		envAssignment("GJC_TEAM_WORKER", `${config.team_name}/${worker.id}`),
-		envAssignment("GJC_TEAM_INTERNAL_WORKER", `${config.team_name}/${worker.id}`),
-		envAssignment("GJC_TEAM_NAME", config.team_name),
-		envAssignment("GJC_TEAM_WORKER_ID", worker.id),
-		envAssignment("GJC_TEAM_STATE_ROOT", config.state_root),
-		...(config.gjc_session_id ? [envAssignment("GJC_SESSION_ID", config.gjc_session_id)] : []),
-		envAssignment("GJC_TEAM_LEADER_CWD", config.leader.cwd),
-		envAssignment("GJC_TEAM_DISPLAY_NAME", config.display_name),
+		envAssignment("WORX_TEAM_WORKER", `${config.team_name}/${worker.id}`),
+		envAssignment("WORX_TEAM_INTERNAL_WORKER", `${config.team_name}/${worker.id}`),
+		envAssignment("WORX_TEAM_NAME", config.team_name),
+		envAssignment("WORX_TEAM_WORKER_ID", worker.id),
+		envAssignment("WORX_TEAM_STATE_ROOT", config.state_root),
+		...(config.gjc_session_id ? [envAssignment("WORX_SESSION_ID", config.gjc_session_id)] : []),
+		envAssignment("WORX_TEAM_LEADER_CWD", config.leader.cwd),
+		envAssignment("WORX_TEAM_DISPLAY_NAME", config.display_name),
 		envAssignment(SPAWN_PROVENANCE_ENV, config.leader.session_id.trim() || config.team_name),
-		...(worker.worktree_path ? [envAssignment("GJC_TEAM_WORKTREE_PATH", worker.worktree_path)] : []),
+		...(worker.worktree_path ? [envAssignment("WORX_TEAM_WORKTREE_PATH", worker.worktree_path)] : []),
 		envAssignment(
-			"GJC_TEAM_WORKER_MEMORY_GUARD_PATH",
+			"WORX_TEAM_WORKER_MEMORY_GUARD_PATH",
 			workerMemoryGuardLedgerPath(path.join(config.state_root, config.team_name), worker.id),
 		),
 		// The worker derives its heartbeat cadence from the same window the leader
 		// enforces. tmux panes do not inherit the launching shell's environment, so
 		// without this a tightened window would leave workers publishing on the
 		// default cadence and reported stale while they are working.
-		...(env.GJC_TEAM_HEARTBEAT_STALE_MS?.trim()
-			? [envAssignment("GJC_TEAM_HEARTBEAT_STALE_MS", env.GJC_TEAM_HEARTBEAT_STALE_MS.trim())]
+		...(env.WORX_TEAM_HEARTBEAT_STALE_MS?.trim()
+			? [envAssignment("WORX_TEAM_HEARTBEAT_STALE_MS", env.WORX_TEAM_HEARTBEAT_STALE_MS.trim())]
 			: []),
 	];
 	const joined = envLines.join(" ");
 	const clearInheritedSession = config.gjc_session_id
 		? ""
 		: platform === "win32"
-			? "$env:GJC_SESSION_ID = $null; "
-			: "unset GJC_SESSION_ID; ";
+			? "$env:WORX_SESSION_ID = $null; "
+			: "unset WORX_SESSION_ID; ";
 	if (platform === "win32")
 		return `& { ${clearInheritedSession}${joined} & ${config.worker_command} ${quote(prompt)} }`;
 	return `${clearInheritedSession}${joined} ${config.worker_command} ${quote(prompt)}`;
@@ -220,7 +220,7 @@ export async function startGjcTeamLaunch(
 ): Promise<GjcTeamSnapshot> {
 	const cwd = options.cwd ?? process.cwd();
 	const env = options.env ?? process.env;
-	const gjcSessionId = resolveSessionIdFromSources({ envSessionId: env.GJC_SESSION_ID })?.gjcSessionId;
+	const gjcSessionId = resolveSessionIdFromSources({ envSessionId: env.WORX_SESSION_ID })?.gjcSessionId;
 	if (!Number.isInteger(options.workerCount) || options.workerCount < 1 || options.workerCount > runtime.maxWorkers)
 		throw new Error(`invalid_team_worker_count:${options.workerCount}:expected_1_${runtime.maxWorkers}`);
 	const workerCliPlan = runtime.resolveWorkerCliPlan(options.workerCount, env);
@@ -234,12 +234,12 @@ export async function startGjcTeamLaunch(
 	const tmuxBinary = runtime.resolveTmuxBinary({ env, platform });
 	const tmuxCommand = tmuxBinary.command;
 	const tmuxProviderGeneration =
-		tmuxBinary.isPsmux && platform === "win32" ? env[GJC_TMUX_OWNER_GENERATION_ENV]?.trim() : undefined;
+		tmuxBinary.isPsmux && platform === "win32" ? env[WORX_TMUX_OWNER_GENERATION_ENV]?.trim() : undefined;
 	const tmuxProvider = resolveGjcTmuxProviderContext({ binary: tmuxBinary, env, platform });
 	if (tmuxProvider.binary.command !== tmuxCommand) throw new Error("gjc_team_tmux_provider_command_mismatch");
 	const launchSessionId =
-		env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim() || env.GJC_SESSION_ID?.trim() || gjcSessionId?.trim();
-	const launchStateDir = env[GJC_TMUX_OWNER_STATE_DIR_ENV]?.trim();
+		env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || env.WORX_SESSION_ID?.trim() || gjcSessionId?.trim();
+	const launchStateDir = env[WORX_TMUX_OWNER_STATE_DIR_ENV]?.trim();
 	const tmuxAuthority =
 		tmuxBinary.isPsmux && platform === "win32" && !options.dryRun
 			? launchSessionId && launchStateDir && tmuxProviderGeneration
@@ -320,7 +320,7 @@ export async function startGjcTeamLaunch(
 		workspace_mode: worktreeMode.enabled ? "worktree" : "direct",
 		dry_run: options.dryRun ?? false,
 		leader: {
-			session_id: env.GJC_SESSION_ID ?? env.CODEX_SESSION_ID ?? "",
+			session_id: env.WORX_SESSION_ID ?? env.CODEX_SESSION_ID ?? "",
 			pane_id: tmuxContext.leaderPaneId,
 			cwd,
 		},

@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import {
-	GJC_BUNDLE_KIND,
 	type GjcBundleIdentity,
 	type GjcPluginQuarantineEntry,
 	type GjcPluginRegistryEntry,
 	type GjcPluginScope,
 	type NormalizedGjcPluginBundle,
 	type NormalizedGjcPluginSurfaces,
+	WORX_BUNDLE_KIND,
 } from "./types";
 
 /**
@@ -21,7 +21,7 @@ function sha256(text: string): string {
 }
 
 export function bundleIdentity(scope: GjcPluginScope, name: string): GjcBundleIdentity {
-	return { kind: GJC_BUNDLE_KIND, scope, name };
+	return { kind: WORX_BUNDLE_KIND, scope, name };
 }
 
 export function identityKey(identity: GjcBundleIdentity): string {

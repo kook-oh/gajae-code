@@ -67,14 +67,14 @@ const guideKeyCache = new Map<string, KeyObject>();
 
 /** Test-only override: installs an additional trusted key for deterministic tests. */
 export function addTestGuidePinnedKey(key: GuidePinnedKey): void {
-	if (process.env.GJC_TEST_GUIDE_KEYS !== "1") throw new Error("Test guide key injection is disabled.");
+	if (process.env.WORX_TEST_GUIDE_KEYS !== "1") throw new Error("Test guide key injection is disabled.");
 	guideKeyCache.delete(key.keyId);
 	guidePinnedKeys.push(key);
 }
 
 /** Test-only override: removes a previously installed test key. */
 export function removeTestGuidePinnedKey(keyId: string): void {
-	if (process.env.GJC_TEST_GUIDE_KEYS !== "1") throw new Error("Test guide key injection is disabled.");
+	if (process.env.WORX_TEST_GUIDE_KEYS !== "1") throw new Error("Test guide key injection is disabled.");
 	guideKeyCache.delete(keyId);
 	const index = guidePinnedKeys.findIndex(key => key.keyId === keyId);
 	if (index >= 0) guidePinnedKeys.splice(index, 1);

@@ -8,7 +8,7 @@
  */
 
 /** Error code a remote ask source uses to signal that its own timeout fired. */
-export const GJC_ASK_TIMEOUT_CODE = "gjc.ask.timeout";
+export const WORX_ASK_TIMEOUT_CODE = "gjc.ask.timeout";
 
 import { logger } from "@gajae-code/utils";
 import type { WorkflowGateEmitter } from "../modes/shared/agent-wire/workflow-gate-broker";

@@ -12,7 +12,7 @@ import { ConfigFile, type LoadResult } from "../../config/config-file";
  * per-spawn rather than dynastic: a grandchild is marked only if its own spawn
  * site marks it, never by inheriting a marked ancestor's environment.
  */
-export const SPAWN_PROVENANCE_ENV = "GJC_SPAWNED_BY_SESSION";
+export const SPAWN_PROVENANCE_ENV = "WORX_SPAWNED_BY_SESSION";
 
 export type TelegramActivationState = "inactive" | "blocked";
 export type TelegramActivationReason = "saved_inactive" | "identity_mismatch";
@@ -678,10 +678,10 @@ export interface GenericNotificationSessionEligibilityInput {
 export function resolveGenericNotificationSessionEligibility(
 	input: GenericNotificationSessionEligibilityInput,
 ): GenericNotificationSessionEligibility {
-	if (input.env.GJC_NOTIFICATIONS === "0") return { enabled: false, source: "hard_opt_out" };
+	if (input.env.WORX_NOTIFICATIONS === "0") return { enabled: false, source: "hard_opt_out" };
 	if (input.sessionDisabled) return { enabled: false, source: "session_local_off" };
-	if (input.env.GJC_NOTIFICATIONS === "1") return { enabled: true, source: "explicit_env" };
-	if (input.env.GJC_NOTIFICATIONS_TOKEN) return { enabled: true, source: "token_env" };
+	if (input.env.WORX_NOTIFICATIONS === "1") return { enabled: true, source: "explicit_env" };
+	if (input.env.WORX_NOTIFICATIONS_TOKEN) return { enabled: true, source: "token_env" };
 	if (input.spawnedByGjc && input.cfg.sessionScope === "primary") {
 		return { enabled: false, source: "session_scope" };
 	}
@@ -695,7 +695,7 @@ export function resolveGenericNotificationStreamPolicy(input: {
 	genericSessionEnabled: boolean;
 }): GenericNotificationStreamPolicy {
 	if (!input.genericSessionEnabled) return { enabled: false, source: "session_not_admitted" };
-	const override = input.env.GJC_NOTIFICATIONS_STREAM?.trim().toLowerCase();
+	const override = input.env.WORX_NOTIFICATIONS_STREAM?.trim().toLowerCase();
 	if (override === "1") return { enabled: true, source: "env_on" };
 	if (override === "0" || override === "off" || override === "false") return { enabled: false, source: "env_off" };
 	const durableEnabled =
@@ -706,7 +706,7 @@ export function resolveGenericNotificationStreamPolicy(input: {
 }
 
 export function completionNotifyDisabledByEnv(env: NodeJS.ProcessEnv): boolean {
-	const value = env.GJC_NOTIFY?.trim().toLowerCase();
+	const value = env.WORX_NOTIFY?.trim().toLowerCase();
 	return value === "off" || value === "0" || value === "false";
 }
 
@@ -725,8 +725,8 @@ export function isGenericNotificationHostEligible(input: NotificationHostEligibi
 	if (completionNotifyDisabledByEnv(input.env)) return false;
 	if (input.hostModeSupported === false) return false;
 	if ((input.taskDepth ?? 0) > 0 || input.parentTaskPrefix || input.currentAgentType) return false;
-	if (input.env.GJC_NOTIFICATIONS === "0") return false;
-	if (input.env.GJC_NOTIFICATIONS === "1" || input.env.GJC_NOTIFICATIONS_TOKEN) return true;
+	if (input.env.WORX_NOTIFICATIONS === "0") return false;
+	if (input.env.WORX_NOTIFICATIONS === "1" || input.env.WORX_NOTIFICATIONS_TOKEN) return true;
 	if (input.spawnedByGjc && input.sessionScope === "primary") return false;
 	return true;
 }
@@ -754,7 +754,7 @@ export function shouldRegisterGenericNotificationsExtension(input: GenericNotifi
 	) {
 		return false;
 	}
-	if (input.env.GJC_NOTIFICATIONS === "1" || input.env.GJC_NOTIFICATIONS_TOKEN) return true;
+	if (input.env.WORX_NOTIFICATIONS === "1" || input.env.WORX_NOTIFICATIONS_TOKEN) return true;
 	return input.cfg !== undefined && hasAnyEffectivelyEnabledProvider(input.cfg);
 }
 

@@ -1,6 +1,10 @@
 import * as path from "node:path";
 import { activeSnapshotPath, assertNonEmptyGjcSessionId, modeStatePath } from "../gjc-runtime/session-layout";
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill, SKILL_ACTIVE_STATE_FILE } from "./active-state";
+import {
+	CANONICAL_WORX_WORKFLOW_SKILLS,
+	type CanonicalGjcWorkflowSkill,
+	SKILL_ACTIVE_STATE_FILE,
+} from "./active-state";
 import { WORKFLOW_STATE_RECEIPT_FRESH_MS, WORKFLOW_STATE_RECEIPT_VERSION } from "./workflow-state-version";
 
 export {
@@ -94,7 +98,7 @@ export function workflowReceiptStatus(
 }
 
 export function canonicalWorkflowSkill(value: string): CanonicalGjcWorkflowSkill | null {
-	return (CANONICAL_GJC_WORKFLOW_SKILLS as readonly string[]).includes(value)
+	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(value)
 		? (value as CanonicalGjcWorkflowSkill)
 		: null;
 }

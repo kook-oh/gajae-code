@@ -710,7 +710,7 @@ export async function writeWorkflowEnvelopeAtomic(
 		if (options?.audit?.forced !== true && parsed.data.active === true) {
 			const toPhase = parsed.data.current_phase.trim();
 			if (toPhase) {
-				// Lazy import: workflow-manifest dereferences CANONICAL_GJC_WORKFLOW_SKILLS at
+				// Lazy import: workflow-manifest dereferences CANONICAL_WORX_WORKFLOW_SKILLS at
 				// module load, and active-state -> state-writer -> workflow-manifest -> active-state
 				// is a load-time cycle. Importing at call time (after init) avoids the TDZ.
 				const { isKnownWorkflowState, isValidTransition } = await import("./workflow-manifest");

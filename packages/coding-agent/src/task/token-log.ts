@@ -74,7 +74,7 @@ export function taskTokenLogFromUsage(
 export async function resolveTaskTokenLogDir(
 	cwd: string,
 	sessionManager: TaskTokenLogSessionManager | undefined,
-	envSessionId: string | undefined = process.env.GJC_SESSION_ID,
+	envSessionId: string | undefined = process.env.WORX_SESSION_ID,
 ): Promise<string | undefined> {
 	// Prefer the canonical SessionManager id so root turns land in the SAME
 	// `<session>/token-logs` dir the task executor uses for subagent turns and

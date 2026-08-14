@@ -1,4 +1,4 @@
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
 
 export interface SkillKeywordDefinition {
 	keyword: string;
@@ -7,11 +7,11 @@ export interface SkillKeywordDefinition {
 	guidance: string;
 }
 
-export const GJC_WORKFLOW_SKILLS = CANONICAL_GJC_WORKFLOW_SKILLS;
+export const WORX_WORKFLOW_SKILLS = CANONICAL_WORX_WORKFLOW_SKILLS;
 
 export type GjcWorkflowSkill = CanonicalGjcWorkflowSkill;
 
-export const GJC_SKILL_KEYWORD_DEFINITIONS: readonly SkillKeywordDefinition[] = [
+export const WORX_SKILL_KEYWORD_DEFINITIONS: readonly SkillKeywordDefinition[] = [
 	{
 		keyword: "$deep-interview",
 		skill: "deep-interview",
@@ -39,7 +39,7 @@ export const GJC_SKILL_KEYWORD_DEFINITIONS: readonly SkillKeywordDefinition[] = 
 ] as const;
 
 export function isGjcWorkflowSkill(value: string): value is GjcWorkflowSkill {
-	return (GJC_WORKFLOW_SKILLS as readonly string[]).includes(value);
+	return (WORX_WORKFLOW_SKILLS as readonly string[]).includes(value);
 }
 
 export function compareSkillKeywordMatches(

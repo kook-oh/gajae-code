@@ -140,7 +140,7 @@ export async function runSdkServe(argv: string[]): Promise<void> {
 		throw new Error("unsupported_platform: --socket is unavailable on Windows.");
 	const pendingCeilingBytes = resolveServePendingCeiling(
 		parsed.pendingCeiling,
-		process.env.GJC_SDK_SERVE_PENDING_CEILING_BYTES,
+		process.env.WORX_SDK_SERVE_PENDING_CEILING_BYTES,
 	);
 	const discovery = await readSdkBrokerDiscovery(getAgentDir());
 	if (!discovery) throw new Error("broker_unavailable: SDK broker is not running");

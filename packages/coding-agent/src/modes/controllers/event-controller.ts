@@ -83,15 +83,15 @@ function cleanNotificationEnvValue(value: string | undefined, max = 4000): strin
 
 function buildCompletionNotifyEnv(payload: CompletionNotifyPayload): Record<string, string> {
 	return {
-		GJC_NOTIFICATION_TYPE: payload.type,
-		GJC_NOTIFICATION_TITLE: cleanNotificationEnvValue(payload.title, 500),
-		GJC_NOTIFICATION_BODY: cleanNotificationEnvValue(payload.body),
-		GJC_NOTIFICATION_CWD: cleanNotificationEnvValue(payload.cwd, 2000),
-		GJC_NOTIFICATION_SESSION_ID: cleanNotificationEnvValue(payload.sessionId, 500),
-		GJC_NOTIFICATION_SESSION_NAME: cleanNotificationEnvValue(payload.sessionName, 500),
-		GJC_NOTIFICATION_LAST_ASSISTANT_MESSAGE: cleanNotificationEnvValue(payload.lastAssistantMessage),
-		GJC_NOTIFICATION_STOP_REASON: cleanNotificationEnvValue(payload.stopReason, 100),
-		GJC_NOTIFICATION_JSON: cleanNotificationEnvValue(JSON.stringify(payload), 8000),
+		WORX_NOTIFICATION_TYPE: payload.type,
+		WORX_NOTIFICATION_TITLE: cleanNotificationEnvValue(payload.title, 500),
+		WORX_NOTIFICATION_BODY: cleanNotificationEnvValue(payload.body),
+		WORX_NOTIFICATION_CWD: cleanNotificationEnvValue(payload.cwd, 2000),
+		WORX_NOTIFICATION_SESSION_ID: cleanNotificationEnvValue(payload.sessionId, 500),
+		WORX_NOTIFICATION_SESSION_NAME: cleanNotificationEnvValue(payload.sessionName, 500),
+		WORX_NOTIFICATION_LAST_ASSISTANT_MESSAGE: cleanNotificationEnvValue(payload.lastAssistantMessage),
+		WORX_NOTIFICATION_STOP_REASON: cleanNotificationEnvValue(payload.stopReason, 100),
+		WORX_NOTIFICATION_JSON: cleanNotificationEnvValue(JSON.stringify(payload), 8000),
 	};
 }
 
@@ -1192,7 +1192,7 @@ export class EventController {
 	}
 
 	sendCompletionNotification(): void {
-		// Per-run hard opt-out (env, config-untouched, child-inheritable): GJC_NOTIFY=off.
+		// Per-run hard opt-out (env, config-untouched, child-inheritable): WORX_NOTIFY=off.
 		if (completionNotifyDisabledByEnv(process.env)) return;
 		const isBackgrounded = this.ctx.isBackgrounded !== false;
 		const notify = settings.get("completion.notify");

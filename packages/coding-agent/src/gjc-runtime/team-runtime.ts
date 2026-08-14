@@ -9,9 +9,9 @@ import type { GcPidProbe, GcRecord } from "./gc-runtime";
 import { modeStatePath, sessionIdFromDirName, sessionReportsDir, teamStateRoot } from "./session-layout";
 import { resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
 import {
 	AlreadyExistsError,
@@ -72,8 +72,6 @@ import {
 } from "./team-worker-memory-guard";
 import {
 	buildGjcContinuationPrompt,
-	GJC_TEAM_CONTINUATION_ACK_POLL_MS,
-	GJC_TEAM_CONTINUATION_PROMPT,
 	type GjcTeamWorkerOrchestrationRuntime,
 	type GjcTeamWorkerRuntime,
 	gjcContinuationReservationDigest,
@@ -89,6 +87,8 @@ import {
 	shutdownGjcTeamWorkers,
 	updateGjcWorkerHeartbeat as updateWorkerHeartbeat,
 	updateGjcWorkerStatus as updateWorkerStatus,
+	WORX_TEAM_CONTINUATION_ACK_POLL_MS,
+	WORX_TEAM_CONTINUATION_PROMPT,
 	writeWorkerLifecycleForConfig as writeLifecycleForConfig,
 	writeWorkerLifecycleRecord as writeLifecycleRecord,
 	writeGjcShutdownRequest as writeShutdownRequest,
@@ -99,11 +99,11 @@ import {
 	buildGjcTmuxExactOptionTarget,
 	buildGjcTmuxProfileCommands,
 	buildGjcTmuxUntaggedSessionHint,
-	GJC_TMUX_ACTIVE_SESSION_ENV,
-	GJC_TMUX_PROFILE_OPTION,
-	GJC_TMUX_PROFILE_VALUE,
 	resolveGjcTmuxBinary,
 	resolveGjcTmuxCommand,
+	WORX_TMUX_ACTIVE_SESSION_ENV,
+	WORX_TMUX_PROFILE_OPTION,
+	WORX_TMUX_PROFILE_VALUE,
 } from "./tmux-common";
 import {
 	assertGjcTmuxMutationAuthoritySync,
@@ -131,10 +131,10 @@ export type {
 	GjcTeamTaskStatus,
 } from "./team-store";
 
-export const GJC_TEAM_DEFAULT_WORKERS = 3;
-export const GJC_TEAM_MAX_WORKERS = 20;
-const GJC_TEAM_WORKER_CLI_ENV = "GJC_TEAM_WORKER_CLI";
-const GJC_TEAM_WORKER_CLI_MAP_ENV = "GJC_TEAM_WORKER_CLI_MAP";
+export const WORX_TEAM_DEFAULT_WORKERS = 3;
+export const WORX_TEAM_MAX_WORKERS = 20;
+const WORX_TEAM_WORKER_CLI_ENV = "WORX_TEAM_WORKER_CLI";
+const WORX_TEAM_WORKER_CLI_MAP_ENV = "WORX_TEAM_WORKER_CLI_MAP";
 
 export type GjcTeamWorkerCli = "worx";
 type GjcTeamWorkerCliMode = "auto" | GjcTeamWorkerCli;
@@ -375,7 +375,7 @@ interface FsError {
 
 function normalizeGjcTeamWorkerCliMode(
 	raw: string | undefined,
-	sourceEnv = GJC_TEAM_WORKER_CLI_ENV,
+	sourceEnv = WORX_TEAM_WORKER_CLI_ENV,
 ): GjcTeamWorkerCliMode {
 	const normalized = String(raw ?? "auto")
 		.trim()
@@ -389,7 +389,7 @@ function normalizeGjcTeamWorkerCliMode(
 }
 
 export function resolveGjcTeamWorkerCli(env: NodeJS.ProcessEnv = process.env): GjcTeamWorkerCli {
-	const mode = normalizeGjcTeamWorkerCliMode(env[GJC_TEAM_WORKER_CLI_ENV]);
+	const mode = normalizeGjcTeamWorkerCliMode(env[WORX_TEAM_WORKER_CLI_ENV]);
 	return mode === "auto" ? "worx" : mode;
 }
 
@@ -400,8 +400,8 @@ export function resolveGjcTeamWorkerCliPlan(
 	if (!Number.isInteger(workerCount) || workerCount < 1) {
 		throw new Error(`workerCount must be >= 1 (got ${workerCount})`);
 	}
-	normalizeGjcTeamWorkerCliMode(env[GJC_TEAM_WORKER_CLI_ENV]);
-	const rawMap = String(env[GJC_TEAM_WORKER_CLI_MAP_ENV] ?? "").trim();
+	normalizeGjcTeamWorkerCliMode(env[WORX_TEAM_WORKER_CLI_ENV]);
+	const rawMap = String(env[WORX_TEAM_WORKER_CLI_MAP_ENV] ?? "").trim();
 	if (rawMap === "") {
 		const cli = resolveGjcTeamWorkerCli(env);
 		return Array.from({ length: workerCount }, () => cli);
@@ -409,22 +409,22 @@ export function resolveGjcTeamWorkerCliPlan(
 	const entries = rawMap.split(",").map(entry => entry.trim());
 	if (entries.length === 0 || entries.every(entry => entry.length === 0)) {
 		throw new Error(
-			`Invalid ${GJC_TEAM_WORKER_CLI_MAP_ENV} value "${env[GJC_TEAM_WORKER_CLI_MAP_ENV]}". Expected: auto or worx`,
+			`Invalid ${WORX_TEAM_WORKER_CLI_MAP_ENV} value "${env[WORX_TEAM_WORKER_CLI_MAP_ENV]}". Expected: auto or worx`,
 		);
 	}
 	if (entries.some(entry => entry.length === 0)) {
 		throw new Error(
-			`Invalid ${GJC_TEAM_WORKER_CLI_MAP_ENV} value "${env[GJC_TEAM_WORKER_CLI_MAP_ENV]}". Empty entries are not allowed.`,
+			`Invalid ${WORX_TEAM_WORKER_CLI_MAP_ENV} value "${env[WORX_TEAM_WORKER_CLI_MAP_ENV]}". Empty entries are not allowed.`,
 		);
 	}
 	if (entries.length !== 1 && entries.length !== workerCount) {
 		throw new Error(
-			`Invalid ${GJC_TEAM_WORKER_CLI_MAP_ENV} length ${entries.length}; expected 1 or ${workerCount} comma-separated values.`,
+			`Invalid ${WORX_TEAM_WORKER_CLI_MAP_ENV} length ${entries.length}; expected 1 or ${workerCount} comma-separated values.`,
 		);
 	}
 	const expanded = entries.length === 1 ? Array.from({ length: workerCount }, () => entries[0] ?? "") : entries;
 	return expanded.map(entry => {
-		const mode = normalizeGjcTeamWorkerCliMode(entry, GJC_TEAM_WORKER_CLI_MAP_ENV);
+		const mode = normalizeGjcTeamWorkerCliMode(entry, WORX_TEAM_WORKER_CLI_MAP_ENV);
 		return mode === "auto" ? "worx" : mode;
 	});
 }
@@ -535,7 +535,7 @@ function parseGjcTeamTaskStatus(value: unknown, allowLegacyComplete = false): Gj
 	throw new Error(`invalid_task_status:${raw}`);
 }
 
-export const GJC_TEAM_API_OPERATIONS = [
+export const WORX_TEAM_API_OPERATIONS = [
 	"send-message",
 	"broadcast",
 	"mailbox-list",
@@ -579,7 +579,7 @@ export const GJC_TEAM_API_OPERATIONS = [
 	"write-task-approval",
 ] as const;
 
-export type GjcTeamApiOperation = (typeof GJC_TEAM_API_OPERATIONS)[number];
+export type GjcTeamApiOperation = (typeof WORX_TEAM_API_OPERATIONS)[number];
 
 export class UnknownGjcTeamApiOperationError extends Error {
 	readonly code = "unknown_team_api_operation";
@@ -599,7 +599,7 @@ export class UnknownGjcTeamApiOperationError extends Error {
 }
 
 function isGjcTeamApiOperation(operation: string): operation is GjcTeamApiOperation {
-	return (GJC_TEAM_API_OPERATIONS as readonly string[]).includes(operation);
+	return (WORX_TEAM_API_OPERATIONS as readonly string[]).includes(operation);
 }
 
 function unknownGjcTeamApiOperationSuggestions(operation: string): readonly string[] {
@@ -649,9 +649,9 @@ function stateWriterOptions(filePath: string, category: "state" | "ledger" | "re
 	const parts = resolved.split(path.sep);
 	const sessionId =
 		parts.map(part => sessionIdFromDirName(part)).find((value): value is string => Boolean(value)) ??
-		process.env.GJC_SESSION_ID?.trim();
+		process.env.WORX_SESSION_ID?.trim();
 	// Session-scoped audit requires a GJC session. When an explicit env-root override
-	// (e.g. GJC_TEAM_STATE_ROOT) is in effect with no resolvable session, omit the audit
+	// (e.g. WORX_TEAM_STATE_ROOT) is in effect with no resolvable session, omit the audit
 	// context entirely so the override write does not fail on a session-scoped audit.
 	return sessionId
 		? {
@@ -679,7 +679,7 @@ function stableHash(value: string): string {
 	return createHash("sha256").update(value).digest("hex").slice(0, 24);
 }
 function makeTeamName(task: string, env: NodeJS.ProcessEnv): string {
-	const basis = [task, env.GJC_SESSION_ID, env.CODEX_SESSION_ID, env.TMUX_PANE, env.TMUX, now()]
+	const basis = [task, env.WORX_SESSION_ID, env.CODEX_SESSION_ID, env.TMUX_PANE, env.TMUX, now()]
 		.filter(Boolean)
 		.join(":");
 	const prefix = sanitizeName(task).slice(0, 30).replace(/-$/, "") || "team";
@@ -777,10 +777,10 @@ function workerIntegrationDedupePath(dir: string, worker: string): string {
 }
 
 export function resolveGjcTeamStateRoot(cwd = process.cwd(), env: NodeJS.ProcessEnv = process.env): string {
-	const explicit = env.GJC_TEAM_STATE_ROOT?.trim();
+	const explicit = env.WORX_TEAM_STATE_ROOT?.trim();
 	if (explicit) return path.resolve(cwd, explicit);
 	const session = resolveGjcSessionForWrite(cwd, {
-		envSessionId: env.GJC_SESSION_ID,
+		envSessionId: env.WORX_SESSION_ID,
 	});
 	return teamStateRoot(cwd, session.gjcSessionId);
 }
@@ -1272,7 +1272,7 @@ async function readConfig(dir: string): Promise<GjcTeamConfig> {
 	const tmuxSessionName = config.tmux_session_name ?? config.tmux_session?.split(":")[0] ?? "";
 	return {
 		...config,
-		max_workers: config.max_workers ?? GJC_TEAM_MAX_WORKERS,
+		max_workers: config.max_workers ?? WORX_TEAM_MAX_WORKERS,
 		tmux_command: config.tmux_command ?? resolveGjcTmuxCommand(),
 		tmux_session: tmuxSessionName,
 		tmux_session_name: tmuxSessionName,
@@ -1575,7 +1575,7 @@ async function relaunchWorkerPaneForMemoryGuard(input: {
 		input.config,
 		input.worker,
 		input.platform,
-		`Send startup ACK before resuming: worx team api worker-startup-ack --input '{"team_name":"${input.config.team_name}","worker_id":"${input.worker.id}","protocol_version":"1","replacement_token":"${input.replacementToken}"}' --json. ${GJC_TEAM_CONTINUATION_PROMPT}`,
+		`Send startup ACK before resuming: worx team api worker-startup-ack --input '{"team_name":"${input.config.team_name}","worker_id":"${input.worker.id}","protocol_version":"1","replacement_token":"${input.replacementToken}"}' --json. ${WORX_TEAM_CONTINUATION_PROMPT}`,
 		input.env,
 	);
 	const workerCwd = input.worker.worktree_path ?? input.config.leader.cwd;
@@ -1808,7 +1808,7 @@ async function applyWorkerMemoryGuardUnlocked(input: {
 	const controllerProcessStart = await readLinuxProcessStartTime(process.pid);
 	const controllerId = `pid:${process.pid}:start:${controllerProcessStart ?? "unknown"}`;
 	const controllerNow = currentTimeMs();
-	const controllerCooldownMs = parseDurationEnv(input.env, "GJC_TEAM_MEMORY_GUARD_ACTION_COOLDOWN_MS", 120_000);
+	const controllerCooldownMs = parseDurationEnv(input.env, "WORX_TEAM_MEMORY_GUARD_ACTION_COOLDOWN_MS", 120_000);
 	const existingController = await readJsonFile<{
 		controller_id?: string;
 		cooldown_until?: string;
@@ -1910,7 +1910,7 @@ async function applyWorkerMemoryGuardUnlocked(input: {
 	};
 	await fs.rm(startupAckPath, { force: true });
 	const replacementToken = input.replacementToken ?? randomUUID();
-	const startupAckTimeoutMs = parseDurationEnv(input.env, "GJC_TEAM_MEMORY_GUARD_STARTUP_TIMEOUT_MS", 120_000);
+	const startupAckTimeoutMs = parseDurationEnv(input.env, "WORX_TEAM_MEMORY_GUARD_STARTUP_TIMEOUT_MS", 120_000);
 	let newPaneId: string;
 	try {
 		newPaneId = await relaunchWorkerPaneForMemoryGuard({
@@ -2187,7 +2187,7 @@ export async function persistGjcTeamModeStateSummary(snapshot: GjcTeamSnapshot, 
 	const active = snapshot.phase !== "complete" && snapshot.phase !== "cancelled";
 	const updatedAt = now();
 	const sessionId = resolveGjcSessionForWrite(cwd, {
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	}).gjcSessionId;
 	const statePath = teamModeStatePath(cwd, sessionId);
 	await writeWorkflowEnvelopeAtomic(
@@ -2249,13 +2249,13 @@ export async function recoverGjcTeamStaleClaims(
 		return reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);
 	});
 }
-const GJC_TEAM_INTEGRATION_ATTENTION_STATUSES = new Set<GjcTeamIntegrationStatus>([
+const WORX_TEAM_INTEGRATION_ATTENTION_STATUSES = new Set<GjcTeamIntegrationStatus>([
 	"integration_failed",
 	"merge_conflict",
 	"cherry_pick_conflict",
 	"rebase_conflict",
 ]);
-const GJC_TEAM_INTEGRATION_SETTLED_STATUSES = new Set<GjcTeamIntegrationStatus>(["idle", "integrated"]);
+const WORX_TEAM_INTEGRATION_SETTLED_STATUSES = new Set<GjcTeamIntegrationStatus>(["idle", "integrated"]);
 
 async function hasPendingGjcTeamIntegration(
 	dir: string,
@@ -2264,14 +2264,14 @@ async function hasPendingGjcTeamIntegration(
 ): Promise<boolean> {
 	for (const worker of config.workers) {
 		const integration = monitor?.integration_by_worker?.[worker.id];
-		if (integration?.status && GJC_TEAM_INTEGRATION_ATTENTION_STATUSES.has(integration.status)) return true;
+		if (integration?.status && WORX_TEAM_INTEGRATION_ATTENTION_STATUSES.has(integration.status)) return true;
 
 		const request = await readJsonFile<GjcWorkerIntegrationDedupeState>(workerIntegrationDedupePath(dir, worker.id));
 		if (!request?.last_requested_at) continue;
 		if (!integration?.status || !integration.updated_at) return true;
-		if (GJC_TEAM_INTEGRATION_ATTENTION_STATUSES.has(integration.status)) return true;
+		if (WORX_TEAM_INTEGRATION_ATTENTION_STATUSES.has(integration.status)) return true;
 		if (
-			GJC_TEAM_INTEGRATION_SETTLED_STATUSES.has(integration.status) &&
+			WORX_TEAM_INTEGRATION_SETTLED_STATUSES.has(integration.status) &&
 			integration.updated_at >= request.last_requested_at
 		) {
 			continue;
@@ -2537,7 +2537,7 @@ function readGjcTmuxProfileValue(authority: ProviderAuthority, sessionName: stri
 				"-qv",
 				"-t",
 				buildGjcTmuxExactOptionTarget(sessionName, { binary: authority.binary }),
-				GJC_TMUX_PROFILE_OPTION,
+				WORX_TMUX_PROFILE_OPTION,
 			]),
 		],
 		{ stdout: "pipe", stderr: "pipe" },
@@ -2554,15 +2554,15 @@ function tagTmuxSessionAsGjcLeader(authority: ProviderAuthority, sessionName: st
 			...buildTmuxProviderCommand(authority, "set-option", [
 				"-t",
 				buildGjcTmuxExactOptionTarget(sessionName, { binary: authority.binary }),
-				GJC_TMUX_PROFILE_OPTION,
-				GJC_TMUX_PROFILE_VALUE,
+				WORX_TMUX_PROFILE_OPTION,
+				WORX_TMUX_PROFILE_VALUE,
 			]),
 		],
 		{ stdout: "pipe", stderr: "pipe" },
 	);
 	if (result.exitCode !== 0) return false;
 	assertGjcTmuxMutationAuthoritySync(authority);
-	return readGjcTmuxProfileValue(authority, sessionName) === GJC_TMUX_PROFILE_VALUE;
+	return readGjcTmuxProfileValue(authority, sessionName) === WORX_TMUX_PROFILE_VALUE;
 }
 
 function readCurrentTmuxLeaderContext(
@@ -2574,13 +2574,13 @@ function readCurrentTmuxLeaderContext(
 	if (!path.isAbsolute(tmuxCommand) && Bun.which(tmuxCommand) === null)
 		throw new Error(buildTeamTmuxLeaderRequirementMessage(`tmux_not_installed:${tmuxCommand}`));
 	// Prefer the explicit GJC-managed session name propagated by `gjc --tmux`
-	// (GJC_TMUX_ACTIVE_SESSION). Under psmux on Windows the inherited TMUX_PANE
+	// (WORX_TMUX_ACTIVE_SESSION). Under psmux on Windows the inherited TMUX_PANE
 	// can resolve to the wrong/default session, so querying the tagged session
 	// by name is authoritative for GJC-launched leaders. Fall back to TMUX_PANE,
 	// then to the ambient session, to keep native tmux/WSL flows unchanged.
 	const activeSession =
 		authority.kind === "windows-psmux" || env.TMUX_PANE?.trim()
-			? env[GJC_TMUX_ACTIVE_SESSION_ENV]?.trim()
+			? env[WORX_TMUX_ACTIVE_SESSION_ENV]?.trim()
 			: undefined;
 	const displayTarget = activeSession
 		? buildGjcTmuxExactOptionTarget(activeSession, { env, binary: authority.binary })
@@ -2612,7 +2612,7 @@ function readCurrentTmuxLeaderContext(
 	const [sessionName = "", windowIndex = ""] = sessionAndWindow.split(":");
 	if (!sessionName || !windowIndex || !leaderPaneId.startsWith("%"))
 		throw new Error(buildTeamTmuxLeaderRequirementMessage(`invalid_tmux_context:${result.stdout.toString().trim()}`));
-	if (verifyProfile && readGjcTmuxProfileValue(authority, sessionName) !== GJC_TMUX_PROFILE_VALUE) {
+	if (verifyProfile && readGjcTmuxProfileValue(authority, sessionName) !== WORX_TMUX_PROFILE_VALUE) {
 		// Adopt any real tmux leader as a GJC team leader — including a session
 		// the user created outside `gjc --tmux` — by writing GJC's @gjc-profile
 		// ownership tag and reading it back. A provider that round-trips tmux
@@ -2621,7 +2621,7 @@ function readCurrentTmuxLeaderContext(
 		// the leader is rejected as unmanaged. This also self-heals a genuine
 		// `gjc --tmux` pane that lost its @gjc-profile tag mid-startup.
 		const tagged = tagTmuxSessionAsGjcLeader(authority, sessionName);
-		if (!tagged || readGjcTmuxProfileValue(authority, sessionName) !== GJC_TMUX_PROFILE_VALUE)
+		if (!tagged || readGjcTmuxProfileValue(authority, sessionName) !== WORX_TMUX_PROFILE_VALUE)
 			throw new Error(
 				buildTeamTmuxLeaderRequirementMessage(
 					`unmanaged_tmux_session:${sessionName} — ${buildGjcTmuxUntaggedSessionHint(tmuxCommand)}`,
@@ -2643,9 +2643,9 @@ export function probeGjcTeamAvailability(
 	env: NodeJS.ProcessEnv = process.env,
 ): { available: true } | { available: false; reason: string } {
 	try {
-		const stateDir = env[GJC_TMUX_OWNER_STATE_DIR_ENV]?.trim();
-		const sessionId = env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim();
-		const generation = env[GJC_TMUX_OWNER_GENERATION_ENV]?.trim();
+		const stateDir = env[WORX_TMUX_OWNER_STATE_DIR_ENV]?.trim();
+		const sessionId = env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim();
+		const generation = env[WORX_TMUX_OWNER_GENERATION_ENV]?.trim();
 		const authority =
 			stateDir && sessionId && generation && hasGjcTmuxProviderAuthoritySync({ stateDir, sessionId, generation })
 				? readGjcTmuxProviderAuthoritySync({ stateDir, sessionId, generation })
@@ -2692,7 +2692,7 @@ function formatWorkerExecutable(platform: NodeJS.Platform, executable: string): 
 
 function unresolvedWorkerAuthorityError(): Error {
 	return new Error(
-		"Unable to determine the GJC worker executable from this invocation. Set GJC_TEAM_WORKER_COMMAND to the exact GJC command, or launch GJC from a real executable path instead of a Bun virtual path.",
+		"Unable to determine the GJC worker executable from this invocation. Set WORX_TEAM_WORKER_COMMAND to the exact GJC command, or launch GJC from a real executable path instead of a Bun virtual path.",
 	);
 }
 
@@ -2703,7 +2703,7 @@ export function resolveGjcWorkerCommand(
 	argv: string[] = process.argv,
 	execPath = process.execPath,
 ): string {
-	const explicit = env.GJC_TEAM_WORKER_COMMAND?.trim();
+	const explicit = env.WORX_TEAM_WORKER_COMMAND?.trim();
 	if (explicit) {
 		if (isBunVirtualPath(explicit)) throw unresolvedWorkerAuthorityError();
 		return explicit;
@@ -2857,8 +2857,8 @@ function teamProviderAuthority(config: GjcTeamConfig): ProviderAuthority {
 	const binary = resolveGjcTmuxBinary({
 		env: {
 			...process.env,
-			GJC_TMUX_COMMAND: config.tmux_command,
-			GJC_TEAM_TMUX_COMMAND: config.tmux_command,
+			WORX_TMUX_COMMAND: config.tmux_command,
+			WORX_TEAM_TMUX_COMMAND: config.tmux_command,
 		},
 	});
 	const context = resolveGjcTmuxProviderContext({ binary, platform: config.platform ?? process.platform });
@@ -3264,7 +3264,7 @@ function commitHygieneLedgerPath(config: GjcTeamConfig): string {
 		sessionReportsDir(
 			config.leader_cwd,
 			resolveGjcSessionForWrite(config.leader_cwd, {
-				envSessionId: process.env.GJC_SESSION_ID,
+				envSessionId: process.env.WORX_SESSION_ID,
 			}).gjcSessionId,
 		),
 		"team-commit-hygiene",
@@ -3926,7 +3926,7 @@ const writeInitialGjcTeamTask = (dir: string, task: GjcTeamTask) =>
 export async function startGjcTeam(options: GjcTeamStartOptions): Promise<GjcTeamSnapshot> {
 	return startGjcTeamLaunch(
 		{
-			maxWorkers: GJC_TEAM_MAX_WORKERS,
+			maxWorkers: WORX_TEAM_MAX_WORKERS,
 			resolveWorkerCliPlan: resolveGjcTeamWorkerCliPlan,
 			resolveStateRoot: resolveGjcTeamStateRoot,
 			sanitizeName,
@@ -4018,13 +4018,13 @@ export async function requestGjcWorkerIntegrationAttempt(
 	env: NodeJS.ProcessEnv = process.env,
 	options: GjcWorkerIntegrationAttemptOptions = {},
 ): Promise<GjcWorkerIntegrationAttemptRequestResult> {
-	const teamName = env.GJC_TEAM_NAME?.trim();
-	const worker = env.GJC_TEAM_WORKER_ID?.trim() || env.GJC_TEAM_INTERNAL_WORKER?.split("/").pop()?.trim();
+	const teamName = env.WORX_TEAM_NAME?.trim();
+	const worker = env.WORX_TEAM_WORKER_ID?.trim() || env.WORX_TEAM_INTERNAL_WORKER?.split("/").pop()?.trim();
 	if (!teamName || !worker) return { requested: false, reason: "not_worker" };
 	const dir = await findTeamDir(teamName, cwd, env);
 	const config = await readConfigForWorkerIntegration(dir);
 	const configuredWorker = config.workers.find(candidate => candidate.id === worker);
-	const worktreePath = env.GJC_TEAM_WORKTREE_PATH?.trim() || configuredWorker?.worktree_path;
+	const worktreePath = env.WORX_TEAM_WORKTREE_PATH?.trim() || configuredWorker?.worktree_path;
 	if (!worktreePath || !(await pathExists(worktreePath)))
 		return {
 			requested: false,
@@ -4163,8 +4163,8 @@ export async function buildTeamHudSummary(
 	});
 }
 
-const GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS_ENV = "GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS";
-const GJC_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS = 5_000;
+const WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS_ENV = "WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS";
+const WORX_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS = 5_000;
 
 async function validateGjcContinuationEligibility(
 	dir: string,
@@ -4311,7 +4311,7 @@ async function continueStalledGjcTeamWorkers(
 	config: GjcTeamConfig,
 	env: NodeJS.ProcessEnv,
 ): Promise<void> {
-	if (env[GJC_TEAM_AUTO_CONTINUE_STALLED_WORKERS_ENV] !== "1" || config.dry_run) return;
+	if (env[WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS_ENV] !== "1" || config.dry_run) return;
 	const phase = await readContinuationJson<unknown>(path.join(dir, "phase.json"));
 
 	if (
@@ -4506,7 +4506,7 @@ async function continueStalledGjcTeamWorkers(
 					heartbeat.last_turn_at,
 					staleMs,
 					env,
-					new Date(currentTimeMs() + GJC_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS + holdMs).toISOString(),
+					new Date(currentTimeMs() + WORX_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS + holdMs).toISOString(),
 				);
 				if (reservationReason) {
 					// An ineligible reservation must not abort the monitor pass for every other
@@ -4569,7 +4569,7 @@ async function continueStalledGjcTeamWorkers(
 				heartbeat.last_turn_at,
 				staleMs,
 				env,
-				new Date(currentTimeMs() + GJC_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS + holdMs).toISOString(),
+				new Date(currentTimeMs() + WORX_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS + holdMs).toISOString(),
 
 				true,
 			);
@@ -4645,8 +4645,8 @@ async function continueStalledGjcTeamWorkers(
 				// continuationAckPoll) OR wall time (the real Bun.sleep below). Bounding
 				// only one lets the other run forever: with a frozen fake clock and no ack
 				// seam, a seamed-only deadline never trips. Bound both.
-				const ackDeadline = currentTimeMs() + GJC_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS;
-				const ackWallDeadline = Date.now() + GJC_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS;
+				const ackDeadline = currentTimeMs() + WORX_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS;
+				const ackWallDeadline = Date.now() + WORX_TEAM_CONTINUATION_DISPATCH_TIMEOUT_MS;
 				while (true) {
 					const ackAuthorityReason = await validateGjcContinuationAckAuthority(
 						dir,
@@ -4683,7 +4683,7 @@ async function continueStalledGjcTeamWorkers(
 					if (gjcTeamRuntimeTestSeams?.continuationAckPoll) {
 						await gjcTeamRuntimeTestSeams.continuationAckPoll();
 					} else {
-						await Bun.sleep(GJC_TEAM_CONTINUATION_ACK_POLL_MS);
+						await Bun.sleep(WORX_TEAM_CONTINUATION_ACK_POLL_MS);
 					}
 				}
 			} else if (typeof attemptOutcome.exitCode === "number") outcomeReason = "tmux_nonzero_exit";
@@ -4838,7 +4838,7 @@ function parseDurationEnv(env: NodeJS.ProcessEnv, name: string, fallbackMs: numb
 
 /** Positive stale windows are clamped so a worker can publish strictly before expiry. */
 export function parseHeartbeatStaleMs(env: NodeJS.ProcessEnv): number {
-	const raw = env.GJC_TEAM_HEARTBEAT_STALE_MS?.trim();
+	const raw = env.WORX_TEAM_HEARTBEAT_STALE_MS?.trim();
 	if (!raw) return 120_000;
 	const parsed = Number(raw);
 	if (!Number.isFinite(parsed)) return 120_000;
@@ -4856,7 +4856,7 @@ async function writeLifecycleNudge(
 	const nudgePath = path.join(workerDir(dir, worker), "nudges", `${fingerprint}.json`);
 	const existing = await readJsonFile<Record<string, unknown>>(nudgePath);
 	const nowMs = Date.now();
-	const cooldownMs = parseDurationEnv(env, "GJC_TEAM_NUDGE_COOLDOWN_MS", 30_000);
+	const cooldownMs = parseDurationEnv(env, "WORX_TEAM_NUDGE_COOLDOWN_MS", 30_000);
 	const cooldownUntil = typeof existing?.cooldown_until === "string" ? Date.parse(existing.cooldown_until) : 0;
 	if (existing && Number.isFinite(cooldownUntil) && cooldownUntil > nowMs) return;
 	const firstSeen = typeof existing?.first_seen_at === "string" ? existing.first_seen_at : now();
@@ -4903,7 +4903,7 @@ async function computeLifecycleNudges(
 	_cwd: string,
 	env: NodeJS.ProcessEnv,
 ): Promise<void> {
-	const startupGraceMs = parseDurationEnv(env, "GJC_TEAM_STARTUP_GRACE_MS", 30_000);
+	const startupGraceMs = parseDurationEnv(env, "WORX_TEAM_STARTUP_GRACE_MS", 30_000);
 	const heartbeatStaleMs = parseHeartbeatStaleMs(env);
 	const createdAt = Date.parse(config.created_at);
 	const ageMs = Date.now() - (Number.isFinite(createdAt) ? createdAt : Date.now());
@@ -4927,7 +4927,7 @@ async function computeLifecycleNudges(
 		}
 		const heartbeat = await readGjcWorkerHeartbeat(config.team_name, worker.id, config.leader.cwd, {
 			...env,
-			GJC_TEAM_STATE_ROOT: config.state_root,
+			WORX_TEAM_STATE_ROOT: config.state_root,
 		});
 		const heartbeatAt = Date.parse(heartbeat?.last_turn_at ?? worker.last_heartbeat);
 		if (heartbeatStaleMs > 0 && Number.isFinite(heartbeatAt) && Date.now() - heartbeatAt >= heartbeatStaleMs) {
@@ -5885,7 +5885,7 @@ export function parseTeamLaunchArgs(argv: string[]): GjcTeamStartOptions {
 	const parsedWorktree = parseWorktreeMode(argv);
 	const positionals = parsedWorktree.remainingArgs.filter(arg => !arg.startsWith("--"));
 	const dryRun = argv.includes("--dry-run");
-	let workerCount = GJC_TEAM_DEFAULT_WORKERS;
+	let workerCount = WORX_TEAM_DEFAULT_WORKERS;
 	let agentType = "executor";
 	let taskStartIndex = 0;
 	const first = positionals[0] ?? "";
@@ -5905,8 +5905,8 @@ export function parseTeamLaunchArgs(argv: string[]): GjcTeamStartOptions {
 	}
 	const task = positionals.slice(taskStartIndex).join(" ").trim();
 	if (!task) throw new Error("missing_team_task");
-	if (!Number.isInteger(workerCount) || workerCount < 1 || workerCount > GJC_TEAM_MAX_WORKERS)
-		throw new Error(`invalid_team_worker_count:${workerCount}:expected_1_${GJC_TEAM_MAX_WORKERS}`);
+	if (!Number.isInteger(workerCount) || workerCount < 1 || workerCount > WORX_TEAM_MAX_WORKERS)
+		throw new Error(`invalid_team_worker_count:${workerCount}:expected_1_${WORX_TEAM_MAX_WORKERS}`);
 	return {
 		workerCount,
 		agentType,

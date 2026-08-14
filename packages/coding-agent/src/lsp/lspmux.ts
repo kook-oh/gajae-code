@@ -166,11 +166,11 @@ function resolveTrustedLspmuxBinary(cwd: string): string | null {
  * Detect lspmux availability and state.
  * Results are cached for STATE_CACHE_TTL_MS.
  *
- * Set GJC_DISABLE_LSPMUX=1 or PI_DISABLE_LSPMUX=1 to disable.
+ * Set WORX_DISABLE_LSPMUX=1 or PI_DISABLE_LSPMUX=1 to disable.
  */
 export async function detectLspmux(cwd = process.cwd()): Promise<LspmuxState> {
 	const now = Date.now();
-	if ($flag("GJC_DISABLE_LSPMUX") || $flag("PI_DISABLE_LSPMUX")) {
+	if ($flag("WORX_DISABLE_LSPMUX") || $flag("PI_DISABLE_LSPMUX")) {
 		cachedState = { available: false, running: false, binaryPath: null, config: null };
 		cacheTimestamp = now;
 		cacheCwd = cwd;

@@ -548,7 +548,7 @@ function getDefaultAgentDir(): string {
  *
  * Default: local SQLite store at `<agentDir>/agent.db`.
  *
- * Broker mode: when `GJC_AUTH_BROKER_URL` is set, credentials are pulled from
+ * Broker mode: when `WORX_AUTH_BROKER_URL` is set, credentials are pulled from
  * a remote auth-broker over the wire. Refresh tokens never leave the broker;
  * the client receives access tokens with `refresh = "__remote__"` and calls
  * back into the broker through the {@link AuthStorageOptions.refreshOAuthCredential}
@@ -602,13 +602,13 @@ export async function discoverAuthStorage(agentDir: string = getDefaultAgentDir(
 
 /**
  * Opt-in multi-account credential ranking mode, read from the
- * `GJC_CREDENTIAL_RANKING_MODE` env var. Unset/unknown → `undefined`, leaving
+ * `WORX_CREDENTIAL_RANKING_MODE` env var. Unset/unknown → `undefined`, leaving
  * {@link AuthStorage}'s default (`balanced`) untouched. `earliest-reset`
  * switches to earliest-expiry-first selection so soon-to-reset tumbling-window
  * quota is drained before it is lost.
  */
 function resolveCredentialRankingMode(): "balanced" | "earliest-reset" | undefined {
-	const raw = process.env.GJC_CREDENTIAL_RANKING_MODE?.trim();
+	const raw = process.env.WORX_CREDENTIAL_RANKING_MODE?.trim();
 	if (raw === "balanced" || raw === "earliest-reset") return raw;
 	return undefined;
 }
@@ -2086,7 +2086,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// session later spawns (marker is per-spawn, not dynastic — each GJC child
 		// spawn site sets it explicitly). Suppression under `sessionScope=primary`
 		// keeps auto-spawned children (team workers, harness owners) silent while
-		// explicit SDK session opt-in (GJC_NOTIFICATIONS=1) still wins.
+		// explicit SDK session opt-in (WORX_NOTIFICATIONS=1) still wins.
 		const spawnProvenance = process.env[SPAWN_PROVENANCE_ENV];
 		const spawnedByGjc = typeof spawnProvenance === "string" && spawnProvenance.trim().length > 0;
 		delete process.env[SPAWN_PROVENANCE_ENV];
@@ -2128,8 +2128,8 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			inlineExtensions.push(async api => {
 				try {
 					if (lifecycleStartupCapability) attachLifecycleStartupCapability(api, lifecycleStartupCapability);
-					if (lifecycleStartupCapability && process.env.GJC_SDK_TEST_FACTORY_FAILURE === cwd)
-						throw new Error(process.env.GJC_SDK_TEST_FACTORY_SECRET ?? "Lifecycle factory test failure.");
+					if (lifecycleStartupCapability && process.env.WORX_SDK_TEST_FACTORY_FAILURE === cwd)
+						throw new Error(process.env.WORX_SDK_TEST_FACTORY_SECRET ?? "Lifecycle factory test failure.");
 					if (notificationsExtensionEligible || sdkHostEligible) {
 						const createNotificationsExtension = await notificationAdapterService.get("session-extension");
 						createNotificationsExtension(api, {

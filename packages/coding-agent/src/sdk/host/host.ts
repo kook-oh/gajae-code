@@ -87,7 +87,7 @@ const ACTIVATION_MESSAGES: Record<
 
 /** SDK hosting is independent of notification configuration. Only root sessions host an endpoint. */
 export function shouldHostSdk(_settings: unknown, isTopLevel: boolean, env: NodeJS.ProcessEnv = process.env): boolean {
-	return isTopLevel && env.GJC_SDK_DISABLE !== "1";
+	return isTopLevel && env.WORX_SDK_DISABLE !== "1";
 }
 
 function errorFrame(connectionId: string, frame: SdkFrame, error: unknown): SdkFrame {

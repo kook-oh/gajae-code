@@ -27,7 +27,7 @@ process.title = APP_NAME;
 const rootHelpFlags = ["--help", "-h", "help"];
 const versionFlags = ["--version", "-v"];
 const MANAGED_OWNER_SUPERVISOR_ARG = "--internal-managed-owner-supervisor";
-const MANAGED_OWNER_CHILD_TOKEN_ENV = "GJC_MANAGED_OWNER_CHILD_TOKEN";
+const MANAGED_OWNER_CHILD_TOKEN_ENV = "WORX_MANAGED_OWNER_CHILD_TOKEN";
 const TMUX_OWNER_ISOLATION_ARG = "--internal-tmux-owner-isolation";
 
 export const commands: CommandEntry[] = [
@@ -412,10 +412,10 @@ export async function runCli(argv: string[]): Promise<void> {
 	// tmux-owner-isolation and notify-daemon fast paths so those lanes execute inside
 	// the already-scrubbed process too. The cheap inline predicate keeps the common
 	// (uncontaminated / non-darwin) path free of extra module loads; the guard module
-	// (MACOS_MALLOC_ENV_VARS / GJC_MALLOC_ENV_REEXEC) loads only when a re-exec is due.
+	// (MACOS_MALLOC_ENV_VARS / WORX_MALLOC_ENV_REEXEC) loads only when a re-exec is due.
 	if (
 		process.platform === "darwin" &&
-		process.env.GJC_MALLOC_ENV_REEXEC === undefined &&
+		process.env.WORX_MALLOC_ENV_REEXEC === undefined &&
 		(process.env.MallocStackLogging !== undefined || process.env.MallocStackLoggingNoCompact !== undefined)
 	) {
 		const { reexecWithScrubbedMallocEnv } = await import("./cli/malloc-env-guard");

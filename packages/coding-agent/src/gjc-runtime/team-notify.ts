@@ -175,7 +175,7 @@ async function attemptPaneNotification(
 	let result: GjcTeamPaneAttemptResult = "deferred";
 	let reason = "pane_missing";
 	if (paneId) {
-		if (config.tmux_session === "dry-run" || env.GJC_TEAM_FAKE_PANE_ATTEMPT === "sent") {
+		if (config.tmux_session === "dry-run" || env.WORX_TEAM_FAKE_PANE_ATTEMPT === "sent") {
 			result = "sent";
 			reason = "dry_run_or_fake_tmux";
 		} else {

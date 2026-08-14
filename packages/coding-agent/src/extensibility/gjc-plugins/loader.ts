@@ -4,11 +4,11 @@ import { parseFrontmatter } from "@gajae-code/utils";
 import { resolveWithinRoot } from "./paths";
 import { parseManifest, parseSubskillFrontmatter } from "./schema";
 import {
-	GJC_PLUGIN_MANIFEST_FILENAME,
 	GjcPluginLoadError,
 	type LoadedGjcPlugin,
 	type LoadedSubskillBinding,
 	type PhaseScopedToolBinding,
+	WORX_PLUGIN_MANIFEST_FILENAME,
 } from "./types";
 import { buildParentArgMap, buildParentPhaseSet, validateBinding } from "./validation";
 
@@ -57,7 +57,7 @@ function pushToolBinding(
 
 export async function loadGjcPlugin(root: string): Promise<LoadedGjcPlugin> {
 	const pluginRoot = path.resolve(root);
-	const manifestPath = path.join(pluginRoot, GJC_PLUGIN_MANIFEST_FILENAME);
+	const manifestPath = path.join(pluginRoot, WORX_PLUGIN_MANIFEST_FILENAME);
 	const manifest = parseManifest(await readJsonFile(manifestPath), manifestPath);
 	const manifestToolPaths = manifest.tools
 		.filter(tool => tool.surface === "subskill")

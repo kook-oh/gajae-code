@@ -96,7 +96,7 @@ const MUTATION_CLASSES: HermesMutationClass[] = ["sessions", "questions", "repor
 const MANAGED_BY = "worx";
 const SETUP_SCHEMA_VERSION = "1";
 const DEFAULT_SERVER_KEY = "worx_coordinator";
-const DEFAULT_GJC_COMMAND = "worx";
+const DEFAULT_WORX_COMMAND = "worx";
 const DEFAULT_TIMEOUT = 180;
 const DEFAULT_CONNECT_TIMEOUT = 60;
 
@@ -209,7 +209,7 @@ function normalizeInstallTarget(flags: HermesSetupFlags): CoordinatorSetupSpec["
 
 export function buildHermesSetupSpec(flags: HermesSetupFlags): CoordinatorSetupSpec {
 	const roots = normalizeRoots(flags.root);
-	const gjcCommand = optionalTrim(flags.gjcCommand) ?? DEFAULT_GJC_COMMAND;
+	const gjcCommand = optionalTrim(flags.gjcCommand) ?? DEFAULT_WORX_COMMAND;
 	const sessionCommand = resolveHermesSessionCommand(gjcCommand, flags);
 	return {
 		schemaVersion: 1,
@@ -277,18 +277,18 @@ export function computeHermesSetupSignature(spec: CoordinatorSetupSpec): string 
 
 export function renderHermesServerBlock(spec: CoordinatorSetupSpec): Record<string, unknown> {
 	const env: Record<string, string> = {
-		GJC_COORDINATOR_MCP_WORKDIR_ROOTS: spec.roots.join(path.delimiter),
-		GJC_COORDINATOR_MCP_SETUP_MANAGED_BY: MANAGED_BY,
-		GJC_COORDINATOR_MCP_SETUP_SCHEMA_VERSION: SETUP_SCHEMA_VERSION,
-		GJC_COORDINATOR_MCP_SETUP_SIGNATURE: computeHermesSetupSignature(spec),
+		WORX_COORDINATOR_MCP_WORKDIR_ROOTS: spec.roots.join(path.delimiter),
+		WORX_COORDINATOR_MCP_SETUP_MANAGED_BY: MANAGED_BY,
+		WORX_COORDINATOR_MCP_SETUP_SCHEMA_VERSION: SETUP_SCHEMA_VERSION,
+		WORX_COORDINATOR_MCP_SETUP_SIGNATURE: computeHermesSetupSignature(spec),
 	};
-	if (spec.namespace.profile) env.GJC_COORDINATOR_MCP_PROFILE = spec.namespace.profile;
-	if (spec.namespace.repo) env.GJC_COORDINATOR_MCP_REPO = spec.namespace.repo;
-	if (spec.stateRoot) env.GJC_COORDINATOR_MCP_STATE_ROOT = spec.stateRoot;
+	if (spec.namespace.profile) env.WORX_COORDINATOR_MCP_PROFILE = spec.namespace.profile;
+	if (spec.namespace.repo) env.WORX_COORDINATOR_MCP_REPO = spec.namespace.repo;
+	if (spec.stateRoot) env.WORX_COORDINATOR_MCP_STATE_ROOT = spec.stateRoot;
 	if (spec.mutationPolicy.classes.length > 0)
-		env.GJC_COORDINATOR_MCP_MUTATIONS = spec.mutationPolicy.classes.join(",");
-	if (spec.artifactByteCap !== undefined) env.GJC_COORDINATOR_MCP_ARTIFACT_BYTE_CAP = String(spec.artifactByteCap);
-	if (spec.sessionCommand) env.GJC_COORDINATOR_MCP_SESSION_COMMAND = spec.sessionCommand;
+		env.WORX_COORDINATOR_MCP_MUTATIONS = spec.mutationPolicy.classes.join(",");
+	if (spec.artifactByteCap !== undefined) env.WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP = String(spec.artifactByteCap);
+	if (spec.sessionCommand) env.WORX_COORDINATOR_MCP_SESSION_COMMAND = spec.sessionCommand;
 	return {
 		command: spec.gjcCommand,
 		args: spec.args,
@@ -315,9 +315,9 @@ function serverBlockIsManaged(block: unknown): boolean {
 	const env = block.env;
 	return (
 		isRecord(env) &&
-		env.GJC_COORDINATOR_MCP_SETUP_MANAGED_BY === MANAGED_BY &&
-		env.GJC_COORDINATOR_MCP_SETUP_SCHEMA_VERSION === SETUP_SCHEMA_VERSION &&
-		typeof env.GJC_COORDINATOR_MCP_SETUP_SIGNATURE === "string"
+		env.WORX_COORDINATOR_MCP_SETUP_MANAGED_BY === MANAGED_BY &&
+		env.WORX_COORDINATOR_MCP_SETUP_SCHEMA_VERSION === SETUP_SCHEMA_VERSION &&
+		typeof env.WORX_COORDINATOR_MCP_SETUP_SIGNATURE === "string"
 	);
 }
 
@@ -449,14 +449,14 @@ export async function runHermesSetup(flags: HermesSetupFlags): Promise<HermesSet
 		warnings:
 			spec.sessionCommandSource === "explicit"
 				? [
-						"Using explicit GJC_COORDINATOR_MCP_SESSION_COMMAND exactly as supplied; provider/model/worktree validation is not performed.",
+						"Using explicit WORX_COORDINATOR_MCP_SESSION_COMMAND exactly as supplied; provider/model/worktree validation is not performed.",
 					]
 				: spec.worktree.enabled
 					? [
-							`GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to '${spec.sessionCommand}' so WORX owns worktree creation and resume identity.`,
+							`WORX_COORDINATOR_MCP_SESSION_COMMAND defaults to '${spec.sessionCommand}' so WORX owns worktree creation and resume identity.`,
 						]
 					: [
-							"GJC_COORDINATOR_MCP_SESSION_COMMAND defaults to the configured worx command with worktree isolation disabled by user request.",
+							"WORX_COORDINATOR_MCP_SESSION_COMMAND defaults to the configured worx command with worktree isolation disabled by user request.",
 						],
 		smoke,
 	};

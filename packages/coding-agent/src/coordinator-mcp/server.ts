@@ -457,7 +457,8 @@ function toolSchema(name: CoordinatorToolName): {
 					session_id: sessionId,
 					force: {
 						type: "boolean",
-						description: "Close a non-ephemeral session; requires the GJC_COORDINATOR_MCP_FORCE_STOP capability.",
+						description:
+							"Close a non-ephemeral session; requires the WORX_COORDINATOR_MCP_FORCE_STOP capability.",
 					},
 					reason: { type: "string", description: "Optional audit reason recorded on the session.reaped event." },
 					allow_mutation: allowMutation,
@@ -826,7 +827,7 @@ function coordinatorLifecycleTarget(sessionCommand: string | null, cwd: string):
 	if (executable !== "worx")
 		throw new SdkClientError(
 			"invalid_input",
-			"GJC_COORDINATOR_MCP_SESSION_COMMAND must be exactly worx with an optional --worktree [name] selector.",
+			"WORX_COORDINATOR_MCP_SESSION_COMMAND must be exactly worx with an optional --worktree [name] selector.",
 		);
 	if (args.length === 0) return { path: cwd };
 	if (
@@ -836,7 +837,7 @@ function coordinatorLifecycleTarget(sessionCommand: string | null, cwd: string):
 	)
 		throw new SdkClientError(
 			"invalid_input",
-			"GJC_COORDINATOR_MCP_SESSION_COMMAND supports only worx or worx --worktree [name] under SDK lifecycle control.",
+			"WORX_COORDINATOR_MCP_SESSION_COMMAND supports only worx or worx --worktree [name] under SDK lifecycle control.",
 		);
 	return {
 		path: cwd,
@@ -2361,7 +2362,7 @@ export async function readCoordinatorArtifact(
 export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions = {}) {
 	const env = options.env ?? process.env;
 	const config = buildCoordinatorMcpConfig(env);
-	const promptAckTimeoutMs = boundedRuntimePromptAckTimeoutMs(env.GJC_COORDINATOR_MCP_PROMPT_ACK_TIMEOUT_MS);
+	const promptAckTimeoutMs = boundedRuntimePromptAckTimeoutMs(env.WORX_COORDINATOR_MCP_PROMPT_ACK_TIMEOUT_MS);
 	const services = options.services ?? {};
 	const platform = options.platform ?? process.platform;
 	const loadModelProfiles = services.resolveModelProfiles ?? loadCoordinatorModelProfiles;
@@ -4739,7 +4740,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 				const sessionId = safeExternalId("session", args.session_id);
 				const forceRequested = args.force === true;
 				// force is a capability distinct from allow_mutation: closing a non-ephemeral
-				// user-registered session requires GJC_COORDINATOR_MCP_FORCE_STOP to be enabled.
+				// user-registered session requires WORX_COORDINATOR_MCP_FORCE_STOP to be enabled.
 				if (forceRequested && !config.forceStopEnabled) {
 					return { ok: false, reason: "force_not_authorized", session_id: sessionId, closed: false };
 				}

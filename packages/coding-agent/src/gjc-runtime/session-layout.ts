@@ -14,9 +14,9 @@
  */
 import * as path from "node:path";
 
-export const GJC_DIR = ".gjc";
-export const GJC_SESSION_PREFIX = "_session-";
-export const GJC_SESSION_ACTIVITY_FILE = ".session-activity.json";
+export const WORX_DIR = ".gjc";
+export const WORX_SESSION_PREFIX = "_session-";
+export const WORX_SESSION_ACTIVITY_FILE = ".session-activity.json";
 
 /** Source that produced a resolved GJC session id, for audit/diagnostics. */
 export type GjcSessionSource = "flag" | "payload" | "env" | "latest";
@@ -65,25 +65,25 @@ export function assertSafePathComponent(value: string, label: string): void {
 
 /** The shared `.gjc/` root (holds shared config; never session-scoped). */
 export function gjcRoot(cwd: string): string {
-	return path.join(cwd, GJC_DIR);
+	return path.join(cwd, WORX_DIR);
 }
 
 /** The per-session root directory: `<cwd>/.gjc/_session-{encodedId}`. */
 export function sessionRoot(cwd: string, gjcSessionId: string): string {
 	assertNonEmptyGjcSessionId(gjcSessionId, "sessionRoot");
-	return path.join(gjcRoot(cwd), `${GJC_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`);
+	return path.join(gjcRoot(cwd), `${WORX_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`);
 }
 
 /** Directory name (no path) for a session id, e.g. `_session-abc`. */
 export function sessionDirName(gjcSessionId: string): string {
 	assertNonEmptyGjcSessionId(gjcSessionId, "sessionDirName");
-	return `${GJC_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`;
+	return `${WORX_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`;
 }
 
 /** Return the decoded session id for a `_session-*` directory name, else undefined. */
 export function sessionIdFromDirName(name: string): string | undefined {
-	if (!name.startsWith(GJC_SESSION_PREFIX)) return undefined;
-	const suffix = name.slice(GJC_SESSION_PREFIX.length);
+	if (!name.startsWith(WORX_SESSION_PREFIX)) return undefined;
+	const suffix = name.slice(WORX_SESSION_PREFIX.length);
 	if (suffix === "") return undefined;
 	let decoded: string;
 	try {
@@ -96,7 +96,7 @@ export function sessionIdFromDirName(name: string): string | undefined {
 
 /** Authoritative per-session activity marker path. */
 export function sessionActivityPath(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), GJC_SESSION_ACTIVITY_FILE);
+	return path.join(sessionRoot(cwd, gjcSessionId), WORX_SESSION_ACTIVITY_FILE);
 }
 
 // ---- Top-level per-category subdir resolvers ----

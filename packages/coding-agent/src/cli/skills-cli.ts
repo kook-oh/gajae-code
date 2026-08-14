@@ -2,7 +2,7 @@
  * Handles `gjc skills` for inspecting bundled workflow skill definitions.
  */
 import {
-	DEFAULT_GJC_DEFINITION_NAMES,
+	DEFAULT_WORX_DEFINITION_NAMES,
 	type EmbeddedDefaultGjcSkill,
 	getEmbeddedDefaultGjcSkills,
 } from "../defaults/gjc-defaults";
@@ -60,14 +60,14 @@ export async function runSkillsCommand(cmd: SkillsCommandArgs): Promise<void> {
 
 	const name = cmd.name?.trim();
 	if (!name) {
-		process.stderr.write(`error: skill name is required for read (${DEFAULT_GJC_DEFINITION_NAMES.join(", ")})\n`);
+		process.stderr.write(`error: skill name is required for read (${DEFAULT_WORX_DEFINITION_NAMES.join(", ")})\n`);
 		process.exitCode = 1;
 		return;
 	}
 
 	const skill = getEmbeddedSkill(name);
 	if (!skill) {
-		process.stderr.write(`error: unknown embedded skill "${name}" (${DEFAULT_GJC_DEFINITION_NAMES.join(", ")})\n`);
+		process.stderr.write(`error: unknown embedded skill "${name}" (${DEFAULT_WORX_DEFINITION_NAMES.join(", ")})\n`);
 		process.exitCode = 1;
 		return;
 	}

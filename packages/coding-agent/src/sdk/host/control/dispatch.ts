@@ -407,7 +407,7 @@ export function dispatchControl(
 	if (!isInput(request.input))
 		return Promise.resolve(failure(request.id, "invalid_input", "Control input must be an object."));
 	const elevationEnabled =
-		process.env.GJC_SDK_ELEVATION_ENABLED === "1" || process.env.GJC_SDK_ELEVATION_ENABLED === "true";
+		process.env.WORX_SDK_ELEVATION_ENABLED === "1" || process.env.WORX_SDK_ELEVATION_ENABLED === "true";
 	const elevationAllowlisted = isElevationAllowlisted("control", row.sdkId);
 	const elevationRequired = elevationEnabled && elevationAllowlisted;
 	if (elevationRequired && request.elevationRequestId === undefined)

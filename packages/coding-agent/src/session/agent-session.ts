@@ -201,11 +201,11 @@ import {
 } from "../config/model-profile-contract";
 import { resolveProfileBindings } from "../config/model-profiles";
 import {
-	GJC_MODEL_ASSIGNMENT_TARGETS,
 	isAuthenticated,
 	kNoAuth,
 	MODEL_ROLE_IDS,
 	type ModelRegistry,
+	WORX_MODEL_ASSIGNMENT_TARGETS,
 } from "../config/model-registry";
 import {
 	extractExplicitThinkingSelector,
@@ -14564,7 +14564,7 @@ export class AgentSession {
 		availableModels: Model[],
 		currentModel: Model | undefined,
 	): ResolvedModelRoleValue {
-		const target = GJC_MODEL_ASSIGNMENT_TARGETS[role as keyof typeof GJC_MODEL_ASSIGNMENT_TARGETS];
+		const target = WORX_MODEL_ASSIGNMENT_TARGETS[role as keyof typeof WORX_MODEL_ASSIGNMENT_TARGETS];
 		const roleModelStr =
 			target?.settingsPath === "task.agentModelOverrides"
 				? this.settings.get("task.agentModelOverrides")[role]

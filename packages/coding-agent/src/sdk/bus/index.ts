@@ -15,8 +15,8 @@
  * - `turn_end` -> `action_needed` (kind `idle`, deduped per turn).
  * - `session_shutdown` -> `session_closed` frame, stop server, deregister answer source.
  *
- * Enable with Settings notifications config, `GJC_NOTIFICATIONS=1` (a token is
- * generated), or `GJC_NOTIFICATIONS_TOKEN`.
+ * Enable with Settings notifications config, `WORX_NOTIFICATIONS=1` (a token is
+ * generated), or `WORX_NOTIFICATIONS_TOKEN`.
  */
 
 import { AsyncLocalStorage } from "node:async_hooks";
@@ -78,9 +78,9 @@ import type {
 } from "../../tools";
 import { RECOMMENDED_SUFFIX } from "../../tools/ask";
 import {
-	GJC_ASK_TIMEOUT_CODE,
 	registerAskAnswerSource,
 	registerWorkflowGateEmitterListener,
+	WORX_ASK_TIMEOUT_CODE,
 } from "../../tools/ask-answer-registry";
 import { acpFinalTextFromMessage } from "../acp/final-text";
 import { ensureBroker } from "../broker/ensure";
@@ -1449,24 +1449,24 @@ const defaultConfig: NotificationConfig = {
  * view, and this direct read was the outlier.
  */
 export function notificationsEnabled(): boolean {
-	return $credentialEnv("GJC_NOTIFICATIONS") === "1" || Boolean($credentialEnv("GJC_NOTIFICATIONS_TOKEN"));
+	return $credentialEnv("WORX_NOTIFICATIONS") === "1" || Boolean($credentialEnv("WORX_NOTIFICATIONS_TOKEN"));
 }
 
 function streamIntervalMs(): number {
-	return Math.max(200, Number(process.env.GJC_NOTIFICATIONS_STREAM_INTERVAL_MS) || 500);
+	return Math.max(200, Number(process.env.WORX_NOTIFICATIONS_STREAM_INTERVAL_MS) || 500);
 }
 // Max chars of a turn's assistant text carried by the FINALIZED turn_stream (and
 // the pre-ask capture). Finalized turns default to the bounded full-turn ceiling
 // because split-capable clients such as the Telegram daemon schedule each
 // splitTelegramHtml chunk through the shared rate-limit pool. Operators who want
-// glanceable summaries can lower this with GJC_NOTIFICATIONS_TURN_MAX. The value
+// glanceable summaries can lower this with WORX_NOTIFICATIONS_TURN_MAX. The value
 // is always clamped to a finite [280, TURN_TEXT_MAX_CEILING] range so the cap can
 // never be unbounded. Live frames are intentionally NOT raised — they stay one
 // editable preview message rather than fanning a long in-progress turn across
 // sends.
 const TURN_TEXT_MAX_CEILING = 40_000;
 function turnTextMax(): number {
-	const raw = Number(process.env.GJC_NOTIFICATIONS_TURN_MAX);
+	const raw = Number(process.env.WORX_NOTIFICATIONS_TURN_MAX);
 	if (!Number.isFinite(raw) || raw <= 0) return TURN_TEXT_MAX_CEILING;
 	return Math.min(TURN_TEXT_MAX_CEILING, Math.max(280, raw));
 }
@@ -1489,7 +1489,7 @@ function resolveSettings(settingsOverride?: Settings): ResolvedSettings {
 }
 
 function resolveToken(): string {
-	// `GJC_NOTIFICATIONS_TOKEN` remains an enablement compatibility flag, never
+	// `WORX_NOTIFICATIONS_TOKEN` remains an enablement compatibility flag, never
 	// a reusable endpoint credential. Every host identity gets fresh authority.
 	return crypto.randomBytes(24).toString("base64url");
 }
@@ -2095,7 +2095,7 @@ export function createSdkPermissionAskAnswerSource(
 				rejectRequest(error);
 			},
 		);
-		const askTimeoutError = Object.assign(new Error("ask timed out"), { code: GJC_ASK_TIMEOUT_CODE });
+		const askTimeoutError = Object.assign(new Error("ask timed out"), { code: WORX_ASK_TIMEOUT_CODE });
 		let response: unknown;
 		try {
 			response = await requestPromise;
@@ -3875,7 +3875,7 @@ export function createNotificationsExtension(
 
 	async function startSession(ctx: ExtensionContext): Promise<SessionStartResult> {
 		const id = sessionId(ctx);
-		const lifecycleRequestId = safeLifecycleRequestId(process.env.GJC_LIFECYCLE_REQUEST_ID);
+		const lifecycleRequestId = safeLifecycleRequestId(process.env.WORX_LIFECYCLE_REQUEST_ID);
 		const { settings, cfg, settingsAvailable } = resolveSettings(options.settings);
 		const notificationsEnabledForSession = controller.query(ctx).genericSessionEnabled;
 		const sdkEnabledForSession =
@@ -4723,7 +4723,7 @@ export function createNotificationsExtension(
 		 * broker lifecycle-managed session is prepared only by the broker-issued,
 		 * session-scoped readiness intent on its launch request, which the
 		 * lifecycle wait completes on the prepared signal instead of readiness. A
-		 * manual/source session keeps the explicit `GJC_NOTIFY_BIND_EXISTING_THREAD`
+		 * manual/source session keeps the explicit `WORX_NOTIFY_BIND_EXISTING_THREAD`
 		 * opt-in, which is refused for lifecycle-managed sessions so an inherited
 		 * process-global flag can never silently defer a broker-created session.
 		 *
@@ -6014,7 +6014,7 @@ export function createNotificationsExtension(
 			const command = args.trim().split(/\s+/, 1)[0]?.toLowerCase() || "status";
 			const resolved = resolveSettings(options.settings);
 			const manualEligibilityEnv =
-				process.env.GJC_NOTIFICATIONS === "0" ? { ...process.env, GJC_NOTIFICATIONS: undefined } : process.env;
+				process.env.WORX_NOTIFICATIONS === "0" ? { ...process.env, WORX_NOTIFICATIONS: undefined } : process.env;
 			const enabledWithoutLocalOff = resolveGenericNotificationSessionEligibility({
 				cfg: resolved.cfg,
 				env: manualEligibilityEnv,
@@ -6040,7 +6040,7 @@ export function createNotificationsExtension(
 				}
 				if (!enabledWithoutLocalOff) {
 					ctx.ui.notify(
-						"Notifications are not configured. Run `gjc notify setup` or set GJC_NOTIFICATIONS=1.",
+						"Notifications are not configured. Run `gjc notify setup` or set WORX_NOTIFICATIONS=1.",
 						"warning",
 					);
 					return;

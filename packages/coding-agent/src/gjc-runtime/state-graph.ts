@@ -1,4 +1,4 @@
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
 import { getSkillManifest } from "./workflow-manifest";
 
 export type StateGraphSkill = CanonicalGjcWorkflowSkill | "all";
@@ -11,7 +11,7 @@ function assertGraphFormat(format: string): asserts format is StateGraphFormat {
 }
 
 function skillsFor(skill: StateGraphSkill): CanonicalGjcWorkflowSkill[] {
-	return skill === "all" ? [...CANONICAL_GJC_WORKFLOW_SKILLS] : [skill];
+	return skill === "all" ? [...CANONICAL_WORX_WORKFLOW_SKILLS] : [skill];
 }
 
 function renderAscii(skill: StateGraphSkill): string {

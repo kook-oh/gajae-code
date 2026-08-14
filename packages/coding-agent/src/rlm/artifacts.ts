@@ -32,7 +32,7 @@ export function resolveRlmArtifactPaths(cwd: string, sessionId: string): RlmArti
 	}
 	const dir = rlmArtifactRoot(
 		cwd,
-		resolveGjcSessionForWrite(cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId,
+		resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId,
 		sessionId,
 	);
 	return {

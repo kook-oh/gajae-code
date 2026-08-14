@@ -25,7 +25,7 @@ import {
 export type { KernelDisplayOutput, PythonStatusEvent } from "./display";
 export { renderKernelDisplay } from "./display";
 
-// Dual-read: `GJC_PYTHON_IPC_TRACE` is preferred, then legacy `PI_PYTHON_IPC_TRACE`.
+// Dual-read: `WORX_PYTHON_IPC_TRACE` is preferred, then legacy `PI_PYTHON_IPC_TRACE`.
 const TRACE_IPC = resolvePythonIpcTrace($env);
 
 const SHUTDOWN_GRACE_MS = 1_000;

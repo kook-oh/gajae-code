@@ -17,7 +17,7 @@
  * The only way to hand children a clean startup snapshot is to start the primary
  * process with a clean environment. This module re-execs the exact invocation
  * once (darwin-only) with a `filterProcessEnv`-scrubbed environment and a
- * `GJC_MALLOC_ENV_REEXEC` loop guard, before any fast path or subprocess spawn.
+ * `WORX_MALLOC_ENV_REEXEC` loop guard, before any fast path or subprocess spawn.
  * The re-exec'd process — and therefore every downstream lane: `Bun.spawn`
  * defaults, `node:child_process`, the native PTY, the tmux owner, plugin
  * installs, and subagents — starts from a clean snapshot.
@@ -36,7 +36,7 @@ import type { Subprocess } from "bun";
 export const MACOS_MALLOC_ENV_VARS = ["MallocStackLogging", "MallocStackLoggingNoCompact"] as const;
 
 /** Loop guard set on the scrubbed re-exec so it never re-execs itself again. */
-export const MALLOC_ENV_REEXEC_GUARD = "GJC_MALLOC_ENV_REEXEC";
+export const MALLOC_ENV_REEXEC_GUARD = "WORX_MALLOC_ENV_REEXEC";
 
 /** True when at least one macOS malloc-stack-logging var is present in `env`. */
 export function hasMacOSMallocEnv(env: Record<string, string | undefined>): boolean {

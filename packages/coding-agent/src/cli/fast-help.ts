@@ -77,18 +77,18 @@ Environment Variables:
   ANTHROPIC_SEARCH_API_KEY   - Anthropic search provider
 
   # Configuration
-  GJC_CODING_AGENT_DIR       - Session storage directory (default: ~/${CONFIG_DIR_NAME}/agent)
-  GJC_PACKAGE_DIR            - Override package directory (for Nix/Guix store paths)
-  GJC_SMOL_MODEL              - Override smol/fast model (see --smol)
-  GJC_SLOW_MODEL              - Override slow/reasoning model (see --slow)
-  GJC_PLAN_MODEL              - Override planning model (see --plan)
-  GJC_NO_PTY                  - Disable PTY-based interactive bash execution
+  WORX_CODING_AGENT_DIR       - Session storage directory (default: ~/${CONFIG_DIR_NAME}/agent)
+  WORX_PACKAGE_DIR            - Override package directory (for Nix/Guix store paths)
+  WORX_SMOL_MODEL              - Override smol/fast model (see --smol)
+  WORX_SLOW_MODEL              - Override slow/reasoning model (see --slow)
+  WORX_PLAN_MODEL              - Override planning model (see --plan)
+  WORX_NO_PTY                  - Disable PTY-based interactive bash execution
   --tmux                       - Launch interactive startup inside a fresh tmux session
   gjc session                  - List, inspect, create, remove, or attach tagged GJC-managed tmux sessions
-  GJC_LAUNCH_POLICY           - Launch policy for --tmux startup: tmux or direct
-  GJC_TMUX_SESSION            - Explicit tmux session name override for --tmux startup
-  GJC_TMUX_PROFILE            - Apply GJC tmux scroll/mouse/clipboard profile to --tmux sessions (set 0/off to skip)
-  GJC_MOUSE                   - Apply tmux copy-mode mouse capture in --tmux sessions (set 0/off to skip)
+  WORX_LAUNCH_POLICY           - Launch policy for --tmux startup: tmux or direct
+  WORX_TMUX_SESSION            - Explicit tmux session name override for --tmux startup
+  WORX_TMUX_PROFILE            - Apply GJC tmux scroll/mouse/clipboard profile to --tmux sessions (set 0/off to skip)
+  WORX_MOUSE                   - Apply tmux copy-mode mouse capture in --tmux sessions (set 0/off to skip)
 
   For complete environment variable reference, see:
   docs/environment-variables.md

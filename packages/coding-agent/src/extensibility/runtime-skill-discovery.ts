@@ -5,7 +5,7 @@ import { findRepoRoot } from "../capability/fs";
 import type { Skill as CapabilitySkill } from "../capability/skill";
 import type { SkillsSettings } from "../config/settings-schema";
 import { compareSkillOrder, SOURCE_PATHS, scanSkillsFromDir } from "../discovery/helpers";
-import { CANONICAL_GJC_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
 import type { Skill } from "./skills";
 
 export type RuntimeSkillDiscoverySource = "project" | "user";
@@ -33,7 +33,7 @@ function getRuntimeHome(): string {
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 50;
-const BUILT_IN_SKILL_NAMES = new Set<string>(CANONICAL_GJC_WORKFLOW_SKILLS);
+const BUILT_IN_SKILL_NAMES = new Set<string>(CANONICAL_WORX_WORKFLOW_SKILLS);
 
 function normalizeLimit(limit: number | undefined): number {
 	if (limit === undefined || !Number.isFinite(limit)) return DEFAULT_LIMIT;

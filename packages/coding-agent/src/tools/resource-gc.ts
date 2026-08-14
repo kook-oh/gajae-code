@@ -553,13 +553,13 @@ async function readLinuxProcessStartTime(pid: number): Promise<string | null> {
 async function sampleTeamWorkers(cwd: string, sessionId: string): Promise<MemoryGuardWorkerSample[]> {
 	if (process.platform !== "linux") return [];
 	const samples: MemoryGuardWorkerSample[] = [];
-	for (const team of await listGjcTeams(cwd, { ...process.env, GJC_SESSION_ID: sessionId })) {
+	for (const team of await listGjcTeams(cwd, { ...process.env, WORX_SESSION_ID: sessionId })) {
 		if (team.phase === "complete" || team.phase === "cancelled") continue;
 		for (const worker of team.workers) {
 			try {
 				const heartbeat = await readGjcWorkerHeartbeat(team.team_name, worker.id, cwd, {
 					...process.env,
-					GJC_SESSION_ID: sessionId,
+					WORX_SESSION_ID: sessionId,
 				});
 				const heartbeatAt = Date.parse(heartbeat?.last_turn_at ?? "");
 				if (
@@ -574,7 +574,7 @@ async function sampleTeamWorkers(cwd: string, sessionId: string): Promise<Memory
 					"read-worker-memory-guard",
 					{ team_name: team.team_name, worker: worker.id, platform: process.platform },
 					cwd,
-					{ ...process.env, GJC_SESSION_ID: sessionId },
+					{ ...process.env, WORX_SESSION_ID: sessionId },
 				)) as { automatic_action_allowed?: boolean; state?: string };
 				if (!guard.automatic_action_allowed || guard.state === "blocked") continue;
 				const bytes = await readLinuxWorkerRssBytes(heartbeat.pid);
@@ -610,7 +610,7 @@ async function applySelectedTeamWorker(
 			candidates: [{ worker_id: worker, platform: process.platform, excess_bytes: excessBytes }],
 		},
 		cwd,
-		{ ...process.env, GJC_SESSION_ID: sessionId },
+		{ ...process.env, WORX_SESSION_ID: sessionId },
 	);
 }
 async function sweepEnabledMemoryPressureGuard(d: ResourceGcDeps): Promise<void> {

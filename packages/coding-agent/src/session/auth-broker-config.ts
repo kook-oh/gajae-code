@@ -2,7 +2,7 @@
  * Resolve auth-broker connection configuration for the local gjc client.
  *
  * Precedence (highest first):
- *   1. `GJC_AUTH_BROKER_URL` / `GJC_AUTH_BROKER_TOKEN` env vars.
+ *   1. `WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN` env vars.
  *   2. `auth.broker.url` / `auth.broker.token` in `~/.gjc/agent/config.yml`
  *      (hidden from the settings UI; `!command` resolution supported).
  *   3. Token file `~/.gjc/auth-broker.token` (paired with URL from env or config).
@@ -79,8 +79,8 @@ export async function resolveAuthBrokerConfig(): Promise<AuthBrokerClientConfig 
 	// repository content replace the store wholesale. Resolve them the same way
 	// the credentials themselves are: launching shell plus GJC/user-owned `.env`
 	// files, never the project `.env`.
-	const envUrl = $credentialEnv("GJC_AUTH_BROKER_URL");
-	const envToken = $credentialEnv("GJC_AUTH_BROKER_TOKEN");
+	const envUrl = $credentialEnv("WORX_AUTH_BROKER_URL");
+	const envToken = $credentialEnv("WORX_AUTH_BROKER_TOKEN");
 
 	let url = envUrl && envUrl.length > 0 ? envUrl : undefined;
 	let configToken: string | undefined;
@@ -101,8 +101,8 @@ export async function resolveAuthBrokerConfig(): Promise<AuthBrokerClientConfig 
 		(envToken && envToken.length > 0 ? envToken : undefined) ?? configToken ?? (await readTokenFile()) ?? undefined;
 	if (!token) {
 		throw new Error(
-			`GJC_AUTH_BROKER_URL is set (${url}) but no bearer token is available. ` +
-				`Set GJC_AUTH_BROKER_TOKEN, the \`auth.broker.token\` config entry, or place one at ${getAuthBrokerTokenFilePath()}.`,
+			`WORX_AUTH_BROKER_URL is set (${url}) but no bearer token is available. ` +
+				`Set WORX_AUTH_BROKER_TOKEN, the \`auth.broker.token\` config entry, or place one at ${getAuthBrokerTokenFilePath()}.`,
 		);
 	}
 	return { url, token };

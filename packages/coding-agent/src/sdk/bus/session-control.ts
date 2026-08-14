@@ -95,7 +95,7 @@ export class NotificationSessionController {
 	readonly #env: NodeJS.ProcessEnv;
 	readonly #spawnedByGjc: boolean;
 	readonly #disabledSessions = new Set<string>();
-	/** Explicit per-session opt-in overrides only the generic GJC_NOTIFICATIONS=0 auto-admission suppression. */
+	/** Explicit per-session opt-in overrides only the generic WORX_NOTIFICATIONS=0 auto-admission suppression. */
 	readonly #manualOptInSessions = new Set<string>();
 	/** Sessions held inactive after a post-commit foreign daemon identity race. */
 	readonly #blockedRuntimeSessions = new Set<string>();
@@ -481,8 +481,8 @@ export class NotificationSessionController {
 		const shuttingDown = this.#shuttingDownSessions.has(binding.sessionId);
 		const manualOptIn = this.#manualOptInSessions.has(binding.sessionId);
 		const eligibilityEnv =
-			manualOptIn && this.#env.GJC_NOTIFICATIONS === "0"
-				? { ...this.#env, GJC_NOTIFICATIONS: undefined }
+			manualOptIn && this.#env.WORX_NOTIFICATIONS === "0"
+				? { ...this.#env, WORX_NOTIFICATIONS: undefined }
 				: this.#env;
 		const eligibility = resolveGenericNotificationSessionEligibility({
 			cfg,

@@ -8,7 +8,6 @@ import { compileGjcPluginBundle } from "./compiler";
 import { gjcPluginProjectRoot, gjcPluginUserRoot } from "./paths";
 import { readRegistry, sortRegistryEntries, withRegistryLock, writeRegistryUnlocked } from "./registry";
 import {
-	GJC_PLUGIN_MANIFEST_FILENAME,
 	type GjcLifecycleError,
 	GjcPluginLoadError,
 	type GjcPluginRegistry,
@@ -16,6 +15,7 @@ import {
 	type GjcPluginRegistrySource,
 	type GjcPluginScope,
 	type NormalizedGjcPluginBundle,
+	WORX_PLUGIN_MANIFEST_FILENAME,
 } from "./types";
 import { validateInstallPlan } from "./validation";
 
@@ -213,7 +213,7 @@ async function extractTarball(tarPath: string, destRoot: string): Promise<void> 
 }
 
 async function findManifestRoot(base: string): Promise<string | null> {
-	if (await fileExists(path.join(base, GJC_PLUGIN_MANIFEST_FILENAME))) return base;
+	if (await fileExists(path.join(base, WORX_PLUGIN_MANIFEST_FILENAME))) return base;
 	let entries: import("node:fs").Dirent[];
 	try {
 		entries = await fs.readdir(base, { withFileTypes: true });
@@ -222,7 +222,7 @@ async function findManifestRoot(base: string): Promise<string | null> {
 	}
 	for (const dir of entries.filter(e => e.isDirectory())) {
 		const candidate = path.join(base, dir.name);
-		if (await fileExists(path.join(candidate, GJC_PLUGIN_MANIFEST_FILENAME))) return candidate;
+		if (await fileExists(path.join(candidate, WORX_PLUGIN_MANIFEST_FILENAME))) return candidate;
 	}
 	return null;
 }
@@ -232,7 +232,7 @@ async function resolveTarball(source: string): Promise<ResolvedSource> {
 	try {
 		await extractTarball(source, temp);
 		const dir = await findManifestRoot(temp);
-		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${GJC_PLUGIN_MANIFEST_FILENAME} found in tarball`);
+		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in tarball`);
 		return {
 			dir,
 			source: { kind: "tarball", uri: path.resolve(source), resolvedAt: new Date().toISOString() },
@@ -289,7 +289,7 @@ async function resolveGit(source: string): Promise<ResolvedSource> {
 			sha = undefined;
 		}
 		const dir = await findManifestRoot(temp);
-		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${GJC_PLUGIN_MANIFEST_FILENAME} found in git source`);
+		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in git source`);
 		return {
 			dir,
 			source: { kind: "git", uri: repo, ref, sha, resolvedAt: new Date().toISOString() },
@@ -331,7 +331,7 @@ function bundleToRegistryEntry(
 		scope,
 		enabled: true,
 		pluginRoot,
-		manifestPath: path.join(pluginRoot, GJC_PLUGIN_MANIFEST_FILENAME),
+		manifestPath: path.join(pluginRoot, WORX_PLUGIN_MANIFEST_FILENAME),
 		manifestHash: bundle.manifestHash,
 		source,
 		installedAt: now,
@@ -571,13 +571,13 @@ export function isGjcPluginSourceShape(source: string): boolean {
 export async function isGjcPluginBundleSource(source: string): Promise<boolean> {
 	if (!isTarball(source) && !looksLikeGit(source)) {
 		const abs = path.resolve(source);
-		return await fileExists(path.join(abs, GJC_PLUGIN_MANIFEST_FILENAME));
+		return await fileExists(path.join(abs, WORX_PLUGIN_MANIFEST_FILENAME));
 	}
 	// Probe git/tarball content safely, then clean up; never throw for non-bundles.
 	try {
 		const resolved = await resolveSource(source);
 		try {
-			return await fileExists(path.join(resolved.dir, GJC_PLUGIN_MANIFEST_FILENAME));
+			return await fileExists(path.join(resolved.dir, WORX_PLUGIN_MANIFEST_FILENAME));
 		} finally {
 			await resolved.cleanup();
 		}

@@ -304,7 +304,7 @@ const writerOptions = (filePath: string, category: "state" | "prune", verb: stri
 		resolved
 			.split(path.sep)
 			.map(segment => sessionIdFromDirName(segment))
-			.find((value): value is string => Boolean(value)) ?? process.env.GJC_SESSION_ID?.trim();
+			.find((value): value is string => Boolean(value)) ?? process.env.WORX_SESSION_ID?.trim();
 	return sessionId
 		? {
 				cwd,

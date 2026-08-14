@@ -29,12 +29,12 @@ export { initialPhaseForSkill };
 import { WORKFLOW_STATE_VERSION } from "../skill-state/workflow-state-contract";
 import {
 	compareSkillKeywordMatches,
-	GJC_SKILL_KEYWORD_DEFINITIONS,
 	type GjcWorkflowSkill,
 	isGjcWorkflowSkill,
+	WORX_SKILL_KEYWORD_DEFINITIONS,
 } from "./skill-keywords";
 
-export const GJC_STATE_DIR = ".gjc";
+export const WORX_STATE_DIR = ".gjc";
 export const SKILL_ACTIVE_STATE_FILE = "skill-active-state.json";
 
 export interface EffectiveSkillConfigInput {
@@ -155,7 +155,7 @@ function keywordToPattern(keyword: string): RegExp {
 	return new RegExp(`${prefix}${escaped}${suffix}`, "i");
 }
 
-const KEYWORD_PATTERNS = GJC_SKILL_KEYWORD_DEFINITIONS.map(definition => ({
+const KEYWORD_PATTERNS = WORX_SKILL_KEYWORD_DEFINITIONS.map(definition => ({
 	...definition,
 	pattern: keywordToPattern(definition.keyword),
 }));
@@ -178,7 +178,7 @@ function parseExplicitSkillInvocations(text: string): {
 			matches.push({
 				keyword: match[0],
 				skill: normalized,
-				priority: GJC_SKILL_KEYWORD_DEFINITIONS.find(definition => definition.skill === normalized)?.priority ?? 0,
+				priority: WORX_SKILL_KEYWORD_DEFINITIONS.find(definition => definition.skill === normalized)?.priority ?? 0,
 			});
 		}
 		match = explicitPattern.exec(text);
@@ -211,13 +211,13 @@ export function detectPrimarySkillKeyword(text: string): SkillKeywordMatch | nul
 }
 
 export function resolveGjcStateDir(cwd: string, stateDir?: string): string {
-	return stateDir ? path.resolve(cwd, stateDir) : path.join(cwd, GJC_STATE_DIR);
+	return stateDir ? path.resolve(cwd, stateDir) : path.join(cwd, WORX_STATE_DIR);
 }
 
 async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string> {
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
-	return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+	return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 }
 
 function modeStatePath(cwd: string, skill: GjcWorkflowSkill, sessionId: string): string {

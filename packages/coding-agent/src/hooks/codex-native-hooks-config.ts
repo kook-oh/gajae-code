@@ -1,9 +1,9 @@
 import * as os from "node:os";
 import * as path from "node:path";
 
-export const GJC_MANAGED_CODEX_HOOK_EVENTS = ["UserPromptSubmit", "Stop"] as const;
+export const WORX_MANAGED_CODEX_HOOK_EVENTS = ["UserPromptSubmit", "Stop"] as const;
 
-export type GjcManagedCodexHookEvent = (typeof GJC_MANAGED_CODEX_HOOK_EVENTS)[number];
+export type GjcManagedCodexHookEvent = (typeof WORX_MANAGED_CODEX_HOOK_EVENTS)[number];
 
 type JsonObject = Record<string, unknown>;
 
@@ -102,7 +102,7 @@ export function mergeGjcManagedCodexHooksConfig(existingContent: string | null):
 	const managed = buildGjcManagedCodexHooksConfig();
 	let managedHookCount = 0;
 
-	for (const event of GJC_MANAGED_CODEX_HOOK_EVENTS) {
+	for (const event of WORX_MANAGED_CODEX_HOOK_EVENTS) {
 		const existingEntries = Array.isArray(hooks[event]) ? hooks[event] : [];
 		const userEntries = existingEntries.filter(entry => !entryContainsGjcManagedHook(entry));
 		const nextEntries = [...managed.hooks[event], ...userEntries];
@@ -127,7 +127,7 @@ export function readGjcManagedCodexHooksStatus(content: string | null, hooksPath
 		}
 	}
 
-	for (const event of GJC_MANAGED_CODEX_HOOK_EVENTS) {
+	for (const event of WORX_MANAGED_CODEX_HOOK_EVENTS) {
 		const entries = Array.isArray(hooks[event]) ? hooks[event] : [];
 		const eventManagedCount = entries.filter(entryContainsGjcManagedHook).length;
 		managedHookCount += eventManagedCount;

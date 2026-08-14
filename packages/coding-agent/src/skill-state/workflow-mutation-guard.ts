@@ -4,7 +4,7 @@ import * as path from "node:path";
 import type { AgentTool } from "@gajae-code/agent-core";
 import { logger } from "@gajae-code/utils";
 import { expandApplyPatchToEntries } from "../edit/modes/apply-patch";
-import { GJC_SESSION_PREFIX, modeStatePath as sessionModeStatePath } from "../gjc-runtime/session-layout";
+import { modeStatePath as sessionModeStatePath, WORX_SESSION_PREFIX } from "../gjc-runtime/session-layout";
 import { resolveGjcSessionForRead } from "../gjc-runtime/session-resolution";
 import { ModeStateSchema } from "../gjc-runtime/state-schema";
 import { getSkillManifest } from "../gjc-runtime/workflow-manifest";
@@ -147,7 +147,7 @@ async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promis
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	} catch {
 		return null;
 	}
@@ -1049,7 +1049,7 @@ function relativeGjcSegments(cwd: string, rawPath: string): string[] | null {
 function blockedWorkflowStateSkill(cwd: string, rawPath: string): CanonicalGjcWorkflowSkill | null {
 	const segments = relativeGjcSegments(cwd, rawPath);
 	if (segments?.[0] !== ".gjc") return null;
-	const generatedRoot = segments[1]?.startsWith(GJC_SESSION_PREFIX) ? segments[2] : segments[1];
+	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	if (generatedRoot === "specs" || generatedRoot === "plans") return null;
 	if (generatedRoot !== "state") return null;
 	const fileName = segments.at(-1) ?? "";
@@ -1071,7 +1071,7 @@ function firstBlockedWorkflowStateSkill(cwd: string, targets: ExtractedTargets):
 function isAllowlistedPath(cwd: string, rawPath: string): boolean {
 	const segments = relativeGjcSegments(cwd, rawPath);
 	if (segments?.[0] !== ".gjc") return false;
-	const generatedRoot = segments[1]?.startsWith(GJC_SESSION_PREFIX) ? segments[2] : segments[1];
+	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	return generatedRoot === "specs" || generatedRoot === "plans";
 }
 function isBlockedGjcPath(cwd: string, rawPath: string): boolean {

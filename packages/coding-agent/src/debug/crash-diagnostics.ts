@@ -2,8 +2,8 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 
-const CRASH_DIAGNOSTICS_ENV = "GJC_CRASH_DIAGNOSTICS";
-const CRASH_DIAGNOSTICS_DIR_ENV = "GJC_CRASH_DIAGNOSTICS_DIR";
+const CRASH_DIAGNOSTICS_ENV = "WORX_CRASH_DIAGNOSTICS";
+const CRASH_DIAGNOSTICS_DIR_ENV = "WORX_CRASH_DIAGNOSTICS_DIR";
 const STDERR_PREVIEW_BYTES = 4096;
 const DIRECTORY_MODE = 0o700;
 const REPORT_FILE_MODE = 0o600;

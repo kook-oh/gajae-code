@@ -13,9 +13,9 @@ import { sessionStateDir, sessionUltragoalDir } from "./session-layout";
 import { resolveGjcSessionForRead, resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
 import { removeFileAudited, writeJsonAtomic } from "./state-writer";
 
-export const GJC_SESSION_FILE_ENV = "GJC_SESSION_FILE";
-export const GJC_SESSION_ID_ENV = "GJC_SESSION_ID";
-export const GJC_SESSION_CWD_ENV = "GJC_SESSION_CWD";
+export const WORX_SESSION_FILE_ENV = "WORX_SESSION_FILE";
+export const WORX_SESSION_ID_ENV = "WORX_SESSION_ID";
+export const WORX_SESSION_CWD_ENV = "WORX_SESSION_CWD";
 
 const REQUEST_VERSION = 1;
 export const DEFAULT_ULTRAGOAL_OBJECTIVE =
@@ -31,7 +31,7 @@ export interface PendingGoalModeRequest {
 	provenance: Extract<GoalProvenance, { source: "ultragoal" }>;
 
 	/**
-	 * Session id that produced this request (from GJC_SESSION_ID). When present,
+	 * Session id that produced this request (from WORX_SESSION_ID). When present,
 	 * only the originating session may consume it, so concurrent sessions sharing
 	 * the same `.gjc` project state never auto-run each other's ultragoal.
 	 */
@@ -77,7 +77,7 @@ export async function readUltragoalGjcObjective(
 ): Promise<{ objective: string; goalsPath: string; provenance: Extract<GoalProvenance, { source: "ultragoal" }> }> {
 	const session = sessionId?.trim()
 		? { gjcSessionId: sessionId.trim() }
-		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID });
+		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
 	const goalsPath = ultragoalGoalsPath(cwd, session.gjcSessionId);
 	try {
 		const plan = (await Bun.file(goalsPath).json()) as UltragoalPlanShape;
@@ -112,7 +112,7 @@ export async function writePendingGoalModeRequest(input: {
 	if (!objective) throw new Error("goal objective is required");
 	const resolvedSessionId =
 		input.sessionId?.trim() ||
-		resolveGjcSessionForWrite(input.cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId;
+		resolveGjcSessionForWrite(input.cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
 	const sessionId = resolvedSessionId;
 	const request: PendingGoalModeRequest = {
 		version: REQUEST_VERSION,
@@ -224,7 +224,7 @@ export async function writeCurrentSessionGoalModeState(input: {
 		mode: "goal",
 		data: { goal: state.goal },
 	};
-	// The session transcript file lives outside `.gjc/` (GJC_SESSION_FILE), so it is not a
+	// The session transcript file lives outside `.gjc/` (WORX_SESSION_FILE), so it is not a
 	// sanctioned-writer target; append directly.
 	await fs.appendFile(sessionFile, `${JSON.stringify(entry)}\n`);
 	return { status: "updated", goal: state.goal, sessionFile };
@@ -236,7 +236,7 @@ export async function consumePendingGoalModeRequest(
 ): Promise<PendingGoalModeRequest | null> {
 	const session = currentSessionId?.trim()
 		? { gjcSessionId: currentSessionId.trim() }
-		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID });
+		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
 	const filePath = requestPath(cwd, session.gjcSessionId);
 	let raw: unknown;
 	try {
@@ -278,8 +278,8 @@ export function buildGjcRuntimeSessionEnv(input: {
 	cwd?: string | null;
 }): Record<string, string> {
 	const env: Record<string, string> = {};
-	if (input.sessionFile) env[GJC_SESSION_FILE_ENV] = input.sessionFile;
-	if (input.sessionId) env[GJC_SESSION_ID_ENV] = input.sessionId;
-	if (input.cwd) env[GJC_SESSION_CWD_ENV] = input.cwd;
+	if (input.sessionFile) env[WORX_SESSION_FILE_ENV] = input.sessionFile;
+	if (input.sessionId) env[WORX_SESSION_ID_ENV] = input.sessionId;
+	if (input.cwd) env[WORX_SESSION_CWD_ENV] = input.cwd;
 	return env;
 }

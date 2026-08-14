@@ -2083,12 +2083,12 @@ export class SessionTranscriptOversizedError extends Error {
 }
 /** Default synchronous session-context materialization budget (512 MiB). */
 export const SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_DEFAULT = 512 * 1024 * 1024;
-/** Ceiling for a `GJC_SESSION_CONTEXT_BUDGET_BYTES` override (8 GiB) so the memory guard stays meaningful. */
+/** Ceiling for a `WORX_SESSION_CONTEXT_BUDGET_BYTES` override (8 GiB) so the memory guard stays meaningful. */
 export const SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_MAX = 8 * 1024 * 1024 * 1024;
 
 /**
  * Resolve the operation-peak session-context materialization budget from the
- * `GJC_SESSION_CONTEXT_BUDGET_BYTES` override. Parsing is fail-closed: only a
+ * `WORX_SESSION_CONTEXT_BUDGET_BYTES` override. Parsing is fail-closed: only a
  * canonical positive-integer decimal value is honored; anything else (empty,
  * non-numeric, negative, zero, overflowing a safe integer, or above the
  * documented ceiling) falls back to the 512 MiB default and is surfaced as a
@@ -2097,12 +2097,12 @@ export const SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_MAX = 8 * 1024 * 1024 
 export function resolveSessionContextBudgetBytes(override: string | undefined): number {
 	if (override === undefined) return SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_DEFAULT;
 	if (override === "" || !/^[0-9]+$/.test(override)) {
-		logger.warn("GJC_SESSION_CONTEXT_BUDGET_BYTES ignored: expected a positive integer", { override });
+		logger.warn("WORX_SESSION_CONTEXT_BUDGET_BYTES ignored: expected a positive integer", { override });
 		return SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_DEFAULT;
 	}
 	const parsed = Number(override);
 	if (!Number.isSafeInteger(parsed) || parsed <= 0 || parsed > SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_MAX) {
-		logger.warn("GJC_SESSION_CONTEXT_BUDGET_BYTES ignored: must be a positive integer ≤ 8 GiB", {
+		logger.warn("WORX_SESSION_CONTEXT_BUDGET_BYTES ignored: must be a positive integer ≤ 8 GiB", {
 			override,
 			max: SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_MAX,
 		});
@@ -2113,7 +2113,7 @@ export function resolveSessionContextBudgetBytes(override: string | undefined): 
 
 /** Operation-peak budget for one synchronous session-context materialization. */
 export const SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES = resolveSessionContextBudgetBytes(
-	process.env.GJC_SESSION_CONTEXT_BUDGET_BYTES,
+	process.env.WORX_SESSION_CONTEXT_BUDGET_BYTES,
 );
 
 /**
@@ -2388,15 +2388,15 @@ function createSessionId(): string {
 
 /**
  * A session id pre-allocated by the notifications lifecycle subsystem, when this
- * process was spawned by `/session_create`. Gated by `GJC_LIFECYCLE_REQUEST_ID`
+ * process was spawned by `/session_create`. Gated by `WORX_LIFECYCLE_REQUEST_ID`
  * so it ONLY applies to lifecycle-launched sessions (never normal launches): the
  * daemon tags the tmux session, endpoint discovery, and its `/session_recent`
  * id with this value, so the agent MUST adopt it as its header id or those ids
  * diverge (breaking close/resume-by-id after the session is gone).
  */
 function lifecyclePreallocatedSessionId(): string | undefined {
-	if (!process.env.GJC_LIFECYCLE_REQUEST_ID) return undefined;
-	const id = process.env.GJC_SESSION_ID?.trim();
+	if (!process.env.WORX_LIFECYCLE_REQUEST_ID) return undefined;
+	const id = process.env.WORX_SESSION_ID?.trim();
 	if (!id || !/^[A-Za-z0-9._-]{1,128}$/.test(id)) return undefined;
 	return id;
 }
@@ -6596,7 +6596,7 @@ function emptyFirstOpenTelemetry(
 
 function firstOpenGcStrategy(): SessionMemoryGcStrategy {
 	const candidate =
-		SessionManagerTestHooks.firstOpenGcStrategy ?? process.env.GJC_SESSION_MEMORY_GC_STRATEGY?.trim().toLowerCase();
+		SessionManagerTestHooks.firstOpenGcStrategy ?? process.env.WORX_SESSION_MEMORY_GC_STRATEGY?.trim().toLowerCase();
 	return candidate === "none" || candidate === "async" || candidate === "pressure" || candidate === "current"
 		? candidate
 		: "pressure";
@@ -6605,7 +6605,7 @@ function firstOpenGcStrategy(): SessionMemoryGcStrategy {
 function firstOpenSecondaryArtifactMode(): SessionMemorySecondaryArtifactMode {
 	const candidate =
 		SessionManagerTestHooks.secondaryArtifactMode ??
-		process.env.GJC_SESSION_MEMORY_SECONDARY_ARTIFACT_MODE?.trim().toLowerCase();
+		process.env.WORX_SESSION_MEMORY_SECONDARY_ARTIFACT_MODE?.trim().toLowerCase();
 	return candidate === "enabled" || candidate === "disabled" || candidate === "auto" ? candidate : "disabled";
 }
 

@@ -13,7 +13,7 @@ const REPO_MARKERS = [".git", "bun.lock"];
 const SOURCE_REPO_PACKAGE_NAME = "gajae-code";
 
 export function resolveBuildMetadata(moduleDir: string = import.meta.dir): BuildMetadata {
-	const explicitChannel = normalizeBuildChannel(process.env.GJC_BUILD_CHANNEL);
+	const explicitChannel = normalizeBuildChannel(process.env.WORX_BUILD_CHANNEL);
 	if (explicitChannel) {
 		return metadataForChannel(explicitChannel);
 	}

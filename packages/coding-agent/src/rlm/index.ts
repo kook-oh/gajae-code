@@ -234,7 +234,7 @@ async function writeRlmMetadata(input: {
 	await Bun.write(input.paths.metadataPath, `${JSON.stringify(metadata, null, 2)}\n`);
 	// Best-effort: update the per-session activity marker so latest-session auto-detect
 	// accounts for RLM-only generated output (AC2). Never let marker failure break RLM.
-	const gjcSessionId = resolveSessionIdFromSources({ envSessionId: process.env.GJC_SESSION_ID })?.gjcSessionId;
+	const gjcSessionId = resolveSessionIdFromSources({ envSessionId: process.env.WORX_SESSION_ID })?.gjcSessionId;
 	if (gjcSessionId) {
 		await writeSessionActivityMarker(input.cwd, gjcSessionId, { writer: "rlm" }).catch(() => {});
 	}
@@ -243,7 +243,7 @@ async function writeRlmMetadata(input: {
 /**
  * RLM artifacts are scoped under a GJC session directory and resolving their
  * paths is a *write* (it must pick a concrete session). When `gjc rlm` runs
- * standalone — no parent agent, no `GJC_SESSION_ID` in the environment — there is
+ * standalone — no parent agent, no `WORX_SESSION_ID` in the environment — there is
  * no session to resolve and `resolveGjcSessionForWrite` throws
  * `missing_for_write`. Establish a dedicated GJC session id in that case and pin
  * it into the environment so artifact-path resolution, the per-session activity
@@ -252,10 +252,10 @@ async function writeRlmMetadata(input: {
  * Returns the resolved (existing or freshly generated) GJC session id.
  */
 export function ensureRlmGjcSessionId(): string {
-	const existing = resolveSessionIdFromSources({ envSessionId: process.env.GJC_SESSION_ID })?.gjcSessionId;
+	const existing = resolveSessionIdFromSources({ envSessionId: process.env.WORX_SESSION_ID })?.gjcSessionId;
 	if (existing) return existing;
 	const generated = `rlm-${generateRlmSessionId()}`;
-	process.env.GJC_SESSION_ID = generated;
+	process.env.WORX_SESSION_ID = generated;
 	return generated;
 }
 export async function runRlmCommand(argv: string[]): Promise<void> {

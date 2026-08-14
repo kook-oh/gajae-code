@@ -23,10 +23,10 @@ import {
 } from "../../config/model-profiles";
 import type { GjcModelAssignmentTargetId, ModelRegistry } from "../../config/model-registry";
 import {
-	GJC_MODEL_ASSIGNMENT_TARGET_IDS,
-	GJC_MODEL_ASSIGNMENT_TARGETS,
 	isAuthenticated,
 	kNoAuth,
+	WORX_MODEL_ASSIGNMENT_TARGET_IDS,
+	WORX_MODEL_ASSIGNMENT_TARGETS,
 } from "../../config/model-registry";
 import {
 	formatModelSelectorValue,
@@ -552,8 +552,8 @@ export class ModelSelectorComponent extends Container {
 			? this.#modelRegistry.getModelProfile(this.#activeModelProfile)
 			: undefined;
 		const activeProfileBindings = activeProfile ? resolveProfileBindings(activeProfile) : undefined;
-		for (const role of GJC_MODEL_ASSIGNMENT_TARGET_IDS) {
-			const target = GJC_MODEL_ASSIGNMENT_TARGETS[role];
+		for (const role of WORX_MODEL_ASSIGNMENT_TARGET_IDS) {
+			const target = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 			const roleValue =
 				target.settingsPath === "modelRoles" ? this.#settings.getModelRole(role) : agentModelOverrides[role];
 			if (!roleValue) continue;
@@ -1188,7 +1188,7 @@ export class ModelSelectorComponent extends Container {
 		}
 
 		const agentOverrides = this.#settings.get("task.agentModelOverrides");
-		for (const role of GJC_MODEL_ASSIGNMENT_TARGET_IDS) {
+		for (const role of WORX_MODEL_ASSIGNMENT_TARGET_IDS) {
 			if (role === "default") continue;
 			const selector = this.#resolveProfileModelSelector(agentOverrides[role]);
 			if (selector) modelMapping[role] = selector;
@@ -1500,7 +1500,7 @@ export class ModelSelectorComponent extends Container {
 		for (const role of PROFILE_ROLE_PREVIEW_ORDER) {
 			const assigned = this.#roles[role];
 			if (!assigned) continue;
-			const label = GJC_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase();
+			const label = WORX_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase();
 			lines.push(
 				theme.fg("dim", `  ${label}: ${this.#formatAssignedModelLabel(assigned.model, assigned.thinkingLevel)}`),
 			);
@@ -1607,7 +1607,7 @@ export class ModelSelectorComponent extends Container {
 				aliasIntent: "preset-equivalent",
 				credentialSessionId: this.#authSessionId,
 			});
-			const label = GJC_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase();
+			const label = WORX_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase();
 			this.#listContainer.addChild(
 				new Text(`  ${label}: ${formatClampedModelSelector(selectorHead(selector) ?? "", resolved.model)}`, 0, 0),
 			);
@@ -1710,8 +1710,8 @@ export class ModelSelectorComponent extends Container {
 			// the standalone current glyph below — a subagent-only match must NOT, since
 			// subagent badges reflect the subagent tier, not the current model.
 			let currentModelEffectiveGlyphRendered = false;
-			for (const role of GJC_MODEL_ASSIGNMENT_TARGET_IDS) {
-				const roleInfo = GJC_MODEL_ASSIGNMENT_TARGETS[role];
+			for (const role of WORX_MODEL_ASSIGNMENT_TARGET_IDS) {
+				const roleInfo = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 				const assigned = this.#roles[role];
 				if (roleInfo.tag && assigned && modelsAreEqual(assigned.model, item.model)) {
 					const badge = makeInvertedBadge(roleInfo.tag, roleInfo.color ?? "muted");
@@ -1829,10 +1829,10 @@ export class ModelSelectorComponent extends Container {
 		const actionCount = this.#getActionCount(item.model);
 		for (let i = 0; i < actionCount; i++) {
 			const prefix = i === this.#selectedActionIndex ? theme.fg("accent", `${theme.nav.cursor} `) : "  ";
-			const role = GJC_MODEL_ASSIGNMENT_TARGET_IDS[i];
+			const role = WORX_MODEL_ASSIGNMENT_TARGET_IDS[i];
 			const label = role
-				? `Set as ${GJC_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase()} (${GJC_MODEL_ASSIGNMENT_TARGETS[role].name}) — now: ${this.#formatRoleBinding(role)}`
-				: i === GJC_MODEL_ASSIGNMENT_TARGET_IDS.length
+				? `Set as ${WORX_MODEL_ASSIGNMENT_TARGETS[role].tag ?? role.toUpperCase()} (${WORX_MODEL_ASSIGNMENT_TARGETS[role].name}) — now: ${this.#formatRoleBinding(role)}`
+				: i === WORX_MODEL_ASSIGNMENT_TARGET_IDS.length
 					? "Set for all role agents"
 					: "Set for all targets";
 			this.#listContainer.addChild(
@@ -1848,7 +1848,7 @@ export class ModelSelectorComponent extends Container {
 	 * for role badges.
 	 */
 	#formatRoleBinding(role: GjcModelAssignmentTargetId): string {
-		const target = GJC_MODEL_ASSIGNMENT_TARGETS[role];
+		const target = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 		const configured =
 			target.settingsPath === "modelRoles"
 				? this.#settings.getModelRole(role)
@@ -1885,7 +1885,7 @@ export class ModelSelectorComponent extends Container {
 				: "all role agents"
 			: choice.role === null
 				? "temporary model"
-				: GJC_MODEL_ASSIGNMENT_TARGETS[choice.role].name;
+				: WORX_MODEL_ASSIGNMENT_TARGETS[choice.role].name;
 		// Show the highlighted reasoning level — never the model id (that mislabel
 		// made "Reasoning for Default: gpt-5.6-luna" look like a level).
 		const selectedLevel = choice.levels[this.#selectedThinkingIndex];
@@ -1910,7 +1910,7 @@ export class ModelSelectorComponent extends Container {
 		return this.#roles[role]?.thinkingLevel ?? ThinkingLevel.Inherit;
 	}
 	#getActionCount(_model: Model): number {
-		return GJC_MODEL_ASSIGNMENT_TARGET_IDS.length + 2;
+		return WORX_MODEL_ASSIGNMENT_TARGET_IDS.length + 2;
 	}
 
 	#getSelectedItem(): ModelItem | CanonicalModelItem | undefined {
@@ -2211,15 +2211,15 @@ export class ModelSelectorComponent extends Container {
 		}
 		if (matchesKey(keyData, "enter") || matchesKey(keyData, "return") || keyData === "\n") {
 			this.#pendingActionItem = undefined;
-			const role = GJC_MODEL_ASSIGNMENT_TARGET_IDS[this.#selectedActionIndex];
+			const role = WORX_MODEL_ASSIGNMENT_TARGET_IDS[this.#selectedActionIndex];
 			if (role) {
 				this.#handleSelect(item, role);
 				return;
 			}
 			const roles =
-				this.#selectedActionIndex === GJC_MODEL_ASSIGNMENT_TARGET_IDS.length
+				this.#selectedActionIndex === WORX_MODEL_ASSIGNMENT_TARGET_IDS.length
 					? (["executor", "architect", "planner", "critic"] as const)
-					: GJC_MODEL_ASSIGNMENT_TARGET_IDS;
+					: WORX_MODEL_ASSIGNMENT_TARGET_IDS;
 			this.#handleSelect(item, "default", undefined, roles);
 			return;
 		}
@@ -2255,8 +2255,8 @@ export class ModelSelectorComponent extends Container {
 			if (choice.role !== null) {
 				this.#pendingActionItem = choice.item;
 				this.#selectedActionIndex = choice.roles
-					? GJC_MODEL_ASSIGNMENT_TARGET_IDS.length + (choice.roles.includes("default") ? 1 : 0)
-					: Math.max(0, GJC_MODEL_ASSIGNMENT_TARGET_IDS.indexOf(choice.role));
+					? WORX_MODEL_ASSIGNMENT_TARGET_IDS.length + (choice.roles.includes("default") ? 1 : 0)
+					: Math.max(0, WORX_MODEL_ASSIGNMENT_TARGET_IDS.indexOf(choice.role));
 			}
 			this.#updateList();
 		}
@@ -2435,7 +2435,7 @@ export class ModelSelectorComponent extends Container {
 function requiresExplicitThinkingChoice(model: Model, role: GjcModelAssignmentTargetId | null): boolean {
 	if (model.reasoning !== true) return false;
 	if (model.provider === "openai" || model.provider === "openai-codex") return true;
-	return role !== null && GJC_MODEL_ASSIGNMENT_TARGETS[role].settingsPath === "task.agentModelOverrides";
+	return role !== null && WORX_MODEL_ASSIGNMENT_TARGETS[role].settingsPath === "task.agentModelOverrides";
 }
 
 function getSelectableThinkingLevels(model: Model): ThinkingLevel[] {

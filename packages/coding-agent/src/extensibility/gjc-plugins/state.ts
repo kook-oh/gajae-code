@@ -4,7 +4,7 @@ async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promis
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") return undefined;
 		throw error;

@@ -25,7 +25,7 @@ import {
 	type KeyDisplayContext,
 } from "../config/keybindings";
 import { isSettingsInitialized, type Settings, settings } from "../config/settings";
-import { DEFAULT_GJC_DEFINITION_NAMES } from "../defaults/gjc-defaults";
+import { DEFAULT_WORX_DEFINITION_NAMES } from "../defaults/gjc-defaults";
 import type {
 	ExtensionUIContext,
 	ExtensionUIDialogOptions,
@@ -1058,7 +1058,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		for (const command of resolvedCommands) {
 			this.skillCommands.set(command.name, command.skill);
 		}
-		const defaultGjcNames = new Set<string>(DEFAULT_GJC_DEFINITION_NAMES);
+		const defaultGjcNames = new Set<string>(DEFAULT_WORX_DEFINITION_NAMES);
 		return resolvedCommands.map(command => ({
 			name: command.name,
 			description: command.description,

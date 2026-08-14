@@ -17,12 +17,12 @@ import {
 	writeActiveEntry,
 } from "../gjc-runtime/state-writer";
 import { getSkillManifest } from "../gjc-runtime/workflow-manifest";
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "./canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "./canonical-skills";
 import type { WorkflowStateReceipt } from "./workflow-state-contract";
 
 export const SKILL_ACTIVE_STATE_FILE = "skill-active-state.json";
 
-export { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill };
+export { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill };
 export type WorkflowHudSeverity = "info" | "warning" | "blocked" | "error" | "success";
 
 export interface WorkflowHudChip {
@@ -302,7 +302,7 @@ function unionActiveSubskillEntries(...entrySets: Array<ActiveSubskillEntry[] | 
 function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string> {
 	const normalizedSessionId = safeString(sessionId).trim();
 	if (normalizedSessionId) return Promise.resolve(normalizedSessionId);
-	return resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID }).then(
+	return resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID }).then(
 		context => context.gjcSessionId,
 	);
 }
@@ -340,7 +340,7 @@ function normalizeEntry(raw: unknown): SkillActiveEntry | null {
 }
 
 export function isCanonicalGjcWorkflowSkill(skill: string): skill is CanonicalGjcWorkflowSkill {
-	return (CANONICAL_GJC_WORKFLOW_SKILLS as readonly string[]).includes(skill);
+	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(skill);
 }
 
 /**

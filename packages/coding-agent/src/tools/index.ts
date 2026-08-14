@@ -438,7 +438,7 @@ export interface EvalBackendsAllowance {
 }
 
 /**
- * Parse the `GJC_PY` multi-value token into per-backend booleans.
+ * Parse the `WORX_PY` multi-value token into per-backend booleans.
  *
  * Tokens (case-insensitive):
  * - `0` / `bash` → JavaScript only (`{ py: false, js: true }`)
@@ -446,13 +446,13 @@ export interface EvalBackendsAllowance {
  * - `js`         → JavaScript only (`{ py: false, js: true }`)
  * - `mix` / `both` → both backends (`{ py: true, js: true }`)
  *
- * Returns `null` when `GJC_PY` is unset, empty, or holds an unrecognized
+ * Returns `null` when `WORX_PY` is unset, empty, or holds an unrecognized
  * token, so the caller can fall back to the legacy `PI_PY` / `PI_JS` flags or
  * per-key settings. This matches the documented contract that invalid values
  * are ignored.
  */
 export function parseGjcPy(env: Record<string, string | undefined>): { py: boolean; js: boolean } | null {
-	const raw = env.GJC_PY;
+	const raw = env.WORX_PY;
 	if (raw === undefined) return null;
 	const token = raw.trim().toLowerCase();
 	if (token === "") return null;
@@ -493,7 +493,7 @@ function parseLegacyEvalEnvFlags(env: Record<string, string | undefined>): EvalB
 }
 
 /**
- * Resolve eval-backend allowance from environment only. `GJC_PY` wins when set
+ * Resolve eval-backend allowance from environment only. `WORX_PY` wins when set
  * to a recognized token; otherwise the legacy `PI_PY` / `PI_JS` flags apply.
  * Returns `null` when no env override is set so the caller can defer to settings.
  */
@@ -512,7 +512,7 @@ export function readEvalBackendsAllowance(session: ToolSession): EvalBackendsAll
 }
 
 /**
- * Materialize the active eval backend allowance. `GJC_PY` takes precedence
+ * Materialize the active eval backend allowance. `WORX_PY` takes precedence
  * over the legacy `PI_PY` / `PI_JS` env flags, which in turn override the
  * per-key settings (defaults true). When no env override is set, settings win.
  */

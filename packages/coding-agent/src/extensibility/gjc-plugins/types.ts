@@ -1,18 +1,18 @@
 import type { CanonicalGjcWorkflowSkill } from "../../skill-state/active-state";
-import { CANONICAL_GJC_WORKFLOW_SKILLS } from "../../skill-state/active-state";
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../../skill-state/active-state";
 
-export const GJC_PLUGIN_MANIFEST_FILENAME = "gajae-plugin.json";
-export const GJC_PLUGIN_KIND = "gajae-code-plugin";
+export const WORX_PLUGIN_MANIFEST_FILENAME = "gajae-plugin.json";
+export const WORX_PLUGIN_KIND = "gajae-code-plugin";
 
-export const GJC_SUBSKILL_PARENT_SKILLS = CANONICAL_GJC_WORKFLOW_SKILLS;
+export const WORX_SUBSKILL_PARENT_SKILLS = CANONICAL_WORX_WORKFLOW_SKILLS;
 export type GjcSubskillParentSkill = CanonicalGjcWorkflowSkill;
 
-export const GJC_SUBSKILL_PARENT_AGENTS = ["executor", "architect", "planner", "critic"] as const;
-export type GjcSubskillParentAgent = (typeof GJC_SUBSKILL_PARENT_AGENTS)[number];
+export const WORX_SUBSKILL_PARENT_AGENTS = ["executor", "architect", "planner", "critic"] as const;
+export type GjcSubskillParentAgent = (typeof WORX_SUBSKILL_PARENT_AGENTS)[number];
 
 export type GjcSubskillParent = GjcSubskillParentSkill | GjcSubskillParentAgent;
 
-export const GJC_AGENT_SUBSKILL_PHASES: Record<GjcSubskillParentAgent, string[]> = {
+export const WORX_AGENT_SUBSKILL_PHASES: Record<GjcSubskillParentAgent, string[]> = {
 	executor: ["prompt"],
 	architect: ["prompt"],
 	planner: ["prompt"],
@@ -384,10 +384,10 @@ export interface GjcPluginRegistry {
 export type GjcPluginSurfaceExtensionId = string;
 
 /** Canonical GJC bundle identity: kind is fixed, target is (scope, name). */
-export const GJC_BUNDLE_KIND = "gjc-bundle";
+export const WORX_BUNDLE_KIND = "gjc-bundle";
 
 export interface GjcBundleIdentity {
-	kind: typeof GJC_BUNDLE_KIND;
+	kind: typeof WORX_BUNDLE_KIND;
 	scope: GjcPluginScope;
 	name: string;
 }

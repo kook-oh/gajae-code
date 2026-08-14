@@ -164,7 +164,7 @@ async function readRawConfig(filePath: string): Promise<Record<string, unknown> 
  * These paths pick the `config.yml` whose `skills.customDirectories` the agent
  * then loads skills from, so the directory they are built from is a trust
  * boundary. Bun loads `cwd/.env` into `process.env` before any module runs, so
- * reading `GJC_CODING_AGENT_DIR` / `GJC_CONFIG_DIR` directly let a repository
+ * reading `WORX_CODING_AGENT_DIR` / `WORX_CONFIG_DIR` directly let a repository
  * point this at a directory it ships and inject its own skill directories.
  *
  * `getAgentDir()` and `getConfigDirName()` apply the escalation guards that
@@ -282,7 +282,7 @@ function readSessionFile(payload: HookPayload): string | undefined {
 		safeString(
 			payload.session_file ?? payload.sessionFile ?? payload.transcript_path ?? payload.transcriptPath,
 		).trim() ||
-		process.env.GJC_SESSION_FILE?.trim() ||
+		process.env.WORX_SESSION_FILE?.trim() ||
 		undefined
 	);
 }
@@ -420,7 +420,7 @@ async function readStdinJson(): Promise<{ payload: HookPayload; parseError: Erro
 }
 
 async function logHookError(cwd: string, type: string, error: unknown): Promise<void> {
-	const gjcSessionId = process.env.GJC_SESSION_ID?.trim();
+	const gjcSessionId = process.env.WORX_SESSION_ID?.trim();
 	if (!gjcSessionId) {
 		console.error(
 			JSON.stringify({

@@ -28,7 +28,7 @@ import {
 	type RepositoryBinding,
 	RepositoryBindingError,
 } from "./repository-binding";
-import { GJC_RALPLAN_ARTIFACT_ENV, isRestrictedRoleAgentBash } from "./restricted-role-agent-bash";
+import { isRestrictedRoleAgentBash, WORX_RALPLAN_ARTIFACT_ENV } from "./restricted-role-agent-bash";
 import { gjcRoot, modeStatePath, sessionIdFromDirName, sessionPlansDir } from "./session-layout";
 import { resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
 import { migrateWorkflowState } from "./state-migrations";
@@ -56,7 +56,7 @@ import { getSkillManifest } from "./workflow-manifest";
  *    scripted users see a useful response and the active run is visible to the TUI.
  *
  * 2. **Artifact write**: `gjc ralplan --write --stage <type> --stage_n <N>
- *    (--artifact <path-or-string> | --artifact-env GJC_RALPLAN_ARTIFACT)
+ *    (--artifact <path-or-string> | --artifact-env WORX_RALPLAN_ARTIFACT)
  *    [--run-id <id>] [--session-id <id>] [--lane-verdict <token>] [--json]` persists Planner / Architect
  *    / Critic / disposition / revision / post-interview / ADR / final artifacts under
  *    `.gjc/plans/ralplan/<run-id>/`, maintains an `index.jsonl` audit log, copies `final`
@@ -1399,7 +1399,7 @@ async function resolveArtifactSessionId(args: readonly string[], cwd: string, ex
 	const flagSessionId = flagValue(args, "--session-id");
 	const currentSession = resolveGjcSessionForWrite(cwd, {
 		flagValue: flagSessionId,
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	if (!explicitRunId) return currentSession.gjcSessionId;
 
@@ -1438,8 +1438,8 @@ async function resolveArtifactArgs(args: readonly string[], cwd: string): Promis
 	if (artifactSources.length > 1) {
 		throw new RalplanCommandError(2, "--artifact and --artifact-env are mutually exclusive");
 	}
-	if (artifactEnvName !== undefined && artifactEnvName !== GJC_RALPLAN_ARTIFACT_ENV) {
-		throw new RalplanCommandError(2, `--artifact-env must be ${GJC_RALPLAN_ARTIFACT_ENV}`);
+	if (artifactEnvName !== undefined && artifactEnvName !== WORX_RALPLAN_ARTIFACT_ENV) {
+		throw new RalplanCommandError(2, `--artifact-env must be ${WORX_RALPLAN_ARTIFACT_ENV}`);
 	}
 
 	const explicitRunId = flagValue(args, "--run-id")?.trim();
@@ -1459,7 +1459,7 @@ async function resolveArtifactArgs(args: readonly string[], cwd: string): Promis
 
 	const artifact =
 		artifactEnvName !== undefined
-			? (process.env[GJC_RALPLAN_ARTIFACT_ENV] ?? "")
+			? (process.env[WORX_RALPLAN_ARTIFACT_ENV] ?? "")
 			: await resolveArtifactContent(rawArtifact!, cwd);
 	if (artifact === "") {
 		throw new RalplanCommandError(2, "artifact content is empty");
@@ -2228,7 +2228,7 @@ function resolveConsensusArgs(args: readonly string[], cwd: string): ConsensusHa
 	}
 	const session = resolveGjcSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	});
 	const sessionId = session.gjcSessionId;
 	assertSafePathComponent(sessionId, "session-id");

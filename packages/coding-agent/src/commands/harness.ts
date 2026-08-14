@@ -16,9 +16,9 @@ import * as path from "node:path";
 import { Args, Command, Flags } from "@gajae-code/utils/cli";
 import { $credentialEnv } from "@gajae-code/utils/env";
 import {
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_SERVER_KEY_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_SERVER_KEY_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "../gjc-runtime/session-state-sidecar";
 import { resolveGjcTmuxBinary, resolveGjcTmuxCommand, sanitizeTmuxToken } from "../gjc-runtime/tmux-common";
 import {
@@ -561,7 +561,7 @@ function scopedBootstrapReceipt(stdout: Uint8Array): ScopedBootstrapReceipt | nu
 }
 
 function ownerIsolationPlatform(): NodeJS.Platform {
-	return process.platform === "linux" || process.env.GJC_HARNESS_TEST_ASSUME_LINUX_OWNER_ISOLATION !== "1"
+	return process.platform === "linux" || process.env.WORX_HARNESS_TEST_ASSUME_LINUX_OWNER_ISOLATION !== "1"
 		? process.platform
 		: "linux";
 }
@@ -580,7 +580,7 @@ function ownerIsolationPlatform(): NodeJS.Platform {
 type ProcessStartCommandOverride = { kind: "none" } | { kind: "invalid" } | { kind: "command"; command: string[] };
 
 function processStartCommandOverride(): ProcessStartCommandOverride {
-	const configured = $credentialEnv("GJC_HARNESS_PROCESS_START_COMMAND");
+	const configured = $credentialEnv("WORX_HARNESS_PROCESS_START_COMMAND");
 	if (!configured) return { kind: "none" };
 	try {
 		const parsed = JSON.parse(configured) as unknown;
@@ -857,7 +857,7 @@ export default class Harness extends Command {
 	async #harnessOwnerIsolationProbe(tmuxCommand: string): Promise<OwnerIsolationProbe> {
 		return {
 			readCallerCgroup: async () =>
-				process.env.GJC_HARNESS_TEST_CALLER_CGROUP ??
+				process.env.WORX_HARNESS_TEST_CALLER_CGROUP ??
 				(await fs.readFile("/proc/self/cgroup", "utf8").catch(() => null)),
 			probeServer: async (socketKey, tmuxControlArgv): Promise<TmuxServerProof> => {
 				const platform = ownerIsolationPlatform();
@@ -876,9 +876,9 @@ export default class Harness extends Command {
 				const pid = Number(result.stdout.toString().trim());
 				if (!Number.isSafeInteger(pid) || pid <= 0) return { state: "unverifiable" };
 				const cgroupText =
-					process.env.GJC_HARNESS_TEST_SERVER_CGROUP ??
+					process.env.WORX_HARNESS_TEST_SERVER_CGROUP ??
 					(platform === "linux" ? await fs.readFile(`/proc/${pid}/cgroup`, "utf8").catch(() => null) : null);
-				const testStartTime = process.env.GJC_HARNESS_TEST_SERVER_START_TIME;
+				const testStartTime = process.env.WORX_HARNESS_TEST_SERVER_START_TIME;
 				const stat =
 					testStartTime || platform !== "linux"
 						? null
@@ -999,17 +999,19 @@ export default class Harness extends Command {
 		await fs.mkdir(path.join(ownerStateDir, sessionId, "owner-lifecycle"), { recursive: true, mode: 0o700 });
 		const ownerGeneration = randomUUID();
 		const envAssignments = [
-			`GJC_HARNESS_STATE_ROOT=${shellQuote(root)}`,
-			`${GJC_TMUX_OWNER_GENERATION_ENV}=${shellQuote(ownerGeneration)}`,
-			`${GJC_TMUX_OWNER_STATE_DIR_ENV}=${shellQuote(ownerStateDir)}`,
-			`${GJC_TMUX_OWNER_SERVER_KEY_ENV}=${shellQuote(socketKey)}`,
+			`WORX_HARNESS_STATE_ROOT=${shellQuote(root)}`,
+			`${WORX_TMUX_OWNER_GENERATION_ENV}=${shellQuote(ownerGeneration)}`,
+			`${WORX_TMUX_OWNER_STATE_DIR_ENV}=${shellQuote(ownerStateDir)}`,
+			`${WORX_TMUX_OWNER_SERVER_KEY_ENV}=${shellQuote(socketKey)}`,
 		];
 		if (process.env[RECEIPT_SPOOL_DIR_ENV])
 			envAssignments.push(`${RECEIPT_SPOOL_DIR_ENV}=${shellQuote(process.env[RECEIPT_SPOOL_DIR_ENV])}`);
-		if (process.env.GJC_HARNESS_TEST_NODE_MODULES)
-			envAssignments.push(`GJC_HARNESS_TEST_NODE_MODULES=${shellQuote(process.env.GJC_HARNESS_TEST_NODE_MODULES)}`);
-		if (process.env.GJC_SDK_DISABLE)
-			envAssignments.push(`GJC_SDK_DISABLE=${shellQuote(process.env.GJC_SDK_DISABLE)}`);
+		if (process.env.WORX_HARNESS_TEST_NODE_MODULES)
+			envAssignments.push(
+				`WORX_HARNESS_TEST_NODE_MODULES=${shellQuote(process.env.WORX_HARNESS_TEST_NODE_MODULES)}`,
+			);
+		if (process.env.WORX_SDK_DISABLE)
+			envAssignments.push(`WORX_SDK_DISABLE=${shellQuote(process.env.WORX_SDK_DISABLE)}`);
 		const shellCommand = `exec env ${envAssignments.join(" ")} ${this.#buildOwnerCommand(sessionId).map(shellQuote).join(" ")}`;
 		const probe = await this.#harnessOwnerIsolationProbe(tmuxCommand);
 		const probeServer = probe.probeServer;
@@ -1207,14 +1209,14 @@ export default class Harness extends Command {
 			cwd,
 			env: {
 				...process.env,
-				GJC_HARNESS_STATE_ROOT: root,
+				WORX_HARNESS_STATE_ROOT: root,
 				...(process.env[RECEIPT_SPOOL_DIR_ENV]
 					? { [RECEIPT_SPOOL_DIR_ENV]: process.env[RECEIPT_SPOOL_DIR_ENV] }
 					: {}),
-				...(process.env.GJC_HARNESS_TEST_NODE_MODULES
-					? { GJC_HARNESS_TEST_NODE_MODULES: process.env.GJC_HARNESS_TEST_NODE_MODULES }
+				...(process.env.WORX_HARNESS_TEST_NODE_MODULES
+					? { WORX_HARNESS_TEST_NODE_MODULES: process.env.WORX_HARNESS_TEST_NODE_MODULES }
 					: {}),
-				...(process.env.GJC_SDK_DISABLE ? { GJC_SDK_DISABLE: process.env.GJC_SDK_DISABLE } : {}),
+				...(process.env.WORX_SDK_DISABLE ? { WORX_SDK_DISABLE: process.env.WORX_SDK_DISABLE } : {}),
 			},
 			stdout: "ignore",
 			stderr: "ignore",

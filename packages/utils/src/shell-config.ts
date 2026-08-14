@@ -40,15 +40,15 @@ function isExecutable(path: string): boolean {
 /**
  * Build the spawn environment (cached).
  *
- * `CI=true` is injected unless the documented `GJC_BASH_NO_CI` (or its legacy
+ * `CI=true` is injected unless the documented `WORX_BASH_NO_CI` (or its legacy
  * `PI_BASH_NO_CI` / `CLAUDE_BASH_NO_CI` aliases) is set to a canonical truthy
  * flag value.
  */
 function buildSpawnEnv(shell: string): Record<string, string> {
-	const noCI = $pickflag("GJC_BASH_NO_CI", "PI_BASH_NO_CI", "CLAUDE_BASH_NO_CI");
+	const noCI = $pickflag("WORX_BASH_NO_CI", "PI_BASH_NO_CI", "CLAUDE_BASH_NO_CI");
 	const inherited = filterProcessEnv(Bun.env);
-	delete inherited.GJC_SESSION_FILE;
-	delete inherited.GJC_MANAGED_OWNER_TRANSCRIPT_PATH;
+	delete inherited.WORX_SESSION_FILE;
+	delete inherited.WORX_MANAGED_OWNER_TRANSCRIPT_PATH;
 	return {
 		...inherited,
 		SHELL: shell,
@@ -63,14 +63,14 @@ function buildSpawnEnv(shell: string): Record<string, string> {
 /**
  * Get shell args, optionally including login shell flag.
  *
- * Honors the documented `GJC_BASH_NO_LOGIN` first, with `PI_BASH_NO_LOGIN` and
+ * Honors the documented `WORX_BASH_NO_LOGIN` first, with `PI_BASH_NO_LOGIN` and
  * `CLAUDE_BASH_NO_LOGIN` as legacy aliases. Boolean-like values follow the
  * canonical flag contract (`1`/`Y`/`TRUE`/`YES`/`ON`, case-insensitive), so an
- * explicit `GJC_BASH_NO_LOGIN=0` keeps the login shell even when a legacy alias
+ * explicit `WORX_BASH_NO_LOGIN=0` keeps the login shell even when a legacy alias
  * is set to a truthy value.
  */
 function getShellArgs(): string[] {
-	const noLogin = $pickflag("GJC_BASH_NO_LOGIN", "PI_BASH_NO_LOGIN", "CLAUDE_BASH_NO_LOGIN");
+	const noLogin = $pickflag("WORX_BASH_NO_LOGIN", "PI_BASH_NO_LOGIN", "CLAUDE_BASH_NO_LOGIN");
 	return noLogin ? ["-c"] : ["-l", "-c"];
 }
 

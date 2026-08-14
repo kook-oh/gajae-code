@@ -362,7 +362,7 @@ export function spawnNormalHarnessSession(
 	options: { termGraceMs?: number; killVerifyMs?: number } = {},
 ): SpawnedHarnessSession {
 	const entry = process.argv[1];
-	if (process.env.GJC_SDK_DISABLE === "1") {
+	if (process.env.WORX_SDK_DISABLE === "1") {
 		throw new HarnessSdkTransportError(
 			"endpoint_unavailable",
 			"SDK hosting is disabled for the harness child session.",
@@ -375,7 +375,7 @@ export function spawnNormalHarnessSession(
 		);
 	const child = Bun.spawn([process.execPath, path.resolve(entry)], {
 		cwd: repo,
-		env: { ...process.env, GJC_LIFECYCLE_REQUEST_ID: `harness-${sessionId}`, GJC_SESSION_ID: sessionId },
+		env: { ...process.env, WORX_LIFECYCLE_REQUEST_ID: `harness-${sessionId}`, WORX_SESSION_ID: sessionId },
 		terminal: { cols: 80, rows: 24 },
 		stdout: "ignore",
 		stderr: "ignore",

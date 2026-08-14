@@ -16,7 +16,7 @@ import {
 	restoreMaterializedModelProfileForDeletion,
 } from "../../config/model-profile-activation";
 import { formatModelProfileDisplayLabel, recommendModelProfileForProvider } from "../../config/model-profiles";
-import { GJC_MODEL_ASSIGNMENT_TARGETS, type GjcModelAssignmentTargetId } from "../../config/model-registry";
+import { type GjcModelAssignmentTargetId, WORX_MODEL_ASSIGNMENT_TARGETS } from "../../config/model-registry";
 import { formatModelSelectorValue } from "../../config/model-resolver";
 import { selectorHead } from "../../config/model-selector-value";
 import type { ModelProfileConfig } from "../../config/models-config-schema";
@@ -2340,7 +2340,7 @@ export class SelectorController {
 								});
 								if (!materializedProfile) {
 									for (const targetRole of targetRoles) {
-										const target = GJC_MODEL_ASSIGNMENT_TARGETS[targetRole];
+										const target = WORX_MODEL_ASSIGNMENT_TARGETS[targetRole];
 										if (target.settingsPath === "modelRoles") {
 											this.ctx.settings.setModelRole(targetRole, value);
 										} else {
@@ -2367,7 +2367,7 @@ export class SelectorController {
 							this.ctx.updateEditorBorderColor();
 							await this.ctx.notifyConfigChanged?.();
 							const labels = targetRoles.map(
-								targetRole => GJC_MODEL_ASSIGNMENT_TARGETS[targetRole].tag ?? targetRole.toUpperCase(),
+								targetRole => WORX_MODEL_ASSIGNMENT_TARGETS[targetRole].tag ?? targetRole.toUpperCase(),
 							);
 							this.ctx.showStatus(
 								includesDefault
@@ -2442,7 +2442,7 @@ export class SelectorController {
 								assignments,
 							});
 							if (!materializedProfile) {
-								const target = GJC_MODEL_ASSIGNMENT_TARGETS[role];
+								const target = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 								if (target.settingsPath === "modelRoles") {
 									this.ctx.settings.setModelRole(role, value);
 								} else {

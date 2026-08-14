@@ -4,7 +4,7 @@ import {
 	type StateAction,
 	type StateArgvClassification,
 } from "../gjc-runtime/state-argv";
-import { CANONICAL_GJC_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
 
 export interface BashAllowedPrefixesCheck {
 	allowed: boolean;
@@ -27,7 +27,7 @@ const UNSAFE_UNQUOTED_EXPANSION_CHARS = new Set(["$", "*", "?", "[", "]", "{", "
 // in either the `name=value` or the compound `name+=value` form.
 const ASSIGNMENT_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*\+?$/u;
 const ALLOWED_STATE_ACTIONS = new Set(["read", "write", "contract"]);
-const CANONICAL_STATE_TARGETS = new Set<string>(CANONICAL_GJC_WORKFLOW_SKILLS);
+const CANONICAL_STATE_TARGETS = new Set<string>(CANONICAL_WORX_WORKFLOW_SKILLS);
 const READ_ONLY_COMMANDS = new Set(["grep", "rg", "tree", "ls", "pwd", "wc", "du", "file", "stat"]);
 
 function parseShellWords(command: string): { words: string[]; reason?: string } {

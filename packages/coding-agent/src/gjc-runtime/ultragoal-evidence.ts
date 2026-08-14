@@ -367,7 +367,7 @@ const CLI_REPLAY_EXEMPT_REASON_CODES = [
 	"platform_unavailable",
 ] as const;
 const CLI_REPLAY_EXEMPT_REASON_CODE_SET = new Set<string>(CLI_REPLAY_EXEMPT_REASON_CODES);
-const CLI_REPLAY_ENV_BASE: Record<string, string> = { CI: "1", NO_COLOR: "1", GJC_ULTRAGOAL_REPLAY: "1" };
+const CLI_REPLAY_ENV_BASE: Record<string, string> = { CI: "1", NO_COLOR: "1", WORX_ULTRAGOAL_REPLAY: "1" };
 const CLI_REPLAY_EXEMPT_REASON_CODE_LIST = CLI_REPLAY_EXEMPT_REASON_CODES.join(", ");
 const CLI_REPLAY_SAFE_ENV_NAMES = new Set(["LANG", "LC_ALL", "LC_CTYPE", "TZ"]);
 const CLI_REPLAY_DANGEROUS_ENV_NAME_PATTERN =

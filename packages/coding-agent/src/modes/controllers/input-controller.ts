@@ -1000,7 +1000,7 @@ export class InputController {
 
 		// Generate session title on first message
 		const hasUserMessages = this.ctx.session.messages.some((m: AgentMessage) => m.role === "user");
-		if (!hasUserMessages && !this.ctx.sessionManager.getSessionName() && !$pickenv("GJC_NO_TITLE", "PI_NO_TITLE")) {
+		if (!hasUserMessages && !this.ctx.sessionManager.getSessionName() && !$pickenv("WORX_NO_TITLE", "PI_NO_TITLE")) {
 			const registry = this.ctx.session.modelRegistry;
 			generateSessionTitle(
 				text,

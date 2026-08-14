@@ -19,11 +19,11 @@ import {
 } from "./managed-owner-supervisor";
 import { tmuxRuntimeSessionPath } from "./session-layout";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_SERVER_KEY_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_SERVER_KEY_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
 import {
 	assertGjcTmuxMutationAuthoritySync,
@@ -33,12 +33,6 @@ import {
 	buildGjcTmuxProfileCommands,
 	buildGjcTmuxSessionName,
 	buildGjcTmuxSessionSlug,
-	GJC_DEFAULT_TMUX_SESSION,
-	GJC_TMUX_ACTIVE_SESSION_ENV,
-	GJC_TMUX_COMMAND_ENV,
-	GJC_TMUX_MOUSE_ENV,
-	GJC_TMUX_PROFILE_ENV,
-	GJC_TMUX_SESSION_PREFIX,
 	type GjcTmuxProfileCommand,
 	type ProviderAuthority,
 	persistGjcTmuxProviderAuthoritySync,
@@ -46,6 +40,12 @@ import {
 	resolveGjcTmuxBinary,
 	resolveGjcTmuxCommand,
 	resolveGjcTmuxProviderContext,
+	WORX_DEFAULT_TMUX_SESSION,
+	WORX_TMUX_ACTIVE_SESSION_ENV,
+	WORX_TMUX_COMMAND_ENV,
+	WORX_TMUX_MOUSE_ENV,
+	WORX_TMUX_PROFILE_ENV,
+	WORX_TMUX_SESSION_PREFIX,
 } from "./tmux-common";
 import {
 	captureOwnerGenerationBaselineSync,
@@ -71,8 +71,8 @@ import {
 } from "./tmux-sessions";
 import {
 	buildWindowsPowerShellInnerCommand,
-	GJC_TMUX_LAUNCHED_ENV,
 	type WindowsPowerShellInnerCommandOptions,
+	WORX_TMUX_LAUNCHED_ENV,
 } from "./windows-powershell-command";
 
 export type { WindowsPowerShellInnerCommandOptions };
@@ -80,19 +80,19 @@ export {
 	buildGjcTmuxExactSessionTarget,
 	buildGjcTmuxProfileCommands,
 	buildWindowsPowerShellInnerCommand,
-	GJC_DEFAULT_TMUX_SESSION,
-	GJC_TMUX_COMMAND_ENV,
-	GJC_TMUX_LAUNCHED_ENV,
-	GJC_TMUX_MOUSE_ENV,
-	GJC_TMUX_PROFILE_ENV,
-	GJC_TMUX_SESSION_PREFIX,
+	WORX_DEFAULT_TMUX_SESSION,
+	WORX_TMUX_COMMAND_ENV,
+	WORX_TMUX_LAUNCHED_ENV,
+	WORX_TMUX_MOUSE_ENV,
+	WORX_TMUX_PROFILE_ENV,
+	WORX_TMUX_SESSION_PREFIX,
 };
 
-export const GJC_LAUNCH_POLICY_ENV = "GJC_LAUNCH_POLICY";
-export const GJC_TMUX_WINDOW_LABEL_MAX_WIDTH = 48;
+export const WORX_LAUNCH_POLICY_ENV = "WORX_LAUNCH_POLICY";
+export const WORX_TMUX_WINDOW_LABEL_MAX_WIDTH = 48;
 
 const WINDOWS_PSMUX_ATTACH_RETRY_DELAY_MS = 100;
-const GJC_TMUX_PSMUX_INCARNATION_OPTION = "@gjc-psmux-incarnation";
+const WORX_TMUX_PSMUX_INCARNATION_OPTION = "@gjc-psmux-incarnation";
 const TERMINAL_TITLE_CONTROL_CHARS = /[\u0000-\u001f\u007f-\u009f]/g;
 
 type LaunchPolicy = "direct" | "tmux";
@@ -204,7 +204,7 @@ export interface TmuxLaunchPlan {
 }
 
 function explicitTmuxSessionName(env: NodeJS.ProcessEnv): string | undefined {
-	return env.GJC_TMUX_SESSION?.trim() || undefined;
+	return env.WORX_TMUX_SESSION?.trim() || undefined;
 }
 function hasCurrentGjcVersion(session: GjcTmuxSessionStatus | undefined): boolean {
 	return session?.version === VERSION;
@@ -278,9 +278,9 @@ interface CommandResolutionContext {
 }
 
 function parseLaunchPolicy(env: NodeJS.ProcessEnv): LaunchPolicy {
-	const raw = env[GJC_LAUNCH_POLICY_ENV]?.trim().toLowerCase();
+	const raw = env[WORX_LAUNCH_POLICY_ENV]?.trim().toLowerCase();
 	if (raw === "direct" || raw === "tmux") return raw;
-	if (env.GJC_NO_TMUX === "1" || env.GJC_NO_TMUX === "true") return "direct";
+	if (env.WORX_NO_TMUX === "1" || env.WORX_NO_TMUX === "true") return "direct";
 	return "tmux";
 }
 
@@ -378,7 +378,7 @@ function formatTmuxUnavailableDiagnostic(platform: NodeJS.Platform): string {
 			`gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session. ` +
 			"GJC searched for psmux, pmux, and tmux on PATH. " +
 			"Install psmux (https://github.com/psmux/psmux) for native Windows tmux support, or use WSL with real tmux. " +
-			"You can also point GJC at a specific binary via GJC_TMUX_COMMAND.\n"
+			"You can also point GJC at a specific binary via WORX_TMUX_COMMAND.\n"
 		);
 	}
 	return "gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n";
@@ -414,8 +414,8 @@ export function applyGjcTmuxProfile(context: GjcTmuxProfileContext): GjcTmuxProf
 			branch: context.branch ?? null,
 			branchSlug,
 			project: context.project ?? null,
-			sessionId: context.sessionId ?? env[GJC_COORDINATOR_SESSION_ID_ENV] ?? null,
-			sessionStateFile: context.sessionStateFile ?? env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV] ?? null,
+			sessionId: context.sessionId ?? env[WORX_COORDINATOR_SESSION_ID_ENV] ?? null,
+			sessionStateFile: context.sessionStateFile ?? env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] ?? null,
 			ownerGeneration: context.ownerGeneration ?? null,
 			ownerServerKey: context.ownerServerKey ?? null,
 			version: context.version ?? null,
@@ -425,7 +425,7 @@ export function applyGjcTmuxProfile(context: GjcTmuxProfileContext): GjcTmuxProf
 	if (context.psmuxIncarnation)
 		commands.push({
 			description: "record psmux incarnation",
-			args: ["set-option", "-t", context.target, GJC_TMUX_PSMUX_INCARNATION_OPTION, context.psmuxIncarnation],
+			args: ["set-option", "-t", context.target, WORX_TMUX_PSMUX_INCARNATION_OPTION, context.psmuxIncarnation],
 		});
 	if (commands.length === 0) return { skipped: true, commands: [], failures: [] };
 	const spawnSync = context.spawnSync ?? defaultSpawnSync;
@@ -501,13 +501,13 @@ function buildInnerCommand(context: CommandResolutionContext, rawArgs: string[])
 	const command = resolveCurrentGjcCommand(context);
 	const childArgs = stripRootTmuxFlag(rawArgs);
 	const supervisorEnv: Record<string, string> = context.managedOwnerSupervisor
-		? { GJC_MANAGED_OWNER_COMMAND_JSON: JSON.stringify([...command, ...childArgs]) }
+		? { WORX_MANAGED_OWNER_COMMAND_JSON: JSON.stringify([...command, ...childArgs]) }
 		: {};
 	const invocationArgs = context.managedOwnerSupervisor
 		? [...command, MANAGED_OWNER_SUPERVISOR_ARG]
 		: [...command, ...childArgs];
 	const quoted = invocationArgs.map(shellQuote).join(" ");
-	const invocation = `env ${GJC_TMUX_LAUNCHED_ENV}=1${buildEnvAssignments({ ...context.extraEnv, ...supervisorEnv })} ${quoted}`;
+	const invocation = `env ${WORX_TMUX_LAUNCHED_ENV}=1${buildEnvAssignments({ ...context.extraEnv, ...supervisorEnv })} ${quoted}`;
 	if (!context.tmuxExitMarkerPath) return `exec ${invocation}`;
 	return `${buildPosixTmuxExitMarkerPrefix(context.tmuxExitMarkerPath)}; ${invocation}; exit $?`;
 }
@@ -544,12 +544,12 @@ function truncateVisibleTail(value: string, maxWidth: number): string {
 	return `…${result}`;
 }
 
-const GJC_TMUX_WINDOW_BRANCH_SEPARATOR = "-";
-const GJC_TMUX_WINDOW_TITLE_PREFIX = "GJC-";
-const GJC_TMUX_TERMINAL_TITLE_PREFIX = "GJC: ";
-const GJC_TMUX_ROOT_TERMINAL_TITLE_OPTION = "@gjc-root-terminal-title";
-const GJC_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION = "@gjc-root-terminal-title-session";
-const GJC_TMUX_DYNAMIC_SESSION_TITLE = "GJC: #{session_name}";
+const WORX_TMUX_WINDOW_BRANCH_SEPARATOR = "-";
+const WORX_TMUX_WINDOW_TITLE_PREFIX = "GJC-";
+const WORX_TMUX_TERMINAL_TITLE_PREFIX = "GJC: ";
+const WORX_TMUX_ROOT_TERMINAL_TITLE_OPTION = "@gjc-root-terminal-title";
+const WORX_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION = "@gjc-root-terminal-title-session";
+const WORX_TMUX_DYNAMIC_SESSION_TITLE = "GJC: #{session_name}";
 
 function sanitizeTmuxWindowTitleSegment(value: string): string {
 	return value.replace(/:+/g, "-");
@@ -566,25 +566,25 @@ function buildGjcTmuxPrefixedTitle(prefix: string, cwd: string, branch: string |
 	const project = sanitizeTmuxWindowProjectName(path.basename(path.resolve(cwd)) || "gjc");
 	const projectTitle = `${prefix}${project}`;
 	const trimmedBranch = sanitizeTmuxWindowTitleSegment(branch?.trim() ?? "");
-	if (!trimmedBranch) return truncateVisible(projectTitle, GJC_TMUX_WINDOW_LABEL_MAX_WIDTH);
+	if (!trimmedBranch) return truncateVisible(projectTitle, WORX_TMUX_WINDOW_LABEL_MAX_WIDTH);
 
-	const separatorWidth = visibleWidth(GJC_TMUX_WINDOW_BRANCH_SEPARATOR);
+	const separatorWidth = visibleWidth(WORX_TMUX_WINDOW_BRANCH_SEPARATOR);
 	const projectWidth = visibleWidth(projectTitle);
-	const fullTitle = `${projectTitle}${GJC_TMUX_WINDOW_BRANCH_SEPARATOR}${trimmedBranch}`;
-	if (visibleWidth(fullTitle) <= GJC_TMUX_WINDOW_LABEL_MAX_WIDTH) return fullTitle;
+	const fullTitle = `${projectTitle}${WORX_TMUX_WINDOW_BRANCH_SEPARATOR}${trimmedBranch}`;
+	if (visibleWidth(fullTitle) <= WORX_TMUX_WINDOW_LABEL_MAX_WIDTH) return fullTitle;
 
-	const remainingBranchWidth = GJC_TMUX_WINDOW_LABEL_MAX_WIDTH - projectWidth - separatorWidth;
-	if (remainingBranchWidth <= 0) return truncateVisible(projectTitle, GJC_TMUX_WINDOW_LABEL_MAX_WIDTH);
+	const remainingBranchWidth = WORX_TMUX_WINDOW_LABEL_MAX_WIDTH - projectWidth - separatorWidth;
+	if (remainingBranchWidth <= 0) return truncateVisible(projectTitle, WORX_TMUX_WINDOW_LABEL_MAX_WIDTH);
 
-	return `${projectTitle}${GJC_TMUX_WINDOW_BRANCH_SEPARATOR}${truncateVisibleTail(trimmedBranch, remainingBranchWidth)}`;
+	return `${projectTitle}${WORX_TMUX_WINDOW_BRANCH_SEPARATOR}${truncateVisibleTail(trimmedBranch, remainingBranchWidth)}`;
 }
 
 export function buildGjcTmuxWindowTitle(cwd: string, branch: string | null | undefined): string {
-	return buildGjcTmuxPrefixedTitle(GJC_TMUX_WINDOW_TITLE_PREFIX, cwd, branch);
+	return buildGjcTmuxPrefixedTitle(WORX_TMUX_WINDOW_TITLE_PREFIX, cwd, branch);
 }
 
 function buildGjcTmuxRootTerminalTitle(cwd: string, branch: string | null | undefined): string {
-	return buildGjcTmuxPrefixedTitle(GJC_TMUX_TERMINAL_TITLE_PREFIX, cwd, branch);
+	return buildGjcTmuxPrefixedTitle(WORX_TMUX_TERMINAL_TITLE_PREFIX, cwd, branch);
 }
 
 function sanitizeGjcTmuxRootTerminalTitle(title: string): string {
@@ -592,8 +592,8 @@ function sanitizeGjcTmuxRootTerminalTitle(title: string): string {
 }
 
 function buildGjcTmuxRootTerminalTitleFormat(sessionName: string): string {
-	if (!sessionName.startsWith(GJC_TMUX_SESSION_PREFIX)) return GJC_TMUX_DYNAMIC_SESSION_TITLE;
-	return `#{?#{==:#{${GJC_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION}},#{session_name}},#{${GJC_TMUX_ROOT_TERMINAL_TITLE_OPTION}},${GJC_TMUX_DYNAMIC_SESSION_TITLE}}`;
+	if (!sessionName.startsWith(WORX_TMUX_SESSION_PREFIX)) return WORX_TMUX_DYNAMIC_SESSION_TITLE;
+	return `#{?#{==:#{${WORX_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION}},#{session_name}},#{${WORX_TMUX_ROOT_TERMINAL_TITLE_OPTION}},${WORX_TMUX_DYNAMIC_SESSION_TITLE}}`;
 }
 
 function buildGjcTmuxRootTerminalTitleCommands(
@@ -606,11 +606,11 @@ function buildGjcTmuxRootTerminalTitleCommands(
 	return [
 		{
 			description: "remember tmux client terminal title fallback",
-			args: ["set-option", "-t", target, GJC_TMUX_ROOT_TERMINAL_TITLE_OPTION, sanitized],
+			args: ["set-option", "-t", target, WORX_TMUX_ROOT_TERMINAL_TITLE_OPTION, sanitized],
 		},
 		{
 			description: "remember tmux client terminal title session",
-			args: ["set-option", "-t", target, GJC_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION, sessionName],
+			args: ["set-option", "-t", target, WORX_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION, sessionName],
 		},
 		{ description: "enable tmux client terminal title", args: ["set-option", "-t", target, "set-titles", "on"] },
 		{
@@ -635,7 +635,7 @@ function applyGjcTmuxRootTerminalTitleProfile(context: {
 }
 
 function shouldSetGjcTmuxRootTerminalTitle(parsed: Args, env: NodeJS.ProcessEnv): boolean {
-	return !parsed.noTitle && !(env.GJC_NO_TITLE || env.PI_NO_TITLE);
+	return !parsed.noTitle && !(env.WORX_NO_TITLE || env.PI_NO_TITLE);
 }
 
 function buildTmuxRenameWindowArgs(title: string, target?: string): string[] {
@@ -704,7 +704,7 @@ function renameExistingTmuxWindow(
 
 function renameExistingTmuxWindowIfNeeded(context: TmuxLaunchContext): void {
 	const env = context.env ?? process.env;
-	if (!env.TMUX || env[GJC_TMUX_LAUNCHED_ENV] === "1") return;
+	if (!env.TMUX || env[WORX_TMUX_LAUNCHED_ENV] === "1") return;
 	if (parseLaunchPolicy(env) === "direct") return;
 
 	// Note: Windows is intentionally allowed here. Psmux supports
@@ -975,7 +975,7 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 	const env = context.env ?? process.env;
 	const policy = parseLaunchPolicy(env);
 	if (!context.parsed.tmux || policy === "direct") return undefined;
-	if (env.TMUX || env[GJC_TMUX_LAUNCHED_ENV] === "1") return undefined;
+	if (env.TMUX || env[WORX_TMUX_LAUNCHED_ENV] === "1") return undefined;
 	const platform = context.platform ?? process.platform;
 	const tty = context.tty ?? {
 		stdin: Boolean(process.stdin.isTTY),
@@ -992,16 +992,16 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 	// Pick the most appropriate tmux binary for this platform. On native Windows
 	// the resolver walks psmux / pmux / tmux and uses the first one present on
 	// PATH, so the default `gjc --tmux` flow lands on a real multiplexer even
-	// without an explicit GJC_TMUX_COMMAND override.
+	// without an explicit WORX_TMUX_COMMAND override.
 	const resolvedBinary = resolveGjcTmuxBinary({ platform, env });
 	const tmuxCommand = resolvedBinary.command;
-	const sessionId = env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim() || sessionName;
-	// The session ROOT is keyed by the active GJC session (GJC_SESSION_ID), NOT the
+	const sessionId = env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || sessionName;
+	// The session ROOT is keyed by the active GJC session (WORX_SESSION_ID), NOT the
 	// coordinator/tmux identity. Fall back to the coordinator id only for standalone
 	// tmux launches with no GJC session context.
-	const gjcSessionId = env.GJC_SESSION_ID?.trim() || sessionId;
+	const gjcSessionId = env.WORX_SESSION_ID?.trim() || sessionId;
 	const sessionStateFile =
-		env[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim() ||
+		env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim() ||
 		tmuxRuntimeSessionPath(cwd, gjcSessionId, buildGjcTmuxSessionSlug(sessionName));
 	const tmuxAvailable = context.tmuxAvailable ?? Bun.which(tmuxCommand) !== null;
 	if (!tmuxAvailable) {
@@ -1025,13 +1025,13 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 			argv: context.argv ?? process.argv,
 			execPath: context.execPath ?? process.execPath,
 			extraEnv: {
-				[GJC_COORDINATOR_SESSION_ID_ENV]: sessionId,
-				[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
+				[WORX_COORDINATOR_SESSION_ID_ENV]: sessionId,
+				[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
 				// Carry the GJC-managed session name into the child so `gjc team`
 				// can target the correct leader session by name. Under psmux on
 				// Windows the inherited TMUX_PANE can resolve to the wrong/default
 				// session, which would split/send workers into the wrong session.
-				[GJC_TMUX_ACTIVE_SESSION_ENV]: sessionName,
+				[WORX_TMUX_ACTIVE_SESSION_ENV]: sessionName,
 			},
 			tmuxExitMarkerPath: tmuxExitMarkerPath(sessionStateFile),
 			platform,
@@ -1098,12 +1098,12 @@ function prepareManagedOwnerLifecycle(plan: TmuxLaunchPlan, context: TmuxLaunchC
 			argv: context.argv ?? process.argv,
 			execPath: context.execPath ?? process.execPath,
 			extraEnv: {
-				[GJC_COORDINATOR_SESSION_ID_ENV]: sessionId,
-				[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: plan.sessionStateFile ?? "",
-				[GJC_TMUX_ACTIVE_SESSION_ENV]: plan.sessionName,
-				[GJC_TMUX_OWNER_GENERATION_ENV]: generation,
-				[GJC_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
-				[GJC_TMUX_OWNER_SERVER_KEY_ENV]: plan.tmuxCommand,
+				[WORX_COORDINATOR_SESSION_ID_ENV]: sessionId,
+				[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: plan.sessionStateFile ?? "",
+				[WORX_TMUX_ACTIVE_SESSION_ENV]: plan.sessionName,
+				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
+				[WORX_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
+				[WORX_TMUX_OWNER_SERVER_KEY_ENV]: plan.tmuxCommand,
 				[MANAGED_OWNER_RUN_ID_ENV]: runId,
 				[MANAGED_OWNER_INCARNATION_ENV]: incarnation,
 				...(replacement
@@ -1113,7 +1113,7 @@ function prepareManagedOwnerLifecycle(plan: TmuxLaunchPlan, context: TmuxLaunchC
 							[MANAGED_OWNER_PREDECESSOR_RUN_ID_ENV]: replacement.runId,
 							[MANAGED_OWNER_PREDECESSOR_INCARNATION_ENV]: replacement.incarnation,
 							[MANAGED_OWNER_TRANSCRIPT_PATH_ENV]:
-								context.env?.GJC_SESSION_FILE ?? process.env.GJC_SESSION_FILE ?? "",
+								context.env?.WORX_SESSION_FILE ?? process.env.WORX_SESSION_FILE ?? "",
 						}
 					: {}),
 			},
@@ -1326,7 +1326,7 @@ function requiredProfileFailure(profile: GjcTmuxProfileResult): GjcTmuxProfileRe
 		"@gjc-session-state-file",
 		"@gjc-owner-generation",
 		"@gjc-owner-server-key",
-		GJC_TMUX_PSMUX_INCARNATION_OPTION,
+		WORX_TMUX_PSMUX_INCARNATION_OPTION,
 	]);
 	return profile.failures.find(item => requiredOptions.has(String(item.command.args[item.command.args.length - 2])));
 }
@@ -1364,7 +1364,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			isExplicitTmuxRequest(context) &&
 			parseLaunchPolicy(env) !== "direct" &&
 			!env.TMUX &&
-			env[GJC_TMUX_LAUNCHED_ENV] !== "1" &&
+			env[WORX_TMUX_LAUNCHED_ENV] !== "1" &&
 			isInteractiveRootLaunch(context.parsed, tty) &&
 			!tmuxAvailable
 		)
@@ -1376,9 +1376,9 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 	if (plan.isPsmux && plan.platform === "win32") {
 		try {
 			if (plan.attachSessionName) {
-				const stateDir = env[GJC_TMUX_OWNER_STATE_DIR_ENV]?.trim();
-				const sessionId = env[GJC_COORDINATOR_SESSION_ID_ENV]?.trim();
-				const generation = env[GJC_TMUX_OWNER_GENERATION_ENV]?.trim();
+				const stateDir = env[WORX_TMUX_OWNER_STATE_DIR_ENV]?.trim();
+				const sessionId = env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim();
+				const generation = env[WORX_TMUX_OWNER_GENERATION_ENV]?.trim();
 				if (!stateDir || !sessionId || !generation) throw new Error("gjc_tmux_provider_authority_unavailable");
 				plan.authority = readGjcTmuxProviderAuthoritySync({ stateDir, sessionId, generation });
 			} else {
@@ -1519,7 +1519,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 								"set-option",
 								"-t",
 								createdSessionOptionTarget(plan, env),
-								GJC_TMUX_PSMUX_INCARNATION_OPTION,
+								WORX_TMUX_PSMUX_INCARNATION_OPTION,
 								plan.ownerIncarnation,
 							],
 						},
@@ -1532,7 +1532,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 				"@gjc-session-state-file",
 				"@gjc-owner-generation",
 				"@gjc-owner-server-key",
-				GJC_TMUX_PSMUX_INCARNATION_OPTION,
+				WORX_TMUX_PSMUX_INCARNATION_OPTION,
 			].includes(command.args[command.args.length - 2] ?? ""),
 		);
 		return required.every(command => {

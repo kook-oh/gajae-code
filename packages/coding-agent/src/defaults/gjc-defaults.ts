@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { getAgentDir, isEnoent } from "@gajae-code/utils";
-import { BUNDLED_GJC_SKILL_CATALOG, type BundledGjcSkillCatalogEntry } from "./gjc-skills.generated";
+import { BUNDLED_WORX_SKILL_CATALOG, type BundledGjcSkillCatalogEntry } from "./gjc-skills.generated";
 
-export const DEFAULT_GJC_DEFINITION_NAMES = ["deep-interview", "ralplan", "team", "ultragoal"] as const;
-export type DefaultGjcDefinitionName = (typeof DEFAULT_GJC_DEFINITION_NAMES)[number];
+export const DEFAULT_WORX_DEFINITION_NAMES = ["deep-interview", "ralplan", "team", "ultragoal"] as const;
+export type DefaultGjcDefinitionName = (typeof DEFAULT_WORX_DEFINITION_NAMES)[number];
 export type DefaultGjcDefinitionKind = "skill" | "skill-fragment";
 export type EmbeddedDefaultGjcSkill = {
 	name: DefaultGjcDefinitionName;
@@ -145,10 +145,10 @@ function asDefaultDefinition(entry: BundledGjcSkillCatalogEntry): DefaultGjcDefi
 	);
 }
 
-const DEFAULT_GJC_DEFINITIONS: readonly DefaultGjcDefinition[] = BUNDLED_GJC_SKILL_CATALOG.map(asDefaultDefinition);
+const DEFAULT_WORX_DEFINITIONS: readonly DefaultGjcDefinition[] = BUNDLED_WORX_SKILL_CATALOG.map(asDefaultDefinition);
 
 export function getDefaultGjcDefinitions(): readonly DefaultGjcDefinition[] {
-	return DEFAULT_GJC_DEFINITIONS;
+	return DEFAULT_WORX_DEFINITIONS;
 }
 
 export function getDefaultGjcAgentDefinitions(): readonly DefaultGjcDefinition[] {
@@ -158,17 +158,17 @@ export function getDefaultGjcAgentDefinitions(): readonly DefaultGjcDefinition[]
 export function getEmbeddedDefaultGjcSkillFragments(
 	parentSkillName: DefaultGjcDefinitionName,
 ): DefaultGjcSkillFragmentDefinition[] {
-	return DEFAULT_GJC_DEFINITIONS.filter(
+	return DEFAULT_WORX_DEFINITIONS.filter(
 		(definition): definition is DefaultGjcSkillFragmentDefinition =>
 			definition.kind === "skill-fragment" && definition.parentSkillName === parentSkillName,
 	);
 }
 
 export function getEmbeddedDefaultGjcSkills(): EmbeddedDefaultGjcSkill[] {
-	return DEFAULT_GJC_DEFINITIONS.filter(
+	return DEFAULT_WORX_DEFINITIONS.filter(
 		(definition): definition is DefaultGjcSkillDefinition => definition.kind === "skill",
 	).map(definition => {
-		const catalogEntry = BUNDLED_GJC_SKILL_CATALOG.find(
+		const catalogEntry = BUNDLED_WORX_SKILL_CATALOG.find(
 			entry => entry.kind === "skill" && entry.name === definition.name,
 		);
 		if (!catalogEntry) {
@@ -195,7 +195,7 @@ export async function installDefaultGjcDefinitions(
 	const targetRoot = options.targetRoot ?? getAgentDir();
 	const files: DefaultGjcDefinitionInstallFile[] = [];
 
-	for (const definition of DEFAULT_GJC_DEFINITIONS) {
+	for (const definition of DEFAULT_WORX_DEFINITIONS) {
 		const content = await definition.loadContent();
 		const destination = path.join(targetRoot, definition.relativePath);
 		const existing = await readExistingText(destination);

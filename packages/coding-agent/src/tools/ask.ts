@@ -59,7 +59,7 @@ import type {
 	AskSettlementResult,
 	ToolSession,
 } from ".";
-import { GJC_ASK_TIMEOUT_CODE } from "./ask-answer-registry";
+import { WORX_ASK_TIMEOUT_CODE } from "./ask-answer-registry";
 
 import {
 	type AskParametersSchema,
@@ -120,7 +120,7 @@ function errorMessage(error: unknown): string {
 }
 
 function isAskTimeoutError(error: unknown): boolean {
-	return typeof error === "object" && error !== null && (error as { code?: unknown }).code === GJC_ASK_TIMEOUT_CODE;
+	return typeof error === "object" && error !== null && (error as { code?: unknown }).code === WORX_ASK_TIMEOUT_CODE;
 }
 
 async function awaitDeepInterviewRecorderPersistence(persistence: Promise<void>, required: boolean): Promise<void> {

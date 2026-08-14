@@ -1,7 +1,7 @@
 import { Buffer } from "node:buffer";
 import * as path from "node:path";
 
-export const GJC_TMUX_LAUNCHED_ENV = "GJC_TMUX_LAUNCHED";
+export const WORX_TMUX_LAUNCHED_ENV = "WORX_TMUX_LAUNCHED";
 
 export interface WindowsPowerShellInnerCommandOptions {
 	command: readonly string[];
@@ -35,7 +35,7 @@ export function buildWindowsPowerShellInnerCommand({
 	environment,
 	tmuxExitMarkerPath,
 }: WindowsPowerShellInnerCommandOptions): string {
-	const envLines = Object.entries({ [GJC_TMUX_LAUNCHED_ENV]: "1", ...(environment ?? {}) }).map(
+	const envLines = Object.entries({ [WORX_TMUX_LAUNCHED_ENV]: "1", ...(environment ?? {}) }).map(
 		([key, value]) => `$env:${key} = ${powershellQuote(value)}`,
 	);
 	const resolvedCommand = command.map(powershellQuote).join(" ");

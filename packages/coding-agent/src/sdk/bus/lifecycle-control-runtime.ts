@@ -29,11 +29,11 @@ import {
 } from "../../gjc-runtime/managed-owner-supervisor";
 import { tmuxRuntimeSessionPath } from "../../gjc-runtime/session-layout";
 import {
-	GJC_COORDINATOR_SESSION_ID_ENV,
-	GJC_COORDINATOR_SESSION_STATE_FILE_ENV,
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_SERVER_KEY_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_SERVER_KEY_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "../../gjc-runtime/session-state-sidecar";
 import {
 	buildGjcTmuxProfileCommands,
@@ -81,9 +81,9 @@ import {
 import { listRecentSessions } from "./recent-activity";
 
 const directLifecycleManagedOwnerEnvUnsets = [
-	GJC_TMUX_OWNER_GENERATION_ENV,
-	GJC_TMUX_OWNER_STATE_DIR_ENV,
-	GJC_TMUX_OWNER_SERVER_KEY_ENV,
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
+	WORX_TMUX_OWNER_SERVER_KEY_ENV,
 	MANAGED_OWNER_COMMAND_ENV,
 	MANAGED_OWNER_RUN_ID_ENV,
 	MANAGED_OWNER_INCARNATION_ENV,
@@ -400,7 +400,7 @@ function tmuxSessionNameFor(sessionId: string): string {
 
 /** Build the `gjc` argv for a create target (existing path / worktree / dir).
  *
- *  The launched session id is carried via `GJC_SESSION_ID` in the child env (see
+ *  The launched session id is carried via `WORX_SESSION_ID` in the child env (see
  *  {@link daemonSpawnCreate}); the root `gjc` launcher has no `--session-id`
  *  flag, so it must never appear in argv. Only flags the launch parser actually
  *  supports are emitted (`--worktree <branch>` for worktree targets,
@@ -1152,14 +1152,14 @@ export function daemonSpawnCreate(
 		const { cwd, args } = buildCreateArgv(frame, ids);
 		const sessionStateFile = lifecycleRuntimeStateFile(cwd, ids.intendedSessionId, name);
 		const commonChildEnv: Record<string, string> = {
-			GJC_TMUX_LAUNCHED: "1",
-			GJC_NOTIFICATIONS: "1",
-			GJC_SESSION_ID: ids.intendedSessionId,
-			GJC_LIFECYCLE_REQUEST_ID: ids.lifecycleRequestId,
-			[GJC_COORDINATOR_SESSION_ID_ENV]: ids.intendedSessionId,
-			[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
+			WORX_TMUX_LAUNCHED: "1",
+			WORX_NOTIFICATIONS: "1",
+			WORX_SESSION_ID: ids.intendedSessionId,
+			WORX_LIFECYCLE_REQUEST_ID: ids.lifecycleRequestId,
+			[WORX_COORDINATOR_SESSION_ID_ENV]: ids.intendedSessionId,
+			[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
 		};
-		if (ids.startupPromptRef) commonChildEnv.GJC_STARTUP_PROMPT_REF = ids.startupPromptRef;
+		if (ids.startupPromptRef) commonChildEnv.WORX_STARTUP_PROMPT_REF = ids.startupPromptRef;
 		if ((opts.platform ?? process.platform) === "linux") {
 			const stateDir = path.dirname(sessionStateFile);
 			const previousBaseline = await captureOwnerGenerationBaseline(stateDir, ids.intendedSessionId);
@@ -1169,9 +1169,9 @@ export function daemonSpawnCreate(
 			const incarnation = crypto.randomUUID();
 			const managedChildEnv: Record<string, string> = {
 				...commonChildEnv,
-				[GJC_TMUX_OWNER_GENERATION_ENV]: generation,
-				[GJC_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
-				[GJC_TMUX_OWNER_SERVER_KEY_ENV]: "default",
+				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
+				[WORX_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
+				[WORX_TMUX_OWNER_SERVER_KEY_ENV]: "default",
 				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["gjc", ...args]),
 				[MANAGED_OWNER_RUN_ID_ENV]: runId,
 				[MANAGED_OWNER_INCARNATION_ENV]: incarnation,
@@ -1181,7 +1181,7 @@ export function daemonSpawnCreate(
 							[MANAGED_OWNER_PREDECESSOR_GENERATION_ENV]: predecessor.generation,
 							[MANAGED_OWNER_PREDECESSOR_RUN_ID_ENV]: predecessor.runId,
 							[MANAGED_OWNER_PREDECESSOR_INCARNATION_ENV]: predecessor.incarnation,
-							[MANAGED_OWNER_TRANSCRIPT_PATH_ENV]: env.GJC_SESSION_FILE ?? "",
+							[MANAGED_OWNER_TRANSCRIPT_PATH_ENV]: env.WORX_SESSION_FILE ?? "",
 						}
 					: {}),
 			};
@@ -1383,10 +1383,10 @@ export function daemonResumeSession(
 		const name = tmuxSessionNameFor(resumeId);
 		const sessionStateFile = lifecycleRuntimeStateFile(resolvedResumeCwd, resumeId, name);
 		const commonChildEnv: Record<string, string> = {
-			GJC_TMUX_LAUNCHED: "1",
-			GJC_NOTIFICATIONS: "1",
-			[GJC_COORDINATOR_SESSION_ID_ENV]: resumeId,
-			[GJC_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
+			WORX_TMUX_LAUNCHED: "1",
+			WORX_NOTIFICATIONS: "1",
+			[WORX_COORDINATOR_SESSION_ID_ENV]: resumeId,
+			[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
 		};
 		if ((opts.platform ?? process.platform) === "linux") {
 			const stateDir = path.dirname(sessionStateFile);
@@ -1397,9 +1397,9 @@ export function daemonResumeSession(
 			const incarnation = crypto.randomUUID();
 			const managedChildEnv: Record<string, string> = {
 				...commonChildEnv,
-				[GJC_TMUX_OWNER_GENERATION_ENV]: generation,
-				[GJC_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
-				[GJC_TMUX_OWNER_SERVER_KEY_ENV]: "default",
+				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
+				[WORX_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
+				[WORX_TMUX_OWNER_SERVER_KEY_ENV]: "default",
 				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["gjc", "--resume", resumeId]),
 				[MANAGED_OWNER_RUN_ID_ENV]: runId,
 				[MANAGED_OWNER_INCARNATION_ENV]: incarnation,
@@ -1409,7 +1409,7 @@ export function daemonResumeSession(
 							[MANAGED_OWNER_PREDECESSOR_GENERATION_ENV]: predecessor.generation,
 							[MANAGED_OWNER_PREDECESSOR_RUN_ID_ENV]: predecessor.runId,
 							[MANAGED_OWNER_PREDECESSOR_INCARNATION_ENV]: predecessor.incarnation,
-							[MANAGED_OWNER_TRANSCRIPT_PATH_ENV]: env.GJC_SESSION_FILE ?? "",
+							[MANAGED_OWNER_TRANSCRIPT_PATH_ENV]: env.WORX_SESSION_FILE ?? "",
 						}
 					: {}),
 			};

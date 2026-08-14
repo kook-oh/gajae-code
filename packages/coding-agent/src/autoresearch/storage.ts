@@ -571,7 +571,7 @@ export async function openAutoresearchStorageIfExists(cwd: string): Promise<Auto
 }
 
 async function resolveAutoresearchPaths(cwd: string): Promise<{ dbPath: string; projectDir: string }> {
-	const override = process.env.GJC_AUTORESEARCH_DB_DIR;
+	const override = process.env.WORX_AUTORESEARCH_DB_DIR;
 	const repoRoot = (await git.repo.root(cwd)) ?? cwd;
 	const encoded = encodeProjectKey(repoRoot);
 	if (override) {

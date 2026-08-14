@@ -69,7 +69,7 @@ function internalEnvironment(environment: NodeJS.ProcessEnv, source: boolean): N
 	delete isolated.BUN_OPTIONS;
 	if (source) {
 		delete isolated.PI_COMPILED;
-		delete isolated.GJC_COMPILED;
+		delete isolated.WORX_COMPILED;
 	}
 	return isolated;
 }

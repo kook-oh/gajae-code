@@ -35,8 +35,8 @@ interface EmbeddedAgentDef {
 	template: string;
 }
 
-const ULTRAGOAL_RED_TEAM_OPEN = "__GJC_ULTRAGOAL_RED_TEAM_OPEN__";
-const ULTRAGOAL_RED_TEAM_CLOSE = "__GJC_ULTRAGOAL_RED_TEAM_CLOSE__";
+const ULTRAGOAL_RED_TEAM_OPEN = "__WORX_ULTRAGOAL_RED_TEAM_OPEN__";
+const ULTRAGOAL_RED_TEAM_CLOSE = "__WORX_ULTRAGOAL_RED_TEAM_CLOSE__";
 
 function buildAgentContent(def: EmbeddedAgentDef): string {
 	const restrictedBash = prompt.render(restrictedBashTemplate);

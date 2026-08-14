@@ -41,7 +41,7 @@ const validationBatchContracts = () =>
 		module => module.default,
 	);
 
-export const BUNDLED_GJC_SKILL_CATALOG: readonly BundledGjcSkillCatalogEntry[] = [
+export const BUNDLED_WORX_SKILL_CATALOG: readonly BundledGjcSkillCatalogEntry[] = [
 	{
 		kind: "skill",
 		name: "deep-interview",

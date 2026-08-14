@@ -265,7 +265,7 @@ export interface JsonObject {
 }
 
 export function currentUltragoalSessionId(cwd: string): string {
-	return resolveGjcSessionForWrite(cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId;
+	return resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
 }
 
 const TERMINAL_OR_SKIPPED_STATUSES = new Set<UltragoalGoalStatus>(["complete", "superseded"]);
@@ -323,7 +323,7 @@ export function hashStructuredValue(value: unknown): string {
 }
 
 export function getUltragoalPaths(cwd: string, sessionId?: string | null): UltragoalPaths {
-	const explicitSessionId = sessionId?.trim() || process.env.GJC_SESSION_ID?.trim();
+	const explicitSessionId = sessionId?.trim() || process.env.WORX_SESSION_ID?.trim();
 	const dir = explicitSessionId ? sessionUltragoalDir(cwd, explicitSessionId) : path.join(gjcRoot(cwd), "ultragoal");
 	return {
 		dir,
@@ -345,7 +345,7 @@ export async function appendLedger(
 	sessionId?: string | null,
 ): Promise<UltragoalLedgerEvent> {
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	const entry: UltragoalLedgerEvent = {
 		eventId: typeof event.eventId === "string" ? event.eventId : crypto.randomUUID(),
@@ -363,7 +363,7 @@ export async function appendLedger(
 export async function readUltragoalLedger(cwd: string, sessionId?: string | null): Promise<UltragoalLedgerEvent[]> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	try {
 		const raw = await Bun.file(getUltragoalPaths(cwd, resolvedSessionId).ledgerPath).text();
 		return raw
@@ -409,7 +409,7 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 
 /**
  * Resolve the per-story nudge budget. Project `./.gjc/settings.json` overrides the
- * user settings (`$GJC_CONFIG_DIR/settings.json` or `~/.gjc/settings.json`), else the
+ * user settings (`$WORX_CONFIG_DIR/settings.json` or `~/.gjc/settings.json`), else the
  * default. Mirrors the `gjc.deepInterview.ambiguityThreshold` user+project precedence.
  */
 export async function resolveUltragoalNudgeBudget(cwd: string): Promise<{ budget: number; source: string }> {
@@ -480,7 +480,7 @@ export async function recordUltragoalNudgeIfBudgetRemaining(input: {
 		};
 	}
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	return withWorkflowStateLock(
 		paths.ledgerPath,
@@ -527,7 +527,7 @@ export async function recordUltragoalNudgeIfBudgetRemaining(input: {
 
 export async function writePlan(cwd: string, plan: UltragoalPlan, sessionId?: string | null): Promise<void> {
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.GJC_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	await writeArtifact(paths.briefPath, `${plan.brief.trim()}\n`, {
 		cwd,
@@ -1003,7 +1003,7 @@ function normalizePlan(raw: unknown): UltragoalPlan {
 export async function readUltragoalPlan(cwd: string, sessionId?: string | null): Promise<UltragoalPlan | null> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	try {
 		return normalizePlan(await Bun.file(getUltragoalPaths(cwd, resolvedSessionId).goalsPath).json());
 	} catch (error) {
@@ -1027,7 +1027,7 @@ function emptyCounts(): Record<UltragoalGoalStatus, number> {
 export async function getUltragoalStatus(cwd: string, sessionId?: string | null): Promise<UltragoalStatusSummary> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.GJC_SESSION_ID })).gjcSessionId;
+		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	const plan = await readUltragoalPlan(cwd, resolvedSessionId);
 	const counts = emptyCounts();
@@ -4072,7 +4072,7 @@ export async function recordUltragoalCriticVerdict(input: {
 		throw new Error("record-critic-verdict --classification-event-id is required for pause verdicts");
 	}
 	const resolvedSessionId = resolveGjcSessionForWrite(input.cwd, {
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	}).gjcSessionId;
 	const paths = getUltragoalPaths(input.cwd, resolvedSessionId);
 	return withWorkflowStateLock(
@@ -4153,7 +4153,7 @@ export async function recordUltragoalCriticGateOverride(input: {
 	const evidence = input.evidence.trim();
 	if (!evidence) throw new Error("record-critic-gate-override --evidence is required");
 	const resolvedSessionId = resolveGjcSessionForWrite(input.cwd, {
-		envSessionId: process.env.GJC_SESSION_ID,
+		envSessionId: process.env.WORX_SESSION_ID,
 	}).gjcSessionId;
 	const paths = getUltragoalPaths(input.cwd, resolvedSessionId);
 	return withWorkflowStateLock(
@@ -5315,7 +5315,7 @@ const RECONCILE_COMMANDS = new Set([
  * Derive a workflow-state payload from the ultragoal plan/ledger and reconcile the
  * ultragoal mode-state + active-state/HUD so `gjc state ultragoal read`, the
  * skill-tool chain guard, and the HUD chip mirror the plan/ledger. Session scope
- * follows `gjc state` (`GJC_SESSION_ID`). This is a derived repair: it never changes
+ * follows `gjc state` (`WORX_SESSION_ID`). This is a derived repair: it never changes
  * the triggering command's status/stdout, but a failure is surfaced (stderr + a
  * `reconcile_failed` ledger audit event) rather than silently swallowed. `status` is
  * therefore a read PLUS a derived repair; it never mutates goals.json/ledger.jsonl

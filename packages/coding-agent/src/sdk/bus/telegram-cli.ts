@@ -11,7 +11,7 @@
  *   bun run packages/coding-agent/src/sdk/bus/telegram-cli.ts \
  *     --bot-token <token> [--chat-id <id>] [--endpoint-file <path> | --session-id <id>] [--repo <dir>]
  *
- * Env fallbacks: GJC_TG_BOT_TOKEN, GJC_TG_CHAT_ID.
+ * Env fallbacks: WORX_TG_BOT_TOKEN, WORX_TG_CHAT_ID.
  * If --chat-id is omitted it is auto-resolved from getUpdates (message the bot once).
  * If neither --endpoint-file nor --session-id is given, the newest endpoint file
  * under <repo>/.gjc/state/sdk/ is used.
@@ -87,8 +87,8 @@ function printHelpAndExit(): never {
 		[
 			"gjc notifications — Telegram reference client",
 			"",
-			"  --bot-token <token>     Telegram bot token (or env GJC_TG_BOT_TOKEN)",
-			"  --chat-id <id>          Target chat id (or env GJC_TG_CHAT_ID; auto-resolved if omitted)",
+			"  --bot-token <token>     Telegram bot token (or env WORX_TG_BOT_TOKEN)",
+			"  --chat-id <id>          Target chat id (or env WORX_TG_CHAT_ID; auto-resolved if omitted)",
 			"  --endpoint-file <path>  Session endpoint discovery file",
 			"  --session-id <id>       Resolve <repo>/.gjc/state/sdk/<id>.json",
 			"  --repo <dir>            Repo root for endpoint discovery (default: cwd)",
@@ -176,9 +176,9 @@ async function main(): Promise<void> {
 	// can set it receives the session's notifications and the operator's replies.
 	// `$env` merges the caller's `cwd/.env` into `process.env`, and this client is
 	// normally run from inside a repository.
-	const botToken = args.botToken ?? $credentialEnv("GJC_TG_BOT_TOKEN");
+	const botToken = args.botToken ?? $credentialEnv("WORX_TG_BOT_TOKEN");
 	if (!botToken) {
-		process.stderr.write("error: --bot-token (or GJC_TG_BOT_TOKEN) is required\n");
+		process.stderr.write("error: --bot-token (or WORX_TG_BOT_TOKEN) is required\n");
 		process.exit(2);
 	}
 
@@ -188,12 +188,12 @@ async function main(): Promise<void> {
 		findLatestEndpoint(args.repo);
 	if (!endpointFile || !fs.existsSync(endpointFile)) {
 		process.stderr.write(
-			`error: no endpoint file found (looked under ${args.repo}/.gjc/state/sdk). Start a session with GJC_NOTIFICATIONS=1 first.\n`,
+			`error: no endpoint file found (looked under ${args.repo}/.gjc/state/sdk). Start a session with WORX_NOTIFICATIONS=1 first.\n`,
 		);
 		process.exit(2);
 	}
 
-	const chatId = args.chatId ?? $credentialEnv("GJC_TG_CHAT_ID") ?? (await resolveChatId(botToken, apiBase));
+	const chatId = args.chatId ?? $credentialEnv("WORX_TG_CHAT_ID") ?? (await resolveChatId(botToken, apiBase));
 	if (!args.force && (await activeDaemonOwnsToken({ botToken, chatId }))) {
 		process.stderr.write(
 			"an active gjc notifications daemon already owns this bot token; running a second poller will cause Telegram 409 conflicts. Re-run with --force to override.\n",

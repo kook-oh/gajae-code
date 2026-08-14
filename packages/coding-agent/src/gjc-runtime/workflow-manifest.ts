@@ -4,7 +4,7 @@
  * hand-edited.
  */
 
-import { CANONICAL_GJC_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
 import { initialPhaseForSkill } from "../skill-state/initial-phase";
 
 export interface WorkflowState {
@@ -71,7 +71,7 @@ const PLANNED_ADMIN_VERBS = ["graph", "prune", "migrate", "force-overwrite"] as 
 
 const COMMON_TYPED_ARGS: TypedArgSpec[] = [
 	{ name: "input", type: "string", appliesToVerbs: ["write", "api"] },
-	{ name: "mode", type: "enum", enumValues: [...CANONICAL_GJC_WORKFLOW_SKILLS], appliesToVerbs: [...STATE_VERBS] },
+	{ name: "mode", type: "enum", enumValues: [...CANONICAL_WORX_WORKFLOW_SKILLS], appliesToVerbs: [...STATE_VERBS] },
 	{
 		name: "session-id",
 		type: "string",
@@ -93,7 +93,7 @@ const COMMON_TYPED_ARGS: TypedArgSpec[] = [
 	{ name: "to", type: "string", required: true, appliesToVerbs: ["handoff"] },
 	{ name: "replace", type: "boolean", appliesToVerbs: ["write"] },
 	{ name: "force", type: "boolean", appliesToVerbs: ["write", "clear", "handoff"] },
-	{ name: "skill", type: "enum", enumValues: [...CANONICAL_GJC_WORKFLOW_SKILLS], appliesToVerbs: ["doctor"] },
+	{ name: "skill", type: "enum", enumValues: [...CANONICAL_WORX_WORKFLOW_SKILLS], appliesToVerbs: ["doctor"] },
 	{ name: "json", type: "boolean", appliesToVerbs: ["doctor"] },
 ];
 

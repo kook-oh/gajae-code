@@ -35,7 +35,7 @@ function coordinatorDoctorPayload(): {
 		id: "workdir_roots",
 		status: config.allowedRoots.length > 0 ? "pass" : "fail",
 		detail:
-			config.allowedRoots.length > 0 ? config.allowedRoots.join(":") : "GJC_COORDINATOR_MCP_WORKDIR_ROOTS is empty",
+			config.allowedRoots.length > 0 ? config.allowedRoots.join(":") : "WORX_COORDINATOR_MCP_WORKDIR_ROOTS is empty",
 	});
 	checks.push({
 		id: "session_mutations",
@@ -47,7 +47,7 @@ function coordinatorDoctorPayload(): {
 		status: config.sessionCommand ? "pass" : "warn",
 		detail:
 			config.sessionCommand ??
-			"GJC_COORDINATOR_MCP_SESSION_COMMAND is unset; registration can still reuse visible sessions",
+			"WORX_COORDINATOR_MCP_SESSION_COMMAND is unset; registration can still reuse visible sessions",
 	});
 	checks.push({
 		id: "namespace",

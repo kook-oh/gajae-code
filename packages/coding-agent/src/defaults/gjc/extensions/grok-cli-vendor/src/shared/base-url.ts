@@ -15,22 +15,22 @@ function isAllowedCredentialHost(baseUrl: string): boolean {
 }
 
 export function getBaseUrl(): string {
-  const configured = process.env.GJC_GROK_CLI_BASE_URL || process.env.GROK_CLI_BASE_URL;
+  const configured = process.env.WORX_GROK_CLI_BASE_URL || process.env.GROK_CLI_BASE_URL;
   if (!configured) return DEFAULT_GROK_BUILD_BASE_URL;
 
   const normalized = normalizeBaseUrl(configured);
   if (isAllowedCredentialHost(normalized)) return normalized;
 
-  if (process.env.GJC_GROK_CLI_ALLOW_UNSAFE_BASE_URL === '1') return normalized;
+  if (process.env.WORX_GROK_CLI_ALLOW_UNSAFE_BASE_URL === '1') return normalized;
 
   return DEFAULT_GROK_BUILD_BASE_URL;
 }
 
 export function isGrokBuildBaseUrlOverrideIgnored(): boolean {
-  const configured = process.env.GJC_GROK_CLI_BASE_URL || process.env.GROK_CLI_BASE_URL;
+  const configured = process.env.WORX_GROK_CLI_BASE_URL || process.env.GROK_CLI_BASE_URL;
   if (!configured) return false;
   const normalized = normalizeBaseUrl(configured);
   return (
-    !isAllowedCredentialHost(normalized) && process.env.GJC_GROK_CLI_ALLOW_UNSAFE_BASE_URL !== '1'
+    !isAllowedCredentialHost(normalized) && process.env.WORX_GROK_CLI_ALLOW_UNSAFE_BASE_URL !== '1'
   );
 }

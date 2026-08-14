@@ -6,7 +6,6 @@ import { readSchemaDeclaration, schemaHash } from "./metadata";
 import { resolveWithinRoot } from "./paths";
 import { parseManifest, parseSubskillFrontmatter } from "./schema";
 import {
-	GJC_PLUGIN_MANIFEST_FILENAME,
 	type GjcPluginAppendixManifestEntry,
 	GjcPluginLoadError,
 	type GjcPluginMcpManifestEntry,
@@ -19,6 +18,7 @@ import {
 	type NormalizedSubskillSurface,
 	type NormalizedSubskillToolSurface,
 	type NormalizedToolSurface,
+	WORX_PLUGIN_MANIFEST_FILENAME,
 } from "./types";
 import { validateBinding } from "./validation";
 
@@ -157,7 +157,7 @@ async function compileAppendix(
  */
 export async function compileGjcPluginBundle(root: string): Promise<NormalizedGjcPluginBundle> {
 	const pluginRoot = path.resolve(root);
-	const manifestPath = path.join(pluginRoot, GJC_PLUGIN_MANIFEST_FILENAME);
+	const manifestPath = path.join(pluginRoot, WORX_PLUGIN_MANIFEST_FILENAME);
 	const manifest = parseManifest(await readManifestJson(manifestPath), manifestPath);
 
 	const files = new Map<string, { sha256: string; bytes: number }>();
@@ -384,7 +384,7 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		.map(([relativePath, info]) => ({ relativePath, sha256: info.sha256, bytes: info.bytes }))
 		.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
 	copiedFiles.unshift({
-		relativePath: GJC_PLUGIN_MANIFEST_FILENAME,
+		relativePath: WORX_PLUGIN_MANIFEST_FILENAME,
 		sha256: manifestHash,
 		bytes: manifestBytes.byteLength,
 	});

@@ -72,7 +72,7 @@ function sessionMatchesWorkspace(state: SessionState, expectedWorkspace: string)
 }
 
 function harnessRootRegistryDir(env: NodeJS.ProcessEnv = process.env): string {
-	const override = env.GJC_HARNESS_ROOT_REGISTRY_DIR?.trim();
+	const override = env.WORX_HARNESS_ROOT_REGISTRY_DIR?.trim();
 	if (override) return path.resolve(override);
 	return path.join(os.tmpdir(), `gjch${process.getuid?.() ?? "u"}`, "harness-roots");
 }
@@ -181,7 +181,7 @@ interface SocketPathMetadata {
 }
 
 function socketBase(env: NodeJS.ProcessEnv, allowOverride: boolean): { base: string; fromOverride: boolean } {
-	const override = env.GJC_HARNESS_SOCKET_DIR?.trim();
+	const override = env.WORX_HARNESS_SOCKET_DIR?.trim();
 	if (allowOverride && override) return { base: path.resolve(override), fromOverride: true };
 	return { base: path.join(os.tmpdir(), `gjch${process.getuid?.() ?? "u"}`), fromOverride: false };
 }
@@ -242,9 +242,9 @@ export function resolveHarnessRoot(opts?: {
 }): string {
 	const env = opts?.env ?? process.env;
 	if (opts?.root) return path.resolve(opts.root);
-	const fromEnv = env.GJC_HARNESS_STATE_ROOT;
+	const fromEnv = env.WORX_HARNESS_STATE_ROOT;
 	if (fromEnv?.trim()) return path.resolve(fromEnv.trim());
-	const gjcSessionId = opts?.gjcSessionId ?? env.GJC_SESSION_ID?.trim();
+	const gjcSessionId = opts?.gjcSessionId ?? env.WORX_SESSION_ID?.trim();
 	if (!gjcSessionId) {
 		throw new StorageError("GJC session id is required for default harness state root", "missing_gjc_session_id");
 	}

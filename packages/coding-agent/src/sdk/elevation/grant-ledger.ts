@@ -199,7 +199,7 @@ export interface ElevationListValue {
 }
 
 export interface ElevationLedgerOptions {
-	/** Defaults to the GJC_SDK_ELEVATION_ENABLED environment flag. */
+	/** Defaults to the WORX_SDK_ELEVATION_ENABLED environment flag. */
 	enabled?: boolean;
 	/** Request lifetime before the grant expires. */
 	ttlMs?: number;
@@ -238,7 +238,7 @@ function parseElevationJson(bytes: Uint8Array): unknown {
 }
 
 function elevationEnabledByDefault(): boolean {
-	const raw = (process.env.GJC_SDK_ELEVATION_ENABLED ?? "").trim().toLowerCase();
+	const raw = (process.env.WORX_SDK_ELEVATION_ENABLED ?? "").trim().toLowerCase();
 	return raw === "1" || raw === "true";
 }
 
@@ -710,7 +710,7 @@ export class ElevationLedger {
 
 	async issue(params: ElevationIssueParams): Promise<ElevationResult<ElevationIssueValue>> {
 		if (!this.#enabled)
-			return elevationFailure("elevation_unavailable", "Elevation is not enabled (GJC_SDK_ELEVATION_ENABLED)");
+			return elevationFailure("elevation_unavailable", "Elevation is not enabled (WORX_SDK_ELEVATION_ENABLED)");
 		if (!isElevationOperation(params.operation))
 			return elevationFailure("invalid_input", "operation must be an allowlisted control/query/global operation");
 		if (typeof params.input !== "object" || params.input === null || Array.isArray(params.input))
@@ -809,7 +809,7 @@ export class ElevationLedger {
 
 	async answer(params: ElevationAnswerParams): Promise<ElevationResult<ElevationAnswerValue>> {
 		if (!this.#enabled)
-			return elevationFailure("elevation_unavailable", "Elevation is not enabled (GJC_SDK_ELEVATION_ENABLED)");
+			return elevationFailure("elevation_unavailable", "Elevation is not enabled (WORX_SDK_ELEVATION_ENABLED)");
 		if (!isElevationRequestId(params.elevationRequestId))
 			return elevationFailure("invalid_input", "elevationRequestId must be a UUID");
 		if (params.answer !== "approve" && params.answer !== "deny")

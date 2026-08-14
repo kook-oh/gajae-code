@@ -2,7 +2,7 @@ import { logger } from "@gajae-code/utils";
 
 const CMUX_COMMAND = "cmux";
 const CMUX_WORKSPACE_ID_ENV = "CMUX_WORKSPACE_ID";
-const CMUX_NO_RENAME_ENV = "GJC_NO_CMUX_RENAME";
+const CMUX_NO_RENAME_ENV = "WORX_NO_CMUX_RENAME";
 const CONTROL_CHARS = /[\u0000-\u001f\u007f-\u009f]/g;
 const CMUX_WORKSPACE_TITLE_PREFIX = "GJC: ";
 const CMUX_WORKSPACE_RENAME_TIMEOUT_MS = 1500;
@@ -161,7 +161,7 @@ async function defaultReadOwnership(
  * session name. Ownership-guarded: GJC reads the current workspace title and
  * only renames a workspace that still has its default title, so it never
  * overwrites a name the user pinned or a name a peer session (sharing the same
- * CMUX_WORKSPACE_ID) set. Opt out with GJC_NO_CMUX_RENAME.
+ * CMUX_WORKSPACE_ID) set. Opt out with WORX_NO_CMUX_RENAME.
  */
 export async function syncCmuxWorkspaceTitle(
 	sessionName: string | undefined,

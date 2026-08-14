@@ -2,15 +2,15 @@
 import { createInterface } from "node:readline";
 import { Snowflake } from "@gajae-code/utils";
 import type {
-	ExtensionUIDialogOptions,
 	ExtensionUIContext,
+	ExtensionUIDialogOptions,
 	ExtensionWidgetContent,
 	ExtensionWidgetOptions,
 } from "../extensibility/extensions/types";
-import type { Theme } from "./theme/theme";
-import { theme } from "./theme/theme";
 import type { AgentSession, AgentSessionEvent } from "../session/agent-session";
 import { initializeExtensions } from "./runtime-init";
+import type { Theme } from "./theme/theme";
+import { theme } from "./theme/theme";
 
 export type RpcAgentSession = AgentSession;
 
@@ -178,7 +178,14 @@ class RpcExtensionUIContext implements ExtensionUIContext {
 		return this.#createDialogPromise(
 			dialogOptions,
 			undefined,
-			id => ({ type: "extension_ui_request", id, method: "select", title, options, timeout: dialogOptions?.timeout }),
+			id => ({
+				type: "extension_ui_request",
+				id,
+				method: "select",
+				title,
+				options,
+				timeout: dialogOptions?.timeout,
+			}),
 			response => ("value" in response ? response.value : undefined),
 		);
 	}
@@ -187,7 +194,14 @@ class RpcExtensionUIContext implements ExtensionUIContext {
 		return this.#createDialogPromise(
 			dialogOptions,
 			false,
-			id => ({ type: "extension_ui_request", id, method: "confirm", title, message, timeout: dialogOptions?.timeout }),
+			id => ({
+				type: "extension_ui_request",
+				id,
+				method: "confirm",
+				title,
+				message,
+				timeout: dialogOptions?.timeout,
+			}),
 			response => ("confirmed" in response ? response.confirmed : false),
 		);
 	}
@@ -196,7 +210,14 @@ class RpcExtensionUIContext implements ExtensionUIContext {
 		return this.#createDialogPromise(
 			dialogOptions,
 			undefined,
-			id => ({ type: "extension_ui_request", id, method: "input", title, placeholder, timeout: dialogOptions?.timeout }),
+			id => ({
+				type: "extension_ui_request",
+				id,
+				method: "input",
+				title,
+				placeholder,
+				timeout: dialogOptions?.timeout,
+			}),
 			response => ("value" in response ? response.value : undefined),
 		);
 	}
@@ -249,7 +270,8 @@ class RpcExtensionUIContext implements ExtensionUIContext {
 	setWorkingMessage(): void {}
 
 	setWidget(key: string, content: ExtensionWidgetContent, options?: ExtensionWidgetOptions): void {
-		if (content !== undefined && (!Array.isArray(content) || !content.every(line => typeof line === "string"))) return;
+		if (content !== undefined && (!Array.isArray(content) || !content.every(line => typeof line === "string")))
+			return;
 		void this.#output({
 			type: "extension_ui_request",
 			id: nextRequestId(),
@@ -321,16 +343,18 @@ export async function runRpcMode(
 	options: RpcModeOptions = {},
 ): Promise<void> {
 	process.env.PI_NOTIFICATIONS = "off";
-	process.env.GJC_NOTIFICATIONS = "off";
+	process.env.WORX_NOTIFICATIONS = "off";
 
 	const write = options.output ?? writeStdoutFrame;
 	const failures: unknown[] = [];
 	let outputFailure: unknown;
 	let outputTail = Promise.resolve();
 	const output = (frame: RpcOutboundFrame): Promise<void> => {
-		outputTail = outputTail.then(() => write(frame)).catch(error => {
-			outputFailure ??= error;
-		});
+		outputTail = outputTail
+			.then(() => write(frame))
+			.catch(error => {
+				outputFailure ??= error;
+			});
 		return outputTail;
 	};
 	const pendingRequests = new Map<string, PendingExtensionRequest>();
@@ -373,7 +397,7 @@ export async function runRpcMode(
 				continue;
 			}
 			if (!isRecord(frame) || frame.type !== "prompt" || typeof frame.message !== "string") {
-				await output({ type: "error", command: "parse", error: "Expected {type:\"prompt\",message:string}" });
+				await output({ type: "error", command: "parse", error: 'Expected {type:"prompt",message:string}' });
 				continue;
 			}
 			let tracked: Promise<void>;

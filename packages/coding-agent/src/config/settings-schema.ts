@@ -266,7 +266,7 @@ export const SETTINGS_SCHEMA = {
 
 	// Auth broker — credentials proxied through a remote `gjc auth-broker serve`
 	// host. Hidden from the UI; populate via env vars or hand-edited config.yml.
-	// Env (`GJC_AUTH_BROKER_URL` / `GJC_AUTH_BROKER_TOKEN`) takes precedence so
+	// Env (`WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN`) takes precedence so
 	// per-machine overrides remain trivial.
 	"auth.broker.url": { type: "string", default: undefined },
 	"auth.broker.token": { type: "string", default: undefined },
@@ -1591,7 +1591,7 @@ export const SETTINGS_SCHEMA = {
 			tab: "interaction",
 			label: "Completion Notification Command",
 			description:
-				"Optional user-level shell command to run when an agent turn completes; receives GJC_NOTIFICATION_* environment variables. On Windows, this can call PowerShell [Console]::Beep when terminal BEL is silent.",
+				"Optional user-level shell command to run when an agent turn completes; receives WORX_NOTIFICATION_* environment variables. On Windows, this can call PowerShell [Console]::Beep when terminal BEL is silent.",
 		},
 	},
 

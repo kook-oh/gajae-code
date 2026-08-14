@@ -781,7 +781,7 @@ const ambiguityGraceOverridesForTest = new WeakMap<Broker, number>();
 const publicationObservationOverridesForTest = new WeakMap<Broker, BrokerPublicationObservation>();
 const lockArtifactGraceOverridesForTest = new WeakMap<Broker, number>();
 function elevationLedgerEnabledForBroker(): boolean {
-	const raw = (process.env.GJC_SDK_ELEVATION_ENABLED ?? "").trim().toLowerCase();
+	const raw = (process.env.WORX_SDK_ELEVATION_ENABLED ?? "").trim().toLowerCase();
 	return raw === "1" || raw === "true";
 }
 

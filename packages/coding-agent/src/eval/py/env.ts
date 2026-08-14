@@ -14,13 +14,13 @@ export function resolvePythonFlag(env: PythonEnv, gjcName: string, piName: strin
 }
 
 export function resolvePythonSkipCheck(env: PythonEnv): boolean {
-	return resolvePythonFlag(env, "GJC_PYTHON_SKIP_CHECK", "PI_PYTHON_SKIP_CHECK");
+	return resolvePythonFlag(env, "WORX_PYTHON_SKIP_CHECK", "PI_PYTHON_SKIP_CHECK");
 }
 
 export function resolvePythonIpcTrace(env: PythonEnv): boolean {
-	return resolvePythonFlag(env, "GJC_PYTHON_IPC_TRACE", "PI_PYTHON_IPC_TRACE");
+	return resolvePythonFlag(env, "WORX_PYTHON_IPC_TRACE", "PI_PYTHON_IPC_TRACE");
 }
 
 export function resolvePythonIntegrationGate(env: PythonEnv): boolean {
-	return resolvePythonFlag(env, "GJC_PYTHON_INTEGRATION", "PI_PYTHON_INTEGRATION");
+	return resolvePythonFlag(env, "WORX_PYTHON_INTEGRATION", "PI_PYTHON_INTEGRATION");
 }

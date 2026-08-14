@@ -5,7 +5,7 @@
  * usage widget and containerized deployments) make provider API calls without ever
  * seeing the access token. The gateway is itself a broker client and
  * resolves credentials through the configured broker (via the same
- * `GJC_AUTH_BROKER_URL` / `auth.broker.url` precedence used elsewhere).
+ * `WORX_AUTH_BROKER_URL` / `auth.broker.url` precedence used elsewhere).
  *
  * Sub-verbs:
  *   - `serve [--bind=…]` — boots the gateway against the configured broker.
@@ -132,7 +132,7 @@ async function runServe(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 	const brokerConfig = await resolveAuthBrokerConfig();
 	if (!brokerConfig) {
 		throw new Error(
-			"`gjc auth-gateway serve` requires GJC_AUTH_BROKER_URL (or `auth.broker.url`/`auth.broker.token` in config.yml). The gateway is itself a broker client.",
+			"`gjc auth-gateway serve` requires WORX_AUTH_BROKER_URL (or `auth.broker.url`/`auth.broker.token` in config.yml). The gateway is itself a broker client.",
 		);
 	}
 	const bind = flags.bind ?? DEFAULT_AUTH_GATEWAY_BIND;
@@ -258,7 +258,7 @@ async function runStatus(flags: AuthGatewayCommandArgs["flags"]): Promise<void> 
 		if (flags.json) {
 			process.stdout.write(`${JSON.stringify(status)}\n`);
 		} else {
-			process.stdout.write(`${chalk.yellow("No broker configured.")} Set GJC_AUTH_BROKER_URL.\n`);
+			process.stdout.write(`${chalk.yellow("No broker configured.")} Set WORX_AUTH_BROKER_URL.\n`);
 			process.stdout.write(
 				`token: ${status.tokenPresent ? chalk.green("present") : chalk.red("missing")} at ${status.tokenFile}\n`,
 			);
@@ -353,7 +353,7 @@ async function runCheck(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 	const brokerConfig = await resolveAuthBrokerConfig();
 	if (!brokerConfig) {
 		throw new Error(
-			"`gjc auth-gateway check` requires GJC_AUTH_BROKER_URL (or `auth.broker.url`/`auth.broker.token` in config.yml). It probes the same credentials the gateway would serve.",
+			"`gjc auth-gateway check` requires WORX_AUTH_BROKER_URL (or `auth.broker.url`/`auth.broker.token` in config.yml). It probes the same credentials the gateway would serve.",
 		);
 	}
 

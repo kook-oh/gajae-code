@@ -419,7 +419,7 @@ export function computeExitCode(report: GcReport): number {
 }
 
 function resolveGcAgentDir(env: NodeJS.ProcessEnv): string {
-	return env.GJC_CODING_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim() || getAgentDir();
+	return env.WORX_CODING_AGENT_DIR?.trim() || env.PI_CODING_AGENT_DIR?.trim() || getAgentDir();
 }
 
 /**

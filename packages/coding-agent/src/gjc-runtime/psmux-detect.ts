@@ -16,13 +16,13 @@ import * as fs from "node:fs";
  * --version) once per process and caches the verdict. Cache invalidation
  * knobs:
  *   - force: true re-probes on every call (used by tests).
- *   - GJC_PSMUX_FORCE_DETECT=1 re-probes each call.
- *   - GJC_PSMUX_DETECTION=off skips probing entirely.
+ *   - WORX_PSMUX_FORCE_DETECT=1 re-probes each call.
+ *   - WORX_PSMUX_DETECTION=off skips probing entirely.
  */
 
-export const GJC_PSMUX_COMMAND_ENV = "GJC_PSMUX_COMMAND";
-export const GJC_PSMUX_DETECTION_ENV = "GJC_PSMUX_DETECTION";
-export const GJC_PSMUX_FORCE_DETECT_ENV = "GJC_PSMUX_FORCE_DETECT";
+export const WORX_PSMUX_COMMAND_ENV = "WORX_PSMUX_COMMAND";
+export const WORX_PSMUX_DETECTION_ENV = "WORX_PSMUX_DETECTION";
+export const WORX_PSMUX_FORCE_DETECT_ENV = "WORX_PSMUX_FORCE_DETECT";
 
 /** Names that psmux installs as the canonical executable / alias. */
 export const PSMUX_BINARY_NAMES = ["psmux", "pmux", "tmux"] as const;
@@ -114,7 +114,7 @@ export function envDisabled(value: string | undefined): boolean {
 }
 
 /**
- * GJC_PSMUX_FORCE_DETECT opt-in re-probe switch. Any non-empty value other
+ * WORX_PSMUX_FORCE_DETECT opt-in re-probe switch. Any non-empty value other
  * than a "disabled" sentinel forces a fresh probe on every call. The unset
  * (undefined) case must NOT force probing, otherwise the in-process cache
  * never engages.
@@ -200,7 +200,7 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 	} catch {
 		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux command resolution failed");
 	}
-	if (normalizedCommandBaseName(command) !== "tmux" && !env[GJC_PSMUX_COMMAND_ENV]?.trim()) return false;
+	if (normalizedCommandBaseName(command) !== "tmux" && !env[WORX_PSMUX_COMMAND_ENV]?.trim()) return false;
 
 	let selectedPath: string | null;
 	try {
@@ -216,7 +216,7 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux executable identity is unavailable");
 	}
 
-	const explicitCompanion = env[GJC_PSMUX_COMMAND_ENV]?.trim();
+	const explicitCompanion = env[WORX_PSMUX_COMMAND_ENV]?.trim();
 	const companions = [
 		...new Set([explicitCompanion, "psmux", "pmux"].filter((value): value is string => Boolean(value))),
 	];
@@ -231,7 +231,7 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 		}
 		if (!companionPath) {
 			if (companion === explicitCompanion)
-				throw new Error("gjc_tmux_provider_ambiguous: GJC_PSMUX_COMMAND could not be resolved");
+				throw new Error("gjc_tmux_provider_ambiguous: WORX_PSMUX_COMMAND could not be resolved");
 			continue;
 		}
 		const companionIdentity = activeExecutableIdentityResolver(companionPath);
@@ -242,7 +242,7 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 		else {
 			distinct = true;
 			if (companion === explicitCompanion)
-				throw new Error("gjc_tmux_provider_ambiguous: GJC_PSMUX_COMMAND selects a different executable");
+				throw new Error("gjc_tmux_provider_ambiguous: WORX_PSMUX_COMMAND selects a different executable");
 		}
 	}
 	if (matched && distinct) throw new Error("gjc_tmux_provider_ambiguous: Windows psmux companion identities conflict");
@@ -252,17 +252,17 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 /**
  * Decide whether command resolves to a psmux binary by probing its version
  * output. The result is cached per process unless force is set or
- * GJC_PSMUX_FORCE_DETECT=1.
+ * WORX_PSMUX_FORCE_DETECT=1.
  */
 export function detectPsmux(
 	command: string,
 	options: { force?: boolean; env?: NodeJS.ProcessEnv; runner?: PsmuxSpawnRunner } = {},
 ): boolean {
 	const env = options.env ?? process.env;
-	const explicit = env[GJC_PSMUX_COMMAND_ENV]?.trim();
+	const explicit = env[WORX_PSMUX_COMMAND_ENV]?.trim();
 	if (explicit) {
 		// The override is authoritative on its own — we trust the user's
-		// GJC_PSMUX_COMMAND value when they name a psmux-class binary, even
+		// WORX_PSMUX_COMMAND value when they name a psmux-class binary, even
 		// when the binary cannot be located on PATH in the current process.
 		// This keeps the override usable from CI runners and from test
 		// environments where Bun.which would otherwise return null.
@@ -280,8 +280,8 @@ export function detectPsmux(
 		const explicitPath = resolveBinaryPath(explicit);
 		if (explicitPath && explicitPath === resolveBinaryPath(command)) return true;
 	}
-	if (envDisabled(env[GJC_PSMUX_DETECTION_ENV])) return false;
-	const force = options.force === true || envForcesProbe(env[GJC_PSMUX_FORCE_DETECT_ENV]);
+	if (envDisabled(env[WORX_PSMUX_DETECTION_ENV])) return false;
+	const force = options.force === true || envForcesProbe(env[WORX_PSMUX_FORCE_DETECT_ENV]);
 	const useCache = !force && !options.force;
 	if (useCache) {
 		const cached = detectionCache.get(command);
@@ -307,7 +307,7 @@ export interface ResolvedTmuxBinary {
 
 /**
  * Resolve the tmux command GJC should invoke. Honors the existing
- * GJC_TMUX_COMMAND / GJC_TEAM_TMUX_COMMAND overrides; on Windows when no
+ * WORX_TMUX_COMMAND / WORX_TEAM_TMUX_COMMAND overrides; on Windows when no
  * override is set, psmux (installed as psmux, pmux, or tmux) is picked
  * automatically so the default gjc --tmux flow lands on a real multiplexer.
  */
@@ -315,7 +315,7 @@ export function resolveGjcTmuxBinary(options: ResolveGjcTmuxBinaryOptions = {}):
 	const env = options.env ?? process.env;
 	const platform = options.platform ?? process.platform;
 	const runner = options.runner ?? readSpawnRunner();
-	const explicit = env.GJC_TMUX_COMMAND?.trim() || env.GJC_TEAM_TMUX_COMMAND?.trim();
+	const explicit = env.WORX_TMUX_COMMAND?.trim() || env.WORX_TEAM_TMUX_COMMAND?.trim();
 	if (explicit) {
 		const isPsmux =
 			platform === "win32"
@@ -369,6 +369,6 @@ export function probePsmux(
 	if (!resolved) return { command, versionOutput: "", isPsmux: false };
 	if (options.force) clearPsmuxDetectionCache();
 	const output = probeVersionOutput(resolved, runner);
-	const isPsmux = outputMentionsPsmux(output) || env[GJC_PSMUX_COMMAND_ENV]?.trim() === resolved;
+	const isPsmux = outputMentionsPsmux(output) || env[WORX_PSMUX_COMMAND_ENV]?.trim() === resolved;
 	return { command: resolved, versionOutput: output, isPsmux };
 }
