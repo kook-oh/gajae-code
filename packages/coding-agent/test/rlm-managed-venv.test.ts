@@ -2,7 +2,7 @@
  * G004: managed per-workspace venv resolution.
  *
  * Verifies BYO (VIRTUAL_ENV / .venv) precedence and, absent a BYO env, that gjc
- * auto-creates and uses a per-workspace venv under <cwd>/.gjc/python-env, with a
+ * auto-creates and uses a per-workspace venv under <cwd>/.worx/python-env, with a
  * sys.executable assertion proving the kernel interpreter is the managed one.
  * Uses no network: the managed env is created with `python -m venv` and seeded
  * with an empty package set.
@@ -36,9 +36,9 @@ async function createVenv(target: string): Promise<void> {
 }
 
 describe.skipIf(!RUN)("RLM managed per-workspace venv", () => {
-	test("auto-creates <cwd>/.gjc/python-env and the kernel interpreter is that venv", async () => {
+	test("auto-creates <cwd>/.worx/python-env and the kernel interpreter is that venv", async () => {
 		const runtime = await ensurePythonRuntime(cwd, baseEnv(), { managedWorkspaceVenv: true, seedPackages: [] });
-		const managedDir = path.join(cwd, ".gjc", "python-env");
+		const managedDir = path.join(cwd, ".worx", "python-env");
 
 		expect(runtime.venvPath).toBe(managedDir);
 		expect(runtime.pythonPath.startsWith(managedDir)).toBe(true);
@@ -61,6 +61,6 @@ describe.skipIf(!RUN)("RLM managed per-workspace venv", () => {
 		expect(runtime.venvPath).toBe(byo);
 		expect(runtime.pythonPath.startsWith(byo)).toBe(true);
 		// The managed env was never provisioned because a BYO venv took precedence.
-		expect(await Bun.file(path.join(cwd, ".gjc", "python-env")).exists()).toBe(false);
+		expect(await Bun.file(path.join(cwd, ".worx", "python-env")).exists()).toBe(false);
 	}, 120_000);
 });

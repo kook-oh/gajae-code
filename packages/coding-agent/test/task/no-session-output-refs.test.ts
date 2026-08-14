@@ -698,7 +698,7 @@ describe("task no-session output refs", () => {
 			expect(owner.isArtifactManagerAuthorized(fallbackManager)).toBe(true);
 			expect(await fallbackManager.getPath("0")).toBe(path.join(fallbackRoot, "0.task.log"));
 			expect(await Bun.file((await fallbackManager.getPath("0"))!).text()).toBe("fallback predecessor");
-			expect(await pathExists(path.join(targetLocalRoot, ".gjc-local-legacy-migrated-v1"))).toBe(false);
+			expect(await pathExists(path.join(targetLocalRoot, ".worx-local-legacy-migrated-v1"))).toBe(false);
 
 			expect(await runtime.switchSession(targetFile)).toBe(true);
 			expect(await pathExists(fallbackRoot)).toBe(false);
@@ -712,7 +712,7 @@ describe("task no-session output refs", () => {
 			expect(await Bun.file(localPath).text()).toBe("managed legacy payload");
 			expect(path.dirname(localPath)).toBe(targetLocalRoot);
 			const migrationMarker = await Bun.file(
-				path.join(path.dirname(localPath), ".gjc-local-legacy-migrated-v1"),
+				path.join(path.dirname(localPath), ".worx-local-legacy-migrated-v1"),
 			).text();
 			expect(["verified\n", "cleanup_pending\n"]).toContain(migrationMarker);
 			expect(migrationMarker).not.toBe("absent\n");

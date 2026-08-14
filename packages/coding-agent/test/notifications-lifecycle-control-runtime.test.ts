@@ -430,7 +430,7 @@ it("does not restore running state after stop during deferred initial heartbeat 
 		stat: fs.promises.stat.bind(fs.promises),
 		readEndpointFile: readNotificationEndpointFile,
 		exactUnlink: async (file, identity) =>
-			await exactUnlinkNotificationFile(file, identity, ".gjc-test-daemon-transition.json"),
+			await exactUnlinkNotificationFile(file, identity, ".worx-test-daemon-transition.json"),
 	};
 	const daemon = new TelegramNotificationDaemon({
 		settings,
@@ -495,7 +495,7 @@ it("does not clean up foreign durable state when initial heartbeat renewal rejec
 		chmod: fs.promises.chmod.bind(fs.promises),
 		readEndpointFile: readNotificationEndpointFile,
 		exactUnlink: async (file, identity) =>
-			await exactUnlinkNotificationFile(file, identity, ".gjc-test-daemon-transition.json"),
+			await exactUnlinkNotificationFile(file, identity, ".worx-test-daemon-transition.json"),
 	};
 
 	let controlsCleared = 0;
@@ -1634,7 +1634,7 @@ describe("lifecycle control runtime", () => {
 
 			expect(probeCalls).toBe(8);
 			expect(result.sessionStateFile).toBe(
-				path.join(proj, ".gjc", "_session-owner-123", "runtime", "tmux-sessions", "gjc-lc-owner-123.json"),
+				path.join(proj, ".worx", "_session-owner-123", "runtime", "tmux-sessions", "gjc-lc-owner-123.json"),
 			);
 			const generation = JSON.parse(
 				fs.readFileSync(
@@ -1664,7 +1664,7 @@ describe("lifecycle control runtime", () => {
 		const tmux = path.join(root, "fake-tmux.sh");
 		const callsFile = path.join(root, "tmux-calls.log");
 		const sessionId = "stale-123";
-		const stateDir = path.join(project, ".gjc", `_session-${sessionId}`, "runtime", "tmux-sessions");
+		const stateDir = path.join(project, ".worx", `_session-${sessionId}`, "runtime", "tmux-sessions");
 		const generationFile = path.join(stateDir, sessionId, "owner-lifecycle", "generation.json");
 		fs.mkdirSync(project, { recursive: true });
 		fs.mkdirSync(path.dirname(generationFile), { recursive: true });
@@ -2008,7 +2008,7 @@ describe("lifecycle control runtime", () => {
 			).rejects.toThrow("gjc_lifecycle_psmux_unsupported");
 			expect(listSessionsCalled).toBe(false);
 			expect(fs.existsSync(plain)).toBe(false);
-			expect(fs.existsSync(path.join(project, ".gjc"))).toBe(false);
+			expect(fs.existsSync(path.join(project, ".worx"))).toBe(false);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
 		}
@@ -2064,7 +2064,7 @@ describe("lifecycle control runtime", () => {
 					expect(logged).not.toContain("kill-session");
 					expect(logged).not.toContain("set-option");
 				}
-				expect(fs.existsSync(path.join(project, ".gjc"))).toBe(false);
+				expect(fs.existsSync(path.join(project, ".worx"))).toBe(false);
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
 			}
@@ -2245,7 +2245,7 @@ describe("lifecycle control runtime", () => {
 				fs.existsSync(
 					path.join(
 						project,
-						".gjc",
+						".worx",
 						"_session-metadata-race",
 						"runtime",
 						"tmux-sessions",
@@ -2278,7 +2278,7 @@ describe("lifecycle control runtime", () => {
 		const tmux = path.join(root, "fake-tmux.sh");
 		const retainedOwnerEvidence = path.join(
 			root,
-			".gjc",
+			".worx",
 			"_session-darwin-session",
 			"runtime",
 			"tmux-sessions",
@@ -2374,7 +2374,7 @@ describe("lifecycle control runtime", () => {
 		const tmux = path.join(root, "fake-tmux.sh");
 		const retainedOwnerEvidence = path.join(
 			root,
-			".gjc",
+			".worx",
 			"_session-darwin-resume",
 			"runtime",
 			"tmux-sessions",

@@ -120,7 +120,7 @@ export function resolveBrowserEnvOverridesForTest(): {
 /**
  * Lazily download Chromium on first browser launch via @puppeteer/browsers.
  * Skipped when a system Chromium (NixOS) or PUPPETEER_EXECUTABLE_PATH is set.
- * The browser is cached under ~/.gjc/puppeteer (getPuppeteerDir).
+ * The browser is cached under ~/.worx/puppeteer (getPuppeteerDir).
  */
 let chromiumExecutablePromise: Promise<string | undefined> | undefined;
 async function ensureChromiumExecutable(): Promise<string | undefined> {

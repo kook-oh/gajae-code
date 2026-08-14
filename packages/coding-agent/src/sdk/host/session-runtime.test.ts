@@ -264,7 +264,7 @@ describe("SessionSdkSessionRuntime", () => {
 		} as any;
 		const transports: Array<{ starts: number; stops: number }> = [];
 		createSdkSessionRuntimeExtension(api, {
-			agentDir: path.join(cwd, ".gjc", "agent"),
+			agentDir: path.join(cwd, ".worx", "agent"),
 			createTransport: async ({ sessionId, stateRoot, token }) => {
 				const stats = { starts: 0, stops: 0 };
 				const failFirstStop = transports.length === 0;
@@ -323,7 +323,7 @@ describe("SessionSdkSessionRuntime", () => {
 	});
 	test("keeps a local SDK-only host alive through broker failure and registers after recovery", async () => {
 		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-broker-recovery-"));
-		const agentDir = path.join(cwd, ".gjc", "agent");
+		const agentDir = path.join(cwd, ".worx", "agent");
 		await mkdir(path.dirname(agentDir), { recursive: true });
 		await writeFile(agentDir, "blocked");
 		const handlers = new Map<string, (event: unknown, ctx: any) => Promise<void> | void>();
@@ -380,7 +380,7 @@ describe("SessionSdkSessionRuntime", () => {
 
 	test("rejects lifecycle-required SDK-only startup when broker registration fails", async () => {
 		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-broker-required-"));
-		const agentDir = path.join(cwd, ".gjc", "agent");
+		const agentDir = path.join(cwd, ".worx", "agent");
 		await mkdir(path.dirname(agentDir), { recursive: true });
 		await writeFile(agentDir, "blocked");
 		const handlers = new Map<string, (event: unknown, ctx: any) => Promise<void> | void>();

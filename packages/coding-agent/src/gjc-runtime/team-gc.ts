@@ -1,5 +1,5 @@
 /**
- * GC adapter for team workers (`.gjc/state/team/<name>/workers/<id>/` heartbeat
+ * GC adapter for team workers (`.worx/state/team/<name>/workers/<id>/` heartbeat
  * + lifecycle). Liveness-only: numeric PID status dominates lifecycle/heartbeat
  * signals.
  */

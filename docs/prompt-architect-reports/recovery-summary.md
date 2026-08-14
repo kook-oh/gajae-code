@@ -1,6 +1,6 @@
 # Failed architect context recovery summary
 
-Recovered by inspecting the failed subagent JSONL session files referenced from `.gjc/_session-*/runtime/runtime-state.json`.
+Recovered by inspecting the failed subagent JSONL session files referenced from `.worx/_session-*/runtime/runtime-state.json`.
 
 ## Recovery status
 

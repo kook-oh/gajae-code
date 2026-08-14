@@ -507,7 +507,7 @@ describe("SDK serve CLI and discovery", () => {
 
 	test("parses stale tombstones and fails endpoint selection closed", async () => {
 		const repo = await tempDir();
-		const state = path.join(repo, ".gjc", "state", "sdk");
+		const state = path.join(repo, ".worx", "state", "sdk");
 		await fs.mkdir(state, { recursive: true });
 		await fs.writeFile(
 			path.join(state, "stale.json"),
@@ -594,7 +594,7 @@ describe("SDK serve CLI and discovery", () => {
 		// before that new turn exists.
 		const root = await tempDir();
 		const agentDir = path.join(root, "agent");
-		const stateRoot = path.join(root, ".gjc", "state");
+		const stateRoot = path.join(root, ".worx", "state");
 		const token = "session-token";
 		const replayRequests: Array<{ sinceGeneration?: unknown; sinceSeq?: unknown }> = [];
 		const terminalCheckpoint = { revision: 2, generation: 1, seq: 4 };

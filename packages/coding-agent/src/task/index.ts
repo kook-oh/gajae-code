@@ -3,8 +3,8 @@
  *
  * Discovers agent definitions from:
  *   - Bundled agents (shipped with gjc-coding-agent)
- *   - ~/.gjc/agent/agents/*.md (user-level)
- *   - .gjc/agents/*.md (project-level)
+ *   - ~/.worx/agent/agents/*.md (user-level)
+ *   - .worx/agents/*.md (project-level)
  *
  * Supports:
  *   - Single agent execution

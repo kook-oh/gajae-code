@@ -14,7 +14,7 @@
  * Env fallbacks: WORX_TG_BOT_TOKEN, WORX_TG_CHAT_ID.
  * If --chat-id is omitted it is auto-resolved from getUpdates (message the bot once).
  * If neither --endpoint-file nor --session-id is given, the newest endpoint file
- * under <repo>/.gjc/state/sdk/ is used.
+ * under <repo>/.worx/state/sdk/ is used.
  */
 
 import * as fs from "node:fs";
@@ -90,7 +90,7 @@ function printHelpAndExit(): never {
 			"  --bot-token <token>     Telegram bot token (or env WORX_TG_BOT_TOKEN)",
 			"  --chat-id <id>          Target chat id (or env WORX_TG_CHAT_ID; auto-resolved if omitted)",
 			"  --endpoint-file <path>  Session endpoint discovery file",
-			"  --session-id <id>       Resolve <repo>/.gjc/state/sdk/<id>.json",
+			"  --session-id <id>       Resolve <repo>/.worx/state/sdk/<id>.json",
 			"  --repo <dir>            Repo root for endpoint discovery (default: cwd)",
 			"  --api-base <url>        Telegram API base (default: https://api.telegram.org)",
 			"  --sound <all|important|none> Telegram notification sound (default: all)",
@@ -103,7 +103,7 @@ function printHelpAndExit(): never {
 
 /** Find the most recently modified endpoint discovery file under the repo. */
 function findLatestEndpoint(repo: string): string | undefined {
-	const dir = path.join(repo, ".gjc", "state", "sdk");
+	const dir = path.join(repo, ".worx", "state", "sdk");
 	let entries: string[];
 	try {
 		entries = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
@@ -184,11 +184,11 @@ async function main(): Promise<void> {
 
 	const endpointFile =
 		args.endpointFile ??
-		(args.sessionId ? path.join(args.repo, ".gjc", "state", "sdk", `${args.sessionId}.json`) : undefined) ??
+		(args.sessionId ? path.join(args.repo, ".worx", "state", "sdk", `${args.sessionId}.json`) : undefined) ??
 		findLatestEndpoint(args.repo);
 	if (!endpointFile || !fs.existsSync(endpointFile)) {
 		process.stderr.write(
-			`error: no endpoint file found (looked under ${args.repo}/.gjc/state/sdk). Start a session with WORX_NOTIFICATIONS=1 first.\n`,
+			`error: no endpoint file found (looked under ${args.repo}/.worx/state/sdk). Start a session with WORX_NOTIFICATIONS=1 first.\n`,
 		);
 		process.exit(2);
 	}

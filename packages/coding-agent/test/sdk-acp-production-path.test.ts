@@ -44,7 +44,7 @@ async function createSessionListBroker(
 ): Promise<{ directory: string; agentDir: string; requests: Array<Record<string, unknown>> }> {
 	const directory = await mkdtemp(path.join(tmpdir(), "gjc-sdk-acp-session-list-"));
 	directories.push(directory);
-	const agentDir = path.join(directory, ".gjc", "agent");
+	const agentDir = path.join(directory, ".worx", "agent");
 	const token = "acp-session-list-token";
 	const requests: Array<Record<string, unknown>> = [];
 	let server!: TestServer;
@@ -88,7 +88,7 @@ async function createSessionListBroker(
 test("production ACP routes zero-session SDK globals through the broker adapter", async () => {
 	const directory = await mkdtemp(path.join(tmpdir(), "gjc-sdk-acp-production-"));
 	directories.push(directory);
-	const agentDir = path.join(directory, ".gjc", "agent");
+	const agentDir = path.join(directory, ".worx", "agent");
 	const token = "acp-broker-token";
 	const requests: Array<Record<string, unknown>> = [];
 	let server!: TestServer;
@@ -191,7 +191,7 @@ test("production ACP rejects an ok:false session.list continuation instead of re
 test("production ACP preserves lifecycle, turn, replay, and connection ownership contracts over SDK WebSockets", async () => {
 	const directory = await mkdtemp(path.join(tmpdir(), "gjc-sdk-acp-contract-"));
 	directories.push(directory);
-	const agentDir = path.join(directory, ".gjc", "agent");
+	const agentDir = path.join(directory, ".worx", "agent");
 	const cwd = path.join(directory, "workspace");
 	const token = "acp-contract-token";
 	let brokerSessions: Record<string, unknown>[] = [

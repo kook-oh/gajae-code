@@ -92,7 +92,7 @@ describe("GJC plugin sub-skill tools", () => {
 			phase: "planner",
 			active_subskills: activation.activeSubskillsToPersist.map(toActiveSubskillEntry),
 		});
-		const toolPath = path.join(cwd, ".gjc", "gjc-plugins", "valid-skill-plugin", "tools", "domain-note.ts");
+		const toolPath = path.join(cwd, ".worx", "gjc-plugins", "valid-skill-plugin", "tools", "domain-note.ts");
 		let mutated = false;
 		const loaded = await loadActiveSubskillTools({
 			cwd,

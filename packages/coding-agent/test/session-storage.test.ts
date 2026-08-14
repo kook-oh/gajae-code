@@ -690,7 +690,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 			expect(after.ino).not.toBe(before.ino);
 			const retained = fs.readdirSync(sessionDir).filter(entry => entry.endsWith(".replacement"));
 			expect(retained).toHaveLength(0);
-			for (const entry of fs.readdirSync(sessionDir).filter(entry => entry.startsWith(".gjc-"))) {
+			for (const entry of fs.readdirSync(sessionDir).filter(entry => entry.startsWith(".worx-"))) {
 				expect(fs.readFileSync(path.join(sessionDir, entry))).toHaveLength(0);
 			}
 		} finally {
@@ -730,7 +730,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 			const receipt = store.appendSync("session.jsonl", Buffer.from("after\n"));
 			expect(receipt.descriptor.size).toBe(Buffer.byteLength("before\nafter\n"));
 			expect(fs.readFileSync(path.join(sessionDir, "session.jsonl"), "utf8")).toBe("before\nafter\n");
-			expect(fs.readdirSync(sessionDir).some(entry => entry.startsWith(".gjc-replace-cleanup-"))).toBe(true);
+			expect(fs.readdirSync(sessionDir).some(entry => entry.startsWith(".worx-replace-cleanup-"))).toBe(true);
 		} finally {
 			exactUnlink?.mockRestore();
 			fs.rmSync(root, { recursive: true, force: true });
@@ -750,7 +750,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 			const destination = path.join(sessionDir, "session.jsonl");
 			renameNoReplace = vi.spyOn(native, "renameNoReplacePath").mockImplementation((sourcePath, destinationPath) => {
 				const result = realRenameNoReplacePath(sourcePath, destinationPath);
-				if (!destinationPath.includes(".gjc-replace-cleanup-") || !result.ok) return result;
+				if (!destinationPath.includes(".worx-replace-cleanup-") || !result.ok) return result;
 				return {
 					...result,
 					ok: false,
@@ -766,7 +766,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 
 			expect(fs.readFileSync(destination, "utf8")).toBe("before\n");
 			const entries = fs.readdirSync(sessionDir);
-			expect(entries.some(entry => entry.startsWith(".gjc-replace-cleanup-"))).toBe(true);
+			expect(entries.some(entry => entry.startsWith(".worx-replace-cleanup-"))).toBe(true);
 			const staged = entries.find(entry => entry.endsWith(".replacement"));
 			expect(staged).toBeDefined();
 			expect(fs.readFileSync(path.join(sessionDir, staged!), "utf8")).toBe("successor\n");
@@ -799,7 +799,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 			expect(fs.readFileSync(destination, "utf8")).toBe("attacker\n");
 			expect(fs.readFileSync(detached, "utf8")).toBe("authorized\n");
 			expect(fs.readdirSync(sessionDir).some(entry => entry.endsWith(".replacement"))).toBe(true);
-			expect(fs.readdirSync(sessionDir).some(entry => entry.startsWith(".gjc-replace-cleanup-"))).toBe(true);
+			expect(fs.readdirSync(sessionDir).some(entry => entry.startsWith(".worx-replace-cleanup-"))).toBe(true);
 		} finally {
 			exactReplace?.mockRestore();
 			fs.rmSync(root, { recursive: true, force: true });
@@ -970,7 +970,7 @@ describe.skipIf(process.platform !== "darwin")("authority-absent managed replace
 					return realExactReplacePath(sourcePath, destinationPath, expectedSource, expectedDestination);
 				});
 			exactUnlink = vi.spyOn(native, "exactUnlink").mockImplementation((...args) => {
-				if (!moved && args[0].includes(".gjc-replace-cleanup-")) {
+				if (!moved && args[0].includes(".worx-replace-cleanup-")) {
 					if (!committedSource) throw new Error("Expected native replacement source");
 					retainedReceipt = `${args[0]}.retained`;
 					fs.renameSync(args[0], retainedReceipt);
@@ -1035,10 +1035,10 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 	const receiptPath = (predecessor: ReceiptTestSnapshot, receipt: ReceiptTestSnapshot) =>
 		path.join(
 			root,
-			`.gjc-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}-receipt-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}.json`,
+			`.worx-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}-receipt-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}.json`,
 		);
 	const publishReceipt = (predecessor: ReceiptTestSnapshot, contents: string) => {
-		const pending = path.join(root, `.gjc-replace-receipt-pending-${randomUUID()}.json`);
+		const pending = path.join(root, `.worx-replace-receipt-pending-${randomUUID()}.json`);
 		fs.writeFileSync(pending, contents);
 		const receiptIdentity = snapshot(pending);
 		const receipt = receiptPath(predecessor, receiptIdentity);
@@ -1048,7 +1048,7 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 	const receiptQuarantine = (receipt: ReceiptTestSnapshot, predecessor: ReceiptTestSnapshot) =>
 		path.join(
 			root,
-			`.gjc-receipt-remove-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}`,
+			`.worx-receipt-remove-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}`,
 		);
 	const replay = (name: string) => {
 		const store = new ManagedSessionDescendantStore(managedDirectoryRoot(root), root);
@@ -1092,7 +1092,7 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 	it("detaches an advisory receipt without retiring its predecessor, successor, or staging object", () => {
 		const destination = path.join(root, "session.jsonl");
 		const staging = path.join(root, ".session.replacement");
-		const predecessorPath = path.join(root, ".gjc-exact-replace-destination-retained");
+		const predecessorPath = path.join(root, ".worx-exact-replace-destination-retained");
 		fs.writeFileSync(destination, "committed successor\n");
 		fs.writeFileSync(staging, "prepared successor\n");
 		fs.writeFileSync(predecessorPath, "retained predecessor\n");
@@ -1271,7 +1271,7 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 	});
 
 	it("fails closed on a malformed canonical receipt filename", () => {
-		const malformed = path.join(root, ".gjc-replace-cleanup-00-1.json");
+		const malformed = path.join(root, ".worx-replace-cleanup-00-1.json");
 		fs.writeFileSync(malformed, "receipt");
 
 		expect(() => replay("malformed-receipt")).toThrow("managed_replace_cleanup_receipt_invalid");
@@ -1285,13 +1285,13 @@ describe.skipIf(process.platform !== "darwin")("managed replacement receipt deta
 		const seedIdentity = snapshot(predecessorSeed);
 		const predecessorPath = path.join(
 			root,
-			`.gjc-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
+			`.worx-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
 		);
 		fs.renameSync(predecessorSeed, predecessorPath);
 		const predecessor = snapshot(predecessorPath);
 		const receipt = path.join(
 			root,
-			`.gjc-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}.json`,
+			`.worx-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}.json`,
 		);
 		fs.writeFileSync(
 			receipt,
@@ -1338,10 +1338,10 @@ describe("replacement cleanup receipt reconcile TOCTOU resilience", () => {
 	const canonicalReceiptPath = (predecessor: ReceiptTestSnapshot, receipt: ReceiptTestSnapshot) =>
 		path.join(
 			root,
-			`.gjc-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}-receipt-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}.json`,
+			`.worx-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}-receipt-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}.json`,
 		);
 	const publishCanonicalReceipt = (predecessor: ReceiptTestSnapshot, contents: string) => {
-		const pending = path.join(root, `.gjc-replace-receipt-pending-${randomUUID()}.json`);
+		const pending = path.join(root, `.worx-replace-receipt-pending-${randomUUID()}.json`);
 		fs.writeFileSync(pending, contents);
 		const receiptIdentity = snapshot(pending);
 		const receipt = canonicalReceiptPath(predecessor, receiptIdentity);
@@ -1351,12 +1351,12 @@ describe("replacement cleanup receipt reconcile TOCTOU resilience", () => {
 	const receiptQuarantine = (receipt: ReceiptTestSnapshot, predecessor: ReceiptTestSnapshot) =>
 		path.join(
 			root,
-			`.gjc-receipt-remove-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}`,
+			`.worx-receipt-remove-${BigInt(receipt.dev).toString(16)}-${BigInt(receipt.ino).toString(16)}-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}`,
 		);
 	const legacyReceiptPath = (predecessor: ReceiptTestSnapshot) =>
 		path.join(
 			root,
-			`.gjc-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}.json`,
+			`.worx-replace-cleanup-${BigInt(predecessor.dev).toString(16)}-${BigInt(predecessor.ino).toString(16)}.json`,
 		);
 	const replay = (name: string) => {
 		const store = new ManagedSessionDescendantStore(managedDirectoryRoot(root), root);
@@ -1505,7 +1505,7 @@ describe("replacement cleanup receipt reconcile TOCTOU resilience", () => {
 				"managed_replace_failed:io_error",
 			);
 			expect(fs.readFileSync(destination, "utf8")).toBe("predecessor\n");
-			expect(fs.readdirSync(sessionDir).some(name => name.startsWith(".gjc-replace-cleanup-"))).toBe(true);
+			expect(fs.readdirSync(sessionDir).some(name => name.startsWith(".worx-replace-cleanup-"))).toBe(true);
 		},
 	);
 
@@ -1541,7 +1541,7 @@ describe("replacement cleanup receipt reconcile TOCTOU resilience", () => {
 		const seedIdentity = snapshot(predecessorSeed);
 		const predecessorPath = path.join(
 			root,
-			`.gjc-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
+			`.worx-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
 		);
 		fs.renameSync(predecessorSeed, predecessorPath);
 		const predecessor = snapshot(predecessorPath);
@@ -1615,7 +1615,7 @@ describe("replacement cleanup receipt reconcile TOCTOU resilience", () => {
 		const seedIdentity = snapshot(predecessorSeed);
 		const predecessorPath = path.join(
 			root,
-			`.gjc-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
+			`.worx-exact-replace-destination-${BigInt(seedIdentity.dev).toString(16)}-${BigInt(seedIdentity.ino).toString(16)}`,
 		);
 		fs.renameSync(predecessorSeed, predecessorPath);
 		const predecessor = snapshot(predecessorPath);
@@ -2038,10 +2038,10 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 				...target,
 				plannedArtifactsPath:
 					target.plannedArtifactsPath ??
-					path.join(path.dirname(target.transcriptPath), `.gjc-delete-test-artifacts-${attempt}`),
+					path.join(path.dirname(target.transcriptPath), `.worx-delete-test-artifacts-${attempt}`),
 				plannedTranscriptPath:
 					target.plannedTranscriptPath ??
-					path.join(path.dirname(target.transcriptPath), `.gjc-delete-test-transcript-${attempt}`),
+					path.join(path.dirname(target.transcriptPath), `.worx-delete-test-transcript-${attempt}`),
 			});
 		};
 	});
@@ -2078,7 +2078,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 		await fsp.mkdir(artifactsDir, { recursive: true });
 		await Bun.write(path.join(artifactsDir, "artifact.txt"), "payload");
 
-		const plannedArtifactsPath = path.join(tempDir, ".gjc-delete-happy-artifacts");
+		const plannedArtifactsPath = path.join(tempDir, ".worx-delete-happy-artifacts");
 
 		const target: VerifiedSessionDeleteTarget = {
 			sessionsRoot: tempDir,
@@ -2088,7 +2088,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 			transcriptIdentity: verifiedIdentity(transcriptPath),
 			plannedArtifactsPath,
 
-			plannedTranscriptPath: path.join(tempDir, ".gjc-delete-happy-transcript"),
+			plannedTranscriptPath: path.join(tempDir, ".worx-delete-happy-transcript"),
 		};
 		const artifacts = await storage.deleteSessionVerified(target);
 		if (artifacts.kind !== "cleanup_pending" || artifacts.phase !== "artifacts")
@@ -2103,7 +2103,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 
 	it("revalidates a retained scrubbed root immediately before transcript unlink", async () => {
 		const transcriptPath = await createTranscript("retained-boundary");
-		const retainedRoot = path.join(tempDir, ".gjc-delete-retained-boundary-artifacts.removing");
+		const retainedRoot = path.join(tempDir, ".worx-delete-retained-boundary-artifacts.removing");
 		await fsp.mkdir(retainedRoot);
 		await Bun.write(path.join(retainedRoot, "artifact.txt"), "");
 		const retainedStat = fs.lstatSync(retainedRoot, { bigint: true });
@@ -2128,8 +2128,8 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 				},
 				expectedArtifactsTree: retainedTree.snapshot,
 				detachedArtifactsPath: retainedRoot,
-				plannedArtifactsPath: path.join(tempDir, ".gjc-delete-retained-boundary-artifacts"),
-				plannedTranscriptPath: path.join(tempDir, ".gjc-delete-retained-boundary-transcript"),
+				plannedArtifactsPath: path.join(tempDir, ".worx-delete-retained-boundary-artifacts"),
+				plannedTranscriptPath: path.join(tempDir, ".worx-delete-retained-boundary-transcript"),
 			})
 			.catch(value => value);
 
@@ -2201,7 +2201,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 		if (process.platform === "win32") return;
 		const transcriptPath = await createTranscript("tree-root-retained");
 		const artifactsDir = transcriptPath.slice(0, -6);
-		const plannedArtifactsPath = path.join(tempDir, ".gjc-delete-tree-root-q1");
+		const plannedArtifactsPath = path.join(tempDir, ".worx-delete-tree-root-q1");
 		await fsp.mkdir(artifactsDir, { recursive: true });
 		await Bun.write(path.join(artifactsDir, "artifact.txt"), "payload");
 		const remove = vi.spyOn(native, "exactRemoveDirectoryTree");
@@ -2214,7 +2214,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 				cwd: tempDir,
 				transcriptIdentity: verifiedIdentity(transcriptPath),
 				plannedArtifactsPath,
-				plannedTranscriptPath: path.join(tempDir, ".gjc-delete-tree-root-transcript"),
+				plannedTranscriptPath: path.join(tempDir, ".worx-delete-tree-root-transcript"),
 			});
 			if (result.kind !== "cleanup_pending" || result.phase !== "artifacts")
 				throw new Error("Expected pending tree cleanup");
@@ -2229,7 +2229,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 	it("retains partial tree cleanup at its planned authority", async () => {
 		const transcriptPath = await createTranscript("tree-removing-retry");
 		const artifactsDir = transcriptPath.slice(0, -6);
-		const plannedArtifactsPath = path.join(tempDir, ".gjc-delete-tree-root-q1");
+		const plannedArtifactsPath = path.join(tempDir, ".worx-delete-tree-root-q1");
 		await fsp.mkdir(artifactsDir, { recursive: true });
 		await Bun.write(path.join(artifactsDir, "artifact.txt"), "payload");
 		const target: VerifiedSessionDeleteTarget = {
@@ -2239,7 +2239,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 			cwd: tempDir,
 			transcriptIdentity: verifiedIdentity(transcriptPath),
 			plannedArtifactsPath,
-			plannedTranscriptPath: path.join(tempDir, ".gjc-delete-tree-root-transcript"),
+			plannedTranscriptPath: path.join(tempDir, ".worx-delete-tree-root-transcript"),
 		};
 		const pending = await storage.deleteSessionVerified(target);
 		if (pending.kind !== "cleanup_pending" || pending.phase !== "artifacts")
@@ -2338,7 +2338,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 	it("exactly removes a retained artifact root before reconciling an absent transcript", async () => {
 		const transcriptPath = await createTranscript("retained-root-transcript-absent");
 		const transcriptIdentity = verifiedIdentity(transcriptPath);
-		const retainedRoot = path.join(tempDir, ".gjc-delete-retained-root-q1");
+		const retainedRoot = path.join(tempDir, ".worx-delete-retained-root-q1");
 		await fsp.mkdir(retainedRoot);
 		const retainedStat = fs.lstatSync(retainedRoot, { bigint: true });
 		const retainedTree = native.snapshotDirectoryTree(retainedRoot);
@@ -2354,8 +2354,8 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 			sessionId: "session-id",
 			cwd: tempDir,
 			transcriptIdentity,
-			plannedArtifactsPath: path.join(tempDir, ".gjc-delete-retained-root-q2"),
-			plannedTranscriptPath: path.join(tempDir, ".gjc-delete-retained-transcript-q2"),
+			plannedArtifactsPath: path.join(tempDir, ".worx-delete-retained-root-q2"),
+			plannedTranscriptPath: path.join(tempDir, ".worx-delete-retained-transcript-q2"),
 			expectedArtifactsIdentity: {
 				dev: retainedStat.dev,
 				ino: retainedStat.ino,
@@ -2374,7 +2374,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 
 	it("rejects late files instead of expanding retained artifact tree authority", async () => {
 		const transcriptPath = await createTranscript("retained-root-late-file");
-		const retainedRoot = path.join(tempDir, ".gjc-delete-retained-late-q1");
+		const retainedRoot = path.join(tempDir, ".worx-delete-retained-late-q1");
 		await fsp.mkdir(retainedRoot);
 		await Bun.write(path.join(retainedRoot, "authorized.txt"), "authorized");
 		const retainedStat = fs.lstatSync(retainedRoot, { bigint: true });
@@ -2392,8 +2392,8 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 				sessionId: "session-id",
 				cwd: tempDir,
 				transcriptIdentity: verifiedIdentity(transcriptPath),
-				plannedArtifactsPath: path.join(tempDir, ".gjc-delete-retained-late-q2"),
-				plannedTranscriptPath: path.join(tempDir, ".gjc-delete-retained-late-transcript-q2"),
+				plannedArtifactsPath: path.join(tempDir, ".worx-delete-retained-late-q2"),
+				plannedTranscriptPath: path.join(tempDir, ".worx-delete-retained-late-transcript-q2"),
 				expectedArtifactsIdentity: {
 					dev: retainedStat.dev,
 					ino: retainedStat.ino,
@@ -2419,7 +2419,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 		"rejects an artifact hardlink created after the authorized tree snapshot",
 		async () => {
 			const transcriptPath = await createTranscript("retained-root-hardlink");
-			const retainedRoot = path.join(tempDir, ".gjc-delete-retained-hardlink-q1");
+			const retainedRoot = path.join(tempDir, ".worx-delete-retained-hardlink-q1");
 			const authorizedFile = path.join(retainedRoot, "authorized.txt");
 			const externalHardlink = path.join(tempDir, "retained-artifact-hardlink.txt");
 			await fsp.mkdir(retainedRoot);
@@ -2435,8 +2435,8 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 					sessionId: "session-id",
 					cwd: tempDir,
 					transcriptIdentity: verifiedIdentity(transcriptPath),
-					plannedArtifactsPath: path.join(tempDir, ".gjc-delete-retained-hardlink-q2"),
-					plannedTranscriptPath: path.join(tempDir, ".gjc-delete-retained-hardlink-transcript-q2"),
+					plannedArtifactsPath: path.join(tempDir, ".worx-delete-retained-hardlink-q2"),
+					plannedTranscriptPath: path.join(tempDir, ".worx-delete-retained-hardlink-transcript-q2"),
 					expectedArtifactsIdentity: {
 						dev: retainedStat.dev,
 						ino: retainedStat.ino,
@@ -2551,7 +2551,7 @@ describe("FileSessionStorage.deleteSessionVerified artifact-first", () => {
 
 	it("returns the native detached transcript path after a post-detach failure", async () => {
 		const transcriptPath = await createTranscript("detached-transcript-evidence");
-		const plannedTranscriptPath = path.join(tempDir, ".gjc-delete-transcript-planned");
+		const plannedTranscriptPath = path.join(tempDir, ".worx-delete-transcript-planned");
 		const expectedIdentity = verifiedIdentity(transcriptPath);
 		const exactUnlink = native.exactUnlink;
 		let nativeTranscriptSha256: string | undefined;

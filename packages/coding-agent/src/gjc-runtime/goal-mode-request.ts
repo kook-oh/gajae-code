@@ -19,7 +19,7 @@ export const WORX_SESSION_CWD_ENV = "WORX_SESSION_CWD";
 
 const REQUEST_VERSION = 1;
 export const DEFAULT_ULTRAGOAL_OBJECTIVE =
-	"Complete the durable ultragoal plan in .gjc/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .gjc/ultragoal/ledger.jsonl as the audit trail.";
+	"Complete the durable ultragoal plan in .worx/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .worx/ultragoal/ledger.jsonl as the audit trail.";
 
 export interface PendingGoalModeRequest {
 	version: typeof REQUEST_VERSION;
@@ -33,7 +33,7 @@ export interface PendingGoalModeRequest {
 	/**
 	 * Session id that produced this request (from WORX_SESSION_ID). When present,
 	 * only the originating session may consume it, so concurrent sessions sharing
-	 * the same `.gjc` project state never auto-run each other's ultragoal.
+	 * the same `.worx` project state never auto-run each other's ultragoal.
 	 */
 	sessionId?: string;
 }
@@ -224,7 +224,7 @@ export async function writeCurrentSessionGoalModeState(input: {
 		mode: "goal",
 		data: { goal: state.goal },
 	};
-	// The session transcript file lives outside `.gjc/` (WORX_SESSION_FILE), so it is not a
+	// The session transcript file lives outside `.worx/` (WORX_SESSION_FILE), so it is not a
 	// sanctioned-writer target; append directly.
 	await fs.appendFile(sessionFile, `${JSON.stringify(entry)}\n`);
 	return { status: "updated", goal: state.goal, sessionFile };

@@ -48,7 +48,7 @@ async function getProjectSkillDirs(cwd: string, home: string): Promise<{ dirs: s
 	const stop = path.resolve(repoRoot ?? current);
 	while (true) {
 		if (current !== resolvedHome) {
-			dirs.push(path.join(current, ".gjc", "skills"));
+			dirs.push(path.join(current, ".worx", "skills"));
 		}
 		if (current === stop) break;
 		const parent = path.dirname(current);
@@ -65,7 +65,7 @@ function getUserSkillDirs(home: string): string[] {
 		...new Set([
 			path.join(home, canonicalUserDir, "skills"),
 			path.join(home, configuredLegacyDir, "skills"),
-			path.join(home, ".gjc", "skills"),
+			path.join(home, ".worx", "skills"),
 		]),
 	];
 }

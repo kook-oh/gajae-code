@@ -40,7 +40,7 @@ describe("startup imports", () => {
 	it("importing utils does not synchronously load winston or handlebars", async () => {
 		await expect(
 			runBunEval(importProbe("./packages/utils/src/index.ts", ["node_modules/winston", "node_modules/handlebars"]), {
-				WORX_CONFIG_DIR: `.gjc-startup-imports-${Date.now()}`,
+				WORX_CONFIG_DIR: `.worx-startup-imports-${Date.now()}`,
 			}),
 		).resolves.toContain("ok");
 	});
@@ -48,7 +48,7 @@ describe("startup imports", () => {
 	it("importing the fetch tool does not synchronously load linkedom", async () => {
 		await expect(
 			runBunEval(importProbe("./packages/coding-agent/src/tools/fetch.ts", ["node_modules/linkedom"]), {
-				WORX_CONFIG_DIR: `.gjc-startup-imports-${Date.now()}`,
+				WORX_CONFIG_DIR: `.worx-startup-imports-${Date.now()}`,
 			}),
 		).resolves.toContain("ok");
 	});

@@ -3919,7 +3919,7 @@ export function createNotificationsExtension(
 			return { status: "already", runtime: existingRuntime };
 		}
 
-		const stateRoot = path.join(ctx.cwd, ".gjc", "state");
+		const stateRoot = path.join(ctx.cwd, ".worx", "state");
 		let isolateChatEndpoint = forceIsolatedChatSessions.delete(id);
 		if (
 			!isolateChatEndpoint &&

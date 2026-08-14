@@ -5,9 +5,9 @@ This guide captures a production-style Elgato Stream Deck control surface for Ga
 The installable skill body starts at the first frontmatter marker. To install it as a user skill:
 
 ```sh
-mkdir -p ~/.gjc/agent/skills/streamdeck-cmux
+mkdir -p ~/.worx/agent/skills/streamdeck-cmux
 sed -n '/^---$/,$p' docs/streamdeck-integration-guide-with-cmux.md \
-  > ~/.gjc/agent/skills/streamdeck-cmux/SKILL.md
+  > ~/.worx/agent/skills/streamdeck-cmux/SKILL.md
 
 gjc config set skills.enabled true
 gjc config set skills.enablePiUser true
@@ -62,7 +62,7 @@ The control surface should:
 8. Send `Shift+Tab` as one atomic key event. Do not emulate it with separately delivered `Esc`-prefixed text.
 9. Do not create duplicate browser tabs when an existing Chrome or Safari tab matches.
 10. Reuse a focused non-GJC terminal when the operator explicitly wants an in-place worktree launch.
-11. Keep Stream Deck profiles, local plugin installations, generated artwork, and SDK state outside version control. Repository-local `.gjc/state/` is gitignored and is the authoritative SDK discovery location; do not move, delete, or copy it elsewhere.
+11. Keep Stream Deck profiles, local plugin installations, generated artwork, and SDK state outside version control. Repository-local `.worx/state/` is gitignored and is the authoritative SDK discovery location; do not move, delete, or copy it elsewhere.
 
 ## Reference environment
 
@@ -211,7 +211,7 @@ Model profile keys submit commands to the focused GJC editor:
 /model gajae-code/kimi-gpt
 ```
 
-A profile must exist and be available to the current session. The names shown above (`frontier-heavy`, `gpt-heavy`, `glm-deepseek`, `kimi-gpt`) are operator-defined examples, not bundled defaults; none of them ships with GJC. Provide matching definitions in `~/.gjc/agent/models.yml` or replace them with bundled profile names before the keys will work.
+A profile must exist and be available to the current session. The names shown above (`frontier-heavy`, `gpt-heavy`, `glm-deepseek`, `kimi-gpt`) are operator-defined examples, not bundled defaults; none of them ships with GJC. Provide matching definitions in `~/.worx/agent/models.yml` or replace them with bundled profile names before the keys will work.
 
 #### Session controls
 
@@ -274,7 +274,7 @@ cmux send-key \
 
 ### Voice (`Ctrl+H`)
 
-Remap local Whisper speech-to-text in `~/.gjc/agent/keybindings.json`:
+Remap local Whisper speech-to-text in `~/.worx/agent/keybindings.json`:
 
 ```json
 {
@@ -318,7 +318,7 @@ Keep these as distinct controls. The abort control should not require a hold unl
 Every top-level GJC session publishes a loopback SDK discovery file:
 
 ```text
-<repo>/.gjc/state/sdk/<sessionId>.json
+<repo>/.worx/state/sdk/<sessionId>.json
 ```
 
 The file contains the session WebSocket URL and token. Connect with the token as a query parameter and never persist or log it elsewhere.

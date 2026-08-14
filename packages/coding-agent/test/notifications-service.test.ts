@@ -971,7 +971,7 @@ describe("notification-service recovery", () => {
 	});
 	test("reports a detached endpoint after native post-detach failure for retry", async () => {
 		const endpoint = path.join(epDir, "detached.json");
-		const detached = path.join(epDir, ".gjc-delete-notification-endpoint-retry.json");
+		const detached = path.join(epDir, ".worx-delete-notification-endpoint-retry.json");
 		const { fs, store, unlinked } = mockFs(
 			{
 				[endpoint]: JSON.stringify({ sessionId: "detached", url: "ws://x", token: "t", pid: 999 }),
@@ -997,8 +997,8 @@ describe("notification-service recovery", () => {
 	});
 	test("reports detached stale endpoints and retained successors as separate recovery paths", async () => {
 		const endpoint = path.join(epDir, "raced.json");
-		const detached = path.join(epDir, ".gjc-delete-notification-endpoint-raced.json");
-		const successor = path.join(epDir, ".gjc-exact-unlink-placeholder-raced.json");
+		const detached = path.join(epDir, ".worx-delete-notification-endpoint-raced.json");
+		const successor = path.join(epDir, ".worx-exact-unlink-placeholder-raced.json");
 		const { fs, unlinked } = mockFs(
 			{
 				[endpoint]: JSON.stringify({ sessionId: "raced", url: "ws://x", token: "t", pid: 999 }),
@@ -1033,7 +1033,7 @@ describe("notification-service recovery", () => {
 	});
 	test("reports a retained internal exchange placeholder separately from stale objects and live successors", async () => {
 		const endpoint = path.join(epDir, "placeholder.json");
-		const placeholder = path.join(epDir, ".gjc-exact-unlink-placeholder-verified");
+		const placeholder = path.join(epDir, ".worx-exact-unlink-placeholder-verified");
 		const { fs, unlinked } = mockFs(
 			{
 				[endpoint]: JSON.stringify({ sessionId: "placeholder", url: "ws://x", token: "t", pid: 999 }),
@@ -1062,7 +1062,7 @@ describe("notification-service recovery", () => {
 	});
 	test("reports an unverified retained cleanup entry separately from stale objects and verified placeholders", async () => {
 		const endpoint = path.join(epDir, "unknown.json");
-		const unknown = path.join(epDir, ".gjc-exact-unlink-placeholder-mismatch");
+		const unknown = path.join(epDir, ".worx-exact-unlink-placeholder-mismatch");
 		const { fs, unlinked } = mockFs(
 			{
 				[endpoint]: JSON.stringify({ sessionId: "unknown", url: "ws://x", token: "t", pid: 999 }),

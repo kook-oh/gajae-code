@@ -70,7 +70,7 @@ describe("SessionManager session ids", () => {
 			expect(persisted).toContain("durable immediately");
 			const recoveryCopies = fsSync
 				.readdirSync(tempDir.path(), { recursive: true, encoding: "utf8" })
-				.filter(entry => path.basename(entry).startsWith(".gjc-managed-replace-"));
+				.filter(entry => path.basename(entry).startsWith(".worx-managed-replace-"));
 			expect(recoveryCopies).toEqual([]);
 		} finally {
 			await session.close();

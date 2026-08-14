@@ -86,7 +86,7 @@ import { getSkillManifest, isKnownWorkflowState, isValidTransition } from "./wor
  * Native implementation of the `gjc state read|write|clear` command surface.
  *
  * Simple file-receipt operations against session-scoped state under
- * `.gjc/_session-{id}/state/`. This is the sanctioned CLI mediator for
+ * `.worx/_session-{id}/state/`. This is the sanctioned CLI mediator for
  * mutation-guarded GJC state — agents call it instead of editing those files directly.
  */
 

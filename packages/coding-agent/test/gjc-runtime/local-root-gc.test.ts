@@ -16,7 +16,7 @@ import { localRootsGcAdapter } from "../../src/internal-urls/local-root-gc";
  * started is still inside its window, so no liveness oracle is needed.
  */
 
-const MARKER = ".gjc-local-legacy-migrated-v1";
+const MARKER = ".worx-local-legacy-migrated-v1";
 const PAST_GRACE_MS = 25 * 60 * 60 * 1000;
 
 const tempDirs: string[] = [];

@@ -77,7 +77,7 @@ async function treeOf(root: string): Promise<string> {
 describe("GJC bundle refusal purity", () => {
 	test("a refused install does not create the scope root", async () => {
 		const cwd = await mkProjectCwd();
-		const scopeRoot = path.join(cwd, ".gjc", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
 
 		const first = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(first.ok).toBe(true);
@@ -122,7 +122,7 @@ describe("GJC bundle refusal purity", () => {
 	test("a refused install does not depend on the source being resolvable", async () => {
 		const cwd = await mkProjectCwd();
 		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
-		const scopeRoot = path.join(cwd, ".gjc", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
 		const before = await treeOf(scopeRoot);
 
 		// A copy that declares the same name but is otherwise broken must still be
@@ -151,7 +151,7 @@ describe("GJC bundle refusal purity", () => {
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
 		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
-		const scopeRoot = path.join(cwd, ".gjc", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
 		const before = await treeOf(scopeRoot);
 
 		await fs.rm(copy, { recursive: true, force: true });

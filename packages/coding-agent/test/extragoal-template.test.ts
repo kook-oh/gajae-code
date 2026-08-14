@@ -14,11 +14,11 @@ describe("Extragoal skill template", () => {
 		expect(defaultSkillNames).toEqual(expectedWorkflowSkills);
 		expect(template).toContain("Extragoal is **not** a bundled workflow skill; `gjc extragoal` does not exist.");
 		// Install path must target the scanned user-level location, frontmatter-first.
-		expect(template).toContain("mkdir -p ~/.gjc/agent/skills/extragoal");
+		expect(template).toContain("mkdir -p ~/.worx/agent/skills/extragoal");
 		expect(template).toContain(
-			"sed -n '/^---$/,$p' docs/extragoal-skill-template.md > ~/.gjc/agent/skills/extragoal/SKILL.md",
+			"sed -n '/^---$/,$p' docs/extragoal-skill-template.md > ~/.worx/agent/skills/extragoal/SKILL.md",
 		);
-		expect(template).toContain("<project>/.gjc/skills/extragoal/SKILL.md");
+		expect(template).toContain("<project>/.worx/skills/extragoal/SKILL.md");
 	});
 
 	it("keeps the installable body frontmatter-first so the skill scan accepts it", async () => {
@@ -48,7 +48,7 @@ describe("Extragoal skill template", () => {
 		expect(template).toContain("a reviewer invocation without a tool allowlist does not satisfy the leaf contract");
 		expect(template).toContain("Maximum **2 re-sign rounds**");
 		expect(template).toContain("Any fix invalidates the previous signature.");
-		expect(template).toContain("never commit `.gjc/_session-*` gate artifacts");
+		expect(template).toContain("never commit `.worx/_session-*` gate artifacts");
 		expect(template).toContain("The one-shot session's `default` model authors the verdict");
 		expect(template).toContain("gjc -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find");
 		expect(template).toContain(

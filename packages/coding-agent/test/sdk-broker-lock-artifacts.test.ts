@@ -14,7 +14,7 @@ import { LifecycleLedger } from "../src/sdk/broker/lifecycle-ledger";
 
 const HOUR_MS = 60 * 60 * 1_000;
 
-/** Temp state roots created by this file; `~/.gjc` is never touched. */
+/** Temp state roots created by this file; `~/.worx` is never touched. */
 const roots: string[] = [];
 /** Paths chmod-ed to 0 that must be reopened before the temp root can be removed. */
 const restoreModes: string[] = [];

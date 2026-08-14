@@ -1,6 +1,6 @@
 # Standalone MCP configuration
 
-`gjc mcp add` writes only the definition supplied on that invocation to GJC's own MCP config (`~/.gjc/agent/mcp.json` by default, or `./.gjc/mcp.json` with `--project`). `gjc mcp list` and `gjc mcp remove` print redacted definitions. These commands are storage-only: normal standalone startup does not consume registered definitions.
+`gjc mcp add` writes only the definition supplied on that invocation to GJC's own MCP config (`~/.worx/agent/mcp.json` by default, or `./.worx/mcp.json` with `--project`). `gjc mcp list` and `gjc mcp remove` print redacted definitions. These commands are storage-only: normal standalone startup does not consume registered definitions.
 
 ## Use an explicit config
 

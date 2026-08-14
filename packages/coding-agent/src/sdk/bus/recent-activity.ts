@@ -218,7 +218,10 @@ async function resolveRecentScopes(
 			if (!directory.isDirectory() || directory.isSymbolicLink() || !directory.name.startsWith("v2-")) continue;
 			try {
 				const binding = JSON.parse(
-					await fs.readFile(path.join(sessionsRoot, directory.name, ".gjc-managed-session-scope.v2.json"), "utf8"),
+					await fs.readFile(
+						path.join(sessionsRoot, directory.name, ".worx-managed-session-scope.v2.json"),
+						"utf8",
+					),
 				) as { canonicalPath?: unknown };
 				if (typeof binding.canonicalPath !== "string") {
 					warnings.push("Ignored invalid managed session scope binding.");

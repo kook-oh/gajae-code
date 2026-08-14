@@ -531,7 +531,7 @@ test("steady sidecar renewal creates no transition markers and calls no exactUnl
 			.readdirSync(paths.dir)
 			.filter(
 				name =>
-					name.startsWith(".gjc-delete-daemon-transition-") || name.startsWith(".gjc-exact-unlink-placeholder-"),
+					name.startsWith(".worx-delete-daemon-transition-") || name.startsWith(".worx-exact-unlink-placeholder-"),
 			);
 	const before = leakArtifacts();
 	let exactUnlinks = 0;
@@ -840,7 +840,7 @@ function transitionFsCapabilities(): Pick<TelegramDaemonFs, "readEndpointFile" |
 
 function settings(agentDir: string, botToken = "123456:secret-token"): Settings {
 	// Isolate getAgentDir() to the temp dir so daemon persistence (aliases,
-	// topics, lock/state/roots) never writes into the real global ~/.gjc/agent.
+	// topics, lock/state/roots) never writes into the real global ~/.worx/agent.
 	return setPrivateAgentDir(
 		Settings.isolated({
 			"notifications.enabled": true,
@@ -1308,7 +1308,7 @@ describe("telegram daemon", () => {
 		expect(registry.roots).toHaveLength(12);
 		expect(Object.keys(registry.sessions)).toHaveLength(12);
 		for (let i = 0; i < 12; i++) {
-			expect(registry.sessions[`s${i}`]).toBe(path.join(agentDir, `cwd-${i}`, ".gjc", "state"));
+			expect(registry.sessions[`s${i}`]).toBe(path.join(agentDir, `cwd-${i}`, ".worx", "state"));
 		}
 	});
 
@@ -1342,8 +1342,8 @@ describe("telegram daemon", () => {
 			roots: string[];
 			sessions: Record<string, string>;
 		};
-		expect(registry.roots).toEqual([path.join(otherCwd, ".gjc", "state")]);
-		expect(registry.sessions).toEqual({ other: path.join(otherCwd, ".gjc", "state") });
+		expect(registry.roots).toEqual([path.join(otherCwd, ".worx", "state")]);
+		expect(registry.sessions).toEqual({ other: path.join(otherCwd, ".worx", "state") });
 	});
 
 	test("stale unregister does not delete a session re-registered to another root", async () => {
@@ -1358,7 +1358,7 @@ describe("telegram daemon", () => {
 			roots: string[];
 			sessions: Record<string, string>;
 		};
-		const secondRoot = path.join(second, ".gjc", "state");
+		const secondRoot = path.join(second, ".worx", "state");
 		expect(registry.sessions).toEqual({ session: secondRoot });
 		expect(registry.roots).toContain(secondRoot);
 	});
@@ -1368,8 +1368,8 @@ describe("telegram daemon", () => {
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const first = path.join(agentDir, "first");
 		const second = path.join(agentDir, "second");
-		const firstRoot = path.join(first, ".gjc", "state");
-		const secondRoot = path.join(second, ".gjc", "state");
+		const firstRoot = path.join(first, ".worx", "state");
+		const secondRoot = path.join(second, ".worx", "state");
 		await registerNotificationRoot({ settings: s, cwd: first, sessionId: "session" });
 		const replacement = await registerNotificationRoot({ settings: s, cwd: second, sessionId: "session" });
 		let registry = JSON.parse(fs.readFileSync(daemonPaths(agentDir).roots, "utf8")) as {
@@ -1407,7 +1407,7 @@ describe("telegram daemon", () => {
 		const second = await registerNotificationRoot({ settings: s, cwd, sessionId: "session" });
 		expect(second.token).not.toBe(first.token);
 		await unregisterNotificationRoot({ settings: s, cwd, sessionId: "session", registrationToken: first.token });
-		const root = path.join(cwd, ".gjc", "state");
+		const root = path.join(cwd, ".worx", "state");
 		const registry = JSON.parse(fs.readFileSync(daemonPaths(agentDir).roots, "utf8"));
 		expect(registry).toMatchObject({
 			roots: [root],
@@ -1423,7 +1423,7 @@ describe("telegram daemon", () => {
 		const cwd = path.join(agentDir, "session");
 		const registration = await registerNotificationRoot({ settings: s, cwd, sessionId: "session" });
 		await unregisterNotificationRoot({ settings: s, cwd, sessionId: "session" });
-		const root = path.join(cwd, ".gjc", "state");
+		const root = path.join(cwd, ".worx", "state");
 		const registry = JSON.parse(fs.readFileSync(daemonPaths(agentDir).roots, "utf8"));
 		expect(registry).toMatchObject({
 			roots: [root],
@@ -1448,7 +1448,7 @@ describe("telegram daemon", () => {
 		const agentDir = tempAgentDir();
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const cwd = path.join(agentDir, "session");
-		const root = path.join(cwd, ".gjc", "state");
+		const root = path.join(cwd, ".worx", "state");
 		const paths = daemonPaths(agentDir);
 		fs.mkdirSync(paths.dir, { recursive: true });
 		// Pre-token-fencing registry shape: no registrationTokens map at all.
@@ -1496,8 +1496,8 @@ describe("telegram daemon", () => {
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const shared = path.join(agentDir, "shared");
 		const replacement = path.join(agentDir, "replacement");
-		const sharedRoot = path.join(shared, ".gjc", "state");
-		const replacementRoot = path.join(replacement, ".gjc", "state");
+		const sharedRoot = path.join(shared, ".worx", "state");
+		const replacementRoot = path.join(replacement, ".worx", "state");
 		await registerNotificationRoot({ settings: s, cwd: shared, sessionId: "moving" });
 		await registerNotificationRoot({ settings: s, cwd: shared, sessionId: "staying" });
 		await registerNotificationRoot({ settings: s, cwd: replacement, sessionId: "moving" });
@@ -1515,7 +1515,7 @@ describe("telegram daemon", () => {
 	test("legacy unmanaged roots survive register and unregister", async () => {
 		const agentDir = tempAgentDir();
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
-		const legacyRoot = path.join(agentDir, "legacy", ".gjc", "state");
+		const legacyRoot = path.join(agentDir, "legacy", ".worx", "state");
 		fs.mkdirSync(daemonPaths(agentDir).dir, { recursive: true });
 		fs.writeFileSync(daemonPaths(agentDir).roots, JSON.stringify({ version: 1, roots: [legacyRoot], sessions: {} }));
 		await registerNotificationRoot({ settings: s, cwd: path.join(agentDir, "legacy"), sessionId: "legacy-session" });
@@ -1533,7 +1533,7 @@ describe("telegram daemon", () => {
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const legacyCwd = path.join(agentDir, "legacy");
 		const replacementCwd = path.join(agentDir, "replacement");
-		const legacyRoot = path.join(legacyCwd, ".gjc", "state");
+		const legacyRoot = path.join(legacyCwd, ".worx", "state");
 		fs.mkdirSync(daemonPaths(agentDir).dir, { recursive: true });
 		fs.writeFileSync(
 			daemonPaths(agentDir).roots,
@@ -4076,7 +4076,7 @@ describe("telegram daemon", () => {
 		expect(after.ownerId).not.toBe("old");
 		expect(after.generation).toBe(DAEMON_GENERATION);
 		// The new session's root is persisted so the replacement daemon serves it.
-		expect(after.roots).toContain(path.join(cwd, ".gjc", "state"));
+		expect(after.roots).toContain(path.join(cwd, ".worx", "state"));
 	});
 
 	test("D6a: lower-generation predecessor stops polling before the epoch-2 successor is ready", async () => {
@@ -4417,9 +4417,9 @@ describe("telegram daemon", () => {
 		).rejects.toThrow("Unable to replace stale Telegram daemon");
 		const registry = JSON.parse(fs.readFileSync(daemonPaths(agentDir).roots, "utf8"));
 		expect(registry).toMatchObject({
-			roots: [path.join(oldCwd, ".gjc", "state")],
-			managedRoots: [path.join(oldCwd, ".gjc", "state")],
-			sessions: { session: path.join(oldCwd, ".gjc", "state") },
+			roots: [path.join(oldCwd, ".worx", "state")],
+			managedRoots: [path.join(oldCwd, ".worx", "state")],
+			sessions: { session: path.join(oldCwd, ".worx", "state") },
 		});
 	});
 
@@ -5052,7 +5052,7 @@ describe("telegram daemon", () => {
 			tokenFingerprint: "stale-token",
 			generation: DAEMON_GENERATION,
 		});
-		const endpoint = path.join(agentDir, ".gjc", "state", "sdk", "reconciled.json");
+		const endpoint = path.join(agentDir, ".worx", "state", "sdk", "reconciled.json");
 		fs.mkdirSync(path.dirname(endpoint), { recursive: true });
 		fs.writeFileSync(endpoint, JSON.stringify({ url: "ws://dead", token: "dead", pid: 111 }));
 
@@ -5098,7 +5098,7 @@ describe("telegram daemon", () => {
 			generation: DAEMON_GENERATION,
 		});
 		fs.unlinkSync(paths.lock);
-		const endpointDir = path.join(agentDir, ".gjc", "state", "sdk");
+		const endpointDir = path.join(agentDir, ".worx", "state", "sdk");
 		const endpoints = [path.join(endpointDir, "dead-a.json"), path.join(endpointDir, "dead-b.json")];
 		fs.mkdirSync(endpointDir, { recursive: true });
 		for (const endpoint of endpoints)
@@ -5150,7 +5150,7 @@ describe("telegram daemon", () => {
 			generation: DAEMON_GENERATION,
 		});
 		fs.unlinkSync(paths.lock);
-		const endpoint = path.join(agentDir, ".gjc", "state", "sdk", "unproven.json");
+		const endpoint = path.join(agentDir, ".worx", "state", "sdk", "unproven.json");
 		fs.mkdirSync(path.dirname(endpoint), { recursive: true });
 		fs.writeFileSync(endpoint, JSON.stringify({ url: "ws://unproven", token: "unproven" }));
 		let spawns = 0;
@@ -5184,7 +5184,7 @@ describe("telegram daemon", () => {
 		const agentDir = tempAgentDir();
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const paths = daemonPaths(agentDir);
-		const endpoint = path.join(agentDir, ".gjc", "state", "sdk", "raced.json");
+		const endpoint = path.join(agentDir, ".worx", "state", "sdk", "raced.json");
 		const successor = JSON.stringify({ url: "ws://live", token: "live", pid: 4243 });
 		fs.mkdirSync(path.dirname(endpoint), { recursive: true });
 		fs.writeFileSync(endpoint, JSON.stringify({ url: "ws://dead", token: "dead", pid: 111 }));
@@ -5699,7 +5699,7 @@ describe("telegram daemon", () => {
 				}),
 			).toBe(true);
 			expect(JSON.parse(fs.readFileSync(paths.roots, "utf8"))).toMatchObject({
-				sessions: { "replacement-session": path.join(agentDir, "replacement-session", ".gjc", "state") },
+				sessions: { "replacement-session": path.join(agentDir, "replacement-session", ".worx", "state") },
 			});
 		} finally {
 			sleepSpy.mockRestore();
@@ -9815,10 +9815,10 @@ describe("telegram daemon", () => {
 			randomId: () => "owner",
 		});
 
-		// Endpoint discovery files live at <cwd>/.gjc/state/sdk/<sessionId>.json.
+		// Endpoint discovery files live at <cwd>/.worx/state/sdk/<sessionId>.json.
 		const writeEndpoint = async (cwd: string, sessionId: string, url: string) => {
 			await registerNotificationRoot({ settings: s, cwd, sessionId });
-			const dir = path.join(cwd, ".gjc", "state", "sdk");
+			const dir = path.join(cwd, ".worx", "state", "sdk");
 			fs.mkdirSync(dir, { recursive: true });
 			fs.writeFileSync(path.join(dir, `${sessionId}.json`), JSON.stringify({ url, token: "tok" }));
 		};
@@ -12682,7 +12682,7 @@ test("session_closed tombstones its endpoint generation so scans do not recreate
 	const s = setPrivateAgentDir(settings(agentDir), agentDir);
 	const cwd = path.join(agentDir, "repo");
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "S" });
-	const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+	const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 	fs.mkdirSync(endpointDir, { recursive: true });
 	fs.writeFileSync(path.join(endpointDir, "S.json"), JSON.stringify({ url: "ws://live", token: "ts", pid: 4242 }));
 
@@ -14480,7 +14480,7 @@ test("a fresh daemon scanRoots reconnects an existing session endpoint", async (
 	const s = setPrivateAgentDir(settings(agentDir), agentDir);
 	const cwd = path.join(agentDir, "repo");
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "live-session" });
-	const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+	const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 	fs.mkdirSync(endpointDir, { recursive: true });
 	fs.writeFileSync(path.join(endpointDir, "live-session.json"), JSON.stringify({ url: "ws://live", token: "tok" }));
 	const daemon = new TelegramNotificationDaemon({
@@ -14578,7 +14578,7 @@ test("scanRoots connects only live endpoints (skips stale + dead-PID records)", 
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "live" });
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "stale" });
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "dead" });
-	const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+	const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 	fs.mkdirSync(endpointDir, { recursive: true });
 	fs.writeFileSync(path.join(endpointDir, "live.json"), JSON.stringify({ url: "ws://live", token: "t", pid: 4242 }));
 	fs.writeFileSync(
@@ -14610,7 +14610,7 @@ test("scanRoots reaps stale and dead-PID session topics after the orphan grace w
 	const cwd = path.join(agentDir, "repo");
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "stale" });
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "dead" });
-	const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+	const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 	fs.mkdirSync(endpointDir, { recursive: true });
 	fs.writeFileSync(
 		path.join(endpointDir, "stale.json"),
@@ -14696,7 +14696,7 @@ test("scanRoots reaps missing endpoint topics only when all roots are readable a
 	const s = setPrivateAgentDir(settings(agentDir), agentDir);
 	const cwd = path.join(agentDir, "repo");
 	await registerNotificationRoot({ settings: s, cwd, sessionId: "missing" });
-	fs.mkdirSync(path.join(cwd, ".gjc", "state", "sdk"), { recursive: true });
+	fs.mkdirSync(path.join(cwd, ".worx", "state", "sdk"), { recursive: true });
 	fs.mkdirSync(daemonPaths(agentDir).dir, { recursive: true });
 	fs.writeFileSync(
 		path.join(daemonPaths(agentDir).dir, "telegram-topics.json"),
@@ -15014,7 +15014,7 @@ test("validation scanRoots leaves missing production roots and stale leak artifa
 	const paths = daemonPaths(agentDir);
 	const rootsBefore = fs.readFileSync(paths.roots);
 	fs.mkdirSync(paths.dir, { recursive: true });
-	const artifact = path.join(paths.dir, ".gjc-exact-unlink-placeholder-stale");
+	const artifact = path.join(paths.dir, ".worx-exact-unlink-placeholder-stale");
 	const artifactBytes = Buffer.from("retained validation artifact");
 	fs.writeFileSync(artifact, artifactBytes);
 	fs.utimesSync(artifact, new Date(0), new Date(0));
@@ -19302,7 +19302,7 @@ describe("telegram daemon /btw reservation and capability boundaries", () => {
 		const daemonSettings = setPrivateAgentDir(settings(agentDir), agentDir);
 		const cwd = path.join(agentDir, "repo");
 		await registerNotificationRoot({ settings: daemonSettings, cwd, sessionId: "S" });
-		const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+		const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 		await fsPromises.mkdir(endpointDir, { recursive: true });
 		await Bun.write(
 			path.join(endpointDir, "S.json"),
@@ -21116,7 +21116,7 @@ describe("telegram daemon /btw reservation and capability boundaries", () => {
 		const s = setPrivateAgentDir(settings(agentDir), agentDir);
 		const cwd = path.join(agentDir, "repo");
 		await registerNotificationRoot({ settings: s, cwd, sessionId: "B" });
-		const endpointDir = path.join(cwd, ".gjc", "state", "sdk");
+		const endpointDir = path.join(cwd, ".worx", "state", "sdk");
 		fs.mkdirSync(endpointDir, { recursive: true });
 		fs.writeFileSync(
 			path.join(endpointDir, "B.json"),

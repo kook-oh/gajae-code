@@ -62,9 +62,9 @@ describe("telegram daemon self-heal (#2956)", () => {
 	});
 
 	test("isNotificationLeakArtifactName matches quarantine prefixes only", () => {
-		expect(isNotificationLeakArtifactName(".gjc-delete-daemon-transition-abc.json")).toBe(true);
-		expect(isNotificationLeakArtifactName(".gjc-exact-unlink-placeholder-xyz")).toBe(true);
-		expect(isNotificationLeakArtifactName(".gjc-delete-notification-endpoint-1.json")).toBe(true);
+		expect(isNotificationLeakArtifactName(".worx-delete-daemon-transition-abc.json")).toBe(true);
+		expect(isNotificationLeakArtifactName(".worx-exact-unlink-placeholder-xyz")).toBe(true);
+		expect(isNotificationLeakArtifactName(".worx-delete-notification-endpoint-1.json")).toBe(true);
 		expect(isNotificationLeakArtifactName("telegram-daemon.roots.json")).toBe(false);
 		expect(isNotificationLeakArtifactName("normal.json")).toBe(false);
 	});
@@ -77,8 +77,8 @@ describe("telegram daemon self-heal (#2956)", () => {
 		await registerNotificationRoot({ settings: s, cwd: liveCwd, sessionId: "live" });
 		await registerNotificationRoot({ settings: s, cwd: deadCwd, sessionId: "dead" });
 
-		const liveRoot = path.join(liveCwd, ".gjc", "state");
-		const deadRoot = path.join(deadCwd, ".gjc", "state");
+		const liveRoot = path.join(liveCwd, ".worx", "state");
+		const deadRoot = path.join(deadCwd, ".worx", "state");
 		fs.mkdirSync(path.join(liveRoot, "sdk"), { recursive: true });
 		// dead root is registered but never materializes (or is deleted)
 		fs.rmSync(deadRoot, { recursive: true, force: true });
@@ -102,8 +102,8 @@ describe("telegram daemon self-heal (#2956)", () => {
 		const s = settings(agentDir);
 		const dir = daemonPaths(agentDir).dir;
 		fs.mkdirSync(dir, { recursive: true });
-		const aged = path.join(dir, ".gjc-delete-daemon-transition-old.json");
-		const fresh = path.join(dir, ".gjc-exact-unlink-placeholder-fresh");
+		const aged = path.join(dir, ".worx-delete-daemon-transition-old.json");
+		const fresh = path.join(dir, ".worx-exact-unlink-placeholder-fresh");
 		const keep = path.join(dir, "telegram-daemon.roots.json");
 		fs.writeFileSync(aged, "{}");
 		fs.writeFileSync(fresh, "{}");
@@ -117,7 +117,7 @@ describe("telegram daemon self-heal (#2956)", () => {
 			now: () => Date.now(),
 			graceMs: 5 * 60_000,
 		});
-		expect(result.removed.some(p => p.endsWith(".gjc-delete-daemon-transition-old.json"))).toBe(true);
+		expect(result.removed.some(p => p.endsWith(".worx-delete-daemon-transition-old.json"))).toBe(true);
 		expect(fs.existsSync(aged)).toBe(false);
 		expect(fs.existsSync(fresh)).toBe(true);
 		expect(fs.existsSync(keep)).toBe(true);
@@ -131,8 +131,8 @@ describe("telegram daemon self-heal (#2956)", () => {
 		await registerNotificationRoot({ settings: s, cwd: liveCwd, sessionId: "S" });
 		await registerNotificationRoot({ settings: s, cwd: deadCwd, sessionId: "ghost" });
 
-		const liveRoot = path.join(liveCwd, ".gjc", "state");
-		const deadRoot = path.join(deadCwd, ".gjc", "state");
+		const liveRoot = path.join(liveCwd, ".worx", "state");
+		const deadRoot = path.join(deadCwd, ".worx", "state");
 		const sdkDir = path.join(liveRoot, "sdk");
 		fs.mkdirSync(sdkDir, { recursive: true });
 		fs.writeFileSync(path.join(sdkDir, "S.json"), JSON.stringify({ url: "ws://s", token: "ts" }));
@@ -187,8 +187,8 @@ describe("telegram daemon self-heal (#2956)", () => {
 		const flakyCwd = path.join(agentDir, "flaky");
 		await registerNotificationRoot({ settings: s, cwd: liveCwd, sessionId: "S" });
 		await registerNotificationRoot({ settings: s, cwd: flakyCwd, sessionId: "F" });
-		const liveRoot = path.join(liveCwd, ".gjc", "state");
-		const flakyRoot = path.join(flakyCwd, ".gjc", "state");
+		const liveRoot = path.join(liveCwd, ".worx", "state");
+		const flakyRoot = path.join(flakyCwd, ".worx", "state");
 		for (const root of [liveRoot, flakyRoot]) fs.mkdirSync(path.join(root, "sdk"), { recursive: true });
 		fs.writeFileSync(path.join(liveRoot, "sdk", "S.json"), JSON.stringify({ url: "ws://s", token: "ts" }));
 
@@ -239,11 +239,11 @@ describe("telegram daemon self-heal (#2956)", () => {
 		const s = settings(agentDir);
 		const deadCwd = path.join(agentDir, "gone");
 		await registerNotificationRoot({ settings: s, cwd: deadCwd, sessionId: "gone" });
-		const deadRoot = path.join(deadCwd, ".gjc", "state");
+		const deadRoot = path.join(deadCwd, ".worx", "state");
 		fs.rmSync(deadRoot, { recursive: true, force: true });
 
 		const dir = daemonPaths(agentDir).dir;
-		const leak = path.join(dir, ".gjc-delete-daemon-transition-stale.json");
+		const leak = path.join(dir, ".worx-delete-daemon-transition-stale.json");
 		fs.writeFileSync(leak, "{}");
 		const oldTime = new Date(Date.now() - 60 * 60_000);
 		fs.utimesSync(leak, oldTime, oldTime);
@@ -254,7 +254,7 @@ describe("telegram daemon self-heal (#2956)", () => {
 			graceMs: 1_000,
 		});
 		expect(result.prunedRoots).toContain(deadRoot);
-		expect(result.removedArtifacts.some(p => p.endsWith(".gjc-delete-daemon-transition-stale.json"))).toBe(true);
+		expect(result.removedArtifacts.some(p => p.endsWith(".worx-delete-daemon-transition-stale.json"))).toBe(true);
 		expect(fs.existsSync(leak)).toBe(false);
 	});
 });

@@ -228,7 +228,7 @@ process.exitCode = await child.exited;`;
 				const output = `${child.stdout.toString()}${child.stderr.toString()}`;
 				expect(child.exitCode, output).not.toBe(0);
 				expect(output).toContain("was deliberately removed");
-				expect(output).toContain("Inspect leftover managed worktrees under ~/.gjc/wt manually");
+				expect(output).toContain("Inspect leftover managed worktrees under ~/.worx/wt manually");
 				expect(output).toContain("`git worktree remove` or `git worktree prune` instead");
 			}
 		} finally {
@@ -288,7 +288,7 @@ process.exitCode = await child.exited;`;
 
 		expect(result.exitCode, output).toBe(0);
 		expect(output).toContain("--dry-run");
-		expect(output).toContain(".gjc/_session-{sessionid}/state/team");
+		expect(output).toContain(".worx/_session-{sessionid}/state/team");
 		expect(output).toContain("do not commit");
 		expect(output).toContain("existing tmux/GJC --tmux session");
 		expect(output).toContain("gjc --tmux");
@@ -304,7 +304,7 @@ process.exitCode = await child.exited;`;
 
 		expect(result.exitCode, output).toBe(0);
 		expect(output).toContain("--dry-run");
-		expect(output).toContain(".gjc/_session-{sessionid}/state/team");
+		expect(output).toContain(".worx/_session-{sessionid}/state/team");
 	}, 30_000);
 
 	it("preserves root fast-path and legacy team-help precedence", () => {
@@ -442,7 +442,7 @@ process.exitCode = await child.exited;`;
 		try {
 			const result = Bun.spawnSync(["bun", cliEntry, "setup", "--json"], {
 				cwd: repoRoot,
-				env: { ...process.env, HOME: home, WORX_CODING_AGENT_DIR: path.join(home, ".gjc", "agent") },
+				env: { ...process.env, HOME: home, WORX_CODING_AGENT_DIR: path.join(home, ".worx", "agent") },
 				stderr: "pipe",
 				stdout: "pipe",
 			});
@@ -452,7 +452,7 @@ process.exitCode = await child.exited;`;
 			expect(result.exitCode, stderr).toBe(0);
 			const payload = JSON.parse(stdout) as { written?: number; targetRoot?: string };
 			expect(payload.written).toBe(9);
-			expect(payload.targetRoot).toContain(path.join(home, ".gjc", "agent"));
+			expect(payload.targetRoot).toContain(path.join(home, ".worx", "agent"));
 		} finally {
 			await fs.rm(home, { recursive: true, force: true });
 		}

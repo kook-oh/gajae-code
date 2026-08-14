@@ -39,7 +39,7 @@ async function materialize(): Promise<{ files: Map<string, string>; root: string
 async function endpointRepo(url: string, token: string): Promise<string> {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-template-test-"));
 	roots.push(root);
-	const directory = path.join(root, ".gjc", "state", "sdk");
+	const directory = path.join(root, ".worx", "state", "sdk");
 	await fs.mkdir(directory, { recursive: true });
 	await Bun.write(
 		path.join(directory, "session-1.json"),
@@ -166,7 +166,7 @@ describe("generated external GJC SDK skills", () => {
 		expect(skills).toEqual(["gjc-sdk-author/SKILL.md", "gjc-sdk-discover/SKILL.md", "gjc-sdk-operate/SKILL.md"]);
 		for (const key of files.keys()) {
 			expect(key.startsWith("packages/coding-agent/")).toBe(false);
-			expect(key.startsWith(".gjc/")).toBe(false);
+			expect(key.startsWith(".worx/")).toBe(false);
 			const topLevel = key.split("/")[0];
 			if (topLevel !== BUNDLE_MANIFEST_NAME) {
 				expect(["gjc-sdk-author", "gjc-sdk-discover", "gjc-sdk-operate"]).toContain(topLevel);
@@ -393,7 +393,7 @@ describe("generated external GJC SDK skills", () => {
 		const frames: Array<Record<string, unknown>> = [];
 		const sdk = startSdkServer(frames);
 		const repo = await endpointRepo(sdk.url, sdk.token);
-		const directory = path.join(repo, ".gjc", "state", "sdk");
+		const directory = path.join(repo, ".worx", "state", "sdk");
 		await Bun.write(
 			path.join(directory, "session-2.json"),
 			JSON.stringify({ version: 1, sessionId: "session-2", url: sdk.url, token: sdk.token, pid: process.pid, stale: false }),
@@ -420,7 +420,7 @@ describe("generated external GJC SDK skills", () => {
 		const frames: Array<Record<string, unknown>> = [];
 		const sdk = startSdkServer(frames);
 		const repo = await endpointRepo(sdk.url, sdk.token);
-		const endpointPath = path.join(repo, ".gjc", "state", "sdk", "session-1.json");
+		const endpointPath = path.join(repo, ".worx", "state", "sdk", "session-1.json");
 		const result = await runTypeScriptTemplate(
 			[
 				"--repo",

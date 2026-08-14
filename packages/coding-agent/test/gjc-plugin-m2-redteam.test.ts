@@ -193,9 +193,9 @@ describe("GJC plugin installer M2 red-team", () => {
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins.map(plugin => plugin.name)).toEqual(["valid-six-surface-bundle"]);
 		expect(registry.plugins[0]?.source.kind).toBe("tarball");
-		expect(await exists(path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle", "gajae-plugin.json"))).toBe(
-			true,
-		);
+		expect(
+			await exists(path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "gajae-plugin.json")),
+		).toBe(true);
 	});
 
 	test("install of a forbidden-surface bundle leaves no scope files and no registry entry", async () => {
@@ -209,7 +209,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		await expect(installGjcBundle({ cwd }, "project", bad)).rejects.toMatchObject({
 			code: "forbidden_surface",
 		});
-		expect(await listEntries(path.join(cwd, ".gjc", "gjc-plugins"))).toEqual([]);
+		expect(await listEntries(path.join(cwd, ".worx", "gjc-plugins"))).toEqual([]);
 		expect(await readRegistry("project", cwd)).toMatchObject({ plugins: [] });
 	});
 
@@ -241,7 +241,7 @@ describe("GJC plugin installer M2 red-team", () => {
 			value: { status: "updated" },
 		});
 		const installedPrompt = await fs.readFile(
-			path.join(cwd, ".gjc", "gjc-plugins", "m2-reinstall-bundle", "prompts", "system-appendix.md"),
+			path.join(cwd, ".worx", "gjc-plugins", "m2-reinstall-bundle", "prompts", "system-appendix.md"),
 			"utf8",
 		);
 		expect(installedPrompt).toContain("Changed content.");
@@ -263,7 +263,7 @@ describe("GJC plugin installer M2 red-team", () => {
 
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins.map(plugin => plugin.name)).toEqual(["m2-concurrent-bundle"]);
-		expect(await exists(path.join(cwd, ".gjc", "gjc-plugins", "m2-concurrent-bundle", "gajae-plugin.json"))).toBe(
+		expect(await exists(path.join(cwd, ".worx", "gjc-plugins", "m2-concurrent-bundle", "gajae-plugin.json"))).toBe(
 			true,
 		);
 	});

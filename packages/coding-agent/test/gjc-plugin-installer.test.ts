@@ -138,7 +138,7 @@ describe("GJC plugin installer", () => {
 		expect(result.value.status).toBe("installed");
 		expect(result.value.summary.identity).toEqual(bundleIdentity("project", "valid-six-surface-bundle"));
 
-		const installedDir = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle");
+		const installedDir = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle");
 		expect(await exists(path.join(installedDir, "gajae-plugin.json"))).toBe(true);
 
 		const registry = await readRegistry("project", cwd);
@@ -208,7 +208,7 @@ describe("GJC plugin installer", () => {
 		);
 		await expect(installGjcBundle({ cwd }, "project", bad)).rejects.toBeInstanceOf(GjcPluginLoadError);
 
-		expect(await exists(path.join(cwd, ".gjc", "gjc-plugins", "bad-bundle"))).toBe(false);
+		expect(await exists(path.join(cwd, ".worx", "gjc-plugins", "bad-bundle"))).toBe(false);
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins).toEqual([]);
 	});
@@ -265,7 +265,7 @@ describe("GJC plugin installer", () => {
 			expect(result.value.status).toBe("installed");
 			expect(result.value.summary.source.kind).toBe("git");
 
-			const installedDir = path.join(cwd, ".gjc", "gjc-plugins", "git-source-bundle");
+			const installedDir = path.join(cwd, ".worx", "gjc-plugins", "git-source-bundle");
 			expect(await exists(path.join(installedDir, "gajae-plugin.json"))).toBe(true);
 
 			const registry = await readRegistry("project", cwd);
@@ -395,6 +395,6 @@ describe("GJC plugin installer", () => {
 		}
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins).toEqual([]);
-		expect(await exists(path.join(cwd, ".gjc", "gjc-plugins", "no-such-repo"))).toBe(false);
+		expect(await exists(path.join(cwd, ".worx", "gjc-plugins", "no-such-repo"))).toBe(false);
 	});
 });

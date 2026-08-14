@@ -94,7 +94,7 @@ describe("SDK session CLI (gjc sdk session)", () => {
 		replayEvents = [];
 		root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-cli-"));
 		agentDir = path.join(root, "agent");
-		stateRoot = path.join(root, ".gjc", "state");
+		stateRoot = path.join(root, ".worx", "state");
 		const token = "session-token";
 		endpointServer = Bun.serve({
 			hostname: "127.0.0.1",

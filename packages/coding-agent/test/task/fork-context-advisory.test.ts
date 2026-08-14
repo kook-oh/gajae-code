@@ -77,8 +77,8 @@ describe("fork context advisory", () => {
 		["earlier in this session", "prior-session-reference:earlier-in-this-session"],
 		["per the plan above", "prior-session-reference:per-the-plan-above"],
 		["the previous review", "prior-session-reference:the-previous-review"],
-		[".gjc/plans/fork-context.md", "prior-session-reference:gjc-plans-path"],
-		[".gjc/specs/fork-context.md", "prior-session-reference:gjc-specs-path"],
+		[".worx/plans/fork-context.md", "prior-session-reference:gjc-plans-path"],
+		[".worx/specs/fork-context.md", "prior-session-reference:gjc-specs-path"],
 	])("recommends receipt for prior-session trigger %s", (phrase, reason) => {
 		const advisory = adviseForkContextMode({ assignment: `Continue ${phrase} and update the module.` });
 
@@ -99,7 +99,7 @@ describe("fork context advisory", () => {
 
 	it("does not recommend bounded or full from heuristic triggers", () => {
 		const advisory = adviseForkContextMode({
-			assignment: "As discussed, see above and use .gjc/plans/context.md from the previous review.",
+			assignment: "As discussed, see above and use .worx/plans/context.md from the previous review.",
 		});
 
 		expect(advisory.recommendedMode).toBe("last-turn");
@@ -147,7 +147,7 @@ describe("fork context advisory", () => {
 	it("does not mutate the input object", () => {
 		const input = {
 			assignment: "Continue as discussed.",
-			context: "Use .gjc/specs/context.md.",
+			context: "Use .worx/specs/context.md.",
 			explicitMode: "receipt" as const,
 			parentContextTokens: 10_000,
 		};

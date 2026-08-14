@@ -601,7 +601,7 @@ export class ChatDaemonRuntime {
 
 	private async attach(indexed: IndexedSession): Promise<void> {
 		const repo = path.resolve(indexed.locator.repo);
-		const defaultStateRoot = path.join(repo, ".gjc", "state");
+		const defaultStateRoot = path.join(repo, ".worx", "state");
 		const indexedStateRoot = path.resolve(indexed.locator.stateRoot);
 		const scope =
 			indexedStateRoot === defaultStateRoot

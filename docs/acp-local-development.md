@@ -43,14 +43,14 @@ A stale broker is obvious once you look — the path is a different checkout, or
 the elapsed time predates your build:
 
 ```
-19466  08:25:00  /Users/you/git/gajae-code/packages/coding-agent/dist/gjc sdk broker-internal --agent-dir /Users/you/.gjc/agent
+19466  08:25:00  /Users/you/git/gajae-code/packages/coding-agent/dist/gjc sdk broker-internal --agent-dir /Users/you/.worx/agent
 ```
 
 After `bun run restart:sdk-broker -- --close-session-hosts` from your checkout,
 the broker is replaced by one running that checkout's source:
 
 ```
-79955  00:09  bun --config=.../src/sdk/broker/internal-source.bunfig.toml .../src/cli.ts sdk broker-internal --agent-dir /Users/you/.gjc/agent
+79955  00:09  bun --config=.../src/sdk/broker/internal-source.bunfig.toml .../src/cli.ts sdk broker-internal --agent-dir /Users/you/.worx/agent
 ```
 
 The restart asks the published broker to shut down over its authenticated

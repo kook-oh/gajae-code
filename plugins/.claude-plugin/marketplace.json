@@ -1,5 +1,5 @@
 {
-  "name": "gajae-code",
+  "name": "worx-code",
   "owner": {
     "name": "Gajae Code"
   },
@@ -9,8 +9,8 @@
   },
   "plugins": [
     {
-      "name": "gajae-code",
-      "source": "./gajae-code",
+      "name": "worx-code",
+      "source": "./worx-code",
       "description": "Delegate GJC planning/execution/team workflows via coordinator MCP, plus advisory SDK session CLI and guide skills.",
       "version": "0.13.1",
       "author": {

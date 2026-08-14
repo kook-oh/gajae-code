@@ -195,7 +195,7 @@ export function hasValidLifecycleDeadlines(value: LifecycleDeadlines, now = Date
 }
 type Input = Record<string, unknown>;
 export const isCanonicalSessionId = (value: string): boolean => /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value);
-const defaultStateRoot = (cwd: string) => path.join(path.resolve(cwd), ".gjc", "state");
+const defaultStateRoot = (cwd: string) => path.join(path.resolve(cwd), ".worx", "state");
 const hasDefaultStateRoot = (cwd: string, root: string) => path.resolve(root) === defaultStateRoot(cwd);
 
 export interface SessionLifecycleWorktreeTarget {
@@ -532,7 +532,7 @@ function stateRoot(input: Input, cwd: string | undefined): string | undefined {
 	const target = input.target as Record<string, unknown> | undefined;
 	const root = text(input.stateRoot) ?? text(target?.stateRoot);
 	if (root) return path.resolve(root);
-	return cwd ? path.join(cwd, ".gjc", "state") : undefined;
+	return cwd ? path.join(cwd, ".worx", "state") : undefined;
 }
 
 function isLifecycleWorktreeTarget(value: unknown): value is SessionLifecycleWorktreeTarget {
@@ -678,7 +678,7 @@ async function validateLiveResumeScope(
 	if (!requestedCwd) return fail("invalid_input", "A target path is required.");
 	const suppliedRoot = stateRoot(input, requestedCwd);
 	if (!suppliedRoot || !hasDefaultStateRoot(requestedCwd, suppliedRoot))
-		return fail("invalid_input", "stateRoot must be the default .gjc/state for cwd.");
+		return fail("invalid_input", "stateRoot must be the default .worx/state for cwd.");
 	try {
 		if (!(await fs.stat(requestedCwd)).isDirectory())
 			return fail("invalid_input", "Lifecycle worktree must be a directory.");
@@ -1223,7 +1223,7 @@ function lifecycleCleanupPlan(
 				path: file,
 				identity: serializeCleanupIdentity({ ...identity, size: Number(identity.size) }),
 				attempt,
-				plannedPath: path.join(directory, `.gjc-delete-${suffix}-${path.basename(file)}`),
+				plannedPath: path.join(directory, `.worx-delete-${suffix}-${path.basename(file)}`),
 			},
 		];
 	});
@@ -1391,7 +1391,7 @@ function validateLifecycleCleanupFile(root: string, id: string, file: LifecycleC
 	if (
 		!isCanonicalLifecycleCleanupOriginal(root, id, original) ||
 		path.dirname(planned) !== directory ||
-		!path.basename(planned).startsWith(".gjc-delete-") ||
+		!path.basename(planned).startsWith(".worx-delete-") ||
 		(file.detachedPath !== undefined && path.dirname(path.resolve(file.detachedPath)) !== directory)
 	)
 		return false;
@@ -1571,7 +1571,7 @@ function legacyMetadataCleanupPlan(cleanup: CleanupEvidence): CleanupEvidence | 
 	if (
 		metadataPath !== markerPath ||
 		path.dirname(plannedPath) !== directory ||
-		!path.basename(plannedPath).startsWith(".gjc-delete-") ||
+		!path.basename(plannedPath).startsWith(".worx-delete-") ||
 		(detachedPath !== undefined && path.dirname(detachedPath) !== directory) ||
 		(cleanup.metadataAttempt !== undefined &&
 			(!Number.isSafeInteger(cleanup.metadataAttempt) || cleanup.metadataAttempt < 1))
@@ -1667,7 +1667,7 @@ function legacyMetadataCleanupPlan(cleanup: CleanupEvidence): CleanupEvidence | 
 								size: Number(ready.capture.identity.size),
 							}),
 							attempt: 1,
-							plannedPath: path.join(directory, `.gjc-delete-${randomUUID()}-${path.basename(readyPath)}`),
+							plannedPath: path.join(directory, `.worx-delete-${randomUUID()}-${path.basename(readyPath)}`),
 						},
 					]
 				: []),
@@ -1709,7 +1709,7 @@ function lifecycleDeleteMetadataCleanupPlan(
 			attempt: 1,
 			plannedPath: path.join(
 				path.dirname(metadataPath),
-				`.gjc-delete-${randomUUID()}-${path.basename(metadataPath)}`,
+				`.worx-delete-${randomUUID()}-${path.basename(metadataPath)}`,
 			),
 		})),
 	};
@@ -1867,7 +1867,7 @@ async function reconcileLifecycleCleanup(
 				...file,
 				detachedPath: activePath,
 				attempt: (file.attempt ?? 1) + 1,
-				plannedPath: path.join(path.dirname(file.path), `.gjc-delete-${randomUUID()}-${path.basename(file.path)}`),
+				plannedPath: path.join(path.dirname(file.path), `.worx-delete-${randomUUID()}-${path.basename(file.path)}`),
 			};
 			const lifecycleFiles = activeCleanup.lifecycleFiles!.map((candidate, candidateIndex) =>
 				candidateIndex === index ? nextFile : candidate,
@@ -2080,15 +2080,15 @@ async function removeOwnedLifecycleArtifacts(root: string, id: string, expected:
 	const endpointPath = path.join(root, "sdk", `${id}.json`);
 	const plannedEndpointPath = path.join(
 		path.dirname(endpointPath),
-		`.gjc-delete-endpoint-${expected.effectMarker}-${path.basename(endpointPath)}`,
+		`.worx-delete-endpoint-${expected.effectMarker}-${path.basename(endpointPath)}`,
 	);
 	const retryEndpointPath = path.join(
 		path.dirname(endpointPath),
-		`.gjc-delete-endpoint-retry-${expected.effectMarker}-${path.basename(endpointPath)}`,
+		`.worx-delete-endpoint-retry-${expected.effectMarker}-${path.basename(endpointPath)}`,
 	);
 	const finalEndpointPath = path.join(
 		path.dirname(endpointPath),
-		`.gjc-delete-endpoint-final-${expected.effectMarker}-${path.basename(endpointPath)}`,
+		`.worx-delete-endpoint-final-${expected.effectMarker}-${path.basename(endpointPath)}`,
 	);
 	const endpointSource = [endpointPath, plannedEndpointPath, retryEndpointPath, finalEndpointPath].find(candidate => {
 		try {
@@ -2501,7 +2501,7 @@ async function launchInput(
 	const sourceCwd = requestedCwd;
 	const suppliedRoot = stateRoot(input, requestedCwd);
 	if (!suppliedRoot || !hasDefaultStateRoot(requestedCwd, suppliedRoot))
-		return fail("invalid_input", "stateRoot must be the default .gjc/state for cwd.");
+		return fail("invalid_input", "stateRoot must be the default .worx/state for cwd.");
 
 	try {
 		if (!(await fs.stat(sourceCwd)).isDirectory())
@@ -2750,13 +2750,13 @@ function replayDeleteTarget(cleanup: CleanupEvidence): ValidatedDelete | BrokerR
 	if (
 		(plannedArtifactsPath &&
 			(path.dirname(plannedArtifactsPath) !== path.dirname(cleanup.transcriptPath) ||
-				!path.basename(plannedArtifactsPath).startsWith(".gjc-delete-"))) ||
+				!path.basename(plannedArtifactsPath).startsWith(".worx-delete-"))) ||
 		(plannedTranscriptPath &&
 			(path.dirname(plannedTranscriptPath) !== path.dirname(cleanup.transcriptPath) ||
-				!path.basename(plannedTranscriptPath).startsWith(".gjc-delete-"))) ||
+				!path.basename(plannedTranscriptPath).startsWith(".worx-delete-"))) ||
 		(cleanup.artifactTree &&
 			(path.dirname(cleanup.artifactTree.plannedPath) !== path.dirname(cleanup.transcriptPath) ||
-				!path.basename(cleanup.artifactTree.plannedPath).startsWith(".gjc-delete-") ||
+				!path.basename(cleanup.artifactTree.plannedPath).startsWith(".worx-delete-") ||
 				(cleanup.artifactTree.detachedPath !== undefined &&
 					path.dirname(cleanup.artifactTree.detachedPath) !== path.dirname(cleanup.transcriptPath)))) ||
 		retainedArtifactSidePaths.some(
@@ -2884,7 +2884,7 @@ async function validateDeletePath(
 		return fail("invalid_input", "session.delete requires sessionPath and its configured cwd.");
 	const requestedRoot = stateRoot(input, lexicalCwd);
 	if (!requestedRoot || !hasDefaultStateRoot(lexicalCwd, requestedRoot))
-		return fail("invalid_input", "stateRoot must be the default .gjc/state for cwd.");
+		return fail("invalid_input", "stateRoot must be the default .worx/state for cwd.");
 	const cwd = canonicalExistingPath(lexicalCwd);
 	const canonicalRequestedRoot = canonicalExistingPath(requestedRoot);
 	if (
@@ -3614,7 +3614,7 @@ async function executeLifecycleResponse(
 				: {
 						plannedArtifactsPath: path.join(
 							path.dirname(validated.target.transcriptPath),
-							`.gjc-delete-${randomUUID()}-artifacts`,
+							`.worx-delete-${randomUUID()}-artifacts`,
 						),
 					}),
 			...(validated.target.plannedTranscriptPath &&
@@ -3623,7 +3623,7 @@ async function executeLifecycleResponse(
 				: {
 						plannedTranscriptPath: path.join(
 							path.dirname(validated.target.transcriptPath),
-							`.gjc-delete-${randomUUID()}-transcript`,
+							`.worx-delete-${randomUUID()}-transcript`,
 						),
 					}),
 		};

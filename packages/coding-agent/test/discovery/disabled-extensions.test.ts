@@ -18,8 +18,8 @@ describe("disabledExtensions runtime filtering", () => {
 		process.env.HOME = tempHomeDir;
 		vi.spyOn(os, "homedir").mockReturnValue(tempHomeDir);
 		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-disabled-ext-"));
-		await fs.mkdir(path.join(tempDir, ".gjc"), { recursive: true });
-		await fs.writeFile(path.join(tempDir, ".gjc", "AGENTS.md"), "# project instructions\n");
+		await fs.mkdir(path.join(tempDir, ".worx"), { recursive: true });
+		await fs.writeFile(path.join(tempDir, ".worx", "AGENTS.md"), "# project instructions\n");
 
 		const settings = await Settings.init({
 			inMemory: true,

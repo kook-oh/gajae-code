@@ -38,7 +38,7 @@ const allowedUnscopedPackageNames = new Set([expectedRootPackageName]);
 const rootPublicMetadataFields = ["name", "description", "homepage", "repository", "bugs"] as const;
 const rootLegacyScriptKeys = new Set(["test:py"]);
 
-const ignoredDirs = new Set([".git", "node_modules", ".gjc", "dist", "build", "coverage", ".turbo"]);
+const ignoredDirs = new Set([".git", "node_modules", ".worx", "dist", "build", "coverage", ".turbo"]);
 const ignoredFiles = new Set(["bun.lock", "Cargo.lock"]);
 const ignoredExtensions = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".node", ".wasm"]);
 
@@ -151,10 +151,10 @@ function listSkillDirs(dir: string): VisibleDefinition[] {
 
 function listVisibleDefinitions(): VisibleDefinition[] {
 	return [
-		...listSkillDirs(".gjc/skills"),
-		...listDefinitionFiles(".gjc/agents", "agent", [".md", ".toml"]),
-		...listDefinitionFiles(".gjc/commands", "command", [".md"]),
-		...listDefinitionFiles(".gjc/rules", "rule", [".md"]),
+		...listSkillDirs(".worx/skills"),
+		...listDefinitionFiles(".worx/agents", "agent", [".md", ".toml"]),
+		...listDefinitionFiles(".worx/commands", "command", [".md"]),
+		...listDefinitionFiles(".worx/rules", "rule", [".md"]),
 	].sort((a, b) => a.name.localeCompare(b.name) || a.path.localeCompare(b.path));
 }
 
@@ -186,11 +186,11 @@ function scanLegacyHits(): LegacyHit[] {
 		"packages",
 		"python",
 		"scripts",
-		".gjc/skills",
-		".gjc/agents",
-		".gjc/commands",
-		".gjc/rules",
-		".gjc/settings.json",
+		".worx/skills",
+		".worx/agents",
+		".worx/commands",
+		".worx/rules",
+		".worx/settings.json",
 		"assets",
 		"package.json",
 		"Cargo.toml",

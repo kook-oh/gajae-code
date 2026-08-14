@@ -8,7 +8,7 @@
       ],
       "env": {
         "WORX_COORDINATOR_MCP_WORKDIR_ROOTS": "${CLAUDE_PROJECT_DIR}",
-        "WORX_COORDINATOR_MCP_REPO": "gajae-code-plugin",
+        "WORX_COORDINATOR_MCP_REPO": "worx-code-plugin",
         "WORX_COORDINATOR_MCP_SESSION_COMMAND": "worx --worktree"
       }
     }

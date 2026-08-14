@@ -1,6 +1,6 @@
 # Choosing models in GJC: role-based profiles
 
-A practical guide to picking models for GJC's roles, for every subscription situation — one vendor, two vendors, or the full multi-vendor set. It adds curated cross-vendor `profiles:` for `~/.gjc/agent/models.yml` and verified selector notes on top of the mechanism in [Model profiles](./models.md#model-profiles---mpreset). Everything here is **user config**; it complements the built-in `--mpreset` presets and overrides a built-in only when it shares its exact name.
+A practical guide to picking models for GJC's roles, for every subscription situation — one vendor, two vendors, or the full multi-vendor set. It adds curated cross-vendor `profiles:` for `~/.worx/agent/models.yml` and verified selector notes on top of the mechanism in [Model profiles](./models.md#model-profiles---mpreset). Everything here is **user config**; it complements the built-in `--mpreset` presets and overrides a built-in only when it shares its exact name.
 
 > Selectors, prices, and "axis leaders" are catalog- and time-sensitive (selectors and prices observed 2026-07 on the current bundled catalog; the measured latency and single-message-limit notes below were observed 2026-06 on `claude-opus-4-8` and have not been re-measured on `claude-opus-5`). Re-verify any selector with `gjc -p --no-session --no-tools --model <selector> "Reply OK"`.
 
@@ -87,7 +87,7 @@ A verified use is the cross-session final review gate: the authoring session lau
 
 ```sh
 # the one-shot gate needs only a cross-family --model; add --mpreset reviewer as an
-# optional enhancement AFTER installing this profile in ~/.gjc/agent/models.yml:
+# optional enhancement AFTER installing this profile in ~/.worx/agent/models.yml:
 gjc -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find "<review prompt: diff + spec paths, severity findings, final line VERDICT: APPROVE|REQUEST_CHANGES>"
 ```
 

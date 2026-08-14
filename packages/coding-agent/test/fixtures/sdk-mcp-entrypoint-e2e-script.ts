@@ -70,7 +70,7 @@ try {
 			},
 		},
 	});
-	const stateRoot = path.join(repo, ".gjc", "state");
+	const stateRoot = path.join(repo, ".worx", "state");
 	const endpointPath = path.join(stateRoot, "sdk", "s1.json");
 	await mkdir(path.dirname(endpointPath), { recursive: true });
 	await writeFile(

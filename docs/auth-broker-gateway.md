@@ -167,7 +167,7 @@ The gateway has no dedicated env vars — it inherits `WORX_AUTH_BROKER_*` becau
 | `<config-dir>/auth-broker.token`  | `gjc auth-broker serve` (created at first start) | `0600` in a `0700` parent dir |
 | `<config-dir>/auth-gateway.token` | `gjc auth-gateway serve` (skipped under `--no-auth`) | `0600` in a `0700` parent dir |
 
-`<config-dir>` resolves to `~/.gjc/` (respecting `WORX_CONFIG_DIR`).
+`<config-dir>` resolves to `~/.worx/` (respecting `WORX_CONFIG_DIR`).
 
 ## Interaction with the local API-key resolution order
 

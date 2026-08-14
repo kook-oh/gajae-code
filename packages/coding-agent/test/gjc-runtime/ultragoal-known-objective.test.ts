@@ -9,7 +9,9 @@ describe("isKnownUltragoalObjective", () => {
 
 	test("rejects objectives that merely mention ultragoal paths", () => {
 		expect(
-			isKnownUltragoalObjective("Please inspect .gjc/ultragoal/goals.json and .gjc/ultragoal/ledger.jsonl for fun"),
+			isKnownUltragoalObjective(
+				"Please inspect .worx/ultragoal/goals.json and .worx/ultragoal/ledger.jsonl for fun",
+			),
 		).toBe(false);
 	});
 });

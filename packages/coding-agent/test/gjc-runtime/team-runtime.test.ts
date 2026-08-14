@@ -444,7 +444,7 @@ function artifactCompletionEvidence(summary = "Completed by artifact review") {
 				kind: "artifact",
 				status: "verified",
 				summary: "Artifact was reviewed",
-				artifact: ".gjc/state/team/demo/report.md",
+				artifact: ".worx/state/team/demo/report.md",
 			},
 		],
 	};
@@ -521,7 +521,7 @@ describe("native gjc team runtime", () => {
 		const repoRoot = path.resolve("C:/Users/alice/source/really/deep/repository");
 		const stateDir = path.join(
 			repoRoot,
-			".gjc",
+			".worx",
 			"_session-019f40f8-b6df-7000-8529-9227933daf5a",
 			"state",
 			"team",
@@ -546,7 +546,7 @@ describe("native gjc team runtime", () => {
 
 	it("keeps the session-scoped worker worktree root outside Windows psmux", () => {
 		const repoRoot = path.resolve("/tmp/gjc-team-runtime");
-		const stateDir = path.join(repoRoot, ".gjc", "_session-test-session", "state", "team", "posix-team");
+		const stateDir = path.join(repoRoot, ".worx", "_session-test-session", "state", "team", "posix-team");
 
 		const workerPath = resolveWorkerWorktreePath({
 			repoRoot,
@@ -940,7 +940,7 @@ describe("native gjc team runtime", () => {
 			dryRun: true,
 			env: {
 				CODEX_SESSION_ID: "foreign-session",
-				WORX_TEAM_STATE_ROOT: path.join(cleanupRoot, ".gjc", "team-state"),
+				WORX_TEAM_STATE_ROOT: path.join(cleanupRoot, ".worx", "team-state"),
 				PATH: "",
 			},
 		});
@@ -3311,10 +3311,10 @@ describe("native gjc team runtime", () => {
 		});
 	});
 	it("checkpoint classification excludes GJC runtime paths from worker auto-commits", async () => {
-		const protectedTeamPath = `.gjc/_session-${TEST_SESSION_ID}/state/team/demo/worker.json`;
-		const protectedReportPath = `.gjc/_session-${TEST_SESSION_ID}/reports/team-commit-hygiene/demo.ledger.json`;
-		const protectedGatePath = `.gjc/_session-${TEST_SESSION_ID}/extragoal/gate-1.md`;
-		const protectedActivityPath = `.gjc/_session-${TEST_SESSION_ID}/.session-activity.json`;
+		const protectedTeamPath = `.worx/_session-${TEST_SESSION_ID}/state/team/demo/worker.json`;
+		const protectedReportPath = `.worx/_session-${TEST_SESSION_ID}/reports/team-commit-hygiene/demo.ledger.json`;
+		const protectedGatePath = `.worx/_session-${TEST_SESSION_ID}/extragoal/gate-1.md`;
+		const protectedActivityPath = `.worx/_session-${TEST_SESSION_ID}/.session-activity.json`;
 		expect(
 			classifyGjcTeamCheckpointFiles([
 				"src/feature.ts",
@@ -3347,7 +3347,7 @@ describe("native gjc team runtime", () => {
 		const worker = config.workers[0];
 		if (!worker?.worktree_path) throw new Error("missing worker worktree");
 		await Bun.write(path.join(worker.worktree_path, "semantic.txt"), "semantic\n");
-		await Bun.write(path.join(worker.worktree_path, ".gjc", "state", "team", "runtime.json"), "{}\n");
+		await Bun.write(path.join(worker.worktree_path, ".worx", "state", "team", "runtime.json"), "{}\n");
 
 		await monitorGjcTeam("protected-checkpoint-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
@@ -3759,7 +3759,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			agent_type: "executor",
 			worker_count: 1,
 			max_workers: 1,
-			state_root: "C:\\repo\\.gjc\\team",
+			state_root: "C:\\repo\\.worx\\team",
 			worker_command: "bun cli.ts",
 			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
@@ -3770,7 +3770,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			dry_run: false,
 			leader: { session_id: "test", pane_id: "%1", cwd: "C:\\repo" },
 			leader_cwd: "C:\\repo",
-			team_state_root: "C:\\repo\\.gjc\\team",
+			team_state_root: "C:\\repo\\.worx\\team",
 			workers: [
 				{
 					id: "worker-1",
@@ -3816,7 +3816,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			agent_type: "executor",
 			worker_count: 1,
 			max_workers: 1,
-			state_root: "C:\\repo\\.gjc\\team",
+			state_root: "C:\\repo\\.worx\\team",
 			worker_command: "bun cli.ts",
 			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
@@ -3827,7 +3827,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			dry_run: false,
 			leader: { session_id: "test", pane_id: "%1", cwd: "C:\\repo" },
 			leader_cwd: "C:\\repo",
-			team_state_root: "C:\\repo\\.gjc\\team",
+			team_state_root: "C:\\repo\\.worx\\team",
 			workers: [
 				{
 					id: "worker-7",
@@ -4026,7 +4026,7 @@ describe("team worker memory guard wiring", () => {
 		});
 		const workerWorktree = snapshot.workers.find(worker => worker.id === "worker-2")?.worktree_path;
 		expect(workerWorktree).toBeTruthy();
-		const protectedPath = `.gjc/_session-${TEST_SESSION_ID}/state/team/runtime.json`;
+		const protectedPath = `.worx/_session-${TEST_SESSION_ID}/state/team/runtime.json`;
 		await Bun.write(path.join(workerWorktree!, protectedPath), "{}\n");
 		await Bun.write(path.join(workerWorktree!, "report draft.md"), "eligible\n");
 		runGit(workerWorktree!, ["add", "-f", "--", protectedPath]);

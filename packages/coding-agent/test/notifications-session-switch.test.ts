@@ -116,7 +116,7 @@ function createHarness(
 		},
 	} as never;
 
-	const notifDir = path.join(cwd, ".gjc", "state", "sdk");
+	const notifDir = path.join(cwd, ".worx", "state", "sdk");
 	return {
 		handlers,
 		commands,
@@ -139,7 +139,7 @@ function createHarness(
 			return path.join(notifDir, `${id}.json`);
 		},
 		previousSessionFile(id: string) {
-			return path.join(cwd, ".gjc", "agent", "sessions", `ts_${id}.jsonl`);
+			return path.join(cwd, ".worx", "agent", "sessions", `ts_${id}.jsonl`);
 		},
 	};
 }
@@ -166,7 +166,7 @@ async function startAndConnect(harness: ReturnType<typeof createHarness>): Promi
 
 test("session_switch publishes successor SDK authority only after AgentSession restore commits", async () => {
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-notif-post-commit-switch-"));
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const authStorage = await AuthStorage.create(path.join(cwd, "testauth.db"));
 	const model = getBundledModel("anthropic", "claude-sonnet-4-5");
 	if (!model) throw new Error("Expected bundled model");
@@ -189,8 +189,8 @@ test("session_switch publishes successor SDK authority only after AgentSession r
 	createNotificationsExtension(api);
 	const ctx = { cwd, sessionManager: currentSessionManager } as never;
 	const predecessorSessionId = currentSessionManager.getSessionId();
-	const predecessorEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${predecessorSessionId}.json`);
-	const successorEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${targetSessionId}.json`);
+	const predecessorEndpoint = path.join(cwd, ".worx", "state", "sdk", `${predecessorSessionId}.json`);
+	const successorEndpoint = path.join(cwd, ".worx", "state", "sdk", `${targetSessionId}.json`);
 	let session: AgentSession | undefined;
 	let postCommitObserved = false;
 	const extensionRunner = {
@@ -270,7 +270,7 @@ test("turn.prompt preflight rejection returns a correlated failure without an ac
 		},
 	} as never;
 	await handlers.get("session_start")!({ type: "session_start" }, ctx);
-	const endpointPath = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointPath = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointPath), 4000, "preflight endpoint");
 	const { url, token } = readEndpoint(endpointPath);
 	const frames: Array<Record<string, unknown>> = [];
@@ -338,7 +338,7 @@ test("accepted turn.prompt submission failures emit a correlated terminal event"
 		},
 	} as never;
 	await handlers.get("session_start")!({ type: "session_start" }, ctx);
-	const endpointPath = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointPath = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointPath), 4000, "terminal failure endpoint");
 	const { url, token } = readEndpoint(endpointPath);
 	const frames: Array<Record<string, unknown>> = [];
@@ -420,7 +420,7 @@ test("session_switch rotates SDK authority while preserving topic identity", asy
 
 		await handlers.get("session_start")!({ type: "session_start" }, ctx);
 
-		const notifDir = path.join(cwd, ".gjc", "state", "sdk");
+		const notifDir = path.join(cwd, ".worx", "state", "sdk");
 		const originalEndpoint = path.join(notifDir, `${sid}.json`);
 		await waitFor(() => fs.existsSync(originalEndpoint), 4000, "original endpoint file");
 
@@ -439,7 +439,7 @@ test("session_switch rotates SDK authority while preserving topic identity", asy
 		const previousSessionId = sid;
 		sid = `switch-b-${suffix}`;
 		name = "Renamed Plan";
-		const previousSessionFile = path.join(cwd, ".gjc", "agent", "sessions", `ts_${previousSessionId}.jsonl`);
+		const previousSessionFile = path.join(cwd, ".worx", "agent", "sessions", `ts_${previousSessionId}.jsonl`);
 		await handlers.get("session_switch")!({ type: "session_switch", reason: "new", previousSessionFile }, ctx);
 
 		const newEndpoint = path.join(notifDir, `${sid}.json`);

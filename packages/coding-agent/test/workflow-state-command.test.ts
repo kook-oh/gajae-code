@@ -7,7 +7,7 @@ const repoRoot = path.resolve(import.meta.dir, "..", "..", "..");
 const cliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");
 const workflowSkills = ["deep-interview", "ralplan", "ultragoal", "team"] as const;
 function sessionStateDir(cwd: string, sessionId: string): string {
-	return path.join(cwd, ".gjc", `_session-${encodeURIComponent(sessionId).replaceAll(".", "%2E")}`, "state");
+	return path.join(cwd, ".worx", `_session-${encodeURIComponent(sessionId).replaceAll(".", "%2E")}`, "state");
 }
 const initialPhases: Record<(typeof workflowSkills)[number], string> = {
 	"deep-interview": "interviewing",

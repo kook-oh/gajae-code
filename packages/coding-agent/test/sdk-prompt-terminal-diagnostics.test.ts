@@ -72,7 +72,7 @@ function isolatedSettings(cwd: string): Settings {
 	const base = Settings.isolated({ "notifications.enabled": false });
 	return new Proxy(base, {
 		get(target, property) {
-			if (property === "getAgentDir") return () => path.join(cwd, ".gjc", "agent");
+			if (property === "getAgentDir") return () => path.join(cwd, ".worx", "agent");
 			const value = Reflect.get(target, property, target);
 			return typeof value === "function" ? value.bind(target) : value;
 		},
@@ -132,7 +132,7 @@ test.serial("SDK host logs a bounded reason from a reachable provider failure", 
 	const unsubscribe = agent.subscribe(event => {
 		void handlers.get(event.type)?.(event, sessionContext);
 	});
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
 	const endpoint = JSON.parse(fs.readFileSync(endpointFile, "utf8")) as { url: string; token: string };
 
@@ -212,7 +212,7 @@ test.serial("SDK host logs a bounded reason from an accepted sendUserMessage rej
 	const handlers = await start(sessionContext, async () => {
 		throw new Error(reason);
 	});
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
 	const endpoint = JSON.parse(fs.readFileSync(endpointFile, "utf8")) as { url: string; token: string };
 
@@ -279,7 +279,7 @@ test.serial("SDK host does not log a client cancellation as a prompt terminal fa
 	const sessionId = `sdk-prompt-terminal-cancel-${Date.now()}`;
 	const sessionContext = context(cwd, sessionId);
 	const handlers = await start(sessionContext);
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "SDK endpoint");
 	const endpoint = JSON.parse(fs.readFileSync(endpointFile, "utf8")) as { url: string; token: string };
 

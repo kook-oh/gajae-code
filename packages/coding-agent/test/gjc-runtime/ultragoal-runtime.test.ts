@@ -1220,7 +1220,7 @@ describe("native GJC ultragoal runtime", () => {
 		const ledgerRaw = await Bun.file(path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "ledger.jsonl")).text();
 
 		expect(plan.gjcGoalMode).toBe("aggregate");
-		expect(plan.gjcObjective).toContain(".gjc/ultragoal/goals.json");
+		expect(plan.gjcObjective).toContain(".worx/ultragoal/goals.json");
 		expect(plan.goals).toHaveLength(1);
 		expect(plan.goals[0]).toMatchObject({ id: "G001", status: "pending" });
 		expect(goalsRaw).toContain("Fix native ultragoal status");
@@ -2237,10 +2237,10 @@ describe("native GJC ultragoal runtime", () => {
 		const gatePath = path.join(root, "valid-gate.json");
 		await fs.writeFile(gatePath, validGate);
 
-		const goalsPath = path.join(root, ".gjc", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
+		const goalsPath = path.join(root, ".worx", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
 		const ledgerPath = path.join(
 			root,
-			".gjc",
+			".worx",
 			`_session-${process.env.WORX_SESSION_ID}`,
 			"ultragoal",
 			"ledger.jsonl",
@@ -2305,7 +2305,7 @@ describe("native GJC ultragoal runtime", () => {
 	it("quality-gate init: writes a multi-surface template without mutating goals", async () => {
 		const root = await batchTempDir();
 		await createUltragoalPlan({ cwd: root, brief: "Ship one boundary" });
-		const goalsPath = path.join(root, ".gjc", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
+		const goalsPath = path.join(root, ".worx", `_session-${process.env.WORX_SESSION_ID}`, "ultragoal", "goals.json");
 		const goalsBefore = await fs.readFile(goalsPath, "utf8");
 		const out = path.join(root, "quality-gate.json");
 

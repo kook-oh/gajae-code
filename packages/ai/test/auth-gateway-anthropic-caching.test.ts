@@ -7,7 +7,7 @@
  *
  * Skips unless a local gateway is reachable at the default `127.0.0.1:4000`
  * (override via `WORX_E2E_GATEWAY_URL`) AND the bearer token file exists at
- * `~/.gjc/auth-gateway.token`.
+ * `~/.worx/auth-gateway.token`.
  *
  * To run: `bun --cwd packages/ai test test/auth-gateway-anthropic-caching.test.ts`
  * with the gateway live (`gjc auth-gateway serve` or pm2).

@@ -231,7 +231,7 @@ describe("InteractiveMode goal mode integration", () => {
 		);
 
 		expect(result.exitCode).toBe(0);
-		expect(harness.session.getGoalModeState()?.goal.objective).toContain(".gjc/ultragoal/goals.json");
+		expect(harness.session.getGoalModeState()?.goal.objective).toContain(".worx/ultragoal/goals.json");
 		expect(harness.session.getActiveToolNames()).toContain("goal");
 	}, 15_000);
 

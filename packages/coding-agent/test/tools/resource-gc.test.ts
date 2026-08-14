@@ -1259,7 +1259,7 @@ describe("resource GC settings precedence", () => {
 		projectDir = path.join(testDir, "project");
 		fs.mkdirSync(agentDir, { recursive: true });
 		fs.mkdirSync(getProjectAgentDir(projectDir), { recursive: true });
-		fs.mkdirSync(path.join(projectDir, ".gjc"), { recursive: true });
+		fs.mkdirSync(path.join(projectDir, ".worx"), { recursive: true });
 	});
 
 	afterEach(() => {
@@ -1267,10 +1267,10 @@ describe("resource GC settings precedence", () => {
 		fs.rmSync(testDir, { recursive: true, force: true });
 	});
 
-	it("lets project .gjc/settings.json override the user config.yml", async () => {
+	it("lets project .worx/settings.json override the user config.yml", async () => {
 		fs.writeFileSync(path.join(agentDir, "config.yml"), YAML.stringify({ browser: { gc: { idleMs: 111_111 } } }));
 		fs.writeFileSync(
-			path.join(projectDir, ".gjc", "settings.json"),
+			path.join(projectDir, ".worx", "settings.json"),
 			JSON.stringify({ browser: { gc: { idleMs: 222_222 } } }),
 		);
 

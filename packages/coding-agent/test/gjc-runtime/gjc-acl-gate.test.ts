@@ -29,12 +29,12 @@ function tool(name: string, extra: Record<string, unknown> = {}): AgentTool {
 }
 
 describe("G2 gjc ACL gate", () => {
-	it("blocks mutation tools targeting .gjc paths", async () => {
+	it("blocks mutation tools targeting .worx paths", async () => {
 		await withTempCwd(async cwd => {
 			const blockedCases: Array<[AgentTool, unknown]> = [
-				[tool("write"), { path: ".gjc/state/foo.json", content: "{}" }],
-				[tool("edit"), { path: ".gjc/specs/spec.md", edits: [{ old_text: "a", new_text: "b" }] }],
-				[tool("ast_edit"), { paths: [".gjc/state/foo.json"], ops: [{ pat: "foo", out: "bar" }] }],
+				[tool("write"), { path: ".worx/state/foo.json", content: "{}" }],
+				[tool("edit"), { path: ".worx/specs/spec.md", edits: [{ old_text: "a", new_text: "b" }] }],
+				[tool("ast_edit"), { paths: [".worx/state/foo.json"], ops: [{ pat: "foo", out: "bar" }] }],
 			];
 
 			for (const [targetTool, args] of blockedCases) {
@@ -48,7 +48,7 @@ describe("G2 gjc ACL gate", () => {
 		});
 	});
 
-	it("allows sanctioned worx bash commands, bash mutations, and non-.gjc writes", async () => {
+	it("allows sanctioned worx bash commands, bash mutations, and non-.worx writes", async () => {
 		await withTempCwd(async cwd => {
 			const worxCommand = await getWorkflowMutationDecision({
 				cwd,
@@ -60,7 +60,7 @@ describe("G2 gjc ACL gate", () => {
 			const bashMutation = await getWorkflowMutationDecision({
 				cwd,
 				tool: tool("bash"),
-				args: { command: "rm -rf .gjc/specs" },
+				args: { command: "rm -rf .worx/specs" },
 			});
 			expect(bashMutation.blocked).toBe(false);
 
@@ -71,9 +71,9 @@ describe("G2 gjc ACL gate", () => {
 			});
 			expect(productWrite.blocked).toBe(false);
 
-			// Per #951 the mutation guard never blocks `bash`; `.gjc/**` is gated only
-			// through the dedicated write/edit/ast_edit tools, so bash targeting .gjc is allowed.
-			for (const command of ["echo x > .gjc/state/foo.json", "rm -rf .gjc/specs"]) {
+			// Per #951 the mutation guard never blocks `bash`; `.worx/**` is gated only
+			// through the dedicated write/edit/ast_edit tools, so bash targeting .worx is allowed.
+			for (const command of ["echo x > .worx/state/foo.json", "rm -rf .worx/specs"]) {
 				const gjcBash = await getWorkflowMutationDecision({ cwd, tool: tool("bash"), args: { command } });
 				expect(gjcBash.blocked).toBe(false);
 			}

@@ -222,7 +222,7 @@ export const CURRENT_SESSION_VERSION = 5;
  */
 
 function isUnderProjectGjc(cwd: string, targetPath: string): boolean {
-	const relative = path.relative(path.join(path.resolve(cwd), ".gjc"), path.resolve(targetPath));
+	const relative = path.relative(path.join(path.resolve(cwd), ".worx"), path.resolve(targetPath));
 	return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
@@ -5902,12 +5902,12 @@ function isProjectSessionTranscriptPath(projectGjcDir: string, filePath: string)
 }
 
 /**
- * Discover resumable transcripts intentionally stored inside a project's `.gjc`.
+ * Discover resumable transcripts intentionally stored inside a project's `.worx`.
  * Runtime token/audit JSONL files are excluded by requiring a known transcript
  * container (`agent-session` or `sessions`).
  */
 function listProjectSessionTranscriptFiles(cwd: string): string[] {
-	const projectGjcDir = path.join(path.resolve(cwd), ".gjc");
+	const projectGjcDir = path.join(path.resolve(cwd), ".worx");
 	let rootStat: fs.Stats;
 	try {
 		rootStat = fs.lstatSync(projectGjcDir);
@@ -7313,7 +7313,7 @@ export class SessionManager {
 			size: BigInt(named.size),
 			mtimeNs: named.mtimeNs,
 			sha256: publication.publishedSha256,
-			quarantineName: `.gjc-fork-${process.pid}-${crypto.randomUUID()}`,
+			quarantineName: `.worx-fork-${process.pid}-${crypto.randomUUID()}`,
 		});
 		if (
 			!removed.ok &&
@@ -17493,7 +17493,7 @@ export class SessionManager {
 	/**
 	 * Create a new session.
 	 * @param cwd Working directory (stored in session header)
-	 * @param sessionDir Optional session directory. If omitted, uses default (~/.gjc/agent/sessions/<encoded-cwd>/).
+	 * @param sessionDir Optional session directory. If omitted, uses default (~/.worx/agent/sessions/<encoded-cwd>/).
 	 */
 	static nestedManagedDestination(
 		authority: ManagedDirectoryRoot | ManagedSessionDescendantStore,
@@ -18578,7 +18578,7 @@ export class SessionManager {
 		const inspected = inspectTranscriptHeaderBounded(sessionPath, storage, BOUNDED_RESUME_TRANSCRIPT_MAX_BYTES);
 		if (!inspected.ok || !inspected.inspection.cwd) throw new Error("Session has no valid workspace header.");
 		const headerCwd = inspected.inspection.cwd;
-		const projectGjcDir = path.join(path.resolve(headerCwd), ".gjc");
+		const projectGjcDir = path.join(path.resolve(headerCwd), ".worx");
 		if (isProjectSessionTranscriptPath(projectGjcDir, sessionPath)) {
 			const relativePath = path.relative(projectGjcDir, path.resolve(sessionPath)).split(path.sep).join("/");
 			const authority = nativeSessionManager().openRecoveryFsRoot(projectGjcDir);
@@ -19291,7 +19291,7 @@ export class SessionManager {
 	/**
 	 * Continue the most recent session, or create new if none.
 	 * @param cwd Working directory
-	 * @param sessionDir Optional session directory. If omitted, uses default (~/.gjc/agent/sessions/<encoded-cwd>/).
+	 * @param sessionDir Optional session directory. If omitted, uses default (~/.worx/agent/sessions/<encoded-cwd>/).
 	 */
 	static async continueRecent(
 		cwd: string,
@@ -19415,7 +19415,7 @@ export class SessionManager {
 	/**
 	 * List all sessions.
 	 * @param cwd Working directory (used to compute default session directory)
-	 * @param sessionDir Optional session directory. If omitted, uses default (~/.gjc/agent/sessions/<encoded-cwd>/).
+	 * @param sessionDir Optional session directory. If omitted, uses default (~/.worx/agent/sessions/<encoded-cwd>/).
 	 */
 	static async list(
 		cwd: string,

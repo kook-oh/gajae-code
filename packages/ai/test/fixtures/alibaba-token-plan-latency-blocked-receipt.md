@@ -8,7 +8,7 @@
 
 A live Alibaba Token Plan A/B benchmark could not be run during this lane
 because **no `ALIBABA_TOKEN_PLAN_API_KEY` is present** in this host's process
-or login environment, and there is no Alibaba entry in `~/.gjc/agent/models.yml`.
+or login environment, and there is no Alibaba entry in `~/.worx/agent/models.yml`.
 
 Per the issue's latency-analysis requirements, live results were **not
 fabricated**. The harness is landed and validated against a deterministic local

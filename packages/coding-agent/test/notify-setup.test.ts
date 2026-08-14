@@ -501,9 +501,9 @@ describe("notify setup cli", () => {
 			const roots = daemonPaths(settings.getAgentDir()).roots;
 			const existing = {
 				version: 1,
-				roots: ["/existing/.gjc/state"],
-				managedRoots: ["/existing/.gjc/state"],
-				sessions: { existing: "/existing/.gjc/state" },
+				roots: ["/existing/.worx/state"],
+				managedRoots: ["/existing/.worx/state"],
+				sessions: { existing: "/existing/.worx/state" },
 			};
 			fs.mkdirSync(path.dirname(roots), { recursive: true });
 			fs.writeFileSync(roots, JSON.stringify(existing));

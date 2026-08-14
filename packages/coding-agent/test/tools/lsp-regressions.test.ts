@@ -419,7 +419,7 @@ describe("lsp regressions", () => {
 	it("detects tlaplus files for LSP startup and language ids", async () => {
 		const tempDir = TempDir.createSync("@gjc-lsp-tlaplus-");
 		const cwd = path.join(tempDir.path(), "repo");
-		const externalBinDir = path.join(os.homedir(), `.gjc-lsp-tlaplus-${process.pid}-${Date.now()}`);
+		const externalBinDir = path.join(os.homedir(), `.worx-lsp-tlaplus-${process.pid}-${Date.now()}`);
 		const specPath = path.join(cwd, "Spec.tla");
 		const aliasPath = path.join(cwd, "Spec.tlaplus");
 		const tlapmLsp = path.join(externalBinDir, "tlapm_lsp");
@@ -448,7 +448,7 @@ describe("lsp regressions", () => {
 	it("detects csharp-ls as the preferred C# LSP when installed", async () => {
 		const tempDir = TempDir.createSync("@gjc-lsp-csharp-ls-");
 		const cwd = path.join(tempDir.path(), "repo");
-		const externalBinDir = path.join(os.homedir(), `.gjc-lsp-csharp-${process.pid}-${Date.now()}`);
+		const externalBinDir = path.join(os.homedir(), `.worx-lsp-csharp-${process.pid}-${Date.now()}`);
 		const csharpLs = path.join(externalBinDir, "csharp-ls");
 		const omnisharp = path.join(externalBinDir, "omnisharp");
 		try {
@@ -480,7 +480,7 @@ describe("lsp regressions", () => {
 	it("keeps omnisharp as the C# fallback when csharp-ls is unavailable", async () => {
 		const tempDir = TempDir.createSync("@gjc-lsp-omnisharp-fallback-");
 		const cwd = path.join(tempDir.path(), "repo");
-		const externalBinDir = path.join(os.homedir(), `.gjc-lsp-omnisharp-${process.pid}-${Date.now()}`);
+		const externalBinDir = path.join(os.homedir(), `.worx-lsp-omnisharp-${process.pid}-${Date.now()}`);
 		const omnisharp = path.join(externalBinDir, "omnisharp");
 		try {
 			await fs.promises.mkdir(cwd, { recursive: true });

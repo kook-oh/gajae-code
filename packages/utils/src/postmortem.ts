@@ -457,7 +457,7 @@ function boundCrashRecord(report: string): string {
 
 /**
  * Append a fatal-crash record to the dedicated, rotation-immune crash log
- * (`~/.gjc/agent/gjc-crash.log`).
+ * (`~/.worx/agent/gjc-crash.log`).
  *
  * The daily logger file is gzip-archived at date rollover by every gjc process
  * independently; that shared-archive race can truncate a day's log to an empty

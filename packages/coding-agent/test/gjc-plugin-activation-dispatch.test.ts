@@ -19,8 +19,8 @@ let agentDir: string;
 async function tempProjectWithFixture(fixtureName: string): Promise<string> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-activation-"));
 	tempRoots.push(cwd);
-	await fs.mkdir(path.join(cwd, ".gjc", "gjc-plugins"), { recursive: true });
-	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".gjc", "gjc-plugins", fixtureName), {
+	await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".worx", "gjc-plugins", fixtureName), {
 		recursive: true,
 	});
 	return cwd;
@@ -29,9 +29,9 @@ async function tempProjectWithFixture(fixtureName: string): Promise<string> {
 async function tempProjectWithFixtures(fixtureNames: string[]): Promise<string> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-activation-"));
 	tempRoots.push(cwd);
-	await fs.mkdir(path.join(cwd, ".gjc", "gjc-plugins"), { recursive: true });
+	await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
 	for (const fixtureName of fixtureNames) {
-		await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".gjc", "gjc-plugins", fixtureName), {
+		await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".worx", "gjc-plugins", fixtureName), {
 			recursive: true,
 		});
 	}

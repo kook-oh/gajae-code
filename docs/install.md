@@ -89,7 +89,7 @@ Both the launch-time check and `gjc update` resolve the registry the way npm doe
 
 ## Retry configuration
 
-Provider retry budgets live in `~/.gjc/config.yml`:
+Provider retry budgets live in `~/.worx/config.yml`:
 
 ```yaml
 retry:

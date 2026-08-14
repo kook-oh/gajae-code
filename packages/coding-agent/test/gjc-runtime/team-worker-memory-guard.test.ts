@@ -18,7 +18,7 @@ afterEach(async () => {
 });
 
 async function makeWorkerDir(): Promise<string> {
-	const gjcRoot = path.join(process.cwd(), ".gjc");
+	const gjcRoot = path.join(process.cwd(), ".worx");
 	await fs.mkdir(gjcRoot, { recursive: true });
 	const root = await fs.mkdtemp(path.join(gjcRoot, "tmp-team-worker-memory-guard-"));
 	tempRoots.push(root);

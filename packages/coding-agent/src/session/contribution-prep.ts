@@ -196,7 +196,7 @@ export async function prepareContributionPrep(
 	const createdAt = (options.now ?? context.now ?? new Date()).toISOString();
 	const safeTimestamp = createdAt.replace(/[:.]/g, "-");
 	const artifactDir = path.join(
-		options.artifactRoot ?? path.join(context.cwd, ".gjc", "contribution-prep"),
+		options.artifactRoot ?? path.join(context.cwd, ".worx", "contribution-prep"),
 		safeTimestamp,
 	);
 	await fs.mkdir(artifactDir, { recursive: true });

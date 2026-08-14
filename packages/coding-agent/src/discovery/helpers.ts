@@ -777,18 +777,18 @@ export function parseClaudePluginsRegistry(content: string): ClaudePluginsRegist
  * Resolve the active project registry path by walking up from `cwd`.
  *
  * Walk order:
- * 1. Walk up from `cwd` looking for the nearest directory containing `.gjc/`.
- *    The first match returns `<dir>/.gjc/plugins/installed_plugins.json`.
- * 2. If no `.gjc/` is found, rescan from `cwd` upward looking for `.git`.
- *    The git root is used as an anchor: `<gitRoot>/.gjc/plugins/installed_plugins.json`.
+ * 1. Walk up from `cwd` looking for the nearest directory containing `.worx/`.
+ *    The first match returns `<dir>/.worx/plugins/installed_plugins.json`.
+ * 2. If no `.worx/` is found, rescan from `cwd` upward looking for `.git`.
+ *    The git root is used as an anchor: `<gitRoot>/.worx/plugins/installed_plugins.json`.
  * 3. If neither is found, return `null` — no project context is active.
  *
  * This is the single source of truth for "active project root" used by install,
  * uninstall, list, upgrade, discovery, and doctor. Deterministic for a given `cwd`.
  */
 export async function resolveActiveProjectRegistryPath(cwd: string): Promise<string | null> {
-	// Pass 1: walk up looking for an existing .gjc/ directory (nearest wins).
-	// Stop before os.homedir() — ~/.gjc/ is the user-level config dir, not a project root.
+	// Pass 1: walk up looking for an existing .worx/ directory (nearest wins).
+	// Stop before os.homedir() — ~/.worx/ is the user-level config dir, not a project root.
 	const homeDir = os.homedir();
 	let dir = path.resolve(cwd);
 	while (dir !== homeDir) {
@@ -823,11 +823,11 @@ export async function resolveActiveProjectRegistryPath(cwd: string): Promise<str
 }
 
 /**
- * Like resolveActiveProjectRegistryPath, but falls back to `<cwd>/.gjc/plugins/installed_plugins.json`
- * when no project anchor (.gjc/ or .git/) is found.
+ * Like resolveActiveProjectRegistryPath, but falls back to `<cwd>/.worx/plugins/installed_plugins.json`
+ * when no project anchor (.worx/ or .git/) is found.
  *
  * Use this when the caller accepts an explicit --scope project so that installing into a freshly
- * bootstrapped directory (no .gjc/ or .git/ yet) works: writeInstalledPluginsRegistry auto-creates
+ * bootstrapped directory (no .worx/ or .git/ yet) works: writeInstalledPluginsRegistry auto-creates
  * the directory tree on first write.
  *
  * Returns undefined when cwd is os.homedir() — that path is already the user registry and must
@@ -910,7 +910,7 @@ export async function listClaudePluginRoots(
 	}
 
 	// ── Project-scoped GJC registry ────────────────────────────────────────
-	// Loaded from the nearest .gjc/plugins/installed_plugins.json relative to cwd.
+	// Loaded from the nearest .worx/plugins/installed_plugins.json relative to cwd.
 	// Project entries take precedence over user entries for the same plugin ID.
 	if (resolvedProjectPath) {
 		const projectContent = await readFile(resolvedProjectPath);

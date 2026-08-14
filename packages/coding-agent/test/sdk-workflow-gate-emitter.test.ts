@@ -584,11 +584,11 @@ describe("SDK ToolSession forwards getWorkflowGateEmitter", () => {
 			slashCommands: [],
 		});
 		try {
-			// Poison the durable skill-state location AFTER session boot: `.gjc`
+			// Poison the durable skill-state location AFTER session boot: `.worx`
 			// replaced by a FILE makes the observational state-sync writes throw
 			// while attach must still succeed.
-			fs.rmSync(path.join(tempDir, ".gjc"), { recursive: true, force: true });
-			fs.writeFileSync(path.join(tempDir, ".gjc"), "not-a-directory");
+			fs.rmSync(path.join(tempDir, ".worx"), { recursive: true, force: true });
+			fs.writeFileSync(path.join(tempDir, ".worx"), "not-a-directory");
 			expect(session.getActiveToolNames()).not.toContain("ask");
 			session.agent.emitExternalEvent({
 				type: "message_start",

@@ -1,5 +1,5 @@
 {
-  "name": "gajae-code",
+  "name": "worx-code",
   "description": "Delegate planning, execution, and team workflows to GJC through the coordinator MCP server, plus advisory SDK session CLI and guide skills.",
   "version": "0.13.1",
   "commands": "./commands",

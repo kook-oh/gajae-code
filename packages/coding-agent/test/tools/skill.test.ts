@@ -66,8 +66,8 @@ function encodeSessionSegment(value: string): string {
 }
 
 function stateBaseDir(cwd: string, sessionId?: string): string {
-	if (!sessionId) return path.join(cwd, ".gjc", "_session-test", "state");
-	return path.join(cwd, ".gjc", `_session-${encodeSessionSegment(sessionId)}`, "state");
+	if (!sessionId) return path.join(cwd, ".worx", "_session-test", "state");
+	return path.join(cwd, ".worx", `_session-${encodeSessionSegment(sessionId)}`, "state");
 }
 
 async function writeCallerModeState(
@@ -220,10 +220,10 @@ describe("SkillTool", () => {
 		let preloaded: Skill | undefined;
 		try {
 			process.env.HOME = home;
-			process.env.WORX_CONFIG_DIR = ".gjc";
+			process.env.WORX_CONFIG_DIR = ".worx";
 			delete process.env.PI_CONFIG_DIR;
 			const runtimePath = await makeRuntimeSkill(
-				path.join(home, ".gjc", "agent", "skills"),
+				path.join(home, ".worx", "agent", "skills"),
 				"runtime-helper",
 				"Runtime helper",
 				"Runtime fallback body.",
@@ -285,7 +285,7 @@ describe("SkillTool", () => {
 			process.env.PI_CODING_AGENT_DIR = piAgentDecoyDir;
 			process.env.XDG_CONFIG_HOME = xdgConfigHome;
 			const defaultCanonicalPath = await makeRuntimeSkill(
-				path.join(home, ".gjc", "agent", "skills"),
+				path.join(home, ".worx", "agent", "skills"),
 				"default-canonical",
 				"Default canonical",
 				"Default canonical body.",
@@ -313,13 +313,13 @@ describe("SkillTool", () => {
 				"Configured legacy body.",
 			);
 			const historicalPath = await makeRuntimeSkill(
-				path.join(home, ".gjc", "skills"),
+				path.join(home, ".worx", "skills"),
 				"historical-only",
 				"Historical legacy",
 				"Historical body.",
 			);
 			const projectPath = await makeRuntimeSkill(
-				path.join(cwd, ".gjc", "skills"),
+				path.join(cwd, ".worx", "skills"),
 				"winner",
 				"Project",
 				"Project body.",
@@ -331,7 +331,7 @@ describe("SkillTool", () => {
 				"Canonical winner body.",
 			);
 			await makeRuntimeSkill(path.join(configuredRoot, "skills"), "winner", "Configured", "Configured winner body.");
-			await makeRuntimeSkill(path.join(home, ".gjc", "skills"), "winner", "Historical", "Historical winner body.");
+			await makeRuntimeSkill(path.join(home, ".worx", "skills"), "winner", "Historical", "Historical winner body.");
 			const canonicalDuplicatePath = await makeRuntimeSkill(
 				path.join(configuredRoot, "agent", "skills"),
 				"canonical-configured-historical",
@@ -345,7 +345,7 @@ describe("SkillTool", () => {
 				"Configured duplicate body.",
 			);
 			await makeRuntimeSkill(
-				path.join(home, ".gjc", "skills"),
+				path.join(home, ".worx", "skills"),
 				"canonical-configured-historical",
 				"Historical duplicate",
 				"Historical duplicate body.",
@@ -357,7 +357,7 @@ describe("SkillTool", () => {
 				"Configured duplicate body.",
 			);
 			await makeRuntimeSkill(
-				path.join(home, ".gjc", "skills"),
+				path.join(home, ".worx", "skills"),
 				"configured-historical",
 				"Historical duplicate",
 				"Historical duplicate body.",

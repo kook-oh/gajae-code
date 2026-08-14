@@ -476,7 +476,7 @@ describe("rlm preset tool boundary", () => {
 		).toEqual({
 			allowed: true,
 		});
-		expect(checkBashAllowedPrefixes("ls -la .gjc", RLM_READ_ONLY_BASH_PREFIXES, { profile: "read-only" })).toEqual({
+		expect(checkBashAllowedPrefixes("ls -la .worx", RLM_READ_ONLY_BASH_PREFIXES, { profile: "read-only" })).toEqual({
 			allowed: true,
 		});
 		expect(

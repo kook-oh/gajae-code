@@ -14,7 +14,7 @@ Keep this invariant front-and-center when onboarding to the repo:
 - Public role agents: `executor`, `architect`, `planner`, `critic`.
 - Bundled default workflow skill sources live under `packages/coding-agent/src/defaults/gjc/skills/`.
 - Bundled role-agent prompt sources live under `packages/coding-agent/src/prompts/agents/`.
-- Runtime state, specs, plans, goals, team state, and local overrides belong under `.gjc/` for the product and `.omx/` only for this agent-run orchestration.
+- Runtime state, specs, plans, goals, team state, and local overrides belong under `.worx/` for the product and `.omx/` only for this agent-run orchestration.
 
 Do not add a fifth default skill, fifth public role agent, new command, new config surface, or feature-intake behavior unless that product decision has already been made and the default-surface gates are updated.
 

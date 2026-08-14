@@ -1207,7 +1207,7 @@ describe("notifications config", () => {
 		tempDirs.push(root);
 		const agentDir = path.join(root, "agent");
 		const projectDir = path.join(root, "project");
-		const projectSettingsPath = path.join(projectDir, ".gjc", "settings.json");
+		const projectSettingsPath = path.join(projectDir, ".worx", "settings.json");
 		const projectToken = "project-secret-token";
 		fs.mkdirSync(path.dirname(projectSettingsPath), { recursive: true });
 		fs.mkdirSync(agentDir, { recursive: true });
@@ -1560,7 +1560,7 @@ describe("notifications config", () => {
 	});
 	test("settings-enabled subagent sessions do not register the notifications extension", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-subagent-"));
-		const agentDir = path.join(cwd, ".gjc", "agent");
+		const agentDir = path.join(cwd, ".worx", "agent");
 		const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 		const previous = process.env.WORX_NOTIFICATIONS;
 		delete process.env.WORX_NOTIFICATIONS;
@@ -1704,25 +1704,25 @@ describe("notifications config", () => {
 			await parentPrefixSubagent.session.extensionRunner?.emit({ type: "session_start" });
 			await agentTypeOnlySubagent.session.extensionRunner?.emit({ type: "session_start" });
 			await explicitExtensionSubagent.session.extensionRunner?.emit({ type: "session_start" });
-			const topLevelEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${topLevel.session.sessionId}.json`);
-			const subagentEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${subagent.session.sessionId}.json`);
+			const topLevelEndpoint = path.join(cwd, ".worx", "state", "sdk", `${topLevel.session.sessionId}.json`);
+			const subagentEndpoint = path.join(cwd, ".worx", "state", "sdk", `${subagent.session.sessionId}.json`);
 			const parentPrefixSubagentEndpoint = path.join(
 				cwd,
-				".gjc",
+				".worx",
 				"state",
 				"sdk",
 				`${parentPrefixSubagent.session.sessionId}.json`,
 			);
 			const agentTypeOnlySubagentEndpoint = path.join(
 				cwd,
-				".gjc",
+				".worx",
 				"state",
 				"sdk",
 				`${agentTypeOnlySubagent.session.sessionId}.json`,
 			);
 			const explicitExtensionSubagentEndpoint = path.join(
 				cwd,
-				".gjc",
+				".worx",
 				"state",
 				"sdk",
 				`${explicitExtensionSubagent.session.sessionId}.json`,
@@ -1756,7 +1756,7 @@ describe("notifications config", () => {
 
 		test("isolates a safe chat sibling endpoint from a proven foreign Telegram owner", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-provider-foreign-telegram-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const settings = isolatedNotificationSettings(agentDir, {
 				"notifications.enabled": true,
@@ -1783,7 +1783,7 @@ describe("notifications config", () => {
 					chatId: "foreign-chat",
 					startedAt: Date.now(),
 					heartbeatAt: Date.now(),
-					roots: [path.join(cwd, ".gjc", "state")],
+					roots: [path.join(cwd, ".worx", "state")],
 					version: DAEMON_VERSION,
 					generation: DAEMON_GENERATION,
 				}),
@@ -1817,8 +1817,8 @@ describe("notifications config", () => {
 			const sessionStart = handlers.get("session_start");
 			const sessionShutdown = handlers.get("session_shutdown");
 			if (!sessionStart || !sessionShutdown) throw new Error("notifications extension handlers were not registered");
-			const standardEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
-			const chatEndpoint = path.join(cwd, ".gjc", "state", "chat", "sdk", `${sessionId}.json`);
+			const standardEndpoint = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
+			const chatEndpoint = path.join(cwd, ".worx", "state", "chat", "sdk", `${sessionId}.json`);
 			try {
 				await sessionStart({}, context);
 				expect(providerEnsures).toBe(1);
@@ -1833,7 +1833,7 @@ describe("notifications config", () => {
 
 		test("preserves an already-published canonical endpoint on a late Telegram ownership race", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-provider-late-telegram-race-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const botToken = "1234567890:late-race-token-value";
 			const chatId = "late-race-chat";
@@ -1862,7 +1862,7 @@ describe("notifications config", () => {
 					chatId,
 					startedAt: Date.now(),
 					heartbeatAt: Date.now(),
-					roots: [path.join(cwd, ".gjc", "state")],
+					roots: [path.join(cwd, ".worx", "state")],
 					version: DAEMON_VERSION,
 					generation: DAEMON_GENERATION,
 				}),
@@ -1895,8 +1895,8 @@ describe("notifications config", () => {
 			const sessionStart = handlers.get("session_start");
 			const sessionShutdown = handlers.get("session_shutdown");
 			if (!sessionStart || !sessionShutdown) throw new Error("notifications extension handlers were not registered");
-			const standardEndpoint = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
-			const chatEndpoint = path.join(cwd, ".gjc", "state", "chat", "sdk", `${sessionId}.json`);
+			const standardEndpoint = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
+			const chatEndpoint = path.join(cwd, ".worx", "state", "chat", "sdk", `${sessionId}.json`);
 			try {
 				await sessionStart({}, context);
 				expect(providerEnsures).toBeGreaterThan(0);
@@ -1910,7 +1910,7 @@ describe("notifications config", () => {
 		}, 30_000);
 		test("keeps canonical SDK discovery when Telegram ownership is blocked", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-telegram-ownership-blocked-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const settings = isolatedNotificationSettings(agentDir, {
 				"notifications.enabled": true,
@@ -1941,7 +1941,7 @@ describe("notifications config", () => {
 			const sessionStart = handlers.get("session_start");
 			const sessionShutdown = handlers.get("session_shutdown");
 			if (!sessionStart || !sessionShutdown) throw new Error("notifications extension handlers were not registered");
-			const endpoint = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+			const endpoint = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 			try {
 				await sessionStart({}, context);
 				expect(JSON.parse(fs.readFileSync(endpoint, "utf8"))).toMatchObject({ sessionId });
@@ -1953,7 +1953,7 @@ describe("notifications config", () => {
 		}, 30_000);
 		test("keeps the core SDK endpoint when notification provider readiness fails", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-provider-readiness-failure-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const settings = providerSettings(agentDir);
 			let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
@@ -1982,7 +1982,7 @@ describe("notifications config", () => {
 				).session;
 				const runner = session.extensionRunner;
 				if (!runner) throw new Error("notifications extension runner was not registered");
-				const endpoint = path.join(cwd, ".gjc", "state", "sdk", `${session.sessionId}.json`);
+				const endpoint = path.join(cwd, ".worx", "state", "sdk", `${session.sessionId}.json`);
 
 				const errors: string[] = [];
 				const unsubscribe = runner.onError(error => errors.push(error.error));
@@ -2000,7 +2000,7 @@ describe("notifications config", () => {
 
 		test("retains a readiness-failed notification runtime so /notify on can retry without republishing SDK", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-provider-readiness-retry-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const settings = isolatedNotificationSettings(agentDir, {
 				"notifications.enabled": true,
@@ -2027,7 +2027,7 @@ describe("notifications config", () => {
 					chatId: "foreign-retry-chat",
 					startedAt: Date.now(),
 					heartbeatAt: Date.now(),
-					roots: [path.join(cwd, ".gjc", "state")],
+					roots: [path.join(cwd, ".worx", "state")],
 					version: DAEMON_VERSION,
 					generation: DAEMON_GENERATION,
 				}),
@@ -2059,7 +2059,7 @@ describe("notifications config", () => {
 				},
 				ui: { notify: (message: string) => notifications.push(message) },
 			} as unknown as ExtensionCommandContext;
-			const endpoint = path.join(cwd, ".gjc", "state", "chat", "sdk", "provider-readiness-retry.json");
+			const endpoint = path.join(cwd, ".worx", "state", "chat", "sdk", "provider-readiness-retry.json");
 			createNotificationsExtension(api, {
 				settings,
 				ensureTelegramDaemon: async () => "blocked",
@@ -2102,7 +2102,7 @@ describe("notifications config", () => {
 
 		test("publishes the core SDK endpoint before notification provider readiness", async () => {
 			const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-provider-readiness-success-"));
-			const agentDir = path.join(cwd, ".gjc", "agent");
+			const agentDir = path.join(cwd, ".worx", "agent");
 			const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 			const settings = providerSettings(agentDir);
 			let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
@@ -2132,7 +2132,7 @@ describe("notifications config", () => {
 				).session;
 				const runner = session.extensionRunner;
 				if (!runner) throw new Error("notifications extension runner was not registered");
-				endpoint = path.join(cwd, ".gjc", "state", "sdk", `${session.sessionId}.json`);
+				endpoint = path.join(cwd, ".worx", "state", "sdk", `${session.sessionId}.json`);
 
 				await runner.emit({ type: "session_start" });
 				expect(fs.existsSync(endpoint)).toBe(true);
@@ -2147,7 +2147,7 @@ describe("notifications config", () => {
 
 	test("sessionScope=primary keeps a canonical SDK endpoint while suppressing GJC-spawned child delivery", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-notif-spawned-"));
-		const agentDir = path.join(cwd, ".gjc", "agent");
+		const agentDir = path.join(cwd, ".worx", "agent");
 		const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 		const previousNotif = process.env.WORX_NOTIFICATIONS;
 		const previousSpawn = process.env.WORX_SPAWNED_BY_SESSION;
@@ -2185,7 +2185,7 @@ describe("notifications config", () => {
 				enableMCP: false,
 				enableLsp: false,
 			});
-		const endpointFor = (sessionId: string): string => path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+		const endpointFor = (sessionId: string): string => path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 		try {
 			resetSettingsForTest();
 			await Settings.init({ inMemory: true, cwd, agentDir });
@@ -2307,7 +2307,7 @@ describe("notifications config", () => {
 		expect(extensionShouldRegister).toBe(false);
 		if (extensionShouldRegister) createNotificationsExtension(api);
 		expect(notify).toBeUndefined();
-		expect(fs.existsSync(path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`))).toBe(false);
+		expect(fs.existsSync(path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`))).toBe(false);
 		expect(fs.existsSync(daemonPaths(agentDir).roots)).toBe(false);
 	});
 	test("captured /notify on uses the production daemon ensurer once and awaits SDK endpoint shutdown", async () => {
@@ -2381,7 +2381,7 @@ describe("notifications config", () => {
 			},
 		});
 
-		const endpoint = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+		const endpoint = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 		const roots = daemonPaths(agentDir).roots;
 		const sessionStart = handlers.get("session_start");
 		const sessionShutdown = handlers.get("session_shutdown");
@@ -2398,13 +2398,13 @@ describe("notifications config", () => {
 			expect(fs.existsSync(endpoint)).toBe(true);
 			expect(fs.existsSync(roots)).toBe(true);
 			const registeredRoots = JSON.parse(fs.readFileSync(roots, "utf8")) as { roots: string[] };
-			expect(registeredRoots.roots).toEqual([path.join(cwd, ".gjc", "state")]);
+			expect(registeredRoots.roots).toEqual([path.join(cwd, ".worx", "state")]);
 			expect(spawns).toBe(1);
 
 			await notify.handler("on", context);
 			expect(fs.existsSync(endpoint)).toBe(true);
 			expect((JSON.parse(fs.readFileSync(roots, "utf8")) as { roots: string[] }).roots).toEqual([
-				path.join(cwd, ".gjc", "state"),
+				path.join(cwd, ".worx", "state"),
 			]);
 			expect(spawns).toBe(1);
 

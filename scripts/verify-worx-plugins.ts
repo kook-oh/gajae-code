@@ -18,9 +18,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { COORDINATOR_MCP_TOOL_NAMES } from "../packages/coding-agent/src/coordinator/contract";
-import { findUnexpectedPluginFiles, renderPluginFiles } from "./generate-gjc-plugins";
+import { findUnexpectedPluginFiles, renderPluginFiles } from "./generate-worx-plugins";
 
-const PLUGIN_DIR = "gajae-code";
+const PLUGIN_DIR = "worx-code";
 
 interface GateResult {
 	name: string;

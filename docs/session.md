@@ -28,10 +28,10 @@ Does not cover `/tree` UI rendering behavior beyond semantics that affect sessio
 Default managed session file location:
 
 ```text
-~/.gjc/agent/sessions/v2-<52-char-base32-sha256>/<timestamp>_<sessionId>.jsonl
+~/.worx/agent/sessions/v2-<52-char-base32-sha256>/<timestamp>_<sessionId>.jsonl
 ```
 
-The `v2-…` component is a fixed-width SHA-256/base32 digest of the native canonical workspace identity (identity version 1); it is **not** a reversible or injective user-facing encoding. The binding file `.gjc-managed-session-scope.v2.json` records the canonical identity and digest. Existing bindings must be regular, canonically encoded files that agree with the resolved identity; a mismatch or unsafe path fails closed.
+The `v2-…` component is a fixed-width SHA-256/base32 digest of the native canonical workspace identity (identity version 1); it is **not** a reversible or injective user-facing encoding. The binding file `.worx-managed-session-scope.v2.json` records the canonical identity and digest. Existing bindings must be regular, canonically encoded files that agree with the resolved identity; a mismatch or unsafe path fails closed.
 
 Identity is platform-specific:
 
@@ -56,13 +56,13 @@ On Linux filesystems where the exact POSIX ACL xattr operation returns `ENOTSUP`
 Blob store location:
 
 ```text
-~/.gjc/agent/blobs/<sha256>
+~/.worx/agent/blobs/<sha256>
 ```
 
 Terminal breadcrumb files are written under:
 
 ```text
-~/.gjc/agent/terminal-sessions/<terminal-id>
+~/.worx/agent/terminal-sessions/<terminal-id>
 ```
 
 Breadcrumb content is two lines: original cwd, then session file path. `continueRecent()` prefers this terminal-scoped pointer before scanning most-recent mtime.
@@ -519,7 +519,7 @@ Defined in `session-manager.ts`:
 - `getRecentSessions(sessionDir, limit)` -> lightweight metadata for UI/session picker
 - `findMostRecentSession(sessionDir)` -> newest by mtime
 - `list(cwd, sessionDir?)` -> sessions in one project scope
-- `listAll()` -> sessions across all project scopes under `~/.gjc/agent/sessions`
+- `listAll()` -> sessions across all project scopes under `~/.worx/agent/sessions`
 
 Metadata extraction reads only a prefix (`readTextPrefix(..., 4096)`) where possible.
 
@@ -527,7 +527,7 @@ Metadata extraction reads only a prefix (`readTextPrefix(..., 4096)`) where poss
 
 `HistoryStorage` (`history-storage.ts`) is a separate SQLite subsystem for prompt recall/search, not session replay.
 
-- DB: `~/.gjc/agent/history.db`
+- DB: `~/.worx/agent/history.db`
 - Table: `history(id, prompt, created_at, cwd)`
 - FTS5 index: `history_fts` with trigger-maintained sync
 - Deduplicates consecutive identical prompts using in-memory last-prompt cache

@@ -103,7 +103,7 @@ Theme lookup order (`loadThemeJson`):
 
 Custom themes directory comes from `getCustomThemesDir()`:
 
-- default: `~/.gjc/agent/themes`
+- default: `~/.worx/agent/themes`
 - overridden by `WORX_CODING_AGENT_DIR` (`$WORX_CODING_AGENT_DIR/themes`)
 
 `getAvailableThemes()` returns merged built-in + custom names, sorted, with built-ins taking precedence on name collision.
@@ -217,8 +217,8 @@ Other tokens are unchanged.
 Theme-related settings are persisted by `Settings` to global config YAML:
 
 - path: `<agentDir>/config.yml`
-- default agent dir: `~/.gjc/agent`
-- effective default file: `~/.gjc/agent/config.yml`
+- default agent dir: `~/.worx/agent`
+- effective default file: `~/.worx/agent/config.yml`
 
 Persisted keys:
 
@@ -231,7 +231,7 @@ Legacy migration exists: old flat `theme: "name"` is migrated to nested `theme.d
 
 ## Creating a custom theme (practical)
 
-1. Create file in custom themes dir, e.g. `~/.gjc/agent/themes/my-theme.json`.
+1. Create file in custom themes dir, e.g. `~/.worx/agent/themes/my-theme.json`.
 2. Include `name`, optional `vars`, and **all required** `colors` tokens.
 3. Optionally include `symbols` and `export`.
 4. Select the theme in Settings (`Display -> Dark theme` or `Display -> Light theme`) depending on which auto slot you want. All bundled themes are selectable: the crustacean defaults `red-claw` and `blue-crab`, plus the migration themes `claude-code`, `codex`, and `opencode` (dark-classified, recommended for the dark slot but selectable in either).

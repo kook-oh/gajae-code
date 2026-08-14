@@ -159,7 +159,7 @@ export declare class NotificationServer {
    * Create a server for `session_id` authenticated by `token`.
    *
    * `state_root` (when given) is where the endpoint discovery file is written
-   * (e.g. `<repo>/.gjc/state`). `resolver_available` defaults to `true`.
+   * (e.g. `<repo>/.worx/state`). `resolver_available` defaults to `true`.
    */
   constructor(sessionId: string, token: string, stateRoot?: string | undefined | null, resolverAvailable?: boolean | undefined | null)
   /** Register the reply callback. Must be called before [`Self::start`]. */

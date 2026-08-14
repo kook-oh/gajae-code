@@ -58,7 +58,7 @@ async function createHarness(
 		sendUserMessage: () => {},
 	} as never;
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-notif-file-redaction-"));
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 	cleanupRoots.push(cleanup);
 	const settings = isolatedNotificationSettings(agentDir, { "notifications.redact": redact });
@@ -74,7 +74,7 @@ async function createHarness(
 			getCwd: () => cwd,
 		},
 	} as never;
-	const endpoint = () => path.join(cwd, ".gjc", "state", "sdk", `${sid}.json`);
+	const endpoint = () => path.join(cwd, ".worx", "state", "sdk", `${sid}.json`);
 
 	return {
 		handlers,
@@ -208,7 +208,7 @@ test("session_switch keeps telegram_send file attachments blocked under redactio
 		const previousId = harness.sid;
 		expect(getTelegramFileSink(previousId)).toBeDefined();
 		harness.sid = `file-redaction-new-${previousId}`;
-		const previousSessionFile = path.join(harness.cwd, ".gjc", "agent", "sessions", `ts_${previousId}.jsonl`);
+		const previousSessionFile = path.join(harness.cwd, ".worx", "agent", "sessions", `ts_${previousId}.jsonl`);
 		await harness.handlers.get("session_switch")!(
 			{ type: "session_switch", reason: "new", previousSessionFile },
 			harness.ctx,

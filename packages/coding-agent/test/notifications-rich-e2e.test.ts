@@ -44,7 +44,7 @@ function tempAgentDir(): string {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gjc-rich-e2e-"));
 }
 
-/** Isolate getAgentDir() to a temp dir so daemon persistence never touches ~/.gjc/agent. */
+/** Isolate getAgentDir() to a temp dir so daemon persistence never touches ~/.worx/agent. */
 function setPrivateAgentDir(s: Settings, agentDir: string): Settings {
 	return new Proxy(s, {
 		get(target, prop) {
@@ -342,7 +342,7 @@ async function connectRealPipeline(
 		await registerNotificationRoot({ settings: s, cwd, sessionId });
 		// The napi server writes its endpoint file under <stateRoot>/sdk/<id>.json,
 		// which is exactly where registerNotificationRoot points the daemon to scan.
-		const stateRoot = path.join(cwd, ".gjc", "state");
+		const stateRoot = path.join(cwd, ".worx", "state");
 		const srv = new NotificationServer(sessionId, "tok", stateRoot, true);
 		let replayConnectionId: string | undefined;
 		const closedConnectionIds = new Set<string>();

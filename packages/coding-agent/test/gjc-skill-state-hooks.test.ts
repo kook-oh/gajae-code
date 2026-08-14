@@ -947,19 +947,19 @@ describe("GJC native skill-state hooks", () => {
 			cwd: root,
 			sessionId: "session-rich",
 			tool: { name: "write" } as never,
-			args: { path: ".gjc/specs/deep-interview-sample.md", content: "spec" },
+			args: { path: ".worx/specs/deep-interview-sample.md", content: "spec" },
 		});
 		expect(blockedSpec.blocked).toBe(true);
 		expect(blockedSpec.reason).toBe("worx-target");
 		expect(blockedSpec.message).toContain("runtime-owned");
 
-		// Per #951 the mutation guard never blocks `bash`, even for `.gjc/**` targets;
-		// `.gjc/**` is gated only through the dedicated write/edit/ast_edit tools.
+		// Per #951 the mutation guard never blocks `bash`, even for `.worx/**` targets;
+		// `.worx/**` is gated only through the dedicated write/edit/ast_edit tools.
 		const allowedGjcBash = await getWorkflowMutationDecision({
 			cwd: root,
 			sessionId: "session-rich",
 			tool: { name: "bash" } as never,
-			args: { command: "cat sample.md > .gjc/specs/deep-interview-sample.md" },
+			args: { command: "cat sample.md > .worx/specs/deep-interview-sample.md" },
 		});
 		expect(allowedGjcBash.blocked).toBe(false);
 
@@ -967,7 +967,7 @@ describe("GJC native skill-state hooks", () => {
 			cwd: root,
 			sessionId: "session-rich",
 			tool: { name: "write" } as never,
-			args: { path: ".gjc/state/sessions/session-rich/deep-interview-state.json", content: "{}" },
+			args: { path: ".worx/state/sessions/session-rich/deep-interview-state.json", content: "{}" },
 		});
 		expect(blocked.blocked).toBe(true);
 		expect(blocked.reason).toBe("workflow-state-target");
@@ -978,7 +978,7 @@ describe("GJC native skill-state hooks", () => {
 		const blocked = await getWorkflowMutationDecision({
 			cwd: root,
 			tool: { name: "write" } as never,
-			args: { path: ".gjc/state/ralplan-state.json", content: "{}" },
+			args: { path: ".worx/state/ralplan-state.json", content: "{}" },
 		});
 		expect(blocked.blocked).toBe(true);
 		expect(blocked.reason).toBe("workflow-state-target");
@@ -987,14 +987,14 @@ describe("GJC native skill-state hooks", () => {
 		const allowedSpec = await getWorkflowMutationDecision({
 			cwd: root,
 			tool: { name: "write" } as never,
-			args: { path: ".gjc/specs/deep-interview-sample.md", content: "spec" },
+			args: { path: ".worx/specs/deep-interview-sample.md", content: "spec" },
 		});
 		expect(allowedSpec.blocked).toBe(true);
 
 		const allowedPlan = await getWorkflowMutationDecision({
 			cwd: root,
 			tool: { name: "write" } as never,
-			args: { path: ".gjc/plans/sample.md", content: "plan" },
+			args: { path: ".worx/plans/sample.md", content: "plan" },
 		});
 		expect(allowedPlan.blocked).toBe(true);
 	});
@@ -1015,7 +1015,7 @@ describe("GJC native skill-state hooks", () => {
 		const state = await readVisibleSkillActiveState(root, "../../../escape");
 		expect(state?.initialized_state_path).toBe(modeStatePath(root, "../../../escape", "team"));
 		expect(await fs.stat(activeSnapshotPath(root, "../../../escape"))).toBeDefined();
-		await expect(fs.stat(path.join(root, ".gjc", "escape"))).rejects.toThrow();
+		await expect(fs.stat(path.join(root, ".worx", "escape"))).rejects.toThrow();
 	});
 
 	it("UserPromptSubmit injects sanitized effective skill config without raw paths or settings-file instructions", async () => {
@@ -1055,8 +1055,8 @@ describe("GJC native skill-state hooks", () => {
 		expect(context).toContain("disabledSkillExtensions.count=1");
 		expect(context).toContain("Custom skill directories: count=1");
 		expect(context).not.toContain(rawCustomDirectory);
-		expect(context).not.toContain("~/.gjc");
-		expect(context).not.toContain(".gjc/settings.json");
+		expect(context).not.toContain("~/.worx");
+		expect(context).not.toContain(".worx/settings.json");
 		expect(context).not.toContain("SKILL.md");
 		expect(context).not.toContain("ralplan, team]");
 		expect(context).not.toContain("legacy-*");

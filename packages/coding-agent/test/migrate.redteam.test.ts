@@ -70,7 +70,7 @@ describe("red-team: path traversal", () => {
 		const escaped2 = path.join(path.dirname(cwd), "evil");
 		expect(await exists(escaped)).toBe(false);
 		expect(await exists(escaped2)).toBe(false);
-		const skillsDir = path.join(cwd, ".gjc", "skills");
+		const skillsDir = path.join(cwd, ".worx", "skills");
 		const entries = await fs.readdir(skillsDir).catch(() => []);
 		for (const e of entries) expect(e.includes("..")).toBe(false);
 	});
@@ -83,7 +83,7 @@ describe("red-team: all-malformed input", () => {
 		await write(".config/opencode/opencode.json", "{ broken");
 		const report = await runMigrate(base({}));
 		expect(report.ok).toBe(false);
-		expect(await exists(path.join(cwd, ".gjc", "mcp.json"))).toBe(false);
+		expect(await exists(path.join(cwd, ".worx", "mcp.json"))).toBe(false);
 	});
 });
 
@@ -97,7 +97,7 @@ describe("red-team: cross-source slug collision", () => {
 		expect(skillActions[0].status).toBe("imported");
 		expect(skillActions[1].status).toBe("skipped_exists");
 		// The first (canonical-order: claude-code) wins on disk.
-		const written = await fs.readFile(path.join(cwd, ".gjc", "skills", "shared", "SKILL.md"), "utf-8");
+		const written = await fs.readFile(path.join(cwd, ".worx", "skills", "shared", "SKILL.md"), "utf-8");
 		expect(written).toContain("from-claude");
 	});
 });

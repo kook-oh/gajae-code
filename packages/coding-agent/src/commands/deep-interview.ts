@@ -27,7 +27,7 @@ session_id, or WORX_SESSION_ID.`;
 		threshold: Flags.string({ description: "Override ambiguity threshold for kickoff" }),
 		"threshold-source": Flags.string({ description: "Describe the threshold override source" }),
 		"session-id": Flags.string({
-			description: "Route state/spec handoff through a session-scoped .gjc/_session-{sessionid} directory",
+			description: "Route state/spec handoff through a session-scoped .worx/_session-{sessionid} directory",
 		}),
 		input: Flags.string({ description: "JSON payload (or @file) for the write/stage verbs" }),
 		for: Flags.string({
@@ -36,7 +36,7 @@ session_id, or WORX_SESSION_ID.`;
 		reset: Flags.boolean({ description: "With write: replace state instead of incremental merge" }),
 		write: Flags.boolean({ description: "Persist a final deep-interview spec through the sanctioned GJC CLI/API" }),
 		stage: Flags.string({ description: 'Spec stage for --write (currently "final")' }),
-		slug: Flags.string({ description: "Safe slug for .gjc/_session-{sessionid}/specs/deep-interview-<slug>.md" }),
+		slug: Flags.string({ description: "Safe slug for .worx/_session-{sessionid}/specs/deep-interview-<slug>.md" }),
 		spec: Flags.string({ description: "Final spec markdown or a path to the final spec markdown" }),
 		handoff: Flags.string({ description: 'After --write, hand off to a workflow target (currently "ralplan")' }),
 		deliberate: Flags.boolean({

@@ -7,22 +7,22 @@ The prompt is designed to be repeatable: it tells GJC what local artifacts to in
 ## Full prompt
 
 ```text
-~/.gjc 에 있는 내 가재코드 사용내역을 바탕으로, 가재코드 밋업 아이스브레이킹용 “가재코드가 보는 나” 자기소개 글을 작성해줘.
+~/.worx 에 있는 내 가재코드 사용내역을 바탕으로, 가재코드 밋업 아이스브레이킹용 “가재코드가 보는 나” 자기소개 글을 작성해줘.
 
 목표:
 - 내 실제 가재코드 사용패턴을 분석해서, 내가 어떤 개발자/빌더/운영자인지 소개하는 글을 써줘.
 - 단순 통계 나열이 아니라, 사용 습관과 관심사에서 드러나는 성향을 해석해줘.
 - 밋업에서 2~4분 정도 읽을 수 있는 분량으로 작성해줘.
 - 너무 딱딱한 리포트 말고, 사람 소개글처럼 재미있고 선명하게 써줘.
-- 과장하거나 없는 사실을 만들지 말고, 실제 ~/.gjc 기록에서 관찰된 패턴만 근거로 삼아줘.
+- 과장하거나 없는 사실을 만들지 말고, 실제 ~/.worx 기록에서 관찰된 패턴만 근거로 삼아줘.
 
 분석 지시:
-1. ~/.gjc 디렉터리 구조를 먼저 확인해줘.
+1. ~/.worx 디렉터리 구조를 먼저 확인해줘.
 2. 가능한 경우 아래의 안전한 메타데이터 중심 자료만 분석해줘:
-   - ~/.gjc/agent/history.db 의 집계값
-   - ~/.gjc/agent/sessions/**/*.jsonl 의 세션 메타데이터(세션 제목, timestamp, cwd, 메시지 수, tool-call 수, 파일 크기, subagent/task 이름)
-   - ~/.gjc 내부의 추가 파일은 사용패턴 집계에 꼭 필요하고 민감정보가 없다고 판단되는 경우에만 읽어줘.
-   - 기본적으로 ~/.gjc/logs/*, auth/config/credential 파일, env dump, raw tool-result body, raw prompt body, secret-like 값은 읽지 마.
+   - ~/.worx/agent/history.db 의 집계값
+   - ~/.worx/agent/sessions/**/*.jsonl 의 세션 메타데이터(세션 제목, timestamp, cwd, 메시지 수, tool-call 수, 파일 크기, subagent/task 이름)
+   - ~/.worx 내부의 추가 파일은 사용패턴 집계에 꼭 필요하고 민감정보가 없다고 판단되는 경우에만 읽어줘.
+   - 기본적으로 ~/.worx/logs/*, auth/config/credential 파일, env dump, raw tool-result body, raw prompt body, secret-like 값은 읽지 마.
 3. history.db에서는 최소한 다음을 봐줘:
    - 전체 프롬프트 수
    - 기간 범위
@@ -83,7 +83,7 @@ The prompt is designed to be repeatable: it tells GJC what local artifacts to in
 
 주의:
 - 분석 없이 일반론으로 쓰지 마.
-- 실제 ~/.gjc 기록을 읽고 나서 작성해.
+- 실제 ~/.worx 기록을 읽고 나서 작성해.
 - 숫자를 말할 때는 실제로 확인한 숫자만 써.
 - 확인하지 못한 항목은 “확인 불가”라고 하지 말고, 그 항목을 빼고 자연스럽게 작성해.
 ```
@@ -93,16 +93,16 @@ The prompt is designed to be repeatable: it tells GJC what local artifacts to in
 Use this when participants need a shorter copy/paste prompt.
 
 ```text
-~/.gjc 사용내역을 분석해서 밋업 아이스브레이킹용 “가재코드가 보는 나” 자기소개 글을 써줘.
+~/.worx 사용내역을 분석해서 밋업 아이스브레이킹용 “가재코드가 보는 나” 자기소개 글을 써줘.
 
-반드시 실제 ~/.gjc 기록을 읽되, 안전한 메타데이터와 집계값 중심으로 근거 기반 작성해:
+반드시 실제 ~/.worx 기록을 읽되, 안전한 메타데이터와 집계값 중심으로 근거 기반 작성해:
 - history.db의 프롬프트 수, 기간, cwd/레포 분포, 자주 쓰는 단어, skill 사용량
 - sessions jsonl의 세션 수, 세션 길이 다양성, subagent/task 사용 흔적
 - 레포지토리/주제 다양성
 - 짧은 명령 vs 긴 지시문 패턴
 - 실행/검증/리뷰/PR/CI/릴리스/위임 습관
 
-민감정보는 읽지도 출력하지도 마. API key, 토큰, private credential, 개인 secret, 긴 원문 프롬프트, raw tool-result body, ~/.gjc/logs/*, auth/config/env dump는 기본적으로 건너뛰고, 필요한 경우에도 안전한 집계값과 짧은 paraphrase만 써.
+민감정보는 읽지도 출력하지도 마. API key, 토큰, private credential, 개인 secret, 긴 원문 프롬프트, raw tool-result body, ~/.worx/logs/*, auth/config/env dump는 기본적으로 건너뛰고, 필요한 경우에도 안전한 집계값과 짧은 paraphrase만 써.
 
 출력:
 1. 분석 근거 bullet 3~6개
@@ -125,12 +125,12 @@ Use this when participants need a shorter copy/paste prompt.
 A meetup host can also turn the same analysis into a playful, MBTI-like “GajaeTI” result. This is only an icebreaker taxonomy, not a psychological assessment.
 
 ```text
-~/.gjc 사용내역을 안전한 메타데이터와 집계값 중심으로 분석해서, 밋업 아이스브레이킹용 “가재TI”를 만들어줘.
+~/.worx 사용내역을 안전한 메타데이터와 집계값 중심으로 분석해서, 밋업 아이스브레이킹용 “가재TI”를 만들어줘.
 
 목표:
 - MBTI처럼 4글자 코드와 타입명을 만들되, 실제 성격검사가 아니라 가재코드 사용패턴 기반의 재미있는 작업 스타일 분류로 작성해.
-- 실제 ~/.gjc 기록에서 확인한 사용패턴만 근거로 삼아줘.
-- 민감정보는 읽지도 출력하지도 마. API key, 토큰, private credential, 개인 secret, 긴 원문 프롬프트, raw tool-result body, ~/.gjc/logs/*, auth/config/env dump는 기본적으로 건너뛰고, 안전한 집계값과 짧은 paraphrase만 써.
+- 실제 ~/.worx 기록에서 확인한 사용패턴만 근거로 삼아줘.
+- 민감정보는 읽지도 출력하지도 마. API key, 토큰, private credential, 개인 secret, 긴 원문 프롬프트, raw tool-result body, ~/.worx/logs/*, auth/config/env dump는 기본적으로 건너뛰고, 안전한 집계값과 짧은 paraphrase만 써.
 
 먼저 아래 4개 축을 기준으로 타입을 판정해줘. 각 축은 한쪽을 고르되, 애매하면 근거와 함께 중간 성향이라고 설명해.
 

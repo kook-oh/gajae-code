@@ -1,5 +1,5 @@
 /**
- * RLM session artifact layout under <cwd>/.gjc/_session-{gjcSessionId}/rlm/<rlmSessionId>/.
+ * RLM session artifact layout under <cwd>/.worx/_session-{gjcSessionId}/rlm/<rlmSessionId>/.
  *
  * The GJC session id (process boundary) scopes the directory; the RLM session id
  * names the individual research run within it. The two ids are kept distinct.

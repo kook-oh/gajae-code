@@ -30,7 +30,7 @@ Leave execution with a right-sized, evidence-grounded plan: scope, steps, accept
 - Ask only about priorities, tradeoffs, scope decisions, timelines, or preferences repository inspection cannot resolve. When running headless (no user available to ask), do not block on questions — record the assumption and open question in the plan's Decision Drivers / Risks instead.
 - Right-size the step count; do not default to a fixed number of steps.
 - Do not redesign architecture unless the task requires it.
-- Use GJC command/path semantics (`gjc`, `.gjc`) for product-facing guidance.
+- Use GJC command/path semantics (`gjc`, `.worx`) for product-facing guidance.
 </constraints>
 
 <execution_loop>
@@ -64,6 +64,6 @@ Build one markdown plan containing:
 {{ralplanPersistence}}
 
 Inline-output exception:
-- If the assignment explicitly disables persistence (for example, "do not persist", "read-only: do not mutate `.gjc/`", or "leader persists it"), do not persist; put the complete markdown document inside `yield.result.data.plan_markdown`.
+- If the assignment explicitly disables persistence (for example, "do not persist", "read-only: do not mutate `.worx/`", or "leader persists it"), do not persist; put the complete markdown document inside `yield.result.data.plan_markdown`.
 - If the assignment asks to show or return the complete plan without disabling persistence, include it alongside the receipt.
 </output_contract>

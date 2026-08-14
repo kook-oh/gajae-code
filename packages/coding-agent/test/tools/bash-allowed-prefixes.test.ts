@@ -428,7 +428,7 @@ describe("checkBashAllowedPrefixes", () => {
 
 	it("blocks shell chaining that could smuggle destructive commands", () => {
 		const result = checkBashAllowedPrefixes(
-			"worx ralplan --write --stage critic --artifact ok; rm -rf .gjc",
+			"worx ralplan --write --stage critic --artifact ok; rm -rf .worx",
 			ROLE_AGENT_PREFIXES,
 		);
 

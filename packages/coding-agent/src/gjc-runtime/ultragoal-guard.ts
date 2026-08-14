@@ -459,7 +459,7 @@ export async function readUltragoalVerificationState(input: {
 		if (isKnownUltragoalObjective(currentObjective) || (await hasDurableUltragoalState(input.cwd))) {
 			return {
 				state: "unreadable_fail_closed",
-				message: "Active Ultragoal objective is missing durable .gjc/ultragoal/goals.json state.",
+				message: "Active Ultragoal objective is missing durable .worx/ultragoal/goals.json state.",
 			};
 		}
 		return { state: "inactive", message: "No Ultragoal plan exists." };
@@ -548,10 +548,10 @@ export async function verifyUltragoalDurableCompletionState(input: {
 	try {
 		await fs.stat(paths.dir);
 	} catch (error) {
-		if (isEnoent(error)) return { state: "inactive", message: "No durable .gjc/ultragoal state exists." };
+		if (isEnoent(error)) return { state: "inactive", message: "No durable .worx/ultragoal state exists." };
 		return {
 			state: "unreadable_fail_closed",
-			message: `Durable .gjc/ultragoal state is present but unreadable: ${error instanceof Error ? error.message : String(error)}`,
+			message: `Durable .worx/ultragoal state is present but unreadable: ${error instanceof Error ? error.message : String(error)}`,
 		};
 	}
 
@@ -673,14 +673,14 @@ export async function isUltragoalAskBlocked(
 	} catch (error) {
 		if (isEnoent(error)) {
 			return inactiveAskDiagnostic({
-				reason: "No durable .gjc/ultragoal state exists.",
+				reason: "No durable .worx/ultragoal state exists.",
 				source: "absent",
 				goalsPath: paths.goalsPath,
 				ledgerPath: paths.ledgerPath,
 			});
 		}
 		return activeAskDiagnostic({
-			reason: `Durable .gjc/ultragoal state is present but unreadable: ${error instanceof Error ? error.message : String(error)}`,
+			reason: `Durable .worx/ultragoal state is present but unreadable: ${error instanceof Error ? error.message : String(error)}`,
 			source: "durable_state_unreadable",
 			goalsPath: paths.goalsPath,
 			ledgerPath: paths.ledgerPath,
@@ -705,7 +705,7 @@ export async function isUltragoalAskBlocked(
 		// durable state, not a clean "no run". Fail closed so the pause guard (which
 		// relies on this `durable_state_unreadable` signal) keeps blocking give-ups.
 		return activeAskDiagnostic({
-			reason: "Durable .gjc/ultragoal state exists but goals.json is missing or empty.",
+			reason: "Durable .worx/ultragoal state exists but goals.json is missing or empty.",
 			source: "durable_state_unreadable",
 			goalsPath: paths.goalsPath,
 			ledgerPath: paths.ledgerPath,

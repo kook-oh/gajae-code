@@ -232,7 +232,7 @@ export async function runDaemonInternal(argv: string[], deps: RunDaemonInternalD
 		recordDaemonCompatibilityDiagnostic("GJC notify daemon exiting because its owner is not alive");
 		return;
 	}
-	const resolvedAgentDir = agentDir ?? process.env.WORX_CODING_AGENT_DIR ?? path.join(process.cwd(), ".gjc", "agent");
+	const resolvedAgentDir = agentDir ?? process.env.WORX_CODING_AGENT_DIR ?? path.join(process.cwd(), ".worx", "agent");
 	const settings = await resolveDaemonSettings(resolvedAgentDir, deps);
 	const cfg = getNotificationConfig(settings);
 	if (!isProviderEffectivelyEnabled(cfg, "telegram") || !isTelegramComplete(cfg)) return;

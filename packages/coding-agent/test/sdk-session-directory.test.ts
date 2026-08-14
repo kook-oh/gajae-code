@@ -37,7 +37,7 @@ describe("managed session directory SDK", () => {
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-xdg-"));
 			const xdgData = path.join(root, "data");
-			const agentDir = path.join(os.homedir(), ".gjc", "agent");
+			const agentDir = path.join(os.homedir(), ".worx", "agent");
 			const cwd = path.join(root, "workspace");
 			temporaryDirectories.push(root);
 			await fs.mkdir(path.join(xdgData, "gjc"), { recursive: true });
@@ -148,7 +148,7 @@ describe("managed session directory SDK", () => {
 		if (resolved.kind !== "resolved") return;
 		await fs.mkdir(resolved.scope.directoryPath, { mode: 0o700 });
 		await fs.writeFile(
-			path.join(resolved.scope.directoryPath, ".gjc-managed-session-scope.v2.json"),
+			path.join(resolved.scope.directoryPath, ".worx-managed-session-scope.v2.json"),
 			`${JSON.stringify({
 				schemaVersion: 1,
 				layoutVersion: 2,

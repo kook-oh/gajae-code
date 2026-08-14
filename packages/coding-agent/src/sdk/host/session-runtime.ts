@@ -1418,7 +1418,7 @@ export function createSdkSessionRuntimeExtension(api: ExtensionAPI, options: Cre
 	const startRuntime = async (ctx: ExtensionContext): Promise<void> => {
 		if (active) return;
 		const sessionId = ctx.sessionManager.getSessionId();
-		const stateRoot = path.join(ctx.cwd, ".gjc", "state");
+		const stateRoot = path.join(ctx.cwd, ".worx", "state");
 		const token = crypto.randomBytes(24).toString("base64url");
 		const elevationAuthorityToken = crypto.randomBytes(32).toString("base64url");
 		const elevationAuthorityFile = elevationAuthorityPath(stateRoot, sessionId);

@@ -80,9 +80,9 @@ async function runDoctorUnchanged(
 	root: string,
 	args: string[],
 ): Promise<Awaited<ReturnType<typeof runNativeStateCommand>>> {
-	const before = await snapshotFiles(path.join(root, ".gjc"));
+	const before = await snapshotFiles(path.join(root, ".worx"));
 	const result = await runNativeStateCommand(args, root);
-	const after = await snapshotFiles(path.join(root, ".gjc"));
+	const after = await snapshotFiles(path.join(root, ".worx"));
 	expectUnchanged(before, after);
 	return result;
 }

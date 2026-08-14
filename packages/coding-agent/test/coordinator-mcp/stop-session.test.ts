@@ -35,7 +35,7 @@ async function createServer(
 	root: string,
 	options: { forceStop?: boolean; closeFails?: boolean; closeFailures?: number } = {},
 ) {
-	const stateRoot = path.join(root, ".gjc", "coordinator-state");
+	const stateRoot = path.join(root, ".worx", "coordinator-state");
 	const agentDir = path.join(root, "agent-global");
 	const controls: BrokerControl[] = [];
 	let closeAttempts = 0;

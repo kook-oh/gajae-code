@@ -1609,7 +1609,7 @@ export function resolveResidentImageDataSync(
 // =============================================================================
 //
 // The resident-cache sweep above bounds *cache* directories. These primitives
-// expose the canonical `~/.gjc/agent/blobs` store to an out-of-process retention
+// expose the canonical `~/.worx/agent/blobs` store to an out-of-process retention
 // pass so it can mark live hashes from surviving transcripts and sweep the rest.
 // They own no policy: the caller decides what "unreferenced" means.
 
@@ -1720,7 +1720,7 @@ export async function removeCanonicalBlob(
 		size: BigInt(entry.bytes),
 		mtimeNs: entry.mtimeNs,
 		sha256: entry.hash,
-		quarantineName: `.gjc-gc-blob-${entry.hash}`,
+		quarantineName: `.worx-gc-blob-${entry.hash}`,
 	});
 	if (removed.ok) return { removed: true };
 	if (removed.code === "cleanup_pending" && removed.detachedPath) {

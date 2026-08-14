@@ -21,9 +21,9 @@ describe("reconciliation-store", () => {
 	});
 
 	test("path is private sibling of transcript, not artifacts stem", () => {
-		const sessionFile = "/home/u/.gjc/agent/sessions/scope/abc.jsonl";
+		const sessionFile = "/home/u/.worx/agent/sessions/scope/abc.jsonl";
 		const storePath = reconciliationStorePath(sessionFile, "abc");
-		expect(storePath).toBe("/home/u/.gjc/agent/sessions/scope/.sdk-reconciliation/abc.json");
+		expect(storePath).toBe("/home/u/.worx/agent/sessions/scope/.sdk-reconciliation/abc.json");
 		expect(storePath.includes("abc/")).toBe(false); // not under artifact stem abc/
 	});
 

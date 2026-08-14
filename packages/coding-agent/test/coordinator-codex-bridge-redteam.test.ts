@@ -83,7 +83,7 @@ async function recursiveText(root: string): Promise<string> {
 }
 
 async function createSession(root: string): Promise<string> {
-	const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+	const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 	await fs.mkdir(path.join(namespace, "sessions"), { recursive: true });
 	await fs.writeFile(path.join(namespace, "sessions", "session-1.json"), JSON.stringify({ session_id: "session-1" }));
 	return namespace;
@@ -98,7 +98,7 @@ function createServer(
 	return createCoordinatorMcpServer({
 		env: {
 			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 			WORX_COORDINATOR_MCP_PROFILE: "local",
 			WORX_COORDINATOR_MCP_REPO: "repo",
 			WORX_COORDINATOR_MCP_MUTATIONS: "sessions",

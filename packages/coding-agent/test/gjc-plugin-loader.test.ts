@@ -16,7 +16,7 @@ const tempRoots: string[] = [];
 async function copyFixtureToProject(fixtureName: string): Promise<string> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-loader-"));
 	tempRoots.push(cwd);
-	const pluginsDir = path.join(cwd, ".gjc", "gjc-plugins");
+	const pluginsDir = path.join(cwd, ".worx", "gjc-plugins");
 	await fs.mkdir(pluginsDir, { recursive: true });
 	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(pluginsDir, fixtureName), { recursive: true });
 	return cwd;
@@ -73,14 +73,14 @@ describe("GJC plugin loader", () => {
 	test("discovers direct and nested project GJC plugin roots", async () => {
 		const directCwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-direct-"));
 		tempRoots.push(directCwd);
-		await fs.cp(path.join(fixturesRoot, "valid-skill-plugin"), path.join(directCwd, ".gjc", "gjc-plugins"), {
+		await fs.cp(path.join(fixturesRoot, "valid-skill-plugin"), path.join(directCwd, ".worx", "gjc-plugins"), {
 			recursive: true,
 		});
 		const directRoots = await discoverGjcPluginRoots({ cwd: directCwd });
-		expect(directRoots).toContain(path.join(directCwd, ".gjc", "gjc-plugins"));
+		expect(directRoots).toContain(path.join(directCwd, ".worx", "gjc-plugins"));
 
 		const nestedCwd = await copyFixtureToProject("valid-agent-plugin");
 		const nestedRoots = await discoverGjcPluginRoots({ cwd: nestedCwd });
-		expect(nestedRoots).toContain(path.join(nestedCwd, ".gjc", "gjc-plugins", "valid-agent-plugin"));
+		expect(nestedRoots).toContain(path.join(nestedCwd, ".worx", "gjc-plugins", "valid-agent-plugin"));
 	});
 });

@@ -8,7 +8,7 @@ import * as path from "node:path";
  * `dirs.ts` implements it that way (`path.join(os.homedir(), getConfigDirName())`).
  *
  * These three workflow settings readers used the value as a *full path*
- * (`WORX_CONFIG_DIR?.trim() || path.join(os.homedir(), ".gjc")`), so a user who
+ * (`WORX_CONFIG_DIR?.trim() || path.join(os.homedir(), ".worx")`), so a user who
  * set it per the documented meaning had their settings looked up at a
  * cwd-relative path instead of under home, and silently got the built-in
  * defaults.
@@ -60,10 +60,10 @@ describe("config root is resolved under home", () => {
 	});
 
 	it("keeps using the default config dir name when unset", async () => {
-		const { home, repo } = scenario({ "gjc.ralplan.maxIterations": 4 }, ".gjc");
+		const { home, repo } = scenario({ "gjc.ralplan.maxIterations": 4 }, ".worx");
 		const result = (await resolveIn(home, repo, undefined)).ralplan as { maxIterations: number; source: string };
 
 		expect(result.maxIterations).toBe(4);
-		expect(result.source).toBe(path.join(home, ".gjc", "settings.json"));
+		expect(result.source).toBe(path.join(home, ".worx", "settings.json"));
 	});
 });

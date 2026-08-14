@@ -51,7 +51,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("source write with stale expectedRevision throws and preserves the newer record", async () => {
 		const root = await cwd();
-		const target = ".gjc/state/source.json";
+		const target = ".worx/state/source.json";
 
 		await writeGuardedJsonAtomic(target, { value: "first" }, { cwd: root, policy: "source" });
 		await writeGuardedJsonAtomic(target, { value: "second" }, { cwd: root, policy: "source", expectedRevision: 1 });
@@ -65,7 +65,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("treats a persisted record without state_revision as revision 0", async () => {
 		const root = await cwd();
-		const target = ".gjc/state/migration.json";
+		const target = ".worx/state/migration.json";
 		await fs.mkdir(path.dirname(path.join(root, target)), { recursive: true });
 		await fs.writeFile(path.join(root, target), JSON.stringify({ value: "legacy" }, null, 2));
 
@@ -76,7 +76,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("ignores payload-supplied state_revision when stamping source writes", async () => {
 		const root = await cwd();
-		const target = ".gjc/state/payload-revision.json";
+		const target = ".worx/state/payload-revision.json";
 
 		await writeGuardedJsonAtomic(target, { value: "initial", state_revision: 99 }, { cwd: root, policy: "source" });
 		await expect(readJson(root, target)).resolves.toMatchObject({ value: "initial", state_revision: 1 });
@@ -87,7 +87,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("stale-skips cache writes when sourceRevision is older or equal to persisted", async () => {
 		const root = await cwd();
-		const target = ".gjc/state/cache.json";
+		const target = ".worx/state/cache.json";
 
 		await writeGuardedJsonAtomic(target, { value: "newer" }, { cwd: root, policy: "cache", sourceRevision: 5 });
 		const result = await writeGuardedJsonAtomic(
@@ -106,7 +106,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("writes cache payloads when sourceRevision is newer and bumps cache state_revision", async () => {
 		const root = await cwd();
-		const target = ".gjc/state/cache-overwrite.json";
+		const target = ".worx/state/cache-overwrite.json";
 
 		await writeGuardedJsonAtomic(target, { value: "old" }, { cwd: root, policy: "cache", sourceRevision: 2 });
 		const result = await writeGuardedJsonAtomic(
@@ -130,7 +130,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("authoritative mode-state write conflict fails visibly and preserves newer state", async () => {
 		const root = await cwd();
-		const target = ".gjc/_session-sess/state/mode-state/deep-interview.json";
+		const target = ".worx/_session-sess/state/mode-state/deep-interview.json";
 		const base = modeEnvelope("interviewing");
 		await writeGuardedWorkflowEnvelopeAtomic(target, base, { cwd: root, policy: "source", receipt: receipt(root) });
 		await writeGuardedWorkflowEnvelopeAtomic(
@@ -152,7 +152,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("guarded workflow envelope checksum covers final receipt and state_revision", async () => {
 		const root = await cwd();
-		const target = ".gjc/_session-sess/state/mode-state/deep-interview.json";
+		const target = ".worx/_session-sess/state/mode-state/deep-interview.json";
 
 		await writeGuardedWorkflowEnvelopeAtomic(target, modeEnvelope("interviewing"), {
 			cwd: root,
@@ -169,7 +169,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("deep-interview recorder conflict fails visibly for direct recorder writes", async () => {
 		const root = await cwd();
-		const target = ".gjc/_session-sess/state/mode-state/deep-interview.json";
+		const target = ".worx/_session-sess/state/mode-state/deep-interview.json";
 		const base = {
 			...modeEnvelope("interviewing"),
 			state: { rounds: [{ round_key: "r1", round: 1 }] },
@@ -197,7 +197,7 @@ describe("GJC state writer revision policy", () => {
 
 	it("ultragoal authoritative ledger conflict fails visibly and does not drop event", async () => {
 		const root = await cwd();
-		const target = ".gjc/_session-sess/ultragoal/goals.json";
+		const target = ".worx/_session-sess/ultragoal/goals.json";
 		const base = { version: 1, goals: [{ id: "G001", status: "pending" }], updatedAt: "t0" };
 		await writeGuardedJsonAtomic(target, base, { cwd: root, policy: "source" });
 		await writeGuardedJsonAtomic(
@@ -238,7 +238,7 @@ describe("GJC state writer revision policy", () => {
 			});
 
 			expect(result.deleted).toBe(false);
-			await expect(readJson(root, ".gjc/_session-sess/state/active/deep-interview.json")).resolves.toMatchObject({
+			await expect(readJson(root, ".worx/_session-sess/state/active/deep-interview.json")).resolves.toMatchObject({
 				skill: "deep-interview",
 				source_state_revision: 5,
 			});
@@ -261,7 +261,7 @@ describe("GJC state writer revision policy", () => {
 
 			expect(result.deleted).toBe(true);
 			await expect(
-				fs.stat(path.join(root, ".gjc/_session-sess/state/active/deep-interview.json")),
+				fs.stat(path.join(root, ".worx/_session-sess/state/active/deep-interview.json")),
 			).rejects.toThrow();
 		});
 	});

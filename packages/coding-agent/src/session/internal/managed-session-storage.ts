@@ -343,7 +343,7 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
 }
 
 function legacyReplacementCleanupReceiptBinding(name: string): { dev: bigint; ino: bigint } | undefined {
-	const match = /^\.gjc-replace-cleanup-([0-9a-f]+)-([0-9a-f]+)\.json$/.exec(name);
+	const match = /^\.worx-replace-cleanup-([0-9a-f]+)-([0-9a-f]+)\.json$/.exec(name);
 	if (!match?.[1] || !match[2]) return undefined;
 	const dev = parseLegacyHexU64(match[1]);
 	const ino = parseLegacyHexU64(match[2]);
@@ -394,7 +394,7 @@ function replacementCleanupReceiptBinding(
 	name: string,
 ): { predecessor: { dev: bigint; ino: bigint }; receipt: { dev: bigint; ino: bigint } } | undefined {
 	const match =
-		/^\.gjc-replace-cleanup-(0|[1-9a-f][0-9a-f]*)-(0|[1-9a-f][0-9a-f]*)-receipt-(0|[1-9a-f][0-9a-f]*)-(0|[1-9a-f][0-9a-f]*)\.json$/.exec(
+		/^\.worx-replace-cleanup-(0|[1-9a-f][0-9a-f]*)-(0|[1-9a-f][0-9a-f]*)-receipt-(0|[1-9a-f][0-9a-f]*)-(0|[1-9a-f][0-9a-f]*)\.json$/.exec(
 			name,
 		);
 	if (!match?.[1] || !match[2] || !match[3] || !match[4]) return undefined;
@@ -457,7 +457,7 @@ function replacementReceiptPath(
 ): string {
 	return path.join(
 		baseDir,
-		`.gjc-replace-cleanup-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}-receipt-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}.json`,
+		`.worx-replace-cleanup-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}-receipt-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}.json`,
 	);
 }
 
@@ -465,7 +465,7 @@ function replacementReceiptRetirementName(
 	receipt: { dev: bigint; ino: bigint },
 	predecessor: { dev: bigint; ino: bigint },
 ): string {
-	return `.gjc-receipt-remove-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}`;
+	return `.worx-receipt-remove-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}`;
 }
 
 function replacementReceiptPlaceholderRetirementName(
@@ -473,7 +473,7 @@ function replacementReceiptPlaceholderRetirementName(
 	predecessor: { dev: bigint; ino: bigint },
 	receipt: { dev: bigint; ino: bigint },
 ): string {
-	return `.gjc-receipt-placeholder-remove-${placeholder.dev.toString(16)}-${placeholder.ino.toString(16)}-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}`;
+	return `.worx-receipt-placeholder-remove-${placeholder.dev.toString(16)}-${placeholder.ino.toString(16)}-${predecessor.dev.toString(16)}-${predecessor.ino.toString(16)}-${receipt.dev.toString(16)}-${receipt.ino.toString(16)}`;
 }
 
 /**
@@ -487,11 +487,11 @@ function replacementReceiptPlaceholderRetirementName(
  * per-mutation receipt scan and widening quarantine-collision windows.
  */
 const SCRUBBED_REMNANT_PREFIXES = [
-	".gjc-exact-unlink-placeholder-",
-	".gjc-exact-replace-destination-",
-	".gjc-receipt-remove-",
-	".gjc-receipt-placeholder-remove-",
-	".gjc-replace-retry-",
+	".worx-exact-unlink-placeholder-",
+	".worx-exact-replace-destination-",
+	".worx-receipt-remove-",
+	".worx-receipt-placeholder-remove-",
+	".worx-replace-retry-",
 ] as const;
 
 /** In-flight protocol steps complete in milliseconds; anything older is abandoned. */
@@ -1206,7 +1206,7 @@ export class ManagedSessionDescendantStore {
 		const parsed = parseLegacyReplacementCleanupReceipt(receipt.bytes);
 		const expectedPredecessor = path.join(
 			this.#baseDir,
-			`.gjc-exact-replace-destination-${binding.dev.toString(16)}-${binding.ino.toString(16)}`,
+			`.worx-exact-replace-destination-${binding.dev.toString(16)}-${binding.ino.toString(16)}`,
 		);
 		if (
 			!parsed ||
@@ -1226,7 +1226,7 @@ export class ManagedSessionDescendantStore {
 			size: parsed.identity.size,
 			mtimeNs: parsed.identity.mtimeNs,
 			sha256: parsed.identity.sha256,
-			quarantineName: `.gjc-replace-retry-${parsed.identity.dev.toString(16)}-${parsed.identity.ino.toString(16)}`,
+			quarantineName: `.worx-replace-retry-${parsed.identity.dev.toString(16)}-${parsed.identity.ino.toString(16)}`,
 		});
 		if (!exactUnlinkCompleted(retired) && retired.code !== "not_found")
 			throw new Error(`managed_replace_cleanup_pending:${retired.code ?? "unknown"}`);
@@ -1255,7 +1255,7 @@ export class ManagedSessionDescendantStore {
 			size: BigInt(currentReceipt.identity.size),
 			mtimeNs: currentReceipt.identity.mtimeNs,
 			sha256: currentReceipt.identity.sha256,
-			quarantineName: `.gjc-receipt-remove-${currentReceipt.identity.dev.toString(16)}-${currentReceipt.identity.ino.toString(16)}`,
+			quarantineName: `.worx-receipt-remove-${currentReceipt.identity.dev.toString(16)}-${currentReceipt.identity.ino.toString(16)}`,
 		});
 		if (!exactUnlinkCompleted(removed) && removed.code !== "not_found")
 			throw new Error(`managed_replace_receipt_cleanup_pending:${removed.code ?? "unknown"}`);
@@ -1294,7 +1294,7 @@ export class ManagedSessionDescendantStore {
 				size: BigInt(pending.identity.size),
 				mtimeNs: pending.identity.mtimeNs,
 				sha256: pending.identity.sha256,
-				quarantineName: `.gjc-receipt-pending-remove-${pending.identity.dev.toString(16)}-${pending.identity.ino.toString(16)}`,
+				quarantineName: `.worx-receipt-pending-remove-${pending.identity.dev.toString(16)}-${pending.identity.ino.toString(16)}`,
 			});
 			if (!exactUnlinkCompleted(removed) && removed.code !== "not_found")
 				throw new Error(`managed_replace_receipt_cleanup_pending:${removed.code ?? "unknown"}`);
@@ -1316,9 +1316,9 @@ export class ManagedSessionDescendantStore {
 					if (examined > REPLACEMENT_CLEANUP_RECEIPT_SCAN_LIMIT)
 						throw new Error("managed_replace_cleanup_receipt_limit_exceeded");
 					const name = entry.name;
-					if (!name.startsWith(".gjc-replace-receipt-pending-") && !name.startsWith(".gjc-replace-cleanup-"))
+					if (!name.startsWith(".worx-replace-receipt-pending-") && !name.startsWith(".worx-replace-cleanup-"))
 						continue;
-					if (name.startsWith(".gjc-replace-receipt-pending-")) {
+					if (name.startsWith(".worx-replace-receipt-pending-")) {
 						this.#reconcilePendingReplacementReceipt(path.join(this.#baseDir, name));
 						continue;
 					}
@@ -1595,7 +1595,7 @@ export class ManagedSessionDescendantStore {
 		if (!this.#authority) throw new Error("Managed descendant authority is unavailable");
 		const separator = relative.lastIndexOf("/");
 		const parent = separator < 0 ? "" : relative.slice(0, separator);
-		const temporaryName = `.gjc-publish-${process.pid}-${randomUUID()}`;
+		const temporaryName = `.worx-publish-${process.pid}-${randomUUID()}`;
 		const temporary = parent ? `${parent}/${temporaryName}` : temporaryName;
 		const created = this.#authority.createManaged(temporary, bytes);
 		if (!created.ok) throw new Error(created.code ?? "managed_publish_failed");
@@ -1923,7 +1923,7 @@ export class ManagedSessionDescendantStore {
 				sha256: expected.identity.sha256,
 				parentDev: parent.dev,
 				parentIno: parent.ino,
-				quarantineName: `.gjc-remove-${process.pid}-${randomUUID()}`,
+				quarantineName: `.worx-remove-${process.pid}-${randomUUID()}`,
 			});
 			if (
 				!removed.ok &&
@@ -2742,7 +2742,7 @@ function replaceManagedFileGeneratedSync(
 			const parentIdentity = fs.lstatSync(parent, { bigint: true });
 			if (Number(staged.size) !== generated.size) throw new Error("managed_replace_generated_size_changed");
 			const successor = expectedSuccessor;
-			const receiptStagingPath = path.join(parent, `.gjc-replace-receipt-pending-${randomUUID()}.json`);
+			const receiptStagingPath = path.join(parent, `.worx-replace-receipt-pending-${randomUUID()}.json`);
 			preserveStaging = true;
 			const publishedReceiptIdentity = publishManagedFileNoReplaceSync(
 				receiptStagingPath,
@@ -3171,7 +3171,7 @@ export async function acquireManagedLock(
 						size: BigInt(observed.snapshot.identity.size),
 						mtimeNs: observed.snapshot.identity.mtimeNs,
 						sha256: observed.snapshot.identity.sha256,
-						quarantineName: `.gjc-lock-${randomUUID()}.stale`,
+						quarantineName: `.worx-lock-${randomUUID()}.stale`,
 					});
 					if (removed.ok || removed.code === "cleanup_pending") fsyncDirectory(locksDirectory);
 				} catch {

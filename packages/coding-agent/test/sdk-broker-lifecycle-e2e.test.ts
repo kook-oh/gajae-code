@@ -312,7 +312,7 @@ test("ledger reopen bounds malformed persisted rows before they gain cleanup aut
 
 test("legacy metadata cleanup rejects mixed lifecycle and arbitrary receipt keys before mutation", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-legacy-metadata-allowlist-"));
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "legacy-allowlist";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -334,7 +334,7 @@ test("legacy metadata cleanup rejects mixed lifecycle and arbitrary receipt keys
 				mtimeNs: stat.mtimeNs.toString(),
 				sha256: createHash("sha256").update(bytes).digest("hex"),
 			},
-			plannedMetadataPath: path.join(stateRoot, "sdk", `.gjc-delete-${sessionId}.lifecycle.json`),
+			plannedMetadataPath: path.join(stateRoot, "sdk", `.worx-delete-${sessionId}.lifecycle.json`),
 		};
 		for (const extra of [{ lifecycleFiles: [] }, { lifecycleDeleteMetadata: true }, { arbitrary: true }]) {
 			const outcome = await executeLifecycle(
@@ -354,7 +354,7 @@ test("legacy metadata cleanup rejects mixed lifecycle and arbitrary receipt keys
 });
 
 async function liveLifecycleSession(root: string, agentDir: string, sessionId: string, staleMarkerFirst = false) {
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const request = {
 		operation: "session.create",
 		sessionId,
@@ -463,7 +463,7 @@ test("lifecycle host rejects a transcript replaced after strict authorization be
 						operation: "session.resume",
 						sessionId: candidate.id,
 						cwd: root,
-						stateRoot: path.join(root, ".gjc", "state"),
+						stateRoot: path.join(root, ".worx", "state"),
 						sessionPath,
 						...deriveLifecycleDeadlines(Date.now(), 4_000),
 						sessionIdentity: {
@@ -531,7 +531,7 @@ test("lifecycle fork rejects a source replaced after capture without destination
 						operation: "session.fork",
 						sessionId: "fork-destination",
 						cwd: targetCwd,
-						stateRoot: path.join(targetCwd, ".gjc", "state"),
+						stateRoot: path.join(targetCwd, ".worx", "state"),
 						...deriveLifecycleDeadlines(Date.now(), 4_000),
 						sourceCwd,
 						sourceSessionId: candidate.id,
@@ -551,7 +551,7 @@ test("lifecycle fork rejects a source replaced after capture without destination
 			).rejects.toThrow("Lifecycle saved session authority changed while the session host forked it.");
 			expect(replaced).toBe(true);
 			const initializedEntries = await fs.readdir(destinationSessionDir);
-			expect(initializedEntries).toContain(".gjc-managed-session-scope.v2.json");
+			expect(initializedEntries).toContain(".worx-managed-session-scope.v2.json");
 			expect(initializedEntries.filter(entry => entry.endsWith(".jsonl"))).toEqual([]);
 		} finally {
 			SessionManager.captureTranscriptStrict = originalCapture;
@@ -589,7 +589,7 @@ test("broker derives and validates the exact five-timestamp lifecycle windows", 
 test("session host exact cutoff writes proven pre-session absence", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-lifecycle-exact-cutoff-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "exact-cutoff";
 	const effectMarker = "exact-cutoff-marker";
 	const deadlines = deriveLifecycleDeadlines(1_000, 4_000);
@@ -649,7 +649,7 @@ test("session host exact cutoff writes proven pre-session absence", async () => 
 test("session host fails closed when its lifecycle effect marker is corrupt", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-lifecycle-corrupt-marker-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "corrupt-marker";
 	const effectMarker = "corrupt-marker-effect";
 	const deadlines = deriveLifecycleDeadlines(1_000, 4_000);
@@ -859,7 +859,7 @@ test("broker fails closed for failed or malformed Windows FILETIME process-incar
 
 test("broker bounds a hanging WebSocket upgrade by the lifecycle deadline and cleans its child", async () => {
 	const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-hanging-upgrade-"));
-	const stateRoot = path.join(agentDir, ".gjc", "state");
+	const stateRoot = path.join(agentDir, ".worx", "state");
 	const fixture = path.join(agentDir, "hanging-upgrade.js");
 	const fixturePidPath = path.join(agentDir, "hanging-upgrade.pid");
 	const fixtureRequestPath = path.join(agentDir, "hanging-upgrade.request.json");
@@ -940,7 +940,7 @@ setInterval(()=>{},1000);
 
 test("broker rejects an endpoint-only lifecycle child that never authenticates session_ready", async () => {
 	const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-life-"));
-	const stateRoot = path.join(agentDir, ".gjc", "state");
+	const stateRoot = path.join(agentDir, ".worx", "state");
 	const fixture = path.join(agentDir, "fixture.js");
 	await fs.writeFile(
 		fixture,
@@ -1028,7 +1028,7 @@ test("broker rejects a cross-workspace cold fork source before spawning", async 
 				"session.fork",
 				{
 					cwd: targetCwd,
-					stateRoot: path.join(targetCwd, ".gjc", "state"),
+					stateRoot: path.join(targetCwd, ".worx", "state"),
 					sourceSessionId: source.getSessionId(),
 					sourceSessionPath: sourcePath,
 				},
@@ -1053,7 +1053,7 @@ test("broker rejects a cross-workspace cold fork source before spawning", async 
 test("broker rejects duplicate owned source candidates before spawning", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-duplicate-owned-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const spawnedPath = path.join(root, "spawned");
 	const command = path.join(root, "spawned.js");
 	const broker = new Broker({ agentDir });
@@ -1144,7 +1144,7 @@ test("broker rejects duplicate owned source candidates before spawning", async (
 test("broker directly resumes and forks a canonical cold saved session with scoped cleanup", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-canonical-cold-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const broker = new Broker({ agentDir });
 	try {
 		const scopeResult = await resolveManagedSessionScope({ cwd: root, agentDir });
@@ -1337,7 +1337,7 @@ test("broker directly resumes and forks a canonical cold saved session with scop
 test("broker replays one identity-bound lifecycle metadata cleanup plan after the first delete detach", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-delete-metadata-crash-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const saved = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 	let crashing: Broker | undefined;
 	let reopened: Broker | undefined;
@@ -1411,7 +1411,7 @@ test("broker replays one identity-bound lifecycle metadata cleanup plan after th
 test("broker uses incarnation-aware observations before fresh lifecycle metadata cleanup", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-delete-incarnation-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const broker = new Broker({ agentDir });
 	try {
 		await broker.start();
@@ -1469,7 +1469,7 @@ test("broker uses incarnation-aware observations before fresh lifecycle metadata
 test("broker refuses fresh lifecycle cleanup when ready sibling has a different owner marker", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-mismatched-ready-cleanup-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const saved = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 	const broker = new Broker({ agentDir });
 	try {
@@ -1549,7 +1549,7 @@ test("broker refuses fresh lifecycle cleanup when ready sibling has a different 
 test("broker preserves ready-only lifecycle metadata without canonical marker authority during fresh delete", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-ready-only-cleanup-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const saved = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 	const broker = new Broker({ agentDir });
 	try {
@@ -1607,11 +1607,11 @@ test("broker preserves ready-only lifecycle metadata without canonical marker au
 test("broker replays an unmarked base metadata cleanup receipt and rejects a replaced ready sibling after marker loss", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-legacy-metadata-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "legacy-metadata-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
-	const plannedPath = path.join(stateRoot, "sdk", `.gjc-delete-base-${sessionId}.lifecycle.json`);
+	const plannedPath = path.join(stateRoot, "sdk", `.worx-delete-base-${sessionId}.lifecycle.json`);
 	const request = { cwd: root, stateRoot, sessionId };
 	const key = "base-metadata-cleanup-replay";
 	let broker: Broker | undefined;
@@ -1711,7 +1711,7 @@ test("broker replays an unmarked base metadata cleanup receipt and rejects a rep
 		const mismatchedPlannedPath = path.join(
 			stateRoot,
 			"sdk",
-			`.gjc-delete-base-${mismatchedSessionId}.lifecycle.json`,
+			`.worx-delete-base-${mismatchedSessionId}.lifecycle.json`,
 		);
 		const replacedReady = {
 			pid: process.pid + 1,
@@ -1781,7 +1781,7 @@ test("broker replays an unmarked base metadata cleanup receipt and rejects a rep
 test("broker rejects a corrupt completed lifecycle cleanup receipt when its ready sibling remains", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-completed-lifecycle-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "completed-lifecycle-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -1839,7 +1839,7 @@ test("broker rejects a corrupt completed lifecycle cleanup receipt when its read
 								attempt: 1,
 								plannedPath: path.join(
 									path.dirname(markerPath),
-									`.gjc-delete-marker-${sessionId}.lifecycle.json`,
+									`.worx-delete-marker-${sessionId}.lifecycle.json`,
 								),
 
 								completed: true,
@@ -1867,7 +1867,7 @@ test("broker rejects a corrupt completed lifecycle cleanup receipt when its read
 test("broker rejects malformed lifecycle cleanup receipts without mutating metadata", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-malformed-lifecycle-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "malformed-lifecycle-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -1894,7 +1894,7 @@ test("broker rejects malformed lifecycle cleanup receipts without mutating metad
 			path: markerPath,
 			identity,
 			attempt: 1,
-			plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-malformed-marker"),
+			plannedPath: path.join(stateRoot, "sdk", ".worx-delete-malformed-marker"),
 		};
 		const malformed = [
 			{ lifecycleFiles: [null] },
@@ -1929,7 +1929,7 @@ test("broker rejects malformed lifecycle cleanup receipts without mutating metad
 test("broker rejects oversized lifecycle marker and readiness receipts before hashing or unlinking", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-oversized-lifecycle-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "oversized-lifecycle-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -1960,13 +1960,13 @@ test("broker rejects oversized lifecycle marker and readiness receipts before ha
 				path: markerPath,
 				identity: await capture(markerPath),
 				attempt: 1,
-				plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-oversized-marker"),
+				plannedPath: path.join(stateRoot, "sdk", ".worx-delete-oversized-marker"),
 			},
 			{
 				path: readyPath,
 				identity: await capture(readyPath),
 				attempt: 1,
-				plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-oversized-ready"),
+				plannedPath: path.join(stateRoot, "sdk", ".worx-delete-oversized-ready"),
 			},
 		],
 	});
@@ -1997,7 +1997,7 @@ test("broker rejects oversized lifecycle marker and readiness receipts before ha
 test("broker rejects duplicate lifecycle marker replay authorities without unlinking siblings", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-duplicate-lifecycle-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "duplicate-lifecycle-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -2052,8 +2052,8 @@ test("broker rejects duplicate lifecycle marker replay authorities without unlin
 						sessionId,
 						metadataRoot: stateRoot,
 						lifecycleFiles: [
-							cleanupFile(path.join(stateRoot, "sdk", ".gjc-delete-one")),
-							cleanupFile(path.join(stateRoot, "sdk", ".gjc-delete-two")),
+							cleanupFile(path.join(stateRoot, "sdk", ".worx-delete-one")),
+							cleanupFile(path.join(stateRoot, "sdk", ".worx-delete-two")),
 						],
 					},
 				},
@@ -2075,7 +2075,7 @@ test("broker rejects duplicate lifecycle marker replay authorities without unlin
 test("broker rejects a ready-only lifecycle replay entry without marker authority", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-ready-only-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "ready-only-lifecycle-replay";
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
 	const request = { cwd: root, stateRoot, sessionId };
@@ -2122,7 +2122,7 @@ test("broker rejects a ready-only lifecycle replay entry without marker authorit
 									sha256: createHash("sha256").update(readyBytes).digest("hex"),
 								},
 								attempt: 1,
-								plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-ready-only"),
+								plannedPath: path.join(stateRoot, "sdk", ".worx-delete-ready-only"),
 							},
 						],
 					},
@@ -2144,7 +2144,7 @@ test("broker rejects a ready-only lifecycle replay entry without marker authorit
 test("broker fails closed when a lifecycle ready sibling is swapped after marker reconciliation", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-lifecycle-swap-replay-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "lifecycle-swap-replay";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -2206,7 +2206,7 @@ test("broker fails closed when a lifecycle ready sibling is swapped after marker
 								sha256: createHash("sha256").update(bytes).digest("hex"),
 							},
 							attempt: 1,
-							plannedPath: path.join(stateRoot, "sdk", `.gjc-delete-swap-${path.basename(file)}`),
+							plannedPath: path.join(stateRoot, "sdk", `.worx-delete-swap-${path.basename(file)}`),
 						})),
 					},
 				},
@@ -2244,7 +2244,7 @@ test("broker terminalizes default command resolver failures", async () => {
 		const requestId = "resolver-failure-terminal-receipt";
 		const response = await broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state") },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state") },
 			requestId,
 		);
 		expect(response).toEqual({
@@ -2258,7 +2258,7 @@ test("broker terminalizes default command resolver failures", async () => {
 		expect(
 			await broker.handleRequest(
 				"session.create",
-				{ cwd: root, stateRoot: path.join(root, ".gjc", "state") },
+				{ cwd: root, stateRoot: path.join(root, ".worx", "state") },
 				requestId,
 			),
 		).toEqual(response);
@@ -2338,9 +2338,9 @@ test("broker propagates an owned lifecycle startup failure without semantic read
 		expect(Date.now() - started).toBeLessThan(1_000);
 		const sessionId = await fs.readFile(sessionIdPath, "utf8");
 		await expect(
-			fs.stat(path.join(agentDir, ".gjc", "state", "sdk", `${sessionId}.lifecycle.ready.json`)),
+			fs.stat(path.join(agentDir, ".worx", "state", "sdk", `${sessionId}.lifecycle.ready.json`)),
 		).rejects.toThrow();
-		await expect(fs.stat(path.join(agentDir, ".gjc", "state", "sdk", `${sessionId}.json`))).rejects.toThrow();
+		await expect(fs.stat(path.join(agentDir, ".worx", "state", "sdk", `${sessionId}.json`))).rejects.toThrow();
 		expect(await broker.handleRequest("session.list", {})).toMatchObject({
 			ok: true,
 			result: { sessions: [{ sessionId, terminalUncertain: true }] },
@@ -2459,13 +2459,13 @@ await fs.rm(endpoint);
 						expect.objectContaining({
 							path: expect.stringContaining(`${sessionId}.lifecycle.failure.`),
 							identity: expect.objectContaining({ sha256: expect.any(String) }),
-							plannedPath: expect.stringContaining(".gjc-delete-"),
+							plannedPath: expect.stringContaining(".worx-delete-"),
 						}),
 					]),
 				},
 			},
 		});
-		const stateRoot = path.join(root, ".gjc", "state", "sdk");
+		const stateRoot = path.join(root, ".worx", "state", "sdk");
 		const artifact = path.join(stateRoot, `${sessionId}.lifecycle.failure.${persisted.effectMarker}.json`);
 		const marker = path.join(stateRoot, `${sessionId}.lifecycle.json`);
 		await expect(fs.stat(artifact)).rejects.toThrow();
@@ -2531,7 +2531,7 @@ await fs.rm(endpoint);
 				fs.stat(
 					path.join(
 						normalRoot,
-						".gjc",
+						".worx",
 						"state",
 						"sdk",
 						`${normalSessionId}.lifecycle.failure.${normalTerminal.effectMarker}.json`,
@@ -2539,7 +2539,7 @@ await fs.rm(endpoint);
 				),
 			).rejects.toThrow();
 			await expect(
-				fs.stat(path.join(normalRoot, ".gjc", "state", "sdk", `${normalSessionId}.lifecycle.json`)),
+				fs.stat(path.join(normalRoot, ".worx", "state", "sdk", `${normalSessionId}.lifecycle.json`)),
 			).rejects.toThrow();
 			expect({
 				crashAfterDetachRecovered: await Promise.all([
@@ -2556,13 +2556,13 @@ await fs.rm(endpoint);
 					fs.stat(
 						path.join(
 							normalRoot,
-							".gjc",
+							".worx",
 							"state",
 							"sdk",
 							`${normalSessionId}.lifecycle.failure.${normalTerminal.effectMarker}.json`,
 						),
 					),
-					fs.stat(path.join(normalRoot, ".gjc", "state", "sdk", `${normalSessionId}.lifecycle.json`)),
+					fs.stat(path.join(normalRoot, ".worx", "state", "sdk", `${normalSessionId}.lifecycle.json`)),
 				]).then(
 					() => false,
 					() => true,
@@ -2657,7 +2657,7 @@ test("broker records the resolved worktree state root and preserves pre-child pr
 			"session.create",
 			{
 				cwd: repo,
-				stateRoot: path.join(repo, ".gjc", "state"),
+				stateRoot: path.join(repo, ".worx", "state"),
 				target: { worktree: { enabled: true, name: worktreeName } },
 			},
 			"pre-child-worktree-conflict",
@@ -2674,7 +2674,7 @@ test("broker records the resolved worktree state root and preserves pre-child pr
 		expect(terminal).toMatchObject({
 			response,
 			effectIntent: {
-				stateRoot: path.join(worktreeRoot, ".gjc", "state"),
+				stateRoot: path.join(worktreeRoot, ".worx", "state"),
 				childOwnershipEstablished: false,
 			},
 		});
@@ -2712,7 +2712,7 @@ test("broker fails closed when the reopened terminal ledger cannot reproduce its
 
 test("broker rejects a ready foreign host for the spawned session id", async () => {
 	const agentDir = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-foreign-ready-"));
-	const stateRoot = path.join(agentDir, ".gjc", "state");
+	const stateRoot = path.join(agentDir, ".worx", "state");
 	const fixture = path.join(agentDir, "foreign.js");
 	const foreignIdPath = path.join(agentDir, "foreign-session-id");
 	const previousCommand = process.env.WORX_SDK_SESSION_COMMAND;
@@ -2819,7 +2819,7 @@ test("broker closes a live host whose workspace state root is gone using its reg
 	// The workspace — and with it the spawn-time lifecycle marker and endpoint —
 	// was deleted while the host kept running, which is exactly how an orphan that
 	// still serves its original source outlives every later close attempt.
-	const stateRoot = path.join(agentDir, "deleted-workspace", ".gjc", "state");
+	const stateRoot = path.join(agentDir, "deleted-workspace", ".worx", "state");
 	const child = Bun.spawn([process.execPath, "-e", "setInterval(() => {}, 1000)"], {
 		stdio: ["ignore", "ignore", "ignore"],
 	});
@@ -2988,7 +2988,7 @@ test("broker rebinds implicit close only for a matching non-empty lifecycle requ
 test("broker atomically reuses the indexed live owner for distinct resume keys", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-resume-live-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const savedSession = SessionManager.create(root, SessionManager.managedDestination(root, agentDir));
 	await savedSession.ensureOnDisk();
 	const sessionId = savedSession.getSessionId();
@@ -3250,7 +3250,7 @@ test("session-host-internal exits with a sanitized startup failure before writin
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-startup-failure-"));
 	const agentDir = path.join(root, "agent");
 	const sessionId = "startup-failure";
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	try {
 		await fs.mkdir(path.dirname(stateRoot), { recursive: true });
 		await fs.writeFile(stateRoot, "not-a-directory");
@@ -3428,18 +3428,18 @@ test("production post-registration startup failure proves cleanup and exact repl
 				],
 			},
 		});
-		const sdkDir = path.join(root, ".gjc", "state", "sdk");
+		const sdkDir = path.join(root, ".worx", "state", "sdk");
 		const entries = await fs.readdir(sdkDir);
-		// Retained `.gjc-delete-*` quarantines are typed cleanup evidence; only
+		// Retained `.worx-delete-*` quarantines are typed cleanup evidence; only
 		// canonical lifecycle metadata must be gone. Every remaining entry that
 		// still matches a lifecycle pattern must be an authorized quarantine name.
-		const canonical = entries.filter(entry => !entry.startsWith(".gjc-delete-"));
+		const canonical = entries.filter(entry => !entry.startsWith(".worx-delete-"));
 		expect(canonical.some(entry => entry.includes(".lifecycle.failure."))).toBe(false);
 		expect(canonical.some(entry => entry.endsWith(".lifecycle.json"))).toBe(false);
 		const retained = entries.filter(
 			entry => entry.includes(".lifecycle.failure.") || entry.endsWith(".lifecycle.json"),
 		);
-		expect(retained.every(entry => entry.startsWith(".gjc-delete-"))).toBe(true);
+		expect(retained.every(entry => entry.startsWith(".worx-delete-"))).toBe(true);
 	} finally {
 		if (previousFailure === undefined) delete process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION;
 		else process.env.WORX_SDK_TEST_FAIL_AFTER_REGISTRATION = previousFailure;
@@ -3484,7 +3484,7 @@ test("production broker session.create authenticates a source-workspace v3 nativ
 			ok: true,
 			result: { sessionId },
 		});
-		const sdkEntries = await fs.readdir(path.join(root, ".gjc", "state", "sdk"));
+		const sdkEntries = await fs.readdir(path.join(root, ".worx", "state", "sdk"));
 		expect(sdkEntries.some(entry => entry.includes(".lifecycle.failure."))).toBe(false);
 	} finally {
 		await broker.stop();
@@ -3676,7 +3676,7 @@ test("ACP, MCP, and daemon global requests bootstrap a broker with zero sessions
 
 test("lifecycle cleanup rejects transplanted and ambiguous receipts before mutation", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-cleanup-receipt-"));
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "cleanup-receipt";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const broker = new Broker({ agentDir: path.join(root, "agent") });
@@ -3702,13 +3702,13 @@ test("lifecycle cleanup rejects transplanted and ambiguous receipts before mutat
 			lifecycleDeleteMetadata: true,
 			sessionId,
 			metadataRoot: stateRoot,
-			lifecycleFiles: [file(path.join(stateRoot, "sdk", ".gjc-delete-cleanup"))],
+			lifecycleFiles: [file(path.join(stateRoot, "sdk", ".worx-delete-cleanup"))],
 		};
 		for (const [operation, input] of [
 			["session.delete", { cwd: root, stateRoot, sessionId: "other-cleanup-receipt" }],
 			[
 				"session.delete",
-				{ cwd: path.join(root, "other"), stateRoot: path.join(root, "other", ".gjc", "state"), sessionId },
+				{ cwd: path.join(root, "other"), stateRoot: path.join(root, "other", ".worx", "state"), sessionId },
 			],
 			["session.create", { cwd: root, stateRoot }],
 		] as const) {
@@ -3721,20 +3721,20 @@ test("lifecycle cleanup rejects transplanted and ambiguous receipts before mutat
 			sessionId,
 			metadataRoot: stateRoot,
 			lifecycleFiles: [
-				file(path.join(stateRoot, "sdk", ".gjc-delete-one")),
-				file(path.join(stateRoot, "sdk", ".gjc-delete-two")),
+				file(path.join(stateRoot, "sdk", ".worx-delete-one")),
+				file(path.join(stateRoot, "sdk", ".worx-delete-two")),
 			],
 		};
 		const mixed: BrokerCleanupEvidence = {
 			...duplicate,
 			metadataPath: markerPath,
-			lifecycleFiles: [file(path.join(stateRoot, "sdk", ".gjc-delete-mixed"))],
+			lifecycleFiles: [file(path.join(stateRoot, "sdk", ".worx-delete-mixed"))],
 		};
 		const shared: BrokerCleanupEvidence = {
 			phase: "lifecycle",
 			sessionId,
 			metadataRoot: stateRoot,
-			lifecycleFiles: [{ ...file(path.join(stateRoot, "sdk", ".gjc-delete-shared")), detachedPath: markerPath }],
+			lifecycleFiles: [{ ...file(path.join(stateRoot, "sdk", ".worx-delete-shared")), detachedPath: markerPath }],
 		};
 		for (const cleanup of [duplicate, mixed, shared]) {
 			const result = await executeLifecycle(
@@ -3756,7 +3756,7 @@ test("lifecycle cleanup rejects transplanted and ambiguous receipts before mutat
 test("lifecycle cleanup receipt parser rejects hostile bounded inputs without touching user data", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-hostile-lifecycle-receipt-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "hostile-lifecycle-receipt";
 	const markerPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.json`);
 	const readyPath = path.join(stateRoot, "sdk", `${sessionId}.lifecycle.ready.json`);
@@ -3794,13 +3794,13 @@ test("lifecycle cleanup receipt parser rejects hostile bounded inputs without to
 				path: markerPath,
 				identity: await capture(markerPath),
 				attempt: 1,
-				plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-hostile-marker"),
+				plannedPath: path.join(stateRoot, "sdk", ".worx-delete-hostile-marker"),
 			},
 			{
 				path: readyPath,
 				identity: await capture(readyPath),
 				attempt: 1,
-				plannedPath: path.join(stateRoot, "sdk", ".gjc-delete-hostile-ready"),
+				plannedPath: path.join(stateRoot, "sdk", ".worx-delete-hostile-ready"),
 			},
 		],
 	});
@@ -3961,7 +3961,7 @@ async function registerFakeLiveSession(
 test("broker heartbeat seam checkpoints live sessions and dead hosts stay unknown after restart (C2)", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-broker-heartbeat-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const liveId = "heartbeat-live";
 	const deadId = "heartbeat-dead";
 	const deadPid = await (async () => {
@@ -4031,8 +4031,8 @@ test("broker rejects ambiguous sessions before endpoint credentials and elevatio
 	await withElevationEnabled(async () => {
 		try {
 			await broker.start();
-			const firstRoot = path.join(root, "a", ".gjc", "state");
-			const secondRoot = path.join(root, "b", ".gjc", "state");
+			const firstRoot = path.join(root, "a", ".worx", "state");
+			const secondRoot = path.join(root, "b", ".worx", "state");
 			await broker.index.append({
 				type: "host_registered",
 				sessionId: "dup",
@@ -4124,7 +4124,7 @@ test("elevation-enforced raw close without a grant fails closed before any lifec
 test("elevation grants gate raw close: issue, operator answer, claim-before-dispatch, truthful outcome, double spend", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-elevation-roundtrip-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "elevated-close";
 	await withElevationEnabled(async () => {
 		const broker = new Broker({ agentDir });
@@ -4246,7 +4246,7 @@ test("elevation grants gate raw close: issue, operator answer, claim-before-disp
 test("elevation claim refuses a stale endpoint identity after the target changed", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-elevation-stale-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "elevated-stale";
 	await withElevationEnabled(async () => {
 		const broker = new Broker({ agentDir });
@@ -4436,8 +4436,8 @@ async function registerFakeLiveSessionWithEndpoint(
 test("elevation grants bind to the approved target session: equal-input cross-session misuse fails closed", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-elevation-crosstarget-"));
 	const agentDir = path.join(root, "agent");
-	const firstState = path.join(root, "first", ".gjc", "state");
-	const secondState = path.join(root, "second", ".gjc", "state");
+	const firstState = path.join(root, "first", ".worx", "state");
+	const secondState = path.join(root, "second", ".worx", "state");
 	const firstId = "cross-session-a";
 	const secondId = "cross-session-b";
 	await withElevationEnabled(async () => {
@@ -4500,7 +4500,7 @@ test("elevation grants bind to the approved target session: equal-input cross-se
 test("elevation issues, grants, and dispatches a delete grant for a retained stopped session", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-elevation-stopped-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "retained-del";
 	await withElevationEnabled(async () => {
 		const broker = new Broker({ agentDir });
@@ -4585,8 +4585,8 @@ test("elevation issues, grants, and dispatches a delete grant for a retained sto
 test("clientRef idempotency is target-session scoped and never replays across sessions", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-clientref-scope-"));
 	const agentDir = path.join(root, "agent");
-	const firstState = path.join(root, "first", ".gjc", "state");
-	const secondState = path.join(root, "second", ".gjc", "state");
+	const firstState = path.join(root, "first", ".worx", "state");
+	const secondState = path.join(root, "second", ".worx", "state");
 	const firstId = "clientref-session-a";
 	const secondId = "clientref-session-b";
 	const broker = new Broker({ agentDir });
@@ -4622,7 +4622,7 @@ test("clientRef idempotency is target-session scoped and never replays across se
 test("elevation preflight before clientRef reservation lets a later granted retry dispatch", async () => {
 	const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-sdk-elevation-retry-"));
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(root, ".gjc", "state");
+	const stateRoot = path.join(root, ".worx", "state");
 	const sessionId = "elevation-retry";
 	await withElevationEnabled(async () => {
 		const broker = new Broker({ agentDir });

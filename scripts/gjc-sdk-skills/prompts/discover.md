@@ -10,7 +10,7 @@ Use this skill when an external agent needs to find or inspect local GJC session
 ## Required behavior
 
 1. Resolve the repository root explicitly.
-2. Read the local SDK discovery records under `<repo>/.gjc/state/sdk/` through the maintained SDK discovery API.
+2. Read the local SDK discovery records under `<repo>/.worx/state/sdk/` through the maintained SDK discovery API.
 3. Select an exact session ID. Session omission is allowed only when exactly one live endpoint exists.
 4. Fail closed for missing, malformed, stale, dead, unknown, symlinked, or ambiguous discovery.
 5. Never print, persist, return, or place the endpoint token in logs, errors, source, config, environment examples, or shell history.

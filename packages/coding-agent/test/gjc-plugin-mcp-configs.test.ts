@@ -36,7 +36,7 @@ describe("plugin MCP runtime config conversion", () => {
 		expect(docs.command).toBe("bun");
 		expect(docs.args).toEqual(["mcp/domain-docs.ts"]);
 		// cwd is confined to the installed plugin root.
-		const installedRoot = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle");
+		const installedRoot = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle");
 		expect(path.resolve(docs.cwd)).toBe(path.resolve(installedRoot));
 	});
 

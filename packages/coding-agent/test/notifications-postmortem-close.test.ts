@@ -55,7 +55,7 @@ async function createHarness(prefix: string) {
 		sendUserMessage: () => {},
 	} as never;
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 	cleanupRoots.push(cleanup);
 	createNotificationsExtension(api, { settings: isolatedNotificationSettings(agentDir) });
@@ -72,7 +72,7 @@ async function createHarness(prefix: string) {
 		},
 	} as never;
 
-	const endpoint = path.join(cwd, ".gjc", "state", "sdk", `${sid}.json`);
+	const endpoint = path.join(cwd, ".worx", "state", "sdk", `${sid}.json`);
 	return { handlers, ctx, sid, endpoint, cleanup };
 }
 

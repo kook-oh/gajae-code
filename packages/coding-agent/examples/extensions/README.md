@@ -6,12 +6,12 @@ Example extensions for gajae-code.
 
 ```bash
 # Copy an existing extension into the user extension directory for auto-discovery
-mkdir -p ~/.gjc/agent/extensions
-cp packages/coding-agent/examples/extensions/hello.ts ~/.gjc/agent/extensions/
+mkdir -p ~/.worx/agent/extensions
+cp packages/coding-agent/examples/extensions/hello.ts ~/.worx/agent/extensions/
 
-# Project-local extensions can live in .gjc/extensions/
-mkdir -p .gjc/extensions
-cp packages/coding-agent/examples/extensions/pirate.ts .gjc/extensions/
+# Project-local extensions can live in .worx/extensions/
+mkdir -p .worx/extensions
+cp packages/coding-agent/examples/extensions/pirate.ts .worx/extensions/
 ```
 
 ### Enable the Ouroboros `ooo` bridge
@@ -30,12 +30,12 @@ Ouroboros setup installs its own managed bridge. Replace that file with this sta
 ```bash
 curl -fL https://raw.githubusercontent.com/Yeachan-Heo/gajae-code/4311fefd49e9c6781c4d1111b8dd3f758e7d8974/packages/coding-agent/examples/extensions/ooo-bridge.ts -o /tmp/gjc-ooo-bridge.ts
 shasum -a 256 /tmp/gjc-ooo-bridge.ts
-mkdir -p "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${WORX_CONFIG_DIR:-.gjc}/agent/extensions/ouroboros-ooo-bridge/index.ts"
+mkdir -p "${HOME}/${WORX_CONFIG_DIR:-.worx}/agent/extensions/ouroboros-ooo-bridge" && cp /tmp/gjc-ooo-bridge.ts "${HOME}/${WORX_CONFIG_DIR:-.worx}/agent/extensions/ouroboros-ooo-bridge/index.ts"
 ```
 
 The `shasum` output must match `2b0e1e25ac145331f112da629076875542db6f6e63c3c17adcd6770a4dcaf7bd` before the copy. The file has no runtime package imports and uses the host API injected by GJC, so compiled binaries do not require a peer `node_modules` directory beside the installation.
 
-For a project-only installation, copy the same verified file to `.gjc/extensions/ouroboros-ooo-bridge/index.ts`. Start a new GJC session after installation, then enter:
+For a project-only installation, copy the same verified file to `.worx/extensions/ouroboros-ooo-bridge/index.ts`. Start a new GJC session after installation, then enter:
 
 ```text
 ooo interview "I want to build a task management CLI"

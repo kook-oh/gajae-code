@@ -250,7 +250,7 @@ const nodeServiceFs: NotificationServiceFs = {
 	readFile: (file, encoding) => fsPromises.readFile(file, encoding),
 	readEndpointFile: readNotificationEndpointFile,
 	exactUnlink: async (file, identity) =>
-		exactUnlinkNotificationFile(file, identity, `.gjc-delete-notification-endpoint-${crypto.randomUUID()}.json`),
+		exactUnlinkNotificationFile(file, identity, `.worx-delete-notification-endpoint-${crypto.randomUUID()}.json`),
 	unlink: file => fsPromises.unlink(file),
 	writeFile: (file, data, opts) => fsPromises.writeFile(file, data, opts),
 	stat: file => fsPromises.stat(file),
@@ -280,7 +280,7 @@ function defaultPidAlive(pid: number): boolean {
 }
 
 function defaultStateRoot(): string {
-	return path.join(process.cwd(), ".gjc", "state");
+	return path.join(process.cwd(), ".worx", "state");
 }
 
 function endpointDir(stateRoot: string): string {

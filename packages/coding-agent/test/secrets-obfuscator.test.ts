@@ -103,7 +103,7 @@ describe("loadSecrets regex provenance", () => {
 		const cwd = path.join(root, "project");
 		const agentDir = path.join(root, "agent");
 		try {
-			await fs.mkdir(path.join(cwd, ".gjc"), { recursive: true });
+			await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
 			await fs.mkdir(agentDir, { recursive: true });
 			await Bun.write(
 				path.join(agentDir, "secrets.yml"),
@@ -113,7 +113,7 @@ describe("loadSecrets regex provenance", () => {
 				].join("\n"),
 			);
 			await Bun.write(
-				path.join(cwd, ".gjc", "secrets.yml"),
+				path.join(cwd, ".worx", "secrets.yml"),
 				[
 					"- type: plain\n  content: project-secret",
 					'- type: plain\n  content: "shared-[a-z]+"',
@@ -152,7 +152,7 @@ describe("loadSecrets regex provenance", () => {
 		const cwd = path.join(root, "project");
 		const agentDir = path.join(cwd, "caller-agent");
 		try {
-			await fs.mkdir(path.join(cwd, ".gjc"), { recursive: true });
+			await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
 			await fs.mkdir(agentDir, { recursive: true });
 			await Bun.write(path.join(agentDir, "secrets.yml"), '- type: regex\n  content: "contained-[a-z]+"');
 
@@ -169,7 +169,7 @@ describe("loadSecrets regex provenance", () => {
 		const cwd = path.join(root, "project");
 		const agentDir = path.join(root, "agent");
 		try {
-			await fs.mkdir(path.join(cwd, ".gjc"), { recursive: true });
+			await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
 			await fs.mkdir(agentDir, { recursive: true });
 			await Bun.write(path.join(agentDir, "secrets.yml"), '- type: regex\n  content: "uncertain-[a-z]+"');
 			const realpathSpy = spyOn(fs, "realpath").mockRejectedValue(new Error("canonicalization unavailable"));
@@ -193,7 +193,7 @@ describe("loadSecrets regex provenance", () => {
 		const lexicalInsideAlias = path.join(cwd, "outside-alias");
 		const canonicalInsideAlias = path.join(root, "inside-alias");
 		try {
-			await fs.mkdir(path.join(cwd, ".gjc"), { recursive: true });
+			await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
 			await fs.mkdir(outsideAgentDir, { recursive: true });
 			await fs.mkdir(insideAgentDir, { recursive: true });
 			await Bun.write(path.join(outsideAgentDir, "secrets.yml"), '- type: regex\n  content: "outside-[a-z]+"');

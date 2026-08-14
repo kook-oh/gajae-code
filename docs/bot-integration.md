@@ -68,7 +68,7 @@ The generated config uses these environment variables:
 | `WORX_COORDINATOR_MCP_SESSION_COMMAND` | Command used to start real GJC sessions, defaulting to `gjc --worktree` in generated setup. |
 | `WORX_COORDINATOR_MCP_PROFILE` | Optional profile namespace so one bot cannot enumerate another profile's state. |
 | `WORX_COORDINATOR_MCP_REPO` | Optional repo namespace so one repo cannot enumerate another repo's state. |
-| `WORX_COORDINATOR_MCP_STATE_ROOT` | Optional coordination state root; defaults under `.gjc/state/coordinator-mcp`. |
+| `WORX_COORDINATOR_MCP_STATE_ROOT` | Optional coordination state root; defaults under `.worx/state/coordinator-mcp`. |
 | `WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Maximum bytes returned by artifact reads. |
 
 Mutating calls require both startup opt-in, per-call `allow_mutation: true`, and the required caller-provided `idempotency_key`. Missing any one fails closed.
@@ -312,14 +312,14 @@ This Coordinator MCP pull loop is separate from #2549/#2551 and unattended plain
 Use `worx_coordinator_list_artifacts` to inspect safe roots and `worx_coordinator_read_artifact` to read a bounded artifact:
 
 ```json
-{ "path": "/path/to/repo/.gjc/ultragoal/ledger.jsonl" }
+{ "path": "/path/to/repo/.worx/ultragoal/ledger.jsonl" }
 ```
 
 Artifact paths are canonicalized, symlink escapes are rejected, and output is byte-capped. Use `worx_coordinator_read_coordination_status` for status reports written through `worx_coordinator_report_status`.
 
 ## SDK WebSocket integration
 
-Use the SDK when your bot owns a single live session rather than an MCP coordinator. Each running session exposes a loopback WebSocket endpoint discovered via `.gjc/state/sdk/<sessionId>.json`; the wire protocol (state queries, control operations, event subscription and replay, workflow-gate replies, reverse host-tool leases) is documented in [`docs/sdk.md`](./sdk.md).
+Use the SDK when your bot owns a single live session rather than an MCP coordinator. Each running session exposes a loopback WebSocket endpoint discovered via `.worx/state/sdk/<sessionId>.json`; the wire protocol (state queries, control operations, event subscription and replay, workflow-gate replies, reverse host-tool leases) is documented in [`docs/sdk.md`](./sdk.md).
 
 Key SDK workflow-gate facts:
 - The discovery file carries the endpoint URL and per-session token; a wrong
@@ -403,7 +403,7 @@ Hermes and OpenClaw can use the same MCP tool contract. Their names here are exa
 - Keep `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` narrow; do not allow `/`, `/home`, or broad parent directories.
 - Use namespaces for multi-tenant bots.
 - Keep mutation classes minimal: read-only for dashboards, `sessions` for work dispatch, `questions` for answering questions, and `reports` for final state.
-- Treat `.gjc/` as local runtime state and evidence. Do not expose it wholesale to untrusted users.
+- Treat `.worx/` as local runtime state and evidence. Do not expose it wholesale to untrusted users.
 
 ## Related references
 

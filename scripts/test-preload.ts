@@ -4,7 +4,7 @@ import * as os from "node:os";
 // macOS `os.tmpdir()` resolves through the `/var -> /private/var` symlink, and the
 // native owner-only primitive plus the session-storage reparse guard intentionally
 // reject any symlinked path component. Production session roots live under a real
-// home (`~/.gjc`) and never hit this, but tests create sessions under
+// home (`~/.worx`) and never hit this, but tests create sessions under
 // `mkdtemp(os.tmpdir())`, so every such path would trip the strict guards.
 //
 // Canonicalize the temp root once per test process so `os.tmpdir()` (and every

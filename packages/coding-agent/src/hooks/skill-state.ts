@@ -34,7 +34,7 @@ import {
 	WORX_SKILL_KEYWORD_DEFINITIONS,
 } from "./skill-keywords";
 
-export const WORX_STATE_DIR = ".gjc";
+export const WORX_STATE_DIR = ".worx";
 export const SKILL_ACTIVE_STATE_FILE = "skill-active-state.json";
 
 export interface EffectiveSkillConfigInput {
@@ -486,7 +486,7 @@ export interface EnsureWorkflowSkillActivationInput {
 }
 
 /**
- * Idempotently seed `.gjc/state` for a workflow skill that was invoked directly
+ * Idempotently seed `.worx/state` for a workflow skill that was invoked directly
  * (e.g. via `/skill:<name>`) rather than through keyword detection. This ensures
  * the mutation guard and Stop hook engage the moment a workflow skill becomes
  * active, instead of relying on the skill prompt to run its own state-init steps.
@@ -602,7 +602,7 @@ const DEEP_INTERVIEW_ABORT_PHASES = new Set(["failed", "cancelled", "canceled"])
 /**
  * A deep-interview run is "crystallized" once it has persisted a final spec.
  * `persistDeepInterviewSpec` records the spec path in the mode-state and writes
- * the artifact under `.gjc/specs/`, so a crystallized state carries a
+ * the artifact under `.worx/specs/`, so a crystallized state carries a
  * `spec_path` that still resolves to a real file. A bare `spec_path` with no
  * backing file (deleted/stale/fabricated) does not count as crystallized.
  */

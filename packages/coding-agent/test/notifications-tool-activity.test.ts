@@ -66,7 +66,7 @@ async function setup(
 	const settings =
 		options.settingsOverrides === undefined
 			? undefined
-			: isolatedNotificationSettings(path.join(cwd, ".gjc", "agent"), options.settingsOverrides);
+			: isolatedNotificationSettings(path.join(cwd, ".worx", "agent"), options.settingsOverrides);
 	const controller =
 		settings === undefined
 			? undefined
@@ -91,7 +91,7 @@ async function setup(
 	} as never;
 	await handlers.get("session_start")!({ type: "session_start" } as never, ctx);
 
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), "endpoint file");
 	const { url, token } = readEndpoint(endpointFile);
 	const frames: Frame[] = [];

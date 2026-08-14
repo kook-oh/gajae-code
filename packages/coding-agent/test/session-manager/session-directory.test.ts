@@ -319,7 +319,7 @@ describe.skipIf(process.platform !== "linux")("managed session scope shared stic
 		const { cwd, sessionsRoot, scope } = await fixture();
 		const agentDir = path.dirname(sessionsRoot);
 		SessionManager.managedDestination(cwd, agentDir);
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		await fs.rm(tombstones, { recursive: true, force: true });
 		await fs.writeFile(tombstones, "not-a-directory\n", { mode: 0o600 });
 
@@ -575,7 +575,7 @@ describe("managed session write protocol", () => {
 			expect(coalesced.owned[0]?.provenance).toBe("v2");
 			expect(coalesced.owned[0]?.migrationState).toBe("migrated_v2");
 		}
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const committedReceipt = path.join(
 			receipts,
 			(await fs.readdir(receipts)).find(
@@ -643,7 +643,7 @@ describe("managed session write protocol", () => {
 		if (opened.kind !== "opened") return;
 		expect((await fs.readdir(opened.path.slice(0, -6))).filter(name => name.endsWith(".bin"))).toHaveLength(count);
 		expect((await fs.readdir(artifacts)).filter(name => name.endsWith(".bin"))).toHaveLength(count);
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const [committed] = await committedReceiptNames(receipts);
 		if (!committed) throw new Error("Missing committed migration receipt");
 		const receipt = JSON.parse(await fs.readFile(path.join(receipts, committed), "utf8")) as {
@@ -831,7 +831,7 @@ describe("managed session write protocol", () => {
 		expect((await fs.stat(path.join(destinationArtifacts, "nested", "empty"))).isDirectory()).toBe(true);
 		expect(await fs.readFile(path.join(sourceArtifacts, "payload.txt"), "utf8")).toBe("root");
 		expect((await fs.stat(path.join(sourceArtifacts, "nested", "empty"))).isDirectory()).toBe(true);
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const committedReceipt = path.join(
 			receipts,
 			(await fs.readdir(receipts)).find(
@@ -864,7 +864,7 @@ describe("managed session write protocol", () => {
 		if (listed.kind !== "complete" || !listed.owned[0]) throw new Error("Missing legacy candidate");
 		await expect(openManagedCandidateForWrite(scope, listed.owned[0])).resolves.toMatchObject({ kind: "opened" });
 
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const [committed] = await committedReceiptNames(receipts);
 		if (!committed) throw new Error("Missing committed receipt");
 		const record = JSON.parse(await fs.readFile(path.join(receipts, committed), "utf8")) as {
@@ -874,7 +874,7 @@ describe("managed session write protocol", () => {
 			sourceArtifactCleanup: {
 				state: "cleanup_pending",
 				role: "exchange_placeholder",
-				retainedPath: expect.stringMatching(/\.gjc-exact-unlink-placeholder-/),
+				retainedPath: expect.stringMatching(/\.worx-exact-unlink-placeholder-/),
 			},
 		});
 	});
@@ -901,7 +901,7 @@ describe("managed session write protocol", () => {
 			restore.mockRestore();
 		}
 
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const detachedReceipt = (await fs.readdir(receipts)).find(name => name.endsWith(".detached.json"));
 		if (!detachedReceipt) throw new Error("Missing detached receipt");
 		const record = JSON.parse(await fs.readFile(path.join(receipts, detachedReceipt), "utf8")) as Record<
@@ -930,7 +930,7 @@ describe("managed session write protocol", () => {
 		expect(replay).toMatchObject({ kind: "error", code: "durability_failed" });
 		expect(await fs.readFile(path.join(retainedPath, "foreign.txt"), "utf8")).toBe("foreign");
 		const detached = (await fs.readdir(legacy)).find(
-			name => name.startsWith(".gjc-migrate-") && name.endsWith("-artifacts"),
+			name => name.startsWith(".worx-migrate-") && name.endsWith("-artifacts"),
 		);
 		if (!detached) throw new Error("Missing retained detached artifact root");
 		expect(await fs.readFile(path.join(legacy, detached, "payload.txt"), "utf8")).toBe("authoritative");
@@ -960,7 +960,7 @@ describe("managed session write protocol", () => {
 		}
 		expect((await fs.stat(sourceArtifacts)).isDirectory()).toBe(true);
 		const detached = (await fs.readdir(legacy)).find(
-			name => name.startsWith(".gjc-migrate-") && name.endsWith("-artifacts"),
+			name => name.startsWith(".worx-migrate-") && name.endsWith("-artifacts"),
 		);
 		expect(detached).toBeDefined();
 		if (!detached) throw new Error("Missing retained detached artifact root");
@@ -1013,7 +1013,7 @@ describe("managed session write protocol", () => {
 		expect(replacement.identity.mtimeNs).not.toBe(first.identity.mtimeNs);
 		expect(await openManagedCandidateForWrite(scope, replacement)).toMatchObject({ kind: "opened" });
 
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		expect(
 			(await fs.readdir(receipts)).filter(
 				name => name.endsWith(".json") && !name.endsWith(".prepared.json") && !name.endsWith(".published.json"),
@@ -1048,7 +1048,7 @@ describe("managed session write protocol", () => {
 		expect(secondDelete.tombstonePath).not.toBe(firstDelete.tombstonePath);
 		await expect(fs.access(targetPath)).rejects.toMatchObject({ code: "ENOENT" });
 
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		expect(
 			(await fs.readdir(tombstones)).filter(name => name.endsWith(".json") && !name.includes(".cleanup-")),
 		).toHaveLength(2);
@@ -1206,7 +1206,7 @@ describe("managed session write protocol", () => {
 			await reconcileManagedTombstones(restarted.scope);
 			expect(await prepareManagedSessionScopeForWrite(restarted.scope)).toMatchObject({ kind: "resolved" });
 			expect(await fs.readFile(path.join(retainedRoot, "artifact.txt"))).toEqual(Buffer.alloc(0));
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			expect((await fs.readdir(tombstones)).some(name => name.includes(".cleanup-completed-"))).toBe(true);
 		} finally {
 			replayRemove.mockRestore();
@@ -1248,7 +1248,7 @@ describe("managed session write protocol", () => {
 		if (!retainedRoot) throw new Error("Missing retained artifact root");
 		expect(await fs.readdir(retainedRoot)).toEqual([]);
 		expect(await fs.readFile(source, "utf8")).toContain("undurable-root-only-artifacts");
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		expect((await fs.readdir(tombstones)).some(name => name.includes(".cleanup-completed-"))).toBe(false);
 	});
 
@@ -1461,7 +1461,7 @@ describe("managed session write protocol", () => {
 		if (initial.kind !== "complete" || !initial.owned[0]) throw new Error("Missing legacy candidate");
 		const opened = await openManagedCandidateForWrite(scope, initial.owned[0]);
 		if (opened.kind !== "opened") throw new Error(opened.message);
-		const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+		const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 		const receipt = (await fs.readdir(receipts)).find(name => /^[a-f0-9]{64}\.json$/.test(name));
 		if (!receipt) throw new Error("Missing committed receipt");
 		const receiptPath = path.join(receipts, receipt);
@@ -1666,7 +1666,7 @@ describe("managed session write protocol", () => {
 			} finally {
 				failParentFsync.mockRestore();
 			}
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			expect((await fs.readdir(tombstones)).some(name => name.includes("cleanup-completed"))).toBe(false);
 		},
 	);
@@ -1694,7 +1694,7 @@ describe("managed session write protocol", () => {
 		temporaryDirectories.push(root);
 		const sessionsRoot = path.join(root, "agent", "sessions");
 		const home = os.homedir();
-		const child = await fs.mkdtemp(path.join(home, ".gjc-managed-session-child-"));
+		const child = await fs.mkdtemp(path.join(home, ".worx-managed-session-child-"));
 		temporaryDirectories.push(child);
 		const encodedHome = encoded(home);
 		const relative = path.relative(home, child);
@@ -1989,7 +1989,7 @@ describe("managed session write protocol", () => {
 			kind: "deleted",
 		});
 
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const completed = (await fs.readdir(tombstones)).filter(name => name.includes(".cleanup-completed-"));
 		expect(completed.length).toBeGreaterThan(0);
 		for (const name of completed) {
@@ -2152,7 +2152,7 @@ describe("managed session write protocol", () => {
 			remove.mockRestore();
 			unlink.mockRestore();
 		}
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const receiptName = (await fs.readdir(tombstones))
 			.filter(name => name.includes(".cleanup-pending-"))
 			.sort()
@@ -2264,7 +2264,7 @@ describe("managed session write protocol", () => {
 			remove.mockRestore();
 		}
 		try {
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			const firstName = (await fs.readdir(tombstones)).find(name => name.includes(".cleanup-pending-1"));
 			if (!firstName) throw new Error("Missing initial cleanup receipt");
 			const firstPath = path.join(tombstones, firstName);
@@ -2272,9 +2272,9 @@ describe("managed session write protocol", () => {
 			const forged = {
 				...first,
 				attempt: 2,
-				detachedArtifactsPath: path.join(path.dirname(source), ".gjc-delete-forged-artifacts"),
-				plannedArtifactsPath: path.join(path.dirname(source), ".gjc-delete-forged-next-artifacts"),
-				plannedTranscriptPath: path.join(path.dirname(source), ".gjc-delete-forged-next-transcript"),
+				detachedArtifactsPath: path.join(path.dirname(source), ".worx-delete-forged-artifacts"),
+				plannedArtifactsPath: path.join(path.dirname(source), ".worx-delete-forged-next-artifacts"),
+				plannedTranscriptPath: path.join(path.dirname(source), ".worx-delete-forged-next-transcript"),
 			};
 			await fs.writeFile(firstPath.replace("cleanup-pending-1", "cleanup-pending-2"), JSON.stringify(forged));
 			await expect(deleteManagedSessionCandidate(scope, listed.owned[0])).resolves.toMatchObject({
@@ -2321,7 +2321,7 @@ describe("managed session write protocol", () => {
 		await fs.writeFile(source, transcript("repeat-detach", cwd));
 		const listed = listManagedCandidates(scope);
 		if (listed.kind !== "complete" || !listed.owned[0]) throw new Error("Missing candidate");
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const exactUnlink = native.exactUnlink;
 		const unlink = vi.spyOn(native, "exactUnlink").mockImplementation((pathname, identity) => {
 			if (pathname === source) return { ok: false, code: "io_error" };
@@ -2408,7 +2408,7 @@ describe("managed session write protocol", () => {
 		} finally {
 			crash.mockRestore();
 		}
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const pendingNames = (await fs.readdir(tombstones)).filter(name => name.includes(".cleanup-pending-"));
 		const pendingRecords = await Promise.all(
 			pendingNames.map(
@@ -2500,7 +2500,7 @@ describe("managed session write protocol", () => {
 			unlink.mockRestore();
 		}
 
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const pendingReceipts = await Promise.all(
 			(await fs.readdir(tombstones))
 				.filter(name => name.includes(".cleanup-pending-"))
@@ -2593,7 +2593,7 @@ describe("managed session write protocol", () => {
 
 			const candidate = listed.owned[0];
 			const predecessorIdentity = { dev: candidate.identity.dev, ino: candidate.identity.ino };
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			const retainedTranscript = `${source}.retained-stale`;
 			const successorTranscript = transcript("direct-successor-race", cwd, "successor transcript payload");
 			const entered = Promise.withResolvers<void>();
@@ -2667,7 +2667,7 @@ describe("managed session write protocol", () => {
 
 			const candidate = listed.owned[0];
 			const predecessorIdentity = { dev: candidate.identity.dev, ino: candidate.identity.ino };
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			const retainedTranscript = `${source}.retained-stale`;
 			const successorTranscript = transcript("reconcile-successor-race", cwd, "successor transcript payload");
 			ManagedSessionScopeTestHooks.beforeVerifiedDelete = event => {
@@ -2761,7 +2761,7 @@ describe("managed session write protocol", () => {
 				message: "test_crash",
 			});
 			ManagedSessionScopeTestHooks.beforeVerifiedDelete = undefined;
-			const unexpectedTranscriptPath = path.join(path.dirname(source), ".gjc-delete-unexpected-transcript");
+			const unexpectedTranscriptPath = path.join(path.dirname(source), ".worx-delete-unexpected-transcript");
 			await fs.writeFile(unexpectedTranscriptPath, "foreign transcript sentinel", { mode: 0o600 });
 			let deleteCalls = 0;
 
@@ -2793,7 +2793,7 @@ describe("managed session write protocol", () => {
 			expect(deleteCalls).toBe(1);
 			expect(await fs.readFile(unexpectedTranscriptPath, "utf8")).toBe("foreign transcript sentinel");
 			expect(await fs.readFile(source, "utf8")).toBe(sourceTranscript);
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			expect((await fs.readdir(tombstones)).some(name => name.includes(".cleanup-completed-"))).toBe(false);
 		},
 	);
@@ -2809,7 +2809,7 @@ describe("managed session write protocol", () => {
 			await fs.writeFile(source, sourceTranscript);
 			const listed = listManagedCandidates(scope);
 			if (listed.kind !== "complete" || !listed.owned[0]) throw new Error("Missing candidate");
-			const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+			const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 			let retainedArtifactsPath: string | undefined;
 			ManagedSessionScopeTestHooks.beforeVerifiedDelete = async event => {
 				if (event.flow !== "direct" || event.stage !== "transcript-after-artifacts-removed") return;
@@ -2875,7 +2875,7 @@ describe("managed session write protocol", () => {
 			unlink.mockRestore();
 		}
 
-		const tombstones = path.join(scope.directoryPath, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(scope.directoryPath, ".worx-managed-session-internal", "tombstones");
 		const receiptName = (await fs.readdir(tombstones))
 			.filter(name => name.includes(".cleanup-pending-"))
 			.sort()
@@ -2959,11 +2959,11 @@ describe("managed session write protocol", () => {
 
 describe("scrubbed write-protocol remnant reaping", () => {
 	const remnantNames = [
-		".gjc-exact-unlink-placeholder-100000d-cad4835",
-		".gjc-exact-replace-destination-100000d-9f00001",
-		".gjc-receipt-remove-100000d-c023948-100000d-c023947",
-		".gjc-receipt-placeholder-remove-1-2-3-4-5-6",
-		".gjc-replace-retry-100000d-c024971",
+		".worx-exact-unlink-placeholder-100000d-cad4835",
+		".worx-exact-replace-destination-100000d-9f00001",
+		".worx-receipt-remove-100000d-c023948-100000d-c023947",
+		".worx-receipt-placeholder-remove-1-2-3-4-5-6",
+		".worx-replace-retry-100000d-c024971",
 	];
 	const aged = new Date(Date.now() - 60 * 60 * 1000);
 
@@ -2975,9 +2975,9 @@ describe("scrubbed write-protocol remnant reaping", () => {
 			await fs.writeFile(pathname, "", { mode: 0o600 });
 			await fs.utimes(pathname, aged, aged);
 		}
-		const fresh = path.join(scope.directoryPath, ".gjc-exact-unlink-placeholder-fresh");
+		const fresh = path.join(scope.directoryPath, ".worx-exact-unlink-placeholder-fresh");
 		await fs.writeFile(fresh, "", { mode: 0o600 });
-		const evidence = path.join(scope.directoryPath, ".gjc-receipt-remove-retained-evidence");
+		const evidence = path.join(scope.directoryPath, ".worx-receipt-remove-retained-evidence");
 		await fs.writeFile(evidence, "retained receipt payload", { mode: 0o600 });
 		await fs.utimes(evidence, aged, aged);
 		const transcriptFile = path.join(scope.directoryPath, "unrelated.jsonl");

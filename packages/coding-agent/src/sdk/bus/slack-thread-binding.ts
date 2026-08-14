@@ -171,10 +171,10 @@ export async function resolveSessionBindingAuthority(
 	if (!Number.isSafeInteger(session.endpointGeneration) || session.endpointGeneration <= 0) return undefined;
 	if (!Number.isSafeInteger(session.pid) || session.pid <= 0) return undefined;
 	// Same scope derivation the runtime's attach() fence uses. Reading a
-	// `.gjc/state/chat/sdk` session at the default scope would either miss it or
+	// `.worx/state/chat/sdk` session at the default scope would either miss it or
 	// prove the wrong endpoint, so an underivable scope is not authority.
 	const repo = path.resolve(session.locator.repo);
-	const defaultStateRoot = path.join(repo, ".gjc", "state");
+	const defaultStateRoot = path.join(repo, ".worx", "state");
 	const indexedStateRoot = path.resolve(session.locator.stateRoot);
 	const scope: SdkSessionEndpointScope | undefined =
 		indexedStateRoot === defaultStateRoot

@@ -1,7 +1,7 @@
 /**
  * Centralized path helpers for gajae-code config directories.
  *
- * Uses WORX_CONFIG_DIR (legacy alias PI_CONFIG_DIR, default ".gjc") for the
+ * Uses WORX_CONFIG_DIR (legacy alias PI_CONFIG_DIR, default ".worx") for the
  * config root and WORX_CODING_AGENT_DIR (legacy alias PI_CODING_AGENT_DIR) to
  * override the agent directory.
  *
@@ -21,8 +21,8 @@ import { parseEnvFile } from "./env-file";
 /** App name (e.g. "gjc") */
 export const APP_NAME: string = "worx";
 
-/** Config directory name (e.g. ".gjc") */
-export const CONFIG_DIR_NAME: string = ".gjc";
+/** Config directory name (e.g. ".worx") */
+export const CONFIG_DIR_NAME: string = ".worx";
 
 /** Version (e.g. "1.0.0") */
 export const VERSION: string = version;
@@ -169,7 +169,7 @@ function sanitizeConfigDirName(value: string | undefined): string | undefined {
 	return trimmed;
 }
 
-/** Get the config directory name relative to home (e.g. ".gjc" or PI_CONFIG_DIR override). */
+/** Get the config directory name relative to home (e.g. ".worx" or PI_CONFIG_DIR override). */
 /**
  * Config-directory name, rejected when it comes from the caller's project `.env`.
  *
@@ -202,7 +202,7 @@ export function getConfigDirName(): string {
 	);
 }
 
-/** Get the config agent directory name relative to home (e.g. ".gjc/agent" or PI_CONFIG_DIR + "/agent"). */
+/** Get the config agent directory name relative to home (e.g. ".worx/agent" or PI_CONFIG_DIR + "/agent"). */
 export function getConfigAgentDirName(): string {
 	return `${getConfigDirName()}/agent`;
 }
@@ -266,7 +266,7 @@ class DirResolver {
 			state: xdgState ?? this.configRoot,
 			cache: xdgCache ?? this.configRoot,
 		};
-		// XDG flattens the agent/ prefix: ~/.gjc/agent/sessions → $XDG_DATA_HOME/gjc/sessions
+		// XDG flattens the agent/ prefix: ~/.worx/agent/sessions → $XDG_DATA_HOME/gjc/sessions
 		this.#agentDirs = {
 			data: xdgData ?? this.agentDir,
 			state: xdgState ?? this.agentDir,
@@ -346,7 +346,7 @@ const RESOLVER_HOME = os.homedir();
 // Root directories
 // =============================================================================
 
-/** Get the config root directory (~/.gjc). */
+/** Get the config root directory (~/.worx). */
 export function getConfigRootDir(): string {
 	return dirs.configRoot;
 }
@@ -357,37 +357,37 @@ export function setAgentDir(dir: string): void {
 	process.env.WORX_CODING_AGENT_DIR = dir;
 }
 
-/** Get the agent config directory (~/.gjc/agent). */
+/** Get the agent config directory (~/.worx/agent). */
 export function getAgentDir(): string {
 	return dirs.agentDir;
 }
 
-/** Get the project-local config directory (.gjc). */
+/** Get the project-local config directory (.worx). */
 export function getProjectAgentDir(cwd: string = getProjectDir()): string {
 	return path.join(cwd, CONFIG_DIR_NAME);
 }
 
 // =============================================================================
-// Config-root subdirectories (~/.gjc/*)
+// Config-root subdirectories (~/.worx/*)
 // =============================================================================
 
-/** Get the reports directory (~/.gjc/reports). */
+/** Get the reports directory (~/.worx/reports). */
 export function getReportsDir(): string {
 	return dirs.rootSubdir("reports", "state");
 }
 
-/** Get the logs directory (~/.gjc/logs). */
+/** Get the logs directory (~/.worx/logs). */
 export function getLogsDir(): string {
 	return dirs.rootSubdir("logs", "state");
 }
 
-/** Get the path to a dated log file (~/.gjc/logs/gjc.YYYY-MM-DD.log). */
+/** Get the path to a dated log file (~/.worx/logs/gjc.YYYY-MM-DD.log). */
 export function getLogPath(date = new Date()): string {
 	return path.join(getLogsDir(), `${APP_NAME}.${date.toISOString().slice(0, 10)}.log`);
 }
 
 /**
- * Get the plugins directory (~/.gjc/plugins or its XDG equivalent).
+ * Get the plugins directory (~/.worx/plugins or its XDG equivalent).
  *
  * No-arg form (production callers) goes through the XDG-aware DirResolver so
  * reads and writes always agree. The optional `home` parameter is for test
@@ -403,52 +403,52 @@ export function getPluginsDir(home?: string): string {
 	return dirs.rootSubdir("plugins", "data");
 }
 
-/** Where npm installs packages (~/.gjc/plugins/node_modules). */
+/** Where npm installs packages (~/.worx/plugins/node_modules). */
 export function getPluginsNodeModules(): string {
 	return path.join(getPluginsDir(), "node_modules");
 }
 
-/** Plugin manifest (~/.gjc/plugins/package.json). */
+/** Plugin manifest (~/.worx/plugins/package.json). */
 export function getPluginsPackageJson(): string {
 	return path.join(getPluginsDir(), "package.json");
 }
 
-/** Plugin lock file (~/.gjc/plugins/gjc-plugins.lock.json). */
+/** Plugin lock file (~/.worx/plugins/gjc-plugins.lock.json). */
 export function getPluginsLockfile(): string {
 	return path.join(getPluginsDir(), "gjc-plugins.lock.json");
 }
 
-/** Get the remote mount directory (~/.gjc/remote). */
+/** Get the remote mount directory (~/.worx/remote). */
 export function getRemoteDir(): string {
 	return dirs.rootSubdir("remote", "data");
 }
 
-/** Get the agent-managed worktrees directory (~/.gjc/wt). */
+/** Get the agent-managed worktrees directory (~/.worx/wt). */
 export function getWorktreesDir(): string {
 	return dirs.rootSubdir("wt", "data");
 }
 
-/** Get the SSH control socket directory (~/.gjc/ssh-control). */
+/** Get the SSH control socket directory (~/.worx/ssh-control). */
 export function getSshControlDir(): string {
 	return dirs.rootSubdir("ssh-control", "state");
 }
 
-/** Get the remote host info directory (~/.gjc/remote-host). */
+/** Get the remote host info directory (~/.worx/remote-host). */
 export function getRemoteHostDir(): string {
 	return dirs.rootSubdir("remote-host", "data");
 }
 
-/** Get the managed Python venv directory (~/.gjc/python-env). */
+/** Get the managed Python venv directory (~/.worx/python-env). */
 export function getPythonEnvDir(): string {
 	return dirs.rootSubdir("python-env", "data");
 }
 
-/** Get the shared Python gateway state directory (~/.gjc/agent/python-gateway; XDG default: $XDG_STATE_HOME/gjc/python-gateway). */
+/** Get the shared Python gateway state directory (~/.worx/agent/python-gateway; XDG default: $XDG_STATE_HOME/gjc/python-gateway). */
 export function getPythonGatewayDir(): string {
 	return dirs.agentSubdir(undefined, "python-gateway", "state");
 }
 
-/** Get the puppeteer sandbox directory (~/.gjc/puppeteer). */
+/** Get the puppeteer sandbox directory (~/.worx/puppeteer). */
 export function getPuppeteerDir(): string {
 	return dirs.rootSubdir("puppeteer", "cache");
 }
@@ -457,7 +457,7 @@ export function getPuppeteerDir(): string {
  * Stable 7-character hex digest of an absolute filesystem path.
  *
  * Used to pack the project identity into a single short fs-safe segment
- * (e.g. PR-checkout and task-isolation worktree dirs under `~/.gjc/wt/`).
+ * (e.g. PR-checkout and task-isolation worktree dirs under `~/.worx/wt/`).
  * Bun.hash is non-cryptographic — collision space is ~2^28, which is fine
  * for naming a handful of repos on a single machine. Same input on the
  * same Bun runtime yields the same output.
@@ -466,18 +466,18 @@ export function hashPath(absPath: string): string {
 	return Bun.hash(path.resolve(absPath)).toString(16).padStart(16, "0").slice(-7);
 }
 
-/** Get the path to a single worktree directory (~/.gjc/wt/<segment>). */
+/** Get the path to a single worktree directory (~/.worx/wt/<segment>). */
 export function getWorktreeDir(segment: string): string {
 	return path.join(getWorktreesDir(), segment);
 }
 
-/** Get the GPU cache path (~/.gjc/gpu_cache.json). */
+/** Get the GPU cache path (~/.worx/gpu_cache.json). */
 export function getGpuCachePath(): string {
 	return dirs.rootSubdir("gpu_cache.json", "cache");
 }
 
 /**
- * Get the GitHub view cache database path (~/.gjc/cache/github-cache.db).
+ * Get the GitHub view cache database path (~/.worx/cache/github-cache.db).
  * Honors the `WORX_GITHUB_CACHE_DB` env var when set so tests can isolate the
  * cache file without touching the rest of the config root.
  */
@@ -487,38 +487,38 @@ export function getGithubCacheDbPath(): string {
 	return dirs.rootSubdir(path.join("cache", "github-cache.db"), "cache");
 }
 
-/** Get the natives directory (~/.gjc/natives). */
+/** Get the natives directory (~/.worx/natives). */
 export function getNativesDir(): string {
 	return dirs.rootSubdir("natives", "cache");
 }
 
-/** Get the stats database path (~/.gjc/stats.db). */
+/** Get the stats database path (~/.worx/stats.db). */
 export function getStatsDbPath(): string {
 	return dirs.rootSubdir("stats.db", "data");
 }
 
-/** Get the autoresearch state directory (~/.gjc/autoresearch). */
+/** Get the autoresearch state directory (~/.worx/autoresearch). */
 export function getAutoresearchDir(): string {
 	return dirs.rootSubdir("autoresearch", "state");
 }
 
-/** Get the per-project autoresearch state directory (~/.gjc/autoresearch/<encoded-project>). */
+/** Get the per-project autoresearch state directory (~/.worx/autoresearch/<encoded-project>). */
 export function getAutoresearchProjectDir(encodedProject: string): string {
 	return path.join(getAutoresearchDir(), encodedProject);
 }
 
-/** Get the per-project autoresearch SQLite database path (~/.gjc/autoresearch/<encoded-project>.db). */
+/** Get the per-project autoresearch SQLite database path (~/.worx/autoresearch/<encoded-project>.db). */
 export function getAutoresearchDbPath(encodedProject: string): string {
 	return path.join(getAutoresearchDir(), `${encodedProject}.db`);
 }
 
-/** Get the per-run artifact directory (~/.gjc/autoresearch/<encoded-project>/runs/<runId>). */
+/** Get the per-run artifact directory (~/.worx/autoresearch/<encoded-project>/runs/<runId>). */
 export function getAutoresearchRunDir(encodedProject: string, runId: number): string {
 	return path.join(getAutoresearchProjectDir(encodedProject), "runs", String(runId).padStart(4, "0"));
 }
 
 // =============================================================================
-// Agent subdirectories (~/.gjc/agent/*)
+// Agent subdirectories (~/.worx/agent/*)
 // =============================================================================
 
 /** Get the path to agent.db (SQLite database for settings and auth storage). */
@@ -536,12 +536,12 @@ export function getModelDbPath(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "models.db", "data");
 }
 
-/** Get the sessions directory (~/.gjc/agent/sessions). */
+/** Get the sessions directory (~/.worx/agent/sessions). */
 export function getSessionsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "sessions", "data");
 }
 
-/** Get the content-addressed blob store directory (~/.gjc/agent/blobs). */
+/** Get the content-addressed blob store directory (~/.worx/agent/blobs). */
 export function getBlobsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "blobs", "data");
 }
@@ -556,66 +556,66 @@ export function getSidecarCacheRootDir(profileAgentDir: string): string {
 	return dirs.agentSubdir(profileAgentDir, "sidecar-cache", "cache");
 }
 
-/** Get the custom themes directory (~/.gjc/agent/themes). */
+/** Get the custom themes directory (~/.worx/agent/themes). */
 export function getCustomThemesDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "themes");
 }
 
-/** Get the tools directory (~/.gjc/agent/tools). */
+/** Get the tools directory (~/.worx/agent/tools). */
 export function getToolsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "tools");
 }
 
-/** Get the slash commands directory (~/.gjc/agent/commands). */
+/** Get the slash commands directory (~/.worx/agent/commands). */
 export function getCommandsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "commands");
 }
 
-/** Get the prompts directory (~/.gjc/agent/prompts). */
+/** Get the prompts directory (~/.worx/agent/prompts). */
 export function getPromptsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "prompts");
 }
 
-/** Get the user-level Python modules directory (~/.gjc/agent/modules). */
+/** Get the user-level Python modules directory (~/.worx/agent/modules). */
 export function getAgentModulesDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "modules");
 }
 
-/** Get the memories directory (~/.gjc/agent/memories). */
+/** Get the memories directory (~/.worx/agent/memories). */
 export function getMemoriesDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "memories", "state");
 }
 
-/** Get the terminal sessions directory (~/.gjc/agent/terminal-sessions). */
+/** Get the terminal sessions directory (~/.worx/agent/terminal-sessions). */
 export function getTerminalSessionsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "terminal-sessions", "state");
 }
 
-/** Get the crash log path (~/.gjc/agent/gjc-crash.log). */
+/** Get the crash log path (~/.worx/agent/gjc-crash.log). */
 export function getCrashLogPath(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "gjc-crash.log", "state");
 }
 
-/** Get the debug log path (~/.gjc/agent/gjc-debug.log). */
+/** Get the debug log path (~/.worx/agent/gjc-debug.log). */
 export function getDebugLogPath(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, `${APP_NAME}-debug.log`, "state");
 }
 
 // =============================================================================
-// Project subdirectories (.gjc/*)
+// Project subdirectories (.worx/*)
 // =============================================================================
 
-/** Get the project-level Python modules directory (.gjc/modules). */
+/** Get the project-level Python modules directory (.worx/modules). */
 export function getProjectModulesDir(cwd: string = getProjectDir()): string {
 	return path.join(getProjectAgentDir(cwd), "modules");
 }
 
-/** Get the project-level prompts directory (.gjc/prompts). */
+/** Get the project-level prompts directory (.worx/prompts). */
 export function getProjectPromptsDir(cwd: string = getProjectDir()): string {
 	return path.join(getProjectAgentDir(cwd), "prompts");
 }
 
-/** Get the project-level plugin overrides path (.gjc/plugin-overrides.json). */
+/** Get the project-level plugin overrides path (.worx/plugin-overrides.json). */
 export function getProjectPluginOverridesPath(cwd: string = getProjectDir()): string {
 	return path.join(getProjectAgentDir(cwd), "plugin-overrides.json");
 }

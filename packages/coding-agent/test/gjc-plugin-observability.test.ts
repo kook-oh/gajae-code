@@ -60,7 +60,7 @@ describe("plugin observability summary", () => {
 		const cwd = await mkCwd();
 		const r = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const installed = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
+		const installed = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		await fs.appendFile(installed, "\n// tampered\n");
 		const summary = await summarizeGjcPluginObservability(cwd);
 		expect(summary.surfaces.some(s => s.status === "quarantined" && s.quarantineCode === "runtime_mismatch")).toBe(
@@ -101,7 +101,7 @@ describe("observability quarantine keying", () => {
 
 	test("session-collision quarantines only the colliding plugin, not the first", async () => {
 		const cwd = await mkCwd();
-		await fs.mkdir(path.join(cwd, ".gjc", "gjc-plugins"), { recursive: true });
+		await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
 		// Two entries share extension id tool:dup; the second collides.
 		await writeRegistry({ version: 1, scope: "project", plugins: [entry("a"), entry("b")] }, cwd);
 		const summary = await summarizeGjcPluginObservability(cwd);

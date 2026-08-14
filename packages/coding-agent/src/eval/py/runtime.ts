@@ -13,7 +13,7 @@ import { withFileLock } from "../../config/file-lock";
 export const RLM_MANAGED_PYTHON_PACKAGES: readonly string[] = ["numpy", "pandas", "matplotlib", "polars"];
 
 export interface PythonRuntimeOptions {
-	/** Create/use <cwd>/.gjc/python-env when no BYO venv/conda env is present. */
+	/** Create/use <cwd>/.worx/python-env when no BYO venv/conda env is present. */
 	managedWorkspaceVenv?: boolean;
 	/** Packages to seed into the managed workspace venv when provisioning it. */
 	seedPackages?: readonly string[];
@@ -138,7 +138,7 @@ function resolveManagedPythonCandidate(): { venvPath: string; pythonPath: string
 }
 
 function resolveWorkspaceManagedPythonCandidate(cwd: string): { venvPath: string; pythonPath: string; binDir: string } {
-	return resolvePythonCandidateInVenv(path.join(cwd, ".gjc", "python-env"));
+	return resolvePythonCandidateInVenv(path.join(cwd, ".worx", "python-env"));
 }
 
 export interface PythonRuntime {
@@ -422,7 +422,7 @@ async function ensureWorkspaceManagedVenvInner(
 		}
 	}
 	if (seedPackages.length === 0) return;
-	const markerPath = path.join(managed.venvPath, ".gjc-seeded.json");
+	const markerPath = path.join(managed.venvPath, ".worx-seeded.json");
 	let seeded = false;
 	try {
 		const marker = JSON.parse(await fs.promises.readFile(markerPath, "utf8")) as { packages?: unknown };

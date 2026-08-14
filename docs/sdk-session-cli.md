@@ -43,7 +43,7 @@ row is credential-free and carries:
 
 `gjc sdk session inspect <sessionId>` renders one indexed row. When the broker
 is absent, it falls back to a credential-free offline projection from the local
-endpoint discovery record (`<repo>/.gjc/state/sdk/<sessionId>.json`) so a
+endpoint discovery record (`<repo>/.worx/state/sdk/<sessionId>.json`) so a
 session can still be inspected without a broker.
 
 ### send

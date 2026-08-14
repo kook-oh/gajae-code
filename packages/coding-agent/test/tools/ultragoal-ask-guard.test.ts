@@ -135,7 +135,7 @@ describe("ultragoal ask guard", () => {
 			const diagnostic = await isUltragoalAskBlocked(cwd);
 			expect(diagnostic.active).toBe(false);
 			expect(diagnostic.source).toBe("absent");
-			expect(diagnostic.goalsPath).toBe(path.join(cwd, ".gjc", "ultragoal", "goals.json"));
+			expect(diagnostic.goalsPath).toBe(path.join(cwd, ".worx", "ultragoal", "goals.json"));
 		} finally {
 			if (previousSessionId === undefined) delete process.env.WORX_SESSION_ID;
 			else process.env.WORX_SESSION_ID = previousSessionId;
@@ -321,9 +321,9 @@ describe("ultragoal ask guard", () => {
 		const previousSessionId = process.env.WORX_SESSION_ID;
 		delete process.env.WORX_SESSION_ID;
 		try {
-			// Legacy/global .gjc/ultragoal with an incomplete plan, but no resolvable
+			// Legacy/global .worx/ultragoal with an incomplete plan, but no resolvable
 			// session (no env, no _session-* activity marker). Must not block ask.
-			const globalDir = path.join(cwd, ".gjc", "ultragoal");
+			const globalDir = path.join(cwd, ".worx", "ultragoal");
 			await fs.mkdir(globalDir, { recursive: true });
 			await fs.writeFile(
 				path.join(globalDir, "goals.json"),

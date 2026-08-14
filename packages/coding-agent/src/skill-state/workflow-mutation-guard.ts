@@ -21,7 +21,7 @@ import {
 export const DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE =
 	"Deep-interview phase boundary: continue gathering context/questions/risks and emit a handoff/spec before code edits. Mutation tools and patch execution are blocked while deep-interview is active; finalize specs through `gjc deep-interview --write --stage final` or hand off to an execution phase.";
 export const WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE =
-	".gjc workflow state and artifacts are runtime-owned. Agent mutation tools cannot edit `.gjc/**`; use the sanctioned `worx` CLI instead.";
+	".worx workflow state and artifacts are runtime-owned. Agent mutation tools cannot edit `.worx/**`; use the sanctioned `worx` CLI instead.";
 export const RALPLAN_MUTATION_BLOCK_MESSAGE =
 	"Ralplan planning phase boundary: keep refining the consensus plan and persist plan artifacts through `gjc ralplan --write` (stage scratch files under a temp dir if needed). Product-code mutation tools and patch execution are blocked while ralplan is active; mutate only after the plan is approved and execution begins.";
 export const ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE =
@@ -1048,7 +1048,7 @@ function relativeGjcSegments(cwd: string, rawPath: string): string[] | null {
 
 function blockedWorkflowStateSkill(cwd: string, rawPath: string): CanonicalGjcWorkflowSkill | null {
 	const segments = relativeGjcSegments(cwd, rawPath);
-	if (segments?.[0] !== ".gjc") return null;
+	if (segments?.[0] !== ".worx") return null;
 	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	if (generatedRoot === "specs" || generatedRoot === "plans") return null;
 	if (generatedRoot !== "state") return null;
@@ -1070,13 +1070,13 @@ function firstBlockedWorkflowStateSkill(cwd: string, targets: ExtractedTargets):
 
 function isAllowlistedPath(cwd: string, rawPath: string): boolean {
 	const segments = relativeGjcSegments(cwd, rawPath);
-	if (segments?.[0] !== ".gjc") return false;
+	if (segments?.[0] !== ".worx") return false;
 	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	return generatedRoot === "specs" || generatedRoot === "plans";
 }
 function isBlockedGjcPath(cwd: string, rawPath: string): boolean {
 	const segments = relativeGjcSegments(cwd, rawPath);
-	return segments?.[0] === ".gjc";
+	return segments?.[0] === ".worx";
 }
 
 function hasBlockedGjcTarget(cwd: string, targets: ExtractedTargets): boolean {
@@ -1140,11 +1140,11 @@ async function canonicalizeForContainment(absolutePath: string): Promise<string>
 /**
  * A neutral scratch path the planning-phase block tolerates: it resolves to a
  * system temp directory and lives OUTSIDE the project cwd. Files inside the
- * project tree (product code, `.gjc/**`) are never neutral, even when the cwd
+ * project tree (product code, `.worx/**`) are never neutral, even when the cwd
  * itself is rooted under a temp dir. The lexical checks run first; a canonical
  * (symlink/alias-resolved) re-check then ensures the REAL target is still outside
  * the project and inside a real temp root, defeating a temp symlink that points
- * back into the repo or `.gjc/`.
+ * back into the repo or `.worx/`.
  */
 async function isNeutralTempPath(cwd: string, rawPath: string): Promise<boolean> {
 	const { absolutePath, unknown } = resolveRawPath(cwd, rawPath);
@@ -1176,8 +1176,8 @@ export async function assertWorkflowMutationRawPathsAllowed(input: {
 	guardContext?: WorkflowGuardContext;
 }): Promise<void> {
 	const targets: ExtractedTargets = { paths: input.rawPaths, unknown: input.rawPaths.length === 0 };
-	// Always-on `.gjc/**` runtime-owned block, ahead of forceOverride.
-	// A deferred ast_edit apply must not reach `.gjc/**` either.
+	// Always-on `.worx/**` runtime-owned block, ahead of forceOverride.
+	// A deferred ast_edit apply must not reach `.worx/**` either.
 	if (hasBlockedGjcTarget(input.cwd, targets)) {
 		const stateSkill = firstBlockedWorkflowStateSkill(input.cwd, targets);
 		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "worx <workflow-command>";

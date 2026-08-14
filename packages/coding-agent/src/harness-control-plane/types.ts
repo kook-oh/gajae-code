@@ -2,8 +2,8 @@
  * Core types for the gajae-code-native coding-harness operations control plane (v1).
  *
  * See the approved consensus plan at
- * `.gjc/plans/ralplan/2026-06-02-0853-3e33/stage-02-revision.md` and the spec at
- * `.gjc/specs/deep-interview-harness-control-plane.md`.
+ * `.worx/plans/ralplan/2026-06-02-0853-3e33/stage-02-revision.md` and the spec at
+ * `.worx/specs/deep-interview-harness-control-plane.md`.
  *
  * v1 implements the gajae-code adapter only. omx/codex/remote/auth are deferred seams.
  */

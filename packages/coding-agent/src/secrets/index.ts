@@ -21,7 +21,7 @@ type SecretsFileScope = "global" | "project";
  * Project-local plain entries override global entries with matching content.
  */
 export async function loadSecrets(cwd: string, agentDir: string): Promise<SecretEntry[]> {
-	const projectPath = path.join(cwd, ".gjc", "secrets.yml");
+	const projectPath = path.join(cwd, ".worx", "secrets.yml");
 	const globalPath = path.join(agentDir, "secrets.yml");
 	const agentScope = await classifySecretsFileScope(cwd, agentDir);
 

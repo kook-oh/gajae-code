@@ -12,8 +12,8 @@ import {
 	SessionManager,
 } from "@bworx-io/worx-code";
 
-// Default: discoverAuthStorage() uses ~/.gjc/agent/agent.db
-// discoverModels() loads built-in + custom models from ~/.gjc/agent/models.json
+// Default: discoverAuthStorage() uses ~/.worx/agent/agent.db
+// discoverModels() loads built-in + custom models from ~/.worx/agent/models.json
 const authStorage = await discoverAuthStorage();
 const modelRegistry = await discoverModels(authStorage);
 

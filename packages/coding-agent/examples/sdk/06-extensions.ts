@@ -5,8 +5,8 @@
  * They provide a unified system for extensions, custom tools, commands, and more.
  *
  * Extension files are discovered from:
- * - ~/.gjc/agent/extensions/ (legacy: ~/.pi/agent/extensions/)
- * - <cwd>/.gjc/extensions/ (legacy: <cwd>/.pi/extensions/)
+ * - ~/.worx/agent/extensions/ (legacy: ~/.pi/agent/extensions/)
+ * - <cwd>/.worx/extensions/ (legacy: <cwd>/.pi/extensions/)
  * - Paths specified in settings.json "extensions" array
  * - Paths passed via --extension CLI flag
  *
@@ -17,7 +17,7 @@ import { createAgentSession, SessionManager } from "@bworx-io/worx-code";
 
 // Extensions are loaded from disk, not passed inline to createAgentSession.
 // Use the discovery mechanism:
-//   1. Place extension files in ~/.gjc/agent/extensions/ or .gjc/extensions/
+//   1. Place extension files in ~/.worx/agent/extensions/ or .worx/extensions/
 //   2. Add paths to settings.json: { "extensions": ["./my-extension.ts"] }
 //   3. Use --extension flag: pi --extension ./my-extension.ts
 

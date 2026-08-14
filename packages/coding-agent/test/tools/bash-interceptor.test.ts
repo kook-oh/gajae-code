@@ -289,7 +289,7 @@ describe("BashTool restricted role-agent allowlist", () => {
 			const persisted = await fs.readFile(
 				path.join(
 					root,
-					".gjc",
+					".worx",
 					sessionDirName("restricted-bash-test"),
 					"plans",
 					"ralplan",
@@ -322,7 +322,7 @@ describe("BashTool restricted role-agent allowlist", () => {
 			const persisted = await fs.readFile(
 				path.join(
 					root,
-					".gjc",
+					".worx",
 					sessionDirName("restricted-bash-test"),
 					"plans",
 					"ralplan",

@@ -141,10 +141,10 @@ GJC session (upstream)                          your client (anywhere)
 A running session writes a discovery file at:
 
 ```
-<repo>/.gjc/state/sdk/<sessionId>.json
+<repo>/.worx/state/sdk/<sessionId>.json
 ```
 
-(`.gjc/state/` is git-ignored.) Shape:
+(`.worx/state/` is git-ignored.) Shape:
 
 ```json
 {
@@ -590,7 +590,7 @@ import { readFileSync } from "node:fs";
 import WebSocket from "ws";
 
 const { url, token } = JSON.parse(
-  readFileSync(`.gjc/state/sdk/${sessionId}.json`, "utf8"),
+  readFileSync(`.worx/state/sdk/${sessionId}.json`, "utf8"),
 );
 
 const ws = new WebSocket(`${url}/?token=${encodeURIComponent(token)}`);
@@ -661,7 +661,7 @@ setup fails closed without saving or exposing the raw token.
 
 Configuration completeness, provider-local quarantine, durable desired intent, effective enablement, runtime readiness, and delivery outcomes are separate contracts. The global `notifications.enabled` master never erases provider credentials or desired flags. `/settings` edits secrets through explicit `keep`, `replace`, or `remove` actions, commits only the selected provider in one CAS batch, and reports post-commit observer or activation failures without pretending the durable save rolled back. Malformed provider-local values are quarantined for explicit repair while safe sibling providers remain usable; malformed global notification structure remains fail-closed.
 
-`WORX_NOTIFICATIONS=0` suppresses only automatic generic current-session admission. Explicit `/notify on` can opt the current session back in without mutating durable provider state, and direct provider APIs remain governed by provider effectiveness and their own runtime readiness. If Telegram ownership is proven foreign while Discord or Slack is effective, GJC publishes the chat daemon endpoint under the isolated `.gjc/state/chat/sdk/` discovery path; the blocked Telegram scanner never receives the shared endpoint token.
+`WORX_NOTIFICATIONS=0` suppresses only automatic generic current-session admission. Explicit `/notify on` can opt the current session back in without mutating durable provider state, and direct provider APIs remain governed by provider effectiveness and their own runtime readiness. If Telegram ownership is proven foreign while Discord or Slack is effective, GJC publishes the chat daemon endpoint under the isolated `.worx/state/chat/sdk/` discovery path; the blocked Telegram scanner never receives the shared endpoint token.
 
 - [Telegram notification onboarding](./telegram-onboarding.md) documents
   `gjc notify setup` and private-chat pairing.
@@ -838,7 +838,7 @@ or intentionally want to override the daemon guard.
 The SDK now exposes **two distinct surfaces**. Do not confuse them:
 
 1. **Per-session notification clients (the normal, documented contract above).**
-   A client discovers `<repo>/.gjc/state/sdk/<sessionId>.json`, connects
+   A client discovers `<repo>/.worx/state/sdk/<sessionId>.json`, connects
    to that session's loopback WebSocket, and handles `action_needed`,
    `action_resolved`, `reply_rejected`, and the optional threaded frames. This is
    all an ordinary integration (Telegram, Discord, Slack, mobile, local tools)

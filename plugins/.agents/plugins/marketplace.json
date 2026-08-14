@@ -1,14 +1,14 @@
 {
-  "name": "gajae-code-local",
+  "name": "worx-code-local",
   "interface": {
     "displayName": "Gajae Code"
   },
   "plugins": [
     {
-      "name": "gajae-code",
+      "name": "worx-code",
       "source": {
         "source": "local",
-        "path": "./gajae-code"
+        "path": "./worx-code"
       },
       "policy": {
         "installation": "AVAILABLE",

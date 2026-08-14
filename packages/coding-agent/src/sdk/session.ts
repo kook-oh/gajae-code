@@ -312,7 +312,7 @@ function resolveAgentRosterLabel(label: string | undefined, agentId: string, dis
 export interface CreateAgentSessionOptions {
 	/** Working directory for project-local discovery. Default: getProjectDir() */
 	cwd?: string;
-	/** Global config directory. Default: ~/.gjc/agent */
+	/** Global config directory. Default: ~/.worx/agent */
 	agentDir?: string;
 	/** Spawns to allow. Default: "*" */
 	spawns?: string;
@@ -373,7 +373,7 @@ export interface CreateAgentSessionOptions {
 	contextFiles?: Array<{ path: string; content: string }>;
 	/** Pre-built workspace tree (skips re-scanning; passed by parents to subagents). */
 	workspaceTree?: WorkspaceTree;
-	/** Prompt templates. Default: discovered from cwd/.gjc/prompts/ + agentDir/prompts/ */
+	/** Prompt templates. Default: discovered from cwd/.worx/prompts/ + agentDir/prompts/ */
 	promptTemplates?: PromptTemplate[];
 	/** File-based slash commands. Default: discovered from commands/ directories */
 	slashCommands?: FileSlashCommand[];
@@ -1523,7 +1523,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			// The four public GJC workflow skills are a product invariant, not
 			// ordinary filesystem-discovered skills. Keep them available even for
 			// explicit SDK skill lists so startup and command routing survive
-			// accidental `.gjc` deletion or overzealous caller filtering.
+			// accidental `.worx` deletion or overzealous caller filtering.
 			skills = withEmbeddedDefaultGjcSkills(options.skills);
 			skillWarnings = [];
 		} else if (settings.get("skills.enabled")) {
@@ -1536,7 +1536,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			skillWarnings = skillsResult.warnings;
 		} else {
 			// GJC's four public workflow skills are bundled into the binary so the
-			// default workflow surface survives accidental .gjc deletion. Arbitrary
+			// default workflow surface survives accidental .worx deletion. Arbitrary
 			// filesystem skill discovery remains gated by skills.enabled above.
 			skills = getEmbeddedDefaultGjcSkills();
 			skillWarnings = [];

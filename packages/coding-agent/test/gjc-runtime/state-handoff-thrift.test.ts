@@ -316,7 +316,7 @@ describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 		expect(scrub(ultragoalHandoff.stdout ?? "")).toMatchInlineSnapshot(`
 			"ultragoal next-action=execute-goal goal-id=G001
 			objective=Ship the compact output
-			gjc-objective=Complete the durable ultragoal plan in .gjc/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .gjc/ultragoal/ledger.jsonl as the audit trail.
+			gjc-objective=Complete the durable ultragoal plan in .worx/ultragoal/goals.json, including later accepted/appended stories, under the original brief constraints; use .worx/ultragoal/ledger.jsonl as the audit trail.
 			checkpoint requires=architectReview:CLEAR+APPROVE,executorQa:passed
 			"
 			`);

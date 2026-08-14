@@ -99,7 +99,7 @@ describe("advisory modules red-team", () => {
 	describe("fork context advisory", () => {
 		it("documents that trigger phrases in code blocks and URLs still activate heuristics", () => {
 			const advisory = adviseForkContextMode({
-				assignment: "```txt\nsee above\n```\nUse https://example.test/.gjc/plans/plan.md for context.",
+				assignment: "```txt\nsee above\n```\nUse https://example.test/.worx/plans/plan.md for context.",
 			});
 
 			expect(advisory.recommendedMode).toBe("last-turn");
@@ -108,7 +108,7 @@ describe("advisory modules red-team", () => {
 
 		it("chooses a deterministic winner for conflicting receipt and last-turn triggers", () => {
 			const advisory = adviseForkContextMode({
-				assignment: "As discussed, use the previous turn and .gjc/specs/context.md.",
+				assignment: "As discussed, use the previous turn and .worx/specs/context.md.",
 			});
 
 			expect(advisory.recommendedMode).toBe("last-turn");
@@ -121,7 +121,7 @@ describe("advisory modules red-team", () => {
 
 		it("respects explicit none even when receipt and last-turn triggers are strong", () => {
 			const advisory = adviseForkContextMode({
-				assignment: "As decided earlier in this session, see above and use .gjc/plans/x.md.",
+				assignment: "As decided earlier in this session, see above and use .worx/plans/x.md.",
 				explicitMode: "none",
 				parentContextTokens: 50_000,
 			});

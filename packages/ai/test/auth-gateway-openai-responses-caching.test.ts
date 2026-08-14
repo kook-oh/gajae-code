@@ -8,7 +8,7 @@
  *
  * Skips unless a local gateway is reachable at the default `127.0.0.1:4000`
  * (override via `WORX_E2E_GATEWAY_URL`) AND the bearer token file exists at
- * `~/.gjc/auth-gateway.token`.
+ * `~/.worx/auth-gateway.token`.
  *
  * To run: `bun --cwd packages/ai test test/auth-gateway-openai-responses-caching.test.ts`
  * with the gateway live (`gjc auth-gateway serve` or pm2).
@@ -37,7 +37,7 @@ interface OpenAIResponse {
 }
 
 const GATEWAY_URL = Bun.env.WORX_E2E_GATEWAY_URL ?? "http://127.0.0.1:4000";
-const TOKEN_PATH = path.join(os.homedir(), ".gjc", "auth-gateway.token");
+const TOKEN_PATH = path.join(os.homedir(), ".worx", "auth-gateway.token");
 // `gpt-5.3-OpenAI code backend` is the model we've verified the ChatGPT-subscription OpenAI code backend
 // backend accepts; older or higher-tier ids 4xx with "model not supported".
 const MODEL = Bun.env.WORX_E2E_OPENAI_RESPONSES_MODEL ?? "gpt-5.3-codex";

@@ -225,7 +225,7 @@ describe("InputController #invokeSkillCommand (E1-E3)", () => {
 		expect(messageArg.details.__pendingDisplayTag).toBe("sk-test-0");
 	});
 
-	it("E3b: embedded default skill command does not require .gjc on disk", async () => {
+	it("E3b: embedded default skill command does not require .worx on disk", async () => {
 		const embedded = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "deep-interview");
 		if (!embedded) throw new Error("expected embedded deep-interview skill");
 		const { ctx, editor, promptCustomMessage } = createStubInputControllerContext({

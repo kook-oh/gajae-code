@@ -43,7 +43,7 @@ function start(
 
 test("discovery binds explicit identity while accepting usable legacy filename identities", async () => {
 	const repo = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-discovery-identity-"));
-	const state = path.join(repo, ".gjc", "state", "sdk");
+	const state = path.join(repo, ".worx", "state", "sdk");
 	await fs.mkdir(state, { recursive: true });
 	try {
 		await fs.writeFile(path.join(state, "stale.json"), JSON.stringify({ url: "ws://stale", stale: true, token: "" }));

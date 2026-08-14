@@ -21,10 +21,10 @@ import {
 import { RequiredOnWriteEnvelopeSchema } from "./state-schema";
 
 /**
- * Sole sanctioned project `.gjc/**` writer module (gate G1).
+ * Sole sanctioned project `.worx/**` writer module (gate G1).
  *
- * All native `.gjc/**` filesystem mutations must route through these primitives.
- * The primitives validate project `.gjc/**` ownership, create parent directories,
+ * All native `.worx/**` filesystem mutations must route through these primitives.
+ * The primitives validate project `.worx/**` ownership, create parent directories,
  * and emit workflow receipts or audit entries where applicable by the caller's
  * supplied mutation context. No lockfiles are used; isolation is by atomic rename,
  * append, O_EXCL creates, conditional deletes, per-entry active-state files,
@@ -215,11 +215,11 @@ function cwdForOptions(options?: StateWriterOptions): string {
 function resolveGjcTarget(targetPath: string, cwd = process.cwd()): string {
 	if (!targetPath.trim()) throw new Error("targetPath is required");
 	const projectRoot = path.resolve(cwd);
-	const gjcRoot = path.join(projectRoot, ".gjc");
+	const gjcRoot = path.join(projectRoot, ".worx");
 	const resolved = path.resolve(projectRoot, targetPath);
 	const relative = path.relative(gjcRoot, resolved);
 	if (relative === "" || relative.startsWith("..") || path.isAbsolute(relative)) {
-		throw new Error(`target path must be within project .gjc/**: ${targetPath}`);
+		throw new Error(`target path must be within project .worx/**: ${targetPath}`);
 	}
 	return resolved;
 }
@@ -761,7 +761,7 @@ export async function writeTextAtomic(targetPath: string, text: string, options?
 
 /**
  * Serialize a read-modify-write (or any multi-step mutation) against concurrent
- * writers of the same `.gjc/**` target. Uses the cross-process directory lock
+ * writers of the same `.worx/**` target. Uses the cross-process directory lock
  * from `withFileLock`, keyed on the resolved file path, so separate CLI/agent
  * processes (e.g. team-mode workers) cannot interleave one writer's read with
  * another writer's write and silently drop the first mutation (issue #646).
@@ -976,7 +976,7 @@ export async function removeFileAudited(targetPath: string, options?: StateWrite
 }
 
 /**
- * Active entry files under `.gjc/_session-{id}/state/active/<skill>.json` are authoritative. The
+ * Active entry files under `.worx/_session-{id}/state/active/<skill>.json` are authoritative. The
  * adjacent `skill-active-state.json` file is only a derived cache rebuilt from
  * those entries, so concurrent snapshot rebuilds can race without losing any
  * writer's per-skill state.

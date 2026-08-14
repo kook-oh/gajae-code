@@ -77,7 +77,7 @@ The first transcription with a model may take longer while Whisper downloads tha
 
 ## Remap the shortcut
 
-User keybindings live at `~/.gjc/agent/keybindings.json`. For example:
+User keybindings live at `~/.worx/agent/keybindings.json`. For example:
 
 ```json
 {

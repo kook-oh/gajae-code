@@ -61,7 +61,7 @@ describe("verifyExpectedFiles", () => {
 		try {
 			await Bun.write(path.join(expectedDir, "index.ts"), "export const value = 1;\n");
 			await Bun.write(path.join(actualDir, "index.ts"), "export const value = 1;\n");
-			await Bun.write(path.join(actualDir, ".gjc", "_session-123", "runtime-state.json"), "{}\n");
+			await Bun.write(path.join(actualDir, ".worx", "_session-123", "runtime-state.json"), "{}\n");
 
 			const result = await verifyExpectedFiles(expectedDir, actualDir);
 
@@ -78,12 +78,12 @@ describe("verifyExpectedFiles", () => {
 		try {
 			await Bun.write(path.join(expectedDir, "index.ts"), "export const value = 1;\n");
 			await Bun.write(path.join(actualDir, "index.ts"), "export const value = 1;\n");
-			await Bun.write(path.join(actualDir, ".gjc\\_session-123\\runtime-state.json"), "{}\n");
+			await Bun.write(path.join(actualDir, ".worx\\_session-123\\runtime-state.json"), "{}\n");
 
 			const result = await verifyExpectedFiles(expectedDir, actualDir);
 
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("Unexpected files: .gjc\\_session-123\\runtime-state.json");
+			expect(result.error).toContain("Unexpected files: .worx\\_session-123\\runtime-state.json");
 		} finally {
 			await cleanup();
 		}
@@ -94,12 +94,12 @@ describe("verifyExpectedFiles", () => {
 		try {
 			await Bun.write(path.join(expectedDir, "index.ts"), "export const value = 1;\n");
 			await Bun.write(path.join(actualDir, "index.ts"), "export const value = 1;\n");
-			await Bun.write(path.join(actualDir, ".gjc", "_session-decoy.json"), "{}\n");
+			await Bun.write(path.join(actualDir, ".worx", "_session-decoy.json"), "{}\n");
 
 			const result = await verifyExpectedFiles(expectedDir, actualDir);
 
 			expect(result.success).toBe(false);
-			expect(result.error).toContain(`Unexpected files: ${path.join(".gjc", "_session-decoy.json")}`);
+			expect(result.error).toContain(`Unexpected files: ${path.join(".worx", "_session-decoy.json")}`);
 		} finally {
 			await cleanup();
 		}
@@ -109,15 +109,15 @@ describe("verifyExpectedFiles", () => {
 		try {
 			await Bun.write(path.join(expectedDir, "index.ts"), "export const value = 1;\n");
 			await Bun.write(path.join(actualDir, "index.ts"), "export const value = 1;\n");
-			await Bun.write(path.join(actualDir, ".gjc", "_session-123", "runtime-state.json"), "{}\n");
-			await Bun.write(path.join(actualDir, ".gjc", "agents", "foo.md"), "# Agent\n");
-			await Bun.write(path.join(actualDir, ".gjc", "mcp.json"), "{}\n");
+			await Bun.write(path.join(actualDir, ".worx", "_session-123", "runtime-state.json"), "{}\n");
+			await Bun.write(path.join(actualDir, ".worx", "agents", "foo.md"), "# Agent\n");
+			await Bun.write(path.join(actualDir, ".worx", "mcp.json"), "{}\n");
 
 			const result = await verifyExpectedFiles(expectedDir, actualDir);
 
 			expect(result.success).toBe(false);
 			expect(result.error).toContain(
-				`Unexpected files: ${path.join(".gjc", "agents", "foo.md")}, ${path.join(".gjc", "mcp.json")}`,
+				`Unexpected files: ${path.join(".worx", "agents", "foo.md")}, ${path.join(".worx", "mcp.json")}`,
 			);
 		} finally {
 			await cleanup();

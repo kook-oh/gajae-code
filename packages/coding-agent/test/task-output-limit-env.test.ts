@@ -35,7 +35,7 @@ async function readTaskOutputLimits(
 	if (options.dotenv) {
 		tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-task-output-env-"));
 		const home = path.join(tempRoot, "home");
-		const configRoot = path.join(home, ".gjc");
+		const configRoot = path.join(home, ".worx");
 		const agentDir = path.join(configRoot, "agent");
 		await fs.mkdir(agentDir, { recursive: true });
 
@@ -47,7 +47,7 @@ async function readTaskOutputLimits(
 		await Bun.write(path.join(dotenvDirectory, ".env"), `${dotenvContents}\n`);
 
 		env.HOME = home;
-		env.WORX_CONFIG_DIR = ".gjc";
+		env.WORX_CONFIG_DIR = ".worx";
 		env.WORX_CODING_AGENT_DIR = agentDir;
 		delete env.PI_CONFIG_DIR;
 		delete env.PI_CODING_AGENT_DIR;

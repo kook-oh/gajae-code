@@ -82,9 +82,9 @@ async function startSdkFixture(): Promise<void> {
 			},
 		},
 	});
-	await mkdir(path.join(workspace, ".gjc", "state", "sdk"), { recursive: true });
+	await mkdir(path.join(workspace, ".worx", "state", "sdk"), { recursive: true });
 	await writeFile(
-		path.join(workspace, ".gjc", "state", "sdk", `${SID}.json`),
+		path.join(workspace, ".worx", "state", "sdk", `${SID}.json`),
 		JSON.stringify({ url: `ws://127.0.0.1:${sdkServer.port}`, token: "test-token" }),
 	);
 }
@@ -325,7 +325,7 @@ describe.skipIf(process.platform !== "linux")("gjc harness start --detach (detac
 	it("reports blocked only after detached owner endpoint remains unavailable", async () => {
 		tmuxCommand = path.join(root, "missing-tmux");
 		disableSdkHost = true;
-		await rm(path.join(workspace, ".gjc", "state", "sdk", `${SID}.json`), { force: true });
+		await rm(path.join(workspace, ".worx", "state", "sdk", `${SID}.json`), { force: true });
 		const started = await runHarness([
 			"start",
 			"--input",

@@ -42,7 +42,7 @@ function getNativesDir() {
 	if (xdgDataHome && fs.existsSync(path.join(xdgDataHome, "gjc"))) {
 		return path.join(xdgDataHome, "gjc", "natives");
 	}
-	return path.join(os.homedir(), ".gjc", "natives");
+	return path.join(os.homedir(), ".worx", "natives");
 }
 
 // =========================================================================
@@ -111,7 +111,7 @@ export function resolveOptionalPackageNativeDirs({ packageNames, requireResolve 
 
 /**
  * Decide whether the loader should mirror the package's `native/<filename>.node`
- * into the per-version cache directory (`~/.gjc/natives/<version>/`) before loading.
+ * into the per-version cache directory (`~/.worx/natives/<version>/`) before loading.
  *
  * Windows-only safety net for `bun install -g` updates: when a previous `gjc`
  * process is running, bun cannot overwrite the locked `.node` inside

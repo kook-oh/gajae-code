@@ -4,7 +4,7 @@
 import type { KernelDisplayOutput } from "../eval/py/kernel";
 
 export interface RlmArtifactPaths {
-	/** Absolute session directory: <cwd>/.gjc/rlm/<sessionId>/ */
+	/** Absolute session directory: <cwd>/.worx/rlm/<sessionId>/ */
 	dir: string;
 	/** Absolute path to the live notebook.ipynb */
 	notebookPath: string;

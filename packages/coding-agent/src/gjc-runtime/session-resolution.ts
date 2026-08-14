@@ -130,7 +130,7 @@ interface SessionCandidate {
 }
 
 /**
- * Scan `.gjc/_session-*` directories and select the most-recently-active one by
+ * Scan `.worx/_session-*` directories and select the most-recently-active one by
  * its activity marker. Never uses raw directory mtime. Throws on zero candidates
  * or an ambiguous tie.
  */

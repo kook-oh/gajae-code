@@ -80,7 +80,7 @@ async function setup(
 	} as never;
 
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-notif-order-"));
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 	cleanupRoots.push(cleanup);
 	createNotificationsExtension(api, {
@@ -111,7 +111,7 @@ async function setup(
 
 	await handlers.get("session_start")!({ type: "session_start" }, ctx);
 
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sid}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sid}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), 4000, "endpoint file");
 	const { url, token } = readEndpoint(endpointFile);
 

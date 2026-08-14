@@ -219,8 +219,8 @@ function inputFor(operation: Operation, secret = false): Record<string, unknown>
 
 async function fixture(): Promise<AdapterFixture> {
 	const repo = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-adapter-dispositions-"));
-	const agentDir = path.join(repo, ".gjc", "adapter-agent");
-	const stateRoot = path.join(repo, ".gjc", "state");
+	const agentDir = path.join(repo, ".worx", "adapter-agent");
+	const stateRoot = path.join(repo, ".worx", "state");
 	Bun.spawnSync(["git", "init", "-q"], { cwd: repo });
 	const productionHost = await startProductionSdkHost(repo, { acceptPromptPreflightWithoutExecution: true });
 	const sessionId = productionHost.sessionId;
@@ -275,7 +275,7 @@ async function stopFixture(host: AdapterFixture, operation: Operation): Promise<
 	await host.stop();
 	if (operation.sdkId !== "session.new") return;
 	await Bun.sleep(500);
-	const runtimeAgentDir = path.join(host.repo, ".gjc", "agent");
+	const runtimeAgentDir = path.join(host.repo, ".worx", "agent");
 	const restartedAfterShutdown = fs.existsSync(runtimeAgentDir);
 	await brokerOwnerForTest(runtimeAgentDir)?.stop();
 	fs.rmSync(host.repo, { recursive: true, force: true });

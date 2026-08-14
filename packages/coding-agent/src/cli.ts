@@ -304,7 +304,7 @@ export class RootHelpCommand extends Command {
 		`# Pin a stored credential for this session\n  ${APP_NAME} --credential email:me@example.com`,
 		`# Activate a model profile for this session\n  ${APP_NAME} --mpreset codex-medium`,
 		`# Persist a model profile as the default\n  ${APP_NAME} --mpreset opencodego --default`,
-		`# Export a session file to HTML\n  ${APP_NAME} --export ~/.gjc/agent/sessions/--path--/session.jsonl`,
+		`# Export a session file to HTML\n  ${APP_NAME} --export ~/.worx/agent/sessions/--path--/session.jsonl`,
 	];
 	static strict = false;
 	async run(): Promise<void> {}

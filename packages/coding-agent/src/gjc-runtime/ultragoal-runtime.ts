@@ -394,7 +394,7 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 		// Support both the flat dotted key and a nested gjc.ultragoal.nudgeBudget shape.
 		const flat = parseNudgeBudgetValue(parsed["gjc.ultragoal.nudgeBudget"]);
 		if (flat !== null) return flat;
-		const gjc = parsed.gjc;
+		const gjc = parsed.worx;
 		if (gjc && typeof gjc === "object") {
 			const ultragoal = (gjc as Record<string, unknown>).ultragoal;
 			if (ultragoal && typeof ultragoal === "object") {
@@ -408,8 +408,8 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 }
 
 /**
- * Resolve the per-story nudge budget. Project `./.gjc/settings.json` overrides the
- * user settings (`$WORX_CONFIG_DIR/settings.json` or `~/.gjc/settings.json`), else the
+ * Resolve the per-story nudge budget. Project `./.worx/settings.json` overrides the
+ * user settings (`$WORX_CONFIG_DIR/settings.json` or `~/.worx/settings.json`), else the
  * default. Mirrors the `gjc.deepInterview.ambiguityThreshold` user+project precedence.
  */
 export async function resolveUltragoalNudgeBudget(cwd: string): Promise<{ budget: number; source: string }> {
@@ -4627,7 +4627,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"  $ gjc ultragoal checkpoint --goal-id <id> --status <status> --evidence <text> [FLAGS]",
 			"",
 			"FLAGS",
-			"      --goal-id=<value>            Durable .gjc/ultragoal goal id, e.g. G001",
+			"      --goal-id=<value>            Durable .worx/ultragoal goal id, e.g. G001",
 			"      --status=<value>             pending|active|complete|failed|blocked|review_blocked|superseded",
 			"      --evidence=<value>           Completion or checkpoint evidence text",
 			"      --quality-gate-json=<value>  JSON string or path for complete checkpoints",
@@ -4674,7 +4674,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"FLAGS",
 			"      --classification=<value>     Required. human_blocked must be the latest blocker_classified event; pause also requires a later bound clean pause terminal critic OKAY verdict; resolvable never authorizes pause",
 			"      --evidence=<value>           Required. Specific blocker evidence; must name the human-only dependency for human_blocked",
-			"      --goal-id=<value>            Optional durable .gjc/ultragoal goal id, e.g. G001",
+			"      --goal-id=<value>            Optional durable .worx/ultragoal goal id, e.g. G001",
 			"      --json                       Output a machine-readable receipt",
 			"",
 			"EXAMPLES",
@@ -4695,7 +4695,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"      --verdict=<value>            Required. OKAY, ITERATE, or REJECT",
 			"      --evidence=<value>           Required. Specific evidence supporting the verdict",
 			"      --blockers-json=<value>      Optional JSON string array of blockers",
-			"      --goal-id=<value>            Optional durable .gjc/ultragoal goal id, e.g. G001",
+			"      --goal-id=<value>            Optional durable .worx/ultragoal goal id, e.g. G001",
 			"      --classification-event-id=<id> Required for pause verdicts; binds the human_blocked classification",
 			"      --json                       Output a machine-readable receipt",
 			"",

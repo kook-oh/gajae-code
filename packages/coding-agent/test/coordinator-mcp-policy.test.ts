@@ -25,7 +25,7 @@ describe("Hermes MCP safety policy", () => {
 	it("defaults to read-only with a deterministic local state root when no session env exists", () => {
 		const config = buildCoordinatorMcpConfig({});
 
-		expect(config.stateRoot).toBe(path.join(process.cwd(), ".gjc", "state", "coordinator-mcp"));
+		expect(config.stateRoot).toBe(path.join(process.cwd(), ".worx", "state", "coordinator-mcp"));
 		expect(config.mutationClasses.size).toBe(0);
 		expect(config.namespace.profile).toBeNull();
 		expect(config.namespace.repo).toBeNull();
@@ -36,7 +36,7 @@ describe("Hermes MCP safety policy", () => {
 		const config = buildCoordinatorMcpConfig({ WORX_SESSION_ID: "coordinator-policy-test-session" });
 
 		expect(config.stateRoot).toContain(
-			path.join(".gjc", "_session-coordinator-policy-test-session", "state", "coordinator-mcp"),
+			path.join(".worx", "_session-coordinator-policy-test-session", "state", "coordinator-mcp"),
 		);
 		expect(config.mutationClasses.size).toBe(0);
 		expect(config.namespace.profile).toBeNull();

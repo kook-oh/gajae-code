@@ -1080,7 +1080,7 @@ function trustedReplacementAuthority(
 function prepareManagedOwnerLifecycle(plan: TmuxLaunchPlan, context: TmuxLaunchContext): void {
 	if (plan.ownerGeneration) return;
 	const sessionId = plan.sessionId ?? plan.sessionName;
-	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".gjc", "runtime"));
+	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".worx", "runtime"));
 	const baseline = captureOwnerGenerationBaselineSync(stateDir, sessionId);
 	const replacement = trustedReplacementAuthority(stateDir, sessionId, baseline);
 	const generation = crypto.randomUUID();
@@ -1158,7 +1158,7 @@ function defaultOwnerIsolationProbe(
 	spawn: TmuxSpawnSync,
 	callerCgroupReader?: () => string | null,
 ): OwnerIsolationProbeSync {
-	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".gjc", "runtime"));
+	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".worx", "runtime"));
 	const probeServer = (): TmuxServerProof => {
 		if (plan.platform !== "linux") {
 			return {
@@ -1257,7 +1257,7 @@ function createIsolatedTmuxSession(
 	probe: OwnerIsolationProbeSync,
 ): TmuxSpawnResult {
 	const sessionId = plan.sessionId ?? plan.sessionName;
-	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".gjc", "runtime"));
+	const stateDir = path.dirname(plan.sessionStateFile ?? path.join(plan.cwd, ".worx", "runtime"));
 	const baseline = plan.ownerGenerationBaseline ?? captureOwnerGenerationBaselineSync(stateDir, sessionId);
 	plan.ownerGenerationBaseline = baseline;
 	const ownerPlan = planTmuxOwnerIsolationSync(

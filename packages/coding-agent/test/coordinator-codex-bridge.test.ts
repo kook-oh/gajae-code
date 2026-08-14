@@ -22,7 +22,7 @@ afterEach(async () => {
 });
 
 function namespaceDir(root: string): string {
-	return path.join(root, ".gjc", "coordinator-state", "local", "repo");
+	return path.join(root, ".worx", "coordinator-state", "local", "repo");
 }
 
 type CodexTransportControl = {
@@ -40,7 +40,7 @@ function createServer(
 	return createCoordinatorMcpServer({
 		env: {
 			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 			WORX_COORDINATOR_MCP_PROFILE: "local",
 			WORX_COORDINATOR_MCP_REPO: "repo",
 			WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
@@ -435,7 +435,7 @@ describe("Coordinator Codex resume bridge", () => {
 		createCoordinatorMcpServer({
 			env: {
 				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 				WORX_COORDINATOR_MCP_PROFILE: "local",
 				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
@@ -518,7 +518,7 @@ describe("Coordinator Codex resume bridge", () => {
 		createCoordinatorMcpServer({
 			env: {
 				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 				WORX_COORDINATOR_MCP_PROFILE: "local",
 				WORX_COORDINATOR_MCP_REPO: "repo",
 			},
@@ -597,7 +597,7 @@ describe("Coordinator Codex resume bridge", () => {
 		createCoordinatorMcpServer({
 			env: {
 				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 				WORX_COORDINATOR_MCP_PROFILE: "local",
 				WORX_COORDINATOR_MCP_REPO: "repo",
 			},

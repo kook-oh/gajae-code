@@ -128,7 +128,7 @@ user-perceived reduction. It is **REAL** across five dimensions:
    (`docs/sdk.md §Coordinator MCP question pull loop`).
 2. **Reattach/registry — NOT implemented.** Define cross-process registry and
    reattachment semantics. Partial equivalent only: discovery files at
-   `.gjc/state/sdk/<sessionId>.json` provide endpoint location and token for a
+   `.worx/state/sdk/<sessionId>.json` provide endpoint location and token for a
    live session (`docs/sdk.md §Endpoint discovery`); architecture explicitly says there is no
    shared upstream registry (`docs/sdk.md §Architecture`).
 3. **Full event stream — NOT implemented.** Define a renderer-grade session

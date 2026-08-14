@@ -854,7 +854,7 @@ describe("deep-interview staged transitions", () => {
 	it("refreshes the active-state/HUD projection after write and apply", async () => {
 		const root = await tempDir();
 		await seed(root);
-		const snapshotPath = path.join(root, ".gjc", `_session-${TEST_SESSION_ID}`, "state", "skill-active-state.json");
+		const snapshotPath = path.join(root, ".worx", `_session-${TEST_SESSION_ID}`, "state", "skill-active-state.json");
 		const readHudAmbiguity = async (): Promise<string | undefined> => {
 			const snapshot = JSON.parse(await fs.readFile(snapshotPath, "utf-8")) as Record<string, unknown>;
 			const skills = snapshot.active_skills as Record<string, unknown>[];

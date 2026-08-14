@@ -50,53 +50,53 @@ describe("resolveActiveProjectRegistryPath", () => {
 		fs.rmSync(tmpDir, { recursive: true, force: true });
 	});
 
-	it("walk-up finds nearest .gjc/ directory", async () => {
-		// Layout: tmpDir/.gjc/   +   tmpDir/sub/nested/  (cwd)
-		// Resolver must climb from cwd → sub → tmpDir and find .gjc/ there.
-		fs.mkdirSync(path.join(tmpDir, ".gjc"), { recursive: true });
+	it("walk-up finds nearest .worx/ directory", async () => {
+		// Layout: tmpDir/.worx/   +   tmpDir/sub/nested/  (cwd)
+		// Resolver must climb from cwd → sub → tmpDir and find .worx/ there.
+		fs.mkdirSync(path.join(tmpDir, ".worx"), { recursive: true });
 		const cwd = path.join(tmpDir, "sub", "nested");
 		fs.mkdirSync(cwd, { recursive: true });
 
 		const result = await resolveActiveProjectRegistryPath(cwd);
 
-		expect(result).toBe(path.join(tmpDir, ".gjc", "plugins", "installed_plugins.json"));
+		expect(result).toBe(path.join(tmpDir, ".worx", "plugins", "installed_plugins.json"));
 	});
 
-	it("walk-up stops at the nearest .gjc/ — does not skip to a more distant one", async () => {
-		// Layout: tmpDir/.gjc/   +   tmpDir/sub/.gjc/   +   tmpDir/sub/nested/  (cwd)
-		// Resolver must stop at tmpDir/sub/.gjc/, not climb further to tmpDir/.gjc/.
-		fs.mkdirSync(path.join(tmpDir, ".gjc"), { recursive: true });
-		fs.mkdirSync(path.join(tmpDir, "sub", ".gjc"), { recursive: true });
+	it("walk-up stops at the nearest .worx/ — does not skip to a more distant one", async () => {
+		// Layout: tmpDir/.worx/   +   tmpDir/sub/.worx/   +   tmpDir/sub/nested/  (cwd)
+		// Resolver must stop at tmpDir/sub/.worx/, not climb further to tmpDir/.worx/.
+		fs.mkdirSync(path.join(tmpDir, ".worx"), { recursive: true });
+		fs.mkdirSync(path.join(tmpDir, "sub", ".worx"), { recursive: true });
 		const cwd = path.join(tmpDir, "sub", "nested");
 		fs.mkdirSync(cwd, { recursive: true });
 
 		const result = await resolveActiveProjectRegistryPath(cwd);
 
-		expect(result).toBe(path.join(tmpDir, "sub", ".gjc", "plugins", "installed_plugins.json"));
+		expect(result).toBe(path.join(tmpDir, "sub", ".worx", "plugins", "installed_plugins.json"));
 	});
 
-	it("falls back to .git root when no .gjc/ exists", async () => {
+	it("falls back to .git root when no .worx/ exists", async () => {
 		// Layout: tmpDir/.git/   +   tmpDir/sub/  (cwd)
-		// No .gjc/ anywhere → second pass finds .git/ at tmpDir.
+		// No .worx/ anywhere → second pass finds .git/ at tmpDir.
 		// Returned path is relative to the .git root, not .git itself.
 		fs.mkdirSync(path.join(tmpDir, ".git"), { recursive: true });
 		const cwd = path.join(tmpDir, "sub");
 		fs.mkdirSync(cwd, { recursive: true });
 
-		// Bound the walk-up at os.tmpdir() so a `.gjc/` polluting a shared ancestor
-		// (e.g. a /tmp/.gjc left by other processes on CI runners) cannot shadow the
+		// Bound the walk-up at os.tmpdir() so a `.worx/` polluting a shared ancestor
+		// (e.g. a /tmp/.worx left by other processes on CI runners) cannot shadow the
 		// intended .git fallback. resolveActiveProjectRegistryPath stops before homedir.
 		const homeSpy = vi.spyOn(os, "homedir").mockReturnValue(os.tmpdir());
 		try {
 			const result = await resolveActiveProjectRegistryPath(cwd);
-			expect(result).toBe(path.join(tmpDir, ".gjc", "plugins", "installed_plugins.json"));
+			expect(result).toBe(path.join(tmpDir, ".worx", "plugins", "installed_plugins.json"));
 		} finally {
 			homeSpy.mockRestore();
 		}
 	});
 
-	it("returns null when neither .gjc/ nor .git/ found anywhere in the tree", async () => {
-		// Start at the filesystem root — guaranteed to have no .gjc/ or .git/ ancestors.
+	it("returns null when neither .worx/ nor .git/ found anywhere in the tree", async () => {
+		// Start at the filesystem root — guaranteed to have no .worx/ or .git/ ancestors.
 		const result = await resolveActiveProjectRegistryPath(path.sep);
 
 		expect(result).toBeNull();
@@ -104,7 +104,7 @@ describe("resolveActiveProjectRegistryPath", () => {
 
 	it("does not treat ~/.git as a project root (pass-2 home-dir guard)", async () => {
 		// Simulate a dotfiles repo managed with a bare-git technique: ~/.git exists.
-		// resolveActiveProjectRegistryPath must NOT return ~/.gjc/.../installed_plugins.json.
+		// resolveActiveProjectRegistryPath must NOT return ~/.worx/.../installed_plugins.json.
 		const homeDir = os.homedir();
 		const fakeHomeGit = path.join(homeDir, ".git");
 		const hadGit = await fs.promises
@@ -115,10 +115,10 @@ describe("resolveActiveProjectRegistryPath", () => {
 			await fs.promises.mkdir(fakeHomeGit, { recursive: true });
 		}
 		try {
-			// Start from a tmpDir that has no .gjc/ or .git/ of its own.
+			// Start from a tmpDir that has no .worx/ or .git/ of its own.
 			const result = await resolveActiveProjectRegistryPath(tmpDir);
 			// Must not resolve to the home-dir GJC registry.
-			const homeGjcPath = path.join(homeDir, ".gjc", "plugins", "installed_plugins.json");
+			const homeGjcPath = path.join(homeDir, ".worx", "plugins", "installed_plugins.json");
 			expect(result).not.toBe(homeGjcPath);
 		} finally {
 			if (!hadGit) await fs.promises.rm(fakeHomeGit, { recursive: true, force: true });
@@ -127,7 +127,7 @@ describe("resolveActiveProjectRegistryPath", () => {
 
 	it("canonical path — /repo and /repo/src resolve to the same registry file", async () => {
 		// Both sub-directories of the same project must produce identical paths.
-		fs.mkdirSync(path.join(tmpDir, ".gjc"), { recursive: true });
+		fs.mkdirSync(path.join(tmpDir, ".worx"), { recursive: true });
 		const src = path.join(tmpDir, "src");
 		fs.mkdirSync(src, { recursive: true });
 
@@ -153,13 +153,13 @@ describe("listClaudePluginRoots — project shadows user", () => {
 		tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-shadow-home-"));
 		tmpProject = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-shadow-proj-"));
 
-		// Create .gjc/ in project so resolveActiveProjectRegistryPath finds it.
-		fs.mkdirSync(path.join(tmpProject, ".gjc", "plugins"), { recursive: true });
+		// Create .worx/ in project so resolveActiveProjectRegistryPath finds it.
+		fs.mkdirSync(path.join(tmpProject, ".worx", "plugins"), { recursive: true });
 
-		userRegPath = path.join(tmpHome, ".gjc", "plugins", "installed_plugins.json");
+		userRegPath = path.join(tmpHome, ".worx", "plugins", "installed_plugins.json");
 		fs.mkdirSync(path.dirname(userRegPath), { recursive: true });
 
-		projectRegPath = path.join(tmpProject, ".gjc", "plugins", "installed_plugins.json");
+		projectRegPath = path.join(tmpProject, ".worx", "plugins", "installed_plugins.json");
 	});
 
 	afterEach(() => {

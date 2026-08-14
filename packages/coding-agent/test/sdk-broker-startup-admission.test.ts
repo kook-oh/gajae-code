@@ -307,7 +307,7 @@ async function expectGraceWindowFenceRefusesQueuedStartup(observation: "replaced
 		});
 		const queued = broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state"), readinessTimeoutMs: 4_000 },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state"), readinessTimeoutMs: 4_000 },
 			`queued-during-${observation}-fence`,
 		);
 		await queuedInAdmission.promise;
@@ -399,7 +399,7 @@ test("an admitted startup fenced during ledger persistence cannot reach synchron
 
 		const startup = broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state"), readinessTimeoutMs: 4_000 },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state"), readinessTimeoutMs: 4_000 },
 			"admitted-before-ledger-fence",
 		);
 		await transitionEntered.promise;
@@ -469,7 +469,7 @@ test("a broker that lost the root refuses queued startups instead of spawning ch
 		});
 		const queued = broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state"), readinessTimeoutMs: 4_000 },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state"), readinessTimeoutMs: 4_000 },
 			"queued-behind-lost-root",
 		);
 		await queuedInAdmission.promise;
@@ -538,7 +538,7 @@ test("a stop that cannot prove it still owns the root drains the queued startups
 		});
 		const queued = broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state"), readinessTimeoutMs: 4_000 },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state"), readinessTimeoutMs: 4_000 },
 			"queued-behind-replaced-root",
 		);
 		await queuedInAdmission.promise;
@@ -656,7 +656,7 @@ test("a default startup admitted late by the production broker stays inside the 
 		// No `readinessTimeoutMs`: the default request every ACP caller sends.
 		const queued = broker.handleRequest(
 			"session.create",
-			{ cwd: root, stateRoot: path.join(root, ".gjc", "state") },
+			{ cwd: root, stateRoot: path.join(root, ".worx", "state") },
 			"default-late-admission",
 		);
 		await admissionParked.promise;

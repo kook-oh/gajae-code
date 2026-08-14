@@ -59,7 +59,7 @@ import {
 
 export const MANAGED_SESSION_LAYOUT_VERSION = 2 as const;
 export const MANAGED_SESSION_IDENTITY_VERSION = 1 as const;
-export const MANAGED_SESSION_BINDING_FILE = ".gjc-managed-session-scope.v2.json";
+export const MANAGED_SESSION_BINDING_FILE = ".worx-managed-session-scope.v2.json";
 
 export interface ManagedScope {
 	apiVersion: 1;
@@ -1257,7 +1257,7 @@ export function listManagedCandidates(scope: ManagedScope): ManagedCandidateList
 	}
 }
 
-const MANAGED_INTERNAL_DIRECTORY = ".gjc-managed-session-internal";
+const MANAGED_INTERNAL_DIRECTORY = ".worx-managed-session-internal";
 const MANAGED_RECEIPTS_DIRECTORY = "receipts";
 const MANAGED_LOCKS_DIRECTORY = "locks";
 const MANAGED_TOMBSTONES_DIRECTORY = "tombstones";
@@ -1882,7 +1882,7 @@ function isQuarantinePath(target: RetiredTarget, pathname: unknown): pathname is
 	return (
 		typeof pathname === "string" &&
 		path.dirname(pathname) === path.dirname(target.path) &&
-		path.basename(pathname).startsWith(".gjc-delete-")
+		path.basename(pathname).startsWith(".worx-delete-")
 	);
 }
 
@@ -1890,7 +1890,7 @@ function isRetainedNativePath(target: RetiredTarget, pathname: unknown): pathnam
 	return (
 		typeof pathname === "string" &&
 		path.dirname(pathname) === path.dirname(target.path) &&
-		path.basename(pathname).startsWith(".gjc-")
+		path.basename(pathname).startsWith(".worx-")
 	);
 }
 
@@ -2522,8 +2522,8 @@ function nextCleanupReceipt(target: RetiredTarget, pending: CleanupReceipt | und
 		retainedTranscriptSuccessorPath: pending?.retainedTranscriptSuccessorPath,
 		retainedTranscriptPlaceholderPath: pending?.retainedTranscriptPlaceholderPath,
 		retainedTranscriptUnknownPath: pending?.retainedTranscriptUnknownPath,
-		plannedArtifactsPath: path.join(directory, `.gjc-delete-${operation}-artifacts-${attempt}`),
-		plannedTranscriptPath: path.join(directory, `.gjc-delete-${operation}-transcript-${attempt}`),
+		plannedArtifactsPath: path.join(directory, `.worx-delete-${operation}-artifacts-${attempt}`),
+		plannedTranscriptPath: path.join(directory, `.worx-delete-${operation}-transcript-${attempt}`),
 	};
 }
 
@@ -2884,7 +2884,7 @@ function planArtifactRootForMigration(sourceTranscript: string, operation: strin
 	const parent = fs.lstatSync(path.dirname(originalPath), { bigint: true });
 	return {
 		originalPath,
-		detachedPath: path.join(path.dirname(originalPath), `.gjc-migrate-${operation}-artifacts`),
+		detachedPath: path.join(path.dirname(originalPath), `.worx-migrate-${operation}-artifacts`),
 		identity: {
 			dev: stat.dev,
 			ino: stat.ino,
@@ -3151,7 +3151,7 @@ export function restorePreparedArtifactRoot(
 		quarantine.path !== source.path.slice(0, -6) ||
 		typeof quarantine.detachedPath !== "string" ||
 		path.dirname(quarantine.detachedPath) !== path.dirname(source.path) ||
-		!path.basename(quarantine.detachedPath).startsWith(".gjc-migrate-") ||
+		!path.basename(quarantine.detachedPath).startsWith(".worx-migrate-") ||
 		!artifactTreeSnapshot(quarantine.tree) ||
 		!identity ||
 		typeof identity.dev !== "string" ||

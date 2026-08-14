@@ -152,7 +152,7 @@ Any running top-level session (including one your embedded app created) writes a
 discovery file:
 
 ```
-<repo>/.gjc/state/sdk/<sessionId>.json   →  { url, port, token, ... }
+<repo>/.worx/state/sdk/<sessionId>.json   →  { url, port, token, ... }
 ```
 
 Connect with any WebSocket client (`ws://127.0.0.1:<port>/?token=<token>`), or

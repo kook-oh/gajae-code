@@ -41,7 +41,7 @@ const KEYS = [
 ] as const;
 const PAYLOADS = ["terminal.txt", "terminal-ansi.txt", "terminal.html", "metadata.json"] as const;
 const COMMAND =
-	"bun packages/coding-agent/scripts/capture-sticky-viewport-showcase.ts --out .gjc/qa/sticky-viewport-<run>";
+	"bun packages/coding-agent/scripts/capture-sticky-viewport-showcase.ts --out .worx/qa/sticky-viewport-<run>";
 const TIMESTAMP = "1970-01-01T00:00:00.000Z";
 const FIXTURE = "packages/coding-agent/test/fixtures/tui/sticky-viewport-showcase.ts";
 const DEFAULT_FOREGROUND = "#ffe7dc";

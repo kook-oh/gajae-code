@@ -436,7 +436,7 @@ export function createNotificationsEditorOperations(
 			try {
 				const input: Parameters<typeof checkNotificationHealth>[0] & { signal?: AbortSignal } = {
 					settings: ctx.settings,
-					stateRoot: path.join(ctx.sessionManager.getCwd(), ".gjc", "state"),
+					stateRoot: path.join(ctx.sessionManager.getCwd(), ".worx", "state"),
 					probe,
 					provider,
 					signal,
@@ -491,7 +491,7 @@ export function createNotificationsEditorOperations(
 			try {
 				const result = await services.recoverNotifications({
 					settings: ctx.settings,
-					stateRoot: path.join(ctx.sessionManager.getCwd(), ".gjc", "state"),
+					stateRoot: path.join(ctx.sessionManager.getCwd(), ".worx", "state"),
 				});
 				return {
 					...result,

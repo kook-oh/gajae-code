@@ -40,7 +40,7 @@ function extractPromptSection(content: string, sectionName: string): string {
 async function makeTempRoot(): Promise<string> {
 	// Keep project-discovery fixtures outside the real user HOME even when
 	// TMPDIR points at ~/tmp; otherwise walk-up discovery can pick up
-	// ~/.gjc/agents as a project config directory.
+	// ~/.worx/agents as a project config directory.
 	const tempRoot = await fs.mkdtemp(path.join(path.sep, "tmp", "gjc-default-definitions-"));
 	tempRoots.push(tempRoot);
 	return tempRoot;
@@ -214,7 +214,7 @@ describe("default GJC definitions", () => {
 		expect(section).toContain("advisory findings are included in the gate report only");
 	});
 
-	it("keeps the four role agents bundled when project .gjc is absent", async () => {
+	it("keeps the four role agents bundled when project .worx is absent", async () => {
 		await withTempHome(async home => {
 			const repoRoot = await makeTempRoot();
 			const agents = await discoverAgents(repoRoot, home);
@@ -308,8 +308,8 @@ describe("default GJC definitions", () => {
 			"git checkout .",
 			"git branch -D main",
 			"git config user.name x",
-			"git status; rm -rf .gjc",
-			"rm -rf .gjc",
+			"git status; rm -rf .worx",
+			"rm -rf .worx",
 			"echo verdict",
 		];
 
@@ -348,7 +348,7 @@ describe("default GJC definitions", () => {
 	it("makes installed project workflow skills discoverable without installing project agent stubs", async () => {
 		await withTempHome(async home => {
 			const repoRoot = await makeTempRoot();
-			const projectGjcRoot = path.join(repoRoot, ".gjc");
+			const projectGjcRoot = path.join(repoRoot, ".worx");
 			await installDefaultGjcDefinitions({ targetRoot: projectGjcRoot });
 
 			const skills = await loadSkills({
@@ -373,10 +373,10 @@ describe("default GJC definitions", () => {
 		});
 	});
 
-	it("preserves project .gjc agent overrides at runtime", async () => {
+	it("preserves project .worx agent overrides at runtime", async () => {
 		await withTempHome(async home => {
 			const repoRoot = await makeTempRoot();
-			const agentsDir = path.join(repoRoot, ".gjc", "agents");
+			const agentsDir = path.join(repoRoot, ".worx", "agents");
 			await fs.mkdir(agentsDir, { recursive: true });
 			await Bun.write(
 				path.join(agentsDir, "executor.md"),
@@ -590,14 +590,14 @@ Project executor override body.
 		expect(deepInterview).toBeDefined();
 		const content = deepInterview?.content ?? "";
 
-		for (const required of ["ask", ".gjc/_session-{sessionid}/state", "pending approval"]) {
+		for (const required of ["ask", ".worx/_session-{sessionid}/state", "pending approval"]) {
 			expect(content).toContain(required);
 		}
 		expect(content).toContain("/skill:ralplan");
 		expect(content).toContain("/skill:team");
 		expect(content).toContain("`gjc ralplan` is a native CLI");
-		expect(content).toContain("Direct `.gjc/` file edits are forbidden unless an explicit force override is active");
-		expect(content).toContain("do not edit `.gjc/_session-{sessionid}/state` directly without force override");
+		expect(content).toContain("Direct `.worx/` file edits are forbidden unless an explicit force override is active");
+		expect(content).toContain("do not edit `.worx/_session-{sessionid}/state` directly without force override");
 		expect(content).toContain("gjc deep-interview clear --force");
 		expect(content).toContain("gjc deep-interview read --json");
 		expect(content).toContain("gjc deep-interview write --input");
@@ -659,13 +659,13 @@ Project executor override body.
 		expect(content).toContain("--stage planner");
 		expect(content).toContain("--stage architect");
 		expect(content).toContain("--stage critic");
-		expect(content).toContain("do not directly edit `.gjc/_session-{sessionid}/plans`");
+		expect(content).toContain("do not directly edit `.worx/_session-{sessionid}/plans`");
 		expect(content).toContain("gjc state clear --force --mode ralplan");
 		expect(content).toContain('workflowGate: { stage: "ralplan", kind: "approval" }');
 		expect(content).toContain("A role subagent's own session id is transcript/resume identity only");
 		expect(content).toContain("RPC/headless clients receive a `ralplan`/`approval` workflow gate");
 		expect(content).toContain(
-			"Direct `write`, `edit`, or `ast_edit` calls against `.gjc/_session-{sessionid}/specs`, `.gjc/_session-{sessionid}/plans`, `.gjc/_session-{sessionid}/state`, or any other `.gjc/` path are forbidden",
+			"Direct `write`, `edit`, or `ast_edit` calls against `.worx/_session-{sessionid}/specs`, `.worx/_session-{sessionid}/plans`, `.worx/_session-{sessionid}/state`, or any other `.worx/` path are forbidden",
 		);
 	});
 
@@ -736,7 +736,7 @@ Project executor override body.
 	it("does not make installed fragments reachable as skill-relative internal URL assets", async () => {
 		await withTempHome(async () => {
 			const repoRoot = await makeTempRoot();
-			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".gjc") });
+			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
 
 			const skills = await loadSkills({
 				cwd: repoRoot,
@@ -759,7 +759,7 @@ Project executor override body.
 	it("does not make the ultragoal ai-slop-cleaner fragment reachable as a skill-relative internal URL asset", async () => {
 		await withTempHome(async () => {
 			const repoRoot = await makeTempRoot();
-			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".gjc") });
+			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
 
 			const skills = await loadSkills({
 				cwd: repoRoot,
@@ -847,7 +847,7 @@ Project executor override body.
 });
 
 describe("bundled skills CLI", () => {
-	it("reads embedded workflow skills from outside the repository without .gjc files", async () => {
+	it("reads embedded workflow skills from outside the repository without .worx files", async () => {
 		const externalRoot = await makeTempRoot();
 		const proc = Bun.spawn(
 			[

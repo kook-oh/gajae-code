@@ -31,7 +31,7 @@ describe("issue-851: marketplace plugins load flat .mcp.json shape", () => {
 	});
 
 	async function setupPlugin(pluginId: string, mcpJson: unknown): Promise<void> {
-		const pluginsDir = path.join(tempDir, ".gjc", "plugins");
+		const pluginsDir = path.join(tempDir, ".worx", "plugins");
 		const pluginPath = path.join(tempDir, "plugins", pluginId);
 		await fs.mkdir(pluginsDir, { recursive: true });
 		await fs.mkdir(pluginPath, { recursive: true });

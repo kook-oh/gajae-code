@@ -21,7 +21,7 @@ export default class Migrate extends Command {
 			required: true,
 		}),
 		project: Flags.boolean({
-			description: "Write to the project scope (./.gjc) instead of the user scope (~/.gjc)",
+			description: "Write to the project scope (./.worx) instead of the user scope (~/.worx)",
 			default: false,
 		}),
 		force: Flags.boolean({

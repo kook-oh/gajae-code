@@ -161,7 +161,7 @@ function createBrokerTestServer(root: string, services: BrokerTestServices) {
 	return createCoordinatorMcpServer({
 		env: {
 			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 			WORX_COORDINATOR_MCP_PROFILE: "local",
 			WORX_COORDINATOR_MCP_REPO: "repo",
 		},
@@ -172,7 +172,7 @@ function createRealBrokerServer(root: string, agentDir: string) {
 	return createCoordinatorMcpServer({
 		env: {
 			WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+			WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 			WORX_COORDINATOR_MCP_PROFILE: "local",
 			WORX_COORDINATOR_MCP_REPO: "repo",
 		},
@@ -220,7 +220,7 @@ async function createSdkControlServer(
 	endpointRequestHandler?: EndpointRequestHandler,
 	serverOptions: SdkControlServerOptions = {},
 ): Promise<ReturnType<typeof createCoordinatorMcpServer>> {
-	const stateRoot = path.join(root, ".gjc", "coordinator-state");
+	const stateRoot = path.join(root, ".worx", "coordinator-state");
 	const agentDir = path.join(root, "agent-global");
 	let createdSessions = 0;
 	const server = createCoordinatorMcpServer({
@@ -290,9 +290,9 @@ async function createSdkControlServer(
 							const lifecycleCwd = worktree?.enabled === true ? path.join(root, "hermes-worktree") : undefined;
 							const sessionId = `created-session-${++createdSessions}`;
 							const sessionCwd = lifecycleCwd ?? root;
-							await fs.mkdir(path.join(sessionCwd, ".gjc", "state", "sdk"), { recursive: true });
+							await fs.mkdir(path.join(sessionCwd, ".worx", "state", "sdk"), { recursive: true });
 							await Bun.write(
-								path.join(sessionCwd, ".gjc", "state", "sdk", `${sessionId}.json`),
+								path.join(sessionCwd, ".worx", "state", "sdk", `${sessionId}.json`),
 								JSON.stringify({ url: "ws://sdk.example.test", token: "test-token" }),
 							);
 							brokerSessions.push({
@@ -349,7 +349,7 @@ async function createSdkControlServer(
 				}) as unknown as SdkClient,
 		},
 	});
-	await fs.mkdir(path.join(root, ".gjc", "state", "sdk"), { recursive: true });
+	await fs.mkdir(path.join(root, ".worx", "state", "sdk"), { recursive: true });
 	await writeBrokerDiscovery(agentDir, {
 		version: 1,
 		protocolVersion: 3,
@@ -364,7 +364,7 @@ async function createSdkControlServer(
 		heartbeatAt: Date.now(),
 	});
 	await Bun.write(
-		path.join(root, ".gjc", "state", "sdk", "visible-session.json"),
+		path.join(root, ".worx", "state", "sdk", "visible-session.json"),
 		JSON.stringify({ url: "ws://sdk.example.test", token: "session-endpoint-secret" }),
 	);
 	return server;
@@ -389,7 +389,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const registered = await registerSdkSession(server, root);
 		expect(registered).toMatchObject({ ok: true, registered: true, session_state: { state: "ready_for_input" } });
 		await Bun.write(
-			path.join(root, ".gjc", "coordinator-state", "local", "repo", "sessions", "visible-session.json"),
+			path.join(root, ".worx", "coordinator-state", "local", "repo", "sessions", "visible-session.json"),
 			JSON.stringify({
 				session_id: "visible-session",
 				cwd: root,
@@ -398,7 +398,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			}),
 		);
 		await Bun.write(
-			path.join(root, ".gjc", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
+			path.join(root, ".worx", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
 			JSON.stringify({
 				schema_version: 1,
 				session_id: "visible-session",
@@ -471,7 +471,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		).resolves.toMatchObject({ ok: true });
 		const lifecyclePayload = JSON.parse(
 			await fs.readFile(
-				path.join(root, ".gjc", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
+				path.join(root, ".worx", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
 				"utf8",
 			),
 		) as Record<string, unknown>;
@@ -501,7 +501,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		).resolves.toMatchObject({ ok: true });
 		const repairedPayload = JSON.parse(
 			await fs.readFile(
-				path.join(root, ".gjc", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
+				path.join(root, ".worx", "coordinator-state", "local", "repo", "session-states", "visible-session.json"),
 				"utf8",
 			),
 		) as Record<string, unknown>;
@@ -592,7 +592,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		if (typeof turnId !== "string") throw new Error("missing durable coordinator turn id");
 		const persisted = JSON.parse(
 			await fs.readFile(
-				path.join(root, ".gjc", "coordinator-state", "local", "repo", "turns", `${turnId}.json`),
+				path.join(root, ".worx", "coordinator-state", "local", "repo", "turns", `${turnId}.json`),
 				"utf8",
 			),
 		) as { delivery: Record<string, unknown> };
@@ -711,7 +711,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		expect(controls.filter(control => control.operation === "turn.prompt")).toHaveLength(8);
 		expect(controls.filter(control => control.operation === "turn.follow_up")).toHaveLength(1);
 		await expect(
-			fs.readdir(path.join(root, ".gjc", "coordinator-state", "local", "repo", "turns")),
+			fs.readdir(path.join(root, ".worx", "coordinator-state", "local", "repo", "turns")),
 		).rejects.toMatchObject({ code: "ENOENT" });
 	});
 	it("passes the bounded acknowledgement timeout to the SDK and surfaces timeout errors", async () => {
@@ -740,7 +740,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		]);
 		expect(controlOptions).toContainEqual({ idempotencyKey: "bounded-timeout", timeoutMs: 17 });
 		await expect(
-			fs.readdir(path.join(root, ".gjc", "coordinator-state", "local", "repo", "turns")),
+			fs.readdir(path.join(root, ".worx", "coordinator-state", "local", "repo", "turns")),
 		).rejects.toMatchObject({ code: "ENOENT" });
 	});
 	it("caps and defaults prompt acknowledgement timeouts passed to the SDK", async () => {
@@ -917,7 +917,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			idempotency_key: "prompt-1",
 			allow_mutation: true,
 		});
-		await fs.rm(path.join(root, ".gjc", "state", "sdk", "visible-session.json"));
+		await fs.rm(path.join(root, ".worx", "state", "sdk", "visible-session.json"));
 
 		await expect(server.callTool("worx_coordinator_read_turn", { turn_id: sent.turn_id })).resolves.toMatchObject({
 			ok: true,
@@ -944,14 +944,14 @@ describe("Coordinator MCP canonical SDK controls", () => {
 					cwd: root,
 					target: { path: root },
 					modelPreset: "codex-eco",
-					coordinatorStateDir: path.join(root, ".gjc", "coordinator-state", "local", "repo"),
+					coordinatorStateDir: path.join(root, ".worx", "coordinator-state", "local", "repo"),
 				},
 				idempotencyKey: "preset-start",
 			},
 		]);
 		await expect(
 			fs.readFile(
-				path.join(root, ".gjc", "coordinator-state", "local", "repo", "sessions", "created-session-1.json"),
+				path.join(root, ".worx", "coordinator-state", "local", "repo", "sessions", "created-session-1.json"),
 				"utf8",
 			),
 		).resolves.toContain('"mpreset": "codex-eco"');
@@ -1010,7 +1010,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			input: {
 				cwd: root,
 				target: { path: root, worktree: { enabled: true, name: "hermes" } },
-				coordinatorStateDir: path.join(root, ".gjc", "coordinator-state", "local", "repo"),
+				coordinatorStateDir: path.join(root, ".worx", "coordinator-state", "local", "repo"),
 			},
 			idempotencyKey: "worktree-start",
 		});
@@ -1162,7 +1162,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 		const recordPath = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -1256,7 +1256,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const corruptKey = "corrupt-report";
 		const corruptFile = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -1274,13 +1274,13 @@ describe("Coordinator MCP canonical SDK controls", () => {
 			}),
 		).resolves.toMatchObject({ ok: false, error: { code: "terminal_uncertain" } });
 		expect(
-			await fs.readdir(path.join(root, ".gjc", "coordinator-state", "local", "repo", "reports")).catch(() => []),
+			await fs.readdir(path.join(root, ".worx", "coordinator-state", "local", "repo", "reports")).catch(() => []),
 		).toEqual([]);
 
 		await registerSdkSession(server, root);
 		const registerFile = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -1362,7 +1362,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const server = await createSdkControlServer(root, controls, undefined, undefined, sessions);
 		const recordPath = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -1423,7 +1423,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 		const recordPath = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -1489,7 +1489,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const queuedAcknowledgement = queued.result as { command_id?: unknown; turn_id?: unknown };
 		const persistedQueuedTurn = JSON.parse(
 			await fs.readFile(
-				path.join(root, ".gjc", "coordinator-state", "local", "repo", "turns", `${queuedTurnId}.json`),
+				path.join(root, ".worx", "coordinator-state", "local", "repo", "turns", `${queuedTurnId}.json`),
 				"utf8",
 			),
 		) as { delivery: Record<string, unknown> };
@@ -1723,7 +1723,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 					input: {
 						cwd: root,
 						target: { path: root },
-						coordinatorStateDir: path.join(root, ".gjc", "coordinator-state", "local", "repo"),
+						coordinatorStateDir: path.join(root, ".worx", "coordinator-state", "local", "repo"),
 					},
 					idempotencyKey: "plan",
 				},
@@ -1749,7 +1749,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		const host = await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "visible-session",
@@ -1822,7 +1822,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await registerCodexHandoff(namespace, {
 			work_unit: "codex-host-1",
 			thread_id: "thread-explicit-one",
@@ -1850,7 +1850,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "ambient-codex-host",
@@ -1886,7 +1886,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 
 		await expect(
 			server.callTool("worx_delegate_execute", {
@@ -1905,7 +1905,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 
 		await expect(
 			server.callTool("worx_delegate_execute", {
@@ -1924,7 +1924,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await fs.mkdir(path.join(namespace, "codex-handoffs"), { recursive: true });
 		await fs.writeFile(path.join(namespace, "codex-handoffs", "corrupt-codex-host.json"), "{ not json", "utf8");
 
@@ -1945,7 +1945,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		for (const [sessionId, threadId] of [
 			["host-one", "thread-one"],
 			["host-two", "thread-two"],
@@ -1974,7 +1974,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		for (const sessionId of ["same-thread-one", "same-thread-two"]) {
 			await persistMcpDelegateHostContext({ cwd: root, sessionId, prompt: "$gjc-mcp-delegate-flow" });
 			await registerCodexHandoff(namespace, {
@@ -2000,12 +2000,12 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		for (const [directory, sessionId, promptExcerpt] of [
 			["_session-traversal", "../evil", "resume"],
 			["_session-oversized", "oversized", "x".repeat(1024 * 1024)],
 		] as const) {
-			const contextPath = path.join(root, ".gjc", directory, "state", "mcp-delegate-host-context.json");
+			const contextPath = path.join(root, ".worx", directory, "state", "mcp-delegate-host-context.json");
 			await fs.mkdir(path.dirname(contextPath), { recursive: true });
 			await fs.writeFile(
 				contextPath,
@@ -2055,7 +2055,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				close: async () => {},
 			}),
 		});
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "visible-session",
@@ -2101,7 +2101,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "host-without-handoff",
@@ -2136,7 +2136,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "host-context",
@@ -2180,7 +2180,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "host-context",
@@ -2212,7 +2212,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "host-context-mixed",
@@ -2256,7 +2256,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "host-context-all-stale",
@@ -2293,7 +2293,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "direct-host",
@@ -2323,15 +2323,15 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
 		await persistMcpDelegateHostContext({
 			cwd: root,
 			sessionId: "valid-host",
 			prompt: "$gjc-mcp-delegate-flow",
 		});
-		await fs.mkdir(path.join(root, ".gjc", "_session-corrupt-host", "state"), { recursive: true });
+		await fs.mkdir(path.join(root, ".worx", "_session-corrupt-host", "state"), { recursive: true });
 		await fs.writeFile(
-			path.join(root, ".gjc", "_session-corrupt-host", "state", "mcp-delegate-host-context.json"),
+			path.join(root, ".worx", "_session-corrupt-host", "state", "mcp-delegate-host-context.json"),
 			"{",
 			"utf8",
 		);
@@ -2357,8 +2357,8 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const root = await tempRoot();
 		const controls: SdkControl[] = [];
 		const server = await createSdkControlServer(root, controls);
-		const namespace = path.join(root, ".gjc", "coordinator-state", "local", "repo");
-		const contextPath = path.join(root, ".gjc", "_session-corrupt-host", "state", "mcp-delegate-host-context.json");
+		const namespace = path.join(root, ".worx", "coordinator-state", "local", "repo");
+		const contextPath = path.join(root, ".worx", "_session-corrupt-host", "state", "mcp-delegate-host-context.json");
 		await fs.mkdir(path.dirname(contextPath), { recursive: true });
 		await fs.writeFile(contextPath, "{", "utf8");
 
@@ -2463,7 +2463,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		const server = createCoordinatorMcpServer({
 			env: {
 				WORX_COORDINATOR_MCP_WORKDIR_ROOTS: root,
-				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".gjc", "coordinator-state"),
+				WORX_COORDINATOR_MCP_STATE_ROOT: path.join(root, ".worx", "coordinator-state"),
 				WORX_COORDINATOR_MCP_MUTATIONS: "sessions",
 				WORX_COORDINATOR_MCP_PROFILE: "local",
 				WORX_COORDINATOR_MCP_REPO: "repo",
@@ -2508,7 +2508,7 @@ describe("Coordinator MCP canonical SDK controls", () => {
 		await registerSdkSession(server, root);
 		const sessionFile = path.join(
 			root,
-			".gjc",
+			".worx",
 			"coordinator-state",
 			"local",
 			"repo",
@@ -2562,14 +2562,16 @@ describe("Coordinator MCP canonical SDK controls", () => {
 				allow_mutation: true,
 			}),
 		).resolves.toMatchObject({ ok: true });
-		const sessionsDir = path.join(root, ".gjc", "coordinator-state", "local", "repo", "sessions");
+		const sessionsDir = path.join(root, ".worx", "coordinator-state", "local", "repo", "sessions");
 		const idleFile = path.join(sessionsDir, "idle-session.json");
 		const idle = JSON.parse(await fs.readFile(idleFile, "utf8"));
 		await Bun.write(
 			idleFile,
 			JSON.stringify({ ...idle, ephemeral: true, created_at: new Date(Date.now() - 31 * 60_000).toISOString() }),
 		);
-		await fs.rm(path.join(root, ".gjc", "coordinator-state", "local", "repo", "session-states", "idle-session.json"));
+		await fs.rm(
+			path.join(root, ".worx", "coordinator-state", "local", "repo", "session-states", "idle-session.json"),
+		);
 		await Bun.write(
 			path.join(sessionsDir, "registered-session.json"),
 			JSON.stringify({
@@ -3008,7 +3010,7 @@ it("repairs one terminal session without deleting another session's projections"
 	).resolves.toMatchObject({ ok: true });
 	const secondTurnPath = path.join(
 		root,
-		".gjc",
+		".worx",
 		"coordinator-state",
 		"local",
 		"repo",
@@ -3019,7 +3021,7 @@ it("repairs one terminal session without deleting another session's projections"
 });
 
 function coordinatorSessionStateFile(root: string): string {
-	return path.join(root, ".gjc", "coordinator-state", "local", "repo", "session-states", "visible-session.json");
+	return path.join(root, ".worx", "coordinator-state", "local", "repo", "session-states", "visible-session.json");
 }
 
 async function writeCoordinatorSessionState(root: string, state: string): Promise<void> {
@@ -3295,7 +3297,7 @@ describe("Coordinator MCP prepared session activation", () => {
 
 		const first = await server.callTool("worx_coordinator_list_questions", { session_id: "visible-session" });
 		const question = (first.questions as Array<Record<string, unknown>>)[0]!;
-		const journal = path.join(root, ".gjc", "coordinator-state", "local", "repo", "events", "event-journal.jsonl");
+		const journal = path.join(root, ".worx", "coordinator-state", "local", "repo", "events", "event-journal.jsonl");
 		const opened = (await fs.readFile(journal, "utf8"))
 			.trim()
 			.split("\n")
@@ -3320,7 +3322,7 @@ describe("Coordinator MCP prepared session activation", () => {
 				await fs.readFile(
 					path.join(
 						root,
-						".gjc",
+						".worx",
 						"coordinator-state",
 						"local",
 						"repo",
@@ -3413,11 +3415,11 @@ it("keeps parallel pending questions isolated when one answer is submitted", asy
 		answer_binding: questionBBefore.answer_binding,
 	});
 	const journalB = await fs.readFile(
-		path.join(rootB, ".gjc", "coordinator-state", "local", "repo", "events", "event-journal.jsonl"),
+		path.join(rootB, ".worx", "coordinator-state", "local", "repo", "events", "event-journal.jsonl"),
 		"utf8",
 	);
 	expect(journalB).not.toContain("question.answered");
 	await expect(
-		fs.access(path.join(rootB, ".gjc", "coordinator-state", "local", "repo", "codex-wake-events")),
+		fs.access(path.join(rootB, ".worx", "coordinator-state", "local", "repo", "codex-wake-events")),
 	).rejects.toThrow();
 });

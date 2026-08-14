@@ -23,7 +23,7 @@ Ralplan is the consensus planning workflow. It triggers iterative planning with 
 - `--deliberate`: Forces high-risk deliberation: pre-mortem plus expanded test planning. It may also auto-enable for explicit auth/security, migration, destructive, incident, compliance/PII, or public-API-breakage risk.
 - `--architect openai-code` / `--critic openai-code`: Use OpenAI code for that review pass when available; otherwise note the fallback and use default GJC review.
 - `gjc.ralplan.autoHandoff`: Selects final-plan admission: `off` (default), `ultragoal`, or `team`. A `team` target degrades to `off` when tmux is unavailable or no current tmux session is usable; the final receipt reports the `team_unavailable:<reason>` degradation. `PLANNING-STUCK` also resolves every target to `off`. Invalid settings reject the final write before any final artifact is persisted. The final receipt's ledger-backed runtime-owned `auto_handoff.effectiveTarget` is authoritative across state loss and run switching.
-- `--write --stage <type> --stage_n <N> --artifact <markdown file path or markdown string>`: Native writer for Planner/Architect/Critic/revision/ADR/final pending-approval markdown under `.gjc/_session-{sessionid}/plans/ralplan/<run-id>/`; do not edit `.gjc/` directly.
+- `--write --stage <type> --stage_n <N> --artifact <markdown file path or markdown string>`: Native writer for Planner/Architect/Critic/revision/ADR/final pending-approval markdown under `.worx/_session-{sessionid}/plans/ralplan/<run-id>/`; do not edit `.worx/` directly.
 
 ## Corrupt current-session state recovery
 
@@ -37,8 +37,8 @@ Ralplan is planning only. It may inspect context and draft plan/spec/proposal ar
 
 Except for a terminal `planning_stuck` final receipt, explicitly naming `ultragoal` or `team` (including `/skill:` and `gjc` forms) counts as opting into execution for that skill — do not re-ask for the same consent.
 
-Persist planning artifacts and handoffs through the ralplan CLI writer, never direct `.gjc/` edits:
-Direct `write`, `edit`, or `ast_edit` calls against `.gjc/_session-{sessionid}/specs`, `.gjc/_session-{sessionid}/plans`, `.gjc/_session-{sessionid}/state`, or any other `.gjc/` path are forbidden unless an explicit force override is active.
+Persist planning artifacts and handoffs through the ralplan CLI writer, never direct `.worx/` edits:
+Direct `write`, `edit`, or `ast_edit` calls against `.worx/_session-{sessionid}/specs`, `.worx/_session-{sessionid}/plans`, `.worx/_session-{sessionid}/state`, or any other `.worx/` path are forbidden unless an explicit force override is active.
 
 ```bash
 gjc ralplan --write --session-id <owner-session-id> --run-id <run-id> --stage <type> --stage_n <N> --artifact "markdown file path or markdown string"
@@ -46,7 +46,7 @@ gjc ralplan --write --session-id <owner-session-id> --run-id <run-id> --stage <t
 gjc ralplan --write --session-id <owner-session-id> --run-id <run-id> --stage <type> --stage_n <N> --artifact-env WORX_RALPLAN_ARTIFACT
 ```
 
-Use stages `planner`, `architect`, `critic`, `disposition`, `revision`, `post-interview`, `adr`, or `final`; increment `--stage_n` each consensus pass. The writer accepts inline markdown (or JSON for `disposition`), an artifact path prepared outside `.gjc/`, or `--artifact-env WORX_RALPLAN_ARTIFACT`, persists `stage-<NN>-<stage>.md` plus `index.jsonl` under `.gjc/_session-{sessionid}/plans/ralplan/<run-id>/`, and copies `final` to `pending-approval.md`. Ralplan mutation blocking is enforced in code; use temp directories (`os.tmpdir()`/`$TMPDIR`, `/tmp`, `/var/tmp`) only for oversized scratch artifacts, never the repo or `.gjc/`. Staging via the `write` tool or a quoted-delimiter bash heredoc (`cat > /tmp/plan.md <<'EOF' … EOF`) into those temp roots is tolerated by the planning-phase guard.
+Use stages `planner`, `architect`, `critic`, `disposition`, `revision`, `post-interview`, `adr`, or `final`; increment `--stage_n` each consensus pass. The writer accepts inline markdown (or JSON for `disposition`), an artifact path prepared outside `.worx/`, or `--artifact-env WORX_RALPLAN_ARTIFACT`, persists `stage-<NN>-<stage>.md` plus `index.jsonl` under `.worx/_session-{sessionid}/plans/ralplan/<run-id>/`, and copies `final` to `pending-approval.md`. Ralplan mutation blocking is enforced in code; use temp directories (`os.tmpdir()`/`$TMPDIR`, `/tmp`, `/var/tmp`) only for oversized scratch artifacts, never the repo or `.worx/`. Staging via the `write` tool or a quoted-delimiter bash heredoc (`cat > /tmp/plan.md <<'EOF' … EOF`) into those temp roots is tolerated by the planning-phase guard.
 
 Restricted read-only role agents (`planner`, `architect`, `critic`) must pass markdown through `WORX_RALPLAN_ARTIFACT` with `--artifact-env WORX_RALPLAN_ARTIFACT`; their restricted bash environment disables artifact file-path ingestion.
 
@@ -91,16 +91,16 @@ The consensus workflow:
    e. Re-join Architect and Critic verdicts for the same revised Planner artifact/pass (including a fresh disposition stage if new conflicts appear)
    f. Repeat this loop until Critic returns `OKAY` **and** Architect is `CLEAR`/`APPROVE` for the same Planner artifact/pass, or 5 iterations are reached
    g. If 5 iterations are reached without Critic `OKAY` plus Architect `CLEAR`/`APPROVE`, **stop opening further planner/revision passes**. Preserve the best version as a terminal `PLANNING-STUCK` result; do not route it to automatic or explicit execution.
-   h. **Runtime budget (#3165):** native `gjc ralplan --write` refuses a new `planner`/`revision` that would open consensus iteration **> max** (default **5**, overridable via `gjc.ralplan.maxIterations` in project/user `.gjc/settings.json`, integer 1..20). Cap uses the same iteration definition as the HUD (`planner`/`revision` openers in `index.jsonl`). Overflow exits **3**, prints operator-visible **`PLANNING-STUCK`** on stdout (and stderr detail; JSON includes `planning_stuck: true`), and still allows `architect`/`critic` within an already-opened pass plus `post-interview`/`adr`/`final` so the best plan can be escalated to `pending approval` without dispatch. A new `--run-id` starts a fresh budget.
+   h. **Runtime budget (#3165):** native `gjc ralplan --write` refuses a new `planner`/`revision` that would open consensus iteration **> max** (default **5**, overridable via `gjc.ralplan.maxIterations` in project/user `.worx/settings.json`, integer 1..20). Cap uses the same iteration definition as the HUD (`planner`/`revision` openers in `index.jsonl`). Overflow exits **3**, prints operator-visible **`PLANNING-STUCK`** on stdout (and stderr detail; JSON includes `planning_stuck: true`), and still allows `architect`/`critic` within an already-opened pass plus `post-interview`/`adr`/`final` so the best plan can be escalated to `pending approval` without dispatch. A new `--run-id` starts a fresh budget.
 6. **Post-ralplan interview** (intent reconciliation gate): After the review join gate has both Critic `OKAY` and Architect `CLEAR`/`APPROVE` for the same Planner artifact/pass, and before the plan is finalized, reconcile the consensus plan against the user's actual intent. The goal is to make sure ralplan did not silently bake in assumptions that conflict with what the user wants.
    a. **Collect open items** from the run: every assumption the Planner/Architect/Critic resolved by assumption rather than by stated fact, every ambiguity flagged during review, and every decision the loop made without explicit user input. Source these from the persisted `planner`/`architect`/`critic`/`revision` stage artifacts, not from memory.
-   b. **Cross-check prior context for conflicts**: glob `.gjc/_session-{sessionid}/specs/deep-interview-*.md` and other prior specs/plans/context relevant by topic. For each, list points where the consensus plan contradicts, weakens, or expands beyond a previously crystallized decision, constraint, or non-goal. Cite the conflicting artifact and line/section.
+   b. **Cross-check prior context for conflicts**: glob `.worx/_session-{sessionid}/specs/deep-interview-*.md` and other prior specs/plans/context relevant by topic. For each, list points where the consensus plan contradicts, weakens, or expands beyond a previously crystallized decision, constraint, or non-goal. Cite the conflicting artifact and line/section.
    c. **Reconcile with the user via the `ask` tool (always, regardless of `--interactive`)**: Never stop idle with plain-text prose after the consensus loop. Every reconciliation question MUST go through the `ask` tool with contextual options plus free-text.
       - If open items exist, confirm the open assumptions and conflicts **one at a time** with the `ask` tool, weakest/highest-impact first, polishing intent. If any confirmation reveals that the plan diverges from user intent, route the consolidated correction back into the re-review loop (step 5b Planner revision) and re-run Architect + Critic before returning here. Cap at the same 5-iteration ceiling.
       - If the plan is crystal clear (no open assumptions or prior-context conflicts), continue to final persistence in step 7; do not choose an approval or handoff path before its final receipt exists.
       - For every confirmed open item, embed the resolved outcome into the final plan under an **## Intent Reconciliation** section so the `pending approval` artifact records each decision; record any item the user explicitly defers as an open confirmation under that same section.
    d. Persist the reconciliation with `gjc ralplan --write --stage post-interview --stage_n <N> --artifact-env WORX_RALPLAN_ARTIFACT --json`, then return the receipt/path plus a compact status (reconciled-clean / reconciled-with-revision / open-confirmations-pending) instead of pasting the full body.
-7. On reconciliation completion, re-check the review join gate (Critic `OKAY` plus Architect `CLEAR`/`APPROVE` for the same Planner artifact/pass), mark the plan `pending approval` unless execution is already authorized by the resolved handoff admission, then persist the ADR/final plan via `gjc ralplan --write --stage final --stage_n <N> --artifact-env WORX_RALPLAN_ARTIFACT --json`. Read the successful receipt's `auto_handoff` object; its ledger-backed `effectiveTarget` is runtime-owned and is the only automatic-routing decision; do not directly edit `.gjc/_session-{sessionid}/plans`. Final plan must include ADR (Decision, Drivers, Alternatives considered, Why chosen, Consequences, Follow-ups) and, when present, the **## Intent Reconciliation** section.
+7. On reconciliation completion, re-check the review join gate (Critic `OKAY` plus Architect `CLEAR`/`APPROVE` for the same Planner artifact/pass), mark the plan `pending approval` unless execution is already authorized by the resolved handoff admission, then persist the ADR/final plan via `gjc ralplan --write --stage final --stage_n <N> --artifact-env WORX_RALPLAN_ARTIFACT --json`. Read the successful receipt's `auto_handoff` object; its ledger-backed `effectiveTarget` is runtime-owned and is the only automatic-routing decision; do not directly edit `.worx/_session-{sessionid}/plans`. Final plan must include ADR (Decision, Drivers, Alternatives considered, Why chosen, Consequences, Follow-ups) and, when present, the **## Intent Reconciliation** section.
 8. **Final admission and approval gate:** Reconciliation must first reach the successful final receipt from step 7. If that receipt has `auto_handoff.degradationReason: "planning_stuck"`, it is terminal: retain the `pending approval` artifact and **never dispatch**, including for an explicitly named execution skill; do not issue an approval `ask`. Otherwise, if its runtime-owned `auto_handoff.effectiveTarget` is `ultragoal` or `team`, that valid non-off receipt is explicit operator admission for same-turn execution through that target; proceed to step 9 without an `ask`. If it is `off`, including ordinary `off` or a runtime degradation such as `team_unavailable:<reason>`, preserve the ordinary approval flow: if the user already explicitly named an execution skill in the current turn or via the structured approval UI (`ultragoal`, `/skill:ultragoal`, `gjc ultragoal`, `team`, `/skill:team`, `gjc team`, or "Approve execution via ultragoal/team"), that is execution approval — skip the re-ask and proceed to step 9 with that skill. Otherwise, present the finalized plan via the `ask` tool (regardless of `--interactive`) with `workflowGate: { stage: "ralplan", kind: "approval" }` on the final question so RPC/headless clients receive a `ralplan`/`approval` workflow gate, not a deep-interview question gate. Use these options:
    - **Refine further** — re-run the consensus loop / request changes, then return here
    - **Approve execution via ultragoal (Recommended)** — goal-tracked autonomous execution
@@ -116,7 +116,7 @@ The consensus workflow:
    gjc state ralplan write --input '{"current_phase":"handoff"}' --json
    ```
 
-   The skill tool then dispatches the execution skill same-turn and runs `gjc state ralplan handoff --to <team|ultragoal> --json` in-process to atomically demote ralplan, promote the callee, and sync `.gjc/_session-{sessionid}/state/skill-active-state.json`. You do not need to run the handoff verb yourself.
+   The skill tool then dispatches the execution skill same-turn and runs `gjc state ralplan handoff --to <team|ultragoal> --json` in-process to atomically demote ralplan, promote the callee, and sync `.worx/_session-{sessionid}/state/skill-active-state.json`. You do not need to run the handoff verb yourself.
 
 > **Important:** Architect and Critic MAY run in the same parallel batch only for the plan-only Critic lane after Planner persistence (review pass 1). Pass 2+ re-reviews MUST run sequentially Architect -> Critic: await Architect before issuing Critic, pass the current-pass Architect receipt/path to Critic for the rule-5 counter-review, then apply the same review join gate before consensus.
 
@@ -126,7 +126,7 @@ The consensus workflow:
 - On cap: exit code **3**, marker **`PLANNING-STUCK`** (stdout), no silent re-loop, no automatic or explicit ultragoal/team dispatch. Opener budget is `max(index.jsonl openers, on-disk stage-*-{planner,revision}.md count)` so a missing/empty/malformed ledger cannot fail open after prior openers.
 - Headless/CI: treat `PLANNING-STUCK` / exit 3 as terminal planning failure for orchestration/watchdogs.
 - Interactive: retain the best existing plan as a terminal planning result; residual critic findings stay as caveats.
-- Override example (project `.gjc/settings.json`):
+- Override example (project `.worx/settings.json`):
 
 ```json
 {
@@ -141,13 +141,13 @@ The consensus workflow:
 ## Per-lane review budget (operator contract)
 
 - Default: **1** Architect pass and **1** Critic pass per opener iteration.
-- Override via `gjc.ralplan.maxReviewPassesPerLane`: project `.gjc/settings.json` overrides user settings; the value is an integer **1..10** registered in the public settings schema.
+- Override via `gjc.ralplan.maxReviewPassesPerLane`: project `.worx/settings.json` overrides user settings; the value is an integer **1..10** registered in the public settings schema.
 - On overflow: exit code **3** with the **`PLANNING-STUCK`** marker and lane-specific JSON/stderr detail.
 - `post-interview`, `adr`, and `final` are always allowed.
 - Identical re-writes dedupe without stuck-signaling — including after a crash between artifact write and ledger append: the identical retry repairs the missing ledger row and returns the dedupe receipt.
 - A new `--run-id` starts a fresh budget.
 - A rule-2-justified blocker routes through a Planner `revision` opener (new iteration, fresh lane budget), never a second same-iteration review pass.
-- Override example (project `.gjc/settings.json`):
+- Override example (project `.worx/settings.json`):
 
 ```json
 {
@@ -167,7 +167,7 @@ Follow this ralplan-internal consensus workflow for consensus mode details.
 
 The Planner, Architect, and Critic are **same-session persisted subagents**. Launch the Planner detached once and await it before review fan-out; Architect and Critic are also launched once per run as detached, resumable subagents in the pass-1 fan-out (parallel only for the plan-only Critic lane tied to the same Planner receipt/path/sha/stage_n). On pass 2+, resume the SAME persisted Planner with consolidated feedback and resume the SAME persisted Architect and Critic lane subagents with the mandatory re-review context bundle instead of fresh-spawning. Do NOT modify the subagent control surface; use existing `subagent` resume/steer controls only.
 
-**Persistence boundary:** same-parent, active-session continuity only. Resumability requires retained subagent resume metadata and a persistent parent session (in-memory parent yields `resumable:false`), not just `.gjc` run-state. A terminal subagent can still resume when its retained descriptor points at a saved subagent session; after process restart, missing metadata, or failed/unavailable resume, use the fresh role/lane fallback.
+**Persistence boundary:** same-parent, active-session continuity only. Resumability requires retained subagent resume metadata and a persistent parent session (in-memory parent yields `resumable:false`), not just `.worx` run-state. A terminal subagent can still resume when its retained descriptor points at a saved subagent session; after process restart, missing metadata, or failed/unavailable resume, use the fresh role/lane fallback.
 
 **Resume routing table (for every persisted role: Planner, Architect, and Critic)** (per re-review pass, when resuming that role's persisted id):
 

@@ -16,8 +16,8 @@ Most runtime lookups use `$env` from `@gajae-code/utils` (`packages/utils/src/en
 
 1. Existing process environment (`Bun.env`)
 2. Project `.env` (`$PWD/.env`) for keys not already set
-3. Agent `.env` (`~/.gjc/agent/.env`, respecting `WORX_CONFIG_DIR` / `WORX_CODING_AGENT_DIR`) for keys not already set
-4. Config-root `.env` (`~/.gjc/.env`, respecting `WORX_CONFIG_DIR`) for keys not already set
+3. Agent `.env` (`~/.worx/agent/.env`, respecting `WORX_CONFIG_DIR` / `WORX_CODING_AGENT_DIR`) for keys not already set
+4. Config-root `.env` (`~/.worx/.env`, respecting `WORX_CONFIG_DIR`) for keys not already set
 5. Home `.env` (`~/.env`) for keys not already set
 6. Login shell rc files (`~/.zshenv`, `~/.zprofile`, `~/.zshrc`, `~/.bash_profile`, `~/.bashrc`) for keys not already set
 
@@ -104,7 +104,7 @@ When the broker is enabled, the local SQLite credential store is bypassed and al
 | Variable                | Used for                                                                                          | Required when                                                                                                          | Notes / precedence                                                                                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `WORX_AUTH_BROKER_URL`   | Base URL of the remote auth-broker (e.g. `https://broker.tailnet:8765`); selects broker mode      | Resolving credentials through a broker; also required by `gjc auth-gateway serve` (the gateway is itself a broker client) | Wins over `auth.broker.url` in `config.yml`. When set with no resolvable token, `resolveAuthBrokerConfig()` hard-errors instead of falling back to local SQLite.                                    |
-| `WORX_AUTH_BROKER_TOKEN` | Bearer token sent on every broker endpoint except `/v1/healthz`                                   | `WORX_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`     | Resolution: this env → `auth.broker.token` (`$ENV_NAME` indirection supported) → `<config-dir>/auth-broker.token` (mode `0600`). `<config-dir>` is `~/.gjc/` (respecting `WORX_CONFIG_DIR`).         |
+| `WORX_AUTH_BROKER_TOKEN` | Bearer token sent on every broker endpoint except `/v1/healthz`                                   | `WORX_AUTH_BROKER_URL` is set and no token is available from `auth.broker.token` or `<config-dir>/auth-broker.token`     | Resolution: this env → `auth.broker.token` (`$ENV_NAME` indirection supported) → `<config-dir>/auth-broker.token` (mode `0600`). `<config-dir>` is `~/.worx/` (respecting `WORX_CONFIG_DIR`).         |
 
 The gateway has no dedicated env vars — it inherits `WORX_AUTH_BROKER_*`. Its own inbound bearer token lives at `<config-dir>/auth-gateway.token` and is managed via `gjc auth-gateway token`.
 
@@ -300,11 +300,11 @@ Set `mouse.enabled: true` to make the wheel scroll GJC's virtual session viewpor
 
 `gjc team ...` starts tmux worker panes from the current tmux-backed leader session. Start that leader with `gjc --tmux` first; `gjc team` intentionally does not create or attach the leader session itself.
 
-`gjc team ... --dry-run --json` creates the same machine-readable state tree as a team launch without starting tmux panes. By default that state is written under `<cwd>/.gjc/state/team/<team>/`; treat it as ephemeral smoke-test/review state. Do not commit generated `.gjc/state/team` contents. Remove the generated team directory after a dry-run when the harness no longer needs it.
+`gjc team ... --dry-run --json` creates the same machine-readable state tree as a team launch without starting tmux panes. By default that state is written under `<cwd>/.worx/state/team/<team>/`; treat it as ephemeral smoke-test/review state. Do not commit generated `.worx/state/team` contents. Remove the generated team directory after a dry-run when the harness no longer needs it.
 
 | Variable | Behavior |
 | --- | --- |
-| `WORX_TEAM_STATE_ROOT` | Overrides the team state root (default `<cwd>/.gjc/state/team`) |
+| `WORX_TEAM_STATE_ROOT` | Overrides the team state root (default `<cwd>/.worx/state/team`) |
 | `WORX_TEAM_TMUX_COMMAND` | tmux binary/command override for team launch |
 | `WORX_TEAM_WORKER_COMMAND` | Worker GJC command override |
 | `WORX_TEAM_WORKER_CLI` | Team worker CLI selector; accepted values are `auto` or `gjc` |
@@ -323,7 +323,7 @@ Coordinator MCP currently exposes durable polling/await tools, not push subscrip
 | `WORX_COORDINATOR_MCP_WORKDIR_ROOTS` | Required allowlist for workdir and artifact paths. `gjc setup hermes` renders absolute normalized paths joined with the platform path delimiter (`:` on POSIX, `;` on Windows). The bridge parser also accepts commas, semicolons, and newlines for legacy manual configs. |
 | `WORX_COORDINATOR_MCP_MUTATIONS` | Enables mutating tool classes as a comma-separated list (`sessions`, `questions`, `reports`) or `all`. `sessions` covers session startup, prompt delivery, durable turn journal updates, queue, and force operations. Per-call `allow_mutation: true` is still required. |
 | `WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP` | Max bytes returned by artifact reads (default `65536`, capped at `1048576`). |
-| `WORX_COORDINATOR_MCP_STATE_ROOT` | Bridge coordination state root (default `<cwd>/.gjc/state/coordinator-mcp`). |
+| `WORX_COORDINATOR_MCP_STATE_ROOT` | Bridge coordination state root (default `<cwd>/.worx/state/coordinator-mcp`). |
 | `WORX_COORDINATOR_MCP_PROFILE` | Optional profile namespace for session/question/report state. Missing scope never widens to global session enumeration. |
 | `WORX_COORDINATOR_MCP_REPO` | Optional repo namespace for session/question/report state. Missing scope never widens to global session enumeration. |
 | `WORX_COORDINATOR_MCP_SESSION_COMMAND` | Optional **typed SDK lifecycle selector**, never a shell command that the coordinator executes. The only supported values are exactly `gjc` and `gjc --worktree [name]`; the latter optionally selects the GJC-managed worktree name. Wrapper binaries, shell syntax, model/provider flags, tmux flags, and other legacy command shapes fail closed before session creation. `gjc setup hermes` renders `gjc --worktree` by default. When omitted, SDK lifecycle creation still uses the requested coordinator workdir; no coordinator-owned tmux startup or prompt injection is performed. |
@@ -408,7 +408,7 @@ OAuth host chain: `KIMI_CODE_OAUTH_HOST` → `KIMI_OAUTH_HOST` → `https://auth
 | `SEARXNG_ENDPOINT`, `SEARXNG_TOKEN`                 | SearXNG endpoint and optional bearer token                    |
 | `SEARXNG_BASIC_USERNAME`, `SEARXNG_BASIC_PASSWORD`  | SearXNG HTTP Basic Auth credentials                           |
 
-SearXNG also reads the equivalent `searxng.endpoint`, `searxng.token`, `searxng.basicUsername`, and `searxng.basicPassword` settings from `~/.gjc/agent/config.yml`; environment variables are fallbacks.
+SearXNG also reads the equivalent `searxng.endpoint`, `searxng.token`, `searxng.basicUsername`, and `searxng.basicPassword` settings from `~/.worx/agent/config.yml`; environment variables are fallbacks.
 
 ### Anthropic web search auth chain
 
@@ -484,7 +484,7 @@ Extra conditional behavior:
 | `WORX_NO_PTY`                  | If `1`, disables interactive PTY path for bash tool                                                |
 | `WORX_SESSION_CONTEXT_BUDGET_BYTES` | Overrides the synchronous session-context materialization budget in bytes (default `536870912` = 512 MiB, ceiling `8589934592` = 8 GiB). Only a canonical positive-integer value is honored; anything invalid (empty, non-numeric, negative, zero, overflowing a safe integer, or above the ceiling) fail-closes to the 512 MiB default with a warning. Raise it above your measured session size to suppress the `SessionContextTooLargeError` preflight, or lower it to restore the old tight bound. |
 
-LSP project configuration may control declarative matching, activation, and capabilities, but it cannot define a command, arguments, executable, client factory, initialization options, or opaque server settings. Trusted user-wide configuration outside the project—including the recommended `~/.gjc/agent/lsp.*` files and supported legacy user locations—can override LSP launches and server options; automatic discovery uses trusted external executables and rejects project-owned lexical paths as well as symlink-resolved project binaries.
+LSP project configuration may control declarative matching, activation, and capabilities, but it cannot define a command, arguments, executable, client factory, initialization options, or opaque server settings. Trusted user-wide configuration outside the project—including the recommended `~/.worx/agent/lsp.*` files and supported legacy user locations—can override LSP launches and server options; automatic discovery uses trusted external executables and rejects project-owned lexical paths as well as symlink-resolved project binaries.
 
 `WORX_NO_PTY` is also set internally when CLI `--no-pty` is used.
 
@@ -496,8 +496,8 @@ These are consumed via `@gajae-code/utils/dirs` and affect where coding-agent st
 
 | Variable              | Default / behavior                                                            |
 | --------------------- | ----------------------------------------------------------------------------- |
-| `WORX_CONFIG_DIR`       | Config root dirname under home (default `.gjc`)                               |
-| `WORX_CODING_AGENT_DIR` | Full override for agent directory (default `~/<WORX_CONFIG_DIR or .gjc>/agent`) |
+| `WORX_CONFIG_DIR`       | Config root dirname under home (default `.worx`)                               |
+| `WORX_CODING_AGENT_DIR` | Full override for agent directory (default `~/<WORX_CONFIG_DIR or .worx>/agent`) |
 | `PWD`                 | Used when matching canonical current working directory in path helpers        |
 
 ---
@@ -578,7 +578,7 @@ These are read as runtime signals; they are usually set by the terminal/OS rathe
 | --- | --- | --- | --- |
 | `WORX_ACP_PERMISSION_MODE` | `prompt`, `auto`, `always-allow` | `prompt` | Controls whether ACP tool calls use the client's permission prompt or the SDK allow policy. `auto` and `always-allow` both allow gated tool calls without prompting. Invalid values fail safely to `prompt`. |
 
-ACP client metadata at `_meta.gjc.permissionHandling` takes precedence when the client supplies that field; the process environment is the fallback. JetBrains Air custom agents can set the fallback per agent in `acp.json`:
+ACP client metadata at `_meta.worx.permissionHandling` takes precedence when the client supplies that field; the process environment is the fallback. JetBrains Air custom agents can set the fallback per agent in `acp.json`:
 
 ```json
 {

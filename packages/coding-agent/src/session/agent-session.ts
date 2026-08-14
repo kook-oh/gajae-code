@@ -3132,7 +3132,7 @@ export class AgentSession {
 		try {
 			assertNonEmptyGjcSessionId(sessionId, "AgentSession.getActiveSkillPhase");
 			// Keep the session-state-dir construction explicit here so the chain guard
-			// refuses to fall back to a legacy root `.gjc/state` read.
+			// refuses to fall back to a legacy root `.worx/state` read.
 			const stateDir = sessionStateDir(this.sessionManager.getCwd(), sessionId);
 			const filePath = path.join(
 				stateDir,
@@ -8750,11 +8750,11 @@ export class AgentSession {
 		if (active && isCanonicalGjcWorkflowSkill(skill)) this.#attachAskTool();
 		const sessionId = this.sessionManager.getSessionId();
 		// Canonical GJC workflow skills (deep-interview, ralplan, ultragoal, team)
-		// own their `.gjc/state/skill-active-state.json` row through the
+		// own their `.worx/state/skill-active-state.json` row through the
 		// `gjc state handoff` and `gjc state clear` runtime verbs. The prompt
 		// observer must not overwrite an existing row (that clobbered handoff
 		// lineage `handoff_from`/`handoff_at` and desynced the HUD). But a fresh
-		// `/skill:<name>` invocation has no row yet, so seed `.gjc/state`
+		// `/skill:<name>` invocation has no row yet, so seed `.worx/state`
 		// idempotently here: `ensureWorkflowSkillActivationState` writes the
 		// initial mode-state + active row only when the skill is not already
 		// active, so the mutation guard and Stop hook engage immediately instead

@@ -93,7 +93,7 @@ describe("issue #3761 symlinked notifications activation", () => {
 		const result = exactUnlinkNotificationFile(
 			viaAlias,
 			endpoint.identity,
-			`.gjc-delete-test-${crypto.randomUUID()}.json`,
+			`.worx-delete-test-${crypto.randomUUID()}.json`,
 		);
 		expect(result.ok || result.code === "cleanup_pending").toBe(true);
 		expect(fs.existsSync(viaAlias)).toBe(false);
@@ -117,7 +117,7 @@ describe("issue #3761 symlinked notifications activation", () => {
 				mtimeNs: 0n,
 				sha256: "0".repeat(64),
 			},
-			`.gjc-delete-test-${crypto.randomUUID()}.json`,
+			`.worx-delete-test-${crypto.randomUUID()}.json`,
 		);
 		expect(result).toEqual({ ok: false, code: "reparse_point" });
 		expect(fs.existsSync(victim)).toBe(true);
@@ -156,7 +156,7 @@ describe("issue #3761 symlinked notifications activation", () => {
 			const result = exactUnlinkNotificationFile(
 				viaAlias,
 				endpoint.identity,
-				`.gjc-delete-test-${crypto.randomUUID()}.json`,
+				`.worx-delete-test-${crypto.randomUUID()}.json`,
 			);
 			expect(result).toEqual({ ok: false, code: "reparse_point" });
 			expect(fs.existsSync(moved)).toBe(true);

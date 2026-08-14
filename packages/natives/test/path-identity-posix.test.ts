@@ -25,7 +25,7 @@ function expectDetachedCleanupPending(result: ReturnType<typeof exactUnlink>, de
 		ok: false,
 		code: "cleanup_pending",
 		detachedPath,
-		retainedPlaceholderPath: expect.stringMatching(/\.gjc-exact-unlink-placeholder-/),
+		retainedPlaceholderPath: expect.stringMatching(/\.worx-exact-unlink-placeholder-/),
 	});
 }
 
@@ -232,7 +232,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			temporaryDirectories.push(root);
 			const original = path.join(root, "session.jsonl");
 			const originalAlias = path.join(root, "session-alias.jsonl");
-			const detached = path.join(root, ".gjc-delete-session");
+			const detached = path.join(root, ".worx-delete-session");
 			await fs.writeFile(original, "authorized");
 			await fs.link(original, originalAlias);
 			const originalStat = await fs.stat(original, { bigint: true });
@@ -267,7 +267,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			temporaryDirectories.push(root);
 			const directory = path.join(root, "artifact");
 			const child = path.join(directory, "state.json");
-			const quarantineName = ".gjc-delete-preauthorized";
+			const quarantineName = ".worx-delete-preauthorized";
 			await fs.mkdir(directory);
 			await fs.writeFile(child, "preserve");
 			const stat = await fs.stat(directory, { bigint: true });
@@ -297,7 +297,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
 			const original = path.join(root, "state.jsonl");
-			const detached = path.join(root, ".gjc-delete-state");
+			const detached = path.join(root, ".worx-delete-state");
 			const contents = "x".repeat(128 * 1024);
 			await fs.writeFile(original, contents);
 			const stat = await fs.stat(original, { bigint: true });
@@ -323,7 +323,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
 			const directory = path.join(root, "artifact");
-			const quarantine = path.join(root, ".gjc-delete-preauthorized");
+			const quarantine = path.join(root, ".worx-delete-preauthorized");
 			await fs.mkdir(directory);
 			await fs.mkdir(quarantine);
 			const stat = await fs.stat(directory, { bigint: true });
@@ -349,7 +349,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
 			const original = path.join(root, "state.jsonl");
-			const detached = path.join(root, ".gjc-delete-state");
+			const detached = path.join(root, ".worx-delete-state");
 			await fs.writeFile(original, "authorized");
 			const stat = await fs.stat(original, { bigint: true });
 			const identity = {
@@ -379,7 +379,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
 			const original = path.join(root, "state.jsonl");
-			const detached = path.join(root, ".gjc-delete-state");
+			const detached = path.join(root, ".worx-delete-state");
 			await fs.writeFile(original, "authorized");
 			const stat = await fs.stat(original, { bigint: true });
 			const identity = {
@@ -407,7 +407,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
 			const original = path.join(root, "state.jsonl");
-			const detached = path.join(root, ".gjc-delete-state");
+			const detached = path.join(root, ".worx-delete-state");
 			await fs.writeFile(original, "authorized");
 			const stat = await fs.stat(original, { bigint: true });
 			const identity = {
@@ -493,7 +493,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
-			const detached = path.join(root, ".gjc-delete-planned");
+			const detached = path.join(root, ".worx-delete-planned");
 			const originalFile = path.join(detached, "nested", "state.json");
 			const preservedFile = path.join(detached, "nested", "authorized-before-swap.json");
 			await fs.mkdir(path.join(detached, "nested", "child"), { recursive: true });
@@ -531,7 +531,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
-			const detached = path.join(root, ".gjc-delete-planned");
+			const detached = path.join(root, ".worx-delete-planned");
 			const earlier = path.join(detached, "a-earlier.jsonl");
 			const later = path.join(detached, "nested", "z-later.jsonl");
 			await fs.mkdir(path.dirname(later), { recursive: true });
@@ -559,7 +559,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
-			const detached = path.join(root, ".gjc-delete-planned");
+			const detached = path.join(root, ".worx-delete-planned");
 			const nested = path.join(detached, "nested");
 			const first = path.join(nested, "a-first.jsonl");
 			await fs.mkdir(nested, { recursive: true });
@@ -588,7 +588,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
-			const detached = path.join(root, ".gjc-delete-planned");
+			const detached = path.join(root, ".worx-delete-planned");
 			const child = path.join(detached, "state.jsonl");
 			await fs.mkdir(detached);
 			await fs.writeFile(child, "authorized");
@@ -613,7 +613,7 @@ describe.skipIf(process.platform === "win32")("POSIX native path identity", () =
 		async () => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), "pi-path-identity-posix-"));
 			temporaryDirectories.push(root);
-			const detached = path.join(root, ".gjc-delete-planned");
+			const detached = path.join(root, ".worx-delete-planned");
 			const childName = "x".repeat(255);
 			const child = path.join(detached, childName);
 			await fs.mkdir(detached);

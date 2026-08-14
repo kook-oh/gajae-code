@@ -20,7 +20,7 @@ import type { GcCollectResult, GcContext, GcError, GcRecord, GcStoreAdapter } fr
  */
 
 const LOCAL_ROOT_PARENT = "gjc-local";
-const LEGACY_MIGRATION_MARKER = ".gjc-local-legacy-migrated-v1";
+const LEGACY_MIGRATION_MARKER = ".worx-local-legacy-migrated-v1";
 
 /** Directories younger than this are left alone so a live session is never raced. */
 const GRACE_MS = 24 * 60 * 60 * 1000;

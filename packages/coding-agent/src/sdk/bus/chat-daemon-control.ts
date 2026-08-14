@@ -1040,7 +1040,7 @@ function unlinkExactChatDaemonOwnerLock(lock: string, lease: ChatDaemonOwnerLock
 			parentDev: lease.parentDev,
 			parentIno: lease.parentIno,
 			sha256: lease.sha256,
-			quarantineName: `.gjc-delete-chat-daemon-lock-${crypto.randomUUID()}`,
+			quarantineName: `.worx-delete-chat-daemon-lock-${crypto.randomUUID()}`,
 		});
 		if (removed.ok) return true;
 		// Accept only typed retained authority: a concrete detached quarantine plus

@@ -39,7 +39,7 @@ export interface HostPluginSetupResult {
 	check?: { ok: boolean; checked: string[]; missing: string[] };
 }
 
-const NAMESPACE_LABEL = "gajae-code-plugin";
+const NAMESPACE_LABEL = "worx-code-plugin";
 
 function resolveProjectRoot(flags: HostPluginSetupFlags): string {
 	const explicit = flags.root?.find(root => root.trim().length > 0);
@@ -54,7 +54,7 @@ function verifyBundleFiles(files: string[]): { ok: boolean; checked: string[]; m
 export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetupFlags = {}): HostPluginSetupResult {
 	const projectRoot = resolveProjectRoot(flags);
 	const marketplaceRoot = path.join(projectRoot, "plugins");
-	const pluginDir = path.join(marketplaceRoot, "gajae-code");
+	const pluginDir = path.join(marketplaceRoot, "worx-code");
 	const repo = flags.repo && flags.repo.trim().length > 0 ? flags.repo.trim() : NAMESPACE_LABEL;
 
 	// Concrete, fail-closed env: workdir allowlist is the project root, no mutations.
@@ -77,7 +77,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 			marketplacePath,
 			installGuidance: [
 				`Add the local marketplace: /plugin marketplace add ${marketplaceRoot}`,
-				"Install the plugin: /plugin install gajae-code",
+				"Install the plugin: /plugin install worx-code",
 				"Then call worx_delegate_plan / worx_delegate_execute / worx_delegate_team from Claude Code.",
 			],
 			coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },
@@ -103,7 +103,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 		marketplacePath,
 		installGuidance: [
 			`Add the local marketplace: codex plugin marketplace add ${marketplaceRoot}`,
-			"Install the plugin: codex plugin add gajae-code@gajae-code-local",
+			"Install the plugin: codex plugin add worx-code@worx-code-local",
 			"Then call worx_delegate_plan / worx_delegate_execute / worx_delegate_team from Codex.",
 		],
 		coordinatorConfigPreview: { command: "worx", args: ["mcp-serve", "coordinator"], env },

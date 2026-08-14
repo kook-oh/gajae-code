@@ -373,10 +373,10 @@ describe("notification settings controller adapter", () => {
 			},
 			recoverNotifications: async input => {
 				serviceCalls.push("recover");
-				expect(input).toMatchObject({ settings, stateRoot: path.join("/workspace/current", ".gjc", "state") });
+				expect(input).toMatchObject({ settings, stateRoot: path.join("/workspace/current", ".worx", "state") });
 				return recovery();
 			},
-			unregisterNotificationRoot: async () => ({ root: "/workspace/current/.gjc/state", remainingRoots: 1 }),
+			unregisterNotificationRoot: async () => ({ root: "/workspace/current/.worx/state", remainingRoots: 1 }),
 			stopTelegramDaemon: async input => {
 				expect(input).toBe(settings);
 				expect(getNotificationConfig(input).toolActivity.enabled).toBe(true);
@@ -448,7 +448,7 @@ describe("notification settings controller adapter", () => {
 			expect.objectContaining({ sessionManager: ctx.sessionManager }),
 		);
 		expect(healthCalls).toContainEqual(
-			expect.objectContaining({ stateRoot: path.join("/workspace/current", ".gjc", "state"), probe: true, signal }),
+			expect.objectContaining({ stateRoot: path.join("/workspace/current", ".worx", "state"), probe: true, signal }),
 		);
 		expect(serviceCalls).toEqual(["status", "test", "recover"]);
 
@@ -974,7 +974,7 @@ describe("notification settings controller adapter", () => {
 
 			expect(stopCalls).toBe(0);
 			expect(await readNotificationRootRegistration({ settings, sessionId })).toEqual({
-				root: path.join(cwd, ".gjc", "state"),
+				root: path.join(cwd, ".worx", "state"),
 				managed: true,
 				token: replacement.token,
 			});

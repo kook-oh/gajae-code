@@ -47,8 +47,8 @@ export function getChangelogPath(): string {
 
 /**
  * Config directory bases in priority order (highest first).
- * User-level: ~/.gjc/agent, ~/.gemini
- * Project-level: .gjc, .gemini
+ * User-level: ~/.worx/agent, ~/.gemini
+ * Project-level: .worx, .gemini
  */
 const USER_CONFIG_BASES = USER_CONFIG_PRIORITY.map(({ dir, globalAgentDir }) => ({
 	base: () => path.join(os.homedir(), globalAgentDir ? globalAgentDir() : dir),
@@ -62,14 +62,14 @@ const PROJECT_CONFIG_BASES = PROJECT_CONFIG_PRIORITY.map(({ dir }) => ({
 
 export interface ConfigDirEntry {
 	path: string;
-	source: string; // e.g. ".gjc"
+	source: string; // e.g. ".worx"
 	level: "user" | "project";
 }
 
 export interface GetConfigDirsOptions {
-	/** Include user-level directories (~/.gjc/agent/...). Default: true */
+	/** Include user-level directories (~/.worx/agent/...). Default: true */
 	user?: boolean;
-	/** Include project-level directories (.gjc/...). Default: true */
+	/** Include project-level directories (.worx/...). Default: true */
 	project?: boolean;
 	/** Current working directory for project paths. Default: getProjectDir() */
 	cwd?: string;
@@ -87,7 +87,7 @@ export interface GetConfigDirsOptions {
  * @example
  * // Get all command directories
  * getConfigDirs("commands")
- * // → [{ path: "~/.gjc/agent/commands", source: ".gjc", level: "user" }, ...]
+ * // → [{ path: "~/.worx/agent/commands", source: ".worx", level: "user" }, ...]
  *
  * @example
  * // Get only existing project skill directories
@@ -177,7 +177,7 @@ export function findConfigFileWithMeta(
 
 /**
  * Find all nearest config directories by walking up from cwd.
- * Returns one entry per config base (.gjc, .Anthropic model) - the nearest one found.
+ * Returns one entry per config base (.worx, .Anthropic model) - the nearest one found.
  * Results are in priority order (highest first).
  */
 export function findAllNearestProjectConfigDirs(subpath: string, cwd: string = getProjectDir()): ConfigDirEntry[] {

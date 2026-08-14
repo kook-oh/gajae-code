@@ -2,10 +2,10 @@
  * Pure path layout for session-scoped GJC workflow state.
  *
  * Every generated/runtime artifact for a GJC session lives under
- * `<cwd>/.gjc/_session-{encodedSessionId}/...`. The `_session-` prefix is what
+ * `<cwd>/.worx/_session-{encodedSessionId}/...`. The `_session-` prefix is what
  * discriminates a session directory from shared, user-authored/installed config
  * (settings.json, secrets.yml, agents/, gjc-plugins/, agent/, python-env/, user
- * skills/commands), which always stays at the `.gjc/` root.
+ * skills/commands), which always stays at the `.worx/` root.
  *
  * This module is PURE and acyclic: every export is a deterministic function of
  * its arguments. It never reads `process.env` and never touches the filesystem.
@@ -14,7 +14,7 @@
  */
 import * as path from "node:path";
 
-export const WORX_DIR = ".gjc";
+export const WORX_DIR = ".worx";
 export const WORX_SESSION_PREFIX = "_session-";
 export const WORX_SESSION_ACTIVITY_FILE = ".session-activity.json";
 
@@ -63,12 +63,12 @@ export function assertSafePathComponent(value: string, label: string): void {
 	}
 }
 
-/** The shared `.gjc/` root (holds shared config; never session-scoped). */
+/** The shared `.worx/` root (holds shared config; never session-scoped). */
 export function gjcRoot(cwd: string): string {
 	return path.join(cwd, WORX_DIR);
 }
 
-/** The per-session root directory: `<cwd>/.gjc/_session-{encodedId}`. */
+/** The per-session root directory: `<cwd>/.worx/_session-{encodedId}`. */
 export function sessionRoot(cwd: string, gjcSessionId: string): string {
 	assertNonEmptyGjcSessionId(gjcSessionId, "sessionRoot");
 	return path.join(gjcRoot(cwd), `${WORX_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`);

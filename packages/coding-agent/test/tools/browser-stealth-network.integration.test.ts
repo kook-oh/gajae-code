@@ -15,7 +15,7 @@ import {
 // none is resolvable, so they never fail Chromium-less CI environments.
 function chromiumAvailable(): boolean {
 	if (process.env.PUPPETEER_EXECUTABLE_PATH) return true;
-	const cache = path.join(os.homedir(), ".gjc", "puppeteer", "chrome");
+	const cache = path.join(os.homedir(), ".worx", "puppeteer", "chrome");
 	let available = false;
 	try {
 		available = fs.existsSync(cache) && fs.readdirSync(cache).length > 0;

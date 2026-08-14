@@ -6,8 +6,8 @@
  *
  * Instead these tests validate the structural contract that listAnthropic modelPluginRoots
  * depends on:
- *   1. GJC registry lives at path.join(home, ".gjc", "plugins", "installed_plugins.json")
- *      (matches getConfigDirName() == ".gjc")
+ *   1. GJC registry lives at path.join(home, ".worx", "plugins", "installed_plugins.json")
+ *      (matches getConfigDirName() == ".worx")
  *   2. The registry format passes the same validator that parseAnthropic modelPluginsRegistry uses
  *   3. readInstalledPluginsRegistry / writeInstalledPluginsRegistry produce files that
  *      satisfy that validator
@@ -52,9 +52,9 @@ function validateClaudeRegistryFormat(content: string): Record<string, unknown> 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 // Matches getConfigDirName() — single source of truth is in @gajae-code/utils,
-// but we know the value is ".gjc" and hardcoding it here keeps tests free of
+// but we know the value is ".worx" and hardcoding it here keeps tests free of
 // native-addon transitive imports.
-const WORX_CONFIG_DIR = ".gjc";
+const WORX_CONFIG_DIR = ".worx";
 
 function makeEntry(installPath: string, version = "1.0.0"): InstalledPluginEntry {
 	return {
@@ -69,7 +69,7 @@ function makeEntry(installPath: string, version = "1.0.0"): InstalledPluginEntry
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
 let tmpHome: string;
-/** ~/.gjc/plugins/installed_plugins.json inside tmpHome */
+/** ~/.worx/plugins/installed_plugins.json inside tmpHome */
 let gjcRegistryPath: string;
 
 beforeEach(() => {
@@ -85,18 +85,18 @@ afterEach(() => {
 // ── Path contract ─────────────────────────────────────────────────────────────
 
 describe("GJC registry path contract", () => {
-	it("GJC registry lives at home/.gjc/plugins/installed_plugins.json", () => {
+	it("GJC registry lives at home/.worx/plugins/installed_plugins.json", () => {
 		// This is the path that listAnthropic modelPluginRoots reads.
 		// Any change to this path must be reflected in helpers.ts.
-		const expected = path.join(tmpHome, ".gjc", "plugins", "installed_plugins.json");
+		const expected = path.join(tmpHome, ".worx", "plugins", "installed_plugins.json");
 		expect(gjcRegistryPath).toBe(expected);
 	});
 
-	it("GJC config dir name is .gjc", () => {
+	it("GJC config dir name is .worx", () => {
 		// Validate our hardcoded constant matches getConfigDirName().
 		// If getConfigDirName() ever changes, this assertion will fail and
 		// we'll know the path constant here must be updated too.
-		expect(WORX_CONFIG_DIR).toBe(".gjc");
+		expect(WORX_CONFIG_DIR).toBe(".worx");
 	});
 });
 

@@ -306,7 +306,7 @@ async function main(): Promise<void> {
 	const planned = buildMatrix(args);
 	const runId = new Date().toISOString().replace(/[:.]/g, "-");
 	const outDir =
-		args.out ?? path.join(REPO_ROOT, ".gjc/ultragoal/artifacts", `composer-evidence-${runId}`);
+		args.out ?? path.join(REPO_ROOT, ".worx/ultragoal/artifacts", `composer-evidence-${runId}`);
 	const tracePath = path.join(outDir, "traces", "real-gjc-print-traces.json");
 
 	const payload = {

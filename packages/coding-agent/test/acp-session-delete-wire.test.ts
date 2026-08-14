@@ -5,7 +5,7 @@
  * with stdin/stdout pipes and a sanitized, explicitly-owned child environment
  * that NEVER spreads `process.env`. Every HOME/XDG/cache/state/runtime/tmp/agent
  * dir is owned by the test and rooted under an isolated temp root, so session
- * transcripts and artifacts never land in the developer's real `~/.gjc`.
+ * transcripts and artifacts never land in the developer's real `~/.worx`.
  *
  * Over the public SDK 1.2.1 surface (`ClientSideConnection` / `ndJsonStream`)
  * this proves the full lifecycle against a real subprocess: capability

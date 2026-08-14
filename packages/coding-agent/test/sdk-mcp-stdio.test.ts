@@ -39,7 +39,7 @@ test("shipped MCP stdio advertises confirm and forwards confirmed destructive co
 
 	try {
 		const sessionId = "confirmed-control-session";
-		const stateRoot = path.join(repo, ".gjc", "state");
+		const stateRoot = path.join(repo, ".worx", "state");
 		const endpointPath = path.join(stateRoot, "sdk", `${sessionId}.json`);
 		await mkdir(path.dirname(endpointPath), { recursive: true });
 		await writeFile(

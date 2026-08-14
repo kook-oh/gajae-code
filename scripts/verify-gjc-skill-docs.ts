@@ -3,8 +3,8 @@
 /**
  * G4 verifier for bundled GJC skill documentation.
  *
- *   --report  (default)  list command references and direct `.gjc` shell mutations, exit 0
- *   --fail               exit non-zero on manifest drift or direct `.gjc` shell mutations
+ *   --report  (default)  list command references and direct `.worx` shell mutations, exit 0
+ *   --fail               exit non-zero on manifest drift or direct `.worx` shell mutations
  */
 
 import * as fs from "node:fs";
@@ -12,7 +12,7 @@ import * as path from "node:path";
 
 import { listVerbs } from "../packages/coding-agent/src/gjc-runtime/workflow-manifest";
 import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../packages/coding-agent/src/skill-state/canonical-skills";
-import { SDK_SESSION_CLI_VERBS, SDK_SESSION_RAW_KINDS } from "./generate-gjc-plugins";
+import { SDK_SESSION_CLI_VERBS, SDK_SESSION_RAW_KINDS } from "./generate-worx-plugins";
 
 const repoRoot = path.join(import.meta.dir, "..");
 const skillsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills");
@@ -48,7 +48,7 @@ function isRoleSelectorVerb(line: string, commandEndIndex: number): boolean {
 	return line.slice(0, commandEndIndex).endsWith("gjc team executor") && /\bgjc\s+team\s+executor\s+["'`]/u.test(line);
 }
 
-/** Generated advisory plugin skills rendered by `scripts/generate-gjc-plugins.ts`. */
+/** Generated advisory plugin skills rendered by `scripts/generate-worx-plugins.ts`. */
 const ADVISORY_SKILLS = new Set<string>([
 	"gjc-sdk-session",
 	"gjc-sdk-guides",
@@ -159,7 +159,7 @@ function collectDirectGjcMutations(file: string, content: string): MutationRef[]
 	const refs: MutationRef[] = [];
 	const relative = path.relative(repoRoot, file);
 	const lines = content.split("\n");
-	const mutationPattern = /(?:^|[;&|]\s*)(?:rm\s+(?:-[A-Za-z]*\s+)*|rmdir\s+|mkdir\s+(?:-[A-Za-z]*\s+)*|touch\s+|mv\s+|cp\s+|install\s+|tee\s+(?:-[A-Za-z]*\s+)*|printf\b[^|;>]*>|echo\b[^|;>]*>|cat\b[^|;>]*>|>+\s*)\.?\.gjc(?:\b|\/)/u;
+	const mutationPattern = /(?:^|[;&|]\s*)(?:rm\s+(?:-[A-Za-z]*\s+)*|rmdir\s+|mkdir\s+(?:-[A-Za-z]*\s+)*|touch\s+|mv\s+|cp\s+|install\s+|tee\s+(?:-[A-Za-z]*\s+)*|printf\b[^|;>]*>|echo\b[^|;>]*>|cat\b[^|;>]*>|>+\s*)\.?\.worx(?:\b|\/)/u;
 	for (let i = 0; i < lines.length; i++) {
 		const line = stripInlineCode(lines[i] ?? "");
 		if (mutationPattern.test(line)) {
@@ -198,7 +198,7 @@ function main(): void {
 	const drift = commandRefs.filter(ref => !ref.valid);
 	console.log(`gjc skill docs verifier - scanned ${path.relative(repoRoot, skillsRoot)}/*/SKILL.md`);
 	console.log(`Found ${commandRefs.length} gjc command reference(s).`);
-	console.log(`Found ${mutationRefs.length} direct .gjc shell mutation example(s).\n`);
+	console.log(`Found ${mutationRefs.length} direct .worx shell mutation example(s).\n`);
 	if (missingAdvisory.length > 0) {
 		console.log(`MISSING advisory plugin skill(s): ${missingAdvisory.join(", ")}`);
 	}
@@ -231,13 +231,13 @@ function main(): void {
 	}
 
 	console.log(
-		`\nSummary: ${drift.length} command drift issue(s), ${mutationRefs.length} direct .gjc shell mutation example(s), ` +
+		`\nSummary: ${drift.length} command drift issue(s), ${mutationRefs.length} direct .worx shell mutation example(s), ` +
 			`${missingAdvisory.length} missing advisory skill(s), ${advisoryContentGates.length} advisory content gate issue(s).`,
 	);
 
 	if (failMode && (drift.length > 0 || mutationRefs.length > 0 || missingAdvisory.length > 0 || advisoryContentGates.length > 0)) {
 		console.error(
-			`\nG4 FAIL: skill docs must reference manifest verbs only, avoid direct .gjc shell mutation examples, ` +
+			`\nG4 FAIL: skill docs must reference manifest verbs only, avoid direct .worx shell mutation examples, ` +
 				`and keep advisory plugin skills inventory-clean and content-gated.`,
 		);
 		process.exit(1);

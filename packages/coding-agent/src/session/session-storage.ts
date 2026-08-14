@@ -2286,8 +2286,8 @@ export class FileSessionStorage implements SessionStorage {
 			!plannedTranscriptPath ||
 			path.dirname(plannedArtifactsPath) !== path.dirname(transcriptPath) ||
 			path.dirname(plannedTranscriptPath) !== path.dirname(transcriptPath) ||
-			!path.basename(plannedArtifactsPath).startsWith(".gjc-delete-") ||
-			!path.basename(plannedTranscriptPath).startsWith(".gjc-delete-") ||
+			!path.basename(plannedArtifactsPath).startsWith(".worx-delete-") ||
+			!path.basename(plannedTranscriptPath).startsWith(".worx-delete-") ||
 			plannedArtifactsPath === plannedTranscriptPath
 		) {
 			throw new SessionDeleteVerificationError(
@@ -2300,7 +2300,7 @@ export class FileSessionStorage implements SessionStorage {
 		if (
 			detachedTranscriptPath &&
 			(path.dirname(detachedTranscriptPath) !== path.dirname(transcriptPath) ||
-				!path.basename(detachedTranscriptPath).startsWith(".gjc-delete-") ||
+				!path.basename(detachedTranscriptPath).startsWith(".worx-delete-") ||
 				detachedTranscriptPath === plannedTranscriptPath)
 		) {
 			throw new SessionDeleteVerificationError(
@@ -2338,7 +2338,7 @@ export class FileSessionStorage implements SessionStorage {
 			if (
 				!expectedArtifactsIdentity ||
 				path.dirname(detachedArtifactsPath) !== path.dirname(transcriptPath) ||
-				(!path.basename(detachedArtifactsPath).startsWith(".gjc-delete-") &&
+				(!path.basename(detachedArtifactsPath).startsWith(".worx-delete-") &&
 					!detachedArtifactsPath.endsWith(".removing"))
 			) {
 				throw new SessionDeleteVerificationError("artifacts", "Detached artifact cleanup evidence is invalid");
@@ -3592,8 +3592,8 @@ function planSessionRetirement(
 				mtimeNs: snapshot.stat.mtimeNs,
 				sha256: createHash("sha256").update(snapshot.bytes).digest("hex"),
 			},
-			plannedArtifactsPath: path.join(directory, `.gjc-delete-gc-${randomUUID()}-artifacts`),
-			plannedTranscriptPath: path.join(directory, `.gjc-delete-gc-${randomUUID()}-transcript`),
+			plannedArtifactsPath: path.join(directory, `.worx-delete-gc-${randomUUID()}-artifacts`),
+			plannedTranscriptPath: path.join(directory, `.worx-delete-gc-${randomUUID()}-transcript`),
 		},
 	};
 }

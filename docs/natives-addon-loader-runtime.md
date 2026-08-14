@@ -36,7 +36,7 @@ At module initialization, `native/index.js` computes:
     - Non-Windows: `~/.local/bin`.
 - **Natives cache root** (`getNativesDir()`):
   - if `$XDG_DATA_HOME/gjc` exists, `$XDG_DATA_HOME/gjc/natives`;
-  - otherwise `~/.gjc/natives`.
+  - otherwise `~/.worx/natives`.
 - **Compiled-binary mode** (`detectCompiledBinary`): true if any of:
   - embedded-addon manifest is non-null,
   - `WORX_COMPILED` env var is set,

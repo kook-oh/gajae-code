@@ -91,7 +91,7 @@ async function interruptedArtifactMigration(
 		kind: "error",
 		code: "durability_failed",
 	});
-	const receipts = path.join(scope.directoryPath, ".gjc-managed-session-internal", "receipts");
+	const receipts = path.join(scope.directoryPath, ".worx-managed-session-internal", "receipts");
 	const name = (await fs.readdir(receipts)).find(entry => entry.endsWith(".detached.json"));
 	if (!name) throw new Error("Missing detached receipt");
 	return {
@@ -301,7 +301,7 @@ describe("managed session Windows durability", () => {
 		// Scope the divergence to the retained placeholder only; the detached
 		// original is validated by a separate upstream check that must see real
 		// values.
-		const placeholderPrefix = ".gjc-exact-unlink-placeholder-";
+		const placeholderPrefix = ".worx-exact-unlink-placeholder-";
 		vi.spyOn(native, "snapshotDirectoryTree").mockImplementation(pathname => {
 			const actual = originalSnapshot(pathname);
 			if (!path.basename(String(pathname)).startsWith(placeholderPrefix)) return actual;
@@ -320,7 +320,7 @@ describe("managed session Windows durability", () => {
 		const detached = detachArtifactRootForMigration(
 			{
 				originalPath,
-				detachedPath: path.join(root, ".gjc-migrate-fork-artifacts"),
+				detachedPath: path.join(root, ".worx-migrate-fork-artifacts"),
 				identity: {
 					dev: stat.dev,
 					ino: stat.ino,

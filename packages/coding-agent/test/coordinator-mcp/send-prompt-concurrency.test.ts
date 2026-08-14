@@ -41,9 +41,9 @@ describe("send_prompt same-session concurrency", () => {
 				startedAt: Date.now(),
 				heartbeatAt: Date.now(),
 			});
-			await fs.mkdir(path.join(root, ".gjc", "state", "sdk"), { recursive: true });
+			await fs.mkdir(path.join(root, ".worx", "state", "sdk"), { recursive: true });
 			await Bun.write(
-				path.join(root, ".gjc", "state", "sdk", `${sessionId}.json`),
+				path.join(root, ".worx", "state", "sdk", `${sessionId}.json`),
 				JSON.stringify({ version: 1, url: sessionUrl, token: "session-token" }),
 			);
 

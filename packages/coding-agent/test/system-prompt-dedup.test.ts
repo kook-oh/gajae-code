@@ -32,7 +32,7 @@ describe("SYSTEM.md prompt assembly", () => {
 
 	it("renders SYSTEM.md exactly once when it is used as the custom base prompt", async () => {
 		const projectDir = path.join(tempDir, "project");
-		const systemDir = path.join(projectDir, ".gjc");
+		const systemDir = path.join(projectDir, ".worx");
 		const systemPrompt = "You are the project SYSTEM prompt.";
 		fs.mkdirSync(systemDir, { recursive: true });
 		fs.writeFileSync(path.join(systemDir, "SYSTEM.md"), systemPrompt);
@@ -63,10 +63,10 @@ describe("SYSTEM.md prompt assembly", () => {
 
 	it("prefers project SYSTEM.md over user SYSTEM.md", async () => {
 		const projectDir = path.join(tempDir, "project");
-		fs.mkdirSync(path.join(projectDir, ".gjc"), { recursive: true });
-		fs.mkdirSync(path.join(tempHomeDir, ".gjc", "agent"), { recursive: true });
-		fs.writeFileSync(path.join(tempHomeDir, ".gjc", "agent", "SYSTEM.md"), "User SYSTEM prompt");
-		fs.writeFileSync(path.join(projectDir, ".gjc", "SYSTEM.md"), "Project SYSTEM prompt");
+		fs.mkdirSync(path.join(projectDir, ".worx"), { recursive: true });
+		fs.mkdirSync(path.join(tempHomeDir, ".worx", "agent"), { recursive: true });
+		fs.writeFileSync(path.join(tempHomeDir, ".worx", "agent", "SYSTEM.md"), "User SYSTEM prompt");
+		fs.writeFileSync(path.join(projectDir, ".worx", "SYSTEM.md"), "Project SYSTEM prompt");
 
 		await expect(loadSystemPromptFiles({ cwd: projectDir })).resolves.toBe("Project SYSTEM prompt");
 	});
@@ -91,7 +91,7 @@ describe("SYSTEM.md prompt assembly", () => {
 		const projectDir = path.join(tempDir, "project");
 		fs.mkdirSync(projectDir, { recursive: true });
 		fs.writeFileSync(path.join(projectDir, "AGENTS.md"), "Project instructions");
-		const userAgentsPath = path.join(tempHomeDir, ".gjc", "agent", "AGENTS.md");
+		const userAgentsPath = path.join(tempHomeDir, ".worx", "agent", "AGENTS.md");
 		fs.mkdirSync(path.dirname(userAgentsPath), { recursive: true });
 		fs.writeFileSync(userAgentsPath, "User-global instructions");
 
@@ -108,7 +108,7 @@ describe("SYSTEM.md prompt assembly", () => {
 		fs.mkdirSync(projectDir, { recursive: true });
 		fs.mkdirSync(path.join(tempHomeDir, ".claude"), { recursive: true });
 		fs.writeFileSync(path.join(tempHomeDir, ".claude", "CLAUDE.md"), "Home Claude instructions");
-		const userAgentsPath = path.join(tempHomeDir, ".gjc", "agent", "AGENTS.md");
+		const userAgentsPath = path.join(tempHomeDir, ".worx", "agent", "AGENTS.md");
 		fs.mkdirSync(path.dirname(userAgentsPath), { recursive: true });
 		fs.writeFileSync(userAgentsPath, "User-global instructions");
 

@@ -311,7 +311,7 @@ describe("native gjc deep-interview runtime", () => {
 		).toBe(true);
 	});
 
-	it("persists a final spec under .gjc/specs through the native CLI/API", async () => {
+	it("persists a final spec under .worx/specs through the native CLI/API", async () => {
 		const root = await tempDir();
 		const specPath = path.join(root, "final-spec.md");
 		await fs.writeFile(specPath, "# Final Spec\n\nAcceptance: persist me.\n");
@@ -588,18 +588,18 @@ describe("native gjc deep-interview runtime", () => {
 		expect(state.state.codebase_context).toBeUndefined();
 	});
 
-	it("honors gjc.deepInterview.ambiguityThreshold in project .gjc/settings.json", async () => {
+	it("honors gjc.deepInterview.ambiguityThreshold in project .worx/settings.json", async () => {
 		const root = await tempDir();
-		await fs.mkdir(path.join(root, ".gjc"), { recursive: true });
+		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
-			path.join(root, ".gjc", "settings.json"),
+			path.join(root, ".worx", "settings.json"),
 			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 		const result = await runNativeDeepInterviewCommand(["--standard", "--json", "idea"], root);
 		expect(result.status).toBe(0);
 		const payload = JSON.parse(result.stdout ?? "{}");
 		expect(payload.threshold).toBeCloseTo(0.08);
-		expect(payload.threshold_source).toBe(path.join(root, ".gjc", "settings.json"));
+		expect(payload.threshold_source).toBe(path.join(root, ".worx", "settings.json"));
 	});
 
 	it("prefers modern config.yml threshold over legacy project settings.json", async () => {
@@ -608,9 +608,9 @@ describe("native gjc deep-interview runtime", () => {
 		setAgentDir(agentDir);
 		resetSettingsForTest();
 		await fs.writeFile(path.join(agentDir, "config.yml"), "gjc:\n  deepInterview:\n    ambiguityThreshold: 0.2\n");
-		await fs.mkdir(path.join(root, ".gjc"), { recursive: true });
+		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
-			path.join(root, ".gjc", "settings.json"),
+			path.join(root, ".worx", "settings.json"),
 			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 
@@ -625,9 +625,9 @@ describe("native gjc deep-interview runtime", () => {
 
 	it("--threshold beats project settings.json", async () => {
 		const root = await tempDir();
-		await fs.mkdir(path.join(root, ".gjc"), { recursive: true });
+		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
-			path.join(root, ".gjc", "settings.json"),
+			path.join(root, ".worx", "settings.json"),
 			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 		const result = await runNativeDeepInterviewCommand(

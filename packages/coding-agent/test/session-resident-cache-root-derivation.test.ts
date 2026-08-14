@@ -94,7 +94,7 @@ describe.skipIf(process.platform === "win32")("resident cache root derivation", 
 		delete process.env.PI_CONFIG_DIR;
 		delete process.env.WORX_CODING_AGENT_DIR;
 
-		const defaultAgentDir = path.join(os.homedir(), ".gjc", "agent");
+		const defaultAgentDir = path.join(os.homedir(), ".worx", "agent");
 		setAgentDir(defaultAgentDir);
 		const cwd = path.join(root, "workspace");
 		ensurePrivateDirectory(cwd);

@@ -47,7 +47,7 @@ describe("generated JSON Schemas", () => {
 		expect(setting.validate?.(1.5)).toBe(false);
 
 		const schema = configSchema() as any;
-		const ralplan = schema.properties.gjc.properties.ralplan;
+		const ralplan = schema.properties.worx.properties.ralplan;
 		expect(ralplan.properties.maxReviewPassesPerLane).toMatchObject({ type: "number", default: 1 });
 		expect(ralplan.additionalProperties).toBe(false);
 	});

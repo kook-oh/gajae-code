@@ -4,7 +4,7 @@ Run `/hotkeys` inside an `gjc` session to see the active chords for your current
 
 ## Customize keybindings
 
-User remaps live in `~/.gjc/agent/keybindings.json`. The file is a JSON object whose keys are keybinding action IDs and whose values are either one chord string or an array of chord strings. It is not read from `~/.gjc/agent/config.yml`, and there is no nested `keybindings` object.
+User remaps live in `~/.worx/agent/keybindings.json`. The file is a JSON object whose keys are keybinding action IDs and whose values are either one chord string or an array of chord strings. It is not read from `~/.worx/agent/config.yml`, and there is no nested `keybindings` object.
 
 ```json
 {
@@ -69,7 +69,7 @@ For setup, microphone permissions, first-use behavior, and troubleshooting, see 
 
 Older unqualified action names are migrated when `keybindings.json` is loaded, but new docs and new configs should use the namespaced action IDs above.
 
-On macOS, Option+Q queues a message for the next turn when the active terminal profile forwards Option as Meta/Esc; in Apple Terminal, this is controlled by **Use Option as Meta key** and applies to both left and right Option keys. On native Windows terminals, the equivalent default is Alt+Q. Windows Terminal and PowerShell commonly reserve Alt+Enter for fullscreen before GJC can receive it. Users who prefer another chord can remap `app.message.queue` in `~/.gjc/agent/keybindings.json`.
+On macOS, Option+Q queues a message for the next turn when the active terminal profile forwards Option as Meta/Esc; in Apple Terminal, this is controlled by **Use Option as Meta key** and applies to both left and right Option keys. On native Windows terminals, the equivalent default is Alt+Q. Windows Terminal and PowerShell commonly reserve Alt+Enter for fullscreen before GJC can receive it. Users who prefer another chord can remap `app.message.queue` in `~/.worx/agent/keybindings.json`.
 
 When messages are queued, use Option+Up/Down on macOS (Alt+Up/Down on Windows) to open the queue and select a message. In the queue, Return edits the selected message, Forward Delete (`⌦`; Fn+Delete on compact Mac keyboards) removes it, Control+Up/Down reorders it within its delivery group, and Escape closes the queue. Reordering does not convert compaction, steer, and follow-up messages into one another.
 
@@ -90,7 +90,7 @@ The editor's configurable action defaults (including the platform-aware `app.cli
 
 ## Current surface audit
 
-Authoritative inventory of the keybinding registry, one row per action. Generated from `TUI_KEYBINDINGS` (`packages/tui/src/keybindings.ts`) and `KEYBINDINGS` (`packages/coding-agent/src/config/keybindings.ts`). Every action ID below is remappable via `~/.gjc/agent/keybindings.json` unless noted. A drift test (`packages/coding-agent/test/keybindings-audit.test.ts`) asserts every registry action ID appears in this table.
+Authoritative inventory of the keybinding registry, one row per action. Generated from `TUI_KEYBINDINGS` (`packages/tui/src/keybindings.ts`) and `KEYBINDINGS` (`packages/coding-agent/src/config/keybindings.ts`). Every action ID below is remappable via `~/.worx/agent/keybindings.json` unless noted. A drift test (`packages/coding-agent/test/keybindings-audit.test.ts`) asserts every registry action ID appears in this table.
 
 ### Editor context (`tui.editor.*`)
 

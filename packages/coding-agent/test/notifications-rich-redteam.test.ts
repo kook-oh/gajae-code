@@ -45,7 +45,7 @@ function tempAgentDir(): string {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "gjc-tg-redteam-"));
 }
 
-/** Pin getAgentDir() to a temp dir so daemon persistence never touches ~/.gjc. */
+/** Pin getAgentDir() to a temp dir so daemon persistence never touches ~/.worx. */
 function setPrivateAgentDir(s: Settings, agentDir: string): Settings {
 	return new Proxy(s, {
 		get(target, prop) {

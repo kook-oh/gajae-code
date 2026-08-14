@@ -22,8 +22,8 @@ async function runSubprocessHook(payload: Record<string, unknown>): Promise<stri
 		stderr: "pipe",
 		env: {
 			...process.env,
-			WORX_CONFIG_DIR: ".gjc",
-			WORX_CODING_AGENT_DIR: path.join(String(payload.cwd), ".gjc", "agent"),
+			WORX_CONFIG_DIR: ".worx",
+			WORX_CODING_AGENT_DIR: path.join(String(payload.cwd), ".worx", "agent"),
 		},
 	});
 	proc.stdin.write(`${JSON.stringify(payload)}\n`);

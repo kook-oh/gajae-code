@@ -151,7 +151,7 @@ describe("createAgentSession session storage isolation", () => {
 			expect(resumedPath).toBe(path.join(resolveLocalRoot(localOptions), "resume.md"));
 			expect(fs.readFileSync(resumedPath, "utf8")).toBe("preserved");
 			expect(
-				fs.readFileSync(path.join(resolveLocalRoot(localOptions), ".gjc-local-legacy-migrated-v1"), "utf8"),
+				fs.readFileSync(path.join(resolveLocalRoot(localOptions), ".worx-local-legacy-migrated-v1"), "utf8"),
 			).toBe("cleanup_pending\n");
 		} finally {
 			await session.dispose();
@@ -218,7 +218,7 @@ describe("createAgentSession session storage isolation", () => {
 			// Legacy source retired after verified migration (marker may be verified or cleanup_pending).
 			expect(fs.existsSync(path.join(legacyLocalRoot, "switched.md"))).toBe(false);
 			const marker = fs.readFileSync(
-				path.join(resolveLocalRoot(localOptions), ".gjc-local-legacy-migrated-v1"),
+				path.join(resolveLocalRoot(localOptions), ".worx-local-legacy-migrated-v1"),
 				"utf8",
 			);
 			expect(marker === "verified\n" || marker === "cleanup_pending\n").toBe(true);
@@ -265,7 +265,7 @@ describe("createAgentSession session storage isolation", () => {
 			const resolved = resolveLocalUrlToPath("local://fresh.md", localOptions);
 			expect(resolved).toBe(path.join(resolveLocalRoot(localOptions), "fresh.md"));
 			const marker = fs.readFileSync(
-				path.join(resolveLocalRoot(localOptions), ".gjc-local-legacy-migrated-v1"),
+				path.join(resolveLocalRoot(localOptions), ".worx-local-legacy-migrated-v1"),
 				"utf8",
 			);
 			expect(marker === "verified\n" || marker === "absent\n" || marker === "cleanup_pending\n").toBe(true);
@@ -330,7 +330,7 @@ describe("createAgentSession session storage isolation", () => {
 										isManagedDestination: () => manager.isManagedDestination(),
 										getSessionId: () => value,
 									}),
-									".gjc-local-legacy-migrated-v1",
+									".worx-local-legacy-migrated-v1",
 								),
 							),
 						});
@@ -660,8 +660,11 @@ describe("createAgentSession session storage isolation", () => {
 				await withoutSecrets.session.dispose();
 			}
 
-			fs.mkdirSync(path.join(cwd, ".gjc"), { recursive: true });
-			fs.writeFileSync(path.join(cwd, ".gjc", "secrets.yml"), "- type: plain\n  content: sdk-secret-token-123456\n");
+			fs.mkdirSync(path.join(cwd, ".worx"), { recursive: true });
+			fs.writeFileSync(
+				path.join(cwd, ".worx", "secrets.yml"),
+				"- type: plain\n  content: sdk-secret-token-123456\n",
+			);
 
 			const withSecrets = await createAgentSession(commonOptions);
 			try {
@@ -678,8 +681,11 @@ describe("createAgentSession session storage isolation", () => {
 			tempDirs.push(tempDir);
 			const cwd = path.join(tempDir, "project");
 			const agentDir = path.join(tempDir, "agent");
-			fs.mkdirSync(path.join(cwd, ".gjc"), { recursive: true });
-			fs.writeFileSync(path.join(cwd, ".gjc", "secrets.yml"), "- type: plain\n  content: sdk-secret-token-123456\n");
+			fs.mkdirSync(path.join(cwd, ".worx"), { recursive: true });
+			fs.writeFileSync(
+				path.join(cwd, ".worx", "secrets.yml"),
+				"- type: plain\n  content: sdk-secret-token-123456\n",
+			);
 
 			const model = getBundledModel("anthropic", "claude-sonnet-4-5");
 			if (!model) throw new Error("Expected anthropic model");

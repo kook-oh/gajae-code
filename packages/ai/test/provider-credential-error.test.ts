@@ -16,7 +16,7 @@ describe("formatProviderCredentialHint", () => {
 		expect(hint).toContain("https://opencode.ai/auth");
 		expect(hint).toContain("not a separate session/OAuth token");
 		expect(hint).toContain("OPENCODE_API_KEY");
-		expect(hint).toContain("~/.gjc/.env");
+		expect(hint).toContain("~/.worx/.env");
 		expect(hint).toContain("project .env is intentionally ignored");
 		expect(hint).toContain("once before headless/print mode to store the key interactively");
 		expect(hint).not.toContain("non-interactively");

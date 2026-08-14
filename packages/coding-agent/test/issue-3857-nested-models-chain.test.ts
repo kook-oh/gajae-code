@@ -13,7 +13,7 @@ const cliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts"
 describe("issue #3857 nested gjc models chain", () => {
 	it("exits after listing when invoked as `models` under a simulated GJC session env", async () => {
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-issue-3857-"));
-		const agentDir = path.join(home, ".gjc", "agent");
+		const agentDir = path.join(home, ".worx", "agent");
 		try {
 			const result = Bun.spawnSync(["bun", cliEntry, "models"], {
 				cwd: repoRoot,
@@ -53,7 +53,7 @@ describe("issue #3857 nested gjc models chain", () => {
 
 	it("does not leave a grandchild gjc process after models exits", async () => {
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-issue-3857-child-"));
-		const agentDir = path.join(home, ".gjc", "agent");
+		const agentDir = path.join(home, ".worx", "agent");
 		const marker = `issue-3857-models-${process.pid}-${Date.now()}`;
 		try {
 			const result = Bun.spawnSync(["bun", cliEntry, "models", marker], {

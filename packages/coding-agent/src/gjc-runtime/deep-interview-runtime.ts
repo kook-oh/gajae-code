@@ -33,7 +33,7 @@ export * from "./deep-interview-recorder";
  *
  * The CLI itself does not run the Socratic interview; that lives inside the `/skill:deep-interview`
  * skill executed by the agent. This handler validates the documented argument-hint surface
- * (`[--trace] [--quick|--standard|--deep] <idea>`), seeds `.gjc/state/deep-interview-state.json`, and
+ * (`[--trace] [--quick|--standard|--deep] <idea>`), seeds `.worx/state/deep-interview-state.json`, and
  * updates the shared HUD rail via `syncSkillActiveState` so the active interview is visible to
  * the TUI.
  */
@@ -59,7 +59,7 @@ const TRACE_MAX_ENTRY_VISITS = 5000;
 const TRACE_MAX_PENDING_DIRECTORIES = 1200;
 const TRACE_SKIP_DIRS = new Set([
 	".git",
-	".gjc",
+	".worx",
 	"node_modules",
 	"dist",
 	"build",
@@ -397,7 +397,7 @@ async function resolveConfiguredAmbiguityThreshold(
 ): Promise<{ threshold: number; source: string } | undefined> {
 	const modernValue = await readModernSettingsAmbiguityThreshold();
 	if (modernValue) return modernValue;
-	const projectSettings = path.join(cwd, ".gjc", "settings.json");
+	const projectSettings = path.join(cwd, ".worx", "settings.json");
 	const projectValue = await readSettingsAmbiguityThreshold(projectSettings);
 	if (projectValue) return projectValue;
 	const userSettings = path.join(getConfigRootDir(), "settings.json");

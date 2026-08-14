@@ -3,7 +3,7 @@
  *
  * Imports MCP servers and skills from other coding agents (Claude Code, Codex,
  * OpenCode) into native GJC config. See the consensus plan under
- * `.gjc/plans/ralplan/` for the full taxonomy and force/collision semantics.
+ * `.worx/plans/ralplan/` for the full taxonomy and force/collision semantics.
  */
 import type { MCPServerConfig } from "../runtime-mcp/types";
 

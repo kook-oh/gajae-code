@@ -48,7 +48,7 @@ describe("GJC skill-active state", () => {
 		]);
 	});
 
-	it("writes session-scoped active state under .gjc/_session-*", async () => {
+	it("writes session-scoped active state under .worx/_session-*", async () => {
 		await withTempCwd(async cwd => {
 			await syncSkillActiveState({
 				cwd,
@@ -70,7 +70,7 @@ describe("GJC skill-active state", () => {
 		await withTempCwd(async cwd => {
 			const paths = getSkillActiveStatePaths(cwd, "../escape/session");
 			expect(paths.sessionPath).toBe(
-				path.join(cwd, ".gjc", "_session-%2E%2E%2Fescape%2Fsession", "state", "skill-active-state.json"),
+				path.join(cwd, ".worx", "_session-%2E%2E%2Fescape%2Fsession", "state", "skill-active-state.json"),
 			);
 		});
 	});
@@ -410,7 +410,7 @@ describe("GJC skill-active state", () => {
 
 	it("chooses the most advanced active pipeline stage as snapshot primary regardless of file order", async () => {
 		await withTempCwd(async cwd => {
-			const activeDir = path.join(cwd, ".gjc", "_session-sess1", "state", "active");
+			const activeDir = path.join(cwd, ".worx", "_session-sess1", "state", "active");
 			await fs.mkdir(activeDir, { recursive: true });
 			await fs.writeFile(
 				path.join(activeDir, "deep-interview.json"),
@@ -428,7 +428,7 @@ describe("GJC skill-active state", () => {
 			await syncSkillActiveState({ cwd, skill: "team", phase: "running", active: true, sessionId: "sess1" });
 
 			const snapshot = JSON.parse(
-				await fs.readFile(path.join(cwd, ".gjc", "_session-sess1", "state", "skill-active-state.json"), "utf-8"),
+				await fs.readFile(path.join(cwd, ".worx", "_session-sess1", "state", "skill-active-state.json"), "utf-8"),
 			);
 			expect(snapshot.skill).toBe("ultragoal");
 			expect(snapshot.phase).toBe("goal-planning");
@@ -555,7 +555,7 @@ describe("GJC skill-active state", () => {
 
 			const activePath = path.join(
 				cwd,
-				".gjc",
+				".worx",
 				"_session-sess-remove-rev",
 				"state",
 				"active",
@@ -609,7 +609,7 @@ describe("GJC skill-active state", () => {
 				sourceRevision: 11,
 			});
 
-			const activeDir = path.join(cwd, ".gjc", "_session-sess-exact", "state", "active");
+			const activeDir = path.join(cwd, ".worx", "_session-sess-exact", "state", "active");
 			await fs.writeFile(
 				path.join(activeDir, "ultragoal.json"),
 				JSON.stringify({

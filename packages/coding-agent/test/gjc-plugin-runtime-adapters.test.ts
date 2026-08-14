@@ -58,7 +58,7 @@ describe("always-on plugin tool runtime activation", () => {
 		const cwd = await mkCwd();
 		const r = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const installed = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
+		const installed = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		await fs.appendFile(installed, "\n// tampered after install\n");
 		const res = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: [] });
 		expect(res.tools.map(t => t.name)).not.toContain("domain_note");
@@ -148,7 +148,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 		const cwd = await mkCwd();
 		const r = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const installedRoot = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle");
+		const installedRoot = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle");
 		const readFileSpy = spyOn(fs, "readFile");
 		const pluginReadCount = () =>
 			readFileSpy.mock.calls.filter(args => typeof args[0] === "string" && args[0].startsWith(installedRoot)).length;
@@ -171,8 +171,8 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 		const cwd = await mkCwd();
 		const r = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const installed = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
-		const installedRoot = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle");
+		const installed = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
+		const installedRoot = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle");
 		const readFileSpy = spyOn(fs, "readFile");
 		const pluginReadCount = () =>
 			readFileSpy.mock.calls.filter(args => typeof args[0] === "string" && args[0].startsWith(installedRoot)).length;
@@ -195,7 +195,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 		const cwd = await mkCwd();
 		const r = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const installed = path.join(cwd, ".gjc", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
+		const installed = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		const beforeStat = await fs.stat(installed);
 		const primed = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: [] });
 		expect(primed.tools.map(t => t.name)).toContain("domain_note");
@@ -219,7 +219,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 		const before = await renderSkillAdvertisement({ cwd, skillName: "ralplan", phase: "planner" });
 		expect(before).toContain('activation_arg="design"');
 
-		const registryPath = path.join(cwd, ".gjc", "gjc-plugins", "registry.json");
+		const registryPath = path.join(cwd, ".worx", "gjc-plugins", "registry.json");
 		const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
 		registry.plugins[0].enabled = false;
 		await fs.writeFile(registryPath, `${JSON.stringify(registry, null, 2)}\n`);

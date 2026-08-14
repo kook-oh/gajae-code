@@ -230,7 +230,7 @@ describe("broker model-profile validation", () => {
 		expect(validateBrokerModelPresetForTest(agentDir, "custom/profile !")).toBe("custom/profile !");
 		expect(validateBrokerModelPresetForTest(agentDir, "codex-standard")).toBe("codex-medium");
 		const cwd = await temp();
-		const stateRoot = path.join(cwd, ".gjc", "state");
+		const stateRoot = path.join(cwd, ".worx", "state");
 		await fs.mkdir(stateRoot, { recursive: true });
 		await Bun.write(
 			path.join(cwd, "models.yml"),

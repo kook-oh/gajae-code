@@ -280,7 +280,7 @@ const nodeFs: TelegramDaemonFs = {
 		exactUnlinkNotificationFile(
 			file,
 			identity,
-			quarantineName ?? `.gjc-delete-daemon-transition-${crypto.randomUUID()}.json`,
+			quarantineName ?? `.worx-delete-daemon-transition-${crypto.randomUUID()}.json`,
 		),
 };
 
@@ -1864,7 +1864,7 @@ export async function withNotificationRootRegistryFence(input: {
 }
 
 function notificationRootForCwd(cwd: string): string {
-	return path.join(cwd, ".gjc", "state");
+	return path.join(cwd, ".worx", "state");
 }
 
 /**
@@ -1873,10 +1873,10 @@ function notificationRootForCwd(cwd: string): string {
  * directory across ownership transitions.
  */
 export const NOTIFICATION_LEAK_ARTIFACT_PREFIXES = [
-	".gjc-delete-daemon-transition-",
-	".gjc-exact-unlink-placeholder-",
-	".gjc-delete-notification-endpoint-",
-	".gjc-delete-notification-staging-temp-",
+	".worx-delete-daemon-transition-",
+	".worx-exact-unlink-placeholder-",
+	".worx-delete-notification-endpoint-",
+	".worx-delete-notification-staging-temp-",
 ] as const;
 
 /** Grace window before a leak artifact is reaped (covers in-flight unlinks). */
@@ -2111,7 +2111,7 @@ async function reapAbandonedNotificationStagingTemp(input: {
 		input.fs,
 		input.file,
 		endpoint.identity,
-		`.gjc-delete-notification-staging-temp-${crypto.randomUUID()}.json`,
+		`.worx-delete-notification-staging-temp-${crypto.randomUUID()}.json`,
 	);
 }
 
@@ -2123,8 +2123,8 @@ async function reapNotificationLeakArtifact(input: {
 	graceMs: number;
 }): Promise<NotificationArtifactReapOutcome> {
 	const name = path.basename(input.file);
-	if (name.startsWith(".gjc-exact-unlink-placeholder-")) return "retained";
-	if (name.startsWith(".gjc-delete-notification-staging-temp-")) {
+	if (name.startsWith(".worx-exact-unlink-placeholder-")) return "retained";
+	if (name.startsWith(".worx-delete-notification-staging-temp-")) {
 		if (!input.fs.readEndpointFile || !input.fs.exactUnlink) return "unchanged";
 		const endpoint = await input.fs.readEndpointFile(input.file);
 		if (!(await isSingleLinkRegularFile(input.fs, input.file))) return "unchanged";
@@ -2134,7 +2134,7 @@ async function reapNotificationLeakArtifact(input: {
 			input.fs,
 			input.file,
 			endpoint.identity,
-			`.gjc-exact-unlink-placeholder-${crypto.randomUUID()}.json`,
+			`.worx-exact-unlink-placeholder-${crypto.randomUUID()}.json`,
 		);
 	}
 	if (!input.fs.stat) return "unchanged";

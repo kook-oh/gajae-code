@@ -81,7 +81,7 @@ For compiled binaries, loader behavior is:
    - non-Windows: `~/.local/bin`
 3. Fall back to packaged `native/` and executable directory candidates.
 
-`getNativesDir()` uses `$XDG_DATA_HOME/gjc/natives` when `$XDG_DATA_HOME/gjc` exists; otherwise it uses `~/.gjc/natives`.
+`getNativesDir()` uses `$XDG_DATA_HOME/gjc/natives` when `$XDG_DATA_HOME/gjc` exists; otherwise it uses `~/.worx/natives`.
 
 If a populated embedded addon manifest is present, it is also treated as a compiled-binary signal. The loader can extract the matching embedded `.node` into the versioned cache directory before candidate probing.
 

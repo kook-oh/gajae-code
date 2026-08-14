@@ -42,9 +42,9 @@ describe("session-layout (pure)", () => {
 		expect(decodeSessionSegment(encodeSessionSegment("a.b/c"))).toBe("a.b/c");
 	});
 
-	it("builds session root and category dirs under .gjc/_session-<id>", () => {
+	it("builds session root and category dirs under .worx/_session-<id>", () => {
 		const root = sessionRoot("/proj", "abc");
-		expect(root).toBe(path.join("/proj", ".gjc", "_session-abc"));
+		expect(root).toBe(path.join("/proj", ".worx", "_session-abc"));
 		expect(sessionStateDir("/proj", "abc")).toBe(path.join(root, "state"));
 		expect(modeStatePath("/proj", "abc", "ralplan")).toBe(path.join(root, "state", "ralplan-state.json"));
 		expect(activeEntryPath("/proj", "abc", "ultragoal")).toBe(path.join(root, "state", "active", "ultragoal.json"));
@@ -64,7 +64,7 @@ describe("session-layout (pure)", () => {
 		expect(() => tmuxRuntimeSessionPath("/proj", "abc", "../../escape")).toThrow();
 		expect(() => tmuxRuntimeSessionPath("/proj", "abc", "a\\b")).toThrow();
 		expect(modeStatePath("/proj", "abc", "deep-interview")).toBe(
-			path.join("/proj", ".gjc", "_session-abc", "state", "deep-interview-state.json"),
+			path.join("/proj", ".worx", "_session-abc", "state", "deep-interview-state.json"),
 		);
 	});
 

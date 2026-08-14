@@ -252,7 +252,7 @@ describe("LSP repository command trust", () => {
 	it("wraps supported servers with an external lspmux and honors both disable variables", async () => {
 		using tempDir = TempDir.createSync("@gjc-lspmux-external-");
 		const cwd = path.join(tempDir.path(), "repo");
-		const externalBinDir = path.join(os.homedir(), `.gjc-lspmux-external-${process.pid}-${Date.now()}`);
+		const externalBinDir = path.join(os.homedir(), `.worx-lspmux-external-${process.pid}-${Date.now()}`);
 		await fs.promises.mkdir(cwd, { recursive: true });
 		await fs.promises.mkdir(externalBinDir, { recursive: true });
 		try {
@@ -335,7 +335,7 @@ describe("LSP repository command trust", () => {
 		expect(fs.existsSync(lspmuxCanary)).toBe(false);
 	});
 
-	it("anchors non-Git nested sessions to the nearest parent .gjc project", async () => {
+	it("anchors non-Git nested sessions to the nearest parent .worx project", async () => {
 		if (process.platform === "win32") return;
 
 		using tempDir = TempDir.createSync("@gjc-lsp-project-config-root-trust-");
@@ -344,7 +344,7 @@ describe("LSP repository command trust", () => {
 		const symlinkedCwd = path.join(tempDir.path(), "symlinked-session");
 		const serverBinary = path.join(projectRoot, "typescript-language-server");
 		const lspmuxCanary = path.join(projectRoot, "lspmux-status-ran");
-		await fs.promises.mkdir(path.join(projectRoot, ".gjc"), { recursive: true });
+		await fs.promises.mkdir(path.join(projectRoot, ".worx"), { recursive: true });
 		await fs.promises.mkdir(nestedCwd, { recursive: true });
 		await fs.promises.symlink(nestedCwd, symlinkedCwd);
 		await Bun.write(path.join(nestedCwd, "package.json"), "{}\n");
@@ -365,7 +365,7 @@ describe("LSP repository command trust", () => {
 		expect(fs.existsSync(lspmuxCanary)).toBe(false);
 	});
 
-	it("lets a Git root outrank a nearer project .gjc marker", async () => {
+	it("lets a Git root outrank a nearer project .worx marker", async () => {
 		if (process.platform === "win32") return;
 
 		using tempDir = TempDir.createSync("@gjc-lsp-git-root-precedence-");
@@ -376,7 +376,7 @@ describe("LSP repository command trust", () => {
 		const lspmuxCanary = path.join(repositoryRoot, "lspmux-status-ran");
 		await fs.promises.mkdir(repositoryRoot, { recursive: true });
 		await Bun.write(path.join(repositoryRoot, ".git"), "gitdir: ../metadata.git\n");
-		await fs.promises.mkdir(path.join(nestedProject, ".gjc"), { recursive: true });
+		await fs.promises.mkdir(path.join(nestedProject, ".worx"), { recursive: true });
 		await fs.promises.mkdir(cwd, { recursive: true });
 		await Bun.write(path.join(cwd, "package.json"), "{}\n");
 		await Bun.write(serverBinary, "");
@@ -399,7 +399,7 @@ describe("LSP repository command trust", () => {
 		const canonicalHome = path.join(tempDir.path(), "home");
 		const lexicalHome = path.join(tempDir.path(), "home-link");
 		const cwd = path.join(canonicalHome, "workspace", "nested");
-		const userBinDir = path.join(lexicalHome, ".gjc", "bin");
+		const userBinDir = path.join(lexicalHome, ".worx", "bin");
 		const userServer = path.join(userBinDir, "typescript-language-server");
 		await fs.promises.mkdir(userBinDir.replace(lexicalHome, canonicalHome), { recursive: true });
 		await fs.promises.mkdir(cwd, { recursive: true });
@@ -425,10 +425,10 @@ describe("LSP repository command trust", () => {
 		using tempDir = TempDir.createSync("@gjc-lsp-home-cwd-guard-");
 		const canonicalHome = path.join(tempDir.path(), "home");
 		const lexicalHome = path.join(tempDir.path(), "home-link");
-		const userBinDir = path.join(lexicalHome, ".gjc", "bin");
+		const userBinDir = path.join(lexicalHome, ".worx", "bin");
 		const userServer = path.join(userBinDir, "typescript-language-server");
 		await fs.promises.mkdir(path.join(canonicalHome, ".git"), { recursive: true });
-		await fs.promises.mkdir(path.join(canonicalHome, ".gjc", "bin"), { recursive: true });
+		await fs.promises.mkdir(path.join(canonicalHome, ".worx", "bin"), { recursive: true });
 		await fs.promises.symlink(canonicalHome, lexicalHome);
 		await Bun.write(userServer, "");
 		const userLspmux = await writeLspmuxBinary(userBinDir);
@@ -522,7 +522,7 @@ describe("LSP repository command trust", () => {
 	it("keeps trusted user launch fields when repository config overrides server behavior", async () => {
 		using tempDir = TempDir.createSync("@gjc-lsp-command-fields-");
 		const cwd = tempDir.path();
-		const configDirName = `.gjc-lsp-command-trust-${process.pid}-${Date.now()}`;
+		const configDirName = `.worx-lsp-command-trust-${process.pid}-${Date.now()}`;
 		const userConfigDir = path.join(os.homedir(), configDirName);
 		const userAgentDir = path.join(userConfigDir, "agent");
 		const trustedServer = path.join(userConfigDir, "typescript-language-server");

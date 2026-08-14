@@ -39,7 +39,7 @@ async function tempDir(): Promise<string> {
 }
 
 async function setProjectBudget(cwd: string, budget: number): Promise<void> {
-	const gjcDir = path.join(cwd, ".gjc");
+	const gjcDir = path.join(cwd, ".worx");
 	await fs.mkdir(gjcDir, { recursive: true });
 	await fs.writeFile(path.join(gjcDir, "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": budget }));
 }
@@ -326,12 +326,12 @@ describe("ultragoal nudge guard", () => {
 		expect(defaultResolved.budget).toBe(10);
 
 		const home = await tempDir();
-		await fs.mkdir(path.join(home, ".gjc"), { recursive: true });
-		await fs.writeFile(path.join(home, ".gjc", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 3 }));
+		await fs.mkdir(path.join(home, ".worx"), { recursive: true });
+		await fs.writeFile(path.join(home, ".worx", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 3 }));
 		const probe = path.join(import.meta.dir, "..", "fixtures", "config-root-settings-probe.ts");
 		const userOnly = Bun.spawn([process.execPath, probe], {
 			cwd,
-			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".gjc" },
+			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".worx" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -343,7 +343,7 @@ describe("ultragoal nudge guard", () => {
 		await setProjectBudget(cwd, 7);
 		const projectWins = Bun.spawn([process.execPath, probe], {
 			cwd,
-			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".gjc" },
+			env: { ...process.env, HOME: home, WORX_CONFIG_DIR: ".worx" },
 			stdout: "pipe",
 			stderr: "pipe",
 		});

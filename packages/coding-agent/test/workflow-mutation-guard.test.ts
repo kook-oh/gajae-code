@@ -147,7 +147,7 @@ describe("workflow mutation guard", () => {
 		const cwd = await makeTempRoot();
 		await writeActiveDeepInterview(cwd);
 
-		for (const rawPath of [".gjc/specs/deep-interview-x.md", ".gjc/plans/plan.md"]) {
+		for (const rawPath of [".worx/specs/deep-interview-x.md", ".worx/plans/plan.md"]) {
 			const decision = await getWorkflowMutationDecision({
 				cwd,
 				sessionId: "session-a",
@@ -160,23 +160,23 @@ describe("workflow mutation guard", () => {
 		}
 
 		const blockedCases: Array<[string, AgentTool, unknown]> = [
-			["write active", tool("write"), { path: ".gjc/state/skill-active-state.json", content: "{}" }],
+			["write active", tool("write"), { path: ".worx/state/skill-active-state.json", content: "{}" }],
 			[
 				"write session active legacy",
 				tool("write"),
-				{ path: ".gjc/state/sessions/session-a/skill-active-state.json", content: "{}" },
+				{ path: ".worx/state/sessions/session-a/skill-active-state.json", content: "{}" },
 			],
 			[
 				"write session active generated",
 				tool("write"),
-				{ path: ".gjc/_session-session-a/state/skill-active-state.json", content: "{}" },
+				{ path: ".worx/_session-session-a/state/skill-active-state.json", content: "{}" },
 			],
 			...(["deep-interview", "ralplan", "ultragoal", "team"] as const).map(
 				skill =>
 					[
 						`write ${skill}`,
 						tool("write"),
-						{ path: `.gjc/state/sessions/session-a/${skill}-state.json`, content: "{}" },
+						{ path: `.worx/state/sessions/session-a/${skill}-state.json`, content: "{}" },
 					] as [string, AgentTool, unknown],
 			),
 			...(["deep-interview", "ralplan", "ultragoal", "team"] as const).map(
@@ -184,25 +184,25 @@ describe("workflow mutation guard", () => {
 					[
 						`write generated ${skill}`,
 						tool("write"),
-						{ path: `.gjc/_session-session-a/state/${skill}-state.json`, content: "{}" },
+						{ path: `.worx/_session-session-a/state/${skill}-state.json`, content: "{}" },
 					] as [string, AgentTool, unknown],
 			),
 			[
 				"apply_patch state",
 				tool("edit", { mode: "apply_patch", customWireName: "apply_patch" }),
 				{
-					input: "*** Begin Patch\n*** Update File: .gjc/state/team-state.json\n@@\n-a\n+b\n*** End Patch\n",
+					input: "*** Begin Patch\n*** Update File: .worx/state/team-state.json\n@@\n-a\n+b\n*** End Patch\n",
 				},
 			],
 			[
 				"vim state",
 				tool("edit", { mode: "vim" }),
-				{ file: "src/foo.ts", steps: [{ kbd: [":edit .gjc/state/sessions/session-a/ralplan-state.json<CR>"] }] },
+				{ file: "src/foo.ts", steps: [{ kbd: [":edit .worx/state/sessions/session-a/ralplan-state.json<CR>"] }] },
 			],
 			[
 				"ast_edit state",
 				tool("ast_edit"),
-				{ paths: [".gjc/state/**/team-state.json"], ops: [{ pat: "foo", out: "bar" }] },
+				{ paths: [".worx/state/**/team-state.json"], ops: [{ pat: "foo", out: "bar" }] },
 			],
 		];
 
@@ -250,7 +250,7 @@ describe("workflow mutation guard", () => {
 			expect(decision.message).toBe(DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE);
 		}
 
-		for (const rawPath of [".gjc/specs-evil/plan.md", ".gjc/stateful/data.json"]) {
+		for (const rawPath of [".worx/specs-evil/plan.md", ".worx/stateful/data.json"]) {
 			const decision = await getWorkflowMutationDecision({
 				cwd,
 				sessionId: "session-a",
@@ -265,7 +265,7 @@ describe("workflow mutation guard", () => {
 			cwd,
 			sessionId: "session-a",
 			tool: tool("ast_edit"),
-			args: { paths: [".gjc/state/deep-interview-state.json", "packages/**"], ops: [{ pat: "foo", out: "bar" }] },
+			args: { paths: [".worx/state/deep-interview-state.json", "packages/**"], ops: [{ pat: "foo", out: "bar" }] },
 		});
 		expect(mixed.blocked).toBe(true);
 	});
@@ -304,7 +304,7 @@ describe("workflow mutation guard", () => {
 			"# Spec: Memory System",
 			"",
 			"- retrieval: session > project > global precedence",
-			"- don't hardcode `~/.gjc`; user's overrides matter",
+			"- don't hardcode `~/.worx`; user's overrides matter",
 			"| Round | Prior → New | 66.5% → 62.3% |",
 			"rm -rf src is what we must never do",
 			"echo x > src/product.ts (quoted example, not a command)",
@@ -433,7 +433,7 @@ describe("workflow mutation guard", () => {
 		await writeActiveDeepInterview(cwd);
 
 		for (const command of [
-			"rm .gjc/state/deep-interview-state.json",
+			"rm .worx/state/deep-interview-state.json",
 			"tee src/product.ts",
 			"cat <<EOF > src/product.ts\nx\nEOF",
 		]) {
@@ -448,9 +448,9 @@ describe("workflow mutation guard", () => {
 		}
 
 		for (const command of [
-			"mkdir -p .gjc/specs",
-			"cp source.md .gjc/specs/deep-interview-x.md",
-			"cat source.md > .gjc/specs/deep-interview-x.md",
+			"mkdir -p .worx/specs",
+			"cp source.md .worx/specs/deep-interview-x.md",
+			"cat source.md > .worx/specs/deep-interview-x.md",
 		]) {
 			const decision = await getWorkflowMutationDecision({
 				cwd,
@@ -516,13 +516,13 @@ describe("workflow mutation guard", () => {
 		// leave an empty target list that reads as "safe".
 		for (const command of [
 			"exec 1<>src/product.ts; printf x >/dev/stdout",
-			"exec 1<>.gjc/_session-session-a/state/deep-interview-state.json; printf x >/dev/stdout",
+			"exec 1<>.worx/_session-session-a/state/deep-interview-state.json; printf x >/dev/stdout",
 			"/bin/dd if=/dev/zero of=src/product.ts count=1 2>/dev/null",
 			"printf x | /usr/bin/tee src/product.ts >/dev/null",
 			"dd if=/dev/zero of=/dev/null of=src/product.ts count=1",
 			"printf x >|src/product.ts 2>/dev/null",
 			"printf x >&src/product.ts 2>/dev/null",
-			"printf x >|.gjc/_session-session-a/state/deep-interview-state.json 2>/dev/null",
+			"printf x >|.worx/_session-session-a/state/deep-interview-state.json 2>/dev/null",
 			'dd if=/dev/zero of=" /dev/null"',
 			'printf x >" src.ts"',
 		]) {
@@ -536,13 +536,13 @@ describe("workflow mutation guard", () => {
 		}
 	});
 
-	it("keeps project, .gjc, mixed, dd, and exact-match-negative targets blocked", async () => {
+	it("keeps project, .worx, mixed, dd, and exact-match-negative targets blocked", async () => {
 		const cwd = await makeTempRoot();
 		await writeActiveDeepInterview(cwd);
 
 		for (const command of [
 			"echo x > src/product.ts",
-			"echo x > .gjc/_session-test/state/deep-interview-state.json",
+			"echo x > .worx/_session-test/state/deep-interview-state.json",
 			"echo hi > /dev/null; touch src/product.ts",
 			"dd if=/dev/zero of=src/product.ts",
 			"echo x > /dev/nullx",
@@ -559,7 +559,7 @@ describe("workflow mutation guard", () => {
 		}
 	});
 
-	it("blocks vim file-switches into .gjc", async () => {
+	it("blocks vim file-switches into .worx", async () => {
 		const cwd = await makeTempRoot();
 		await writeActiveDeepInterview(cwd);
 
@@ -569,7 +569,7 @@ describe("workflow mutation guard", () => {
 			tool: tool("edit", { mode: "vim" }),
 			args: {
 				file: "packages/coding-agent/src/product.ts",
-				steps: [{ kbd: [":edit .gjc/specs/deep-interview-x.md<CR>", "iunsafe"] }],
+				steps: [{ kbd: [":edit .worx/specs/deep-interview-x.md<CR>", "iunsafe"] }],
 			},
 		});
 
@@ -671,7 +671,7 @@ describe("workflow mutation guard", () => {
 		const cwd = await makeTempRoot();
 		await writeActiveDeepInterview(cwd);
 
-		for (const rawPaths of [["src/product.ts"], [".gjc/specs/deep-interview-x.md"], []]) {
+		for (const rawPaths of [["src/product.ts"], [".worx/specs/deep-interview-x.md"], []]) {
 			await expect(
 				assertWorkflowMutationRawPathsAllowed({
 					cwd,
@@ -877,9 +877,9 @@ describe("workflow mutation guard", () => {
 			"gjc ralplan --write --stage planner --artifact /tmp/p.md ; tee src/product.ts",
 			"echo x > src/product.ts",
 			"gjc state read && echo x | tee src/product.ts",
-			"gjc state read && echo x > .gjc/state/foo.json",
+			"gjc state read && echo x > .worx/state/foo.json",
 			"gjc ralplan --write --stage planner --artifact /tmp/p.md\ntouch src/product.ts",
-			"gjc state read\nrm .gjc/state/foo.json",
+			"gjc state read\nrm .worx/state/foo.json",
 			"sed -i s/a/b/ src/product.ts",
 			'python -c \'open("src/product.ts", "w").write("x")\'',
 			"dd if=/dev/null of=src/product.ts",
@@ -901,7 +901,7 @@ describe("workflow mutation guard", () => {
 
 		for (const command of [
 			"gjc ralplan --write --stage planner --artifact /tmp/p.md",
-			"cat sample.md > .gjc/specs/deep-interview-sample.md",
+			"cat sample.md > .worx/specs/deep-interview-sample.md",
 			// Reading and inspecting must never be blocked during a planning phase,
 			// including commands the scanner does not model and read-only wrappers.
 			"gjc deep-interview inspect --selector summary --json",
@@ -985,15 +985,15 @@ describe("workflow mutation guard", () => {
 		expect(decision.blocked).toBe(true);
 	});
 
-	it("blocks .gjc raw paths in deferred ast_edit apply even with no planning skill or forceOverride", async () => {
+	it("blocks .worx raw paths in deferred ast_edit apply even with no planning skill or forceOverride", async () => {
 		const cwd = await makeTempRoot();
 		await expect(
-			assertWorkflowMutationRawPathsAllowed({ cwd, rawPaths: [".gjc/specs/x.md"] }),
+			assertWorkflowMutationRawPathsAllowed({ cwd, rawPaths: [".worx/specs/x.md"] }),
 		).rejects.toBeInstanceOf(ToolError);
 		await expect(
 			assertWorkflowMutationRawPathsAllowed({
 				cwd,
-				rawPaths: [".gjc/state/ralplan-state.json"],
+				rawPaths: [".worx/state/ralplan-state.json"],
 				forceOverride: true,
 			}),
 		).rejects.toBeInstanceOf(ToolError);

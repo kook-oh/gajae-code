@@ -169,7 +169,7 @@ async function bootSession(
 		sendUserMessage: () => {},
 	} as never;
 	const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-notif-stream-"));
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const cleanup = await createNotificationFixtureRoot(cwd, agentDir);
 	cleanupRoots.push(cleanup);
 	const botToken = settingsOverrides["notifications.telegram.botToken"];
@@ -216,7 +216,7 @@ async function bootSession(
 	});
 	await handlers.get("session_start")!({ type: "session_start" }, ctx);
 	await handlers.get("turn_start")!({ type: "turn_start", turnIndex: 0 }, ctx);
-	const endpointFile = path.join(cwd, ".gjc", "state", "sdk", `${sid}.json`);
+	const endpointFile = path.join(cwd, ".worx", "state", "sdk", `${sid}.json`);
 	await waitFor(() => fs.existsSync(endpointFile), 4000, "endpoint file");
 	const { url, token } = readEndpoint(endpointFile);
 
@@ -546,7 +546,7 @@ class FakeBotApi {
 
 async function bootDaemon() {
 	const root = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-stream-daemon-"));
-	const agentDir = path.join(root, ".gjc", "agent");
+	const agentDir = path.join(root, ".worx", "agent");
 	cleanupRoots.push(await createNotificationFixtureRoot(root, agentDir));
 	const bot = new FakeBotApi();
 	const daemon = new TelegramNotificationDaemon({

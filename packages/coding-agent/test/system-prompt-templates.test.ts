@@ -330,8 +330,8 @@ describe("system Handlebars prompt templates", () => {
 	});
 	test("buildSystemPrompt wires SYSTEM.md customization without replacing the base prompt", async () => {
 		await withTempDir(async dir => {
-			await fs.mkdir(path.join(dir, ".gjc"), { recursive: true });
-			await fs.writeFile(path.join(dir, ".gjc", "SYSTEM.md"), "Project system sentinel.");
+			await fs.mkdir(path.join(dir, ".worx"), { recursive: true });
+			await fs.writeFile(path.join(dir, ".worx", "SYSTEM.md"), "Project system sentinel.");
 
 			const { systemPrompt } = await buildSystemPrompt({
 				cwd: dir,

@@ -232,7 +232,7 @@ for the canonical states, localized English/Korean/Japanese/Chinese content,
 viewports, and matrix. The required capture command is:
 
 ```sh
-bun packages/coding-agent/scripts/capture-notifications-settings-showcase.ts --output .gjc/qa/issue-2050-notifications
+bun packages/coding-agent/scripts/capture-notifications-settings-showcase.ts --output .worx/qa/issue-2050-notifications
 ```
 
 The baseline consists of every canonical state at `80x24`, `120x36`, and
@@ -258,7 +258,7 @@ capture timestamp, rendering assumptions, wrapping policy, and capture mode.
 
 Regenerate captures, inspect all relevant scroll positions, and obtain an
 independent-review receipt at
-`.gjc/qa/issue-2050-notifications/independent-review.json`. The reviewer must
+`.worx/qa/issue-2050-notifications/independent-review.json`. The reviewer must
 not be the implementing executor. That receipt must use the plan's schema and
 record both manifest counts as 108 plus CJK review results.
 
@@ -354,7 +354,7 @@ first-party harness that starts the production `TUI` over a `VirtualTerminal`.
 It constructs transcript, status, hooks, and the real composer as children,
 then drives the live/manual viewport path before capturing the terminal frame.
 Capture with `bun packages/coding-agent/scripts/capture-sticky-viewport-showcase.ts
---out .gjc/qa/sticky-viewport-<run>` and verify with the paired `--root` script.
+--out .worx/qa/sticky-viewport-<run>` and verify with the paired `--root` script.
 The immutable matrix has exactly 20 keys: `live-overflow`, `manual-history`,
 `manual-new-output`, `multiline-editor-hooks-pet`, `capacity-many`,
 `capacity-one`, `capacity-zero`, and `selection-boundary` at both 80x24 and

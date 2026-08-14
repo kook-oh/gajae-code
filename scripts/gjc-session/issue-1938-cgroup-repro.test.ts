@@ -58,7 +58,7 @@ const withArtifacts = async () => {
 const runUnsupportedSerializer = async (environment: Record<string, string>) => {
 	const sessionId = `serializer-${randomUUID()}`;
 
-	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
+	const sessionRoot = path.join(import.meta.dir, "..", "..", ".worx", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
 	try {
@@ -74,7 +74,7 @@ const runIndeterminateCleanupProbe = async (probe: "tmux" | "systemd") => {
 	const sessionId = `cleanup-${randomUUID()}`;
 	const startedAt = Date.now();
 
-	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
+	const sessionRoot = path.join(import.meta.dir, "..", "..", ".worx", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: probe, ...(probe === "tmux" ? { WORX_ISSUE1938_TEST_TMUX_CLEANUP_PROBE: "error" } : { WORX_ISSUE1938_TEST_SYSTEMD_CLEANUP_PROBE: "error" }) }, stdout: "pipe", stderr: "pipe" });
 	try {
@@ -89,7 +89,7 @@ const runIndeterminateCleanupProbe = async (probe: "tmux" | "systemd") => {
 };
 const runHeldMonitorCleanup = async () => {
 	const sessionId = `held-monitor-${randomUUID()}`;
-	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
+	const sessionRoot = path.join(import.meta.dir, "..", "..", ".worx", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 	const startedAt = Date.now();
 	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY: "monitor" }, stdout: "pipe", stderr: "pipe" });
@@ -410,7 +410,7 @@ describe("issue #1938 evidence", () => {
 	test("leaves no partial receipt when same-directory atomic publication is interrupted", async () => {
 		for (const environment of [{}, { WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1" }, { WORX_ISSUE1938_TEST_DISABLE_PYTHON: "1", WORX_ISSUE1938_TEST_DISABLE_BUN: "1" }]) {
 			const sessionId = `serializer-interrupted-${randomUUID()}`;
-			const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
+			const sessionRoot = path.join(import.meta.dir, "..", "..", ".worx", `_session-${sessionId}`);
 			const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 			const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", WORX_ISSUE1938_TEST_FAIL_EVIDENCE_RENAME: "1", ...environment }, stdout: "pipe", stderr: "pipe" });
 			try {
@@ -424,7 +424,7 @@ describe("issue #1938 evidence", () => {
 	});
 test("leaves no partial receipt when the Python serializer fails", async () => {
 	const sessionId = `serializer-failed-${randomUUID()}`;
-	const sessionRoot = path.join(import.meta.dir, "..", "..", ".gjc", `_session-${sessionId}`);
+	const sessionRoot = path.join(import.meta.dir, "..", "..", ".worx", `_session-${sessionId}`);
 	const evidencePath = path.join(sessionRoot, "runtime", "evidence", "issue-1938", "pre-code.json");
 	const proc = Bun.spawn(["bash", path.join(import.meta.dir, "issue-1938-cgroup-repro.sh"), "--phase", "pre-code", "--session-id", sessionId], { env: { ...process.env, WORX_ISSUE1938_TEST_FORCE_UNSUPPORTED: "1", WORX_ISSUE1938_TEST_FAIL_PYTHON_SERIALIZER: "1" }, stdout: "pipe", stderr: "pipe" });
 	try {

@@ -283,7 +283,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 
 	it("rejects exact restore when retained content has a foreign hard link", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-delete-session");
+		const detached = path.join(root, ".worx-delete-session");
 		const alias = path.join(root, "foreign-session.jsonl");
 		const original = path.join(root, "session.jsonl");
 		const contents = "retained transcript";
@@ -350,7 +350,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 
 	it("refuses exact restore while another writer can mutate retained content", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-delete-contended");
+		const detached = path.join(root, ".worx-delete-contended");
 		const original = path.join(root, "contended.jsonl");
 		await fs.writeFile(detached, "retained content");
 		const stat = await fs.stat(detached, { bigint: true });
@@ -395,7 +395,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 		const managed = path.join(root, "managed");
 		const relocated = path.join(root, "relocated");
 		const original = path.join(managed, "state.jsonl");
-		const detached = path.join(managed, ".gjc-delete-state");
+		const detached = path.join(managed, ".worx-delete-state");
 		await fs.mkdir(managed);
 		await fs.writeFile(original, "authorized");
 		const stat = await fs.stat(original, { bigint: true });
@@ -415,7 +415,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 		await fs.symlink(relocated, managed, "junction");
 
 		expect(exactRestore(detached, original, identity)).toEqual({ ok: false, code: "reparse_point" });
-		expect(await fs.readFile(path.join(relocated, ".gjc-delete-state"), "utf8")).toBe("authorized");
+		expect(await fs.readFile(path.join(relocated, ".worx-delete-state"), "utf8")).toBe("authorized");
 	});
 
 	it("replaces inherited ACLs with a protected owner-only DACL without changing content", async () => {
@@ -580,7 +580,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 		const root = await temporaryDirectory();
 		const directory = path.join(root, "artifact");
 		const child = path.join(directory, "state.json");
-		const quarantineName = ".gjc-delete-preauthorized";
+		const quarantineName = ".worx-delete-preauthorized";
 		await fs.mkdir(directory);
 		await fs.writeFile(child, "preserve");
 		const stat = await fs.stat(directory, { bigint: true });
@@ -605,7 +605,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	it("detaches through the exact FILE_RENAME_INFO trailing-name offset", async () => {
 		const root = await temporaryDirectory();
 		const directory = path.join(root, "artifact-long-name");
-		const quarantineName = `.gjc-${"q".repeat(190)}`;
+		const quarantineName = `.worx-${"q".repeat(190)}`;
 		await fs.mkdir(directory);
 		await fs.writeFile(path.join(directory, "state.json"), "preserve");
 		const stat = await fs.stat(directory, { bigint: true });
@@ -625,7 +625,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	it("keeps the detached authority when post-detach full-file digest verification succeeds", async () => {
 		const root = await temporaryDirectory();
 		const original = path.join(root, "state.jsonl");
-		const detached = path.join(root, ".gjc-delete-state");
+		const detached = path.join(root, ".worx-delete-state");
 		const contents = "x".repeat(128 * 1024);
 		await fs.writeFile(original, contents);
 		const stat = await fs.stat(original, { bigint: true });
@@ -647,7 +647,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	it("restores a handle-bound detached regular file only when the full identity remains authorized", async () => {
 		const root = await temporaryDirectory();
 		const original = path.join(root, "state.jsonl");
-		const detached = path.join(root, ".gjc-delete-state");
+		const detached = path.join(root, ".worx-delete-state");
 		await fs.writeFile(original, "authorized");
 		const stat = await fs.stat(original, { bigint: true });
 		const parent = await parentIdentity(original);
@@ -670,7 +670,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	it("refuses a Windows exact-restore collision without clobbering either object", async () => {
 		const root = await temporaryDirectory();
 		const original = path.join(root, "state.jsonl");
-		const detached = path.join(root, ".gjc-delete-state");
+		const detached = path.join(root, ".worx-delete-state");
 		await fs.writeFile(original, "authorized");
 		const stat = await fs.stat(original, { bigint: true });
 		const parent = await parentIdentity(original);
@@ -695,7 +695,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	it("refuses a detached Windows replacement whose digest no longer matches", async () => {
 		const root = await temporaryDirectory();
 		const original = path.join(root, "state.jsonl");
-		const detached = path.join(root, ".gjc-delete-state");
+		const detached = path.join(root, ".worx-delete-state");
 		await fs.writeFile(original, "authorized");
 		const stat = await fs.stat(original, { bigint: true });
 		const parent = await parentIdentity(original);
@@ -784,7 +784,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 				size: stat.size,
 				mtimeNs: stat.mtimeNs,
 				directory: true,
-				quarantineName: ".gjc-delete-preauthorized",
+				quarantineName: ".worx-delete-preauthorized",
 			}),
 		).toEqual({ ok: false, code: "reparse_point" });
 		expect(await fs.readFile(path.join(target, "state.json"), "utf8")).toBe("preserve");
@@ -832,7 +832,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	);
 	it("snapshots and removes nested files and empty directories through retained NT handles", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached");
+		const detached = path.join(root, ".worx-detached");
 		await fs.mkdir(path.join(detached, "nested", "empty"), { recursive: true });
 		await fs.writeFile(path.join(detached, "nested", "state.jsonl"), "authorized");
 		await fs.writeFile(path.join(detached, "root.json"), "root");
@@ -858,7 +858,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 
 	it("rejects a descendant substitution after snapshot without deleting the replacement", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached");
+		const detached = path.join(root, ".worx-detached");
 		const state = path.join(detached, "state.jsonl");
 		await fs.mkdir(detached);
 		await fs.writeFile(state, "authorized");
@@ -875,7 +875,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 
 	it("returns retained root evidence after a partial failure and allows a fresh retry", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached");
+		const detached = path.join(root, ".worx-detached");
 		const later = path.join(detached, "z-later.jsonl");
 		await fs.mkdir(detached);
 		await fs.writeFile(path.join(detached, "a-first.jsonl"), "first");
@@ -902,7 +902,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	});
 	it("validates all nested siblings before quarantining an earlier sibling", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached-prevalidation");
+		const detached = path.join(root, ".worx-detached-prevalidation");
 		const earlier = path.join(detached, "a-earlier.jsonl");
 		const later = path.join(detached, "nested", "z-later.jsonl");
 		await fs.mkdir(path.dirname(later), { recursive: true });
@@ -925,7 +925,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	});
 	it("replays a previous child-removal prefix from the original snapshot", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached-prefix");
+		const detached = path.join(root, ".worx-detached-prefix");
 		const first = path.join(detached, "a-first.jsonl");
 		await fs.mkdir(detached);
 		await fs.writeFile(first, "first");
@@ -952,7 +952,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	);
 	it("removes nested read-only artifacts through their verified handles", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached-readonly");
+		const detached = path.join(root, ".worx-detached-readonly");
 		const nested = path.join(detached, "nested");
 		const readonly = path.join(nested, "state.jsonl");
 		await fs.mkdir(nested, { recursive: true });
@@ -965,7 +965,7 @@ describe.skipIf(process.platform !== "win32")("Windows native path identity", ()
 	});
 	it("replays a crash after deterministic child quarantine before delete", async () => {
 		const root = await temporaryDirectory();
-		const detached = path.join(root, ".gjc-detached-child-crash");
+		const detached = path.join(root, ".worx-detached-child-crash");
 		const state = path.join(detached, "state.jsonl");
 		await fs.mkdir(detached);
 		await fs.writeFile(state, "authorized");

@@ -232,7 +232,7 @@ function endpointState(endpoint: SdkSessionEndpoint): "live" | "stale" | "dead" 
 }
 
 async function selectEndpoint(repo: string, sessionId?: string): Promise<SdkSessionEndpoint> {
-	const discoveryDirectory = path.join(repo, ".gjc", "state", "sdk");
+	const discoveryDirectory = path.join(repo, ".worx", "state", "sdk");
 	const directoryStat = await lstat(discoveryDirectory).catch(() => undefined);
 	if (!directoryStat || directoryStat.isSymbolicLink() || !directoryStat.isDirectory())
 		throw new Error("unsafe_discovery_directory");
@@ -419,7 +419,7 @@ async def inspect(client: SdkClient, endpoint_token: str) -> dict[str, Any]:
     return snapshot
 
 def select_endpoint(repo: str, session_id: str | None) -> Endpoint:
-    directory = Path(repo) / ".gjc" / "state" / "sdk"
+    directory = Path(repo) / ".worx" / "state" / "sdk"
     if directory.is_symlink() or not directory.is_dir():
         raise ValueError("unsafe_discovery_directory")
     paths = sorted(directory.glob("*.json"))

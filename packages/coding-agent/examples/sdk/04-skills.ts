@@ -6,7 +6,7 @@
  */
 import { createAgentSession, discoverSkills, SessionManager, type Skill } from "@bworx-io/worx-code";
 
-// Discover all skills from cwd/.gjc/skills, ~/.gjc/agent/skills, etc.
+// Discover all skills from cwd/.worx/skills, ~/.worx/agent/skills, etc.
 const { skills: allSkills } = await discoverSkills();
 console.log(
 	"Discovered skills:",

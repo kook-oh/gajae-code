@@ -28,7 +28,7 @@ function scenario(dotenv: string | undefined, configs: Record<string, string>): 
 	const repo = path.join(dir, "repo");
 	const home = path.join(dir, "home");
 	fs.mkdirSync(repo, { recursive: true });
-	fs.mkdirSync(path.join(home, ".gjc", "agent"), { recursive: true });
+	fs.mkdirSync(path.join(home, ".worx", "agent"), { recursive: true });
 	if (dotenv !== undefined) fs.writeFileSync(path.join(repo, ".env"), dotenv);
 	for (const [relative, body] of Object.entries(configs)) {
 		const target = path.join(dir, relative);
@@ -69,7 +69,7 @@ describe("skill hook agent-dir trust boundary", () => {
 
 	it("still honors config in the trusted agent dir", async () => {
 		const { dir, home } = scenario(undefined, {});
-		fs.writeFileSync(path.join(home, ".gjc", "agent", "config.yml"), skillConfig("/tmp/legit-skills"));
+		fs.writeFileSync(path.join(home, ".worx", "agent", "config.yml"), skillConfig("/tmp/legit-skills"));
 
 		expect(await customDirectoriesIn(dir, home)).toContain("/tmp/legit-skills");
 	});

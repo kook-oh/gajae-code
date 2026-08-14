@@ -351,9 +351,9 @@ function normalizeBrokerInput(operation: string, input: Record<string, unknown>)
 		normalizeLifecycleDirectory,
 	);
 	if (stateRoot.error) return error("invalid_input", stateRoot.error);
-	if (stateRoot.value !== undefined && (!cwd.value || stateRoot.value !== path.join(cwd.value, ".gjc", "state")))
-		return error("invalid_input", "stateRoot must be the default .gjc/state for cwd.");
-	if (cwd.value !== undefined) normalized.stateRoot = path.join(cwd.value, ".gjc", "state");
+	if (stateRoot.value !== undefined && (!cwd.value || stateRoot.value !== path.join(cwd.value, ".worx", "state")))
+		return error("invalid_input", "stateRoot must be the default .worx/state for cwd.");
+	if (cwd.value !== undefined) normalized.stateRoot = path.join(cwd.value, ".worx", "state");
 	else if (stateRoot.value !== undefined) return error("invalid_input", "stateRoot requires cwd.");
 
 	if (target) {
@@ -450,7 +450,7 @@ function lifecycleTarget(operation: string, input: Record<string, unknown>): unk
 		explicitRoot ??
 		(() => {
 			const cwd = string(input.cwd, input.path, target?.path);
-			return cwd ? path.join(cwd, ".gjc", "state") : undefined;
+			return cwd ? path.join(cwd, ".worx", "state") : undefined;
 		})();
 	const id = string(input.sessionId, input.id);
 	switch (operation) {
@@ -1601,7 +1601,7 @@ export class Broker {
 				input = {
 					sessionId: cleanup.sessionId,
 					cwd: cleanup.cwd,
-					stateRoot: path.join(cleanup.cwd, ".gjc", "state"),
+					stateRoot: path.join(cleanup.cwd, ".worx", "state"),
 					sessionPath: cleanup.transcriptPath,
 				};
 		}

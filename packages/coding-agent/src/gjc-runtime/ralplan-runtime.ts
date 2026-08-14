@@ -50,7 +50,7 @@ import { getSkillManifest } from "./workflow-manifest";
  *
  * 1. **Consensus handoff**: `gjc ralplan [--interactive] [--deliberate] [--architect <kind>]
  *    [--critic <kind>] [--session-id <id>] "<task>"` validates the documented flag surface,
- *    seeds `.gjc/state/ralplan-state.json`, and updates the shared HUD rail via
+ *    seeds `.worx/state/ralplan-state.json`, and updates the shared HUD rail via
  *    `syncSkillActiveState`. The CLI never *runs* the Planner / Architect / Critic loop itself —
  *    that lives in the bundled `/skill:ralplan` skill — but it accepts every documented flag so
  *    scripted users see a useful response and the active run is visible to the TUI.
@@ -59,7 +59,7 @@ import { getSkillManifest } from "./workflow-manifest";
  *    (--artifact <path-or-string> | --artifact-env WORX_RALPLAN_ARTIFACT)
  *    [--run-id <id>] [--session-id <id>] [--lane-verdict <token>] [--json]` persists Planner / Architect
  *    / Critic / disposition / revision / post-interview / ADR / final artifacts under
- *    `.gjc/plans/ralplan/<run-id>/`, maintains an `index.jsonl` audit log, copies `final`
+ *    `.worx/plans/ralplan/<run-id>/`, maintains an `index.jsonl` audit log, copies `final`
  *    stages to `pending-approval.md`, and advances the HUD chip to reflect the latest
  *    persisted stage. Disposition stage artifacts are fail-closed JSON documents that
  *    record typed review conflicts with authoritative same-pass source receipts (#2902).
@@ -393,7 +393,7 @@ async function readSettingsMaxIterations(settingsPath: string): Promise<number |
 		const parsed = JSON.parse(raw) as Record<string, unknown>;
 		const flat = parseMaxIterationsValue(parsed["gjc.ralplan.maxIterations"]);
 		if (flat !== null) return flat;
-		const gjc = parsed.gjc;
+		const gjc = parsed.worx;
 		if (gjc && typeof gjc === "object") {
 			const ralplan = (gjc as Record<string, unknown>).ralplan;
 			if (ralplan && typeof ralplan === "object") {
@@ -407,7 +407,7 @@ async function readSettingsMaxIterations(settingsPath: string): Promise<number |
 }
 
 /**
- * Resolve ralplan consensus iteration cap. Project `./.gjc/settings.json` overrides
+ * Resolve ralplan consensus iteration cap. Project `./.worx/settings.json` overrides
  * user settings, else default 5.
  */
 export async function resolveRalplanMaxIterations(cwd: string): Promise<{ maxIterations: number; source: string }> {
@@ -451,7 +451,7 @@ function parseRalplanAutoHandoffSettings(parsed: unknown): RalplanAutoHandoffSet
 	if (Object.hasOwn(settings, "gjc.ralplan.autoHandoff")) {
 		return parsePresentRalplanAutoHandoff(settings["gjc.ralplan.autoHandoff"]);
 	}
-	const gjc = settings.gjc;
+	const gjc = settings.worx;
 	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
 	const ralplan = (gjc as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };
@@ -556,7 +556,7 @@ function parseMaxReviewPassesPerLaneSettings(parsed: unknown): RalplanReviewPass
 	if (Object.hasOwn(settings, "gjc.ralplan.maxReviewPassesPerLane")) {
 		return parsePresentMaxReviewPassesPerLane(settings["gjc.ralplan.maxReviewPassesPerLane"]);
 	}
-	const gjc = settings.gjc;
+	const gjc = settings.worx;
 	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
 	const ralplan = (gjc as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };

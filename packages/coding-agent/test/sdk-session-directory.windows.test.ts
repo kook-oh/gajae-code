@@ -124,7 +124,7 @@ describe.skipIf(process.platform !== "win32")("Windows managed session directory
 		if (!firstSessionFile) throw new Error("Expected persisted first-session transcript");
 		await first.close();
 
-		const internal = path.join(firstDirectory, ".gjc-managed-session-internal");
+		const internal = path.join(firstDirectory, ".worx-managed-session-internal");
 		const locks = path.join(internal, "locks");
 		const retainedLocks = path.join(internal, "locks.retained-for-test");
 		const receipts = path.join(internal, "receipts");
@@ -225,7 +225,7 @@ describe.skipIf(process.platform !== "win32")("Windows managed session directory
 		await fs.mkdir(cwd);
 
 		const first = SessionManager.managedDestination(cwd, agentDir);
-		const tombstones = path.join(first.directory, ".gjc-managed-session-internal", "tombstones");
+		const tombstones = path.join(first.directory, ".worx-managed-session-internal", "tombstones");
 		const verifyExpected = native.verifyOwnerOnlyPathSecurityExpected;
 		const verify = vi
 			.spyOn(native, "verifyOwnerOnlyPathSecurityExpected")

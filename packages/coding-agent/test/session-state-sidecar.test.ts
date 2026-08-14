@@ -104,7 +104,7 @@ async function readJson(file: string): Promise<Record<string, unknown>> {
 describe("coordinator runtime state sidecar", () => {
 	it("ignores a session root removed between postmortem lock parent creation and acquisition", async () => {
 		const root = await tempRoot();
-		const stateFile = path.join(root, ".gjc", "_session-removed", "state", "runtime-state.json");
+		const stateFile = path.join(root, ".worx", "_session-removed", "state", "runtime-state.json");
 		const sessionRoot = path.resolve(path.dirname(stateFile), "..");
 		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
 		let removed = false;
@@ -126,7 +126,7 @@ describe("coordinator runtime state sidecar", () => {
 	});
 	it("does not suppress a nested state lock failure while the owning session root remains", async () => {
 		const root = await tempRoot();
-		const sessionRoot = path.join(root, ".gjc", "_session-present");
+		const sessionRoot = path.join(root, ".worx", "_session-present");
 		const stateFile = path.join(sessionRoot, "runtime", "nested", "runtime-state.json");
 		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
 		await fs.mkdir(sessionRoot, { recursive: true });
@@ -1021,7 +1021,7 @@ describe("coordinator runtime state sidecar", () => {
 				state: "completed",
 				cwd: "C:\\Users\\Operator\\Repo",
 				workdir: "C:\\Users\\Operator\\Repo\\.\\",
-				session_file: "C:\\Users\\Operator\\Repo\\.gjc\\session.jsonl",
+				session_file: "C:\\Users\\Operator\\Repo\\.worx\\session.jsonl",
 			}),
 		);
 
@@ -1030,7 +1030,7 @@ describe("coordinator runtime state sidecar", () => {
 				stateFile,
 				sessionId: "windows-session",
 				cwd: "c:\\users\\operator\\repo",
-				sessionFile: "c:\\users\\operator\\repo\\.gjc\\session.jsonl",
+				sessionFile: "c:\\users\\operator\\repo\\.worx\\session.jsonl",
 				platform: "win32",
 			}),
 		).resolves.toEqual({ terminal: true, state: "completed" });
@@ -1039,7 +1039,7 @@ describe("coordinator runtime state sidecar", () => {
 				stateFile,
 				sessionId: "windows-session",
 				cwd: "D:\\Users\\Operator\\Repo",
-				sessionFile: "c:\\users\\operator\\repo\\.gjc\\session.jsonl",
+				sessionFile: "c:\\users\\operator\\repo\\.worx\\session.jsonl",
 				platform: "win32",
 			}),
 		).resolves.toEqual({ terminal: false, reason: "cwd_mismatch" });
@@ -1051,7 +1051,7 @@ describe("coordinator runtime state sidecar", () => {
 		const initialContext = {
 			sessionId: "fallback",
 			cwd: "C:\\Users\\Operator\\Repo",
-			sessionFile: "C:\\Users\\Operator\\Repo\\.gjc\\session.jsonl",
+			sessionFile: "C:\\Users\\Operator\\Repo\\.worx\\session.jsonl",
 			platform: "win32" as const,
 		};
 		process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV] = stateFile;
@@ -1061,7 +1061,7 @@ describe("coordinator runtime state sidecar", () => {
 		await persistCoordinatorRuntimeStateFromEvent(assistantEnd("Windows terminal"), {
 			...initialContext,
 			cwd: "c:\\USERS\\OPERATOR\\REPO\\.\\",
-			sessionFile: "c:\\USERS\\OPERATOR\\REPO\\.gjc\\.\\session.jsonl",
+			sessionFile: "c:\\USERS\\OPERATOR\\REPO\\.worx\\.\\session.jsonl",
 		});
 		const terminal = await readPayload(stateFile);
 		expect(terminal).toMatchObject({
@@ -1069,7 +1069,7 @@ describe("coordinator runtime state sidecar", () => {
 			state: "completed",
 			cwd: "c:\\USERS\\OPERATOR\\REPO",
 			workdir: "c:\\USERS\\OPERATOR\\REPO",
-			session_file: "c:\\USERS\\OPERATOR\\REPO\\.gjc\\session.jsonl",
+			session_file: "c:\\USERS\\OPERATOR\\REPO\\.worx\\session.jsonl",
 			final_response: { source: "agent_end", text: "Windows terminal" },
 		});
 
@@ -1081,7 +1081,7 @@ describe("coordinator runtime state sidecar", () => {
 			persistCoordinatorRuntimeStateFromPostmortem(postmortem.Reason.SIGTERM, {
 				...initialContext,
 				cwd: "D:\\Users\\Operator\\Repo",
-				sessionFile: "D:\\Users\\Operator\\Repo\\.gjc\\session.jsonl",
+				sessionFile: "D:\\Users\\Operator\\Repo\\.worx\\session.jsonl",
 			}),
 		).rejects.toThrow("invalid or unreadable");
 		expect(await Bun.file(stateFile).text()).toBe(beforeRejectedWrite);

@@ -27,7 +27,7 @@ export default class Skills extends Command {
 
 	static examples = [
 		"# List bundled workflow skills\n  gjc skills list",
-		"# Read an embedded workflow skill without requiring .gjc files\n  gjc skills read ultragoal",
+		"# Read an embedded workflow skill without requiring .worx files\n  gjc skills read ultragoal",
 		"# Machine-readable embedded skill content\n  gjc skills read ralplan --json",
 	];
 

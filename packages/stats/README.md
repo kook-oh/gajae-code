@@ -4,7 +4,7 @@ Local observability dashboard for AI usage statistics.
 
 ## Features
 
-- **Session log parsing**: Reads JSONL session logs from `~/.gjc/agent/sessions/`
+- **Session log parsing**: Reads JSONL session logs from `~/.worx/agent/sessions/`
 - **SQLite aggregation**: Efficient stats storage and querying using `bun:sqlite`
 - **Web dashboard**: Real-time metrics visualization with Chart.js
 - **Incremental sync**: Only processes new/modified log entries
@@ -70,8 +70,8 @@ Reverse-proxy and non-loopback deployments are unsupported. They require a separ
 
 ## Data Storage
 
-- **Session logs**: `~/.gjc/agent/sessions/` (JSONL files)
-- **Stats database**: `~/.gjc/stats.db` (SQLite)
+- **Session logs**: `~/.worx/agent/sessions/` (JSONL files)
+- **Stats database**: `~/.worx/stats.db` (SQLite)
 
 ## Dashboard
 

@@ -85,7 +85,7 @@ async function withRuntime(
 	const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-chat-control-frames-"));
 	let runtime: ChatDaemonRuntime | undefined;
 	try {
-		const stateRoot = path.join(agentDir, ".gjc", "state");
+		const stateRoot = path.join(agentDir, ".worx", "state");
 		const endpointFile = path.join(stateRoot, "sdk", `${SESSION_ID}.json`);
 		await fs.mkdir(path.dirname(endpointFile), { recursive: true });
 		await fs.writeFile(

@@ -116,7 +116,7 @@ it("starts the default source session host with isolated bootstrap policy and wo
 	const root = await tempRoot();
 	const workspace = path.join(root, "workspace ü");
 	const agentDir = path.join(root, "agent");
-	const stateRoot = path.join(workspace, ".gjc", "state");
+	const stateRoot = path.join(workspace, ".worx", "state");
 	const sentinel = path.join(root, "host-preload-sentinel");
 	const preload = path.join(root, "host-preload.ts");
 	await fs.mkdir(workspace, { recursive: true });

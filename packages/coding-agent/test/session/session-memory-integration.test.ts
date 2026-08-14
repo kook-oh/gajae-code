@@ -1242,7 +1242,7 @@ it("constructs managed cold forks through bounded authority-bound publication", 
 	const tempDir = TempDir.createSync("@pi-session-managed-bounded-fork-");
 	const storage = new FileSessionStorage();
 	const cwd = tempDir.path();
-	const agentDir = path.join(cwd, ".gjc");
+	const agentDir = path.join(cwd, ".worx");
 	const destination = SessionManager.managedDestination(cwd, agentDir, storage);
 	const source = SessionManager.create(cwd, destination, storage);
 	let forked: SessionManager | undefined;
@@ -2257,7 +2257,7 @@ it("rejects malformed auto-small managed resumes through the strict eager path",
 	const tempDir = TempDir.createSync("@pi-session-auto-small-");
 	const storage = new FileSessionStorage();
 	const cwd = tempDir.path();
-	const agentDir = path.join(cwd, ".gjc");
+	const agentDir = path.join(cwd, ".worx");
 	const destination = SessionManager.managedDestination(cwd, agentDir, storage);
 	const sessionFile = path.join(agentDir, "sessions", "auto-small-malformed.jsonl");
 	storage.writeTextSync(

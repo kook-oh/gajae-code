@@ -5,8 +5,8 @@
  * events (those skills persist through `bash`-backed `gjc` CLI calls whose tool
  * `details` carry no structured payload). The durable source of truth is the
  * append-only ledgers:
- *   - ultragoal: `.gjc/ultragoal/ledger.jsonl`
- *   - ralplan:   `.gjc/plans/ralplan/<run-id>/index.jsonl`
+ *   - ultragoal: `.worx/ultragoal/ledger.jsonl`
+ *   - ralplan:   `.worx/plans/ralplan/<run-id>/index.jsonl`
  *
  * This module is I/O-free: callers read the files and pass lines or already-parsed
  * rows. It feeds the compact HUD chip builders in `skill-state/workflow-hud.ts`

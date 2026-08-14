@@ -12,7 +12,7 @@ Gajae-Code notifications are a loopback WebSocket SDK plus a managed Telegram
 reference daemon:
 
 - each GJC session publishes a local notification endpoint under
-  `.gjc/state/sdk/<sessionId>.json`;
+  `.worx/state/sdk/<sessionId>.json`;
 - the managed Telegram daemon scans those endpoints, connects to them, and sends
   action-needed events to the configured Telegram chat;
 - replies and inline button taps route back to the exact session/action through
@@ -455,7 +455,7 @@ Check, in order:
 
 1. `gjc notify status` and confirm the selected provider is complete, not quarantined, desired on, and effective
 2. the session has not run `/notify off`; when `WORX_NOTIFICATIONS=0` suppresses automatic admission, run `/notify on` explicitly
-3. the repo has `.gjc/state/sdk/<sessionId>.json`, or `.gjc/state/chat/sdk/<sessionId>.json` when a proven foreign Telegram owner is isolated while Discord/Slack remains effective
+3. the repo has `.worx/state/sdk/<sessionId>.json`, or `.worx/state/chat/sdk/<sessionId>.json` when a proven foreign Telegram owner is isolated while Discord/Slack remains effective
 4. the selected provider runtime is ready or attached
 5. the managed daemon state is fresh under the GJC agent notifications directory
 

@@ -179,7 +179,7 @@ async function assertDirectoryNotSymlink(directoryPath: string): Promise<void> {
 	}
 }
 
-const LEGACY_MIGRATION_MARKER = ".gjc-local-legacy-migrated-v1";
+const LEGACY_MIGRATION_MARKER = ".worx-local-legacy-migrated-v1";
 const MAX_LEGACY_LOCAL_BYTES = 64 * 1024 * 1024;
 
 type LegacyMigrationState = "complete" | "cleanup_pending";
@@ -382,7 +382,7 @@ async function migrateManagedLegacyLocal(
 				throw new Error("Legacy local:// migration exceeds the safe size limit");
 		}
 	}
-	const staging = path.join(scratchParent, `.gjc-local-migration-${randomUUID()}`);
+	const staging = path.join(scratchParent, `.worx-local-migration-${randomUUID()}`);
 	const installed: Array<{ readonly path: string; readonly dev: bigint; readonly ino: bigint }> = [];
 	let sourceRetired = false;
 	try {
@@ -476,7 +476,7 @@ async function migrateLegacyLocal(
 		}
 		throw error;
 	}
-	const staging = path.join(scratchParent, `.gjc-local-migration-${randomUUID()}`);
+	const staging = path.join(scratchParent, `.worx-local-migration-${randomUUID()}`);
 	try {
 		await copyLegacyManifest(legacySource.root, staging, manifest);
 		const verifiedManifest = await captureLegacyManifest(legacySource.root, legacySource.identity);

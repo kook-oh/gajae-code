@@ -4,7 +4,7 @@ This document maps the main parts of the `gajae-code` repository. The root READM
 
 ## Product shape
 
-Gajae-Code (`gjc`) is centered on `packages/coding-agent/`. The public workflow surface is intentionally fixed at four source-bundled skills and four public role subagents. Runtime state, specs, plans, goals, team state, and local overrides live under `.gjc/`.
+Gajae-Code (`gjc`) is centered on `packages/coding-agent/`. The public workflow surface is intentionally fixed at four source-bundled skills and four public role subagents. Runtime state, specs, plans, goals, team state, and local overrides live under `.worx/`.
 
 Default workflow skills are embedded from:
 
@@ -18,7 +18,7 @@ Public role subagent prompts are embedded from:
 packages/coding-agent/src/prompts/agents/<role>.md
 ```
 
-The runtime can still discover project/user overrides, but the bundled defaults are loaded from source so a missing project `.gjc` directory does not remove the default workflow surface.
+The runtime can still discover project/user overrides, but the bundled defaults are loaded from source so a missing project `.worx` directory does not remove the default workflow surface.
 
 ## Packages
 

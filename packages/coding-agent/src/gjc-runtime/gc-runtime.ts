@@ -2,7 +2,7 @@
  * `gjc gc` runtime — a global, liveness-only, dry-run-by-default garbage
  * collector for stale GJC session/PID records.
  *
- * Design (see .gjc/plans/ralplan/2026-06-13-1347-954f/pending-approval.md):
+ * Design (see .worx/plans/ralplan/2026-06-13-1347-954f/pending-approval.md):
  * - This module is an ORCHESTRATOR only. It owns the shared PID probe, the
  *   report/exit-code policy, and text/JSON rendering. It must NOT parse private
  *   store layouts directly; every store is reached through an injectable
@@ -537,7 +537,7 @@ export function gcHelpText(): string {
 		"reports reclaimable bytes per surface. Live, referenced, permission-denied or",
 		"otherwise ambiguous state is always KEPT and the report says why. Session tool",
 		"artifacts (`*.<tool>.log`, `.artifact-id-*`, evicted output) are reported per",
-		"family. Managed worktrees under ~/.gjc/wt are never touched.",
+		"family. Managed worktrees under ~/.worx/wt are never touched.",
 		"",
 	].join("\n");
 }
@@ -577,7 +577,7 @@ export async function defaultGcAdapters(): Promise<GcStoreAdapter[]> {
 // anything live, referenced, permission-denied, unreadable or ambiguous is KEPT
 // with the reason recorded in the report.
 //
-// Deliberately out of scope: `~/.gjc/wt` managed worktrees. Removing a worktree
+// Deliberately out of scope: `~/.worx/wt` managed worktrees. Removing a worktree
 // needs evidence-based merge detection, which this axis does not have.
 
 /** On-disk surfaces the retention axis can reclaim. */
@@ -1916,7 +1916,7 @@ async function runGcDiskBackups(input: {
 	const maxAgeMs = policy.backups_max_age_days * GC_DISK_DAY_MS;
 	const candidates: Array<{ id: string; path: string }> = [];
 
-	// `~/.gjc/backups/<entry>` — update/restore backup roots.
+	// `~/.worx/backups/<entry>` — update/restore backup roots.
 	try {
 		for (const entry of await fsp.readdir(surface.root, { withFileTypes: true })) {
 			if (entry.isSymbolicLink()) continue;
@@ -1926,7 +1926,7 @@ async function runGcDiskBackups(input: {
 		if (!isEnoent(error)) errors.push({ surface: "backups", scope: surface.root, message: gcDiskErrorText(error) });
 	}
 
-	// `~/.gjc/*.bak` — sibling roots left by update/restore (agent.bak, natives-*.bak).
+	// `~/.worx/*.bak` — sibling roots left by update/restore (agent.bak, natives-*.bak).
 	try {
 		for (const entry of await fsp.readdir(gjcRoot, { withFileTypes: true })) {
 			if (!entry.name.endsWith(".bak") || entry.isSymbolicLink()) continue;

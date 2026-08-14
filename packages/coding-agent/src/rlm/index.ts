@@ -4,7 +4,7 @@
  * Composes a research session over the existing agent/session loop (python
  * kernel + read + web_search + read-only bash), optional DATA.md context, live
  * notebook.ipynb, first-class complete_research report synthesis, autonomous
- * goal-arg execution, and resumable .gjc/rlm/<session> artifacts.
+ * goal-arg execution, and resumable .worx/rlm/<session> artifacts.
  */
 import * as fs from "node:fs/promises";
 import { getProjectDir } from "@gajae-code/utils";

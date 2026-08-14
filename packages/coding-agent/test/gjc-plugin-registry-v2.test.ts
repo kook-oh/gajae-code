@@ -182,7 +182,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		await fs.cp(fixture, root, { recursive: true });
 		await writeLegacyEntry(cwd, root);
 		await readRegistry("project", cwd);
-		const registryPath = path.join(cwd, ".gjc", "gjc-plugins", "registry.json");
+		const registryPath = path.join(cwd, ".worx", "gjc-plugins", "registry.json");
 		const registry = JSON.parse(await fs.readFile(registryPath, "utf8")) as {
 			plugins: Array<{ surfaces: { tools: Array<Record<string, unknown>> } }>;
 		};

@@ -40,9 +40,9 @@ describe("config directory name containment", () => {
 	});
 
 	it("honors an ordinary configured name", () => {
-		setOnly("WORX_CONFIG_DIR", ".gjc-alt");
-		expect(getConfigDirName()).toBe(".gjc-alt");
-		expect(userAgentDirUnderHome()).toBe(path.join(os.homedir(), ".gjc-alt", "agent"));
+		setOnly("WORX_CONFIG_DIR", ".worx-alt");
+		expect(getConfigDirName()).toBe(".worx-alt");
+		expect(userAgentDirUnderHome()).toBe(path.join(os.homedir(), ".worx-alt", "agent"));
 	});
 
 	it("honors the legacy PI_CONFIG_DIR name", () => {
@@ -59,7 +59,7 @@ describe("config directory name containment", () => {
 	it.each([
 		"../escape",
 		"../../tmp/evil",
-		".gjc/../../tmp/evil",
+		".worx/../../tmp/evil",
 		"a/b/../../../../tmp/evil",
 	])("rejects the escaping name %p and falls back to the default", value => {
 		setOnly("WORX_CONFIG_DIR", value);

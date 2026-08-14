@@ -38,8 +38,8 @@ const EXPECTED_COORDINATOR_TOOLS = [
 ] as const;
 
 const SWEEP_FILES = [
-	"scripts/generate-gjc-plugins.ts",
-	"scripts/verify-gjc-plugins.ts",
+	"scripts/generate-worx-plugins.ts",
+	"scripts/verify-worx-plugins.ts",
 ] as const;
 
 const FORBIDDEN_BEHAVIOR_IDENTIFIERS = [
@@ -72,7 +72,7 @@ const FORBIDDEN_BEHAVIOR_IDENTIFIERS = [
 async function behaviorIdentityFiles(): Promise<string[]> {
 	const files: string[] = [];
 	const glob = new Bun.Glob("**/*.{ts,md,json,yml,yaml,sh}");
-	for (const relativeRoot of ["packages/coding-agent/src", "plugins/gajae-code"] as const) {
+	for (const relativeRoot of ["packages/coding-agent/src", "plugins/worx-code"] as const) {
 		for await (const relativePath of glob.scan({
 			cwd: path.join(REPO_ROOT, relativeRoot),
 			onlyFiles: true,
@@ -113,6 +113,8 @@ async function findLegacyGjcEnvironmentVariables(relativeRoots: readonly string[
 		})) {
 			const repoPath = path.join(relativeRoot, relativePath);
 			if (repoPath.startsWith("docs/plans/")) continue;
+			// The migration guide names the retired variables on purpose so users can find them.
+			if (repoPath === "docs/MIGRATION-worx-rename.md") continue;
 			if (repoPath.endsWith(".generated.ts")) continue;
 			const file = Bun.file(path.join(REPO_ROOT, repoPath));
 			if (file.size > 5_000_000) continue;

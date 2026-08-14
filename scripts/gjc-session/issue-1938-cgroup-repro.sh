@@ -18,7 +18,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-EVIDENCE_DIR="$REPO_ROOT/.gjc/_session-$SESSION_ID/runtime/evidence/issue-1938"
+EVIDENCE_DIR="$REPO_ROOT/.worx/_session-$SESSION_ID/runtime/evidence/issue-1938"
 EVIDENCE_PATH="$EVIDENCE_DIR/$PHASE.json"
 
 
@@ -244,7 +244,7 @@ if [[ -n "${WORX_ISSUE1938_TEST_CLEANUP_PROBE_ONLY:-}" ]]; then
 fi
 [[ "$DISPOSABLE_UNIT" == true ]] || exit 77
 SOURCE_REVISION="$(git -C "$REPO_ROOT" rev-parse --verify HEAD)"
-if ! git -C "$REPO_ROOT" diff --quiet -- . ':!/.gjc/**' || ! git -C "$REPO_ROOT" diff --cached --quiet -- . ':!/.gjc/**' || [[ -n "$(git -C "$REPO_ROOT" ls-files --others --exclude-standard -- ':!/.gjc/**')" ]]; then
+if ! git -C "$REPO_ROOT" diff --quiet -- . ':!/.worx/**' || ! git -C "$REPO_ROOT" diff --cached --quiet -- . ':!/.worx/**' || [[ -n "$(git -C "$REPO_ROOT" ls-files --others --exclude-standard -- ':!/.worx/**')" ]]; then
   echo "issue-1938 evidence requires a clean product source tree" >&2
   exit 1
 fi
@@ -344,7 +344,7 @@ run_post_code() {
   printf '#!/usr/bin/env bash\nexec %q -L "$WORX_ISSUE1938_TMUX_SOCKET" "$@"\n' "$tmux_bin" >"$tmux_wrapper"
   chmod 700 "$product_bin" "$tmux_wrapper"
 
-  raw_session="issue1938-raw-$RUN_PREFIX-$$"; raw_state="$WORKTREE/.gjc-session-state/$raw_session"; RAW_SOCKET="gjc-${raw_session//[^A-Za-z0-9_.-]/_}"
+  raw_session="issue1938-raw-$RUN_PREFIX-$$"; raw_state="$WORKTREE/.worx-session-state/$raw_session"; RAW_SOCKET="gjc-${raw_session//[^A-Za-z0-9_.-]/_}"
 
   if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RAW_SOCKET" WORX_BIN="$product_bin" WORX_SESSION_TMUX_BIN="$tmux_wrapper" WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" WORX_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$raw_session" "$WORKTREE"; then append_case raw_proof_before_exec failed "$started" "$(now)" '' "$raw_session" '' '' proven '' launch_failed "$SERVICE_UNIT"; return 1; fi
   raw_pid="$(wait_server_pid "$raw_session" "$RAW_SOCKET" || true)"; raw_cgroup="$(proc_cgroup "$raw_pid")"; completed="$(now)"
@@ -373,7 +373,7 @@ run_post_code() {
   IFS=$'\t' read -r raw_key raw_signal raw_result raw_latency raw_artifact_path raw_artifact_sha256 < <(parse_wait_receipt "$raw_wait") || { append_case expected_close_verdict failed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown SIGTERM unavailable; return 1; }
   append_case expected_close_verdict passed "$started" "$(now)" "$raw_pid" "$raw_session" "$raw_cgroup" SIGTERM expected_operator_shutdown "$raw_signal" "$raw_result" '' expected_operator_shutdown "$raw_key" "$raw_latency" "$raw_artifact_path" "$raw_artifact_sha256"
 
-  recovery_session="issue1938-recovery-$RUN_PREFIX-$$"; recovery_state="$WORKTREE/.gjc-session-state/$recovery_session"; RECOVERY_SOCKET="gjc-${recovery_session//[^A-Za-z0-9_.-]/_}"; SERVICE_UNIT="gjc-issue1938-recovery-$RUN_PREFIX-$$-$RANDOM.service"; TRACKED_UNITS+=("$SERVICE_UNIT")
+  recovery_session="issue1938-recovery-$RUN_PREFIX-$$"; recovery_state="$WORKTREE/.worx-session-state/$recovery_session"; RECOVERY_SOCKET="gjc-${recovery_session//[^A-Za-z0-9_.-]/_}"; SERVICE_UNIT="gjc-issue1938-recovery-$RUN_PREFIX-$$-$RANDOM.service"; TRACKED_UNITS+=("$SERVICE_UNIT")
 
 
   if ! run_unsafe_service env TMUX_TMPDIR="$WORKTREE/tmux" WORX_ISSUE1938_TMUX_SOCKET="$RECOVERY_SOCKET" WORX_BIN="$product_bin" WORX_SESSION_TMUX_BIN="$tmux_wrapper" WORX_SESSION_MONITOR_INTERVAL="$MONITOR_INTERVAL_SECONDS" WORX_SESSION_SKIP_ROUTER=1 bash "$WORKTREE/scripts/gjc-session/create.sh" "$recovery_session" "$WORKTREE"; then append_case unexpected_incident_recovery failed "$started" "$(now)" '' "$recovery_session" '' SIGTERM unexpected_owner_loss UNKNOWN launch_failed; return 1; fi

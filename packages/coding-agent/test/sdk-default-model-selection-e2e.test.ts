@@ -164,7 +164,7 @@ test("model.set executes every Q10-advertised selection and persists the public 
 	});
 	await initializeExtensions(session, { reportSendError: () => {}, reportRuntimeError: () => {} });
 
-	const endpointFile = path.join(tempDir, ".gjc", "state", "sdk", `${session.sessionId}.json`);
+	const endpointFile = path.join(tempDir, ".worx", "state", "sdk", `${session.sessionId}.json`);
 	const deadline = Date.now() + 4_000;
 	while (!(await Bun.file(endpointFile).exists())) {
 		if (Date.now() > deadline) throw new Error("Timed out starting SDK host");
@@ -529,7 +529,7 @@ test("selecting a synthetic gajae-code profile remains session-scoped across con
 	});
 	await initializeExtensions(session, { reportSendError: () => {}, reportRuntimeError: () => {} });
 
-	const endpointFile = path.join(tempDir, ".gjc", "state", "sdk", `${session.sessionId}.json`);
+	const endpointFile = path.join(tempDir, ".worx", "state", "sdk", `${session.sessionId}.json`);
 	const deadline = Date.now() + 4_000;
 	while (!(await Bun.file(endpointFile).exists())) {
 		if (Date.now() > deadline) throw new Error("Timed out starting SDK host");

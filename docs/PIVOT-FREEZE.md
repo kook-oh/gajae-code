@@ -133,7 +133,7 @@ Output: `window=2026-05-16..2026-08-13 total=92 stable=89 nightly-excluded=3 cad
 
 [V] A Python source extraction of `/Users/kook/bworx/worx-code-wrapper/docs/evidence/p0-4-native-build-probe-2026-08-12.md:10-16` outputs the 2026-08-12 operator signature: **G1 = Option A** and **G2 = darwin-arm64 + linux-x64 (modern), two platforms**; it also says the other three platforms are unsupported and Option C/F2 was not selected.
 
-[V] A Python source extraction of `/Users/kook/bworx/worx-code-wrapper/.gjc/_session-019f846c-2f78-7000-9840-7068e2f159f9/plans/ralplan/019ff279-d9df-7000-0f9b-fa4565a1529a/stage-08-final.md:3,29-52,174-180` outputs ralplan run `019ff279-d9df-7000-0f9b-fa4565a1529a`, stage 8 final rev.6, dated 2026-08-13, and the recorded approval scope.
+[V] A Python source extraction of `/Users/kook/bworx/worx-code-wrapper/.worx/_session-019f846c-2f78-7000-9840-7068e2f159f9/plans/ralplan/019ff279-d9df-7000-0f9b-fa4565a1529a/stage-08-final.md:3,29-52,174-180` outputs ralplan run `019ff279-d9df-7000-0f9b-fa4565a1529a`, stage 8 final rev.6, dated 2026-08-13, and the recorded approval scope.
 
 Disposition summary: §1b retires 13 lines/14 sites of Option C/F2/R13 material: Option C framing and F2 mirroring are removed, R13 is deleted, and the two-platform own-build path is retained. §10 establishes that the wrapper is retired as the product model and this fork is the product/engine itself; no wrapper compatibility layer is planned.
 
@@ -156,8 +156,8 @@ The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:16
 `packages/coding-agent/test/core/python-runner-artifact.test.ts:49`;
 `packages/coding-agent/test/gjc-runtime/launch-tmux.test.ts:125`;
 `packages/coding-agent/test/shell-snapshot.test.ts:49,71,92`;
-`scripts/generate-gjc-plugins.ts:24`; and
-`scripts/verify-gjc-plugins.ts:57,65`.
+`scripts/generate-worx-plugins.ts:24`; and
+`scripts/verify-worx-plugins.ts:57,65`.
 
 [V] `git grep -n 'gjc-sdk-transport/' -- ':!docs/**'` finds the production protocol definition at `packages/coding-agent/src/sdk/transport/auth-preface.ts:6,69`, plus its TypeScript fixture/tests and Python SDK implementation/tests: `packages/coding-agent/test/fixtures/sdk-frame-vectors/transport-shapes.json:6`, `packages/coding-agent/test/sdk-frame-vectors.test.ts:118`, `packages/coding-agent/test/sdk-serve-transport.test.ts:345,347,378,402,421,422,440`, `python/gjc-sdk/gjc_sdk/transport.py:87`, and `python/gjc-sdk/tests/test_vectors.py:52`.
 

@@ -2,12 +2,12 @@
 
 Practical setup recipes for two power-user needs:
 
-1. **Custom providers** — point GJC at any OpenAI/Anthropic-compatible endpoint, proxy, or local runtime through `~/.gjc/agent/models.yml`.
+1. **Custom providers** — point GJC at any OpenAI/Anthropic-compatible endpoint, proxy, or local runtime through `~/.worx/agent/models.yml`.
 2. **Multi-account routing** — keep several OAuth accounts for the same provider (e.g. two Claude Max seats) and control which one each session drains.
 
 Authoritative field-by-field reference: [`models.md`](./models.md). This page is the setup-oriented companion.
 
-## Custom providers (`~/.gjc/agent/models.yml`)
+## Custom providers (`~/.worx/agent/models.yml`)
 
 ### Local OpenAI-compatible endpoint (no auth)
 

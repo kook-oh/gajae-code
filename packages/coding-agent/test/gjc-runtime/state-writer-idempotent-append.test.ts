@@ -45,7 +45,7 @@ const byId = (entry: unknown): string | undefined => {
 describe("appendJsonlIdempotent (issue #660)", () => {
 	it("appends a fresh entry and reports appended: true", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 
 		const result = await appendJsonlIdempotent(target, { id: "a", note: "first" }, { cwd: root, key: byId });
 
@@ -57,7 +57,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("skips a duplicate key, leaving the original row untouched", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 
 		await appendJsonlIdempotent(target, { id: "a", note: "first" }, { cwd: root, key: byId });
 		// Same identity key, different payload: the append must collapse and the
@@ -72,7 +72,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("appends entries with distinct keys", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 
 		await appendJsonlIdempotent(target, { id: "a" }, { cwd: root, key: byId });
 		const second = await appendJsonlIdempotent(target, { id: "b" }, { cwd: root, key: byId });
@@ -84,7 +84,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("always appends entries whose key is undefined (dedup opt-out)", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 
 		// `byId` returns undefined for these rows, so dedup must not engage.
 		await appendJsonlIdempotent(target, { kind: "anon" }, { cwd: root, key: byId });
@@ -97,7 +97,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("uses the equals predicate when provided", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 		const equals = (candidate: unknown, existing: unknown): boolean =>
 			(candidate as { tag?: string }).tag === (existing as { tag?: string }).tag;
 
@@ -112,7 +112,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("prefers equals over key when both are supplied", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 		// key would treat these as distinct, but equals always matches → dedup.
 		const equals = (): boolean => true;
 
@@ -127,13 +127,13 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 	it("throws when neither key nor equals is supplied", async () => {
 		const root = await tempDir();
 		await expect(
-			appendJsonlIdempotent(".gjc/ledger/index.jsonl", { id: "a" }, { cwd: root } as never),
+			appendJsonlIdempotent(".worx/ledger/index.jsonl", { id: "a" }, { cwd: root } as never),
 		).rejects.toThrow(/requires a `key` or `equals`/);
 	});
 
 	it("ignores corrupt lines when checking for duplicates (best-effort)", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 		const filePath = path.join(root, target);
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 		await fs.writeFile(filePath, "{ not json\n", "utf-8");
@@ -152,7 +152,7 @@ describe("appendJsonlIdempotent (issue #660)", () => {
 
 	it("serializes concurrent idempotent appends so a duplicate is written once (TOCTOU)", async () => {
 		const root = await tempDir();
-		const target = ".gjc/ledger/index.jsonl";
+		const target = ".worx/ledger/index.jsonl";
 
 		// Without the cross-process lock, every racing append reads "no duplicate"
 		// and all of them write — the issue #646 TOCTOU. The shared primitive must

@@ -7,7 +7,7 @@ import { pruneHttpRequestDumps } from "@gajae-code/ai/utils/http-inspector";
 /**
  * Every HTTP 400 wrote a dump of the full sanitized request body and nothing ever
  * removed one. A developer machine reached 27,249 files totalling 7.0 GB,
- * averaging 264 KB each — 96% of everything under `~/.gjc`.
+ * averaging 264 KB each — 96% of everything under `~/.worx`.
  *
  * The rotating application log already bounds itself (`maxSize: 10m`,
  * `maxFiles: 5`); these diagnostics now do too.

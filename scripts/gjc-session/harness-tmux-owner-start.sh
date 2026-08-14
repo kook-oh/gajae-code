@@ -59,22 +59,22 @@ input="$(node -e 'const [workspace, branch, base, issueOrPr, sessionId] = proces
 (
   cd "$workspace"
   WORX_HARNESS_STATE_ROOT="$root" gjc harness start --input "$input" --json
-) >"/tmp/${session_name}.gjc-start.json"
+) >"/tmp/${session_name}.worx-start.json"
 
 tmux kill-session -t "$session_name" 2>/dev/null || true
 printf -v owner_command '%q ' env "WORX_HARNESS_STATE_ROOT=$root" gjc harness __owner --session "$sid"
 tmux new-session -d -s "$session_name" -n owner -c "$workspace" "exec $owner_command"
 
 for _ in $(seq 1 30); do
-  if WORX_HARNESS_STATE_ROOT="$root" gjc harness observe --session "$sid" --json >"/tmp/${session_name}.gjc-observe.json" 2>/dev/null; then
-    if node -e 'const fs=require("fs"); const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); process.exit(j.state?.ownerLive ? 0 : 1)' "/tmp/${session_name}.gjc-observe.json"; then
+  if WORX_HARNESS_STATE_ROOT="$root" gjc harness observe --session "$sid" --json >"/tmp/${session_name}.worx-observe.json" 2>/dev/null; then
+    if node -e 'const fs=require("fs"); const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); process.exit(j.state?.ownerLive ? 0 : 1)' "/tmp/${session_name}.worx-observe.json"; then
       break
     fi
   fi
   sleep 0.5
 done
 
-cat "/tmp/${session_name}.gjc-start.json"
-cat "/tmp/${session_name}.gjc-observe.json"
+cat "/tmp/${session_name}.worx-start.json"
+cat "/tmp/${session_name}.worx-observe.json"
 printf '\nSESSION_ID=%s\nSTATE_ROOT=%s\nTMUX_SERVER=default\nTMUX_SESSION=%s\n' "$sid" "$root" "$session_name"
 printf 'MACHINE_CONTROL=Coordinator MCP, ACP, or Gajae-Code SDK\n'

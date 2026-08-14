@@ -80,9 +80,9 @@ describe("Ultragoal owner-loss recovery", () => {
 			const transcriptPath = await setup(cwd);
 			const product = path.join(cwd, "product.ts");
 			await fs.writeFile(product, "export const dirtyProductFile = true;\n");
-			await fs.mkdir(path.join(cwd, ".gjc", "projection"), { recursive: true });
+			await fs.mkdir(path.join(cwd, ".worx", "projection"), { recursive: true });
 			await fs.writeFile(
-				path.join(cwd, ".gjc", "projection", "runtime.json"),
+				path.join(cwd, ".worx", "projection", "runtime.json"),
 				'{"state":"running","owner":"live"}\n',
 			);
 			const decision = await planUltragoalOwnerLossRecovery({

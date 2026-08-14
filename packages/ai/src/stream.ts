@@ -231,7 +231,7 @@ export function formatProviderCredentialHint(provider: string): string {
 	}
 	if (envVar) {
 		parts.push(
-			`Headless GJC reads this provider's key from ${envVar} (exported in your shell or set in ~/.gjc/.env).`,
+			`Headless GJC reads this provider's key from ${envVar} (exported in your shell or set in ~/.worx/.env).`,
 		);
 		parts.push("A value set only in a project .env is intentionally ignored for provider credentials.");
 	}

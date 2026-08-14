@@ -146,7 +146,7 @@ describe("createAgentSession deferred model pattern resolution", () => {
 			"modelRoles:\n  default: runtime-provider/runtime-global-b:high\n",
 		);
 		await Bun.write(
-			path.join(tempDir, ".gjc", "config.yml"),
+			path.join(tempDir, ".worx", "config.yml"),
 			"modelRoles:\n  default: runtime-provider/runtime-policy-c:low\n",
 		);
 		const settings = await Settings.init({ cwd: tempDir, agentDir: tempDir });

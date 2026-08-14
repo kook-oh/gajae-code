@@ -26,7 +26,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /**
  * Every test runs against a private state root. `WORX_CODING_AGENT_DIR` pins the
  * agent dir, `WORX_HARNESS_ROOT_REGISTRY_DIR` pins the harness registry and
- * `TMPDIR` pins the `local://` root parent, so nothing here can reach ~/.gjc.
+ * `TMPDIR` pins the `local://` root parent, so nothing here can reach ~/.worx.
  */
 interface TestRoot {
 	root: string;

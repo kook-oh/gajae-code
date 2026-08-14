@@ -1,4 +1,4 @@
-# Merge into ~/.gjc/agent/models.yml (or use as reference)
+# Merge into ~/.worx/agent/models.yml (or use as reference)
 # Remove global x-grok-model-override when using multiple Grok Build models.
 
 providers:

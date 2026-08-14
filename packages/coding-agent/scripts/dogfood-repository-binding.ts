@@ -151,7 +151,7 @@ async function main(): Promise<void> {
 	console.log(`exit=${ralplan.code}`);
 	console.log(ralplan.stdout.trim() || ralplan.stderr.trim());
 	if (ralplan.code !== 0) process.exit(1);
-	const statePath = path.join(left, ".gjc", `_session-${sessionId}`, "state", "ralplan-state.json");
+	const statePath = path.join(left, ".worx", `_session-${sessionId}`, "state", "ralplan-state.json");
 	const state = JSON.parse(await fsp.readFile(statePath, "utf8")) as {
 		repository_binding?: unknown;
 		run_id?: string;
@@ -186,7 +186,7 @@ async function main(): Promise<void> {
 	// 8) Copy seed authority into RIGHT session layout → stage write fails closed
 	console.log();
 	console.log("## 10) ralplan --write on RIGHT with LEFT binding (fail-closed)");
-	const rightStateDir = path.join(right, ".gjc", `_session-${sessionId}`, "state");
+	const rightStateDir = path.join(right, ".worx", `_session-${sessionId}`, "state");
 	await fsp.mkdir(rightStateDir, { recursive: true });
 	await fsp.copyFile(statePath, path.join(rightStateDir, "ralplan-state.json"));
 	const writeRight = await runCli(

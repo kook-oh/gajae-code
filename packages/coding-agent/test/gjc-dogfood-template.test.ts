@@ -13,14 +13,14 @@ describe("GJC dogfood skill template", () => {
 
 		expect(defaultSkillNames).toEqual(expectedWorkflowSkills);
 		// Install path must target the scanned user-level location, frontmatter-first.
-		expect(template).toContain("mkdir -p ~/.gjc/agent/skills/gjc-dogfood");
+		expect(template).toContain("mkdir -p ~/.worx/agent/skills/gjc-dogfood");
 		expect(template).toContain(
-			"sed -n '/^---$/,$p' docs/gjc-dogfood-skill-template.md > ~/.gjc/agent/skills/gjc-dogfood/SKILL.md",
+			"sed -n '/^---$/,$p' docs/gjc-dogfood-skill-template.md > ~/.worx/agent/skills/gjc-dogfood/SKILL.md",
 		);
 		expect(template).toContain(
-			"Install into the user-level scan location (`~/.gjc/agent/skills/`, not `~/.gjc/skills/`):",
+			"Install into the user-level scan location (`~/.worx/agent/skills/`, not `~/.worx/skills/`):",
 		);
-		expect(template).toContain("<project>/.gjc/skills/gjc-dogfood/SKILL.md");
+		expect(template).toContain("<project>/.worx/skills/gjc-dogfood/SKILL.md");
 		expect(template).toContain("The live issue has no comment approving a fifth bundled default workflow skill");
 		expect(template).toContain("Use when running or reviewing work through GJC sessions");
 		expect(template).toContain("gjc --tmux --worktree <branch-like-name>");

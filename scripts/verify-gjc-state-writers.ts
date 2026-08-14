@@ -3,11 +3,11 @@
 /**
  * Inventory / enforcement for the single-sanctioned-writer invariant (gate G1).
  *
- * The locked design requires that EVERY native write to `.gjc/**` flows through one sanctioned
+ * The locked design requires that EVERY native write to `.worx/**` flows through one sanctioned
  * writer module. This verifier reports filesystem mutation call sites whose path argument is
- * locally tied to a `.gjc` path literal or a known `.gjc` path helper.
+ * locally tied to a `.worx` path literal or a known `.worx` path helper.
  *
- *   --report  (default)  list every candidate `.gjc/**` write site, exit 0
+ *   --report  (default)  list every candidate `.worx/**` write site, exit 0
  *   --fail               exit non-zero unless all candidates are allowlisted
  */
 
@@ -17,7 +17,7 @@ import * as path from "node:path";
 const repoRoot = path.join(import.meta.dir, "..");
 const SCAN_ROOT = path.join(repoRoot, "packages", "coding-agent", "src");
 
-// The one module allowed to perform raw `.gjc/**` filesystem mutations once routing is complete.
+// The one module allowed to perform raw `.worx/**` filesystem mutations once routing is complete.
 const ALLOWED_WRITER_RELATIVE = path.join("packages", "coding-agent", "src", "gjc-runtime", "state-writer.ts");
 
 // Remaining intentional non-writer direct operations: empty mailbox directory creation and legacy
@@ -41,9 +41,9 @@ const MUTATION_API_PATTERNS: readonly RegExp[] = [
 	/\bcreateWriteStream\s*\(/u,
 ];
 
-// `.gjc` is referenced directly, or via a known path-helper symbol that resolves under `.gjc`.
+// `.worx` is referenced directly, or via a known path-helper symbol that resolves under `.worx`.
 const WORX_REFERENCE_PATTERNS: readonly RegExp[] = [
-	/["'`]\.gjc(?:[\\/]|["'`])/u,
+	/["'`]\.worx(?:[\\/]|["'`])/u,
 	/\bstateDirFor\b/u,
 	/\bmodeStateFile\b/u,
 	/\bworkflowStateStoragePath\b/u,
@@ -172,7 +172,7 @@ function main(): void {
 
 	const offending = findings.filter(f => !f.allowed);
 
-	console.log(`gjc .gjc/** writer inventory - scanned ${path.relative(repoRoot, SCAN_ROOT)}`);
+	console.log(`gjc .worx/** writer inventory - scanned ${path.relative(repoRoot, SCAN_ROOT)}`);
 	console.log(`Found ${findings.length} candidate write site(s) across ${byFile.size} file(s).`);
 	console.log(`Allowlisted sanctioned writer: ${ALLOWED_WRITER_RELATIVE}`);
 	console.log(`Known-allowed non-writer sites: ${KNOWN_ALLOWED_SITES.size}\n`);
@@ -193,7 +193,7 @@ function main(): void {
 	console.log(`\nSummary: ${offending.length} write site(s) outside the sanctioned writer / known allowlist.`);
 
 	if (failMode && offending.length > 0) {
-		console.error(`\nG1 FAIL: ${offending.length} direct .gjc/** write site(s) must route through ${ALLOWED_WRITER_RELATIVE}.`);
+		console.error(`\nG1 FAIL: ${offending.length} direct .worx/** write site(s) must route through ${ALLOWED_WRITER_RELATIVE}.`);
 		process.exit(1);
 	}
 }

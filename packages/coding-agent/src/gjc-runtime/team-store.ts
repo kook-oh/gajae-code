@@ -297,7 +297,7 @@ const taskPath = (dir: string, id: string) => path.join(dir, "tasks", `${safeId(
 const claimPath = (dir: string, id: string) => path.join(dir, "claims", `${safeId("task_id", id)}.json`);
 const writerOptions = (filePath: string, category: "state" | "prune", verb: string) => {
 	const resolved = path.resolve(filePath);
-	const marker = `${path.sep}.gjc${path.sep}`;
+	const marker = `${path.sep}.worx${path.sep}`;
 	const markerIndex = resolved.indexOf(marker);
 	const cwd = markerIndex >= 0 ? resolved.slice(0, markerIndex) : process.cwd();
 	const sessionId =

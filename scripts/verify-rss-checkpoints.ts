@@ -165,7 +165,7 @@ export class CheckpointError extends Error {
 }
 
 const repoRoot = path.resolve(import.meta.dir, "..");
-const checkpointRoot = path.join(repoRoot, ".gjc", "rss-checkpoints");
+const checkpointRoot = path.join(repoRoot, ".worx", "rss-checkpoints");
 
 const REFERENCE_CHUNK_MARKER = "gjc-rss-reference-0123456789abcdef";
 const REFERENCE_LARGE_LINE_COUNT = 29_960;
@@ -184,9 +184,9 @@ function usage(): string {
 		"  --scenario <S1..S7[,S...]>  Measure selected scenarios",
 		"  --all                       Measure S1-S5 and S7; report S6 as deferred",
 		"  --compare                   Compare against --baseline, or the current commit checkpoint when omitted",
-		"  --baseline <file>           Baseline JSON path (defaults to .gjc/rss-checkpoints/<commit>.json)",
+		"  --baseline <file>           Baseline JSON path (defaults to .worx/rss-checkpoints/<commit>.json)",
 		"  --allow-baseline-drift      Permit comparing across builds (required for milestone floor gates)",
-		"  --write-baseline            Write .gjc/rss-checkpoints/<commit>.json",
+		"  --write-baseline            Write .worx/rss-checkpoints/<commit>.json",
 		"  --milestone <W1c|W3b|W5b>  enforce the declared RSS improvement floor",
 		"  --rescope-ref <file>       accepted re-scope record for a missed floor",
 		"  --matrix <name[,name...]>   Record a named measurement matrix",

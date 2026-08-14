@@ -63,8 +63,8 @@ describe("runMigrate", () => {
 		});
 		expect(report.dryRun).toBe(true);
 		expect(report.actions.length).toBeGreaterThan(0);
-		expect(await exists(path.join(cwd, ".gjc", "mcp.json"))).toBe(false);
-		expect(await exists(path.join(cwd, ".gjc", "skills"))).toBe(false);
+		expect(await exists(path.join(cwd, ".worx", "mcp.json"))).toBe(false);
+		expect(await exists(path.join(cwd, ".worx", "skills"))).toBe(false);
 	});
 
 	test("--json report carries taxonomy counts by total/type/source", async () => {
@@ -83,7 +83,7 @@ describe("runMigrate", () => {
 		expect(report.summary.bySource).toHaveProperty("claude-code");
 	});
 
-	test("--project writes under cwd/.gjc", async () => {
+	test("--project writes under cwd/.worx", async () => {
 		await runMigrate({
 			from: ["claude-code"],
 			project: true,
@@ -93,8 +93,8 @@ describe("runMigrate", () => {
 			homeDir: home,
 			cwd,
 		});
-		expect(await exists(path.join(cwd, ".gjc", "mcp.json"))).toBe(true);
-		expect(await exists(path.join(cwd, ".gjc", "skills", "alpha", "SKILL.md"))).toBe(true);
+		expect(await exists(path.join(cwd, ".worx", "mcp.json"))).toBe(true);
+		expect(await exists(path.join(cwd, ".worx", "skills", "alpha", "SKILL.md"))).toBe(true);
 	});
 
 	test("user scope writes under the agent dir", async () => {

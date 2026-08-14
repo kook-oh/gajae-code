@@ -34,15 +34,15 @@ machine — it is a local SQLite index.
 
 GJC discovers custom tools from a `tools/` directory in its config dirs:
 
-- **Project-scoped**: `<project>/.gjc/tools/`
-- **User-scoped (all projects)**: `~/.gjc/agent/tools/`
+- **Project-scoped**: `<project>/.worx/tools/`
+- **User-scoped (all projects)**: `~/.worx/agent/tools/`
 
 A `*.ts` tool file's default export is a factory `(pi) => CustomTool`. The factory
 receives an API (`pi`) with members such as `exec`, `cwd`, `zod`, and `logger` — so
 the tool needs no imports from GJC internals.
 
-Save the following as `.gjc/tools/codegraph.ts` (project) or
-`~/.gjc/agent/tools/codegraph.ts` (user):
+Save the following as `.worx/tools/codegraph.ts` (project) or
+`~/.worx/agent/tools/codegraph.ts` (user):
 
 ```typescript
 /**

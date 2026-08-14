@@ -46,7 +46,7 @@ function resolveTargetDir(flags: AgentsCommandArgs["flags"]): string {
 	}
 
 	if (flags.project) {
-		return path.resolve(getProjectDir(), ".gjc", "agents");
+		return path.resolve(getProjectDir(), ".worx", "agents");
 	}
 
 	return path.join(getAgentDir(), "agents");

@@ -38,7 +38,7 @@ function identityFencedFs(): TelegramDaemonFs {
 			exactUnlinkNotificationFile(
 				file,
 				identity,
-				quarantineName ?? ".gjc-delete-notification-staging-temp-test.json",
+				quarantineName ?? ".worx-delete-notification-staging-temp-test.json",
 			),
 	};
 }
@@ -95,7 +95,7 @@ test("the notification reaper detaches dead-publisher staging temps without clai
 	expect(result.removed).toEqual([]);
 	expect(result.skipped).toBe(3);
 	expect(
-		fs.readdirSync(paths.dir).filter(name => name.startsWith(".gjc-delete-notification-staging-temp-")),
+		fs.readdirSync(paths.dir).filter(name => name.startsWith(".worx-delete-notification-staging-temp-")),
 	).toHaveLength(3);
 });
 
@@ -227,7 +227,7 @@ test("a dead publisher's staging temp stays retained under stable exact authorit
 	expect(result.skipped).toBeGreaterThan(0);
 	const [detachedName] = fs
 		.readdirSync(paths.dir)
-		.filter(name => name.startsWith(".gjc-delete-notification-staging-temp-"));
+		.filter(name => name.startsWith(".worx-delete-notification-staging-temp-"));
 	expect(detachedName).toBeString();
 	const detachedPath = path.join(paths.dir, detachedName!);
 	const retainedBytes = fs.readFileSync(detachedPath);
@@ -244,7 +244,7 @@ test("a dead publisher's staging temp stays retained under stable exact authorit
 	expect(fs.existsSync(detachedPath)).toBe(false);
 	const placeholderNames = fs
 		.readdirSync(paths.dir)
-		.filter(name => name.startsWith(".gjc-exact-unlink-placeholder-"))
+		.filter(name => name.startsWith(".worx-exact-unlink-placeholder-"))
 		.sort();
 	const payloadPlaceholderName = placeholderNames.find(name => name.endsWith(".json"));
 	expect(payloadPlaceholderName).toBeString();
@@ -263,7 +263,7 @@ test("a dead publisher's staging temp stays retained under stable exact authorit
 	expect(
 		fs
 			.readdirSync(paths.dir)
-			.filter(name => name.startsWith(".gjc-exact-unlink-placeholder-"))
+			.filter(name => name.startsWith(".worx-exact-unlink-placeholder-"))
 			.sort(),
 	).toEqual(placeholderNames);
 	expect(fs.readFileSync(payloadPlaceholderPath)).toEqual(retainedBytes);
@@ -305,7 +305,7 @@ test("a staging temp replaced between identity capture and delete is not removed
 test("a retained staging quarantine replacement is not removed by the generic reaper", async () => {
 	const agentDir = agentDirWithNotifications();
 	const paths = daemonPaths(agentDir);
-	const file = path.join(paths.dir, ".gjc-delete-notification-staging-temp-retained.json");
+	const file = path.join(paths.dir, ".worx-delete-notification-staging-temp-retained.json");
 	fs.writeFileSync(file, "retained-original\n");
 
 	const base = identityFencedFs();
@@ -334,7 +334,7 @@ test("a retained staging quarantine replacement is not removed by the generic re
 test("a retained cleanup_pending successor stays surfaced without pathname churn", async () => {
 	const agentDir = agentDirWithNotifications();
 	const paths = daemonPaths(agentDir);
-	const file = path.join(paths.dir, ".gjc-delete-notification-staging-temp-retained.json");
+	const file = path.join(paths.dir, ".worx-delete-notification-staging-temp-retained.json");
 	fs.writeFileSync(file, "retained-original\n");
 
 	const base = identityFencedFs();
@@ -361,7 +361,7 @@ test("a retained cleanup_pending successor stays surfaced without pathname churn
 	expect(retained.skipped).toBeGreaterThan(0);
 	expect(fs.existsSync(file)).toBe(false);
 	expect(detachedPath).toBeString();
-	expect(path.basename(detachedPath!)).toStartWith(".gjc-exact-unlink-placeholder-");
+	expect(path.basename(detachedPath!)).toStartWith(".worx-exact-unlink-placeholder-");
 	expect(fs.readFileSync(detachedPath!, "utf8")).toBe("retained-original\n");
 
 	const healed = await reapStaleNotificationArtifacts({
@@ -379,7 +379,7 @@ test("a retained cleanup_pending successor stays surfaced without pathname churn
 	expect(
 		fs
 			.readdirSync(paths.dir)
-			.filter(name => name.startsWith(".gjc-exact-unlink-placeholder-"))
+			.filter(name => name.startsWith(".worx-exact-unlink-placeholder-"))
 			.map(name => path.join(paths.dir, name)),
 	).toEqual([detachedPath!]);
 });

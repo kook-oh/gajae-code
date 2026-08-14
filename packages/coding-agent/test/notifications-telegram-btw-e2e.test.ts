@@ -197,7 +197,7 @@ test("/btw travels through NotificationServer and a real WebSocket with one stri
 		const cwd = path.join(agentDir, "repo");
 		fs.mkdirSync(cwd, { recursive: true });
 		await registerNotificationRoot({ settings, cwd, sessionId });
-		const server = new NotificationServer(sessionId, "token", path.join(cwd, ".gjc", "state"), true);
+		const server = new NotificationServer(sessionId, "token", path.join(cwd, ".worx", "state"), true);
 		const inbound: Array<Record<string, unknown>> = [];
 		const inboundKinds: string[] = [];
 		server.onSdkFrame((error, frame) => {
@@ -415,7 +415,7 @@ test("/btw reconnect does not replay an in-flight provider request", async () =>
 				if (frame.kind === "ephemeral_turn") inbound.push(message);
 			});
 		};
-		const server = new NotificationServer(sessionId, "token", path.join(cwd, ".gjc", "state"), true);
+		const server = new NotificationServer(sessionId, "token", path.join(cwd, ".worx", "state"), true);
 		installCallbacks(server);
 		await server.start();
 		const bot = new Bot();
@@ -526,7 +526,7 @@ test("/btw generation replacement terminalizes an old pending request exactly on
 				if (!error && frame?.kind === "ephemeral_turn") inbound.push(frame as unknown as Record<string, unknown>);
 			});
 		};
-		let server = new NotificationServer(sessionId, "token", path.join(cwd, ".gjc", "state"), true);
+		let server = new NotificationServer(sessionId, "token", path.join(cwd, ".worx", "state"), true);
 		installCallbacks(server);
 		await server.start();
 		const bot = new Bot();
@@ -574,7 +574,7 @@ test("/btw generation replacement terminalizes an old pending request exactly on
 			expect(inbound).toHaveLength(1);
 			replayGeneration = 5;
 
-			server = new NotificationServer(sessionId, "token", path.join(cwd, ".gjc", "state"), true);
+			server = new NotificationServer(sessionId, "token", path.join(cwd, ".worx", "state"), true);
 			installCallbacks(server);
 			await server.start();
 			await daemon.scanRoots();

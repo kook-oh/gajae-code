@@ -256,7 +256,7 @@ export interface ProjectContextFilesResult {
 /**
  * Load all context files using the capability API.
  * Returns {path, content, depth} entries for all discovered context files.
- * Native user-global files (`~/.gjc/agent/AGENTS.md`) come first, then project
+ * Native user-global files (`~/.worx/agent/AGENTS.md`) come first, then project
  * files sorted by depth (descending) so files closer to cwd appear last/more
  * prominent. User-home files from foreign providers (`~/.claude/CLAUDE.md`,
  * `~/.codex/AGENTS.md`, …) stay excluded — only gjc's own user config applies.

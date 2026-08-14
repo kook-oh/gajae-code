@@ -53,7 +53,7 @@ function fixture() {
 	servers.push(server);
 	const sessionId = "live-session";
 	const url = `ws://127.0.0.1:${server.port}`;
-	const dir = path.join(repo, ".gjc", "state", "sdk");
+	const dir = path.join(repo, ".worx", "state", "sdk");
 	fs.mkdirSync(dir, { recursive: true });
 	fs.writeFileSync(path.join(dir, `${sessionId}.json`), JSON.stringify({ url, token }));
 	return { repo, sessionId, url, sent: () => sends };
@@ -105,7 +105,7 @@ function brokerFixture(
 							([
 								{
 									sessionId: session.sessionId,
-									locator: { repo, stateRoot: path.join(repo, ".gjc", "state") },
+									locator: { repo, stateRoot: path.join(repo, ".worx", "state") },
 									endpointGeneration: 1,
 									pid: process.pid,
 									live: true,

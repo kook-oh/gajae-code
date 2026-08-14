@@ -28,7 +28,7 @@ export default class MCP extends Command {
 	};
 
 	static flags = {
-		project: Flags.boolean({ description: "Write/read project scope (./.gjc/mcp.json) instead of user scope" }),
+		project: Flags.boolean({ description: "Write/read project scope (./.worx/mcp.json) instead of user scope" }),
 		force: Flags.boolean({ description: "Overwrite an existing server during add", default: false }),
 		json: Flags.boolean({
 			char: "j",
@@ -98,7 +98,7 @@ COMMANDS
   remove  Remove a stored server and print the removed definition redacted
 
 FLAGS
-      --project          Use project scope (./.gjc/mcp.json) instead of user scope
+      --project          Use project scope (./.worx/mcp.json) instead of user scope
       --force            Overwrite an existing server during add
   -j, --json             Emit machine-readable JSON with sensitive values redacted
       --type=<value>     stdio | http | sse (default: stdio, or http when --url is set)

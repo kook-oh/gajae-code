@@ -16,7 +16,7 @@ Primary implementation files:
 
 Default config path:
 
-- `~/.gjc/agent/models.yml`
+- `~/.worx/agent/models.yml`
 
 Legacy behavior still present:
 
@@ -215,7 +215,7 @@ Presets only write `models.yml` entries that reference documented environment va
 
 ## Model profiles (`--mpreset`)
 
-Model profiles are optional top-level `profiles:` entries in `~/.gjc/agent/models.yml`. A profile can require provider credentials before activation and can map one or more model roles; omitted roles inherit from the active defaults.
+Model profiles are optional top-level `profiles:` entries in `~/.worx/agent/models.yml`. A profile can require provider credentials before activation and can map one or more model roles; omitted roles inherit from the active defaults.
 
 > See also: [Cross-vendor role-based profiles](./multi-vendor-profiles.md) — a curated multi-vendor `profiles:` recipe and verified selector notes that build on the mechanism described here.
 
@@ -1003,7 +1003,7 @@ providers:
 
 ## Legacy consumer caveat
 
-Most model configuration now flows through `models.yml` via `ModelRegistry`. Explicit `.json` / `.jsonc` paths remain supported only when passed programmatically to `ModelRegistry`; the default user config is `~/.gjc/agent/models.yml`.
+Most model configuration now flows through `models.yml` via `ModelRegistry`. Explicit `.json` / `.jsonc` paths remain supported only when passed programmatically to `ModelRegistry`; the default user config is `~/.worx/agent/models.yml`.
 
 ## Failure mode
 

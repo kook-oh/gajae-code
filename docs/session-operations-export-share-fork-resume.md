@@ -93,7 +93,7 @@ No session persistence changes are made by dumping.
 
 ### Phase 2: custom share handler (if present)
 
-`loadCustomShare()` checks `~/.gjc/agent` for first existing candidate:
+`loadCustomShare()` checks `~/.worx/agent` for first existing candidate:
 
 - `share.ts`
 - `share.js`

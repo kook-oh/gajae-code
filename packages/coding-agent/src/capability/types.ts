@@ -2,7 +2,7 @@
  * Core types for the capability-based config discovery system.
  *
  * This architecture inverts control: instead of callers knowing provider-specific
- * paths like `.gjc`, `.gemini`, or `.vscode`, they simply ask for `load("mcps")`
+ * paths like `.worx`, `.gemini`, or `.vscode`, they simply ask for `load("mcps")`
  * and get back a unified array of MCP servers.
  */
 
@@ -38,7 +38,7 @@ export interface Provider<T> {
 	/** Human-readable name for UI display (e.g., "Anthropic Code", "OpenAI code provider") */
 	displayName: string;
 
-	/** Short description for settings UI (e.g., "Load config from .gjc/") */
+	/** Short description for settings UI (e.g., "Load config from .worx/") */
 	description: string;
 
 	/**

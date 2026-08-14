@@ -9,7 +9,7 @@ Example hooks for gjc-coding-agent.
 gjc --hook examples/hooks/permission-gate.ts
 
 # Or copy to hooks directory for auto-discovery
-cp permission-gate.ts ~/.gjc/agent/hooks/
+cp permission-gate.ts ~/.worx/agent/hooks/
 ```
 
 ## Examples

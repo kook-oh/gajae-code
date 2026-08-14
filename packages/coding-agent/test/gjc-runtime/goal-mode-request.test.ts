@@ -55,11 +55,11 @@ describe("GJC ultragoal goal mode request", () => {
 		const root = await tempDir();
 		const goalsPath = path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "goals.json");
 		await fs.mkdir(path.dirname(goalsPath), { recursive: true });
-		await Bun.write(goalsPath, JSON.stringify({ gjcObjective: "Complete .gjc/ultragoal/goals.json" }));
+		await Bun.write(goalsPath, JSON.stringify({ gjcObjective: "Complete .worx/ultragoal/goals.json" }));
 
 		const result = await readUltragoalGjcObjective(root);
 
-		expect(result.objective).toBe("Complete .gjc/ultragoal/goals.json");
+		expect(result.objective).toBe("Complete .worx/ultragoal/goals.json");
 		expect(result.goalsPath).toBe(goalsPath);
 	});
 
@@ -287,7 +287,7 @@ describe("GJC ultragoal goal mode request", () => {
 		// leak into a concurrent independent session sharing the same cwd.
 		expect(await consumePendingGoalModeRequest(root, "other-session")).toBeNull();
 		const pending = await consumePendingGoalModeRequest(root, "session-owner");
-		expect(pending?.objective).toContain(".gjc/ultragoal/goals.json");
+		expect(pending?.objective).toContain(".worx/ultragoal/goals.json");
 		expect(pending?.sessionId).toBe("session-owner");
 		const entries = (await loadEntriesFromFile(sessionFile)).filter(
 			(entry): entry is SessionEntry => entry.type !== "session",

@@ -25,8 +25,8 @@ const ralplanSkill = {
 async function tempProject(fixtureName = "valid-skill-plugin"): Promise<string> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-subskill-injection-"));
 	tempRoots.push(cwd);
-	await fs.mkdir(path.join(cwd, ".gjc", "gjc-plugins"), { recursive: true });
-	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".gjc", "gjc-plugins", fixtureName), {
+	await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".worx", "gjc-plugins", fixtureName), {
 		recursive: true,
 	});
 	return cwd;
@@ -106,7 +106,7 @@ describe("GJC sub-skill prompt injection", () => {
 		});
 		const filePath = path.join(
 			cwd,
-			".gjc",
+			".worx",
 			"gjc-plugins",
 			"combined-pack",
 			"subskills",

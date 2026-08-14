@@ -28,13 +28,13 @@ describe("createAgentSession skills option", () => {
 
 	beforeEach(() => {
 		tempDir = path.join(os.tmpdir(), `gjc-sdk-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-		// Create skill in .gjc/skills/ for native project-level discovery.
-		skillsDir = path.join(tempDir, ".gjc", "skills", "test-skill");
+		// Create skill in .worx/skills/ for native project-level discovery.
+		skillsDir = path.join(tempDir, ".worx", "skills", "test-skill");
 		fs.mkdirSync(skillsDir, { recursive: true });
 		originalHome = process.env.HOME;
 		tempHomeDir = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-home-"));
 		process.env.HOME = tempHomeDir;
-		const nativeUserSkillsDir = path.join(tempHomeDir, ".gjc", "agent", "skills");
+		const nativeUserSkillsDir = path.join(tempHomeDir, ".worx", "agent", "skills");
 		fs.mkdirSync(nativeUserSkillsDir, { recursive: true });
 
 		// Create a test skill in the native GJC skills directory
@@ -70,8 +70,8 @@ Loaded via symbolic link.
 
 	afterEach(cleanupTempHome(() => ({ tempDir, tempHomeDir, originalHome })));
 
-	it("loads embedded default GJC workflow skills even when .gjc is absent and arbitrary skill discovery is disabled", async () => {
-		fs.rmSync(path.join(tempDir, ".gjc"), { recursive: true, force: true });
+	it("loads embedded default GJC workflow skills even when .worx is absent and arbitrary skill discovery is disabled", async () => {
+		fs.rmSync(path.join(tempDir, ".worx"), { recursive: true, force: true });
 		const { session } = await createAgentSession({
 			cwd: tempDir,
 			agentDir: tempDir,
@@ -109,7 +109,7 @@ Loaded via symbolic link.
 	});
 
 	it("should still discover project skills when user skills directory is missing", async () => {
-		const userAgentDir = path.join(tempHomeDir, ".gjc", "agent");
+		const userAgentDir = path.join(tempHomeDir, ".worx", "agent");
 		fs.rmSync(path.join(userAgentDir, "skills"), { recursive: true, force: true });
 		fs.writeFileSync(path.join(userAgentDir, "placeholder.txt"), "placeholder");
 

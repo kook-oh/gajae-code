@@ -62,9 +62,9 @@ function runtimeSkillSettings(overrides: Record<string, unknown> = {}): Settings
 }
 
 describe("SkillDiscoveryTool", () => {
-	it("discovers project runtime skills from .gjc/skills", async () => {
+	it("discovers project runtime skills from .worx/skills", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-project-skills-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill");
 		const settings = runtimeSkillSettings();
 
 		const tool = new SkillDiscoveryTool(createSession(cwd, { settings }));
@@ -80,8 +80,8 @@ describe("SkillDiscoveryTool", () => {
 
 	it("preserves exact skill-name tokens without broadening unnamed partial matches", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-exact-name-skill-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "aws", "Cloud operations router");
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "harbor", "Container registry router");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "aws", "Cloud operations router");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "harbor", "Container registry router");
 		const tool = new SkillDiscoveryTool(createSession(cwd, { settings: runtimeSkillSettings() }));
 
 		const exact = await tool.execute("call", { query: "aws" });
@@ -100,13 +100,13 @@ describe("SkillDiscoveryTool", () => {
 		expect(unrelated.details?.candidates).toEqual([]);
 	});
 
-	it("discovers user runtime skills from ~/.gjc/skills", async () => {
+	it("discovers user runtime skills from ~/.worx/skills", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-skills-cwd-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-skills-home-"));
 		const originalHome = process.env.HOME;
 		process.env.HOME = home;
 		try {
-			await makeSkill(path.join(home, ".gjc", "skills"), "user-helper", "User helper skill");
+			await makeSkill(path.join(home, ".worx", "skills"), "user-helper", "User helper skill");
 			const settings = runtimeSkillSettings();
 
 			const tool = new SkillDiscoveryTool(createSession(cwd, { settings }));
@@ -122,11 +122,11 @@ describe("SkillDiscoveryTool", () => {
 		}
 	});
 
-	it("does not classify home .gjc skills as project skills while walking up", async () => {
+	it("does not classify home .worx skills as project skills while walking up", async () => {
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-home-skill-boundary-"));
 		const cwd = path.join(home, "work", "project", "nested");
 		await fs.mkdir(cwd, { recursive: true });
-		await makeSkill(path.join(home, ".gjc", "skills"), "home-helper", "Home helper skill", "Home body.");
+		await makeSkill(path.join(home, ".worx", "skills"), "home-helper", "Home helper skill", "Home body.");
 		const originalHome = process.env.HOME;
 		process.env.HOME = home;
 		try {
@@ -165,9 +165,9 @@ describe("SkillDiscoveryTool", () => {
 
 	it("does not return bundled built-in skills or grow the core prompt catalog", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-builtins-suppressed-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill");
 		await makeSkill(
-			path.join(cwd, ".gjc", "skills"),
+			path.join(cwd, ".worx", "skills"),
 			"ralplan",
 			"On-disk built-in impostor",
 			"Should be suppressed.",
@@ -198,8 +198,8 @@ describe("SkillDiscoveryTool", () => {
 				{
 					name: "project-helper",
 					description: "Project helper skill",
-					filePath: path.join(cwd, ".gjc", "skills", "project-helper", "SKILL.md"),
-					baseDir: path.join(cwd, ".gjc", "skills", "project-helper"),
+					filePath: path.join(cwd, ".worx", "skills", "project-helper", "SKILL.md"),
+					baseDir: path.join(cwd, ".worx", "skills", "project-helper"),
 					source: "runtime:project",
 				},
 			],
@@ -213,7 +213,7 @@ describe("SkillDiscoveryTool", () => {
 
 	it("loads selected discovered skill content through the skill invocation path", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-selected-skill-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill", "Loaded narrowly.");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill", "Loaded narrowly.");
 		const settings = runtimeSkillSettings();
 		const sent: Array<{ content: string; details?: unknown }> = [];
 		const tool = new SkillTool(
@@ -235,7 +235,7 @@ describe("SkillDiscoveryTool", () => {
 
 	it("does not discover or invoke runtime skills when skills.enabled is false", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-skills-disabled-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill", "Blocked body.");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill", "Blocked body.");
 		const settings = runtimeSkillSettings({ "skills.enabled": false });
 
 		const discovery = await new SkillDiscoveryTool(createSession(cwd, { settings })).execute("call", {});
@@ -258,7 +258,7 @@ describe("SkillDiscoveryTool", () => {
 
 	it("explains empty results caused by disabled discovery scopes, and stays silent for genuine emptiness", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-skills-notice-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill");
 
 		// Requested scope is fully disabled: empty result carries a scope notice.
 		const userOff = runtimeSkillSettings({ "skills.enablePiUser": false });
@@ -322,8 +322,8 @@ describe("SkillDiscoveryTool", () => {
 				"Configured legacy user skill",
 				"Legacy body.",
 			);
-			await makeSkill(path.join(home, ".gjc", "skills"), "historical", "Historical legacy user skill");
-			await makeSkill(path.join(cwd, ".gjc", "skills"), "shared", "Project user skill", "Project body.");
+			await makeSkill(path.join(home, ".worx", "skills"), "historical", "Historical legacy user skill");
+			await makeSkill(path.join(cwd, ".worx", "skills"), "shared", "Project user skill", "Project body.");
 
 			await makeSkill(path.join(home, ".decoy-agent", "skills"), "decoy", "Decoy user skill");
 			await makeSkill(path.join(home, ".decoy-pi-agent", "skills"), "pi-decoy", "PI decoy user skill");
@@ -380,11 +380,11 @@ describe("SkillDiscoveryTool", () => {
 			delete process.env.WORX_CONFIG_DIR;
 			delete process.env.PI_CONFIG_DIR;
 			await makeSkill(
-				path.join(home, ".gjc", "agent", "skills"),
+				path.join(home, ".worx", "agent", "skills"),
 				"default-canonical",
 				"Default canonical user skill",
 			);
-			await makeSkill(path.join(home, ".gjc", "skills"), "default-canonical", "Default legacy user skill");
+			await makeSkill(path.join(home, ".worx", "skills"), "default-canonical", "Default legacy user skill");
 			let result = await new SkillDiscoveryTool(createSession(cwd, { settings: runtimeSkillSettings() })).execute(
 				"call",
 				{
@@ -423,7 +423,7 @@ describe("SkillDiscoveryTool", () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-hidden-runtime-skill-"));
 		try {
 			await makeSkill(
-				path.join(cwd, ".gjc", "skills"),
+				path.join(cwd, ".worx", "skills"),
 				"hidden-helper",
 				"Hidden helper skill",
 				"Hidden body.",
@@ -451,8 +451,8 @@ describe("SkillDiscoveryTool", () => {
 			const hiddenSkill: Skill = {
 				name: "hidden-helper",
 				description: "Hidden helper skill",
-				filePath: path.join(cwd, ".gjc", "skills", "hidden-helper", "SKILL.md"),
-				baseDir: path.join(cwd, ".gjc", "skills", "hidden-helper"),
+				filePath: path.join(cwd, ".worx", "skills", "hidden-helper", "SKILL.md"),
+				baseDir: path.join(cwd, ".worx", "skills", "hidden-helper"),
 				source: "runtime:project",
 				hide: true,
 			};
@@ -474,12 +474,12 @@ describe("SkillDiscoveryTool", () => {
 		const originalHome = process.env.HOME;
 		try {
 			process.env.HOME = home;
-			const skillsDir = path.join(cwd, ".gjc", "skills");
+			const skillsDir = path.join(cwd, ".worx", "skills");
 			const alphaPath = await makeSkill(skillsDir, "alpha", "Sort alpha", "Alpha body.");
 			await fs.symlink(path.dirname(alphaPath), path.join(skillsDir, "zz-alias-alpha"), "dir");
 			await makeSkill(skillsDir, "ralplan", "Sort built-in", "Suppressed body.");
 			const userAlphaPath = await makeSkill(
-				path.join(home, ".gjc", "skills"),
+				path.join(home, ".worx", "skills"),
 				"alpha",
 				"Lower-only user alpha",
 				"User body.",
@@ -516,8 +516,8 @@ describe("SkillDiscoveryTool", () => {
 	it("applies source enable flags and skill filters to discovery and invocation", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-skills-policy-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-skills-policy-home-"));
-		await makeSkill(path.join(cwd, ".gjc", "skills"), "project-helper", "Project helper skill", "Project body.");
-		await makeSkill(path.join(home, ".gjc", "skills"), "user-helper", "User helper skill", "User body.");
+		await makeSkill(path.join(cwd, ".worx", "skills"), "project-helper", "Project helper skill", "Project body.");
+		await makeSkill(path.join(home, ".worx", "skills"), "user-helper", "User helper skill", "User body.");
 		const originalHome = process.env.HOME;
 		process.env.HOME = home;
 		try {

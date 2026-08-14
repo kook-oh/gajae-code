@@ -22,7 +22,7 @@ Invoke another available skill in the current turn.
 
 <examples>
 # Hand off from ralplan to ultragoal after an approved plan
-{"name": "ultragoal", "args": "track execution of .gjc/plans/ralplan/<run-id>/pending-approval.md"}
+{"name": "ultragoal", "args": "track execution of .worx/plans/ralplan/<run-id>/pending-approval.md"}
 
 # Trigger deep-interview with no arguments
 {"name": "deep-interview"}

@@ -26,7 +26,7 @@ Full-featured example demonstrating:
 gjc --tool examples/custom-tools/todo/index.ts
 
 # Or copy entire folder to tools directory for persistent use
-cp -r todo ~/.gjc/agent/tools/
+cp -r todo ~/.worx/agent/tools/
 ```
 
 Then in gjc:

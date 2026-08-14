@@ -1207,7 +1207,7 @@ describe("active managed picker root", () => {
 		const inspection = await SessionManager.inspectSessionTailReadOnly(legacyPath);
 		if (inspection.kind === "error") throw new Error("Expected legacy inspection");
 		fs.writeFileSync(replacementPath, fs.readFileSync(legacyPath));
-		const protocolRoot = path.join(destination.directory, ".gjc-managed-session-internal");
+		const protocolRoot = path.join(destination.directory, ".worx-managed-session-internal");
 		const before = {
 			receipts: fs.readdirSync(path.join(protocolRoot, "receipts")),
 			tombstones: fs.readdirSync(path.join(protocolRoot, "tombstones")),
@@ -1256,8 +1256,8 @@ describe("active managed picker root", () => {
 		expect(opened.kind).toBe("opened");
 		if (opened.kind === "opened") await opened.manager.close();
 		expect(prepare).not.toHaveBeenCalled();
-		expect(fs.existsSync(path.join(explicitDirectory, ".gjc-managed-session-scope.v2.json"))).toBe(false);
-		expect(fs.existsSync(path.join(explicitDirectory, ".gjc-managed-session-internal"))).toBe(false);
+		expect(fs.existsSync(path.join(explicitDirectory, ".worx-managed-session-scope.v2.json"))).toBe(false);
+		expect(fs.existsSync(path.join(explicitDirectory, ".worx-managed-session-internal"))).toBe(false);
 	});
 
 	it("fails closed at the final migration seam when captured managed authority is replaced", async () => {
@@ -1278,8 +1278,8 @@ describe("active managed picker root", () => {
 		fs.mkdirSync(legacyDirectory, { recursive: true });
 		fs.writeFileSync(legacyPath, sessionText("legacy").replace('"cwd":"/cwd"', `"cwd":${JSON.stringify(cwd)}`));
 		const candidateBefore = fs.readFileSync(legacyPath);
-		const protocolRoot = path.join(destination.directory, ".gjc-managed-session-internal");
-		const bindingPath = path.join(destination.directory, ".gjc-managed-session-scope.v2.json");
+		const protocolRoot = path.join(destination.directory, ".worx-managed-session-internal");
+		const bindingPath = path.join(destination.directory, ".worx-managed-session-scope.v2.json");
 		const bindingBefore = fs.readFileSync(bindingPath);
 		const receiptsBefore = fs.readdirSync(path.join(protocolRoot, "receipts"));
 		const tombstonesBefore = fs.readdirSync(path.join(protocolRoot, "tombstones"));
@@ -1308,6 +1308,6 @@ describe("active managed picker root", () => {
 		expect(fs.readdirSync(path.join(protocolRoot, "tombstones"))).toEqual(tombstonesBefore);
 		expect(fs.existsSync(path.join(destination.directory, path.basename(legacyPath)))).toBe(false);
 		expect(fs.existsSync(path.join(destination.directory, path.basename(legacyPath).slice(0, -6)))).toBe(false);
-		expect(fs.existsSync(path.join(legacyDirectory, ".gjc-managed-session-scope.v2.json"))).toBe(false);
+		expect(fs.existsSync(path.join(legacyDirectory, ".worx-managed-session-scope.v2.json"))).toBe(false);
 	});
 });

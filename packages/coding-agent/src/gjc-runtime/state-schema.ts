@@ -170,7 +170,7 @@ function isEnoent(error: unknown): boolean {
 }
 
 /**
- * Parse + schema-validate a `.gjc` JSON file at the read boundary.
+ * Parse + schema-validate a `.worx` JSON file at the read boundary.
  * Returns `null` when the file is absent. Fail-open: an invalid file yields
  * `{ ok: false }` with the raw value attached so the caller can normalize/log.
  */

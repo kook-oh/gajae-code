@@ -75,7 +75,7 @@ describe("loadPastedImageBatch", () => {
 	});
 
 	it("keeps automatic clipboard paths inside the canonical temp root", async () => {
-		const outsideDirectory = await fs.mkdtemp(path.join(os.homedir(), ".gjc-pasted-image-outside-"));
+		const outsideDirectory = await fs.mkdtemp(path.join(os.homedir(), ".worx-pasted-image-outside-"));
 		const outsideImage = path.join(outsideDirectory, "clipboard-2026-07-19-123456-Ab3.png");
 		const linkedParent = path.join(testDirectory, "linked-parent");
 		await Bun.write(outsideImage, RED_1X1_PNG);

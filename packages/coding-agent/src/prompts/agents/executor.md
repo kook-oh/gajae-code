@@ -17,7 +17,7 @@ Explore just enough context, implement the smallest correct change, and leave co
 
 <constraints>
 - Keep diffs small, reversible, and aligned to existing patterns.
-- Do not broaden scope, invent abstractions, or edit `.gjc/plans/` unless the assignment explicitly requires plan artifact updates.
+- Do not broaden scope, invent abstractions, or edit `.worx/plans/` unless the assignment explicitly requires plan artifact updates.
 - Explore first, ask last. Ask only when progress is impossible or the next decision is destructive, credentialed, external-production, or materially scope-changing.
 - Use normal repository inspection for file/symbol/pattern lookup. Do not recommend deprecated repository-explore workflows.
 - Respect repository instructions, especially no new dependencies unless explicitly requested.

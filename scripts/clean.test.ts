@@ -14,7 +14,7 @@ async function fixture(): Promise<string> {
 	await Bun.write(path.join(root, "packages/natives/native/index.js"), "loader");
 	await Bun.write(path.join(root, "artifacts/g011-qa-report.json"), "{}");
 	await Bun.write(path.join(root, "node_modules/left-pad/index.js"), "dep");
-	await Bun.write(path.join(root, ".gjc/state/ledger.json"), "{}");
+	await Bun.write(path.join(root, ".worx/state/ledger.json"), "{}");
 	return root;
 }
 
@@ -33,7 +33,7 @@ test("removes build output but keeps sources, evidence, dependencies, and runtim
 		expect(await fs.exists(path.join(root, "packages/coding-agent/src/cli.ts"))).toBe(true);
 		expect(await fs.exists(path.join(root, "artifacts/g011-qa-report.json"))).toBe(true);
 		expect(await fs.exists(path.join(root, "node_modules/left-pad/index.js"))).toBe(true);
-		expect(await fs.exists(path.join(root, ".gjc/state/ledger.json"))).toBe(true);
+		expect(await fs.exists(path.join(root, ".worx/state/ledger.json"))).toBe(true);
 	} finally {
 		await fs.rm(root, { recursive: true, force: true });
 	}
@@ -67,7 +67,7 @@ test.each([
 	[".", "repo root"],
 	["node_modules/left-pad", "installed dependency"],
 	[".git/config", "git metadata"],
-	[".gjc/state", "runtime state"],
+	[".worx/state", "runtime state"],
 	["artifacts/g011-qa-report.json", "test evidence"],
 	["packages/coding-agent/artifacts", "nested test evidence"],
 ])("rejects %s (%s)", (candidate: string) => {

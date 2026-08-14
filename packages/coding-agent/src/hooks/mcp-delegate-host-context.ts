@@ -110,7 +110,7 @@ export async function listMcpDelegateHostContexts(
 ): Promise<{ contexts: McpDelegateHostContextV1[]; failures: number }> {
 	let entries: Dirent[];
 	try {
-		entries = await fs.readdir(path.join(cwd, ".gjc"), { withFileTypes: true });
+		entries = await fs.readdir(path.join(cwd, ".worx"), { withFileTypes: true });
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === "ENOENT") return { contexts: [], failures: 0 };
 		return { contexts: [], failures: 1 };
@@ -119,7 +119,7 @@ export async function listMcpDelegateHostContexts(
 	const candidates: Array<{ path: string; mtimeMs: number }> = [];
 	for (const entry of entries) {
 		if (!entry.isDirectory() || !entry.name.startsWith("_session-")) continue;
-		const contextPath = path.join(cwd, ".gjc", entry.name, "state", "mcp-delegate-host-context.json");
+		const contextPath = path.join(cwd, ".worx", entry.name, "state", "mcp-delegate-host-context.json");
 		try {
 			const stat = await fs.stat(contextPath);
 			if (stat.isFile() && stat.size <= MAX_HOST_CONTEXT_BYTES)

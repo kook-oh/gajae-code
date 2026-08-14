@@ -21,7 +21,7 @@ async function runPluginCommand(
 	agentDirOverride?: string,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
 	// Isolate the user scope: without this the child process reads the real
-	// ~/.gjc/agent registry and inherits whatever the developer has installed.
+	// ~/.worx/agent registry and inherits whatever the developer has installed.
 	const agentDir = agentDirOverride ?? (await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-")));
 	if (!agentDirOverride) agentDirs.push(agentDir);
 	const proc = Bun.spawn({

@@ -24,14 +24,14 @@ async function createActiveRun(): Promise<string> {
 	// Disable the pre-gate try-harder nudge so these tests isolate the underlying
 	// human_blocked pause gate (the nudge layer has its own dedicated coverage in
 	// ultragoal-nudge-guard.test.ts).
-	await fs.mkdir(path.join(cwd, ".gjc"), { recursive: true });
-	await fs.writeFile(path.join(cwd, ".gjc", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 0 }));
+	await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
+	await fs.writeFile(path.join(cwd, ".worx", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 0 }));
 	await createUltragoalPlan({ cwd, brief: "Implement the story" });
 	return cwd;
 }
 
 function ultragoalPath(cwd: string, file: "goals.json" | "ledger.jsonl"): string {
-	return path.join(cwd, ".gjc", `_session-${TEST_SESSION_ID}`, "ultragoal", file);
+	return path.join(cwd, ".worx", `_session-${TEST_SESSION_ID}`, "ultragoal", file);
 }
 
 afterEach(async () => {

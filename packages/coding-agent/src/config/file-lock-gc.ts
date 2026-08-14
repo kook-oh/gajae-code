@@ -41,7 +41,7 @@ export interface FileLocksGcCollectOptions {
 
 // Global, env-aware GJC lock roots. Per the approved scope this covers the
 // user config root, the agent dir (honors WORX_CODING_AGENT_DIR), and the
-// configured receipt-spool dir — NOT the invocation cwd's project `.gjc`.
+// configured receipt-spool dir — NOT the invocation cwd's project `.worx`.
 function knownFileLockRoots(ctx: GcContext): string[] {
 	const roots = [getConfigRootDir(), getAgentDir()];
 	const spoolDir = resolveReceiptSpoolDir(ctx.env);

@@ -3,9 +3,9 @@
  *
  * Precedence (highest first):
  *   1. `WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN` env vars.
- *   2. `auth.broker.url` / `auth.broker.token` in `~/.gjc/agent/config.yml`
+ *   2. `auth.broker.url` / `auth.broker.token` in `~/.worx/agent/config.yml`
  *      (hidden from the settings UI; `!command` resolution supported).
- *   3. Token file `~/.gjc/auth-broker.token` (paired with URL from env or config).
+ *   3. Token file `~/.worx/auth-broker.token` (paired with URL from env or config).
  *
  * Returns null when no broker URL is configured — caller falls back to the
  * local SQLite store.

@@ -31,7 +31,7 @@ export interface Skill {
 	hide?: boolean;
 	/** Source metadata for display */
 	_source?: SourceMeta;
-	/** Embedded SKILL.md content for bundled defaults that survive .gjc deletion. */
+	/** Embedded SKILL.md content for bundled defaults that survive .worx deletion. */
 	/** Lazily load the full skill body when prompt injection needs it. */
 	loadContent?: () => Promise<string>;
 	content?: string;
@@ -129,7 +129,7 @@ export async function loadSkills(options: LoadSkillsOptions = {}): Promise<LoadS
 		return { skills: [], warnings: [] };
 	}
 
-	// GJC only accepts native `.gjc` skills. Other providers may still exist for
+	// GJC only accepts native `.worx` skills. Other providers may still exist for
 	// their own capabilities, but their skill surfaces are intentionally ignored.
 	function isSourceEnabled(source: SourceMeta): boolean {
 		const { provider, level } = source;

@@ -229,7 +229,7 @@ describe("SDK surface parity", () => {
 			expect(servers.size).toBe(1);
 			const server = [...servers][0];
 			expect(server).toBeDefined();
-			const endpointPath = path.join(cwd, ".gjc", "state", "sdk", `${sessionId}.json`);
+			const endpointPath = path.join(cwd, ".worx", "state", "sdk", `${sessionId}.json`);
 			const endpoint = JSON.parse(await fs.readFile(endpointPath, "utf8")) as { url: string; token: string };
 			socket = new WebSocket(`${endpoint.url}?token=${endpoint.token}`);
 			socket.addEventListener("message", event => messages.push(String(event.data)));

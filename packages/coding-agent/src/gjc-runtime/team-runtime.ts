@@ -643,7 +643,7 @@ function isEnoent(error: unknown): error is FsError {
 }
 function stateWriterOptions(filePath: string, category: "state" | "ledger" | "report" | "prune", verb: string) {
 	const resolved = path.resolve(filePath);
-	const marker = `${path.sep}.gjc${path.sep}`;
+	const marker = `${path.sep}.worx${path.sep}`;
 	const markerIndex = resolved.indexOf(marker);
 	const cwd = markerIndex >= 0 ? resolved.slice(0, markerIndex) : process.cwd();
 	const parts = resolved.split(path.sep);
@@ -3357,13 +3357,13 @@ export type GjcWorkerCheckpointClassification =
 
 const UNMERGED_GIT_STATUS_CODES = new Set(["DD", "AU", "UD", "UA", "DU", "AA", "UU"]);
 // Every generated/runtime artifact for a GJC session lives under
-// `.gjc/_session-{id}/...` (see session-layout.ts), so worker auto-checkpoints
+// `.worx/_session-{id}/...` (see session-layout.ts), so worker auto-checkpoints
 // exclude the whole session subtree instead of enumerating its subdirectories.
 // The enumerated form drifted: subtrees outside the list (for example the
 // extragoal gate receipts from docs/extragoal-skill-template.md, or the
 // session-root `.session-activity.json` marker) were auto-committed and merged
-// into the leader branch on projects that do not gitignore `.gjc/_session-*/`.
-const PROTECTED_WORKER_CHECKPOINT_PREFIXES = [".gjc/_session-*/"];
+// into the leader branch on projects that do not gitignore `.worx/_session-*/`.
+const PROTECTED_WORKER_CHECKPOINT_PREFIXES = [".worx/_session-*/"];
 
 function parsePorcelainStatus(stdout: string): { files: string[]; statusCodes: string[] } {
 	const records = stdout.split("\0");

@@ -38,7 +38,7 @@ export * from "./deep-interview-state";
  * round-record semantics — stable identity, append-or-merge, lifecycle, compact
  * reads, replay detection, and the pure scored-transition validator. Callers such
  * as the `ask` tool only resolve an answer and invoke these helpers; they never
- * compute state paths, merge records, or write `.gjc` files directly. All writes
+ * compute state paths, merge records, or write `.worx` files directly. All writes
  * go through the sanctioned state-writer (`writeWorkflowEnvelopeAtomic`).
  */
 

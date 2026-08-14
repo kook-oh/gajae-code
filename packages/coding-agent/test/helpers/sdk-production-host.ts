@@ -37,7 +37,7 @@ export async function startProductionSdkHost(
 	stop: () => Promise<void>;
 }> {
 	const observed: Array<{ kind: "control" | "query"; operation: string }> = [];
-	const agentDir = path.join(cwd, ".gjc", "agent");
+	const agentDir = path.join(cwd, ".worx", "agent");
 	const fixtureEnv = createFixtureBrokerEnvironment(agentDir, agentDir);
 	return withFixtureBrokerEnvironment(async () => {
 		const started = await startFixtureBrokerWithLeaseForTest({ agentDir, env: fixtureEnv });
@@ -107,7 +107,7 @@ export async function startProductionSdkHost(
 				if (priorNotifications === undefined) delete process.env.WORX_NOTIFICATIONS;
 				else process.env.WORX_NOTIFICATIONS = priorNotifications;
 			}
-			const file = path.join(cwd, ".gjc", "state", "sdk", `${session.sessionId}.json`);
+			const file = path.join(cwd, ".worx", "state", "sdk", `${session.sessionId}.json`);
 			const deadline = Date.now() + 4_000;
 			while (!fs.existsSync(file)) {
 				if (Date.now() > deadline) throw new Error("Timed out starting production SDK host");

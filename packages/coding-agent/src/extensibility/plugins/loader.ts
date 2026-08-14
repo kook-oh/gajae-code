@@ -31,7 +31,7 @@ async function loadRuntimeConfig(): Promise<PluginRuntimeConfig> {
 }
 
 /**
- * Load project-local plugin overrides (checks .gjc and .pi directories).
+ * Load project-local plugin overrides (checks .worx and .pi directories).
  */
 async function loadProjectOverrides(cwd: string): Promise<ProjectPluginOverrides> {
 	for (const overridesPath of getConfigDirPaths("plugin-overrides.json", { user: false, cwd })) {
