@@ -1,7 +1,7 @@
 /**
  * Manage bundled task agents.
  */
-import { Args, Command, Flags, renderCommandHelp } from "@gajae-code/utils/cli";
+import { Args, Command, Flags, renderCommandHelp } from "@bworx-io/worx-utils/cli";
 import { type AgentsAction, type AgentsCommandArgs, runAgentsCommand } from "../cli/agents-cli";
 import { initTheme } from "../modes/theme/theme";
 

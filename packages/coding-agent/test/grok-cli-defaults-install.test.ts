@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { Effort } from "@gajae-code/ai/model-thinking";
+import { Effort } from "@bworx-io/worx-ai/model-thinking";
 import {
 	type GrokCliModelConfig,
 	resolveModels,

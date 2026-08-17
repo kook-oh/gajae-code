@@ -19,6 +19,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { getEmbeddedDefaultGjcSkills } from "@bworx-io/worx-code/defaults/gjc-defaults";
@@ -32,10 +34,8 @@ import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/sessio
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SKILL_PROMPT_MESSAGE_TYPE, type SkillPromptDetails } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { Container } from "@gajae-code/tui";
-import { TempDir } from "@gajae-code/utils";
+import { Container } from "@bworx-io/worx-tui";
+import { TempDir } from "@bworx-io/worx-utils";
 
 // ============================================================================
 // Shared helpers

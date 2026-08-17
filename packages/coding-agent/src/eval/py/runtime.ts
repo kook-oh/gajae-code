@@ -7,7 +7,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { $env, $which, getPythonEnvDir, WhichCachePolicy } from "@gajae-code/utils";
+import { $env, $which, getPythonEnvDir, WhichCachePolicy } from "@bworx-io/worx-utils";
 import { withFileLock } from "../../config/file-lock";
 
 export const RLM_MANAGED_PYTHON_PACKAGES: readonly string[] = ["numpy", "pandas", "matplotlib", "polars"];

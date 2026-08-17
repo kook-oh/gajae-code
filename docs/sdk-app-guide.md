@@ -42,7 +42,7 @@ Gajae-Code packages the runtime as a reusable component:
 
 | | Embedding SDK (in-process) | WebSocket SDK (out-of-process) |
 | --- | --- | --- |
-| What it is | Import `@gajae-code/coding-agent` as a library | Connect to a running session's loopback WS endpoint |
+| What it is | Import `@bworx-io/worx-code` as a library | Connect to a running session's loopback WS endpoint |
 | Language | TypeScript / Bun (Node-compatible) | Any language (JSON frames) |
 | Telemetry | Full: token deltas, tool events, session events | Curated: action/ask frames, summarized turn stream, queries |
 | Trust model | You are the host — full access | Token-authenticated client — secrets are never exposed |
@@ -56,11 +56,11 @@ over WebSocket for notifications and approvals.
 ## Quick start: embed the runtime
 
 ```bash
-bun add @gajae-code/coding-agent
+bun add @bworx-io/worx-code
 ```
 
 ```ts
-import { createAgentSession } from "@gajae-code/coding-agent";
+import { createAgentSession } from "@bworx-io/worx-code";
 
 const { session } = await createAgentSession();
 
@@ -128,7 +128,7 @@ const { session } = await createAgentSession({
 ### Isolate state for request-scoped agents
 
 ```ts
-import { SessionManager, Settings } from "@gajae-code/coding-agent";
+import { SessionManager, Settings } from "@bworx-io/worx-code";
 
 const { session } = await createAgentSession({
   sessionManager: SessionManager.inMemory(), // no filesystem persistence
@@ -159,11 +159,11 @@ Connect with any WebSocket client (`ws://127.0.0.1:<port>/?token=<token>`), or
 use the TypeScript transport package:
 
 ```bash
-bun add @gajae-code/bridge-client
+bun add @bworx-io/worx-bridge-client
 ```
 
 ```ts
-import { SdkClient } from "@gajae-code/bridge-client";
+import { SdkClient } from "@bworx-io/worx-bridge-client";
 ```
 
 A minimal client only handles three frames:

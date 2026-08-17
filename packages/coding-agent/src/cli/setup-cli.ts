@@ -6,8 +6,8 @@
 
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import { AuthStorage, SqliteAuthCredentialStore } from "@gajae-code/ai/core";
-import { $which, APP_NAME, getAgentDbPath, getPythonEnvDir } from "@gajae-code/utils";
+import { AuthStorage, SqliteAuthCredentialStore } from "@bworx-io/worx-ai/core";
+import { $which, APP_NAME, getAgentDbPath, getPythonEnvDir } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
 import { installDefaultGjcDefinitions } from "../defaults/gjc-defaults";

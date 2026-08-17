@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { fuzzyFind as fuzzyFindFn } from "@bworx-io/worx-code-natives";
-import { getProjectDir } from "@gajae-code/utils";
+import { getProjectDir } from "@bworx-io/worx-utils";
 
 type NativeFuzzyFind = typeof fuzzyFindFn;
 let nativeFuzzyFind: NativeFuzzyFind | undefined;

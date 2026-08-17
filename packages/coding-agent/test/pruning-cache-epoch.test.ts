@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent, type AgentContext } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, ToolResultMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
@@ -7,10 +10,7 @@ import { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions/ru
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentContext } from "@gajae-code/agent-core";
-import type { AssistantMessage, ToolResultMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { getProjectAgentDir, TempDir } from "@gajae-code/utils";
+import { getProjectAgentDir, TempDir } from "@bworx-io/worx-utils";
 
 /**
  * Cache-epoch invariant regression tests for tool-output pruning.

@@ -15,7 +15,7 @@
 import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { startAuthGateway } from "@gajae-code/ai/auth-gateway/server";
+import { startAuthGateway } from "@bworx-io/worx-ai/auth-gateway/server";
 import {
 	type Api,
 	AuthBrokerClient,
@@ -27,8 +27,8 @@ import {
 	type Model,
 	RemoteAuthCredentialStore,
 	type SnapshotResponse,
-} from "@gajae-code/ai/core";
-import { getConfigRootDir, isEnoent, VERSION } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { getConfigRootDir, isEnoent, VERSION } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import { type AuthBrokerClientConfig, resolveAuthBrokerConfig } from "../session/auth-broker-config";
 

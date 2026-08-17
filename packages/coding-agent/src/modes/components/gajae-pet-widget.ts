@@ -14,7 +14,7 @@ import {
 	petBurstFrame,
 	registerAnimationCallback,
 	type TUI,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import type { CustomEditor } from "./custom-editor";
 import { getPetPixelProtocol } from "./pet-capability";
 

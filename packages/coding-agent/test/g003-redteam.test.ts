@@ -14,7 +14,7 @@ import {
 } from "@bworx-io/worx-code/extensibility/extensions/runner";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { getProjectAgentDir, logger, TempDir } from "@gajae-code/utils";
+import { getProjectAgentDir, logger, TempDir } from "@bworx-io/worx-utils";
 
 describe("G003 ExtensionRunner red-team", () => {
 	let tempDir: TempDir;

@@ -161,7 +161,7 @@ Artifacts and side channels:
   - Child sessions may use whichever networked tools/models their active tool set permits.
 - Subprocesses / native bindings
   - `fuse-overlayfs` and `fusermount`/`fusermount3` for FUSE isolation.
-  - ProjFS native bindings via `@gajae-code/natives` on Windows.
+  - ProjFS native bindings via `@bworx-io/worx-code-natives` on Windows.
   - Git operations for baseline capture, patch apply/proof, worktrees, branches, stash, and cherry-pick; nested patches are left as working-tree changes rather than committing owner state.
 - Session state (transcript, memory, jobs, checkpoints, registries)
   - Creates child `AgentSession` instances with isolated settings snapshots.

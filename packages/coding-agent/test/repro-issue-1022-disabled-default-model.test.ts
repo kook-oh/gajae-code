@@ -7,7 +7,7 @@ import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/setti
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 
 /**

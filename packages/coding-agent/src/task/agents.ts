@@ -3,7 +3,7 @@
  *
  * Agents are embedded at build time via Bun's import with { type: "text" }.
  */
-import { parseFrontmatter, prompt } from "@gajae-code/utils";
+import { parseFrontmatter, prompt } from "@bworx-io/worx-utils";
 import { parseAgentFields } from "../discovery/helpers";
 import ralplanPersistenceTemplate from "../prompts/agent-fragments/ralplan-persistence.md" with { type: "text" };
 import restrictedBashTemplate from "../prompts/agent-fragments/restricted-bash.md" with { type: "text" };

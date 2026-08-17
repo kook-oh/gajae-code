@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { authBorrowDisabledForTest } from "@gajae-code/ai/utils/oauth/perplexity";
+import { authBorrowDisabledForTest } from "@bworx-io/worx-ai/utils/oauth/perplexity";
 
 /**
  * `docs/environment-variables.md` advertises `WORX_AUTH_NO_BORROW` as the switch

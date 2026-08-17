@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
+import type { AgentEvent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, ToolCall } from "@bworx-io/worx-ai";
 import {
 	getStreamingEditToolCallForEvent,
 	type StreamingEditParsedCacheEntry,
 } from "@bworx-io/worx-code/session/agent-session";
-import type { AgentEvent } from "@gajae-code/agent-core";
-import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
 
 function eventFor(argumentsValue: unknown): AgentEvent {
 	const toolCall: ToolCall = {

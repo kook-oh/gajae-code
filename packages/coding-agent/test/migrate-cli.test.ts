@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { setAgentDir } from "@gajae-code/utils";
+import { setAgentDir } from "@bworx-io/worx-utils";
 import { MigrateArgsError, resolveSources, runMigrate } from "../src/cli/migrate-cli";
 
 let home: string;

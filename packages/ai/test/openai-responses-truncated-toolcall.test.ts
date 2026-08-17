@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { processResponsesStream } from "@gajae-code/ai/providers/openai-responses-shared";
-import type { AssistantMessage, Model, ToolCall } from "@gajae-code/ai/types";
+import { processResponsesStream } from "@bworx-io/worx-ai/providers/openai-responses-shared";
+import type { AssistantMessage, Model, ToolCall } from "@bworx-io/worx-ai/types";
 import type { ResponseStreamEvent } from "openai/resources/responses/responses";
 
 // A response cut short for length (`incomplete`) can stop mid-tool-call. The

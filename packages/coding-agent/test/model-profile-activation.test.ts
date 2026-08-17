@@ -1,8 +1,8 @@
 import { describe, expect, it, test, vi } from "bun:test";
-import { Agent, ThinkingLevel } from "@gajae-code/agent-core";
+import { Agent, ThinkingLevel } from "@bworx-io/worx-agent-core";
 
-import type { Model } from "@gajae-code/ai";
-import { TempDir } from "@gajae-code/utils";
+import type { Model } from "@bworx-io/worx-ai";
+import { TempDir } from "@bworx-io/worx-utils";
 import {
 	activateModelProfile,
 	applyPreparedModelProfileActivation,

@@ -4,7 +4,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { performance } from "node:perf_hooks";
-import { $flag, $pickflag, getDebugLogPath, logger, onDefaultTabWidthChange } from "@gajae-code/utils";
+import { $flag, $pickflag, getDebugLogPath, logger, onDefaultTabWidthChange } from "@bworx-io/worx-utils";
 import { getKeybindings } from "./keybindings";
 import { isKeyRelease } from "./keys";
 import { renderMetrics } from "./metrics";

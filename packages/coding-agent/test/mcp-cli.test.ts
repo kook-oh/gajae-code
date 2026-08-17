@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getConfigRootDir, getMCPConfigPath, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, getMCPConfigPath, setAgentDir } from "@bworx-io/worx-utils";
 import { runMCPCommand } from "../src/cli/mcp-cli";
 import { readMCPConfigFile } from "../src/runtime-mcp/config-writer";
 

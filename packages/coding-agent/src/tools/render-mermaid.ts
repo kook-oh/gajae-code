@@ -1,5 +1,5 @@
-import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import { type MermaidAsciiRenderOptions, prompt, renderMermaidAscii } from "@gajae-code/utils";
+import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@bworx-io/worx-agent-core";
+import { type MermaidAsciiRenderOptions, prompt, renderMermaidAscii } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import renderMermaidDescription from "../prompts/tools/render-mermaid.md" with { type: "text" };
 import type { ToolSession } from "./index";

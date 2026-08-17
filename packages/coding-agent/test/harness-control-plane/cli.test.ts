@@ -178,7 +178,7 @@ describe("gjc harness CLI (foundation)", () => {
 		try {
 			const packageDir = path.join(fakeRepo, "packages", "ai");
 			await mkdir(packageDir, { recursive: true });
-			await writeFile(path.join(packageDir, "package.json"), JSON.stringify({ name: "@gajae-code/ai" }), "utf8");
+			await writeFile(path.join(packageDir, "package.json"), JSON.stringify({ name: "@bworx-io/worx-ai" }), "utf8");
 			const repositoryLink = path.join(fakeRepo, "node_modules", "@gajae-code", "ai");
 
 			const first = createHarnessCliEnv(fakeRepo, {} as NodeJS.ProcessEnv);

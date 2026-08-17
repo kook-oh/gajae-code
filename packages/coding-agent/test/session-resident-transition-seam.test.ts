@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { EphemeralBlobStore, MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
 import type {
 	MemoryGuardParticipantDescriptorV1,
@@ -16,8 +17,7 @@ import {
 import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
 import type { RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 import * as native from "@bworx-io/worx-code-natives";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getAgentDir, getResidentCacheRootDir, getTerminalSessionsDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, getTerminalSessionsDir, setAgentDir } from "@bworx-io/worx-utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 
 const originalAgentDir = getAgentDir();

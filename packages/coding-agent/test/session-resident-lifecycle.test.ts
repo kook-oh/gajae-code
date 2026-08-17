@@ -3,11 +3,11 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
 import * as native from "@bworx-io/worx-code-natives";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;

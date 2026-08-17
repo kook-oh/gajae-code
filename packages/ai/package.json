@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/ai",
+	"name": "@bworx-io/worx-ai",
 	"version": "0.13.1",
 	"description": "Unified LLM API with automatic model discovery and provider configuration",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {
@@ -40,7 +40,7 @@
 	"dependencies": {
 		"@anthropic-ai/sdk": "catalog:",
 		"@bufbuild/protobuf": "catalog:",
-		"@gajae-code/utils": "catalog:",
+		"@bworx-io/worx-utils": "catalog:",
 		"openai": "catalog:",
 		"partial-json": "catalog:",
 		"zod": "catalog:"

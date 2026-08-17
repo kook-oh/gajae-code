@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Args, Command, type CommandEntry, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, type CommandEntry, Flags } from "@bworx-io/worx-utils/cli";
 import { commands, RootHelpCommand } from "../src/cli";
 import {
 	buildGjcFigSpec,

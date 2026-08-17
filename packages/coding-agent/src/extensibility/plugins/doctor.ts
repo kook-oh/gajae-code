@@ -1,4 +1,4 @@
-import { $which } from "@gajae-code/utils";
+import { $which } from "@bworx-io/worx-utils";
 import { theme } from "../../modes/theme/theme";
 import type { DoctorCheck } from "./types";
 

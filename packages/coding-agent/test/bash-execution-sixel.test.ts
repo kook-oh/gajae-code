@@ -4,8 +4,8 @@ import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-
 import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
 import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
 import { sanitizeWithOptionalSixelPassthrough } from "@bworx-io/worx-code/utils/sixel";
-import { ImageProtocol, TERMINAL, type TUI } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import { ImageProtocol, TERMINAL, type TUI } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 
 const SIXEL = "\x1bPqabc\x1b\\";
 

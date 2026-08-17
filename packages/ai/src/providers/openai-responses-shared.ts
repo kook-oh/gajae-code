@@ -1,4 +1,4 @@
-import { structuredCloneJSON } from "@gajae-code/utils";
+import { structuredCloneJSON } from "@bworx-io/worx-utils";
 import type OpenAI from "openai";
 import type {
 	ResponseCustomToolCall,

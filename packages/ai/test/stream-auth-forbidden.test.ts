@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { registerCustomApi, unregisterCustomApis } from "@gajae-code/ai";
-import { streamSimple } from "@gajae-code/ai/stream";
-import type { Api, AssistantMessage, Context, Model, Usage } from "@gajae-code/ai/types";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import { registerCustomApi, unregisterCustomApis } from "@bworx-io/worx-ai";
+import { streamSimple } from "@bworx-io/worx-ai/stream";
+import type { Api, AssistantMessage, Context, Model, Usage } from "@bworx-io/worx-ai/types";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 
 const SOURCE_ID = "stream-auth-forbidden-test";
 const API = "stream-auth-forbidden-test" as Api;

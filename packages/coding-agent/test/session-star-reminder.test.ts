@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
@@ -13,10 +16,7 @@ import {
 import { AgentSession, type BeforeAgentStartContributor } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 const notFound = (): GhResult => ({ exitCode: 1, stdout: "", stderr: "gh: Not Found (HTTP 404)" });
 const starred = (): GhResult => ({ exitCode: 0, stdout: "", stderr: "" });

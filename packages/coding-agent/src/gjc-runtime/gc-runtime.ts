@@ -18,7 +18,7 @@ import * as fsp from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { exactRemoveDirectoryTree, exactUnlink, snapshotDirectoryTree } from "@bworx-io/worx-code-natives";
-import { getAgentDir, getBlobsDir, getSessionsDir, isEnoent, VERSION } from "@gajae-code/utils";
+import { getAgentDir, getBlobsDir, getSessionsDir, isEnoent, VERSION } from "@bworx-io/worx-utils";
 import { getDefault } from "../config/settings-schema";
 import { listHarnessRootRegistriesForGc } from "../harness-control-plane/storage";
 import { SessionIndex } from "../sdk/broker/session-index";
@@ -431,7 +431,7 @@ function resolveGcAgentDir(env: NodeJS.ProcessEnv): string {
 async function collectGcSessionScope(cwd: string, agentDir: string): Promise<GcSessionScopeUsage | undefined> {
 	try {
 		const { resolveManagedScope } = await import("../session/internal/managed-session-scope");
-		const { getSessionsDir } = await import("@gajae-code/utils");
+		const { getSessionsDir } = await import("@bworx-io/worx-utils");
 		const resolved = resolveManagedScope({ cwd, agentDir, sessionsRoot: getSessionsDir(agentDir) });
 		if (resolved.kind !== "resolved") return undefined;
 		return await collectSessionScopeUsage(resolved.scope.directoryPath);

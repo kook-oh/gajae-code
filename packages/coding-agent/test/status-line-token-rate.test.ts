@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { calculateTokensPerSecond } from "@bworx-io/worx-code/modes/components/status-line/token-rate";
-import type { AssistantMessage } from "@gajae-code/ai";
 
 function assistantMessage(overrides?: Partial<AssistantMessage>): AssistantMessage {
 	return {

@@ -5,9 +5,9 @@ import type {
 	AgentToolResult,
 	AgentToolUpdateCallback,
 	RenderResultOptions,
-} from "@gajae-code/agent-core";
-import { type Component, Text } from "@gajae-code/tui";
-import { isEnoent, prompt } from "@gajae-code/utils";
+} from "@bworx-io/worx-agent-core";
+import { type Component, Text } from "@bworx-io/worx-tui";
+import { isEnoent, prompt } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import {
 	type DapBreakpointRecord,

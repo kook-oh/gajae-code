@@ -2,7 +2,7 @@
  * Discovery integration tests for GJC plugin registry reading.
  *
  * NOTE: listAnthropic modelPluginRoots() lives in discovery/helpers.ts which imports
- * @gajae-code/natives (native Rust addon via glob). We cannot call it here.
+ * @bworx-io/worx-code-natives (native Rust addon via glob). We cannot call it here.
  *
  * Instead these tests validate the structural contract that listAnthropic modelPluginRoots
  * depends on:
@@ -30,7 +30,7 @@ import {
 // ── Inline validator ───────────────────────────────────────────────────────────
 //
 // Mirrors parseAnthropic modelPluginsRegistry() in discovery/helpers.ts exactly.
-// Kept here to avoid importing helpers.ts (which pulls in @gajae-code/natives).
+// Kept here to avoid importing helpers.ts (which pulls in @bworx-io/worx-code-natives).
 function validateClaudeRegistryFormat(content: string): Record<string, unknown> | null {
 	let data: Record<string, unknown>;
 	try {
@@ -51,7 +51,7 @@ function validateClaudeRegistryFormat(content: string): Record<string, unknown> 
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-// Matches getConfigDirName() — single source of truth is in @gajae-code/utils,
+// Matches getConfigDirName() — single source of truth is in @bworx-io/worx-utils,
 // but we know the value is ".worx" and hardcoding it here keeps tests free of
 // native-addon transitive imports.
 const WORX_CONFIG_DIR = ".worx";

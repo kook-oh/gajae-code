@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
+import { Effort, type Model } from "@bworx-io/worx-ai";
 import { BUILTIN_MODEL_PROFILES, type ModelProfileDefinition } from "@bworx-io/worx-code/config/model-profiles";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
@@ -6,8 +7,7 @@ import {
 	type ModelSelectorSelection,
 } from "@bworx-io/worx-code/modes/components/model-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
-import { Effort, type Model } from "@gajae-code/ai";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 
 function normalizeRenderedText(text: string): string {
 	return text

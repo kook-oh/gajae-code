@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
 	compileGjcPluginBundle,
 	GjcPluginLoadError,

@@ -9,7 +9,7 @@ import {
 	logger,
 	readSseJson,
 	structuredCloneJSON,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import type OpenAI from "openai";
 import type {
 	ResponseCustomToolCall,

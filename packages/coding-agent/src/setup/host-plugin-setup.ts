@@ -9,7 +9,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { getProjectDir } from "@gajae-code/utils";
+import { getProjectDir } from "@bworx-io/worx-utils";
 
 export type HostPluginKind = "claude" | "codex";
 

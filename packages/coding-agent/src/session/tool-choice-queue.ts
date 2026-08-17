@@ -1,5 +1,5 @@
-import type { ToolChoice } from "@gajae-code/ai/core";
-import { logger } from "@gajae-code/utils";
+import type { ToolChoice } from "@bworx-io/worx-ai/core";
+import { logger } from "@bworx-io/worx-utils";
 
 // ── Callback types ──────────────────────────────────────────────────────────
 

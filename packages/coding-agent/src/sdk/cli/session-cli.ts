@@ -2,7 +2,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import { getAgentDir } from "@gajae-code/utils";
+import { getAgentDir } from "@bworx-io/worx-utils";
 import { ensureBroker } from "../broker/ensure";
 import { lifecycleRequestTimeoutMs } from "../broker/startup-budget";
 import {

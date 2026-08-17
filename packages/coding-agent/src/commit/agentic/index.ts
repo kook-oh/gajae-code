@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import { $env, $pickenv, getProjectDir, isEnoent, prompt } from "@gajae-code/utils";
+import { $env, $pickenv, getProjectDir, isEnoent, prompt } from "@bworx-io/worx-utils";
 import { applyChangelogProposals } from "../../commit/changelog";
 import { detectChangelogBoundaries } from "../../commit/changelog/detect";
 import { parseUnreleasedSection } from "../../commit/changelog/parse";

@@ -8,7 +8,7 @@ import {
 	executeBuiltinSlashCommand,
 	lookupBuiltinSlashCommand,
 } from "@bworx-io/worx-code/slash-commands/builtin-registry";
-import { ImageProtocol, TERMINAL } from "@gajae-code/tui";
+import { ImageProtocol, TERMINAL } from "@bworx-io/worx-tui";
 
 const mutableTerminal = TERMINAL as unknown as { imageProtocol: ImageProtocol | null };
 const originalImageProtocol = mutableTerminal.imageProtocol;

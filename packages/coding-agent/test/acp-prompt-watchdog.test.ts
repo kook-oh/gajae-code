@@ -1,8 +1,8 @@
 import { expect, test, vi } from "bun:test";
 import * as path from "node:path";
 import type { AgentSideConnection, PromptRequest, SessionNotification } from "@agentclientprotocol/sdk";
-import { getProviderFirstEventTimeoutFallbackMs } from "@gajae-code/ai/utils/idle-iterator";
-import { logger, TempDir } from "@gajae-code/utils";
+import { getProviderFirstEventTimeoutFallbackMs } from "@bworx-io/worx-ai/utils/idle-iterator";
+import { logger, TempDir } from "@bworx-io/worx-utils";
 import { AcpAgent } from "../src/modes/acp/acp-agent";
 import { writeBrokerDiscovery } from "../src/sdk/broker/discovery";
 import {

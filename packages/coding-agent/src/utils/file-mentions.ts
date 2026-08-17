@@ -7,11 +7,11 @@
  */
 import * as fs from "node:fs/promises";
 import path from "node:path";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { ImageContent } from "@bworx-io/worx-ai/core";
 import type { glob as globFn } from "@bworx-io/worx-code-natives";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { ImageContent } from "@gajae-code/ai/core";
-import { fuzzyMatch } from "@gajae-code/tui";
-import { formatAge, formatBytes, readImageMetadata } from "@gajae-code/utils";
+import { fuzzyMatch } from "@bworx-io/worx-tui";
+import { formatAge, formatBytes, readImageMetadata } from "@bworx-io/worx-utils";
 import { formatHashLines } from "../hashline/hash";
 import type { FileMentionMessage } from "../session/messages";
 import {

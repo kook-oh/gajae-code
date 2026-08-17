@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { ModelsConfigFile } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest } from "@bworx-io/worx-code/config/settings";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 function loadModelsConfig(modelsPath: string, yaml: string) {
 	fs.writeFileSync(modelsPath, yaml);

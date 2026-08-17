@@ -2,15 +2,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "bu
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { UNK_CONTEXT_WINDOW, UNK_MAX_TOKENS } from "@bworx-io/worx-ai";
 import type { ModelRegistry, ProviderDiscoveryState } from "@bworx-io/worx-code/config/model-registry";
 import { ModelRegistry as ModelRegistryImpl } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { UNK_CONTEXT_WINDOW, UNK_MAX_TOKENS } from "@gajae-code/ai";
-import type { TUI } from "@gajae-code/tui";
-import { hookFetch, Snowflake } from "@gajae-code/utils";
+import type { TUI } from "@bworx-io/worx-tui";
+import { hookFetch, Snowflake } from "@bworx-io/worx-utils";
 
 function normalizeRenderedText(text: string): string {
 	return text

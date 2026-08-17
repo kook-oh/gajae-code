@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { type ptree, TempDir } from "@gajae-code/utils";
+import { type ptree, TempDir } from "@bworx-io/worx-utils";
 import { createLspWritethrough } from "../src/lsp";
 import * as lspClient from "../src/lsp/client";
 import { getActiveClients, isIdleCheckerActiveForTests, setIdleTimeout, shutdownAll } from "../src/lsp/client";

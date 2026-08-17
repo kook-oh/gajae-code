@@ -10,7 +10,7 @@ import {
 	SessionManager,
 } from "@bworx-io/worx-code/session/session-manager";
 import { FileSessionStorage, type SessionStorageWriter } from "@bworx-io/worx-code/session/session-storage";
-import { getConfigRootDir, parseJsonlLenient, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, parseJsonlLenient, setAgentDir } from "@bworx-io/worx-utils";
 
 import { makeAssistantMessage } from "./helpers";
 import { injectManagedAppendOutcomeUncertain, injectManagedAppendPreCommit } from "./managed-failure-injection";

@@ -19,12 +19,12 @@ import {
 	type ThinkingBudgets,
 	type ToolChoice,
 	type ToolResultMessage,
-} from "@gajae-code/ai";
+} from "@bworx-io/worx-ai";
 import {
 	CURSOR_COMPOSER_BASH_POLICY_RECOVERY_PROMPT,
 	isCurrentComposerBashPolicyBlockedError,
-} from "@gajae-code/ai/providers/composer-discipline";
-import { extractHttpStatusFromError } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/providers/composer-discipline";
+import { extractHttpStatusFromError } from "@bworx-io/worx-utils";
 import { agentLoop, agentLoopContinue } from "./agent-loop";
 import type { AppendOnlyContextManager } from "./append-only-context";
 import type { AttemptRunHandle, AttemptScope } from "./attempt-scope";

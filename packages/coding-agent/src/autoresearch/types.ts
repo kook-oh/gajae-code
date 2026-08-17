@@ -1,4 +1,4 @@
-import type { AgentToolResult } from "@gajae-code/agent-core";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
 import type { ExtensionAPI, ExtensionContext } from "../extensibility/extensions";
 import type { SessionEntry } from "../session/session-manager";
 import type { TruncationResult } from "../session/streaming-output";

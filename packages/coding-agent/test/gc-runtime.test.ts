@@ -14,7 +14,7 @@ import {
 	gcProbeToLeasePidStatus,
 	runGjcGcCommand,
 } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import { SessionIndex } from "../src/sdk/broker/session-index";
 
 const originalAgentDir = getAgentDir();

@@ -2,13 +2,13 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AssistantMessage, UserMessage } from "@bworx-io/worx-ai";
 import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import {
 	SessionManager,
 	SessionManagerTestHooks,
 	type SessionMessageEntry,
 } from "@bworx-io/worx-code/session/session-manager";
-import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
 
 const tempDirs: string[] = [];
 afterEach(async () => {

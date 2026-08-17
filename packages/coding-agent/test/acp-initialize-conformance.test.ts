@@ -9,7 +9,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentSideConnection, InitializeRequest } from "@agentclientprotocol/sdk";
 import acpProtocolSchema from "@agentclientprotocol/sdk/schema/schema.json" with { type: "json" };
-import { getConfigRootDir, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, setAgentDir } from "@bworx-io/worx-utils";
 import { fromJSONSchema } from "zod/v4";
 import type * as z from "zod/v4/core";
 import { AcpAgent } from "../src/modes/acp/acp-agent";

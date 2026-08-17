@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { isEnoent, logger } from "@gajae-code/utils";
-import { getAgentDir } from "@gajae-code/utils/dirs";
-import { $credentialEnv } from "@gajae-code/utils/env";
+import { isEnoent, logger } from "@bworx-io/worx-utils";
+import { getAgentDir } from "@bworx-io/worx-utils/dirs";
+import { $credentialEnv } from "@bworx-io/worx-utils/env";
 
 const SMITHERY_AUTH_FILENAME = "smithery.json";
 /**

@@ -13,12 +13,12 @@
       },
     },
     "packages/agent": {
-      "name": "@gajae-code/agent-core",
+      "name": "@bworx-io/worx-agent-core",
       "version": "0.13.1",
       "dependencies": {
+        "@bworx-io/worx-ai": "catalog:",
         "@bworx-io/worx-code-natives": "catalog:",
-        "@gajae-code/ai": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "@opentelemetry/api": "catalog:",
       },
       "devDependencies": {
@@ -28,7 +28,7 @@
       },
     },
     "packages/ai": {
-      "name": "@gajae-code/ai",
+      "name": "@bworx-io/worx-ai",
       "version": "0.13.1",
       "bin": {
         "pi-ai": "./src/cli.ts",
@@ -36,7 +36,7 @@
       "dependencies": {
         "@anthropic-ai/sdk": "catalog:",
         "@bufbuild/protobuf": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "openai": "catalog:",
         "partial-json": "catalog:",
         "zod": "catalog:",
@@ -46,7 +46,7 @@
       },
     },
     "packages/bridge-client": {
-      "name": "@gajae-code/bridge-client",
+      "name": "@bworx-io/worx-bridge-client",
       "version": "0.13.1",
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -61,13 +61,13 @@
       "dependencies": {
         "@agentclientprotocol/sdk": "catalog:",
         "@babel/parser": "catalog:",
+        "@bworx-io/worx-agent-core": "catalog:",
+        "@bworx-io/worx-ai": "catalog:",
+        "@bworx-io/worx-bridge-client": "catalog:",
         "@bworx-io/worx-code-natives": "catalog:",
-        "@gajae-code/agent-core": "catalog:",
-        "@gajae-code/ai": "catalog:",
-        "@gajae-code/bridge-client": "catalog:",
-        "@gajae-code/stats": "catalog:",
-        "@gajae-code/tui": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-stats": "catalog:",
+        "@bworx-io/worx-tui": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "@mozilla/readability": "catalog:",
         "@puppeteer/browsers": "catalog:",
         "@types/turndown": "catalog:",
@@ -110,38 +110,26 @@
       "name": "@bworx-io/worx-code-natives-darwin-arm64",
       "version": "0.13.1",
     },
-    "packages/natives-darwin-x64": {
-      "name": "@gajae-code/natives-darwin-x64",
-      "version": "0.13.1",
-    },
-    "packages/natives-linux-arm64": {
-      "name": "@gajae-code/natives-linux-arm64",
-      "version": "0.13.1",
-    },
     "packages/natives-linux-x64": {
       "name": "@bworx-io/worx-code-natives-linux-x64",
       "version": "0.13.1",
     },
-    "packages/natives-win32-x64": {
-      "name": "@gajae-code/natives-win32-x64",
-      "version": "0.13.1",
-    },
     "packages/orchestration-token-benchmark": {
-      "name": "@gajae-code/orchestration-token-benchmark",
+      "name": "@bworx-io/worx-orchestration-token-benchmark",
       "version": "0.0.1",
       "devDependencies": {
         "@types/bun": "catalog:",
       },
     },
     "packages/stats": {
-      "name": "@gajae-code/stats",
+      "name": "@bworx-io/worx-stats",
       "version": "0.13.1",
       "bin": {
-        "gjc-stats": "./src/index.ts",
+        "worx-stats": "./src/index.ts",
       },
       "dependencies": {
-        "@gajae-code/ai": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-ai": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "@tailwindcss/node": "catalog:",
         "chart.js": "catalog:",
         "date-fns": "catalog:",
@@ -159,11 +147,11 @@
       },
     },
     "packages/tui": {
-      "name": "@gajae-code/tui",
+      "name": "@bworx-io/worx-tui",
       "version": "0.13.1",
       "dependencies": {
         "@bworx-io/worx-code-natives": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "lru-cache": "catalog:",
         "marked": "catalog:",
       },
@@ -174,7 +162,7 @@
       },
     },
     "packages/typescript-edit-benchmark": {
-      "name": "@gajae-code/typescript-edit-benchmark",
+      "name": "@bworx-io/worx-typescript-edit-benchmark",
       "version": "0.0.1",
       "bin": {
         "typescript-edit-benchmark": "src/index.ts",
@@ -184,11 +172,11 @@
         "@babel/parser": "catalog:",
         "@babel/traverse": "catalog:",
         "@babel/types": "catalog:",
+        "@bworx-io/worx-agent-core": "catalog:",
+        "@bworx-io/worx-ai": "catalog:",
         "@bworx-io/worx-code": "catalog:",
-        "@gajae-code/agent-core": "catalog:",
-        "@gajae-code/ai": "catalog:",
-        "@gajae-code/tui": "catalog:",
-        "@gajae-code/utils": "catalog:",
+        "@bworx-io/worx-tui": "catalog:",
+        "@bworx-io/worx-utils": "catalog:",
         "diff": "catalog:",
         "prettier": "catalog:",
         "regexp-tree": "catalog:",
@@ -200,7 +188,7 @@
       },
     },
     "packages/utils": {
-      "name": "@gajae-code/utils",
+      "name": "@bworx-io/worx-utils",
       "version": "0.13.1",
       "dependencies": {
         "@bworx-io/worx-code-natives": "catalog:",
@@ -224,19 +212,16 @@
     "@biomejs/biome": "2.5.2",
     "@bufbuild/protobuf": "^2.12.0",
     "@bufbuild/protoc-gen-es": "^2.12.0",
+    "@bworx-io/worx-agent-core": "0.13.1",
+    "@bworx-io/worx-ai": "0.13.1",
+    "@bworx-io/worx-bridge-client": "0.13.1",
     "@bworx-io/worx-code": "0.13.1",
     "@bworx-io/worx-code-natives": "0.13.1",
     "@bworx-io/worx-code-natives-darwin-arm64": "0.13.1",
     "@bworx-io/worx-code-natives-linux-x64": "0.13.1",
-    "@gajae-code/agent-core": "0.13.1",
-    "@gajae-code/ai": "0.13.1",
-    "@gajae-code/bridge-client": "0.13.1",
-    "@gajae-code/natives-darwin-x64": "0.13.1",
-    "@gajae-code/natives-linux-arm64": "0.13.1",
-    "@gajae-code/natives-win32-x64": "0.13.1",
-    "@gajae-code/stats": "0.13.1",
-    "@gajae-code/tui": "0.13.1",
-    "@gajae-code/utils": "0.13.1",
+    "@bworx-io/worx-stats": "0.13.1",
+    "@bworx-io/worx-tui": "0.13.1",
+    "@bworx-io/worx-utils": "0.13.1",
     "@mozilla/readability": "^0.6.0",
     "@napi-rs/cli": "3.6.2",
     "@opentelemetry/api": "^1.9.0",
@@ -333,6 +318,12 @@
 
     "@bufbuild/protobuf": ["@bufbuild/protobuf@2.13.0", "", {}, "sha512-acq7c49vxfm1ggJ95P70TX7ABDM0vxr1SYD3BB0o0jnBLB4OAqeHyKuN+cD3w80gXEDQ2zxHpR6CUeA+O/aU9g=="],
 
+    "@bworx-io/worx-agent-core": ["@bworx-io/worx-agent-core@workspace:packages/agent"],
+
+    "@bworx-io/worx-ai": ["@bworx-io/worx-ai@workspace:packages/ai"],
+
+    "@bworx-io/worx-bridge-client": ["@bworx-io/worx-bridge-client@workspace:packages/bridge-client"],
+
     "@bworx-io/worx-code": ["@bworx-io/worx-code@workspace:packages/coding-agent"],
 
     "@bworx-io/worx-code-natives": ["@bworx-io/worx-code-natives@workspace:packages/natives"],
@@ -340,6 +331,16 @@
     "@bworx-io/worx-code-natives-darwin-arm64": ["@bworx-io/worx-code-natives-darwin-arm64@workspace:packages/natives-darwin-arm64"],
 
     "@bworx-io/worx-code-natives-linux-x64": ["@bworx-io/worx-code-natives-linux-x64@workspace:packages/natives-linux-x64"],
+
+    "@bworx-io/worx-orchestration-token-benchmark": ["@bworx-io/worx-orchestration-token-benchmark@workspace:packages/orchestration-token-benchmark"],
+
+    "@bworx-io/worx-stats": ["@bworx-io/worx-stats@workspace:packages/stats"],
+
+    "@bworx-io/worx-tui": ["@bworx-io/worx-tui@workspace:packages/tui"],
+
+    "@bworx-io/worx-typescript-edit-benchmark": ["@bworx-io/worx-typescript-edit-benchmark@workspace:packages/typescript-edit-benchmark"],
+
+    "@bworx-io/worx-utils": ["@bworx-io/worx-utils@workspace:packages/utils"],
 
     "@colors/colors": ["@colors/colors@1.6.0", "", {}, "sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA=="],
 
@@ -350,28 +351,6 @@
     "@emnapi/runtime": ["@emnapi/runtime@1.9.2", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-3U4+MIWHImeyu1wnmVygh5WlgfYDtyf0k8AbLhMFxOipihf6nrWC4syIm/SwEeec0mNSafiiNnMJwbza/Is6Lw=="],
 
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w=="],
-
-    "@gajae-code/agent-core": ["@gajae-code/agent-core@workspace:packages/agent"],
-
-    "@gajae-code/ai": ["@gajae-code/ai@workspace:packages/ai"],
-
-    "@gajae-code/bridge-client": ["@gajae-code/bridge-client@workspace:packages/bridge-client"],
-
-    "@gajae-code/natives-darwin-x64": ["@gajae-code/natives-darwin-x64@workspace:packages/natives-darwin-x64"],
-
-    "@gajae-code/natives-linux-arm64": ["@gajae-code/natives-linux-arm64@workspace:packages/natives-linux-arm64"],
-
-    "@gajae-code/natives-win32-x64": ["@gajae-code/natives-win32-x64@workspace:packages/natives-win32-x64"],
-
-    "@gajae-code/orchestration-token-benchmark": ["@gajae-code/orchestration-token-benchmark@workspace:packages/orchestration-token-benchmark"],
-
-    "@gajae-code/stats": ["@gajae-code/stats@workspace:packages/stats"],
-
-    "@gajae-code/tui": ["@gajae-code/tui@workspace:packages/tui"],
-
-    "@gajae-code/typescript-edit-benchmark": ["@gajae-code/typescript-edit-benchmark@workspace:packages/typescript-edit-benchmark"],
-
-    "@gajae-code/utils": ["@gajae-code/utils@workspace:packages/utils"],
 
     "@inquirer/ansi": ["@inquirer/ansi@2.0.7", "", {}, "sha512-3eTuUO1vH2cZm2ZKHeQxnOqlTi9EfZDGgIe3BL3I4u+rJHocr9Fz86M4fjYABPvFnQG/gGK551HqDiIcETwU6Q=="],
 

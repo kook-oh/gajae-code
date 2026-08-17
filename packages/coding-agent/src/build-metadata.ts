@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { isCompiledBinary } from "@gajae-code/utils/env";
+import { isCompiledBinary } from "@bworx-io/worx-utils/env";
 
 export type BuildChannel = "release" | "dev" | "local-source" | "package-install" | "compiled" | "unknown";
 

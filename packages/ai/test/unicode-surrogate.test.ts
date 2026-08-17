@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { convertAnthropicMessages } from "@gajae-code/ai/providers/anthropic";
-import { convertMessages as convertGoogleMessages } from "@gajae-code/ai/providers/google-shared";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { convertAnthropicMessages } from "@bworx-io/worx-ai/providers/anthropic";
+import { convertMessages as convertGoogleMessages } from "@bworx-io/worx-ai/providers/google-shared";
 import {
 	convertMessages as convertOpenAICompletionsMessages,
 	detectCompat,
-} from "@gajae-code/ai/providers/openai-completions";
-import { convertResponsesAssistantMessage } from "@gajae-code/ai/providers/openai-responses-shared";
-import { complete } from "@gajae-code/ai/stream";
-import type { Api, AssistantMessage, Context, Model, OptionsForApi, ToolResultMessage } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/providers/openai-completions";
+import { convertResponsesAssistantMessage } from "@bworx-io/worx-ai/providers/openai-responses-shared";
+import { complete } from "@bworx-io/worx-ai/stream";
+import type { Api, AssistantMessage, Context, Model, OptionsForApi, ToolResultMessage } from "@bworx-io/worx-ai/types";
 import * as z from "zod/v4";
 import { e2eApiKey, resolveApiKey } from "./oauth";
 

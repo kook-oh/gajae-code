@@ -8,7 +8,7 @@
  * Shutdown writes `{"type":"exit"}` and escalates to SIGTERM/SIGKILL on
  * timeout.
  */
-import { $env, isBunTestRuntime, logger, Snowflake } from "@gajae-code/utils";
+import { $env, isBunTestRuntime, logger, Snowflake } from "@bworx-io/worx-utils";
 import type { Subprocess } from "bun";
 import { Settings } from "../../config/settings";
 import { type KernelDisplayOutput, renderKernelDisplay } from "./display";

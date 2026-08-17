@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentTool } from "@gajae-code/agent-core";
-import { logger } from "@gajae-code/utils";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import { logger } from "@bworx-io/worx-utils";
 import { expandApplyPatchToEntries } from "../edit/modes/apply-patch";
 import { modeStatePath as sessionModeStatePath, WORX_SESSION_PREFIX } from "../gjc-runtime/session-layout";
 import { resolveGjcSessionForRead } from "../gjc-runtime/session-resolution";

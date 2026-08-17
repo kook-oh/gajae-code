@@ -2,12 +2,12 @@ import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { registerAskAnswerSource } from "@bworx-io/worx-code/tools/ask-answer-registry";
-import type { AgentToolContext } from "@gajae-code/agent-core";
 
 /**
  * Regression for the "ask buttons only appear after finalize" report: the

@@ -1,5 +1,5 @@
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import type { PtySession as NativePtySession, PtyRunResult } from "@bworx-io/worx-code-natives";
-import type { AgentToolContext } from "@gajae-code/agent-core";
 import {
 	type Component,
 	extractPrintableText,
@@ -9,8 +9,8 @@ import {
 	parseKittySequence,
 	truncateToWidth,
 	visibleWidth,
-} from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import type { Terminal as XtermTerminalType } from "@xterm/headless";
 import { Settings } from "../config/settings";
 import { NON_INTERACTIVE_ENV } from "../exec/non-interactive-env";

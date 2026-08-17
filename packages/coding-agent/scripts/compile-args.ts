@@ -44,7 +44,7 @@ export const devEntrypoints = [
 	"./src/eval/js/worker-entry.ts",
 	// W5b: natives has no static importer anymore (global native gate), so the
 	// dev bundle must list it as an extra entrypoint like the release build or
-	// runtime import("@gajae-code/natives") fails inside the compiled bunfs.
+	// runtime import("@bworx-io/worx-code-natives") fails inside the compiled bunfs.
 	"../natives/native/index.js",
 	"./src/sdk/bus/telegram-daemon-cli.ts",
 	"./src/sdk/bus/chat-daemon-cli.ts",

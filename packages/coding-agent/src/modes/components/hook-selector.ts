@@ -17,7 +17,7 @@ import {
 	truncateToWidth,
 	visibleWidth,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { getEditorTheme, getMarkdownTheme, theme } from "../../modes/theme/theme";
 import {
 	matchesAppExternalEditor,

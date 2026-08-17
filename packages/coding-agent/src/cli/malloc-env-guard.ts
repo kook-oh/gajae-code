@@ -29,7 +29,7 @@
  * `launchctl unsetenv` fix.
  */
 
-import { filterProcessEnv } from "@gajae-code/utils/env";
+import { filterProcessEnv } from "@bworx-io/worx-utils/env";
 import type { Subprocess } from "bun";
 
 /** Env vars that make macOS libmalloc write to a TTY when inherited. */

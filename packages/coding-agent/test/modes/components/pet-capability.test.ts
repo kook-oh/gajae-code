@@ -3,7 +3,7 @@ import {
 	PET_CAPABILITY_SETTLE_MS,
 	warnWhenPetCapabilitySettled,
 } from "@bworx-io/worx-code/modes/components/pet-capability";
-import { ImageProtocol, setTerminalImageProtocol, TERMINAL } from "@gajae-code/tui";
+import { ImageProtocol, setTerminalImageProtocol, TERMINAL } from "@bworx-io/worx-tui";
 
 const originalProtocol = TERMINAL.imageProtocol;
 

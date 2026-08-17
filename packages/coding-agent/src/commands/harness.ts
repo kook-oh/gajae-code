@@ -13,8 +13,8 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
-import { $credentialEnv } from "@gajae-code/utils/env";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
+import { $credentialEnv } from "@bworx-io/worx-utils/env";
 import {
 	WORX_TMUX_OWNER_GENERATION_ENV,
 	WORX_TMUX_OWNER_SERVER_KEY_ENV,

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import { keyboardEnhancementEnabled, ProcessTerminal } from "@gajae-code/tui/terminal";
+import { keyboardEnhancementEnabled, ProcessTerminal } from "@bworx-io/worx-tui/terminal";
 
 const stdinIsTtyDescriptor = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
 const stdoutIsTtyDescriptor = Object.getOwnPropertyDescriptor(process.stdout, "isTTY");

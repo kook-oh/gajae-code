@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { detectDefaultKeyCollisions, KeybindingsManager, TUI_KEYBINDINGS } from "@gajae-code/tui/keybindings";
-import { isKeyId } from "@gajae-code/tui/keys";
+import { detectDefaultKeyCollisions, KeybindingsManager, TUI_KEYBINDINGS } from "@bworx-io/worx-tui/keybindings";
+import { isKeyId } from "@bworx-io/worx-tui/keys";
 
 describe("KeybindingsManager", () => {
 	it("does not evict selector confirm when input submit is rebound", () => {

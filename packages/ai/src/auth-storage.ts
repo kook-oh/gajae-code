@@ -11,7 +11,7 @@ import { Database, type Statement } from "bun:sqlite";
 import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getAgentDbPath, logger } from "@gajae-code/utils";
+import { getAgentDbPath, logger } from "@bworx-io/worx-utils";
 import { checkOpenCodexStatus } from "./providers/openai-opencodex-responses";
 import { getEnvApiKey } from "./stream";
 import type { Provider } from "./types";

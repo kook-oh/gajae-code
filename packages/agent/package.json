@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/agent-core",
+	"name": "@bworx-io/worx-agent-core",
 	"version": "0.13.1",
 	"description": "General-purpose agent with transport abstraction, state management, and attachment support",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {
@@ -32,9 +32,9 @@
 		"fmt": "biome format --write ."
 	},
 	"dependencies": {
-		"@gajae-code/ai": "catalog:",
+		"@bworx-io/worx-ai": "catalog:",
 		"@bworx-io/worx-code-natives": "catalog:",
-		"@gajae-code/utils": "catalog:",
+		"@bworx-io/worx-utils": "catalog:",
 		"@opentelemetry/api": "catalog:"
 	},
 	"devDependencies": {

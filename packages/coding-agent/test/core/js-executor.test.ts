@@ -1,9 +1,9 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
+import type { AgentTool, AgentToolResult } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { disposeAllVmContexts } from "../../src/eval/js/context-manager";
 import { executeJs, type JsResult } from "../../src/eval/js/executor";

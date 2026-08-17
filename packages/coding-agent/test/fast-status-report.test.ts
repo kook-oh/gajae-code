@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import type { Model } from "@bworx-io/worx-ai";
 import {
 	buildFastStatusReport,
 	FAST_STATUS_OFF,
@@ -6,7 +7,6 @@ import {
 	type FastStatusSessionLike,
 	formatFastStatusReport,
 } from "@bworx-io/worx-code/slash-commands/helpers/fast-status-report";
-import type { Model } from "@gajae-code/ai";
 
 const ICON = "\u26a1";
 

@@ -14,8 +14,8 @@
 import { randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { ImageContent, MessageAttribution } from "@gajae-code/ai/core";
-import { getConfigRootDir, isEnoent } from "@gajae-code/utils";
+import type { ImageContent, MessageAttribution } from "@bworx-io/worx-ai/core";
+import { getConfigRootDir, isEnoent } from "@bworx-io/worx-utils";
 import { withFileLock } from "../config/file-lock";
 import type { CustomMessage } from "../session/messages";
 import { type GhResult, type RunGh, runGhDefault } from "../utils/gh";

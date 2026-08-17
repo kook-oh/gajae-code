@@ -23,7 +23,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 // Workspace-local built napi bindings (see notifications-e2e.test.ts for why the
-// relative path is used instead of the @gajae-code/natives package resolution).
+// relative path is used instead of the @bworx-io/worx-code-natives package resolution).
 import { NotificationServer } from "../../natives/native/index.js";
 import { Settings } from "../src/config/settings";
 import { markdownToTelegramHtml, splitTelegramHtml, TELEGRAM_PARSE_MODE } from "../src/sdk/bus/html-format";

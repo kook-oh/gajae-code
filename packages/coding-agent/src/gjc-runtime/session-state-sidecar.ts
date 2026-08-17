@@ -2,8 +2,8 @@ import { createHash, randomUUID } from "node:crypto";
 import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AssistantMessage } from "@gajae-code/ai/core";
-import { normalizePathForComparison, postmortem } from "@gajae-code/utils";
+import type { AssistantMessage } from "@bworx-io/worx-ai/core";
+import { normalizePathForComparison, postmortem } from "@bworx-io/worx-utils";
 import { withFileLock } from "../config/file-lock";
 import { sessionRoot, sessionRuntimeDir } from "./session-layout";
 import {

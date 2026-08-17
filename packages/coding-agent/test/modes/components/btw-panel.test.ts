@@ -6,7 +6,7 @@ import {
 	BTW_MAX_ERROR_UTF8_BYTES,
 	utf8ByteLength,
 } from "@bworx-io/worx-code/session/btw-contract";
-import type { Component, TUI } from "@gajae-code/tui";
+import type { Component, TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	await initTheme();

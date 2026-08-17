@@ -1,4 +1,4 @@
-import { isCompiledBinary } from "@gajae-code/utils/env";
+import { isCompiledBinary } from "@bworx-io/worx-utils/env";
 import type { WorkerInbound, WorkerOutbound } from "./tab-protocol";
 
 interface SmokeWorkerHandle {

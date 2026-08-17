@@ -5,7 +5,7 @@
 import type { Stats } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getAgentDir, getConfigRootDir, isEnoent } from "@gajae-code/utils";
+import { getAgentDir, getConfigRootDir, isEnoent } from "@bworx-io/worx-utils";
 import type {
 	GcCollectResult,
 	GcContext,

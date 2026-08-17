@@ -3,8 +3,8 @@ import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
 import { ExtensionUiController } from "@bworx-io/worx-code/modes/controllers/extension-ui-controller";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
-import type { Component, TUI } from "@gajae-code/tui";
-import { setKeybindings } from "@gajae-code/tui";
+import type { Component, TUI } from "@bworx-io/worx-tui";
+import { setKeybindings } from "@bworx-io/worx-tui";
 
 type TestEditor = {
 	id: string;

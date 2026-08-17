@@ -2,6 +2,7 @@ import { afterEach, beforeAll, describe, expect, it, mock } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { AuthStorage, SqliteAuthCredentialStore } from "@bworx-io/worx-ai";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { CustomProviderWizardComponent } from "@bworx-io/worx-code/modes/components/custom-provider-wizard";
 import {
@@ -12,8 +13,7 @@ import { SelectorController } from "@bworx-io/worx-code/modes/controllers/select
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { addApiCompatibleProvider, type ProviderSetupInput } from "@bworx-io/worx-code/setup/provider-onboarding";
-import { AuthStorage, SqliteAuthCredentialStore } from "@gajae-code/ai";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 let tempAgentDir: string | undefined;

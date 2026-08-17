@@ -2,7 +2,7 @@
  * Shared utilities for Google Generative AI and Google Cloud Code Assist providers.
  */
 
-import { extractHttpStatusFromError, readJsonl, readSseJson } from "@gajae-code/utils";
+import { extractHttpStatusFromError, readJsonl, readSseJson } from "@bworx-io/worx-utils";
 import { calculateCost } from "../models";
 import type {
 	Api,

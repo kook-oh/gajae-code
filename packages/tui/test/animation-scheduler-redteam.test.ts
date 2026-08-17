@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { __animationSchedulerTestHooks } from "@gajae-code/tui";
-import { registerAnimationCallback } from "@gajae-code/tui/animation-scheduler";
-import { Loader } from "@gajae-code/tui/components/loader";
-import type { TUI } from "@gajae-code/tui/tui";
+import { __animationSchedulerTestHooks } from "@bworx-io/worx-tui";
+import { registerAnimationCallback } from "@bworx-io/worx-tui/animation-scheduler";
+import { Loader } from "@bworx-io/worx-tui/components/loader";
+import type { TUI } from "@bworx-io/worx-tui/tui";
 
 function makeUi() {
 	return { requestRender: vi.fn() } as unknown as TUI & { requestRender: ReturnType<typeof vi.fn> };

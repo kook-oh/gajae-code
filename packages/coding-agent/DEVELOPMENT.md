@@ -18,7 +18,7 @@ CLI / daemon session commands / ACP / MCP
 ```
 
 - **Interactive and print CLI**: `src/cli.ts` routes ordinary CLI work to `src/main.ts`, which owns local session setup and interactive or one-shot execution.
-- **SDK transport client**: `@gajae-code/bridge-client` owns the standalone transport-only v3 `SdkClient` and its associated types. `src/sdk/client/client.ts` and `@gajae-code/coding-agent/sdk` compatibility exports re-export that exact class identity; protocol operations remain registered in `src/sdk/protocol/operation-registry.ts`.
+- **SDK transport client**: `@bworx-io/worx-bridge-client` owns the standalone transport-only v3 `SdkClient` and its associated types. `src/sdk/client/client.ts` and `@bworx-io/worx-code/sdk` compatibility exports re-export that exact class identity; protocol operations remain registered in `src/sdk/protocol/operation-registry.ts`.
 
 - **Daemon session CLI**: `gjc daemon session ...` is implemented by `src/commands/daemon.ts` and `src/sdk/cli/session-cli.ts`. It discovers the SDK broker/session endpoint and invokes typed SDK `list`, `control`, `query`, or `global` operations; it does not launch a private transport.
 - **ACP**: `src/modes/acp/acp-mode.ts` creates the ACP connection and `src/modes/acp/acp-agent.ts` adapts ACP requests to `AcpSdkAdapter` and `SdkClient`. ACP must keep session authority in the SDK.
@@ -90,7 +90,7 @@ Choose the public surface deliberately:
 Do not restore or document as active:
 
 - `--mode rpc`, RPC mode source, JSONL RPC clients, or RPC compatibility fixtures.
-- Historical `BridgeClient` backend protocol surfaces, including handshake, commands, SSE, and direct host-control bypasses. The standalone `@gajae-code/bridge-client` package exports only the v3 transport `SdkClient` surface.
+- Historical `BridgeClient` backend protocol surfaces, including handshake, commands, SSE, and direct host-control bypasses. The standalone `@bworx-io/worx-bridge-client` package exports only the v3 transport `SdkClient` surface.
 - Unattended transport imports or protocol clients.
 
 
@@ -98,7 +98,7 @@ Historical changelog entries, removal documentation, and negative scanner self-t
 
 ## Verification
 
-The closure gate is `bun run verify:sdk-canonicalization` from this package. It is part of `bun run check`, so workspace checks and root release/prepublish checks enforce it automatically. The scanner permits only the standalone `@gajae-code/bridge-client` v3 package and root `SdkClient` import; it rejects historical BridgeClient protocol surfaces, retired source trees and exports, bridge/unattended imports, executable RPC compatibility fixtures, direct authority bypasses, and unsupported machine-entrypoint import graphs.
+The closure gate is `bun run verify:sdk-canonicalization` from this package. It is part of `bun run check`, so workspace checks and root release/prepublish checks enforce it automatically. The scanner permits only the standalone `@bworx-io/worx-bridge-client` v3 package and root `SdkClient` import; it rejects historical BridgeClient protocol surfaces, retired source trees and exports, bridge/unattended imports, executable RPC compatibility fixtures, direct authority bypasses, and unsupported machine-entrypoint import graphs.
 
 Run focused checks while working on this boundary:
 

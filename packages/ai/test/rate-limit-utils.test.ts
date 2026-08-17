@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import { calculateRateLimitBackoffMs, isUsageLimitError, parseRateLimitReason } from "@gajae-code/ai/rate-limit-utils";
+import {
+	calculateRateLimitBackoffMs,
+	isUsageLimitError,
+	parseRateLimitReason,
+} from "@bworx-io/worx-ai/rate-limit-utils";
 
 describe("parseRateLimitReason", () => {
 	it("classifies Google Quota exceeded as QUOTA_EXHAUSTED", () => {

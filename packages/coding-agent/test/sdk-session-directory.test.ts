@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getAgentDir, getSessionsDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getSessionsDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
 	listManagedSessionCandidates,
 	resolveManagedSessionScope,

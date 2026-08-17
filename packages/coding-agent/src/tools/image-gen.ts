@@ -3,14 +3,14 @@ import * as https from "node:https";
 import * as net from "node:net";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getEnvApiKey, type Model } from "@gajae-code/ai/core";
+import { getEnvApiKey, type Model } from "@bworx-io/worx-ai/core";
 import {
 	CODEX_BASE_URL,
 	getCodexAccountId,
 	OPENAI_HEADER_VALUES,
 	OPENAI_HEADERS,
 	URL_PATHS,
-} from "@gajae-code/ai/providers/openai-codex/constants";
+} from "@bworx-io/worx-ai/providers/openai-codex/constants";
 import {
 	$credentialEnv,
 	isEnoent,
@@ -20,7 +20,7 @@ import {
 	readSseJson,
 	Snowflake,
 	untilAborted,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import packageJson from "../../package.json" with { type: "json" };
 import { isAuthenticated, type ModelRegistry } from "../config/model-registry";
@@ -1380,7 +1380,7 @@ export const imageGenTool: CustomTool<typeof imageGenSchema, ImageGenToolDetails
 				);
 
 				const { getAntigravityUserAgent } =
-					require("@gajae-code/ai/providers/google-gemini-headers") as typeof import("@gajae-code/ai/providers/google-gemini-headers");
+					require("@bworx-io/worx-ai/providers/google-gemini-headers") as typeof import("@bworx-io/worx-ai/providers/google-gemini-headers");
 				const response = await fetch(`${ANTIGRAVITY_ENDPOINT}/v1internal:streamGenerateContent?alt=sse`, {
 					method: "POST",
 					headers: {

@@ -57,7 +57,7 @@ Save the following as `.worx/tools/codegraph.ts` (project) or
  *
  * Prereqs: `npm i -g @colbymchenry/codegraph` and `codegraph init` in the project.
  */
-import type { CustomToolFactory } from "@gajae-code/coding-agent"; // optional: editor types only
+import type { CustomToolFactory } from "@bworx-io/worx-code"; // optional: editor types only
 
 const CODEGRAPH_CLI = "codegraph";
 const TIMEOUT_MS = 60_000;

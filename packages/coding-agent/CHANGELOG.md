@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Moved every workspace dependency onto the unified `@bworx-io/worx-*` scope; the legacy publish scope still resolves through the plugin compatibility shim.
+
 ## [0.13.1] - 2026-08-11
 
 ### Added

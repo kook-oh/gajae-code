@@ -9,7 +9,7 @@ import { ReadTool } from "@bworx-io/worx-code/tools/read";
 import * as bridge from "@bworx-io/worx-code/web/insane/bridge";
 import * as urlGuard from "@bworx-io/worx-code/web/insane/url-guard";
 import * as scrapers from "@bworx-io/worx-code/web/scrapers/types";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 const baseArgs = {
 	url: "https://example.com/x",

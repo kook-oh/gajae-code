@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { agentLoopContinue } from "@gajae-code/agent-core/agent-loop";
-import { AppendOnlyContextManager } from "@gajae-code/agent-core/append-only-context";
-import type { AgentContext, AgentLoopConfig, AgentMessage, AgentTool, StreamFn } from "@gajae-code/agent-core/types";
-import type { Context, Message } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import { agentLoopContinue } from "@bworx-io/worx-agent-core/agent-loop";
+import { AppendOnlyContextManager } from "@bworx-io/worx-agent-core/append-only-context";
+import type { AgentContext, AgentLoopConfig, AgentMessage, AgentTool, StreamFn } from "@bworx-io/worx-agent-core/types";
+import type { Context, Message } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { createAssistantMessage, createUserMessage } from "./helpers";
 
 function makeContext(messages: AgentMessage[] = [createUserMessage("first")]): AgentContext {

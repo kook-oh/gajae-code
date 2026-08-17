@@ -6,14 +6,14 @@ import type {
 	AgentToolContext,
 	AgentToolResult,
 	AgentToolUpdateCallback,
-} from "@gajae-code/agent-core";
+} from "@bworx-io/worx-agent-core";
 import type {
 	CursorMcpCall,
 	CursorShellStreamCallbacks,
 	CursorExecHandlers as ICursorExecHandlers,
 	ToolResultMessage,
-} from "@gajae-code/ai/core";
-import { sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { resolveToCwd } from "./tools/path-utils";
 
 interface CursorExecBridgeOptions {

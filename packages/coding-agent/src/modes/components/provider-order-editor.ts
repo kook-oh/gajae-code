@@ -13,8 +13,8 @@
  * subscriptions and dispose the container, idempotently.
  */
 
-import { Container, getKeybindings, matchesKey, Spacer, Text } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import { Container, getKeybindings, matchesKey, Spacer, Text } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { theme } from "../../modes/theme/theme";
 import {
 	formatProviderOrderLabel,

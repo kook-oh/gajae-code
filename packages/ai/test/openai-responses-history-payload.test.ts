@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { streamOpenAICodexResponses } from "@gajae-code/ai/providers/openai-codex-responses";
-import { type OpenAIResponsesOptions, streamOpenAIResponses } from "@gajae-code/ai/providers/openai-responses";
-import type { AssistantMessage, Context, Model, ProviderSessionState } from "@gajae-code/ai/types";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { streamOpenAICodexResponses } from "@bworx-io/worx-ai/providers/openai-codex-responses";
+import { type OpenAIResponsesOptions, streamOpenAIResponses } from "@bworx-io/worx-ai/providers/openai-responses";
+import type { AssistantMessage, Context, Model, ProviderSessionState } from "@bworx-io/worx-ai/types";
 import { createOpenAIResponsesHistoryPayload, truncateResponseItemId } from "../src/utils";
 
 function createAbortedSignal(): AbortSignal {

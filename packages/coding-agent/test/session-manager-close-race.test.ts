@@ -24,6 +24,7 @@
  */
 
 import { describe, expect, it } from "bun:test";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { SessionManager, type SessionManagerCloseOutcome } from "@bworx-io/worx-code/session/session-manager";
 import {
 	MemorySessionStorage,
@@ -33,7 +34,6 @@ import {
 	type SessionStorageWriterOpenOptions,
 	SessionStorageWriterRetryableCloseError,
 } from "@bworx-io/worx-code/session/session-storage";
-import { getBundledModel } from "@gajae-code/ai/models";
 
 class CloseHoldingStorage implements SessionStorage {
 	readonly #inner = new MemorySessionStorage();

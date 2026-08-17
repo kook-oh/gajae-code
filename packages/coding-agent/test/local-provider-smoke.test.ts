@@ -9,7 +9,7 @@ import {
 	runLocalProviderSmoke,
 	runLocalProviderStatus,
 } from "@bworx-io/worx-code/cli/local-provider-smoke";
-import { hookFetch } from "@gajae-code/utils/hook-fetch";
+import { hookFetch } from "@bworx-io/worx-utils/hook-fetch";
 import { LOCAL_PROVIDER_ACTIONS, LOCAL_PROVIDER_DEFAULT_ACTION } from "../src/commands/local-provider";
 
 describe("local provider streaming smoke", () => {

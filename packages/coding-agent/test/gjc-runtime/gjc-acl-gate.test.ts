@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentTool } from "@gajae-code/agent-core";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
 import { getWorkflowMutationDecision } from "../../src/skill-state/workflow-mutation-guard";
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {

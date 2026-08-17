@@ -20,7 +20,7 @@ function nativeScope(): NativeManagedScope {
 	return require("@bworx-io/worx-code-natives") as NativeManagedScope;
 }
 
-import { hasFsCode, logger, pathIsWithin } from "@gajae-code/utils";
+import { hasFsCode, logger, pathIsWithin } from "@bworx-io/worx-utils";
 import type { ResumeSessionIdentity } from "../session-manager";
 import {
 	FileSessionStorage,

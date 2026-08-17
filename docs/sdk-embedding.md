@@ -2,7 +2,7 @@
 
 For the external control and notification wire protocol, see [the Gajae-Code SDK](./sdk.md).
 
-The SDK is the in-process integration surface for `@gajae-code/coding-agent`.
+The SDK is the in-process integration surface for `@bworx-io/worx-code`.
 Use it when you want direct access to agent state, event streaming, tool wiring, and session control from your own Bun/Node process.
 
 For cross-language or process-isolated control, use the [SDK WebSocket machine interface](./sdk.md).
@@ -10,14 +10,14 @@ For cross-language or process-isolated control, use the [SDK WebSocket machine i
 ## Installation
 
 ```bash
-bun add @gajae-code/coding-agent
+bun add @bworx-io/worx-code
 ```
 
-For process-isolated TypeScript integrations, install `@gajae-code/bridge-client` and import `SdkClient` from that standalone transport-only package. `@gajae-code/coding-agent/sdk` remains a compatibility re-export with the same `SdkClient` class identity and associated types. Both surfaces use only the v3 SDK transport; no historical BridgeClient backend protocol, handshake/commands/SSE endpoint, or direct host-control path is restored.
+For process-isolated TypeScript integrations, install `@bworx-io/worx-bridge-client` and import `SdkClient` from that standalone transport-only package. `@bworx-io/worx-code/sdk` remains a compatibility re-export with the same `SdkClient` class identity and associated types. Both surfaces use only the v3 SDK transport; no historical BridgeClient backend protocol, handshake/commands/SSE endpoint, or direct host-control path is restored.
 
 ## Entry points
 
-`@gajae-code/coding-agent/sdk` is the canonical entry point for embedders. The package root exports the same SDK APIs for convenience.
+`@bworx-io/worx-code/sdk` is the canonical entry point for embedders. The package root exports the same SDK APIs for convenience.
 
 Core exports for embedders:
 
@@ -33,7 +33,7 @@ Core exports for embedders:
 ## Quick start (auto-discovery defaults)
 
 ```ts
-import { createAgentSession } from "@gajae-code/coding-agent";
+import { createAgentSession } from "@bworx-io/worx-code";
 
 const { session, modelFallbackMessage } = await createAgentSession();
 
@@ -90,7 +90,7 @@ Typically you must provide only what you want to control:
 ### File-backed (default)
 
 ```ts
-import { createAgentSession, SessionManager } from "@gajae-code/coding-agent";
+import { createAgentSession, SessionManager } from "@bworx-io/worx-code";
 
 const { session } = await createAgentSession({
   sessionManager: SessionManager.create(process.cwd()),
@@ -106,7 +106,7 @@ console.log(session.sessionFile); // absolute .jsonl path
 ### In-memory
 
 ```ts
-import { createAgentSession, SessionManager } from "@gajae-code/coding-agent";
+import { createAgentSession, SessionManager } from "@bworx-io/worx-code";
 
 const { session } = await createAgentSession({
   sessionManager: SessionManager.inMemory(),
@@ -122,7 +122,7 @@ console.log(session.sessionFile); // undefined
 ### Resume/open/list helpers
 
 ```ts
-import { SessionManager } from "@gajae-code/coding-agent";
+import { SessionManager } from "@bworx-io/worx-code";
 
 const recent = await SessionManager.continueRecent(process.cwd());
 const listed = await SessionManager.list(process.cwd());
@@ -141,7 +141,7 @@ import {
   discoverAuthStorage,
   ModelRegistry,
   SessionManager,
-} from "@gajae-code/coding-agent";
+} from "@bworx-io/worx-code";
 
 const authStorage = await discoverAuthStorage();
 const modelRegistry = new ModelRegistry(authStorage);
@@ -316,7 +316,7 @@ import {
   ModelRegistry,
   SessionManager,
   Settings,
-} from "@gajae-code/coding-agent";
+} from "@bworx-io/worx-code";
 
 const authStorage = await discoverAuthStorage();
 const modelRegistry = new ModelRegistry(authStorage);

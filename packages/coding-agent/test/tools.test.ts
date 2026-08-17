@@ -4,6 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import * as url from "node:url";
 import * as zlib from "node:zlib";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { AsyncJobManager } from "@bworx-io/worx-code/async";
 import { DEFAULT_BASH_INTERCEPTOR_RULES, Settings } from "@bworx-io/worx-code/config/settings";
 import { EditTool } from "@bworx-io/worx-code/edit";
@@ -32,8 +33,7 @@ import {
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
 import { DEFAULT_FILE_LIMIT, MULTI_FILE_PER_FILE_MATCHES, SearchTool } from "@bworx-io/worx-code/tools/search";
 import { WriteTool } from "@bworx-io/worx-code/tools/write";
-import type { AgentToolContext } from "@gajae-code/agent-core";
-import { $which, Snowflake } from "@gajae-code/utils";
+import { $which, Snowflake } from "@bworx-io/worx-utils";
 import { unzipSync } from "fflate";
 
 // Helper to extract text from content blocks

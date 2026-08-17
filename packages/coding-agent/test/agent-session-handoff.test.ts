@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import * as compactionModule from "@bworx-io/worx-agent-core/compaction";
+import type { AssistantMessage, ToolCall } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import { createAppendOnlyContextManager } from "@bworx-io/worx-code/append-only-mode";
 import { AsyncJobManager } from "@bworx-io/worx-code/async/job-manager";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
@@ -11,12 +16,7 @@ import { AgentSession, type AgentSessionEvent } from "@bworx-io/worx-code/sessio
 import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent } from "@gajae-code/agent-core";
-import * as compactionModule from "@gajae-code/agent-core/compaction";
-import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 describe("AgentSession handoff", () => {
 	let tempDir: TempDir;

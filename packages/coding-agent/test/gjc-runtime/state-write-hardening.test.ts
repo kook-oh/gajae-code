@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { readWorkflowStateJson, runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
-import * as logger from "@gajae-code/utils/logger";
+import * as logger from "@bworx-io/worx-utils/logger";
 
 const TEST_SESSION_ID = "test-session";
 

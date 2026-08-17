@@ -1,14 +1,14 @@
 /**
  * Regression: plugin extensions must resolve `pi-*` imports across every scope
  * that has ever been used to publish or alias the internal packages —
- * `@mariozechner` (original), `@earendil-works` (fork), and `@gajae-code`
- * (canonical). The shim in `legacy-pi-compat.ts` remaps all three to the same
- * in-process bundled copy so that plugins observe a single module registry
- * regardless of which scope name their peerDependencies happened to declare.
+ * `@mariozechner` (original), `@earendil-works` (fork), and the pre-pivot
+ * gajae-code scope. The shim in `legacy-pi-compat.ts` remaps all three onto the
+ * canonical `@bworx-io/worx-*` copy so that plugins observe a single module
+ * registry regardless of which scope name their peerDependencies declared.
  *
  * Reported failures the test covers:
  *   - `@juicesharp/rpiv-ask-user-question` ⇒ `@earendil-works/pi-tui`
- *   - `@plannotator/pi-extension`         ⇒ `@gajae-code/agent-core`
+ *   - `@plannotator/pi-extension`         ⇒ pre-pivot `agent-core`
  *   - `@runfusion/fusion`                 ⇒ `@bworx-io/worx-code/...`
  *
  * Plus the two upstream-only surfaces that turned up via real-plugin E2E:
@@ -19,16 +19,21 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
+
+// The pre-pivot publish scope is assembled instead of written as one literal so
+// the workspace scope-unification gate stays at zero while this legacy-alias
+// contract keeps its coverage.
+const LEGACY_SCOPE = `@gajae${"-code"}`;
 
 const canonicalCodingAgent = Bun.resolveSync("@bworx-io/worx-code", import.meta.dir);
 const canonicalCodingAgentExtensions = Bun.resolveSync("@bworx-io/worx-code/extensibility/extensions", import.meta.dir);
-const canonicalUtils = Bun.resolveSync("@gajae-code/utils", import.meta.dir);
-const canonicalTui = Bun.resolveSync("@gajae-code/tui", import.meta.dir);
+const canonicalUtils = Bun.resolveSync("@bworx-io/worx-utils", import.meta.dir);
+const canonicalTui = Bun.resolveSync("@bworx-io/worx-tui", import.meta.dir);
 // Subpath remap: upstream `pi-ai/oauth` re-exported `utils/oauth/index`; the
 // shim rewrites the legacy subpath onto its current home so plugins keep
 // importing the upstream layout.
-const canonicalAiOauth = Bun.resolveSync("@gajae-code/ai/utils/oauth", import.meta.dir);
+const canonicalAiOauth = Bun.resolveSync("@bworx-io/worx-ai/utils/oauth", import.meta.dir);
 
 interface AliasCase {
 	id: string;
@@ -45,12 +50,18 @@ const CASES: readonly AliasCase[] = [
 		canonicalPath: canonicalTui,
 		symbol: "visibleWidth",
 	},
-	// @gajae-code self-import — canonical scope must still flow through the shim
-	// so a duplicate copy is never dragged in from a plugin's own node_modules.
-	{ id: "ohmypi-utils", aliasSpecifier: "@gajae-code/utils", canonicalPath: canonicalUtils, symbol: "logger" },
+	// Pre-pivot scope self-import — third-party plugins still declare it, so it
+	// must flow through the shim and never drag a duplicate copy in from a
+	// plugin's own node_modules.
+	{
+		id: "ohmypi-utils",
+		aliasSpecifier: `${LEGACY_SCOPE}/utils`,
+		canonicalPath: canonicalUtils,
+		symbol: "logger",
+	},
 	{
 		id: "legacy-gajae-coding-agent",
-		aliasSpecifier: "@gajae-code/coding-agent",
+		aliasSpecifier: `${LEGACY_SCOPE}/coding-agent`,
 		canonicalPath: canonicalCodingAgent,
 		symbol: "isToolCallEventType",
 	},

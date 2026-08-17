@@ -268,7 +268,7 @@ describe("update-cli package-manager verification", () => {
 				expectedVersion: "0.7.8",
 				runInstall: async () => ({
 					exitCode: 1,
-					text: () => 'Fail extracting tarball for "@gajae-code/natives"',
+					text: () => 'Fail extracting tarball for "@bworx-io/worx-code-natives"',
 				}),
 				verifyInstalledRuntime: async expectedVersion => ({
 					ok: true,
@@ -348,7 +348,7 @@ describe("update-cli package-manager verification", () => {
 				expectedVersion: "0.7.8",
 				runInstall: async () => ({
 					exitCode: 1,
-					text: () => 'Fail extracting tarball for "@gajae-code/natives"',
+					text: () => 'Fail extracting tarball for "@bworx-io/worx-code-natives"',
 				}),
 				verifyInstalledRuntime: async () => ({
 					ok: false,

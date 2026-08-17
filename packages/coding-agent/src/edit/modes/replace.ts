@@ -4,7 +4,7 @@
  * Provides both character-level and line-level fuzzy matching with progressive
  * fallback strategies for finding text in files.
  */
-import type { AgentToolResult } from "@gajae-code/agent-core";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
 import * as z from "zod/v4";
 import type { WritethroughCallback, WritethroughDeferredHandle } from "../../lsp";
 import type { ToolSession } from "../../tools";
@@ -46,7 +46,7 @@ let nativeFuzzyWarmupStarted = false;
 /**
  * First-use warm-up for the native fuzzy matchers. Deliberately NOT started at
  * module evaluation: the W5b idle/S1 module-trace gate requires that merely
- * importing the edit tool never materializes @gajae-code/natives. Callers stay
+ * importing the edit tool never materializes @bworx-io/worx-code-natives. Callers stay
  * on the TS fallback until the fire-and-forget load resolves.
  */
 function warmNativeFuzzy(): void {

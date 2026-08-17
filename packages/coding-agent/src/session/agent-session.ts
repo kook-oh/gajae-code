@@ -45,9 +45,9 @@ import {
 	resolveTelemetry,
 	type StablePrefixSnapshot,
 	ThinkingLevel,
-} from "@gajae-code/agent-core";
-import { normalizeMessagesForProvider } from "@gajae-code/agent-core/agent-loop";
-import type { AttemptRunHandle, AttemptScope, AttemptScopeAuthority } from "@gajae-code/agent-core/attempt-scope";
+} from "@bworx-io/worx-agent-core";
+import { normalizeMessagesForProvider } from "@bworx-io/worx-agent-core/agent-loop";
+import type { AttemptRunHandle, AttemptScope, AttemptScopeAuthority } from "@bworx-io/worx-agent-core/attempt-scope";
 import {
 	AUTO_HANDOFF_THRESHOLD_FOCUS,
 	CompactionCancelledError,
@@ -69,7 +69,7 @@ import {
 	type RemoteCompactionFallbackHealthHooks,
 	type SummaryOptions,
 	shouldCompact,
-} from "@gajae-code/agent-core/compaction";
+} from "@bworx-io/worx-agent-core/compaction";
 import {
 	commitToolOutputPrune,
 	createPrunedNotice,
@@ -80,7 +80,7 @@ import {
 	pruneAssistantToolArguments,
 	shouldRunMaintenancePrune,
 	type ToolOutputPruneEvictionHandle,
-} from "@gajae-code/agent-core/compaction/pruning";
+} from "@bworx-io/worx-agent-core/compaction/pruning";
 import type {
 	AssistantMessage,
 	AttemptScopeRef,
@@ -102,7 +102,7 @@ import type {
 	TransportFailureFacts,
 	Usage,
 	UsageReport,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 import {
 	classifyContextOverflow,
 	getSupportedEfforts,
@@ -112,7 +112,7 @@ import {
 	modelSupportsServiceTier,
 	modelsAreEqual,
 	streamSimple,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 import {
 	type AuthDisposition,
 	beginAttempt,
@@ -121,7 +121,7 @@ import {
 	type FallbackAttemptToken,
 	type FallbackTriggerClass,
 	STREAM_FIRST_EVENT_TIMEOUT_PROVIDER_CODE,
-} from "@gajae-code/ai/utils/fallback-transport";
+} from "@bworx-io/worx-ai/utils/fallback-transport";
 import { AttemptRecordStore } from "./attempt-record-store";
 import {
 	BTW_MAX_ANSWER_UTF8_BYTES,
@@ -185,7 +185,7 @@ import {
 	logger,
 	prompt,
 	Snowflake,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 
 import { createAppendOnlyContextManager, resolveAppendOnlyMode } from "../append-only-mode";
 import { type AsyncJob, type AsyncJobDeliveryState, AsyncJobManager, type OwnerSubagentShutdownLease } from "../async";
@@ -12284,7 +12284,7 @@ export class AgentSession {
 	 */
 	#rearmFastMode(): void {
 		const { clearAnthropicFastModeFallback } =
-			require("@gajae-code/ai/providers/anthropic") as typeof import("@gajae-code/ai/providers/anthropic");
+			require("@bworx-io/worx-ai/providers/anthropic") as typeof import("@bworx-io/worx-ai/providers/anthropic");
 		clearAnthropicFastModeFallback(this.#providerSessionState);
 		this.#fastModeAutoDisabledProviderKeys.clear();
 	}

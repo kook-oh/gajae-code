@@ -14,10 +14,10 @@ const scannerPath = "packages/coding-agent/scripts/verify-gjc-sdk-canonicalizati
 const packageManifestPath = "packages/coding-agent/package.json";
 const retiredPythonRpcPackagePath = "python/gjc-rpc/";
 const bridgeClientPackageManifestPath = "packages/bridge-client/package.json";
-const bridgeClientPackageName = "@gajae-code/bridge-client";
+const bridgeClientPackageName = "@bworx-io/worx-bridge-client";
 const bridgeOrUnattendedImportPattern =
 	/(?:\b(?:import|export)\s+(?:type\s+)?(?:[^"'`;]*?\s+from\s+)?|\bimport\s*\(\s*)["'][^"']*(?:(?:^|\/)unattended)(?:["'/]|$)/g;
-const bridgeClientImportPattern = /(?:\bfrom\s*|\bimport\s*\(\s*)["'](@gajae-code\/bridge-client[^"']*)["']/g;
+const bridgeClientImportPattern = /(?:\bfrom\s*|\bimport\s*\(\s*)["'](@bworx-io\/worx-bridge-client[^"']*)["']/g;
 const legacyBridgeClientSurfacePattern = /\b(?:BridgeClient|handshake|commands|SSE|control)\b/;
 
 const pythonUnattendedProtocolClientPattern =
@@ -914,7 +914,7 @@ function bridgeClientOwnershipViolations(file: string, contents: string): string
 			violations.push(`${file}:${lineNumber(contents, start)}: bridge-client import escapes its package`);
 		}
 		if (
-			/(?:^|\/)(?:coding-agent|agent-session|sdk\/(?:host|session)|session)(?:\/|$)|@gajae-code\/coding-agent/.test(
+			/(?:^|\/)(?:coding-agent|agent-session|sdk\/(?:host|session)|session)(?:\/|$)|@bworx-io\/worx-code/.test(
 				specifier,
 			)
 		) {
@@ -2610,19 +2610,19 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture({ [packageManifestPath]: realManifest }, 0);
 	await runSelfTestFixture(
 		{
-			"package.json": '{"catalog":{"@gajae-code/bridge-client":"0.10.1"}}\n',
-			"packages/bridge-client/package.json": '{"name":"@gajae-code/bridge-client"}\n',
+			"package.json": '{"catalog":{"@bworx-io/worx-bridge-client":"0.10.1"}}\n',
+			"packages/bridge-client/package.json": '{"name":"@bworx-io/worx-bridge-client"}\n',
 			"packages/bridge-client/src/index.ts": "export class SdkClient {}\nexport type SdkClientOptions = {};\n",
-			"packages/coding-agent/package.json": '{"dependencies":{"@gajae-code/bridge-client":"catalog:"}}\n',
+			"packages/coding-agent/package.json": '{"dependencies":{"@bworx-io/worx-bridge-client":"catalog:"}}\n',
 			"packages/coding-agent/src/sdk/client/client.ts":
-				'export { SdkClient } from "@gajae-code/bridge-client";\nexport type { SdkClientOptions } from "@gajae-code/bridge-client";\n',
+				'export { SdkClient } from "@bworx-io/worx-bridge-client";\nexport type { SdkClientOptions } from "@bworx-io/worx-bridge-client";\n',
 		},
 		0,
 	);
 	await runSelfTestFixture(
 		{
 			"packages/bridge-client/package.json":
-				'{"name":"@gajae-code/bridge-client","dependencies":{"unsafe":"1.0.0"}}\n',
+				'{"name":"@bworx-io/worx-bridge-client","dependencies":{"unsafe":"1.0.0"}}\n',
 		},
 		1,
 		"canonical bridge-client package must remain runtime-dependency-free",
@@ -2657,14 +2657,14 @@ async function selfTest(): Promise<void> {
 		"bridge-client imports coding-agent or AgentSession authority",
 	);
 	await runSelfTestFixture(
-		{ "packages/renamed-workspace/package.json": '{"name":"@gajae-code/bridge-client"}\n' },
+		{ "packages/renamed-workspace/package.json": '{"name":"@bworx-io/worx-bridge-client"}\n' },
 		1,
 		"declares unsupported bridge-client package metadata",
 	);
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/consumer.ts":
-				'import { BridgeClient } from "@gajae-code/bridge-client";\nvoid BridgeClient;\n',
+				'import { BridgeClient } from "@bworx-io/worx-bridge-client";\nvoid BridgeClient;\n',
 		},
 		1,
 		"historical BridgeClient surface survived",
@@ -2672,7 +2672,7 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/consumer.ts":
-				'import { handshake } from "@gajae-code/bridge-client";\nvoid handshake;\n',
+				'import { handshake } from "@bworx-io/worx-bridge-client";\nvoid handshake;\n',
 		},
 		1,
 		"imports historical bridge-client protocol surface",
@@ -2680,7 +2680,7 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/consumer.ts":
-				'import { commands } from "@gajae-code/bridge-client";\nvoid commands;\n',
+				'import { commands } from "@bworx-io/worx-bridge-client";\nvoid commands;\n',
 		},
 		1,
 		"imports historical bridge-client protocol surface",
@@ -2688,14 +2688,14 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/consumer.ts":
-				'import { SdkClient } from "@gajae-code/bridge-client/commands";\nvoid SdkClient;\n',
+				'import { SdkClient } from "@bworx-io/worx-bridge-client/commands";\nvoid SdkClient;\n',
 		},
 		1,
 		"imports unsupported bridge-client subpath",
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/consumer.ts": 'import { SSE } from "@gajae-code/bridge-client";\nvoid SSE;\n',
+			"packages/coding-agent/src/consumer.ts": 'import { SSE } from "@bworx-io/worx-bridge-client";\nvoid SSE;\n',
 		},
 		1,
 		"imports historical bridge-client protocol surface",
@@ -2703,7 +2703,7 @@ async function selfTest(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/consumer.ts":
-				'import { control } from "@gajae-code/bridge-client";\nvoid control;\n',
+				'import { control } from "@bworx-io/worx-bridge-client";\nvoid control;\n',
 		},
 		1,
 		"imports historical bridge-client protocol surface",

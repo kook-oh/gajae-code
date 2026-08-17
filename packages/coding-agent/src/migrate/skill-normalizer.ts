@@ -8,7 +8,7 @@
  * when the source lacks one.
  */
 
-import { parseFrontmatter } from "@gajae-code/utils";
+import { parseFrontmatter } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 
 export interface NormalizeSkillInput {

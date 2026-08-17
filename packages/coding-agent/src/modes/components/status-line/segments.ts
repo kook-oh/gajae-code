@@ -1,8 +1,14 @@
 import * as os from "node:os";
 import * as path from "node:path";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { TERMINAL } from "@gajae-code/tui";
-import { formatDuration, formatNumber, getProjectDir, pathIsWithin, relativePathWithinRoot } from "@gajae-code/utils";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { TERMINAL } from "@bworx-io/worx-tui";
+import {
+	formatDuration,
+	formatNumber,
+	getProjectDir,
+	pathIsWithin,
+	relativePathWithinRoot,
+} from "@bworx-io/worx-utils";
 import { type ThemeColor, theme } from "../../../modes/theme/theme";
 import { shortenPath } from "../../../tools/render-utils";
 import { getSessionAccentAnsi, getSessionAccentHex } from "../../../utils/session-color";

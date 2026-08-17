@@ -1,4 +1,4 @@
-import type { Component } from "@gajae-code/tui";
+import type { Component } from "@bworx-io/worx-tui";
 import { theme } from "../../modes/theme/theme";
 
 /**

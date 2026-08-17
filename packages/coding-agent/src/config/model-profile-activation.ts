@@ -1,5 +1,5 @@
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Api, Model } from "@gajae-code/ai/core";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Api, Model } from "@bworx-io/worx-ai/core";
 import type { AgentSession, DefaultFallbackRuntimeState } from "../session/agent-session";
 import { clampExplicitThinkingLevelForModel, formatClampedModelSelector } from "../thinking";
 import { validateModelProfileName } from "./model-profile-contract";

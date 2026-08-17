@@ -502,8 +502,8 @@ async function readNpmConfig(key: string): Promise<string | undefined> {
 async function assertPinnedNpmConfiguration(): Promise<void> {
 	const registry = await readNpmConfig("registry");
 	if (registry !== undefined) validateNpmRegistryUrl(registry, "ambient npm registry");
-	const scopedRegistry = await readNpmConfig("@gajae-code:registry");
-	if (scopedRegistry !== undefined) validateNpmRegistryUrl(scopedRegistry, "@gajae-code npm registry");
+	const scopedRegistry = await readNpmConfig("@bworx-io:registry");
+	if (scopedRegistry !== undefined) validateNpmRegistryUrl(scopedRegistry, "@bworx-io npm registry");
 	const tag = await readNpmConfig("tag");
 	if (tag !== undefined && tag !== NPM_RELEASE_TAG) {
 		throw new Error(`ambient npm tag must be ${NPM_RELEASE_TAG}`);

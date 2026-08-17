@@ -15,7 +15,7 @@
 import { Buffer } from "node:buffer";
 import * as os from "node:os";
 import * as path from "node:path";
-import { $credentialEnv, $envpos, isEnoent, logger } from "@gajae-code/utils";
+import { $credentialEnv, $envpos, isEnoent, logger } from "@bworx-io/worx-utils";
 import type { FetchImpl } from "../types";
 
 const OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token";

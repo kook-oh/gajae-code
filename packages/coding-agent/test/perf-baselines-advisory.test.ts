@@ -7,8 +7,8 @@ import * as path from "node:path";
 const originalStateFileEnv = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
 const originalSessionIdEnv = process.env.WORX_COORDINATOR_SESSION_ID;
 
-let getProjectDir: typeof import("@gajae-code/utils").getProjectDir;
-let setProjectDir: typeof import("@gajae-code/utils").setProjectDir;
+let getProjectDir: typeof import("@bworx-io/worx-utils").getProjectDir;
+let setProjectDir: typeof import("@bworx-io/worx-utils").setProjectDir;
 let originalProjectDir: string;
 let StatusLineComponent: typeof import("../src/modes/components/tool-status-header").StatusLineComponent;
 let gitUtils: typeof import("../src/modes/components/status-line/git-utils");
@@ -18,7 +18,7 @@ let eventControllerPerfCounters: typeof import("../src/modes/controllers/event-c
 let persistCoordinatorRuntimeStateFromEvent: typeof import("../src/gjc-runtime/session-state-sidecar").persistCoordinatorRuntimeStateFromEvent;
 
 beforeAll(async () => {
-	const utils = await import("@gajae-code/utils");
+	const utils = await import("@bworx-io/worx-utils");
 	getProjectDir = utils.getProjectDir;
 	setProjectDir = utils.setProjectDir;
 	originalProjectDir = getProjectDir();

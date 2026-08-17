@@ -1,5 +1,5 @@
-import { getAgentDir } from "@gajae-code/utils";
-import { CliParseError } from "@gajae-code/utils/cli";
+import { getAgentDir } from "@bworx-io/worx-utils";
+import { CliParseError } from "@bworx-io/worx-utils/cli";
 import { readSdkBrokerDiscovery, SdkClient, SdkClientError } from "../client";
 import { DEFAULT_PENDING_CEILING_BYTES, MIN_PENDING_CEILING_BYTES, startSocketServe, startStdioServe } from "./index";
 

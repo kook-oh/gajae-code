@@ -1,5 +1,5 @@
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
-import { prompt, untilAborted } from "@gajae-code/utils";
+import type { AgentTool, AgentToolResult } from "@bworx-io/worx-agent-core";
+import { prompt, untilAborted } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { discoverRuntimeSkills, type RuntimeSkillDiscoveryCandidate } from "../extensibility/runtime-skill-discovery";
 import skillDiscoveryDescription from "../prompts/tools/skill-discovery.md" with { type: "text" };

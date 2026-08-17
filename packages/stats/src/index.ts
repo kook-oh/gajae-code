@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { parseArgs } from "node:util";
-import { formatDuration, formatNumber, formatPercent } from "@gajae-code/utils";
+import { formatDuration, formatNumber, formatPercent } from "@bworx-io/worx-utils";
 import { getDashboardStats, getTotalMessageCount, syncAllSessions } from "./aggregator";
 import { closeDb } from "./db";
 import { startServer } from "./server";
@@ -99,10 +99,10 @@ async function main(): Promise<void> {
 
 	if (values.help) {
 		console.log(`
-gjc-stats - AI Usage Statistics Dashboard
+worx-stats - AI Usage Statistics Dashboard
 
 Usage:
-  gjc-stats [options]
+  worx-stats [options]
 
 Options:
   -p, --port <port>  Port for the dashboard server (default: 3847)
@@ -111,10 +111,10 @@ Options:
   -h, --help         Show this help message
 
 Examples:
-  gjc-stats              # Start dashboard server
-  gjc-stats --json       # Print stats as JSON
-  gjc-stats --port 8080  # Start on custom port
-  gjc-stats --sync       # Sync and show summary
+  worx-stats              # Start dashboard server
+  worx-stats --json       # Print stats as JSON
+  worx-stats --port 8080  # Start on custom port
+  worx-stats --sync       # Sync and show summary
 `);
 		return;
 	}

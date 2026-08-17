@@ -1,7 +1,7 @@
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { CompactionOutcome } from "@gajae-code/agent-core/compaction";
-import type { AssistantMessage, ImageContent, Message, UsageReport } from "@gajae-code/ai/core";
-import type { Component, Container, EditorTheme, Loader, SlashCommand, Spacer, Text, TUI } from "@gajae-code/tui";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { CompactionOutcome } from "@bworx-io/worx-agent-core/compaction";
+import type { AssistantMessage, ImageContent, Message, UsageReport } from "@bworx-io/worx-ai/core";
+import type { Component, Container, EditorTheme, Loader, SlashCommand, Spacer, Text, TUI } from "@bworx-io/worx-tui";
 import type { KeybindingsManager } from "../config/keybindings";
 import type { Settings } from "../config/settings";
 import type {

@@ -22,7 +22,7 @@ import {
 	Text,
 	TUI,
 	visibleWidth,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 
 const sidebarTheme = {

@@ -1,5 +1,5 @@
 import type { ExtractSegmentsResult, SliceResult } from "@bworx-io/worx-code-natives";
-import { getDefaultTabWidth, getIndentation, onDefaultTabWidthChange } from "@gajae-code/utils";
+import { getDefaultTabWidth, getIndentation, onDefaultTabWidthChange } from "@bworx-io/worx-utils";
 import { renderMetrics } from "./metrics";
 
 type NativeTuiUtils = Pick<
@@ -29,7 +29,7 @@ export enum Ellipsis {
 	Omit = 2,
 }
 
-export { getDefaultTabWidth, getIndentation } from "@gajae-code/utils";
+export { getDefaultTabWidth, getIndentation } from "@bworx-io/worx-utils";
 /** Test-only performance counters for advisory baseline tests. */
 export const __textHelperPerfCounters = {
 	truncateToWidthCalls: 0,

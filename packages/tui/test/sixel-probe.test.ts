@@ -7,7 +7,7 @@ import {
 	shouldProbeSixelCapability,
 	TERMINAL,
 	TUI,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { VirtualTerminal } from "./virtual-terminal";
 
 type MutableTerminalInfo = {

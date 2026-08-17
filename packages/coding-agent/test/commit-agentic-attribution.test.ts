@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai";
+import { getBundledModel } from "@bworx-io/worx-ai";
 import { runCommitAgentSession } from "../src/commit/agentic/agent";
 import * as toolsModule from "../src/commit/agentic/tools";
 import { Settings } from "../src/config/settings";

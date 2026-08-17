@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { discoverAndLoadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
-import { getAgentDir, getPluginsDir, setAgentDir, TempDir } from "@gajae-code/utils";
+import { getAgentDir, getPluginsDir, setAgentDir, TempDir } from "@bworx-io/worx-utils";
 
 const currentPiCodingAgentPath = Bun.resolveSync("@bworx-io/worx-code", import.meta.dir);
 const currentPiExtensionsPath = Bun.resolveSync("@bworx-io/worx-code/extensibility/extensions", import.meta.dir);

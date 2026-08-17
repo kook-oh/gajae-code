@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import * as ai from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai";
+import * as ai from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai";
 import { PromptSuggestionController } from "../src/modes/prompt-suggestion-controller";
 import type { InteractiveModeContext } from "../src/modes/types";
 

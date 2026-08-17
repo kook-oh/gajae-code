@@ -16,7 +16,7 @@ import {
 	parseIrcMessage,
 } from "@bworx-io/worx-code/modes/utils/irc-message";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
-import { type Component, Container, TUI, visibleWidth } from "@gajae-code/tui";
+import { type Component, Container, TUI, visibleWidth } from "@bworx-io/worx-tui";
 import { VirtualTerminal } from "../../tui/test/virtual-terminal";
 
 const artifactDirectory = path.join(os.tmpdir(), `gjc-irc-chatroom-red-team-${process.pid}`);

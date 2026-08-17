@@ -1,6 +1,6 @@
 /** Print-mode output, terminal-status, and stdout-ownership regressions. */
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import type { AssistantMessage, Message, ToolResultMessage } from "@gajae-code/ai";
+import type { AssistantMessage, Message, ToolResultMessage } from "@bworx-io/worx-ai";
 import type { AgentSession } from "../src/session/agent-session";
 import { SILENT_ABORT_MARKER } from "../src/session/messages";
 

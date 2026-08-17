@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, setSystemTime } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 import {
 	persistCoordinatorRuntimeStateFromEvent,
 	persistCoordinatorRuntimeStateFromPostmortem,

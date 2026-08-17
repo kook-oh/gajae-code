@@ -1,4 +1,4 @@
-import { $pickenv, $pickflag } from "@gajae-code/utils";
+import { $pickenv, $pickflag } from "@bworx-io/worx-utils";
 
 const SIXEL_START_REGEX = /\x1bP(?:[0-9;]*)q/u;
 const SIXEL_END_SEQUENCE = "\x1b\\";

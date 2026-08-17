@@ -3,8 +3,8 @@
  */
 
 import * as os from "node:os";
-import type { AgentTool } from "@gajae-code/agent-core";
-import { $env, getGpuCachePath, getProjectDir, hasFsCode, isEnoent, logger, prompt } from "@gajae-code/utils";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import { $env, getGpuCachePath, getProjectDir, hasFsCode, isEnoent, logger, prompt } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import { contextFileCapability } from "./capability/context-file";
 import { systemPromptCapability } from "./capability/system-prompt";

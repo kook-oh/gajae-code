@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import { toolWireSchema } from "@gajae-code/ai/utils/schema";
+import { toolWireSchema } from "@bworx-io/worx-ai/utils/schema";
 import { TOOL_CATALOG } from "../src/tools/tool-catalog.generated";
 
 export interface GeneratedToolCatalogEntry {

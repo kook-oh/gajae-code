@@ -1,12 +1,12 @@
 import { describe, expect, it } from "bun:test";
-import type { ManagedAttemptOutcome } from "@gajae-code/agent-core";
-import { Agent } from "@gajae-code/agent-core";
-import { agentLoopContinue, sanitizedDetachedClone } from "@gajae-code/agent-core/agent-loop";
-import type { AgentContext, AgentEvent, AgentLoopConfig } from "@gajae-code/agent-core/types";
-import type { AssistantMessage, AssistantMessageEvent, Message } from "@gajae-code/ai";
+import type { ManagedAttemptOutcome } from "@bworx-io/worx-agent-core";
+import { Agent } from "@bworx-io/worx-agent-core";
+import { agentLoopContinue, sanitizedDetachedClone } from "@bworx-io/worx-agent-core/agent-loop";
+import type { AgentContext, AgentEvent, AgentLoopConfig } from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, AssistantMessageEvent, Message } from "@bworx-io/worx-ai";
 
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 
 function assistantMessage(model: ReturnType<typeof createMockModel>["model"]): AssistantMessage {
 	return {

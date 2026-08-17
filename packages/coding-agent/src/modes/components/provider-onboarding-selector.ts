@@ -1,4 +1,4 @@
-import { Container, matchesKey, Spacer, TruncatedText } from "@gajae-code/tui";
+import { Container, matchesKey, Spacer, TruncatedText } from "@bworx-io/worx-tui";
 import { theme } from "../../modes/theme/theme";
 import { matchesSelectCancel } from "../../modes/utils/keybinding-matchers";
 import { formatModelOnboardingGuidance } from "../../setup/model-onboarding-guidance";

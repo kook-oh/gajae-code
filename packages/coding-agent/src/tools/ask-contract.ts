@@ -3,8 +3,8 @@
  * Kept dependency-light so both eager AskTool and the cold descriptor registry
  * validate the same payloads without importing the AskTool implementation.
  */
-import { INTENT_FIELD } from "@gajae-code/agent-core";
-import type { RawArgumentValidationResult } from "@gajae-code/ai/types";
+import { INTENT_FIELD } from "@bworx-io/worx-agent-core";
+import type { RawArgumentValidationResult } from "@bworx-io/worx-ai/types";
 import * as z from "zod/v4";
 import { deepInterviewCharacterCount } from "../gjc-runtime/deep-interview-state";
 

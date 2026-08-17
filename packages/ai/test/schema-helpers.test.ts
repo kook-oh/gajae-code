@@ -7,7 +7,7 @@ import {
 	mergeCompatibleEnumSchemas,
 	mergePropertySchemas,
 	stripResidualCombiners,
-} from "@gajae-code/ai/utils/schema";
+} from "@bworx-io/worx-ai/utils/schema";
 
 describe("isJsonObject", () => {
 	it("returns true for plain objects", () => {

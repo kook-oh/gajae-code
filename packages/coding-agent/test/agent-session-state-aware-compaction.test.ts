@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import * as compactionModule from "@bworx-io/worx-agent-core/compaction";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
@@ -8,11 +12,7 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import * as activeStateModule from "@bworx-io/worx-code/skill-state/active-state";
-import { Agent } from "@gajae-code/agent-core";
-import * as compactionModule from "@gajae-code/agent-core/compaction";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { getProjectAgentDir, TempDir } from "@gajae-code/utils";
+import { getProjectAgentDir, TempDir } from "@bworx-io/worx-utils";
 
 function assistantMessage(stopReason: "stop" | "length" = "stop"): AssistantMessage {
 	return {

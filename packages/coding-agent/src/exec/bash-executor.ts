@@ -5,7 +5,7 @@
  */
 import * as fs from "node:fs/promises";
 import type { MinimizerOptions, Shell as NativeShell } from "@bworx-io/worx-code-natives";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 import { Settings, type ShellMinimizerSettings } from "../config/settings";
 import { formatCrashDiagnosticNotice, writeCrashReport } from "../debug/crash-diagnostics";
 import {

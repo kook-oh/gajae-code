@@ -3,7 +3,7 @@ import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/co
 import { LocalProtocolHandler } from "@bworx-io/worx-code/internal-urls";
 import { AgentRegistry } from "@bworx-io/worx-code/registry/agent-registry";
 import { fileHyperlink, isHyperlinkEnabled, tryResolveInternalUrlSync } from "@bworx-io/worx-code/tui/hyperlink";
-import * as terminalCaps from "@gajae-code/tui";
+import * as terminalCaps from "@bworx-io/worx-tui";
 
 // OSC 8 sequence markers
 const OSC = "\x1b]";

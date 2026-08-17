@@ -7,7 +7,7 @@
  * and mutates nothing — it only exposes the deterministic classifier so task
  * classification can be inspected, audited, and consumed by tooling.
  */
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { classifyQuickLane } from "../quick-lane/classify";
 
 export default class QuickLane extends Command {

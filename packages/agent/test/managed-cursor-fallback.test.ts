@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { Agent, type AgentTool } from "@gajae-code/agent-core";
-import type { Model, SimpleStreamOptions } from "@gajae-code/ai";
-import { z } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { Agent, type AgentTool } from "@bworx-io/worx-agent-core";
+import type { Model, SimpleStreamOptions } from "@bworx-io/worx-ai";
+import { z } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 
 type CursorOptionSnapshot = {
 	hasCursorExecHandlers: boolean;

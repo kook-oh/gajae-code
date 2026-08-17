@@ -1,5 +1,5 @@
-import type { AutocompleteItem } from "@gajae-code/tui";
-import { parseFrontmatter, prompt } from "@gajae-code/utils";
+import type { AutocompleteItem } from "@bworx-io/worx-tui";
+import { parseFrontmatter, prompt } from "@bworx-io/worx-utils";
 import { slashCommandCapability } from "../capability/slash-command";
 import { appendInlineArgsFallback, templateUsesInlineArgPlaceholders } from "../config/prompt-templates";
 import type { SlashCommand } from "../discovery";

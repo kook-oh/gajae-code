@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
@@ -8,10 +11,7 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 /** Build an assistant `message_end` payload signalling the provider auto-dropped fast mode. */

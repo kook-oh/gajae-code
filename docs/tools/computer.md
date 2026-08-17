@@ -7,7 +7,7 @@
 - Entry: `packages/coding-agent/src/tools/computer.ts`
 - Model-facing prompt: `packages/coding-agent/src/prompts/tools/computer.md`
 - Renderer: `packages/coding-agent/src/tools/computer/render.ts`
-- Native controller: `@gajae-code/natives` `ComputerController`
+- Native controller: `@bworx-io/worx-code-natives` `ComputerController`
 
 ## Availability
 

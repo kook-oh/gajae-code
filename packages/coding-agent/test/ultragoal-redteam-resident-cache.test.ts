@@ -7,7 +7,7 @@ import { exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import { sweepResidentCacheRoot } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager, SessionManagerTestHooks } from "@bworx-io/worx-code/session/session-manager";
 import * as native from "@bworx-io/worx-code-natives";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const MiB = 1024 * 1024;
 const originalAgentDir = getAgentDir();

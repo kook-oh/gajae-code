@@ -3,7 +3,7 @@ import * as path from "node:path";
 import type { AgentSideConnection, SessionNotification } from "@agentclientprotocol/sdk";
 import { AcpAgent } from "@bworx-io/worx-code/modes/acp/acp-agent";
 import { writeBrokerDiscovery } from "@bworx-io/worx-code/sdk/broker/discovery";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 const TOKEN = "acp-transcript-continuation-token";
 /** Small enough that every fixture body needs several `resource.body` pages. */

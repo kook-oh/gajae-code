@@ -14,7 +14,7 @@ async function fixture(): Promise<string> {
 	temporaryRoots.push(root);
 	const catalog = Object.fromEntries(
 		PUBLIC_PACKAGE_DEFINITIONS
-			.filter(definition => definition.name.startsWith("@gajae-code/"))
+			.filter(definition => definition.name.startsWith("@bworx-io/"))
 			.map(definition => [definition.name, "1.2.3"]),
 	);
 	await Bun.write(path.join(root, "package.json"), `${JSON.stringify({ workspaces: { catalog } }, null, 2)}\n`);
@@ -81,7 +81,7 @@ describe("nightly release versioning", () => {
 			expect(manifest.version).toBe(nightlyVersion);
 		}
 		const rootManifest = await Bun.file(path.join(root, "package.json")).json() as { workspaces: { catalog: Record<string, string> } };
-		for (const definition of PUBLIC_PACKAGE_DEFINITIONS.filter(candidate => candidate.name.startsWith("@gajae-code/"))) {
+		for (const definition of PUBLIC_PACKAGE_DEFINITIONS.filter(candidate => candidate.name.startsWith("@bworx-io/"))) {
 			expect(rootManifest.workspaces.catalog[definition.name]).toBe(nightlyVersion);
 		}
 		expect(await Bun.file(path.join(root, "Cargo.toml")).text()).toContain(`version = "${nightlyVersion}"`);

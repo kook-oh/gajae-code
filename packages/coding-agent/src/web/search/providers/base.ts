@@ -1,4 +1,4 @@
-import type { AuthStorage } from "@gajae-code/ai/core";
+import type { AuthStorage } from "@bworx-io/worx-ai/core";
 import type { ActiveSearchModelContext, SearchProviderId, SearchResponse } from "../types";
 
 /**

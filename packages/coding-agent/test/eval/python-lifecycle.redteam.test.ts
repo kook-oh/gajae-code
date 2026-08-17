@@ -9,7 +9,7 @@ import type {
 } from "@bworx-io/worx-code/eval/py/kernel";
 import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
 import { ensurePythonRuntime } from "@bworx-io/worx-code/eval/py/runtime";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 const originalStart = PythonKernel.start;
 

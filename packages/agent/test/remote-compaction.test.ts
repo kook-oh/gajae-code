@@ -3,9 +3,9 @@ import {
 	buildOpenAiNativeHistory,
 	requestOpenAiRemoteCompaction,
 	requestRemoteCompaction,
-} from "@gajae-code/agent-core/compaction/openai";
-import type { AssistantMessage, Model, ToolResultMessage } from "@gajae-code/ai/types";
-import { hookFetch } from "@gajae-code/utils";
+} from "@bworx-io/worx-agent-core/compaction/openai";
+import type { AssistantMessage, Model, ToolResultMessage } from "@bworx-io/worx-ai/types";
+import { hookFetch } from "@bworx-io/worx-utils";
 
 function setEnvForTest(key: string, value: string): () => void {
 	const previous = Bun.env[key];

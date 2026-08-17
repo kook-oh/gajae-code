@@ -17,15 +17,15 @@ const EXPECTED_ROLE_AGENTS = ["architect", "critic", "executor", "planner"] as c
 const EXPECTED_PUBLIC_PACKAGE_VERSION_CATALOG_KEY = "@bworx-io/worx-code";
 const ALLOWED_PUBLIC_PACKAGE_VERSIONS = new Map<string, string>();
 const ALLOWED_PRIVATE_PACKAGE_VERSIONS = new Map<string, string>([
-	["@gajae-code/orchestration-token-benchmark", "0.0.1"],
-	["@gajae-code/typescript-edit-benchmark", "0.0.1"],
+	["@bworx-io/worx-orchestration-token-benchmark", "0.0.1"],
+	["@bworx-io/worx-typescript-edit-benchmark", "0.0.1"],
 ]);
 const ALLOWED_UNSCOPED_PACKAGE_NAMES = new Set<string>();
 const ALLOWED_PACKAGE_BINARIES = new Map<string, readonly string[]>([
-	["@gajae-code/ai", ["pi-ai"]],
+	["@bworx-io/worx-ai", ["pi-ai"]],
 	["@bworx-io/worx-code", ["worx"]],
-	["@gajae-code/stats", ["gjc-stats"]],
-	["@gajae-code/typescript-edit-benchmark", ["typescript-edit-benchmark"]],
+	["@bworx-io/worx-stats", ["worx-stats"]],
+	["@bworx-io/worx-typescript-edit-benchmark", ["typescript-edit-benchmark"]],
 ]);
 const PUBLIC_DOC_FILES = ["README.md", "packages/coding-agent/README.md"] as const;
 const LEGACY_NAME_PATTERNS: readonly RegExp[] = [
@@ -102,22 +102,22 @@ const REQUIRED_PRIVATE_EXPORT_BLOCKS = [
 	"./slash-commands/helpers/mcp",
 ] as const;
 const FORBIDDEN_PACKAGE_IMPORTS = [
-	"@gajae-code/coding-agent/mcp",
-	"@gajae-code/coding-agent/runtime-mcp/index",
-	"@gajae-code/coding-agent/runtime-mcp/manager",
-	"@gajae-code/coding-agent/commands/gjc-runtime-bridge",
-	"@gajae-code/coding-agent/capability/mcp",
-	"@gajae-code/coding-agent/config/mcp-schema",
-	"@gajae-code/coding-agent/discovery/mcp-json",
-	"@gajae-code/coding-agent/exa",
-	"@gajae-code/coding-agent/exa/factory",
-	"@gajae-code/coding-agent/exa/mcp-client",
-	"@gajae-code/coding-agent/exa/search",
-	"@gajae-code/coding-agent/exa/types",
-	"@gajae-code/coding-agent/internal-urls/mcp-protocol",
-	"@gajae-code/coding-agent/modes/components/runtime-mcp-add-wizard",
-	"@gajae-code/coding-agent/modes/controllers/runtime-mcp-command-controller",
-	"@gajae-code/coding-agent/slash-commands/helpers/mcp",
+	"@bworx-io/worx-code/mcp",
+	"@bworx-io/worx-code/runtime-mcp/index",
+	"@bworx-io/worx-code/runtime-mcp/manager",
+	"@bworx-io/worx-code/commands/gjc-runtime-bridge",
+	"@bworx-io/worx-code/capability/mcp",
+	"@bworx-io/worx-code/config/mcp-schema",
+	"@bworx-io/worx-code/discovery/mcp-json",
+	"@bworx-io/worx-code/exa",
+	"@bworx-io/worx-code/exa/factory",
+	"@bworx-io/worx-code/exa/mcp-client",
+	"@bworx-io/worx-code/exa/search",
+	"@bworx-io/worx-code/exa/types",
+	"@bworx-io/worx-code/internal-urls/mcp-protocol",
+	"@bworx-io/worx-code/modes/components/runtime-mcp-add-wizard",
+	"@bworx-io/worx-code/modes/controllers/runtime-mcp-command-controller",
+	"@bworx-io/worx-code/slash-commands/helpers/mcp",
 ] as const;
 const FORBIDDEN_PACKAGE_SYMBOLS = [
 	{
@@ -125,7 +125,7 @@ const FORBIDDEN_PACKAGE_SYMBOLS = [
 		symbols: ["exaTools", "callExaTool", "searchTools", "researcherTools", "websetsTools"],
 	},
 	{
-		specifier: "@gajae-code/coding-agent/tools",
+		specifier: "@bworx-io/worx-code/tools",
 		symbols: ["exaTools", "callExaTool", "searchTools", "researcherTools", "websetsTools"],
 	},
 ] as const;
@@ -189,7 +189,7 @@ async function verifyRebrandSurface(): Promise<GateResult> {
 
 	return {
 		name: "rebrand CLI/package surface",
-		passed: rootName === "gajae-code" && codingName.includes("gajae") && hasGjcBin && !hasLegacyBin,
+		passed: rootName === "worx-code" && codingName.includes("worx") && hasGjcBin && !hasLegacyBin,
 		details,
 	};
 }
@@ -220,12 +220,12 @@ async function verifyPackageVersionAndBinaryAllowlist(): Promise<GateResult> {
 		const isPrivate = packageJson.private === true;
 
 		if (relativePath === "package.json") {
-			if (packageName !== "gajae-code") nameFindings.push(`${relativePath}: expected gajae-code, found ${packageName}`);
+			if (packageName !== "worx-code") nameFindings.push(`${relativePath}: expected worx-code, found ${packageName}`);
 			continue;
 		}
 
-		if (!packageName.startsWith("@gajae-code/") && !ALLOWED_UNSCOPED_PACKAGE_NAMES.has(packageName)) {
-			nameFindings.push(`${relativePath}: package name ${packageName} is outside @gajae-code scope`);
+		if (!packageName.startsWith("@bworx-io/") && !ALLOWED_UNSCOPED_PACKAGE_NAMES.has(packageName)) {
+			nameFindings.push(`${relativePath}: package name ${packageName} is outside @bworx-io scope`);
 		}
 
 		const allowedPrivateVersion = ALLOWED_PRIVATE_PACKAGE_VERSIONS.get(packageName);

@@ -16,7 +16,7 @@ import {
 	SettingsList,
 	Spacer,
 	Text,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { PluginManager } from "../../extensibility/plugins/manager";
 import type { InstalledPlugin, PluginSettingSchema } from "../../extensibility/plugins/types";
 import { getSelectListTheme, getSettingsListTheme, theme } from "../../modes/theme/theme";

@@ -157,25 +157,25 @@ describe("WORX engine package publication", () => {
 	test("plans the engine after one of its internal dependencies", () => {
 		const records = canonicalEvidenceRecords();
 		const engine = records.find(record => record.name === "@bworx-io/worx-code")!;
-		engine.internal_dependencies = { "@gajae-code/utils": "1.2.3" };
+		engine.internal_dependencies = { "@bworx-io/worx-utils": "1.2.3" };
 
 		const plannedNames = planExpectedEvidencePublication(records).map(record => record.name);
-		expect(plannedNames.indexOf("@gajae-code/utils")).toBeLessThan(plannedNames.indexOf("@bworx-io/worx-code"));
+		expect(plannedNames.indexOf("@bworx-io/worx-utils")).toBeLessThan(plannedNames.indexOf("@bworx-io/worx-code"));
 	});
 
 	test("topologically moves an early declared package behind a late dependency", () => {
 		const records = canonicalEvidenceRecords();
-		const utils = records.find(record => record.name === "@gajae-code/utils")!;
+		const utils = records.find(record => record.name === "@bworx-io/worx-utils")!;
 		utils.internal_dependencies = { "@bworx-io/worx-code": "1.2.3" };
 
 		const plannedNames = planExpectedEvidencePublication(records).map(record => record.name);
-		expect(plannedNames.indexOf("@bworx-io/worx-code")).toBeLessThan(plannedNames.indexOf("@gajae-code/utils"));
+		expect(plannedNames.indexOf("@bworx-io/worx-code")).toBeLessThan(plannedNames.indexOf("@bworx-io/worx-utils"));
 	});
 
 	test("rejects a closed-set internal dependency cycle before registry publication begins", async () => {
 		const records = canonicalEvidenceRecords();
-		records.find(record => record.name === "@gajae-code/utils")!.internal_dependencies = { "@gajae-code/ai": "1.2.3" };
-		records.find(record => record.name === "@gajae-code/ai")!.internal_dependencies = { "@gajae-code/utils": "1.2.3" };
+		records.find(record => record.name === "@bworx-io/worx-utils")!.internal_dependencies = { "@bworx-io/worx-ai": "1.2.3" };
+		records.find(record => record.name === "@bworx-io/worx-ai")!.internal_dependencies = { "@bworx-io/worx-utils": "1.2.3" };
 		const published: string[] = [];
 
 		await expect(publishExpectedEvidencePackages(records, async (record) => {
@@ -227,7 +227,7 @@ describe("WORX engine package publication", () => {
 		await expect(publishExpectedEvidencePackages(records.slice(1), publish)).rejects.toThrow("missing package record");
 		await expect(publishExpectedEvidencePackages([
 			...records,
-			{ ...records[0]!, dir: "packages/unexpected", name: "@gajae-code/unexpected" },
+			{ ...records[0]!, dir: "packages/unexpected", name: "@bworx-io/unexpected" },
 		], publish)).rejects.toThrow("unexpected package record");
 		expect(published).toEqual([]);
 	});
@@ -260,16 +260,6 @@ describe("WORX engine package publication", () => {
 			expect(manifest.os).toEqual([os]);
 			expect(manifest.cpu).toEqual([cpu]);
 			expect(manifest.files).toEqual(["native", "README.md"]);
-		}
-	});
-
-	test("unsupported inherited native packages remain private", async () => {
-		for (const dir of [
-			"packages/natives-darwin-x64",
-			"packages/natives-linux-arm64",
-			"packages/natives-win32-x64",
-		]) {
-			expect((await readManifest(dir)).private).toBe(true);
 		}
 	});
 
@@ -532,13 +522,13 @@ describe("native release binary coverage", () => {
 		// only (see the ci.yml build matrix), so the platform packages must set
 		// "libc" to keep npm/bun from installing a glibc-linked .node on musl
 		// systems (e.g. Alpine), where dlopen fails with raw relocation errors.
-		for (const dir of ["packages/natives-linux-x64", "packages/natives-linux-arm64"]) {
+		for (const dir of ["packages/natives-linux-x64"]) {
 			const manifest = await readManifest(dir);
 			expect(manifest.libc).toEqual(["glibc"]);
 		}
 
 		// libc is a linux-only selector; other platform packages must not set it.
-		for (const dir of ["packages/natives-darwin-arm64", "packages/natives-darwin-x64", "packages/natives-win32-x64"]) {
+		for (const dir of ["packages/natives-darwin-arm64"]) {
 			const manifest = await readManifest(dir);
 			expect(manifest.libc).toBeUndefined();
 		}

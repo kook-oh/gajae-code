@@ -313,7 +313,7 @@ const packageDirCache = new Map<string, string[]>();
 /**
  * Directories that own a given package name (workspace package or node_modules copy).
  *
- * A trace record for `@gajae-code/natives` is usually a relative or absolute path inside
+ * A trace record for `@bworx-io/worx-code-natives` is usually a relative or absolute path inside
  * `packages/natives`, never the bare package name, so a literal glob can never match it.
  * Resolving the package to its directories lets a package-scoped deny rule fire on any
  * module physically inside that package.
@@ -390,8 +390,8 @@ function isNativeImport(entry: TraceRecord): boolean {
 		value =>
 			value === "bun:sqlite" ||
 			value.startsWith("@bworx-io/worx-code-natives") ||
-			value.includes("/node_modules/@gajae-code/natives") ||
-			value.includes("/node_modules/@gajae-code/natives-") ||
+			value.includes("/node_modules/@bworx-io/worx-code-natives") ||
+			value.includes("/node_modules/@bworx-io/worx-code-natives-") ||
 			value.endsWith(".node") ||
 			value.includes("/native/") ||
 			value.includes("\\native\\"),

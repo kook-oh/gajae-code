@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { loadCustomTools } from "../custom-tools/loader";
 import type { CustomTool } from "../custom-tools/types";
 import { readActiveSubskillsForParent } from "./state";

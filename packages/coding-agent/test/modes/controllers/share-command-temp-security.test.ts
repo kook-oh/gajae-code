@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { CommandController } from "@bworx-io/worx-code/modes/controllers/command-controller";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;

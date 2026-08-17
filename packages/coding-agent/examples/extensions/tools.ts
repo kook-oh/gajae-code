@@ -10,7 +10,7 @@
  */
 import type { ExtensionAPI, ExtensionContext } from "@bworx-io/worx-code";
 import { getSettingsListTheme } from "@bworx-io/worx-code";
-import { Container, type SettingItem, SettingsList } from "@gajae-code/tui";
+import { Container, type SettingItem, SettingsList } from "@bworx-io/worx-tui";
 
 // State persisted to session
 interface ToolsState {

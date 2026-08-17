@@ -1,4 +1,4 @@
-import { getKeybindings, matchesKey } from "@gajae-code/tui";
+import { getKeybindings, matchesKey } from "@bworx-io/worx-tui";
 
 /**
  * Match the coding-agent interrupt key.

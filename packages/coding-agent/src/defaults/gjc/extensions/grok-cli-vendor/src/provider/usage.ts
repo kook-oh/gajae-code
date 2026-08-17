@@ -1,5 +1,5 @@
+import type { Api, Model } from '@bworx-io/worx-ai/core';
 import type { ExtensionAPI } from '@bworx-io/worx-code';
-import type { Api, Model } from '@gajae-code/ai/core';
 import { XaiOAuthError } from '../shared/errors.js';
 import { fetchBillingUsage, formatQuota } from './billing.js';
 

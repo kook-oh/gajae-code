@@ -33,7 +33,7 @@ describe("CLI command registry", () => {
 	});
 
 	it("registers the `stats` command so `gjc stats` resolves instead of routing to launch", () => {
-		// Regression: `src/commands/stats.ts` (and the `@gajae-code/stats`
+		// Regression: `src/commands/stats.ts` (and the `@bworx-io/worx-stats`
 		// dependency it drives via `src/cli/stats-cli.ts`) existed, but the
 		// entry was never added to the `commands` registry in cli.ts.
 		// `isSubcommand()` therefore returned false for "stats", so `gjc stats`

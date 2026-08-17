@@ -7,10 +7,10 @@
 /// <reference types="./bun-imports.d.ts" />
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type { AgentMessage, ResolvedThinkingLevel, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Model } from "@bworx-io/worx-ai";
 import { computeLineHash, formatSessionDumpText } from "@bworx-io/worx-code";
-import type { AgentMessage, ResolvedThinkingLevel, ThinkingLevel } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai";
-import { prompt } from "@gajae-code/utils";
+import { prompt } from "@bworx-io/worx-utils";
 import { diffLines } from "diff";
 import { formatDirectory } from "./formatter";
 import { discoverSharedInfra, InProcessClient, type SharedInfra } from "./in-process-client";
@@ -41,7 +41,7 @@ type ConversationDumpSessionState = {
 /** Common interface for both RPC and in-process clients */
 interface BenchmarkClient {
 	start(): Promise<void>;
-	setThinkingLevel(level: import("@gajae-code/agent-core").ResolvedThinkingLevel): Promise<void>;
+	setThinkingLevel(level: import("@bworx-io/worx-agent-core").ResolvedThinkingLevel): Promise<void>;
 	onEvent(listener: (event: { type: string; [key: string]: unknown }) => void): () => void;
 	prompt(text: string): Promise<void>;
 	followUp(text: string): Promise<void>;

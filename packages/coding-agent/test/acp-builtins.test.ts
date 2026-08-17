@@ -1,6 +1,6 @@
 import { describe, expect, it, spyOn } from "bun:test";
-import { type AgentMessage, ThinkingLevel } from "@gajae-code/agent-core";
-import type { Usage } from "@gajae-code/ai";
+import { type AgentMessage, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Usage } from "@bworx-io/worx-ai";
 import { Settings } from "../src/config/settings";
 import { createMemoryBackendService } from "../src/memory-backend";
 import { getThemeByName, setThemeInstance, theme } from "../src/modes/theme/theme";

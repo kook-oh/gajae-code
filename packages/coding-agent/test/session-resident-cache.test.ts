@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AssistantMessage, UserMessage } from "@bworx-io/worx-ai";
 import { exportFromFile, exportSessionToHtml } from "@bworx-io/worx-code/export/html";
 import { BlobStore, EphemeralBlobStore, externalizeImageDataSync } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
-import type { AssistantMessage, UserMessage } from "@gajae-code/ai";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;

@@ -2,7 +2,7 @@
 // Spawned with a controlled cwd so the caller can plant a project `.env`: the env
 // module parses `projectEnv` at load time from `process.cwd()`, so the trust
 // boundary can only be exercised from a separate process.
-import { $credentialEnv } from "@gajae-code/utils";
+import { $credentialEnv } from "@bworx-io/worx-utils";
 import { notificationsEnabled } from "../../src/sdk/bus";
 
 console.log(

@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import { buildSessionContext, type SessionContext } from "@bworx-io/worx-code/session/session-manager";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import { Container } from "@gajae-code/tui";
+import { Container } from "@bworx-io/worx-tui";
 
 function renderLastLine(container: Container, width = 120): string {
 	const last = container.children[container.children.length - 1];

@@ -29,7 +29,7 @@ npx tsx examples/sdk/01-minimal.ts
 ## Quick Reference
 
 ```typescript
-import { getModel } from "@gajae-code/ai";
+import { getModel } from "@bworx-io/worx-ai";
 import {
 	AuthStorage,
 	createAgentSession,
@@ -47,8 +47,8 @@ import {
 	BUILTIN_TOOLS,
 	HIDDEN_TOOLS,
 	createTools,
-} from "@gajae-code/coding-agent";
-import { ResolveTool } from "@gajae-code/coding-agent/tools/implementations";
+} from "@bworx-io/worx-code";
+import { ResolveTool } from "@bworx-io/worx-code/tools/implementations";
 
 // Auth and models setup
 const authStorage = discoverAuthStorage();

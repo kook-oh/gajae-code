@@ -3,8 +3,8 @@
  * Shares the same kernel session as the agent's eval tool.
  */
 
-import { Container, type Loader, padding, Text, type TUI, visibleWidth } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import { Container, type Loader, padding, Text, type TUI, visibleWidth } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { highlightCode, theme } from "../../modes/theme/theme";
 import type { TruncationMeta } from "../../tools/output-meta";
 import {

@@ -1,12 +1,12 @@
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { CompactionSettings } from "@gajae-code/agent-core/compaction";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { CompactionSettings } from "@bworx-io/worx-agent-core/compaction";
 import {
 	effectiveReserveTokens,
 	estimateMessageTokensHeuristic,
 	resolveThresholdTokens,
-} from "@gajae-code/agent-core/compaction";
-import type { Model } from "@gajae-code/ai/core";
-import { formatNumber } from "@gajae-code/utils";
+} from "@bworx-io/worx-agent-core/compaction";
+import type { Model } from "@bworx-io/worx-ai/core";
+import { formatNumber } from "@bworx-io/worx-utils";
 import type { AgentSession } from "../../session/agent-session";
 import { computeNonMessageBreakdown } from "../../session/context-estimation";
 import type { theme as Theme } from "../theme/theme";

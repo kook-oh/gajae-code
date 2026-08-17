@@ -1,4 +1,8 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import { calculateContextTokens, estimateMessageTokensHeuristic } from "@bworx-io/worx-agent-core/compaction";
+import { type AssistantMessage, getBundledModel, type Model, type Usage } from "@bworx-io/worx-ai";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import type { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions/runner";
@@ -13,10 +17,6 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { calculateContextTokens, estimateMessageTokensHeuristic } from "@gajae-code/agent-core/compaction";
-import { type AssistantMessage, getBundledModel, type Model, type Usage } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { StatusLineComponent } from "../src/modes/components/tool-status-header";
 
 const contextWindow = 200_000;

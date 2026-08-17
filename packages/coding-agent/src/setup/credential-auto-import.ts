@@ -6,8 +6,8 @@ import type {
 	AuthCredentialIfAbsentReason,
 	AuthCredentialIfAbsentSnapshotResult,
 	AuthStorage,
-} from "@gajae-code/ai/core";
-import { getAgentDir, logger, VERSION } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { getAgentDir, logger, VERSION } from "@bworx-io/worx-utils";
 import { withFileLock } from "../config/file-lock";
 import type { ModelRegistry } from "../config/model-registry";
 import {

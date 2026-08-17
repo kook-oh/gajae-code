@@ -1,7 +1,7 @@
 import { describe, expect, it, spyOn } from "bun:test";
-import type { Api, Context, Model, SimpleStreamOptions } from "@gajae-code/ai";
-import * as openaiResponses from "@gajae-code/ai/providers/openai-responses";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import type { Api, Context, Model, SimpleStreamOptions } from "@bworx-io/worx-ai";
+import * as openaiResponses from "@bworx-io/worx-ai/providers/openai-responses";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { streamGrokCli } from "../src/defaults/gjc/extensions/grok-cli-vendor/src/provider/stream";
 
 describe("Grok Build stream wrapper", () => {

@@ -4,7 +4,7 @@ import { HookEditorComponent } from "@bworx-io/worx-code/modes/components/hook-e
 import { ExtensionUiController } from "@bworx-io/worx-code/modes/controllers/extension-ui-controller";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
-import { setKeybindings, type TUI } from "@gajae-code/tui";
+import { setKeybindings, type TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	const theme = await getThemeByName("red-claw");

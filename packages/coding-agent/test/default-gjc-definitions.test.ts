@@ -24,7 +24,7 @@ import { SkillProtocolHandler } from "@bworx-io/worx-code/internal-urls/skill-pr
 import { getBundledAgent } from "@bworx-io/worx-code/task/agents";
 import { discoverAgents } from "@bworx-io/worx-code/task/discovery";
 import { checkBashAllowedPrefixes } from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
-import { prompt } from "@gajae-code/utils";
+import { prompt } from "@bworx-io/worx-utils";
 
 const tempRoots: string[] = [];
 const roleAgentNames = ["architect", "critic", "executor", "planner"] as const;
@@ -803,8 +803,8 @@ Project executor override body.
 		const installStderr = await new Response(installProc.stderr).text();
 		expect(await installProc.exited).toBe(0);
 		expect(installStderr).toBe("");
-		expect(installStdout).toContain("gjc skills list");
-		expect(installStdout).toContain("gjc skills read ralplan");
+		expect(installStdout).toContain("worx skills list");
+		expect(installStdout).toContain("worx skills read ralplan");
 
 		const skippedProc = Bun.spawn(
 			[process.execPath, path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts"), "setup", "defaults"],
@@ -819,8 +819,8 @@ Project executor override body.
 		const skippedStderr = await new Response(skippedProc.stderr).text();
 		expect(await skippedProc.exited).toBe(0);
 		expect(skippedStderr).toBe("");
-		expect(skippedStdout).toContain("gjc skills list");
-		expect(skippedStdout).toContain("gjc setup defaults --force");
+		expect(skippedStdout).toContain("worx skills list");
+		expect(skippedStdout).toContain("worx setup defaults --force");
 
 		const jsonProc = Bun.spawn(
 			[
@@ -841,7 +841,7 @@ Project executor override body.
 		const jsonStderr = await new Response(jsonProc.stderr).text();
 		expect(await jsonProc.exited).toBe(0);
 		expect(jsonStderr).toBe("");
-		expect(jsonStdout).not.toContain("gjc skills list");
+		expect(jsonStdout).not.toContain("worx skills list");
 		expect(JSON.parse(jsonStdout) as { skipped: number }).toMatchObject({ skipped: 9 });
 	});
 });

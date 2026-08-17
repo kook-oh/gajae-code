@@ -2,8 +2,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import { untilAborted } from "@gajae-code/utils/abortable";
-import { Snowflake } from "@gajae-code/utils/snowflake";
+import { untilAborted } from "@bworx-io/worx-utils/abortable";
+import { Snowflake } from "@bworx-io/worx-utils/snowflake";
 import type { HTMLElement } from "linkedom";
 import type {
 	Browser,

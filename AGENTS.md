@@ -23,7 +23,7 @@ utils ─┬─▶ ai ─────┬─▶ agent ─▶ coding-agent (gjc CL
 | `packages/tui` | Terminal UI library with differential rendering. |
 | `packages/natives` + `packages/natives-<platform>` | napi-rs bindings over `crates/pi-natives` (text/image/grep/shell/pty). See `docs/natives-*.md`. |
 | `packages/stats` | Local observability dashboard (`gjc stats`). |
-| `packages/utils` | Shared utilities (`@gajae-code/pi-utils`): logger, `isCompiledBinary`, path/string helpers. |
+| `packages/utils` | Shared utilities (`@bworx-io/pi-utils`): logger, `isCompiledBinary`, path/string helpers. |
 | `packages/bridge-client` | OOO bridge client (`docs/ooo-bridge-extension-contract.md`). |
 | `packages/*-benchmark` | Edit / orchestration-token benchmarks; not shipped. |
 | `crates/` | Rust: `pi-natives`, `pi-shell`/`brush-*` (vendored shell), `pi-ast`, `pi-iso`, `git-daemon`, `gjc-sdk`. Driven via `bun scripts/run-rs-task.ts`. |
@@ -136,7 +136,7 @@ Use namespace imports for Node modules (`import * as fs from "node:fs/promises"`
 Spawn workers with the compile-safe hybrid pattern:
 
 ```ts
-import { isCompiledBinary } from "@gajae-code/pi-utils";
+import { isCompiledBinary } from "@bworx-io/pi-utils";
 
 const worker = isCompiledBinary()
 	? new Worker("./packages/<pkg>/src/<worker>.ts", { type: "module" })
@@ -147,7 +147,7 @@ Every worker entry must also be listed as an extra compile entrypoint in `packag
 
 ## Logging and TUI safety
 
-No `console.log`/`console.warn`/`console.error` in `packages/coding-agent/` — it corrupts TUI rendering. Use the centralized logger from `@gajae-code/pi-utils`.
+No `console.log`/`console.warn`/`console.error` in `packages/coding-agent/` — it corrupts TUI rendering. Use the centralized logger from `@bworx-io/pi-utils`.
 
 All text in tool renderers must be sanitized: `replaceTabs()`, `truncateToWidth()`/`ui.truncate()` with shared limits, `shortenPath()` for home paths, shared preview constants for previews. Apply to success, error, diff, and streaming render paths alike.
 

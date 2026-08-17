@@ -35,7 +35,7 @@ import {
 	type SetSessionModeRequest,
 	type SetSessionModeResponse,
 } from "@agentclientprotocol/sdk";
-import { getAgentDir, logger } from "@gajae-code/utils";
+import { getAgentDir, logger } from "@bworx-io/worx-utils";
 import packageJson from "../../../package.json" with { type: "json" };
 import {
 	ACP_SESSION_RECONNECT,

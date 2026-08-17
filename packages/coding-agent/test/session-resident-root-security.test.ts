@@ -10,7 +10,7 @@ import {
 	ResidentCacheTrustError,
 } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 const originalAgentDirOverride = process.env.WORX_CODING_AGENT_DIR;

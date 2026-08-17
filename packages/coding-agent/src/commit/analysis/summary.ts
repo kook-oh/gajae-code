@@ -1,7 +1,7 @@
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Api, AssistantMessage, Model } from "@gajae-code/ai/core";
-import { completeSimple, validateToolCall } from "@gajae-code/ai/core";
-import { prompt } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Api, AssistantMessage, Model } from "@bworx-io/worx-ai/core";
+import { completeSimple, validateToolCall } from "@bworx-io/worx-ai/core";
+import { prompt } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import summarySystemPrompt from "../../commit/prompts/summary-system.md" with { type: "text" };
 import summaryUserPrompt from "../../commit/prompts/summary-user.md" with { type: "text" };

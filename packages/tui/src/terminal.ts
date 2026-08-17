@@ -1,6 +1,6 @@
 import { dlopen, FFIType, ptr } from "bun:ffi";
 import * as fs from "node:fs";
-import { $env, $flag, $pickenv } from "@gajae-code/utils";
+import { $env, $flag, $pickenv } from "@bworx-io/worx-utils";
 import { setKittyProtocolActive } from "./keys";
 import { StdinBuffer } from "./stdin-buffer";
 

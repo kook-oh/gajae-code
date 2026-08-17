@@ -1,4 +1,4 @@
-import { Container, type SelectItem, SelectList, Text } from "@gajae-code/tui";
+import { Container, type SelectItem, SelectList, Text } from "@bworx-io/worx-tui";
 import { getSelectListTheme, theme } from "../../modes/theme/theme";
 import { DynamicBorder } from "./dynamic-border";
 

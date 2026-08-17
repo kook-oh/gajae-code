@@ -1,4 +1,4 @@
-import type { Api, Model } from "@gajae-code/ai/core";
+import type { Api, Model } from "@bworx-io/worx-ai/core";
 
 /**
  * Effective credential provenance for a provider, derived from credential

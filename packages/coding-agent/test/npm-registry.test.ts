@@ -343,7 +343,7 @@ describe("resolveNpmRegistry precedence", () => {
 				files: {
 					[userNpmrc]: [
 						"registry=https://generic.example.com",
-						"@gajae-code:registry=https://scoped.example.com",
+						"@bworx-io:registry=https://scoped.example.com",
 					].join("\n"),
 				},
 			}),
@@ -357,7 +357,7 @@ describe("resolveNpmRegistry precedence", () => {
 			PACKAGE,
 			environment({
 				env: { npm_config_registry: "https://generic-env.example.com" },
-				files: { [userNpmrc]: "@gajae-code:registry=https://scoped-user.example.com" },
+				files: { [userNpmrc]: "@bworx-io:registry=https://scoped-user.example.com" },
 			}),
 		);
 

@@ -1,4 +1,4 @@
-import { prompt } from "@gajae-code/utils";
+import { prompt } from "@bworx-io/worx-utils";
 import type { CustomCommand, CustomCommandAPI } from "../../../../extensibility/custom-commands/types";
 import type { HookCommandContext } from "../../../../extensibility/hooks/types";
 import ciGreenRequestTemplate from "../../../../prompts/ci-green-request.md" with { type: "text" };

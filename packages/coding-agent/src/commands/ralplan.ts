@@ -1,4 +1,4 @@
-import { Command } from "@gajae-code/utils/cli";
+import { Command } from "@bworx-io/worx-utils/cli";
 import { runNativeRalplanCommand } from "../gjc-runtime/ralplan-runtime";
 
 export default class Ralplan extends Command {

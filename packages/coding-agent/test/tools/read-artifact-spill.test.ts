@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { getDefault, Settings } from "@bworx-io/worx-code/config/settings";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { wrapToolWithMetaNotice } from "@bworx-io/worx-code/tools/output-meta";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
-import type { AgentToolContext } from "@gajae-code/agent-core";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 let artifactCounter = 0;
 

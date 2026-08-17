@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { agentLoopContinue } from "@gajae-code/agent-core/agent-loop";
-import type { AgentContext, AgentLoopConfig, AgentMessage, AgentTool } from "@gajae-code/agent-core/types";
-import type { Context, Message } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { agentLoopContinue } from "@bworx-io/worx-agent-core/agent-loop";
+import type { AgentContext, AgentLoopConfig, AgentMessage, AgentTool } from "@bworx-io/worx-agent-core/types";
+import type { Context, Message } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import * as z from "zod/v4";
 import { createUserMessage } from "./helpers";
 

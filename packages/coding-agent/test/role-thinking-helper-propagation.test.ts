@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import * as ai from "@gajae-code/ai";
-import { Effort, getBundledModel } from "@gajae-code/ai";
+import * as ai from "@bworx-io/worx-ai";
+import { Effort, getBundledModel } from "@bworx-io/worx-ai";
 import { generateCommitMessage } from "../src/utils/commit-message-generator";
 import { generateSessionTitle } from "../src/utils/title-generator";
 

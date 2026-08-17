@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { inflateSync } from "node:zlib";
-import { isCompiledBinary } from "@gajae-code/utils/env";
+import { isCompiledBinary } from "@bworx-io/worx-utils/env";
 import {
 	evidenceKindMatches,
 	hasExistingNonEmptyArtifact,

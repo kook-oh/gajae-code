@@ -4,7 +4,7 @@
  * Loads plugin roots from GJC plugin registries and explicit plugin-dir roots.
  */
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { registerProvider } from "../capability";
 import { readFile } from "../capability/fs";
 import { type Hook, hookCapability } from "../capability/hook";

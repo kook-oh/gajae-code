@@ -8,7 +8,7 @@ import {
 	parseKey,
 	parseKeyId,
 	setKittyProtocolActive,
-} from "@gajae-code/tui/keys";
+} from "@bworx-io/worx-tui/keys";
 
 describe("matchesKey", () => {
 	it("matches ctrl+letter sequences", () => {

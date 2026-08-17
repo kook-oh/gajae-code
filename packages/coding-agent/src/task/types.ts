@@ -1,6 +1,6 @@
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Usage } from "@gajae-code/ai/core";
-import { $env } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Usage } from "@bworx-io/worx-ai/core";
+import { $env } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { isValidTaskId, TASK_ID_DESCRIPTION } from "./id";
 import type { TaskResultReceipt } from "./receipt";
@@ -590,7 +590,7 @@ export interface TaskToolDetails {
  *
  * Additive: this does not alter any existing task result shape. It is the
  * durable, model-independent unit the deterministic orchestration-token
- * benchmark (`@gajae-code/orchestration-token-benchmark`) consumes to measure
+ * benchmark (`@bworx-io/worx-orchestration-token-benchmark`) consumes to measure
  * token efficiency without any live-model calls.
  */
 export interface TaskTokenLog {

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getProjectDir, setProjectDir } from "@gajae-code/utils";
+import { getProjectDir, setProjectDir } from "@bworx-io/worx-utils";
 import { FooterComponent } from "../../../src/modes/components/footer";
 import type { AgentSession } from "../../../src/session/agent-session";
 

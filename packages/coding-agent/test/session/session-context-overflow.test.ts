@@ -14,10 +14,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import { createHash } from "node:crypto";
 import * as path from "node:path";
-import { Agent, AgentBusyError, type AgentMessage } from "@gajae-code/agent-core";
-import * as compactionModule from "@gajae-code/agent-core/compaction";
-import { getBundledModel } from "@gajae-code/ai";
-import { TempDir } from "@gajae-code/utils";
+import { Agent, AgentBusyError, type AgentMessage } from "@bworx-io/worx-agent-core";
+import * as compactionModule from "@bworx-io/worx-agent-core/compaction";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { TempDir } from "@bworx-io/worx-utils";
 import { ModelRegistry } from "../../src/config/model-registry";
 import { Settings } from "../../src/config/settings";
 import { HindsightSessionState } from "../../src/hindsight/state";

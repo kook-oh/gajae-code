@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { Agent, canContinuePersistedHistory } from "@gajae-code/agent-core";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { Agent, canContinuePersistedHistory } from "@bworx-io/worx-agent-core";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import { createAssistantMessage } from "./helpers";
 
 function userMessage() {

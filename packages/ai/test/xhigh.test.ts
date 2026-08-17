@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { stream } from "@gajae-code/ai/stream";
-import type { Context, Model } from "@gajae-code/ai/types";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { stream } from "@bworx-io/worx-ai/stream";
+import type { Context, Model } from "@bworx-io/worx-ai/types";
 import { e2eApiKey } from "./oauth";
 
 function makeContext(): Context {

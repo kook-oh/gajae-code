@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import { BashExecutionComponent } from "@bworx-io/worx-code/modes/components/bash-execution";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
-import type { TUI } from "@gajae-code/tui";
-import { visibleWidth } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
+import { visibleWidth } from "@bworx-io/worx-tui";
 
 const MAX_DISPLAY_LINE_CHARS = 4000;
 

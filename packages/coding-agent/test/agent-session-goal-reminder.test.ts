@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, ToolCall } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import {
@@ -10,10 +13,7 @@ import type { GoalModeState } from "@bworx-io/worx-code/goals/state";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage, ToolCall } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { logger, TempDir } from "@gajae-code/utils";
+import { logger, TempDir } from "@bworx-io/worx-utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 describe("AgentSession active goal reminders", () => {

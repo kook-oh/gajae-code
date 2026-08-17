@@ -4,9 +4,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as util from "node:util";
-import type * as native from "@bworx-io/worx-code-natives";
-import { type AgentMessage, canContinuePersistedHistory } from "@gajae-code/agent-core";
-import type { ConfiguredModelChainEntry as SharedConfiguredModelChainEntry } from "@gajae-code/agent-core/compaction";
+import { type AgentMessage, canContinuePersistedHistory } from "@bworx-io/worx-agent-core";
+import type { ConfiguredModelChainEntry as SharedConfiguredModelChainEntry } from "@bworx-io/worx-agent-core/compaction";
 import type {
 	ImageContent,
 	Message,
@@ -15,13 +14,14 @@ import type {
 	ServiceTier,
 	TextContent,
 	Usage,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
+import type * as native from "@bworx-io/worx-code-natives";
 
 function nativeSessionManager(): typeof import("@bworx-io/worx-code-natives") {
 	return require("@bworx-io/worx-code-natives") as typeof import("@bworx-io/worx-code-natives");
 }
 
-import { getTerminalId } from "@gajae-code/tui";
+import { getTerminalId } from "@bworx-io/worx-tui";
 import {
 	getAgentDir,
 	getBlobsDir,
@@ -38,7 +38,7 @@ import {
 	resolveEquivalentPath,
 	Snowflake,
 	toError,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import type { TtsrInjectionRecord } from "../export/ttsr";
 import { assertSafePathComponent } from "../gjc-runtime/session-layout";
 import { writeTextAtomic } from "../gjc-runtime/state-writer";

@@ -2,11 +2,19 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { type ChildProcess, execSync, spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { Effort } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { complete, getEnvApiKey, stream } from "@gajae-code/ai/stream";
-import type { Api, Context, ImageContent, Model, OptionsForApi, Tool, ToolResultMessage } from "@gajae-code/ai/types";
-import { $which } from "@gajae-code/utils";
+import { Effort } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { complete, getEnvApiKey, stream } from "@bworx-io/worx-ai/stream";
+import type {
+	Api,
+	Context,
+	ImageContent,
+	Model,
+	OptionsForApi,
+	Tool,
+	ToolResultMessage,
+} from "@bworx-io/worx-ai/types";
+import { $which } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { e2eApiKey, resolveApiKey } from "./oauth";
 

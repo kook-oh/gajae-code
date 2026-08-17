@@ -5,7 +5,7 @@
 
 import { resolveKimiSearchBaseUrlForTest } from "@bworx-io/worx-code/web/search/providers/kimi";
 import { resolveXaiSearchBaseUrlForTest } from "@bworx-io/worx-code/web/search/providers/xai";
-import { $credentialEnv } from "@gajae-code/utils";
+import { $credentialEnv } from "@bworx-io/worx-utils";
 
 console.log(
 	JSON.stringify({

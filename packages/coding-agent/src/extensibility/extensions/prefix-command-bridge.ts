@@ -1,4 +1,4 @@
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { type ExecResult, execCommand } from "../../exec/exec";
 import type { ExtensionContext, InputEvent, InputEventResult } from "./types";
 

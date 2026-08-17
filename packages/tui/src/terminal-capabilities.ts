@@ -1,5 +1,5 @@
 import type { encodeSixel as encodeSixelFn } from "@bworx-io/worx-code-natives";
-import { $env, $pickenv } from "@gajae-code/utils";
+import { $env, $pickenv } from "@bworx-io/worx-utils";
 
 type NativeEncodeSixel = typeof encodeSixelFn;
 let nativeEncodeSixel: NativeEncodeSixel | undefined;

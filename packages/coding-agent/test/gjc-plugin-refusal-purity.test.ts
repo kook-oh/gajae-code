@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
 	applyGjcBundleUpdate,
 	bundleIdentity,
@@ -303,7 +303,7 @@ describe("GJC bundle refusal purity", () => {
 		// npm package names may contain dots, so an archive SUFFIX alone must not
 		// claim a spec: `foo.tgz` and `@scope/foo.tar.gz` are legal npm names.
 		for (const npmSpec of [
-			"@gajae-code/exa",
+			"@scope/exa",
 			"pkg@1.2.3",
 			"pkg@latest",
 			"bare-npm-name",

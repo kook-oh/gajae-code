@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test";
+import type { Model } from "@bworx-io/worx-ai";
 import {
 	resolveCliModel,
 	resolveModelFromSettings,
 	resolveModelRoleValue,
 } from "@bworx-io/worx-code/config/model-resolver";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import type { Model } from "@gajae-code/ai";
 
 function model(provider: string, id: string): Model<"anthropic-messages"> {
 	return {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { disposeCursorConversation } from "@bworx-io/worx-ai/providers/cursor";
 import { waitForProjectLoaded } from "@bworx-io/worx-code/lsp/client";
-import { disposeCursorConversation } from "@gajae-code/ai/providers/cursor";
 
 type LspClient = Parameters<typeof waitForProjectLoaded>[0];
 

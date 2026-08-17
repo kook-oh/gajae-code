@@ -11,7 +11,7 @@ import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
 import type { NotificationControlServer as NativeNotificationControlServer } from "@bworx-io/worx-code-natives";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { readLinuxProcStartTime } from "../../gjc-runtime/linux-proc";
 import {
 	MANAGED_OWNER_PREDECESSOR_GENERATION_ENV,

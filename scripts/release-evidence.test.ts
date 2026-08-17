@@ -146,7 +146,7 @@ function expectedRecord(definition: (typeof PUBLIC_PACKAGE_DEFINITIONS)[number],
 
 function expectedFixture(): { records: PackageEvidenceRecord[]; expected: ExpectedReleaseEvidence } {
 	const records = PUBLIC_PACKAGE_DEFINITIONS.map((definition, index) =>
-		expectedRecord(definition, index === 3 ? { "@gajae-code/ai": "1.2.3" } : {}),
+		expectedRecord(definition, index === 3 ? { "@bworx-io/worx-ai": "1.2.3" } : {}),
 	);
 	return {
 		records,
@@ -196,10 +196,10 @@ describe("release package evidence", () => {
 	});
 
 	test("hashes the raw package/package.json bytes without parsing or normalizing them", () => {
-		const rawManifest = "{\r\n  \"name\": \"@gajae-code/ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
+		const rawManifest = "{\r\n  \"name\": \"@bworx-io/worx-ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
 		const tarball = canonicalizePackageTarball(fixtureTarball(rawManifest));
 		const inspection = inspectPackageTarball(tarball);
-		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/ai")!;
+		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-ai")!;
 		const record = packageEvidenceFromTarball(definition, tarball);
 
 		expect(inspection.manifestBytes.equals(Buffer.from(rawManifest))).toBe(true);
@@ -248,15 +248,14 @@ describe("release package evidence", () => {
 		expect(() => packageEvidenceFromTarball(engine, fixtureTarball(JSON.stringify({
 			name: engine.name,
 			version: "1.2.3",
-			dependencies: { "@gajae-code/utils": "catalog:" },
+			dependencies: { "@bworx-io/worx-utils": "catalog:" },
 		})))).toThrow("exact release version");
 	});
 	test("rejects unknown owned internal names before registry or publish callbacks", async () => {
 		const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-code-natives")!;
 		for (const dependencyName of [
 			"@bworx-io/worx-code-natives-win32-x64",
-			"@gajae-code/unknown-owned",
-			"@gajae-code-sync-sandbox/unknown-owned",
+			"@bworx-io/unknown-owned",
 		]) {
 			const manifest = JSON.stringify({
 				name: definition.name,
@@ -271,7 +270,7 @@ describe("release package evidence", () => {
 		const unknownOwnedTarball = canonicalizePackageTarball(fixtureTarball(JSON.stringify({
 			name: record.name,
 			version: record.version,
-			devDependencies: { "@gajae-code/unknown-owned": record.version },
+			devDependencies: { "@bworx-io/unknown-owned": record.version },
 		})));
 		let callbacks = 0;
 		await expect(publishRetainedPackage(record, "retained.tgz", {
@@ -290,7 +289,7 @@ describe("release package evidence", () => {
 
 
 	test("bounds compressed, unpacked, per-entry, and file-count tarball resources", () => {
-		const manifest = Buffer.from('{"name":"@gajae-code/ai","version":"1.2.3"}\n');
+		const manifest = Buffer.from('{"name":"@bworx-io/worx-ai","version":"1.2.3"}\n');
 		const normal = fixtureTarballEntries([
 			{ path: "package/index.js", data: Buffer.from("export {};\n") },
 			{ path: "package/package.json", data: manifest },
@@ -318,10 +317,10 @@ describe("release package evidence", () => {
 	});
 
 	test("streams capped official-registry tarballs and authenticates compressed bytes before inspection", async () => {
-		const tarball = fixtureTarball('{"name":"@gajae-code/ai","version":"1.2.3"}\n');
+		const tarball = fixtureTarball('{"name":"@bworx-io/worx-ai","version":"1.2.3"}\n');
 		const fetchTarball = (async () => new Response(tarball)) as unknown as typeof fetch;
 		await expect(downloadNpmRegistryTarball(
-			"https://registry.npmjs.org/@gajae-code%2fai/-/ai-1.2.3.tgz",
+			"https://registry.npmjs.org/@bworx-io%2fworx-ai/-/worx-ai-1.2.3.tgz",
 			sha512Sri(tarball),
 			{ fetcher: fetchTarball, maxCompressedBytes: tarball.length },
 		)).resolves.toEqual(tarball);
@@ -329,14 +328,14 @@ describe("release package evidence", () => {
 		const malformedCompressed = Buffer.from("not a gzip tarball");
 		const fetchMalformed = (async () => new Response(malformedCompressed)) as unknown as typeof fetch;
 		await expect(downloadNpmRegistryTarball(
-			"https://registry.npmjs.org/@gajae-code%2fai/-/ai-1.2.3.tgz",
+			"https://registry.npmjs.org/@bworx-io%2fworx-ai/-/worx-ai-1.2.3.tgz",
 			sha512Sri(Buffer.from("different compressed bytes")),
 			{ fetcher: fetchMalformed, maxCompressedBytes: 1_024 },
 		)).rejects.toThrow("compressed bytes");
 
 		const fetchOversized = (async () => new Response(Buffer.alloc(64))) as unknown as typeof fetch;
 		await expect(downloadNpmRegistryTarball(
-			"https://registry.npmjs.org/@gajae-code%2fai/-/ai-1.2.3.tgz",
+			"https://registry.npmjs.org/@bworx-io%2fworx-ai/-/worx-ai-1.2.3.tgz",
 			sha512Sri(Buffer.alloc(64)),
 			{ fetcher: fetchOversized, maxCompressedBytes: 16 },
 		)).rejects.toThrow("compressed size");
@@ -346,7 +345,7 @@ describe("release package evidence", () => {
 			headers: { location: "https://registry.npmjs.evil.invalid/ai.tgz" },
 		})) as unknown as typeof fetch;
 		await expect(downloadNpmRegistryTarball(
-			"https://registry.npmjs.org/@gajae-code%2fai/-/ai-1.2.3.tgz",
+			"https://registry.npmjs.org/@bworx-io%2fworx-ai/-/worx-ai-1.2.3.tgz",
 			sha512Sri(tarball),
 			{ fetcher: fetchRedirect },
 		)).rejects.toThrow("redirect destination");
@@ -369,7 +368,7 @@ describe("release package evidence", () => {
 		expect(classifyRegistryObservation(record, undefined)).toBe("publish");
 		expect(classifyRegistryObservation(record, exact)).toBe("skip");
 		expect(classifyRegistryObservation(record, { ...exact, registry_sri: "sha512-invalid" })).toBe("conflict");
-		expect(classifyRegistryObservation(record, { ...exact, registry_internal_dependencies: { "@gajae-code/ai": "9.9.9" } })).toBe("conflict");
+		expect(classifyRegistryObservation(record, { ...exact, registry_internal_dependencies: { "@bworx-io/worx-ai": "9.9.9" } })).toBe("conflict");
 
 	});
 	test("rejects stale latest observations and re-observes the complete set before final evidence", async () => {
@@ -659,7 +658,7 @@ describe("release package evidence", () => {
 		expect(goldenReleaseEvidenceSha256()).toBe(sha256(bytes));
 		expect(golden.expected_evidence.packages).toHaveLength(PUBLIC_PACKAGE_DEFINITIONS.length);
 		expect(golden.expected_evidence.packages.find(record => record.name === "@bworx-io/worx-code")!.internal_dependencies)
-			.toEqual({ "@gajae-code/ai": "1.2.3" });
+			.toEqual({ "@bworx-io/worx-ai": "1.2.3" });
 		expect(golden.final_evidence.packages.every(record => record.registry_sri === record.expected_sri)).toBe(true);
 		verifyFinalEvidence(golden.expected_evidence, golden.final_evidence, golden.expected_evidence_sha256);
 		expect(parseReleaseEvidenceCli(["--emit-golden-evidence"])).toEqual({ mode: "emit-golden-evidence" });

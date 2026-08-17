@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { AuthStorage, getBundledModel } from "@bworx-io/worx-ai";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { localBackend } from "@bworx-io/worx-code/memory-backend/local-backend";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionContextTooLargeError, SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { AuthStorage, getBundledModel } from "@gajae-code/ai";
 
 const createdDirs = new Set<string>();
 

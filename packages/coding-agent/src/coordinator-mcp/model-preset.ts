@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import { getAgentDir } from "@gajae-code/utils";
+import { getAgentDir } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { UnknownModelProfileError, validateModelProfileName } from "../config/model-profile-contract";
 import { mergeModelProfiles } from "../config/model-profiles";

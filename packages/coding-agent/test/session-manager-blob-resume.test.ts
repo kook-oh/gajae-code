@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { SessionManager, type SessionMessageEntry } from "@bworx-io/worx-code/session/session-manager";
-import { getBlobsDir } from "@gajae-code/utils";
+import { getBlobsDir } from "@bworx-io/worx-utils";
 
 const tempDirs: string[] = [];
 

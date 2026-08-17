@@ -1,7 +1,7 @@
-import { type Agent, type AgentMessage, ThinkingLevel } from "@gajae-code/agent-core";
-import type { CompactionOutcome } from "@gajae-code/agent-core/compaction";
-import type { AssistantMessage, ImageContent, Message, UsageReport } from "@gajae-code/ai/core";
-import type { Component, EditorTheme, SlashCommand } from "@gajae-code/tui";
+import { type Agent, type AgentMessage, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { CompactionOutcome } from "@bworx-io/worx-agent-core/compaction";
+import type { AssistantMessage, ImageContent, Message, UsageReport } from "@bworx-io/worx-ai/core";
+import type { Component, EditorTheme, SlashCommand } from "@bworx-io/worx-tui";
 import {
 	Container,
 	clearRenderCache,
@@ -12,8 +12,8 @@ import {
 	Spacer,
 	Text,
 	TUI,
-} from "@gajae-code/tui";
-import { APP_NAME, adjustHsv, getProjectDir, logger, postmortem, sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { APP_NAME, adjustHsv, getProjectDir, logger, postmortem, sanitizeText } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import { AsyncJobManager } from "../async";
 import {

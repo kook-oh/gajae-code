@@ -4,7 +4,7 @@
  * Handles `gjc notify` setup/status and the hidden daemon entrypoint.
  */
 import { createInterface } from "node:readline/promises";
-import { APP_NAME } from "@gajae-code/utils/dirs";
+import { APP_NAME } from "@bworx-io/worx-utils/dirs";
 import chalk from "chalk";
 import { Settings, type SettingsAtomicPatch } from "../config/settings";
 import { SessionIndex } from "../sdk/broker/session-index";

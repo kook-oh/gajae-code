@@ -42,7 +42,7 @@
 							"level": "error",
 							"options": {
 								"paths": {
-									"@gajae-code/ai": "Import from @gajae-code/ai/core instead."
+									"@bworx-io/worx-ai": "Import from @bworx-io/worx-ai/core instead."
 								}
 							}
 						}

@@ -1,4 +1,4 @@
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { renderCliWriteReceipt } from "../gjc-runtime/cli-write-receipt";
 import { renderTeamStatusMarkdown } from "../gjc-runtime/state-renderer";
 import {

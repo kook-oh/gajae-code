@@ -5,7 +5,7 @@ import * as path from "node:path";
 
 import type * as natives from "@bworx-io/worx-code-natives";
 
-import { getWorktreeDir, hashPath, logger, Snowflake } from "@gajae-code/utils";
+import { getWorktreeDir, hashPath, logger, Snowflake } from "@bworx-io/worx-utils";
 import * as git from "../utils/git";
 
 let nativeWorktreeBindings: typeof import("@bworx-io/worx-code-natives") | undefined;

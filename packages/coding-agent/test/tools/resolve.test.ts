@@ -3,7 +3,7 @@ import { Settings } from "@bworx-io/worx-code/config/settings";
 import { getThemeByName } from "@bworx-io/worx-code/modes/theme/theme";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { ResolveTool, resolveToolRenderer } from "@bworx-io/worx-code/tools/resolve";
-import { sanitizeText } from "@gajae-code/utils";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 
 function createSession(handler?: (input: unknown) => Promise<unknown>): ToolSession {

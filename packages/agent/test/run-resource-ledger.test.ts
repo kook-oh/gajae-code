@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import type { Message } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import type { Message } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import * as z from "zod/v4";
 import { agentLoop } from "../src/agent-loop";
 import { createRunResourceLedger } from "../src/run-resource-ledger";

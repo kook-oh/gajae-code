@@ -8,7 +8,7 @@
  * runs isn't required.
  */
 import { scheduler } from "node:timers/promises";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import {
 	type AuthCredential,
 	type AuthCredentialIfAbsentResult,

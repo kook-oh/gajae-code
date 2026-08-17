@@ -1,4 +1,4 @@
-import type { ImageContent } from "@gajae-code/ai/core";
+import type { ImageContent } from "@bworx-io/worx-ai/core";
 
 export interface ImageResizeOptions {
 	maxWidth?: number;

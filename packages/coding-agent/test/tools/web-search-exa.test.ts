@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import { hookFetch } from "@gajae-code/utils";
+import { hookFetch } from "@bworx-io/worx-utils";
 import { runSearchQuery } from "../../src/web/search";
 import {
 	buildExaRequestBody,

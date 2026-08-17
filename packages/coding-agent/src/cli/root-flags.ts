@@ -1,4 +1,4 @@
-import { type FlagDescriptor, Flags } from "@gajae-code/utils/cli";
+import { type FlagDescriptor, Flags } from "@bworx-io/worx-utils/cli";
 
 const ROOT_THINKING_EFFORTS = ["minimal", "low", "medium", "high", "xhigh", "max"] as const;
 

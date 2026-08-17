@@ -95,7 +95,7 @@ for (const file of [projectEnv, agentEnv, piEnv, homeEnv, homeShellEnv]) {
 /**
  * Intentional re-export of Bun.env.
  *
- * All users should import this env module (import { $env } from "@gajae-code/utils")
+ * All users should import this env module (import { $env } from "@bworx-io/worx-utils")
  * before using environment variables. This ensures that .env files have been loaded and
  * overrides (project, home) have been applied, so $env always reflects the correct values.
  *

@@ -1,7 +1,7 @@
 /**
  * Explicit MCP server config storage for standalone GJC.
  */
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { type MCPAction, type MCPCommandArgs, runMCPCommand } from "../cli/mcp-cli";
 
 const ACTIONS: MCPAction[] = ["add", "list", "remove"];

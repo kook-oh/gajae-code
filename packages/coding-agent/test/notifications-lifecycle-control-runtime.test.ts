@@ -22,7 +22,7 @@ import {
 import type { LedgerEntry, OrchestratorDeps } from "@bworx-io/worx-code/sdk/bus/lifecycle-orchestrator";
 import { startDaemonLifecycleControl } from "@bworx-io/worx-code/sdk/bus/telegram-daemon";
 import * as native from "@bworx-io/worx-code-natives";
-import { getConfigRootDir, logger } from "@gajae-code/utils";
+import { getConfigRootDir, logger } from "@bworx-io/worx-utils";
 import { Settings } from "../src/config/settings";
 import { tokenFingerprint } from "../src/sdk/bus/config";
 import { exactUnlinkNotificationFile, readNotificationEndpointFile } from "../src/sdk/bus/notification-service";

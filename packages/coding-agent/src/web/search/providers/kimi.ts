@@ -4,8 +4,8 @@
  * Uses Moonshot Kimi Code search API to retrieve web results.
  * Endpoint: POST https://api.kimi.com/coding/v1/search
  */
-import type { AuthStorage } from "@gajae-code/ai/core";
-import { $credentialEnv } from "@gajae-code/utils";
+import type { AuthStorage } from "@bworx-io/worx-ai/core";
+import { $credentialEnv } from "@bworx-io/worx-utils";
 
 import type { SearchResponse, SearchSource } from "../../../web/search/types";
 import { SearchProviderError } from "../../../web/search/types";

@@ -26,8 +26,8 @@
  */
 
 import * as path from "node:path";
-import type { AuthStorage } from "@gajae-code/ai/core";
-import { $credentialEnv, parseEnvFile } from "@gajae-code/utils";
+import type { AuthStorage } from "@bworx-io/worx-ai/core";
+import { $credentialEnv, parseEnvFile } from "@bworx-io/worx-utils";
 
 import { settings } from "../../../config/settings";
 import type { SearchResponse, SearchSource } from "../../../web/search/types";

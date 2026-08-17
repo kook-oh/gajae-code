@@ -5,8 +5,8 @@
  * CustomToolAPI to avoid import resolution issues with custom tools loaded from user directories.
  */
 import * as path from "node:path";
-import type { AgentToolResult } from "@gajae-code/agent-core";
-import { logger } from "@gajae-code/utils";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
+import { logger } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { toolCapability } from "../../capability/tool";
 import { type CustomTool, loadCapability } from "../../discovery";

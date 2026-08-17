@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
@@ -9,8 +10,7 @@ import { wrapToolWithMetaNotice } from "@bworx-io/worx-code/tools/output-meta";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
 import * as markit from "@bworx-io/worx-code/utils/markit";
 import * as native from "@bworx-io/worx-code-natives";
-import type { AgentToolContext } from "@gajae-code/agent-core";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 let markitContent = "";
 let summarySegments: Array<{ kind: string; startLine: number; endLine: number; text?: string }> | null = null;

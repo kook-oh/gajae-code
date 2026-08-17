@@ -14,8 +14,8 @@ import {
 	persistGjcTmuxProviderAuthoritySync,
 	resolveGjcTmuxProviderContext,
 } from "@bworx-io/worx-code/gjc-runtime/tmux-provider-context";
-import { isEnoent } from "@gajae-code/utils";
-import { getWorktreesDir } from "@gajae-code/utils/dirs";
+import { isEnoent } from "@bworx-io/worx-utils";
+import { getWorktreesDir } from "@bworx-io/worx-utils/dirs";
 import {
 	__setBinaryResolverForTests,
 	__setExecutableIdentityResolverForTests,
@@ -955,14 +955,14 @@ describe("native gjc team runtime", () => {
 			"C:\\repo",
 			{},
 			"win32",
-			["node", "C:\\repo\\node_modules\\@gajae-code\\coding-agent\\bin\\gjc.js"],
+			["node", "C:\\repo\\node_modules\\@bworx-io\\worx-code\\bin\\worx.js"],
 			"C:\\Users\\you\\.bun\\bin\\bun.exe",
 		);
 
 		expect(command).toBe(
-			"'C:\\Users\\you\\.bun\\bin\\bun.exe' 'C:\\repo\\node_modules\\@gajae-code\\coding-agent\\bin\\gjc.js'",
+			"'C:\\Users\\you\\.bun\\bin\\bun.exe' 'C:\\repo\\node_modules\\@bworx-io\\worx-code\\bin\\worx.js'",
 		);
-		expect(command).not.toBe("'C:\\repo\\node_modules\\@gajae-code\\coding-agent\\bin\\gjc.js'");
+		expect(command).not.toBe("'C:\\repo\\node_modules\\@bworx-io\\worx-code\\bin\\worx.js'");
 	});
 
 	it("keeps worker CLI selection limited to GJC teammate sessions", async () => {

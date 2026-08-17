@@ -2,7 +2,7 @@ import { afterEach, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 import { createNotificationsExtension } from "../src/sdk/bus/index";
 import { readEndpoint } from "../src/sdk/bus/telegram-reference";
 import {

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import type { Tool, ToolCall } from "@bworx-io/worx-ai/types";
+import { enforceStrictSchema } from "@bworx-io/worx-ai/utils/schema";
+import { validateToolArguments } from "@bworx-io/worx-ai/utils/validation";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { YieldTool } from "@bworx-io/worx-code/tools/yield";
-import type { Tool, ToolCall } from "@gajae-code/ai/types";
-import { enforceStrictSchema } from "@gajae-code/ai/utils/schema";
-import { validateToolArguments } from "@gajae-code/ai/utils/validation";
 
 function createSession(overrides: Partial<ToolSession> = {}): ToolSession {
 	return {

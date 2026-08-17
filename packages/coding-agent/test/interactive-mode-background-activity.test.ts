@@ -1,6 +1,7 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { stripVTControlCharacters } from "node:util";
+import { Agent } from "@bworx-io/worx-agent-core";
 import { AsyncJobManager } from "@bworx-io/worx-code/async/job-manager";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
@@ -9,9 +10,8 @@ import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent } from "@gajae-code/agent-core";
-import { Container, Loader } from "@gajae-code/tui";
-import { TempDir } from "@gajae-code/utils";
+import { Container, Loader } from "@bworx-io/worx-tui";
+import { TempDir } from "@bworx-io/worx-utils";
 import { ExtensionUiController } from "../src/modes/controllers/extension-ui-controller";
 import { SelectorController } from "../src/modes/controllers/selector-controller";
 

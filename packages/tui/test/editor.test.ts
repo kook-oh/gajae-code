@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { stripVTControlCharacters } from "node:util";
-import { CURSOR_MARKER } from "@gajae-code/tui";
-import { type AutocompleteProvider, CombinedAutocompleteProvider } from "@gajae-code/tui/autocomplete";
-import { __editorPerfCounters, Editor } from "@gajae-code/tui/components/editor";
-import { visibleWidth } from "@gajae-code/tui/utils";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+import { CURSOR_MARKER } from "@bworx-io/worx-tui";
+import { type AutocompleteProvider, CombinedAutocompleteProvider } from "@bworx-io/worx-tui/autocomplete";
+import { __editorPerfCounters, Editor } from "@bworx-io/worx-tui/components/editor";
+import { visibleWidth } from "@bworx-io/worx-tui/utils";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { KeybindingsManager, setKeybindings, TUI_KEYBINDINGS } from "../src/keybindings";
 import { defaultEditorTheme } from "./test-themes";
 

@@ -7,7 +7,7 @@ import type {
 	KernelShutdownResult,
 } from "@bworx-io/worx-code/eval/py/kernel";
 import { checkPythonKernelAvailability, PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 const originalStart = PythonKernel.start;
 

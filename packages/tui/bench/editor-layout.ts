@@ -85,7 +85,7 @@ function gitCommit(): string | null {
 function metadata() {
 	return {
 		bench: "packages/tui/bench/editor-layout.ts",
-		package: "@gajae-code/tui",
+		package: "@bworx-io/worx-tui",
 		createdAt: new Date().toISOString(),
 		gitCommit: gitCommit(),
 		layoutCache: "enabled",

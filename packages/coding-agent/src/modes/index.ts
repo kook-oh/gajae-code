@@ -1,5 +1,5 @@
-import { emergencyTerminalRestore } from "@gajae-code/tui";
-import { postmortem } from "@gajae-code/utils";
+import { emergencyTerminalRestore } from "@bworx-io/worx-tui";
+import { postmortem } from "@bworx-io/worx-utils";
 
 /**
  * Run modes for the coding agent.

@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import { getBundledModel, type Message } from "@bworx-io/worx-ai";
+import { inferCopilotInitiator } from "@bworx-io/worx-ai/providers/github-copilot-headers";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions";
@@ -7,11 +11,7 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { getBundledModel, type Message } from "@gajae-code/ai";
-import { inferCopilotInitiator } from "@gajae-code/ai/providers/github-copilot-headers";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 describe("AgentSession before_agent_start attribution fallback", () => {
 	let tempDir: TempDir;

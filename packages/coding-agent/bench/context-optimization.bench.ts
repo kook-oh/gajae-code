@@ -14,15 +14,15 @@
  * improvement invariants so regressions are provable.
  */
 
-import { estimateMessageTokensHeuristic } from "@gajae-code/agent-core/compaction/compaction";
-import type { SessionEntry } from "@gajae-code/agent-core/compaction/entries";
+import { estimateMessageTokensHeuristic } from "@bworx-io/worx-agent-core/compaction/compaction";
+import type { SessionEntry } from "@bworx-io/worx-agent-core/compaction/entries";
 import {
 	commitToolOutputPrune,
 	DEFAULT_PRUNE_CONFIG,
 	planToolOutputPrune,
 	type PruneConfig,
-} from "@gajae-code/agent-core/compaction/pruning";
-import type { AgentMessage } from "@gajae-code/agent-core/types";
+} from "@bworx-io/worx-agent-core/compaction/pruning";
+import type { AgentMessage } from "@bworx-io/worx-agent-core/types";
 import { buildPhaseRollupReceipt } from "../src/harness-control-plane/phase-rollup";
 import { ingestReceipts, RECEIPT_DIGEST_MAX_CHARS } from "../src/harness-control-plane/receipt-ingest";
 import {

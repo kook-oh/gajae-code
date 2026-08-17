@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
-import { getProjectAgentDir, Snowflake } from "@gajae-code/utils";
+import { getProjectAgentDir, Snowflake } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 
 describe("autocompleteMaxVisible setting", () => {

@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { SessionManager, type UsageStatistics } from "@bworx-io/worx-code/session/session-manager";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 
 const tempDirs: string[] = [];
 const managers: SessionManager[] = [];

@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { stripVTControlCharacters } from "node:util";
-import { visibleWidth } from "@gajae-code/tui";
+import { visibleWidth } from "@bworx-io/worx-tui";
 import { resolveWelcomeIntroTickMs, WelcomeComponent } from "../src/modes/components/welcome";
 import { getThemeByName, setThemeInstance } from "../src/modes/theme/theme";
 

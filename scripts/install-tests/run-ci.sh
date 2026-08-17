@@ -82,14 +82,14 @@ for pkg in utils natives-linux-x64 natives ai agent bridge-client tui stats codi
 	)
 done
 
-utils_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-utils-*.tgz)"
-bridge_client_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-bridge-client-*.tgz)"
+utils_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-utils-*.tgz)"
+bridge_client_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-bridge-client-*.tgz)"
 natives_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-natives-[0-9]*.tgz)"
 natives_linux_x64_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-natives-linux-x64-*.tgz)"
-ai_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-ai-*.tgz)"
-agent_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-agent-core-*.tgz)"
-tui_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-tui-*.tgz)"
-stats_tgz="$(find_tarball "$TARBALL_DIR"/gajae-code-stats-*.tgz)"
+ai_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-ai-*.tgz)"
+agent_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-agent-core-*.tgz)"
+tui_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-tui-*.tgz)"
+stats_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-stats-*.tgz)"
 coding_agent_tgz="$(find_tarball "$TARBALL_DIR"/bworx-io-worx-code-[0-9]*.tgz)"
 
 TARBALL_APP_DIR="$WORK_DIR/tarball-install"
@@ -103,14 +103,14 @@ mkdir -p "$TARBALL_APP_DIR"
 	node -e "
 		const pkg = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
 		pkg.overrides = {
-			'@gajae-code/utils': '$utils_tgz',
+			'@bworx-io/worx-utils': '$utils_tgz',
 			'@bworx-io/worx-code-natives': '$natives_tgz',
 			'@bworx-io/worx-code-natives-linux-x64': '$natives_linux_x64_tgz',
-			'@gajae-code/ai': '$ai_tgz',
-			'@gajae-code/agent-core': '$agent_tgz',
-			'@gajae-code/bridge-client': '$bridge_client_tgz',
-			'@gajae-code/tui': '$tui_tgz',
-			'@gajae-code/stats': '$stats_tgz',
+			'@bworx-io/worx-ai': '$ai_tgz',
+			'@bworx-io/worx-agent-core': '$agent_tgz',
+			'@bworx-io/worx-bridge-client': '$bridge_client_tgz',
+			'@bworx-io/worx-tui': '$tui_tgz',
+			'@bworx-io/worx-stats': '$stats_tgz',
 			'@bworx-io/worx-code': '$coding_agent_tgz'
 		};
 		require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));

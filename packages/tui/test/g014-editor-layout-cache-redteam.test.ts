@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { stripVTControlCharacters } from "node:util";
-import type { AutocompleteItem, AutocompleteProvider } from "@gajae-code/tui/autocomplete";
-import { __editorPerfCounters, Editor } from "@gajae-code/tui/components/editor";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+import type { AutocompleteItem, AutocompleteProvider } from "@bworx-io/worx-tui/autocomplete";
+import { __editorPerfCounters, Editor } from "@bworx-io/worx-tui/components/editor";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { defaultEditorTheme } from "./test-themes";
 
 type Op = (editor: Editor) => void | Promise<void>;

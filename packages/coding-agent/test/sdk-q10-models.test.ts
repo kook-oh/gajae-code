@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { type Api, Effort, type Model } from "@gajae-code/ai";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { type Api, Effort, type Model } from "@bworx-io/worx-ai";
 import { projectQ10Models } from "../src/sdk/models.js";
 
 const thinking = {

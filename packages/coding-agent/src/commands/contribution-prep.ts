@@ -1,4 +1,4 @@
-import { Command, Flags } from "@gajae-code/utils/cli";
+import { Command, Flags } from "@bworx-io/worx-utils/cli";
 
 function writeText(lines: string[]): void {
 	process.stdout.write(`${lines.join("\n")}\n`);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { THINKING_CONTROL_MODES } from "@gajae-code/ai";
+import { THINKING_CONTROL_MODES } from "@bworx-io/worx-ai";
 import {
 	applyGeneratedModelPolicies,
 	clampThinkingLevelForModel,
@@ -9,8 +9,8 @@ import {
 	mapEffortToAnthropicAdaptiveEffort,
 	mapEffortToGoogleThinkingLevel,
 	requireSupportedEffort,
-} from "@gajae-code/ai/model-thinking";
-import type { Api, Model, Provider, ThinkingControlMode } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/model-thinking";
+import type { Api, Model, Provider, ThinkingControlMode } from "@bworx-io/worx-ai/types";
 
 function createModel<TApi extends Api>(overrides: {
 	id: string;

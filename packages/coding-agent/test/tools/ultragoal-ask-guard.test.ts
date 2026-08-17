@@ -1,6 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { AgentTool, AgentToolContext } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { activeSnapshotPath, modeStatePath, sessionActivityPath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import { isUltragoalAskBlocked } from "@bworx-io/worx-code/gjc-runtime/ultragoal-guard";
@@ -15,7 +16,6 @@ import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { AskTool } from "@bworx-io/worx-code/tools/ask";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
 import { guardToolForUltragoalAsk } from "@bworx-io/worx-code/tools/ultragoal-ask-guard";
-import type { AgentTool, AgentToolContext } from "@gajae-code/agent-core";
 
 const TEST_SESSION_ID = "ultragoal-ask-guard-test-session";
 const ORIGINAL_WORX_SESSION_ID = process.env.WORX_SESSION_ID;

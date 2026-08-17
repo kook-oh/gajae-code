@@ -15,7 +15,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import WebSocket from "ws";
 
-// Import the WORKTREE native build directly (not @gajae-code/natives, which can
+// Import the WORKTREE native build directly (not @bworx-io/worx-code-natives, which can
 // resolve to a different checkout in this dev environment).
 import { NotificationControlServer } from "../../natives/native/index.js";
 import { parseLifecycleCommand } from "../src/sdk/bus/lifecycle-commands";

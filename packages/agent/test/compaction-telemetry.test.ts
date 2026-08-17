@@ -16,17 +16,17 @@ import {
 	generateBranchSummary,
 	generateHandoff,
 	generateSummary,
-} from "@gajae-code/agent-core/compaction";
+} from "@bworx-io/worx-agent-core/compaction";
 import {
 	type AgentTelemetryConfig,
 	GenAIAttr,
 	GenAIOperation,
 	PiGenAIAttr,
 	resolveTelemetry,
-} from "@gajae-code/agent-core/telemetry";
-import type { AgentMessage } from "@gajae-code/agent-core/types";
-import type { AssistantMessage, Model, Usage } from "@gajae-code/ai";
-import * as ai from "@gajae-code/ai";
+} from "@bworx-io/worx-agent-core/telemetry";
+import type { AgentMessage } from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, Model, Usage } from "@bworx-io/worx-ai";
+import * as ai from "@bworx-io/worx-ai";
 import { SpanStatusCode } from "@opentelemetry/api";
 import {
 	BasicTracerProvider,

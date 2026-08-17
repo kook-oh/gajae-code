@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
+import { validateToolArguments } from "@bworx-io/worx-ai/utils/validation";
 import { sessionDirName } from "@bworx-io/worx-code/gjc-runtime/session-layout";
-import type { AgentToolContext } from "@gajae-code/agent-core";
-import { validateToolArguments } from "@gajae-code/ai/utils/validation";
 import { Settings } from "../../src/config/settings";
 import type { BashInterceptorRule } from "../../src/config/settings-schema";
 import { disposeAllShellSessions, getShellSessionCount } from "../../src/exec/bash-executor";

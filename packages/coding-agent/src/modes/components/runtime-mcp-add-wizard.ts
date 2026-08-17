@@ -12,8 +12,8 @@ import {
 	Text,
 	TruncatedText,
 	truncateToWidth,
-} from "@gajae-code/tui";
-import { getMCPConfigPath, getProjectDir } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { getMCPConfigPath, getProjectDir } from "@bworx-io/worx-utils";
 import { validateServerName } from "../../runtime-mcp/config-writer";
 import { analyzeAuthError, discoverOAuthEndpoints } from "../../runtime-mcp/oauth-discovery";
 import type {

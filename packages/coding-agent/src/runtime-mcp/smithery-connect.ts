@@ -1,4 +1,4 @@
-import { $credentialEnv } from "@gajae-code/utils/env";
+import { $credentialEnv } from "@bworx-io/worx-utils/env";
 
 /**
  * Smithery API base, from trusted environment sources only.

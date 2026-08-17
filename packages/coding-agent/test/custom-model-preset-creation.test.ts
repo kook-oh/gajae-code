@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Model } from "@bworx-io/worx-ai";
 import {
 	materializeModelProfileForDeletion,
 	restoreMaterializedModelProfileForDeletion,
@@ -18,9 +20,7 @@ import {
 import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 import { YAML } from "bun";
 
 let tempDir: string;

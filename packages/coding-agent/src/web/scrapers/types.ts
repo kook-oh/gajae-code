@@ -1,13 +1,13 @@
 /**
  * Shared types and utilities for web-fetch handlers
  */
-import { ptree } from "@gajae-code/utils";
+import { ptree } from "@bworx-io/worx-utils";
 import type { AgentStorage } from "../../session/agent-storage";
 import { ToolAbortError } from "../../tools/tool-errors";
 import type { AddressResolver } from "../insane/url-guard";
 import { guardedPublicFetch } from "../insane/url-guard";
 
-export { formatNumber } from "@gajae-code/utils";
+export { formatNumber } from "@bworx-io/worx-utils";
 
 export interface RenderResult {
 	url: string;

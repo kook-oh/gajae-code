@@ -1,6 +1,6 @@
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { AssistantMessage, ImageContent, Message } from "@gajae-code/ai/core";
-import { type Component, Loader, Spacer, Text, TruncatedText, type TUI, truncateToWidth } from "@gajae-code/tui";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, ImageContent, Message } from "@bworx-io/worx-ai/core";
+import { type Component, Loader, Spacer, Text, TruncatedText, type TUI, truncateToWidth } from "@bworx-io/worx-tui";
 import { settings } from "../../config/settings";
 import { resolveSubskillActivationForSkillInvocation } from "../../extensibility/gjc-plugins";
 import { buildSkillPromptMessage, parseSkillInvocations } from "../../extensibility/skills";

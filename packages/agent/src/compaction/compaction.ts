@@ -14,8 +14,8 @@ import {
 	type Model,
 	type ProviderSessionState,
 	type Usage,
-} from "@gajae-code/ai";
-import { logger, prompt } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai";
+import { logger, prompt } from "@bworx-io/worx-utils";
 import { type AgentTelemetry, instrumentedCompleteSimple } from "../telemetry";
 import type { AgentMessage, AgentTool } from "../types";
 import type { CompactionEntry, SessionEntry } from "./entries";

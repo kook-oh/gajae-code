@@ -29,7 +29,7 @@
  * full pipe. That draining is the adopter's responsibility.
  */
 import * as fs from "node:fs";
-import { logger, postmortem, ptree } from "@gajae-code/utils";
+import { logger, postmortem, ptree } from "@bworx-io/worx-utils";
 import { type LinuxProcPidProbeResult, probeLinuxProcPidSync } from "../gjc-runtime/linux-proc";
 
 const DEFAULT_GRACEFUL_MS = 2_000;

@@ -17,10 +17,10 @@ import {
 	generateBranchSummary,
 	generateHandoff,
 	generateSummary,
-} from "@gajae-code/agent-core/compaction";
-import type { AgentMessage } from "@gajae-code/agent-core/types";
-import type { AssistantMessage, Model, ProviderSessionState, SimpleStreamOptions, Usage } from "@gajae-code/ai";
-import * as ai from "@gajae-code/ai";
+} from "@bworx-io/worx-agent-core/compaction";
+import type { AgentMessage } from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, Model, ProviderSessionState, SimpleStreamOptions, Usage } from "@bworx-io/worx-ai";
+import * as ai from "@bworx-io/worx-ai";
 
 const MODEL: Model = {
 	id: "mock-model",

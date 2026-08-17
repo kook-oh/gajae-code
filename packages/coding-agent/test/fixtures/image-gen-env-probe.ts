@@ -3,8 +3,8 @@
 // module parses `projectEnv` at load time from `process.cwd()`, so the trust
 // boundary can only be exercised from a separate process.
 
+import type { Model } from "@bworx-io/worx-ai";
 import { getOpenAIImageBaseUrlForTest, googleImageApiKeyFromEnvForTest } from "@bworx-io/worx-code/tools/image-gen";
-import type { Model } from "@gajae-code/ai";
 
 const model = {
 	id: "gpt-image-1",

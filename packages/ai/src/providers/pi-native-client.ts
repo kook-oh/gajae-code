@@ -14,7 +14,7 @@
  * containerized GJC deployments that route every LLM call through a
  * credential-holding sidecar so the container stays credential-free.
  */
-import { readSseJson } from "@gajae-code/utils";
+import { readSseJson } from "@bworx-io/worx-utils";
 import type {
 	Api,
 	AssistantMessage,

@@ -10,14 +10,14 @@
  * block or the session row renders the execution) unfired for the whole gap.
  */
 import { afterEach, describe, expect, it, vi } from "bun:test";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import type { Model } from "@bworx-io/worx-ai";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { PythonResult } from "@bworx-io/worx-code/eval/py/executor";
 import type { BashResult } from "@bworx-io/worx-code/exec/bash-executor";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 const model: Model = {

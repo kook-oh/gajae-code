@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
 import type { FileType as FileTypeEnum, glob as globFn } from "@bworx-io/worx-code-natives";
-import type { ThinkingLevel } from "@gajae-code/agent-core";
 import {
 	CONFIG_DIR_NAME,
 	getConfigDirName,
@@ -11,7 +11,7 @@ import {
 	logger,
 	parseFrontmatter,
 	tryParseJson,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import type { ExtensionModule } from "../capability/extension-module";
 import { invalidate as invalidateFsCache, readDirEntries, readFile } from "../capability/fs";
 import { parseRuleConditionAndScope, type Rule, type RuleFrontmatter } from "../capability/rule";

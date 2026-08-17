@@ -1,7 +1,7 @@
 /**
  * Import MCP servers and skills from other coding agents into GJC.
  */
-import { Command, Flags } from "@gajae-code/utils/cli";
+import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { type MigrateCommandArgs, runMigrateCommand } from "../cli/migrate-cli";
 
 export default class Migrate extends Command {

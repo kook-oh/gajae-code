@@ -1,4 +1,4 @@
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 
 export class EventBus {
 	readonly #listeners = new Map<string, Set<(data: unknown) => void | PromiseLike<void>>>();

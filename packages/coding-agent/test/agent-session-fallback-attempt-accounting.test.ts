@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
+import { classifyFallbackTrigger } from "@bworx-io/worx-ai";
 import {
 	type ConfiguredFallbackChain,
 	cappedExponentialWithFullJitter,
 	effectiveFallbackDelay,
 	FallbackChainController,
 } from "@bworx-io/worx-code/session/fallback-chain-controller";
-import { classifyFallbackTrigger } from "@gajae-code/ai";
 
 function chain(entries: string[]): ConfiguredFallbackChain {
 	return { role: "default", entries, origin: "model_selection", explicitHead: true };

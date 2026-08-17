@@ -26,14 +26,14 @@ N-API, or wire-protocol change is required for a new integration.
 Install the standalone transport-only client when connecting to the v3 SDK WebSocket endpoint from TypeScript:
 
 ```bash
-bun add @gajae-code/bridge-client
+bun add @bworx-io/worx-bridge-client
 ```
 
 ```ts
-import { SdkClient } from "@gajae-code/bridge-client";
+import { SdkClient } from "@bworx-io/worx-bridge-client";
 ```
 
-`@gajae-code/coding-agent/sdk` remains a compatibility re-export of this same `SdkClient` class and associated types, so both entry points preserve class identity. The package is a client for the documented v3 transport only: it does not restore the historical BridgeClient backend protocol, handshake/commands/SSE endpoints, or any direct host-control path.
+`@bworx-io/worx-code/sdk` remains a compatibility re-export of this same `SdkClient` class and associated types, so both entry points preserve class identity. The package is a client for the documented v3 transport only: it does not restore the historical BridgeClient backend protocol, handshake/commands/SSE endpoints, or any direct host-control path.
 For terminal-side session operation, see [the SDK session CLI guide](./sdk-session-cli.md):
 `gjc sdk session list|inspect|send|status|tail` plus the explicit raw
 `control|query|global` hatch, all broker-bound and credential-free.
@@ -278,7 +278,7 @@ Each row preserves the five legacy fields (`provider`, `id`, `name`,
 row when the live session has a thinking level. The exported DTO types are
 `Q10Model`, `Q10ThinkingCapabilities`, `Q10ThinkingEffort`,
 `Q10SettableThinkingLevel`, `Q10CurrentThinkingLevel`, and
-`Q10ThinkingMode`, all from `@gajae-code/coding-agent/sdk`; there is no public
+`Q10ThinkingMode`, all from `@bworx-io/worx-code/sdk`; there is no public
 `/sdk/models` subpath.
 
 ```json
@@ -581,7 +581,7 @@ state remain private: these APIs do not create a public authority value.
 
 ### Runtime and native addon release pairing
 
-The `@gajae-code/coding-agent` runtime and `@gajae-code/natives` native addon ship from the same source release at exact matching package versions. The native loader requires the matching version sentinel; mixed native/runtime versions are unsupported and must not claim SDK compatibility.
+The `@bworx-io/worx-code` runtime and `@bworx-io/worx-code-natives` native addon ship from the same source release at exact matching package versions. The native loader requires the matching version sentinel; mixed native/runtime versions are unsupported and must not claim SDK compatibility.
 
 ## Minimal client example
 
@@ -620,14 +620,14 @@ Model-role selectors may be ordered fallback chains; see [Fallback chains](./mod
 
 ## Managed session-directory adapter guidance
 
-SDK adapters that need to inspect saved sessions must import only the supported public surface from `@gajae-code/coding-agent/sdk`:
+SDK adapters that need to inspect saved sessions must import only the supported public surface from `@bworx-io/worx-code/sdk`:
 
 ```ts
 import {
   SESSION_DIRECTORY_API_VERSION,
   listManagedSessionCandidates,
   resolveManagedSessionScope,
-} from "@gajae-code/coding-agent/sdk";
+} from "@bworx-io/worx-code/sdk";
 
 if (SESSION_DIRECTORY_API_VERSION !== 1) throw new Error("Unsupported session-directory API");
 const resolved = await resolveManagedSessionScope({ cwd: process.cwd() });
@@ -637,7 +637,7 @@ if (resolved.kind === "resolved") {
 }
 ```
 
-This is a readonly resolver/listing contract. Do not import `@gajae-code/coding-agent/session/internal/*`, derive `v2-…` names, write bindings, or implement migration/cleanup in an adapter; private internal subpaths are intentionally unavailable from the packaged module. Treat `network_unsupported`, binding/security errors, incomplete listings, invalid candidates, and foreign candidates as non-authoritative results rather than retrying with a guessed path.
+This is a readonly resolver/listing contract. Do not import `@bworx-io/worx-code/session/internal/*`, derive `v2-…` names, write bindings, or implement migration/cleanup in an adapter; private internal subpaths are intentionally unavailable from the packaged module. Treat `network_unsupported`, binding/security errors, incomplete listings, invalid candidates, and foreign candidates as non-authoritative results rather than retrying with a guessed path.
 
 The resolver uses canonical native identity: supported POSIX and Windows local aliases can designate one scope, while UNC/network workspaces are unsupported. Scope digests are collision-resistant identifiers, not injective aliases, credentials, or authentication. The owner-only checks protect managed local storage paths but do not authenticate an adapter or make hostile concurrent filesystem races safe. Adapters that need mutations must use the higher-level lifecycle/session APIs rather than the readonly directory API.
 ## Managed notification adapters

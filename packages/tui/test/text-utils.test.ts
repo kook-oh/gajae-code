@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { type Component, renderMetrics, TUI } from "@gajae-code/tui";
+import { type Component, renderMetrics, TUI } from "@bworx-io/worx-tui";
 import {
 	__textHelperPerfCounters,
 	Ellipsis,
@@ -10,8 +10,8 @@ import {
 	truncateToWidth,
 	visibleWidth,
 	visibleWidths,
-} from "@gajae-code/tui/utils";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui/utils";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { VirtualTerminal } from "./virtual-terminal";
 
 const originalTabWidth = getDefaultTabWidth();

@@ -1,12 +1,19 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import { stripVTControlCharacters } from "node:util";
+import { Agent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { formatKeyHint, formatKeyHints, type KeyDisplayContext } from "@bworx-io/worx-code/config/keybindings";
 import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import { initTheme, theme } from "@bworx-io/worx-code/modes/theme/theme";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { CURSOR_MARKER, ImageProtocol, setTerminalImageProtocol, TERMINAL, Text, visibleWidth } from "@gajae-code/tui";
-import { TempDir } from "@gajae-code/utils";
+import {
+	CURSOR_MARKER,
+	ImageProtocol,
+	setTerminalImageProtocol,
+	TERMINAL,
+	Text,
+	visibleWidth,
+} from "@bworx-io/worx-tui";
+import { TempDir } from "@bworx-io/worx-utils";
 import { ModelRegistry } from "../src/config/model-registry";
 import type {
 	ExtensionActions,

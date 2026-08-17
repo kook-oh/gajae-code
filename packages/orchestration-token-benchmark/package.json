@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"private": true,
-	"name": "@gajae-code/orchestration-token-benchmark",
+	"name": "@bworx-io/worx-orchestration-token-benchmark",
 	"version": "0.0.1",
 	"description": "Deterministic internal benchmark for orchestration token efficiency (token metrics, prompt-prefix stability, spawn-gate decisions). No live-model calls.",
 	"author": "Yeachan-Heo",
@@ -28,5 +28,5 @@
 	"engines": {
 		"bun": ">=1.3.14"
 	},
-	"homepage": "https://gajae-code.com"
+	"homepage": "https://github.com/bworx-io/worx-code"
 }

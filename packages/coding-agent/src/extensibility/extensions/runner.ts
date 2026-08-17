@@ -1,17 +1,17 @@
 /**
  * Extension runner - executes extensions and manages their lifecycle.
  */
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { AttemptScope } from "@gajae-code/agent-core/attempt-scope";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { AttemptScope } from "@bworx-io/worx-agent-core/attempt-scope";
 import type {
 	AttemptScopeRef,
 	CredentialDisabledEvent,
 	ImageContent,
 	Model,
 	ProviderResponseMetadata,
-} from "@gajae-code/ai/core";
-import type { KeyId } from "@gajae-code/tui";
-import { logger } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import type { KeyId } from "@bworx-io/worx-tui";
+import { logger } from "@bworx-io/worx-utils";
 import type { ModelRegistry } from "../../config/model-registry";
 import type { WorkflowGateEmitter } from "../../modes/shared/agent-wire/workflow-gate-broker";
 import { type Theme, theme } from "../../modes/theme/theme";

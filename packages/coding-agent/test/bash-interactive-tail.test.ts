@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { runInteractiveBashPty } from "@bworx-io/worx-code/tools/bash-interactive";
-import type { AgentToolContext } from "@gajae-code/agent-core";
 
 interface DisposableComponent {
 	dispose?: () => void;

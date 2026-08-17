@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "bun:test";
+import type { AgentTool, AgentToolContext, AgentToolResult } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createReadonlySessionManager, SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { wrapToolWithMetaNotice } from "@bworx-io/worx-code/tools/output-meta";
-import type { AgentTool, AgentToolContext, AgentToolResult } from "@gajae-code/agent-core";
 
 const HEAD_MARKER = "HEAD_MARKER_START";
 const TAIL_MARKER = "TAIL_MARKER_END";

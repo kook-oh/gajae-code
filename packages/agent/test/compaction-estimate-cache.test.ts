@@ -1,13 +1,17 @@
 import { describe, expect, test } from "bun:test";
-import { estimateEntriesTokens, estimateEntryTokens, findCutPoint } from "@gajae-code/agent-core/compaction/compaction";
-import type { SessionEntry, SessionMessageEntry } from "@gajae-code/agent-core/compaction/entries";
+import {
+	estimateEntriesTokens,
+	estimateEntryTokens,
+	findCutPoint,
+} from "@bworx-io/worx-agent-core/compaction/compaction";
+import type { SessionEntry, SessionMessageEntry } from "@bworx-io/worx-agent-core/compaction/entries";
 import {
 	estimateOpenAiCompactInputTokens,
 	resolveOpenAiCompactInputBudget,
 	trimOpenAiCompactInput,
-} from "@gajae-code/agent-core/compaction/openai";
-import type { PruneConfig } from "@gajae-code/agent-core/compaction/pruning";
-import type { AssistantMessage, Message, ToolResultMessage } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-agent-core/compaction/openai";
+import type { PruneConfig } from "@bworx-io/worx-agent-core/compaction/pruning";
+import type { AssistantMessage, Message, ToolResultMessage } from "@bworx-io/worx-ai/types";
 import { applyToolOutputPrune as pruneToolOutputs } from "./pruning-test-utils";
 
 const timestamp = "2026-06-12T00:00:00.000Z";

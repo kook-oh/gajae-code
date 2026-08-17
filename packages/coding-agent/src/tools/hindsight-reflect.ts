@@ -1,5 +1,5 @@
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
-import { logger, untilAborted } from "@gajae-code/utils";
+import type { AgentTool, AgentToolResult } from "@bworx-io/worx-agent-core";
+import { logger, untilAborted } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { ensureBankMission } from "../hindsight/bank";
 import reflectDescription from "../prompts/tools/reflect.md" with { type: "text" };

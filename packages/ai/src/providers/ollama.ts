@@ -1,4 +1,4 @@
-import { extractHttpStatusFromError, fetchWithRetry } from "@gajae-code/utils";
+import { extractHttpStatusFromError, fetchWithRetry } from "@bworx-io/worx-utils";
 import { getEnvApiKey } from "../stream";
 import type {
 	Api,

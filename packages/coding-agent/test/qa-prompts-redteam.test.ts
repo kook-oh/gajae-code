@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import { convertToLlm, escapePromptMetadata } from "../src/session/messages";
 import { wrapUntrustedContent } from "../src/tools/fetch";
 import { formatSearchResponseForLlm } from "../src/web/search";

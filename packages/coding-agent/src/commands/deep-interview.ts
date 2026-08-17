@@ -1,4 +1,4 @@
-import { Command, Flags } from "@gajae-code/utils/cli";
+import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { runNativeDeepInterviewCommand } from "../gjc-runtime/deep-interview-runtime";
 
 export default class DeepInterview extends Command {

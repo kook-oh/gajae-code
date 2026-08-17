@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "bun:
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getProjectAgentDir, Snowflake } from "@gajae-code/utils";
+import { getProjectAgentDir, Snowflake } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { resetSettingsForTest, Settings } from "../../src/config/settings";
 import type { TabGcSnapshot } from "../../src/tools/browser/tab-supervisor";

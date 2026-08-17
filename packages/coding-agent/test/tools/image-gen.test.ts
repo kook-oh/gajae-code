@@ -5,12 +5,12 @@ import * as fs from "node:fs/promises";
 import * as http from "node:http";
 import * as https from "node:https";
 import { Readable } from "node:stream";
+import type { Model } from "@bworx-io/worx-ai";
 import type { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import type { Settings } from "@bworx-io/worx-code/config/settings";
 import type { CustomToolContext } from "@bworx-io/worx-code/extensibility/custom-tools";
 import type { ReadonlySessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getImageGenToolsWithRegistry, imageGenTool } from "@bworx-io/worx-code/tools/image-gen";
-import type { Model } from "@gajae-code/ai";
 
 const originalFetch = global.fetch;
 const originalOpenRouterKey = Bun.env.OPENROUTER_API_KEY;

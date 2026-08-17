@@ -4,9 +4,9 @@
  * from Claude Code: the prediction renders as dim ghost text in the empty
  * composer and Tab accepts it.
  */
-import type { AgentMessage } from "@gajae-code/agent-core";
-import { type Api, type AssistantMessage, completeSimple, type Model } from "@gajae-code/ai/core";
-import { logger, prompt } from "@gajae-code/utils";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import { type Api, type AssistantMessage, completeSimple, type Model } from "@bworx-io/worx-ai/core";
+import { logger, prompt } from "@bworx-io/worx-utils";
 import type { ModelRegistry } from "../config/model-registry";
 import { resolveRoleSelection } from "../config/model-resolver";
 import type { Settings } from "../config/settings";

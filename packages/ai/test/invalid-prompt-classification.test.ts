@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { classifyCodexFailureEventRetryable } from "@gajae-code/ai/providers/openai-codex-responses";
+import { classifyCodexFailureEventRetryable } from "@bworx-io/worx-ai/providers/openai-codex-responses";
 import { isInvalidPromptError, neutralizeReservedControlTokens } from "../src/utils";
 
 // Issue #2282: `Request blocked (code=invalid_prompt)` is a deterministic

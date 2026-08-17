@@ -3,7 +3,7 @@
 	"version": "0.13.1",
 	"description": "Darwin arm64 native addon for @bworx-io/worx-code-natives",
 	"type": "module",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {

@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { SessionManager, SessionMigrationPolicyError } from "@bworx-io/worx-code/session/session-manager";
-import { getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@gajae-code/utils";
+import { getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@bworx-io/worx-utils";
 
 function git(cwd: string, ...args: string[]): string {
 	const result = Bun.spawnSync(["git", ...args], { cwd, stdout: "pipe", stderr: "pipe" });

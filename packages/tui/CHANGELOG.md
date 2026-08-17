@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Renamed the package to `@bworx-io/worx-tui` as part of the byteWORX workspace scope unification.
+
 ## [0.13.1] - 2026-08-11
 
 ### Added

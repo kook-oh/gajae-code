@@ -1,8 +1,8 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
-import { type Component, TUI } from "@gajae-code/tui";
-import { Ellipsis, truncateToWidth, visibleWidth } from "@gajae-code/tui/utils";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+import { type Component, TUI } from "@bworx-io/worx-tui";
+import { Ellipsis, truncateToWidth, visibleWidth } from "@bworx-io/worx-tui/utils";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { VirtualTerminal } from "./virtual-terminal";
 
 const REPORT_PATH = "artifacts/g015-qa-report.json";

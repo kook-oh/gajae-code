@@ -1,6 +1,6 @@
-import type { AgentTelemetryConfig, AgentTool } from "@gajae-code/agent-core";
-import type { Model, ServiceTier, ToolChoice } from "@gajae-code/ai/core";
-import { $env, logger } from "@gajae-code/utils";
+import type { AgentTelemetryConfig, AgentTool } from "@bworx-io/worx-agent-core";
+import type { Model, ServiceTier, ToolChoice } from "@bworx-io/worx-ai/core";
+import { $env, logger } from "@bworx-io/worx-utils";
 import type { PromptTemplate } from "../config/prompt-templates";
 import type { Settings } from "../config/settings";
 import type { Skill } from "../extensibility/skills";

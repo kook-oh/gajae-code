@@ -1,6 +1,6 @@
-import type { AgentTool } from "@gajae-code/agent-core";
-import type { RawArgumentValidationResult, TSchema } from "@gajae-code/ai/types";
-import { $which } from "@gajae-code/utils";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import type { RawArgumentValidationResult, TSchema } from "@bworx-io/worx-ai/types";
+import { $which } from "@bworx-io/worx-utils";
 import type { ToolFactory, ToolSession } from ".";
 import { selectAskParameters } from "./ask-contract";
 import { isComputerCallable, isComputerLoadablePlatform } from "./computer-policy";

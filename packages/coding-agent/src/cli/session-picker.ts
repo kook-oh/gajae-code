@@ -1,6 +1,6 @@
 import * as path from "node:path";
-import { ProcessTerminal, TUI } from "@gajae-code/tui";
-import { pathIsWithin } from "@gajae-code/utils";
+import { ProcessTerminal, TUI } from "@bworx-io/worx-tui";
+import { pathIsWithin } from "@bworx-io/worx-utils";
 import { type SessionSelectionResult, SessionSelectorComponent } from "../modes/components/session-selector";
 import { type SessionInfo, SessionManager } from "../session/session-manager";
 import { FileSessionStorage } from "../session/session-storage";

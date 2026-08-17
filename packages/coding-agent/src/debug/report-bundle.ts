@@ -6,7 +6,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { WorkProfile } from "@bworx-io/worx-code-natives";
-import { APP_NAME, getLogPath, getLogsDir, getReportsDir, isEnoent } from "@gajae-code/utils";
+import { APP_NAME, getLogPath, getLogsDir, getReportsDir, isEnoent } from "@bworx-io/worx-utils";
 import type { CpuProfile, HeapSnapshot } from "./profiler";
 import { collectSystemInfo, sanitizeEnv } from "./system-info";
 

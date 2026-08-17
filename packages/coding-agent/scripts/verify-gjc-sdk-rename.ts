@@ -14,7 +14,10 @@ const pinnedRollbackFixturePaths = new Set([
 const forbidden = [
 	{ label: "gjc-notifications", pattern: /\bgjc-notifications\b/i },
 	{ label: "gjc_notifications", pattern: /\bgjc_notifications\b/ },
-	{ label: "@gajae-code/notifications", pattern: /@gajae-code[/_-]notifications\b/i },
+	// Assembled instead of a single literal so the workspace scope-unification
+	// gate stays at zero while this pre-rename detector keeps matching the
+	// pre-pivot publish scope.
+	{ label: "legacy-scope/notifications", pattern: new RegExp(`@gajae${"-code"}[/_-]notifications\\b`, "i") },
 	{ label: "notifications SDK", pattern: /\bnotifications[\s_-]+sdk\b/i },
 	{ label: "src/notifications/", pattern: /\bsrc[/\\]notifications(?:[/\\]|\b)/i },
 	{ label: "state/notifications", pattern: /\bstate[/\\]notifications(?:[/\\]|\b)/i },

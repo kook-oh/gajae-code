@@ -6,8 +6,8 @@
  */
 
 import { beforeEach, describe, expect, it } from "bun:test";
-import { parseKey, setKittyProtocolActive } from "@gajae-code/tui/keys";
-import { StdinBuffer } from "@gajae-code/tui/stdin-buffer";
+import { parseKey, setKittyProtocolActive } from "@bworx-io/worx-tui/keys";
+import { StdinBuffer } from "@bworx-io/worx-tui/stdin-buffer";
 
 describe("StdinBuffer", () => {
 	let buffer: StdinBuffer;

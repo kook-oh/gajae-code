@@ -2,9 +2,9 @@
  * Edit tool renderer and LSP batching helpers.
  */
 
-import type { Component } from "@gajae-code/tui";
-import { Text, visibleWidth, wrapTextWithAnsi } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import type { Component } from "@bworx-io/worx-tui";
+import { Text, visibleWidth, wrapTextWithAnsi } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
 import type { FileDiagnosticsResult } from "../lsp";
 import { renderDiff as renderDiffColored } from "../modes/components/diff";

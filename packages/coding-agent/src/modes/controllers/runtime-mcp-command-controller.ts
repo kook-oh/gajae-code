@@ -4,9 +4,9 @@
  * Handles /mcp subcommands for managing MCP servers.
  */
 import * as path from "node:path";
-import { resolveMCPOAuthResourceOrigin, resolveMCPOAuthTokenEndpoint } from "@gajae-code/ai/core";
-import { Spacer, Text } from "@gajae-code/tui";
-import { getMCPConfigPath, getProjectDir } from "@gajae-code/utils";
+import { resolveMCPOAuthResourceOrigin, resolveMCPOAuthTokenEndpoint } from "@bworx-io/worx-ai/core";
+import { Spacer, Text } from "@bworx-io/worx-tui";
+import { getMCPConfigPath, getProjectDir } from "@bworx-io/worx-utils";
 import type { SourceMeta } from "../../capability/types";
 import { analyzeAuthError, discoverOAuthEndpoints, MCPManager } from "../../runtime-mcp";
 import { listTools } from "../../runtime-mcp/client";

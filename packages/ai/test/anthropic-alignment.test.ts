@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as tls from "node:tls";
-import { Effort } from "@gajae-code/ai";
+import { Effort } from "@bworx-io/worx-ai";
 import {
 	applyClaudeToolPrefix,
 	buildAnthropicClientOptions,
@@ -17,9 +17,9 @@ import {
 	mapStainlessOs,
 	streamAnthropic,
 	stripClaudeToolPrefix,
-} from "@gajae-code/ai/providers/anthropic";
-import { getEnvApiKey } from "@gajae-code/ai/stream";
-import type { Context, Model, TJsonSchema, Tool } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/providers/anthropic";
+import { getEnvApiKey } from "@bworx-io/worx-ai/stream";
+import type { Context, Model, TJsonSchema, Tool } from "@bworx-io/worx-ai/types";
 import * as z from "zod/v4";
 import { withEnv } from "./helpers";
 

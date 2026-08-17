@@ -4,10 +4,10 @@
 import type * as fs1 from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { ImageContent, Model, TextContent, Tool, UsageReport } from "@gajae-code/ai/core";
-import type { KeyId } from "@gajae-code/tui";
-import { hasFsCode, isEacces, isEnoent, logger } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { ImageContent, Model, TextContent, Tool, UsageReport } from "@bworx-io/worx-ai/core";
+import type { KeyId } from "@bworx-io/worx-tui";
+import { hasFsCode, isEacces, isEnoent, logger } from "@bworx-io/worx-utils";
 import * as Zod from "zod/v4";
 import { type ExtensionModule, extensionModuleCapability } from "../../capability/extension-module";
 import { loadCapability } from "../../discovery";
@@ -178,7 +178,7 @@ class ConcreteExtensionAPI implements ExtensionAPI, IExtensionRuntime {
 	}
 
 	registerTool<
-		TParams extends import("@gajae-code/ai/core").TSchema = import("@gajae-code/ai/core").TSchema,
+		TParams extends import("@bworx-io/worx-ai/core").TSchema = import("@bworx-io/worx-ai/core").TSchema,
 		TDetails = unknown,
 	>(tool: ToolDefinition<TParams, TDetails>): void {
 		this.extension.tools.set(tool.name, {

@@ -25,7 +25,7 @@ import {
 } from "@bworx-io/worx-code/extensibility/plugins/marketplace";
 
 // Inline the parseAnthropic modelPluginsRegistry validation logic to avoid pulling
-// in discovery/helpers.ts which transitively imports @gajae-code/natives.
+// in discovery/helpers.ts which transitively imports @bworx-io/worx-code-natives.
 // Matches the exact checks in helpers.ts parseAnthropic modelPluginsRegistry().
 function validateClaudeRegistryFormat(content: string): Record<string, unknown> | null {
 	let data: Record<string, unknown>;

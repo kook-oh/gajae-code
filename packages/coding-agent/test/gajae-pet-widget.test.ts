@@ -5,7 +5,7 @@ import {
 	getCellDimensions,
 	setCellDimensions,
 	type TUI,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import type { CustomEditor } from "../src/modes/components/custom-editor";
 import { GajaePetWidget, PetFramedEditor } from "../src/modes/components/gajae-pet-widget";
 

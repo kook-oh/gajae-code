@@ -2,6 +2,17 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import {
+	type Api,
+	type Context,
+	Effort,
+	type Model,
+	type OpenAICompat,
+	readModelCache,
+	type ThinkingConfig,
+	writeModelCache,
+} from "@bworx-io/worx-ai";
+import { streamOpenAICompletions } from "@bworx-io/worx-ai/providers/openai-completions";
 import { kNoAuth, MODEL_ROLE_IDS, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	type ModelLookupRegistry,
@@ -16,18 +27,7 @@ import {
 import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { addApiCompatibleProvider } from "@bworx-io/worx-code/setup/provider-onboarding";
-import {
-	type Api,
-	type Context,
-	Effort,
-	type Model,
-	type OpenAICompat,
-	readModelCache,
-	type ThinkingConfig,
-	writeModelCache,
-} from "@gajae-code/ai";
-import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
-import { $credentialEnv, hookFetch, Snowflake } from "@gajae-code/utils";
+import { $credentialEnv, hookFetch, Snowflake } from "@bworx-io/worx-utils";
 
 describe("model roles", () => {
 	test("default is the only built-in model role", () => {

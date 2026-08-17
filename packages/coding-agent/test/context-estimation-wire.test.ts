@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
+import { estimateTextTokensHeuristic } from "@bworx-io/worx-agent-core/compaction";
+import { toolWireSchema } from "@bworx-io/worx-ai/utils/schema/wire";
 import { estimateToolSchemaTokens } from "@bworx-io/worx-code/session/context-estimation";
-import { estimateTextTokensHeuristic } from "@gajae-code/agent-core/compaction";
-import { toolWireSchema } from "@gajae-code/ai/utils/schema/wire";
 import * as z from "zod/v4";
 
 const zodTool = {

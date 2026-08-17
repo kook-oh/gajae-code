@@ -1,6 +1,6 @@
 # Natives Architecture
 
-`@gajae-code/natives` is now a two-layer package around a loader:
+`@bworx-io/worx-code-natives` is now a two-layer package around a loader:
 
 1. **CommonJS loader/package entrypoint** resolves and loads the correct `.node` addon and patches generated enum objects onto the export object.
 2. **Rust N-API module layer** implements the exported functions/classes and emits the generated TypeScript declarations.
@@ -28,7 +28,7 @@ This document is the foundation for deeper module-level docs. Performance-motiva
 - `exports["."].types`: `./native/index.d.ts`
 - `exports["."].import`: `./native/index.js`
 
-There is no current `packages/natives/src` TypeScript wrapper layer. Consumers import functions/classes/enums directly from `@gajae-code/natives`; the type contract is the generated `native/index.d.ts` plus enum exports appended by `scripts/gen-enums.ts`.
+There is no current `packages/natives/src` TypeScript wrapper layer. Consumers import functions/classes/enums directly from `@bworx-io/worx-code-natives`; the type contract is the generated `native/index.d.ts` plus enum exports appended by `scripts/gen-enums.ts`.
 
 Current capability groups in the generated API include:
 
@@ -142,7 +142,7 @@ N-API exports are generated from Rust `#[napi]` functions/classes/objects/enums.
 
 ## Runtime flow (high level)
 
-1. Consumer imports from `@gajae-code/natives`.
+1. Consumer imports from `@bworx-io/worx-code-natives`.
 2. `native/index.js` computes platform/arch/variant and candidate paths.
 3. Optional embedded binary extraction occurs for compiled distributions.
 4. The first `require(candidate)` that succeeds becomes the exported addon object.

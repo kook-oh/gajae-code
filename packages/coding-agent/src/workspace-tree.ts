@@ -4,7 +4,7 @@ import type {
 	GlobMatch,
 	listWorkspace as listWorkspaceFn,
 } from "@bworx-io/worx-code-natives";
-import { formatAge, formatBytes } from "@gajae-code/utils";
+import { formatAge, formatBytes } from "@bworx-io/worx-utils";
 
 /** Defaults for the workspace tree shown in the system prompt. */
 const WORKSPACE_DEFAULTS = {
@@ -20,7 +20,7 @@ const WORKSPACE_DEFAULTS = {
 export const AGENTS_MD_LIMIT = 200;
 
 // Lazy natives binding: loading this module must not materialize
-// @gajae-code/natives (W5b S1/idle module-trace gate). The addon loads only
+// @bworx-io/worx-code-natives (W5b S1/idle module-trace gate). The addon loads only
 // when a workspace scan actually runs.
 let nativeWorkspaceBindings: { FileType: typeof FileTypeEnum; listWorkspace: typeof listWorkspaceFn } | undefined;
 async function workspaceNatives(): Promise<{ FileType: typeof FileTypeEnum; listWorkspace: typeof listWorkspaceFn }> {

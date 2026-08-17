@@ -5,8 +5,8 @@
  * - `gjc -p "prompt"` - text output
  * - `gjc --mode json "prompt"` - JSON event stream
  */
-import { type AssistantMessage, type ImageContent, isContextOverflow } from "@gajae-code/ai/core";
-import { isKnownSinkPeerClosedError, logger, sanitizeText } from "@gajae-code/utils";
+import { type AssistantMessage, type ImageContent, isContextOverflow } from "@bworx-io/worx-ai/core";
+import { isKnownSinkPeerClosedError, logger, sanitizeText } from "@bworx-io/worx-utils";
 import { loadSlashCommands } from "../extensibility/slash-commands";
 import type { AgentSession } from "../session/agent-session";
 import { isSilentAbort } from "../session/messages";

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createEmptyNotebook, readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
 import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
@@ -36,7 +37,6 @@ import {
 	checkBashAllowedPrefixes,
 	normalizeReadOnlyBashCommand,
 } from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
-import { getBundledModel } from "@gajae-code/ai/models";
 import * as z from "zod/v4";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

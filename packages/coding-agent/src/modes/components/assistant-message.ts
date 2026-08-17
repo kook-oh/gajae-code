@@ -1,4 +1,4 @@
-import type { AssistantMessage, ImageContent, Usage } from "@gajae-code/ai/core";
+import type { AssistantMessage, ImageContent, Usage } from "@bworx-io/worx-ai/core";
 import {
 	type Component,
 	Container,
@@ -10,8 +10,8 @@ import {
 	TERMINAL,
 	Text,
 	type ViewportAnchorSource,
-} from "@gajae-code/tui";
-import { formatNumber } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { formatNumber } from "@bworx-io/worx-utils";
 import { settings } from "../../config/settings";
 import { renderDeepInterviewAssistantText } from "../../deep-interview/render-middleware";
 import { getMarkdownTheme, theme } from "../../modes/theme/theme";

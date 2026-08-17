@@ -2,7 +2,7 @@ import type { Dirent } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 
 /** Prefix of every computer-use screenshot fallback directory created under the OS temp dir. */
 export const SCREENSHOT_FALLBACK_DIR_PREFIX = "gjc-computer-screenshots-";

@@ -13,7 +13,7 @@ function nativeLifecycle(): typeof import("@bworx-io/worx-code-natives") {
 	return nativeLifecycleBindings;
 }
 
-import { $credentialEnv, logger, resolveEquivalentPath } from "@gajae-code/utils";
+import { $credentialEnv, logger, resolveEquivalentPath } from "@bworx-io/worx-utils";
 
 import {
 	isModelProfileError,

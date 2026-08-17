@@ -1,7 +1,7 @@
 /**
  * Inspect bundled workflow skills.
  */
-import { Args, Command, Flags, renderCommandHelp } from "@gajae-code/utils/cli";
+import { Args, Command, Flags, renderCommandHelp } from "@bworx-io/worx-utils/cli";
 import { runSkillsCommand, type SkillsAction, type SkillsCommandArgs } from "../cli/skills-cli";
 
 const ACTIONS: SkillsAction[] = ["list", "read"];

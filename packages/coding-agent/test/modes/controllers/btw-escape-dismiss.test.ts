@@ -4,8 +4,8 @@ import { BtwController } from "@bworx-io/worx-code/modes/controllers/btw-control
 import { InputController } from "@bworx-io/worx-code/modes/controllers/input-controller";
 import { getEditorTheme, initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
-import { Container, type TUI } from "@gajae-code/tui";
-import { setKittyProtocolActive } from "@gajae-code/tui/keys";
+import { Container, type TUI } from "@bworx-io/worx-tui";
+import { setKittyProtocolActive } from "@bworx-io/worx-tui/keys";
 
 beforeAll(async () => {
 	await initTheme();

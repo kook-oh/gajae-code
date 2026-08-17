@@ -1,4 +1,4 @@
-import { Command } from "@gajae-code/utils/cli";
+import { Command } from "@bworx-io/worx-utils/cli";
 import { runNativeStateCommand } from "../gjc-runtime/state-runtime";
 
 export default class State extends Command {

@@ -2,11 +2,11 @@
 // Spawned with a controlled cwd so the caller can plant a project `.env`: the
 // env module parses `projectEnv` at load time from `process.cwd()`, so the
 // trust boundary can only be exercised from a separate process.
-import { resolveOpenAIModelManagerBaseUrlForTest } from "@gajae-code/ai/provider-models/openai-compat";
-import { resolveAzureConfigForTest } from "@gajae-code/ai/providers/azure-openai-responses";
-import { resolveOpenAICompletionsBaseUrlForTest } from "@gajae-code/ai/providers/openai-completions";
-import { resolveOpenAIProviderBaseUrlForTest } from "@gajae-code/ai/providers/openai-responses";
-import type { Model } from "@gajae-code/ai/types";
+import { resolveOpenAIModelManagerBaseUrlForTest } from "@bworx-io/worx-ai/provider-models/openai-compat";
+import { resolveAzureConfigForTest } from "@bworx-io/worx-ai/providers/azure-openai-responses";
+import { resolveOpenAICompletionsBaseUrlForTest } from "@bworx-io/worx-ai/providers/openai-completions";
+import { resolveOpenAIProviderBaseUrlForTest } from "@bworx-io/worx-ai/providers/openai-responses";
+import type { Model } from "@bworx-io/worx-ai/types";
 
 const azureModel: Model<"azure-openai-responses"> = {
 	id: "gpt-5.4",

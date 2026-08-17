@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { streamGoogle } from "@gajae-code/ai/providers/google";
-import type { Context, Model } from "@gajae-code/ai/types";
-import { hookFetch } from "@gajae-code/utils";
+import { streamGoogle } from "@bworx-io/worx-ai/providers/google";
+import type { Context, Model } from "@bworx-io/worx-ai/types";
+import { hookFetch } from "@bworx-io/worx-utils";
 
 const model: Model<"google-generative-ai"> = {
 	id: "gemini-3-pro-preview",

@@ -4,7 +4,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import * as native from "@bworx-io/worx-code-natives";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import {
 	injectManagedFileRename,
 	injectManagedTreeFsync,

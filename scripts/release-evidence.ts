@@ -24,16 +24,16 @@ export interface PublicPackageDefinition {
 
 /** The complete, ordered-by-name public package contract. */
 export const PUBLIC_PACKAGE_DEFINITIONS: readonly PublicPackageDefinition[] = [
+	{ dir: "packages/agent", name: "@bworx-io/worx-agent-core" },
+	{ dir: "packages/ai", name: "@bworx-io/worx-ai" },
+	{ dir: "packages/bridge-client", name: "@bworx-io/worx-bridge-client" },
 	{ dir: "packages/coding-agent", name: "@bworx-io/worx-code" },
 	{ dir: "packages/natives", name: "@bworx-io/worx-code-natives" },
 	{ dir: "packages/natives-darwin-arm64", name: "@bworx-io/worx-code-natives-darwin-arm64" },
 	{ dir: "packages/natives-linux-x64", name: "@bworx-io/worx-code-natives-linux-x64" },
-	{ dir: "packages/agent", name: "@gajae-code/agent-core" },
-	{ dir: "packages/ai", name: "@gajae-code/ai" },
-	{ dir: "packages/bridge-client", name: "@gajae-code/bridge-client" },
-	{ dir: "packages/stats", name: "@gajae-code/stats" },
-	{ dir: "packages/tui", name: "@gajae-code/tui" },
-	{ dir: "packages/utils", name: "@gajae-code/utils" },
+	{ dir: "packages/stats", name: "@bworx-io/worx-stats" },
+	{ dir: "packages/tui", name: "@bworx-io/worx-tui" },
+	{ dir: "packages/utils", name: "@bworx-io/worx-utils" },
 ] as const;
 
 const dependencyFieldNames = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"] as const;
@@ -44,7 +44,7 @@ const releaseVersionPattern = new RegExp(`(?:${stableVersionPattern.source})|(?:
 const sha256Pattern = /^[0-9a-f]{64}$/u;
 const sha512Pattern = /^[0-9a-f]{128}$/u;
 const sourceCommitPattern = /^[0-9a-f]{40}$/u;
-const ownedInternalPackagePrefixes = ["@bworx-io/", "@gajae-code/", "@gajae-code-sync-sandbox/"] as const;
+const ownedInternalPackagePrefixes = ["@bworx-io/"] as const;
 
 
 interface JsonObject {
@@ -1083,13 +1083,13 @@ function createSelfTestNativeTarball(definition: PublicPackageDefinition, manife
 }
 
 export function selfTest(): void {
-	const rawManifest = "{\r\n  \"name\": \"@gajae-code/ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
+	const rawManifest = "{\r\n  \"name\": \"@bworx-io/worx-ai\",\r\n  \"version\": \"1.2.3\"\r\n}\r\n";
 	const tarball = createSelfTestTarball(rawManifest);
 	const inspection = inspectPackageTarball(tarball);
 	if (!inspection.manifestBytes.equals(Buffer.from(rawManifest))) fail("self-test lost raw manifest bytes");
 	const canonical = canonicalizePackageTarball(tarball);
 	if (!canonical.equals(tarball)) fail("self-test canonical tarball was unstable");
-	const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@gajae-code/ai")!;
+	const definition = PUBLIC_PACKAGE_DEFINITIONS.find(candidate => candidate.name === "@bworx-io/worx-ai")!;
 	const record = packageEvidenceFromTarball(definition, tarball);
 	validateExpectedTarball(record, tarball);
 	if (classifyRegistryObservation(record, undefined) !== "publish") fail("self-test missing registry classification failed");
@@ -1122,7 +1122,7 @@ export function createGoldenReleaseEvidence(): GoldenReleaseEvidence {
 			name: definition.name,
 			version: releaseVersion,
 			...(definition.name === "@bworx-io/worx-code"
-				? { devDependencies: { "@gajae-code/ai": releaseVersion } }
+				? { devDependencies: { "@bworx-io/worx-ai": releaseVersion } }
 				: {}),
 		});
 		const tarball = definition.name.startsWith("@bworx-io/worx-code-natives-")

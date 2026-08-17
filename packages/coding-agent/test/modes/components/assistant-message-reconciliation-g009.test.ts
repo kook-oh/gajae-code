@@ -1,8 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import type { AssistantMessage, Usage } from "@gajae-code/ai";
-import { Container, ImageProtocol, Markdown, Spacer, setTerminalImageProtocol, TERMINAL, Text } from "@gajae-code/tui";
-import { clearRenderCache } from "@gajae-code/tui/components/markdown";
+import type { AssistantMessage, Usage } from "@bworx-io/worx-ai";
+import {
+	Container,
+	ImageProtocol,
+	Markdown,
+	Spacer,
+	setTerminalImageProtocol,
+	TERMINAL,
+	Text,
+} from "@bworx-io/worx-tui";
+import { clearRenderCache } from "@bworx-io/worx-tui/components/markdown";
 import { resetSettingsForTest, Settings, settings } from "../../../src/config/settings.js";
 import { AssistantMessageComponent } from "../../../src/modes/components/assistant-message.js";
 import { initTheme } from "../../../src/modes/theme/theme.js";

@@ -1,7 +1,7 @@
 import { describe, expect, spyOn, test, vi } from "bun:test";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { type Model, THINKING_EFFORTS } from "@gajae-code/ai";
-import { CliParseError } from "@gajae-code/utils/cli";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { type Model, THINKING_EFFORTS } from "@bworx-io/worx-ai";
+import { CliParseError } from "@bworx-io/worx-utils/cli";
 import { parseArgs } from "../src/cli/args";
 import type { ModelProfileDefinition } from "../src/config/model-profiles";
 import { Settings } from "../src/config/settings";

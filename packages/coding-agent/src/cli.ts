@@ -4,9 +4,9 @@
  * CLI entry point — registers all commands explicitly and delegates to the
  * lightweight CLI runner from pi-utils.
  */
-import "@gajae-code/utils/postmortem";
-import { Args, type CliConfig, Command, type CommandEntry, run } from "@gajae-code/utils/cli";
-import { APP_NAME, formatBunRuntimeError, MIN_BUN_VERSION, VERSION } from "@gajae-code/utils/dirs";
+import "@bworx-io/worx-utils/postmortem";
+import { Args, type CliConfig, Command, type CommandEntry, run } from "@bworx-io/worx-utils/cli";
+import { APP_NAME, formatBunRuntimeError, MIN_BUN_VERSION, VERSION } from "@bworx-io/worx-utils/dirs";
 import { runFixtureReport } from "./cli/fixture-report";
 import { ROOT_LAUNCH_FLAGS } from "./cli/root-flags";
 import QuickLane from "./commands/quick-lane";
@@ -71,7 +71,7 @@ export const commands: CommandEntry[] = [
 ];
 
 async function showHelp(config: CliConfig): Promise<void> {
-	const { renderRootHelp } = await import("@gajae-code/utils/cli");
+	const { renderRootHelp } = await import("@bworx-io/worx-utils/cli");
 	const { getExtraHelpText } = await import("./cli/fast-help");
 	renderRootHelp(config);
 	const extra = getExtraHelpText();
@@ -81,12 +81,12 @@ async function showHelp(config: CliConfig): Promise<void> {
 }
 
 async function installRuntimeGlobals(): Promise<void> {
-	const { installH2Fetch } = await import("@gajae-code/ai/utils/h2-fetch");
+	const { installH2Fetch } = await import("@bworx-io/worx-ai/utils/h2-fetch");
 	// Activate HTTP/2 for all `fetch()` calls (provider streams, OAuth, model
 	// discovery, web tools). Bun's HTTP/2 client is gated on a startup flag we
 	// can't toggle from JS, so we patch globalThis.fetch to pass
 	// `protocol: "http2"` per request, with transparent HTTP/1.1 fallback on
-	// `HTTP2Unsupported`. See @gajae-code/ai/utils/h2-fetch for details.
+	// `HTTP2Unsupported`. See @bworx-io/worx-ai/utils/h2-fetch for details.
 	installH2Fetch();
 
 	const { warnIfMacOSNoFileLimitTooLow } = await import("./cli/nofile-limit");
@@ -331,7 +331,7 @@ function isSubcommand(first: string | undefined): boolean {
  * exercise it on every CI run.
  */
 async function runSmokeTest(): Promise<void> {
-	const { smokeTestSyncWorker } = await import("@gajae-code/stats");
+	const { smokeTestSyncWorker } = await import("@bworx-io/worx-stats");
 	await smokeTestSyncWorker();
 	const { runNativeSmokeTest } = await import("./cli/native-smoke");
 	await runNativeSmokeTest();
@@ -477,7 +477,7 @@ export async function runCli(argv: string[]): Promise<void> {
 	const normalizedArgv = normalizeResumeAlias(argv);
 	const legacyArgv = routeLegacyRootArgv(normalizedArgv);
 	if (!legacyArgv && hasRootHelpFlag(normalizedArgv)) {
-		const { renderRootHelp } = await import("@gajae-code/utils/cli");
+		const { renderRootHelp } = await import("@bworx-io/worx-utils/cli");
 		const { getExtraHelpText } = await import("./cli/fast-help");
 		renderRootHelp({ bin: APP_NAME, version: VERSION, commands: new Map([["launch", RootHelpCommand]]) });
 		const extra = getExtraHelpText();

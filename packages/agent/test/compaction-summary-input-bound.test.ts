@@ -11,8 +11,8 @@
  * summary request fits.
  */
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import type { AssistantMessage, Context, Model, Usage } from "@gajae-code/ai";
-import * as ai from "@gajae-code/ai";
+import type { AssistantMessage, Context, Model, Usage } from "@bworx-io/worx-ai";
+import * as ai from "@bworx-io/worx-ai";
 import { boundConversationTextForSummary, generateSummary } from "../src/compaction/compaction";
 import type { AgentMessage } from "../src/types";
 

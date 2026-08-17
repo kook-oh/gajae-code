@@ -13,7 +13,7 @@
  * The published record carries the writer's real pid, so leader-side diagnostics
  * name the process that is actually working rather than a placeholder.
  */
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { parseHeartbeatStaleMs, refreshGjcWorkerHeartbeat, type WorkerHeartbeatFile } from "./team-runtime";
 
 /** Publish several times per stale window so one missed tick cannot cross it. */

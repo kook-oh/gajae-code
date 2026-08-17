@@ -19,7 +19,7 @@
  * 3. Or start in plan mode with --plan flag
  */
 import type { ExtensionAPI, ExtensionContext } from "@bworx-io/worx-code";
-import { Key } from "@gajae-code/tui";
+import { Key } from "@bworx-io/worx-tui";
 
 // Read-only tools for plan mode
 const PLAN_MODE_TOOLS = ["read", "bash", "search", "find"];

@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
-import { getDefaultTabWidth, getIndentation, Snowflake, setDefaultTabWidth } from "@gajae-code/utils";
+import { getDefaultTabWidth, getIndentation, Snowflake, setDefaultTabWidth } from "@bworx-io/worx-utils";
 
 describe("indentation resolver", () => {
 	let tempDir = "";

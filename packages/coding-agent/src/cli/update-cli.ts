@@ -7,7 +7,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { pipeline } from "node:stream/promises";
-import { $which, APP_NAME, isEnoent, VERSION } from "@gajae-code/utils";
+import { $which, APP_NAME, isEnoent, VERSION } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
 import { distTagForChannel, isUpdateChannel, UPDATE_CHANNELS, type UpdateChannel } from "../config/update-channel";

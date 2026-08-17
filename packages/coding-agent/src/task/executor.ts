@@ -12,9 +12,9 @@ import type {
 	AgentMessage,
 	AgentTelemetryConfig,
 	ThinkingLevel,
-} from "@gajae-code/agent-core";
-import { recordHandoff, resolveTelemetry } from "@gajae-code/agent-core";
-import { estimateMessageTokensHeuristic } from "@gajae-code/agent-core/compaction";
+} from "@bworx-io/worx-agent-core";
+import { recordHandoff, resolveTelemetry } from "@bworx-io/worx-agent-core";
+import { estimateMessageTokensHeuristic } from "@bworx-io/worx-agent-core/compaction";
 import {
 	type AssistantMessage,
 	isFastModeEffectiveForProvider,
@@ -22,9 +22,9 @@ import {
 	type Model,
 	modelSupportsServiceTier,
 	type ServiceTier,
-} from "@gajae-code/ai/core";
-import { type JsonSchemaValidationIssue, validateJsonSchemaValue } from "@gajae-code/ai/utils/schema";
-import { logger, prompt, untilAborted } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { type JsonSchemaValidationIssue, validateJsonSchemaValue } from "@bworx-io/worx-ai/utils/schema";
+import { logger, prompt, untilAborted } from "@bworx-io/worx-utils";
 import { AsyncJobManager } from "../async";
 import { ModelRegistry } from "../config/model-registry";
 import { formatModelString, resolveModelOverrideWithAuthFallback } from "../config/model-resolver";

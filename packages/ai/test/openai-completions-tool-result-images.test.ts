@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { convertMessages } from "@gajae-code/ai/providers/openai-completions";
-import type { AssistantMessage, Context, Model, OpenAICompat, ToolResultMessage, Usage } from "@gajae-code/ai/types";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { convertMessages } from "@bworx-io/worx-ai/providers/openai-completions";
+import type { AssistantMessage, Context, Model, OpenAICompat, ToolResultMessage, Usage } from "@bworx-io/worx-ai/types";
 
 const emptyUsage: Usage = {
 	input: 0,

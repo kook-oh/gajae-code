@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { SelectList } from "@gajae-code/tui/components/select-list";
-import { SettingsList } from "@gajae-code/tui/components/settings-list";
+import { SelectList } from "@bworx-io/worx-tui/components/select-list";
+import { SettingsList } from "@bworx-io/worx-tui/components/settings-list";
 import {
 	setKeybindings,
 	TUI_KEYBINDINGS,
 	KeybindingsManager as TuiKeybindingsManager,
-} from "@gajae-code/tui/keybindings";
-import { getConfigRootDir, setAgentDir } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui/keybindings";
+import { getConfigRootDir, setAgentDir } from "@bworx-io/worx-utils";
 import { inspectConfigFile } from "../src/cli/config-cli";
 import { parseNotifyArgs } from "../src/cli/notify-cli";
 import { KeybindingsManager } from "../src/config/keybindings";

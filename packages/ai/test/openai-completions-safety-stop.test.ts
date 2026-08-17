@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
-import type { AssistantMessageEvent, Context, Model } from "@gajae-code/ai/types";
+import { streamOpenAICompletions } from "@bworx-io/worx-ai/providers/openai-completions";
+import type { AssistantMessageEvent, Context, Model } from "@bworx-io/worx-ai/types";
 
 const originalFetch = global.fetch;
 afterEach(() => {

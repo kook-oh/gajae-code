@@ -2,8 +2,8 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 // Subpath import keeps this module native-free for the gjc-state-gates shards:
-// the package barrel pulls procmgr/ptree → @gajae-code/natives.
-import * as logger from "@gajae-code/utils/logger";
+// the package barrel pulls procmgr/ptree → @bworx-io/worx-code-natives.
+import * as logger from "@bworx-io/worx-utils/logger";
 import type { WorkflowHudSummary } from "../skill-state/active-state";
 import {
 	applyHandoffToActiveState,

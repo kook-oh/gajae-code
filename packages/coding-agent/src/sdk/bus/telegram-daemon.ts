@@ -9,7 +9,7 @@ import {
 	type NativeExactFileIdentity,
 	type NativeExactUnlinkResult,
 } from "@bworx-io/worx-code-natives";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { withFileLock } from "../../config/file-lock";
 import type { Settings } from "../../config/settings";
 import type { DaemonRuntimeInfo } from "../../daemon/control-types";

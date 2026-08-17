@@ -1,4 +1,4 @@
-import { Container, Text } from "@gajae-code/tui";
+import { Container, Text } from "@bworx-io/worx-tui";
 import { buildMemoryFixture } from "./perf-corpus.bench";
 import type { MemoryWorkload } from "./memory-baseline-workloads";
 import type { MemoryWorkloadProfile } from "./perf-corpus-schema";

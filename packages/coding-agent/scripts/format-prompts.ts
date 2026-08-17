@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { prompt } from "@gajae-code/utils";
+import { prompt } from "@bworx-io/worx-utils";
 /**
  * Format prompt files (mixed XML + Markdown + Handlebars).
  *

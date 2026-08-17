@@ -8,7 +8,7 @@
  * (or `options: "runtime"` for runtime-injected lists like themes).
  */
 
-import { TERMINAL } from "@gajae-code/tui";
+import { TERMINAL } from "@bworx-io/worx-tui";
 import { Settings } from "../../config/settings";
 import {
 	type AnyUiMetadata,

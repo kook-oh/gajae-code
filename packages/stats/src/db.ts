@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import * as fs from "node:fs/promises";
-import { type GeneratedProvider, getBundledModel, type Usage } from "@gajae-code/ai";
-import { getConfigRootDir, getStatsDbPath } from "@gajae-code/utils";
+import { type GeneratedProvider, getBundledModel, type Usage } from "@bworx-io/worx-ai";
+import { getConfigRootDir, getStatsDbPath } from "@bworx-io/worx-utils";
 import type {
 	AggregatedStats,
 	BehaviorModelStats,

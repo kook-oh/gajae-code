@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { __gajaePetTestHooks, buildGajaePixelFrames, encodeGridSixel } from "@gajae-code/tui";
+import { __gajaePetTestHooks, buildGajaePixelFrames, encodeGridSixel } from "@bworx-io/worx-tui";
 
 describe("gajae pixel frames", () => {
 	it("encodes bottom-aligned sixel frames with a transparent background", () => {

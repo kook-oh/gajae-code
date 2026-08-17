@@ -1,4 +1,4 @@
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 
 /**
  * Idle reaper for coordinator-managed GJC worker sessions.

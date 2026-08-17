@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { estimateMessageTokensHeuristic } from "@gajae-code/agent-core/compaction/compaction";
-import type { SessionEntry, SessionMessageEntry } from "@gajae-code/agent-core/compaction/entries";
-import { type PruneConfig, pruneAssistantToolArguments } from "@gajae-code/agent-core/compaction/pruning";
-import type { ToolCall, ToolResultMessage } from "@gajae-code/ai/types";
+import { estimateMessageTokensHeuristic } from "@bworx-io/worx-agent-core/compaction/compaction";
+import type { SessionEntry, SessionMessageEntry } from "@bworx-io/worx-agent-core/compaction/entries";
+import { type PruneConfig, pruneAssistantToolArguments } from "@bworx-io/worx-agent-core/compaction/pruning";
+import type { ToolCall, ToolResultMessage } from "@bworx-io/worx-ai/types";
 import { applyToolOutputPrune as pruneToolOutputs } from "./pruning-test-utils";
 
 const timestamp = "2026-06-11T00:00:00.000Z";

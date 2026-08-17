@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@bworx-io/worx-agent-core";
 import type * as natives from "@bworx-io/worx-code-natives";
-import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
 
 let findNativesLoad: Promise<typeof import("@bworx-io/worx-code-natives")> | undefined;
 
@@ -12,9 +12,9 @@ async function findNatives(): Promise<typeof import("@bworx-io/worx-code-natives
 	return await findNativesLoad;
 }
 
-import type { Component } from "@gajae-code/tui";
-import { Text } from "@gajae-code/tui";
-import { isEnoent, prompt, untilAborted } from "@gajae-code/utils";
+import type { Component } from "@bworx-io/worx-tui";
+import { Text } from "@bworx-io/worx-tui";
+import { isEnoent, prompt, untilAborted } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
 import { InternalUrlRouter } from "../internal-urls";

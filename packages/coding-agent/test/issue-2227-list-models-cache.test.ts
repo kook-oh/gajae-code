@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "bun:test";
 import * as path from "node:path";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import type { Args } from "../src/cli/args";
 import { ModelRegistry } from "../src/config/model-registry";
 import { Settings } from "../src/config/settings";

@@ -5,9 +5,9 @@
  * task execution in the terminal UI.
  */
 import path from "node:path";
-import type { Component } from "@gajae-code/tui";
-import { Text } from "@gajae-code/tui";
-import { formatNumber, sanitizeText } from "@gajae-code/utils";
+import type { Component } from "@bworx-io/worx-tui";
+import { Text } from "@bworx-io/worx-tui";
+import { formatNumber, sanitizeText } from "@bworx-io/worx-utils";
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
 import type { Theme } from "../modes/theme/theme";
 import {

@@ -330,13 +330,13 @@ export function releasedBunLockContent(content: string, previousVersion: string,
 	let catalogVersionCount = 0;
 	const updatedPrefix = prefix
 		.replaceAll(previousWorkspaceVersion, `"version": "${version}"`)
-		.replace(/("@gajae-code\/[^"]+":\s*)"([^"]+)"/g, (match, key: string, currentVersion: string) => {
+		.replace(/("@bworx-io\/[^"]+":\s*)"([^"]+)"/g, (match, key: string, currentVersion: string) => {
 			if (currentVersion !== previousVersion) return match;
 			catalogVersionCount++;
 			return `${key}"${version}"`;
 		});
 	if (catalogVersionCount === 0) {
-		throw new Error(`bun.lock has no @gajae-code catalog versions matching ${previousVersion}`);
+		throw new Error(`bun.lock has no @bworx-io catalog versions matching ${previousVersion}`);
 	}
 	return `${updatedPrefix}${suffix}`;
 }
@@ -469,10 +469,10 @@ async function assertReleaseVersionConsistency(version: string, publicPkgPaths: 
 	}
 	const catalog = rootPackage.workspaces.catalog;
 	for (const [name, catalogVersion] of Object.entries(catalog)) {
-		if (!name.startsWith("@gajae-code/")) continue;
+		if (!name.startsWith("@bworx-io/")) continue;
 		if (catalogVersion !== version) throw new Error(`Root catalog ${name} has version ${String(catalogVersion)}, expected ${version}`);
 	}
-	for (const name of publicPackageNames.filter(name => name.startsWith("@gajae-code/"))) {
+	for (const name of publicPackageNames.filter(name => name.startsWith("@bworx-io/"))) {
 		if (catalog[name] !== version) throw new Error(`Root catalog does not match public package ${name} at ${version}`);
 	}
 
@@ -547,15 +547,15 @@ async function cmdRelease(version: string): Promise<void> {
 	}
 	console.log();
 
-	// Update @gajae-code/* catalog entries in root package.json
+	// Update @bworx-io/* catalog entries in root package.json
 	console.log("Updating root catalog versions...");
 	let rootPkgRaw = await Bun.file("package.json").text();
 	rootPkgRaw = rootPkgRaw.replace(
-		/("@gajae-code\/[^"]+":\s*)"[^"]+"/g,
+		/("@bworx-io\/[^"]+":\s*)"[^"]+"/g,
 		`$1"${version}"`,
 	);
 	await Bun.write("package.json", rootPkgRaw);
-	console.log("  Updated root catalog @gajae-code/* entries");
+	console.log("  Updated root catalog @bworx-io/* entries");
 
 	// 3. Update Rust workspace version
 	console.log(`Updating Rust workspace version to ${version}…`);
@@ -579,7 +579,7 @@ async function cmdRelease(version: string): Promise<void> {
 		}
 	}
 	await assertReleaseVersionConsistency(version, publicPkgPaths);
-	console.log("  All public package, Cargo workspace, and @gajae-code catalog versions match");
+	console.log("  All public package, Cargo workspace, and @bworx-io catalog versions match");
 	console.log();
 
 	// 3b. Rename the pi-natives version sentinel so any `.node` left on disk from

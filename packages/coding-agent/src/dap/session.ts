@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import * as timers from "node:timers/promises";
-import { logger, untilAborted } from "@gajae-code/utils";
+import { logger, untilAborted } from "@bworx-io/worx-utils";
 import { NON_INTERACTIVE_ENV } from "../exec/non-interactive-env";
 import { type OwnedProcess, spawnOwnedProcess } from "../runtime/process-lifecycle";
 import { DapClient } from "./client";

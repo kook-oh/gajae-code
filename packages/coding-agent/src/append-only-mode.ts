@@ -5,8 +5,8 @@
  * through here so the auto allowlist and prefix-reset diagnostics never drift.
  */
 
-import { AppendOnlyContextManager } from "@gajae-code/agent-core";
-import { logger } from "@gajae-code/utils";
+import { AppendOnlyContextManager } from "@bworx-io/worx-agent-core";
+import { logger } from "@bworx-io/worx-utils";
 
 /**
  * Providers for which append-only context auto-enables. Exact provider-string

@@ -11,7 +11,7 @@ import { SelectorController } from "@bworx-io/worx-code/modes/controllers/select
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { MemorySessionStorage, type SessionStorageWriter } from "@bworx-io/worx-code/session/session-storage";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 
 initTheme();
 class WriteTrackingStorage extends MemorySessionStorage {

@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { enrichModelThinking } from "@gajae-code/ai/model-thinking";
+import { enrichModelThinking } from "@bworx-io/worx-ai/model-thinking";
 import {
 	getOpenAICodexTransportDetails,
 	getOpenAICodexWebSocketDebugStats,
 	prewarmOpenAICodexResponses,
 	streamOpenAICodexResponses,
-} from "@gajae-code/ai/providers/openai-codex-responses";
-import type { Context, Model, ProviderSessionState } from "@gajae-code/ai/types";
-import { getAgentDir, setAgentDir, TempDir } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/providers/openai-codex-responses";
+import type { Context, Model, ProviderSessionState } from "@bworx-io/worx-ai/types";
+import { getAgentDir, setAgentDir, TempDir } from "@bworx-io/worx-utils";
 import { classifyFallbackTrigger } from "../src/utils/fallback-transport";
 
 const RAW_SENTINEL = "RAW_SENTINEL_DO_NOT_SURFACE";

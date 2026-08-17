@@ -2,11 +2,11 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, rm } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { AuthStorage } from "@bworx-io/worx-ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { initializeExtensions } from "@bworx-io/worx-code/modes/runtime-init";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { AuthStorage } from "@gajae-code/ai";
 import { z } from "zod/v4";
 
 describe("custom tool lifecycle error boundaries", () => {

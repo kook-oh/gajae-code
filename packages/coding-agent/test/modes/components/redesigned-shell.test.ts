@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from "bun:test";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { BashExecutionComponent } from "@bworx-io/worx-code/modes/components/bash-execution";
@@ -11,8 +12,7 @@ import { WelcomeComponent } from "@bworx-io/worx-code/modes/components/welcome";
 import { resolveWelcomeLogoMode } from "@bworx-io/worx-code/modes/interactive-mode";
 import { getEditorTheme, initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { type TUI, visibleWidth } from "@gajae-code/tui";
+import { type TUI, visibleWidth } from "@bworx-io/worx-tui";
 import { StatusLineComponent } from "../../../src/modes/components/tool-status-header";
 
 interface FooterUsageStatistics {

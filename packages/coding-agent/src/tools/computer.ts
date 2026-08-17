@@ -1,9 +1,9 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type { ImageContent } from "@gajae-code/ai/core";
-import { prompt } from "@gajae-code/utils";
+import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@bworx-io/worx-agent-core";
+import type { ImageContent } from "@bworx-io/worx-ai/core";
+import { prompt } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import computerDescription from "../prompts/tools/computer.md" with { type: "text" };
 import { formatDimensionNote, resizeImage } from "../utils/image-resize";
@@ -213,7 +213,7 @@ const NATIVE_ERROR_CODES = new Set([
 function createNativeComputerController(): NativeController {
 	const natives = require("@bworx-io/worx-code-natives") as { ComputerController?: new () => NativeController };
 	if (!natives.ComputerController) {
-		throw new ToolError("ComputerController is unavailable in @gajae-code/natives.", {
+		throw new ToolError("ComputerController is unavailable in @bworx-io/worx-code-natives.", {
 			code: "COMPUTER_UNAVAILABLE",
 		});
 	}

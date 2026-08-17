@@ -1,4 +1,4 @@
-import { tryParseJson } from "@gajae-code/utils";
+import { tryParseJson } from "@bworx-io/worx-utils";
 import type { LocalizedText, RenderResult, SpecialHandler } from "./types";
 import { buildResult, getLocalizedText, loadPage } from "./types";
 

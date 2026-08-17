@@ -25,7 +25,7 @@ function openRecoveryFsRootNative(): typeof import("@bworx-io/worx-code-natives"
 	return nativeRecoveryFsRoot;
 }
 
-import { isCompiledBinary } from "@gajae-code/utils/env";
+import { isCompiledBinary } from "@bworx-io/worx-utils/env";
 import { parseLinuxProcStartTime } from "./linux-proc";
 
 export const TMUX_OWNER_ISOLATION_SCHEMA_VERSION = 1;

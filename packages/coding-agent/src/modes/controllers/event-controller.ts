@@ -1,9 +1,9 @@
-import { INTENT_FIELD } from "@gajae-code/agent-core";
-import { calculatePromptTokens } from "@gajae-code/agent-core/compaction/compaction";
-import type { AssistantMessage, ImageContent } from "@gajae-code/ai/core";
-import { parseRateLimitReason } from "@gajae-code/ai/core";
-import { type Component, Loader, TERMINAL, Text } from "@gajae-code/tui";
-import { logger } from "@gajae-code/utils";
+import { INTENT_FIELD } from "@bworx-io/worx-agent-core";
+import { calculatePromptTokens } from "@bworx-io/worx-agent-core/compaction/compaction";
+import type { AssistantMessage, ImageContent } from "@bworx-io/worx-ai/core";
+import { parseRateLimitReason } from "@bworx-io/worx-ai/core";
+import { type Component, Loader, TERMINAL, Text } from "@bworx-io/worx-tui";
+import { logger } from "@bworx-io/worx-utils";
 import { settings } from "../../config/settings";
 import { AssistantMessageComponent } from "../../modes/components/assistant-message";
 import {

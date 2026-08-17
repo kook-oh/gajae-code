@@ -1,4 +1,4 @@
-import { $credentialEnv, extractHttpStatusFromError, logger, structuredCloneJSON } from "@gajae-code/utils";
+import { $credentialEnv, extractHttpStatusFromError, logger, structuredCloneJSON } from "@bworx-io/worx-utils";
 import OpenAI, { APIConnectionTimeoutError } from "openai";
 import type {
 	Tool as OpenAITool,

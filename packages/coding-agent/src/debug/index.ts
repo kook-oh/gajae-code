@@ -16,8 +16,8 @@ function getWorkProfileNative(...args: Parameters<typeof getWorkProfileFn>): Ret
 	return nativeGetWorkProfile(...args);
 }
 
-import { Container, Loader, type SelectItem, SelectList, Spacer, Text } from "@gajae-code/tui";
-import { getSessionsDir } from "@gajae-code/utils";
+import { Container, Loader, type SelectItem, SelectList, Spacer, Text } from "@bworx-io/worx-tui";
+import { getSessionsDir } from "@bworx-io/worx-utils";
 import { DynamicBorder } from "../modes/components/dynamic-border";
 import { getSelectListTheme, getSymbolTheme, theme } from "../modes/theme/theme";
 import type { InteractiveModeContext } from "../modes/types";

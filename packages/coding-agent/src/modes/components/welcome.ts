@@ -1,5 +1,5 @@
-import { type Component, padding, TERMINAL, truncateToWidth, visibleWidth } from "@gajae-code/tui";
-import { APP_NAME } from "@gajae-code/utils";
+import { type Component, padding, TERMINAL, truncateToWidth, visibleWidth } from "@bworx-io/worx-tui";
+import { APP_NAME } from "@bworx-io/worx-utils";
 import { formatBuildLabel } from "../../build-metadata";
 import { formatKeyHint, type KeyDisplayContext } from "../../config/keybindings";
 import { type ThemeColor, theme } from "../../modes/theme/theme";

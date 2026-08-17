@@ -31,9 +31,9 @@ const repoRoot = process.cwd();
 
 const expectedBundledWorkflowSkills = ["deep-interview", "ralplan", "team", "ultragoal"] as const;
 const expectedBundledRoleAgents = ["architect", "critic", "executor", "planner"] as const;
-const expectedPackageScope = "@gajae-code/";
-const expectedCliBins = ["gjc", "gjc-stats"] as const;
-const expectedRootPackageName = "gajae-code";
+const expectedPackageScope = "@bworx-io/";
+const expectedCliBins = ["worx", "worx-stats"] as const;
+const expectedRootPackageName = "worx-code";
 const allowedUnscopedPackageNames = new Set([expectedRootPackageName]);
 const rootPublicMetadataFields = ["name", "description", "homepage", "repository", "bugs"] as const;
 const rootLegacyScriptKeys = new Set(["test:py"]);
@@ -74,6 +74,11 @@ const legacyAllowlist = [
 		name: "runtime-compatibility-internals",
 		path: /^packages\/(coding-agent|agent|ai|tui|utils|stats|natives)\//,
 		rationale: "Runtime internals may retain legacy aliases while user-facing copy is rebranded.",
+	},
+	{
+		name: "pivot-planning-records",
+		path: /^docs\/(plans\/|PIVOT-FREEZE\.md$)/,
+		rationale: "Engine-pivot plans and evidence records name the upstream lineage they forked from as historical fact.",
 	},
 ] as const;
 
@@ -256,7 +261,7 @@ const unexpectedBundledWorkflowSkills = bundledWorkflowSkills.filter(def => !exp
 const unexpectedBundledRoleAgents = bundledRoleAgents.filter(def => !expectedBundledRoleAgents.includes(def.name as (typeof expectedBundledRoleAgents)[number]));
 const missingBundledWorkflowSkills = expectedBundledWorkflowSkills.filter(name => !bundledWorkflowSkills.some(def => def.name === name));
 const missingBundledRoleAgents = expectedBundledRoleAgents.filter(name => !bundledRoleAgents.some(def => def.name === name));
-const nonGajaePackages = packages.filter(pkg => pkg.name && !pkg.name.startsWith(expectedPackageScope) && !allowedUnscopedPackageNames.has(pkg.name));
+const nonScopedPackages = packages.filter(pkg => pkg.name && !pkg.name.startsWith(expectedPackageScope) && !allowedUnscopedPackageNames.has(pkg.name));
 const observedBins = [...new Set(packages.flatMap(pkg => pkg.bins))].sort();
 const missingBins = expectedCliBins.filter(bin => !observedBins.includes(bin));
 const unexpectedLegacyHits = legacyHits.filter(hit => !hit.allowlist);
@@ -285,7 +290,7 @@ const report = {
 		missingBins,
 		missingBundledRoleAgents,
 		missingBundledWorkflowSkills,
-		nonGajaePackages,
+		nonScopedPackages,
 		rootMetadataViolations,
 		unexpectedBundledRoleAgents,
 		unexpectedBundledWorkflowSkills,
@@ -321,7 +326,7 @@ if (process.argv.includes("--strict")) {
 		missingBins.length > 0 ||
 		missingBundledRoleAgents.length > 0 ||
 		missingBundledWorkflowSkills.length > 0 ||
-		nonGajaePackages.length > 0 ||
+		nonScopedPackages.length > 0 ||
 		rootMetadataViolations.length > 0 ||
 		unexpectedBundledRoleAgents.length > 0 ||
 		unexpectedBundledWorkflowSkills.length > 0 ||

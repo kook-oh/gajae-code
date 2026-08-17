@@ -6,7 +6,7 @@ import * as syncFs from "node:fs";
 import * as fs from "node:fs/promises";
 import path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
-import { getSessionsDir } from "@gajae-code/utils";
+import { getSessionsDir } from "@bworx-io/worx-utils";
 
 import { lifecycleArgs } from "../src/commands/sdk";
 import { Broker, type BrokerResponse } from "../src/sdk/broker/broker";

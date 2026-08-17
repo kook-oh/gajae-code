@@ -5,7 +5,7 @@
  */
 import * as path from "node:path";
 import { GrepOutputMode, grep } from "@bworx-io/worx-code-natives";
-import { APP_NAME } from "@gajae-code/utils";
+import { APP_NAME } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 
 export interface GrepCommandArgs {

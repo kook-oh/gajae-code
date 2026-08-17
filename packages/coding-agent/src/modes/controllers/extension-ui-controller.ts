@@ -1,4 +1,4 @@
-import { ThinkingLevel } from "@gajae-code/agent-core";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
 import {
 	type Component,
 	Container,
@@ -8,8 +8,8 @@ import {
 	Text,
 	type TUI,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
-import { logger } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { logger } from "@bworx-io/worx-utils";
 import { KeybindingsManager } from "../../config/keybindings";
 import type {
 	CompactOptions,

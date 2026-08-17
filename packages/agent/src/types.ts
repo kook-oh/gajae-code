@@ -16,7 +16,7 @@ import type {
 	TransportFailureFacts,
 	TSchema,
 	UserMessage,
-} from "@gajae-code/ai";
+} from "@bworx-io/worx-ai";
 import type { AppendOnlyContextManager } from "./append-only-context";
 import type { AttemptMinter, AttemptRunHandle, AttemptScope } from "./attempt-scope";
 import type { HarmonyAuditEvent } from "./harmony-leak";
@@ -575,7 +575,7 @@ export interface AfterToolCallContext {
  *
  * @example
  * ```typescript
- * declare module "@gajae-code/agent" {
+ * declare module "@bworx-io/worx-agent-core" {
  *   interface CustomAgentMessages {
  *     artifact: ArtifactMessage;
  *     notification: NotificationMessage;

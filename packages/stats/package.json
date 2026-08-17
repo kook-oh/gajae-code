@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/stats",
+	"name": "@bworx-io/worx-stats",
 	"version": "0.13.1",
 	"description": "Local observability dashboard for pi AI usage statistics",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {
@@ -25,7 +25,7 @@
 	"main": "./src/index.ts",
 	"types": "./src/index.ts",
 	"bin": {
-		"gjc-stats": "./src/index.ts"
+		"worx-stats": "./src/index.ts"
 	},
 	"scripts": {
 		"build": "bun run build.ts",
@@ -38,8 +38,8 @@
 		"fmt": "biome format --write ."
 	},
 	"dependencies": {
-		"@gajae-code/ai": "catalog:",
-		"@gajae-code/utils": "catalog:",
+		"@bworx-io/worx-ai": "catalog:",
+		"@bworx-io/worx-utils": "catalog:",
 		"@tailwindcss/node": "catalog:",
 		"chart.js": "catalog:",
 		"date-fns": "catalog:",

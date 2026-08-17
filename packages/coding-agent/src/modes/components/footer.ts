@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { type Component, padding, truncateToWidth, visibleWidth } from "@gajae-code/tui";
-import { formatNumber, getProjectDir } from "@gajae-code/utils";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { type Component, padding, truncateToWidth, visibleWidth } from "@bworx-io/worx-tui";
+import { formatNumber, getProjectDir } from "@bworx-io/worx-utils";
 import { theme } from "../../modes/theme/theme";
 import type { AgentSession } from "../../session/agent-session";
 import { shortenPath } from "../../tools/render-utils";

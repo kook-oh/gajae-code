@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { RenderResultOptions } from "@bworx-io/worx-agent-core";
 import { LspTool } from "@bworx-io/worx-code/lsp";
 import * as lspClient from "@bworx-io/worx-code/lsp/client";
 import * as lspConfig from "@bworx-io/worx-code/lsp/config";
@@ -22,9 +23,8 @@ import {
 import { getThemeByName } from "@bworx-io/worx-code/modes/theme/theme";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { clampTimeout } from "@bworx-io/worx-code/tools/tool-timeouts";
-import type { RenderResultOptions } from "@gajae-code/agent-core";
-import * as piUtils from "@gajae-code/utils";
-import { sanitizeText, TempDir } from "@gajae-code/utils";
+import * as piUtils from "@bworx-io/worx-utils";
+import { sanitizeText, TempDir } from "@bworx-io/worx-utils";
 
 describe("lsp regressions", () => {
 	afterEach(() => {

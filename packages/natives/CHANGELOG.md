@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Dropped the unsupported `darwin-x64`, `linux-arm64`, and `win32-x64` platform packages; supported platforms are `darwin-arm64` and `linux-x64`.
+
 ## [0.13.1] - 2026-08-11
 
 ### Fixed

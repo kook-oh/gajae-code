@@ -8,7 +8,7 @@ function nativeClipboard(): typeof import("@bworx-io/worx-code-natives") {
 	return nativeClipboardModule;
 }
 
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { settings } from "../config/settings";
 
 function hasDisplay(): boolean {

@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
 import * as path from "node:path";
 import { exactUnlink } from "@bworx-io/worx-code-natives";
-import { isEnoent, logger, postmortem } from "@gajae-code/utils";
+import { isEnoent, logger, postmortem } from "@bworx-io/worx-utils";
 
 const BLOB_PREFIX = "blob:sha256:";
 const TAKE_BLOB_BUFFER_OWNERSHIP = Symbol("takeBlobBufferOwnership");

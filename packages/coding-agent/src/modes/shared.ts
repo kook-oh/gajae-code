@@ -1,4 +1,4 @@
-import type { TabBarTheme } from "@gajae-code/tui";
+import type { TabBarTheme } from "@bworx-io/worx-tui";
 import { theme } from "./theme/theme";
 
 // ═══════════════════════════════════════════════════════════════════════════

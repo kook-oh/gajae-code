@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { chmod, mkdir, mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 
 /**
  * Spill directories this process created under the system temp dir.

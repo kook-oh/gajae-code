@@ -2,7 +2,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import type { AssistantMessage, Message, TextContent, ToolCall, ToolResultMessage, Usage } from "@gajae-code/ai";
+import type { AssistantMessage, Message, TextContent, ToolCall, ToolResultMessage, Usage } from "@bworx-io/worx-ai";
 import { SessionManager } from "../src/session/session-manager";
 
 const PACKAGE_NAME = "@bworx-io/worx-code";

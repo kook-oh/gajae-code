@@ -1,4 +1,4 @@
-import { $which, logger } from "@gajae-code/utils";
+import { $which, logger } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import { getRecorderInstallHint } from "./setup";
 import { resolvePython } from "./transcriber";

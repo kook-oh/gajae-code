@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { classifyContextOverflow, isContextOverflow } from "@gajae-code/ai/utils/overflow";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
+import { classifyContextOverflow, isContextOverflow } from "@bworx-io/worx-ai/utils/overflow";
 
 function createErrorMessage(errorMessage: string): AssistantMessage {
 	return {

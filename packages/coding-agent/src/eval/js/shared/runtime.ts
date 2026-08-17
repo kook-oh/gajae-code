@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import * as util from "node:util";
 
-import * as logger from "@gajae-code/utils/logger";
+import * as logger from "@bworx-io/worx-utils/logger";
 
 import { ToolError } from "../../../tools/tool-errors";
 import { createHelpers, type HelperBundle } from "./helpers";

@@ -7,7 +7,7 @@
  * goal-arg execution, and resumable .worx/rlm/<session> artifacts.
  */
 import * as fs from "node:fs/promises";
-import { getProjectDir } from "@gajae-code/utils";
+import { getProjectDir } from "@bworx-io/worx-utils";
 import { type Args, parseArgs } from "../cli/args";
 import { disposeKernelSessionsByOwner } from "../eval/py/executor";
 import type { CustomTool } from "../extensibility/custom-tools/types";

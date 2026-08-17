@@ -1,8 +1,8 @@
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
-import type { ToolCall, ToolResultMessage } from "@gajae-code/ai/core";
-import { matchesKey } from "@gajae-code/tui";
-import { formatDuration, formatNumber } from "@gajae-code/utils";
+import type { ToolCall, ToolResultMessage } from "@bworx-io/worx-ai/core";
+import { matchesKey } from "@bworx-io/worx-tui";
+import { formatDuration, formatNumber } from "@bworx-io/worx-utils";
 import type { KeyId } from "../../config/keybindings";
 import { isSilentAbort } from "../../session/messages";
 import type { FileEntry, SessionMessageEntry } from "../../session/session-manager";

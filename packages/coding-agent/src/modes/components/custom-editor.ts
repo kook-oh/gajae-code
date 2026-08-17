@@ -1,5 +1,5 @@
-import { Editor, type KeyId, matchesKey, parseKittySequence } from "@gajae-code/tui";
-import { BracketedPasteHandler } from "@gajae-code/tui/bracketed-paste";
+import { Editor, type KeyId, matchesKey, parseKittySequence } from "@bworx-io/worx-tui";
+import { BracketedPasteHandler } from "@bworx-io/worx-tui/bracketed-paste";
 import { type AppKeybinding, KEYBINDINGS } from "../../config/keybindings";
 
 type ConfigurableEditorAction = Extract<

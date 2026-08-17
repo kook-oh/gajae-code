@@ -6,7 +6,7 @@
  * read project-level config and never connect to anything.
  */
 import * as fs from "node:fs/promises";
-import { isEnoent } from "@gajae-code/utils";
+import { isEnoent } from "@bworx-io/worx-utils";
 import { normalizeSkill } from "../skill-normalizer";
 import type { AdapterResult, MigrateSource, SkillCandidate, SourceDiagnostic } from "../types";
 import { claudeCodeAdapter } from "./claude-code";

@@ -1,6 +1,6 @@
-import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
-import type { OAuthProviderInfo } from "@gajae-code/ai/utils/oauth/types";
-import { Container, fuzzyFilter, Input, matchesKey, Spacer, TruncatedText } from "@gajae-code/tui";
+import { getOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
+import type { OAuthProviderInfo } from "@bworx-io/worx-ai/utils/oauth/types";
+import { Container, fuzzyFilter, Input, matchesKey, Spacer, TruncatedText } from "@bworx-io/worx-tui";
 import { recordProviderAuthHealth } from "../../config/provider-auth-health";
 import { compareRankedProviders, type ProviderAuthState } from "../../config/provider-ranking";
 import { theme } from "../../modes/theme/theme";

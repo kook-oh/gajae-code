@@ -1,4 +1,4 @@
-import type { ToolCall, ToolResultMessage } from "@gajae-code/ai/types";
+import type { ToolCall, ToolResultMessage } from "@bworx-io/worx-ai/types";
 import { estimateEntryTokens } from "../src/compaction/compaction";
 import type { SessionEntry, SessionMessageEntry } from "../src/compaction/entries";
 import {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import type { Message } from "@gajae-code/ai";
+import type { Message } from "@bworx-io/worx-ai";
 import { estimateMessageTokensHeuristic } from "../src/compaction/compaction";
 
 const MIB = 1024 * 1024;

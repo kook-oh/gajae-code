@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
 
 import { HookInputComponent } from "@bworx-io/worx-code/modes/components/hook-input";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	const theme = await getThemeByName("red-claw");

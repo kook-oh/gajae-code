@@ -3,7 +3,7 @@ import * as crypto from "node:crypto";
 import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { getBlobsDir, getResidentCacheRootDir, getSidecarCacheRootDir, logger, TempDir } from "@gajae-code/utils";
+import { getBlobsDir, getResidentCacheRootDir, getSidecarCacheRootDir, logger, TempDir } from "@bworx-io/worx-utils";
 import {
 	ManagedSessionDescendantStore,
 	managedDirectoryRoot,

@@ -6,7 +6,7 @@ import type {
 	KernelShutdownResult,
 } from "@bworx-io/worx-code/eval/py/kernel";
 import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 class FakeKernel {
 	executeCalls = 0;

@@ -30,15 +30,15 @@ import {
 	UNK_CONTEXT_WINDOW,
 	UNK_MAX_TOKENS,
 	unregisterCustomApis,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 
 // Sentinel for local-only OAuth token (LM Studio, vLLM) — declared inline to avoid loading
 // any provider module at startup. Must match `DEFAULT_LOCAL_TOKEN` in oauth/lm-studio.ts.
 const DEFAULT_LOCAL_TOKEN = "lm-studio-local";
 
-import { registerOAuthProvider, unregisterOAuthProviders } from "@gajae-code/ai/utils/oauth";
-import type { OAuthCredentials, OAuthLoginCallbacks } from "@gajae-code/ai/utils/oauth/types";
-import { $pickCredentialEnv, isRecord, logger } from "@gajae-code/utils";
+import { registerOAuthProvider, unregisterOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
+import type { OAuthCredentials, OAuthLoginCallbacks } from "@bworx-io/worx-ai/utils/oauth/types";
+import { $pickCredentialEnv, isRecord, logger } from "@bworx-io/worx-utils";
 import { parseModelString, resolveProviderModelReference } from "../config/model-resolver";
 import { isValidThemeColor, type ThemeColor } from "../modes/theme/theme";
 import {

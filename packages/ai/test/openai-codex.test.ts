@@ -1,13 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { type RequestBody, transformRequestBody } from "@gajae-code/ai/providers/openai-codex/request-transformer";
-import { parseCodexError } from "@gajae-code/ai/providers/openai-codex/response-handler";
+import { type RequestBody, transformRequestBody } from "@bworx-io/worx-ai/providers/openai-codex/request-transformer";
+import { parseCodexError } from "@bworx-io/worx-ai/providers/openai-codex/response-handler";
 import {
 	codexToolCanonicalName,
 	codexToolWireName,
 	convertOpenAICodexResponsesTools,
 	normalizeCodexToolChoice,
-} from "@gajae-code/ai/providers/openai-codex-responses";
-import type { Tool } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/providers/openai-codex-responses";
+import type { Tool } from "@bworx-io/worx-ai/types";
 import { createCodexModel } from "./helpers";
 
 const DEFAULT_PROMPT_PREFIX =

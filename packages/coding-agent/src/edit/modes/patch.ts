@@ -7,8 +7,8 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { AgentToolResult } from "@gajae-code/agent-core";
-import { isEnoent } from "@gajae-code/utils";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
+import { isEnoent } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import {
 	type FileDiagnosticsResult,

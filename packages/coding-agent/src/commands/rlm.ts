@@ -1,7 +1,7 @@
 /**
  * `gjc rlm` — opt-in Jupyter-style research session with a persistent Python kernel.
  */
-import { Command } from "@gajae-code/utils/cli";
+import { Command } from "@bworx-io/worx-utils/cli";
 import { runRlmCommand } from "../rlm";
 
 export default class Rlm extends Command {

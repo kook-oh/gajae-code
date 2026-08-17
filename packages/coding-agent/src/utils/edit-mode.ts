@@ -1,4 +1,4 @@
-import { $pickenv } from "@gajae-code/utils/env";
+import { $pickenv } from "@bworx-io/worx-utils/env";
 
 export type EditMode = "replace" | "patch" | "hashline" | "vim" | "apply_patch";
 

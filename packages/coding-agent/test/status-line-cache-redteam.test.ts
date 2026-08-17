@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 import * as fs from "node:fs";
-import { getProjectDir, setProjectDir } from "@gajae-code/utils";
+import { getProjectDir, setProjectDir } from "@bworx-io/worx-utils";
 import { resetSettingsForTest, Settings } from "../src/config/settings";
 import { StatusLineComponent } from "../src/modes/components/tool-status-header";
 import { EMPTY_JOBS_SNAPSHOT } from "../src/modes/jobs-observer";

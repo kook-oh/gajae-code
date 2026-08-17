@@ -7,19 +7,19 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import { agentLoop, agentLoopDetailed } from "@gajae-code/agent-core/agent-loop";
+import { agentLoop, agentLoopDetailed } from "@bworx-io/worx-agent-core/agent-loop";
 import {
 	type AgentRunSummary,
 	aggregateAgentRunCoverage,
 	aggregateAgentRunSummaries,
 	emptyAgentRunCoverage,
 	emptyAgentRunSummary,
-} from "@gajae-code/agent-core/run-collector";
-import { EXECUTE_TOOL_STATUS_ATTR, GenAIAttr, PiGenAIAggregateAttr } from "@gajae-code/agent-core/telemetry";
-import type { AgentEvent, AgentLoopConfig, AgentMessage, AgentTool } from "@gajae-code/agent-core/types";
-import type { AssistantMessage, Message } from "@gajae-code/ai";
-import { z } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
+} from "@bworx-io/worx-agent-core/run-collector";
+import { EXECUTE_TOOL_STATUS_ATTR, GenAIAttr, PiGenAIAggregateAttr } from "@bworx-io/worx-agent-core/telemetry";
+import type { AgentEvent, AgentLoopConfig, AgentMessage, AgentTool } from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, Message } from "@bworx-io/worx-ai";
+import { z } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import type {
 	AttributeValue,
 	Context as OtelContext,

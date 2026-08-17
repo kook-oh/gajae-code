@@ -10,7 +10,7 @@ import * as path from "node:path";
 import { disposeAllKernelSessions, executePythonWithKernel } from "@bworx-io/worx-code/eval/py/executor";
 import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
 import { resolvePythonIntegrationGate } from "@bworx-io/worx-code/tools/implementations";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 const SHOULD_RUN = resolvePythonIntegrationGate(Bun.env);
 

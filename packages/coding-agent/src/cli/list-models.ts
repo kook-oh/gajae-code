@@ -1,9 +1,9 @@
 /**
  * List available models with optional fuzzy search
  */
-import { type Api, getSupportedEfforts, type Model } from "@gajae-code/ai/core";
-import { fuzzyFilter } from "@gajae-code/tui";
-import { formatNumber } from "@gajae-code/utils";
+import { type Api, getSupportedEfforts, type Model } from "@bworx-io/worx-ai/core";
+import { fuzzyFilter } from "@bworx-io/worx-tui";
+import { formatNumber } from "@bworx-io/worx-utils";
 import type { ModelRegistry } from "../config/model-registry";
 import {
 	discoverAndLoadExtensions,

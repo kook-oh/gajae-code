@@ -5,7 +5,7 @@ import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import type { SessionContext } from "@bworx-io/worx-code/session/session-manager";
-import { Container } from "@gajae-code/tui";
+import { Container } from "@bworx-io/worx-tui";
 
 beforeAll(() => initTheme());
 afterEach(() => vi.useRealTimers());

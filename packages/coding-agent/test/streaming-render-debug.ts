@@ -4,10 +4,10 @@
  * Run with: npx tsx test/streaming-render-debug.ts
  */
 import * as path from "node:path";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { ProcessTerminal, TUI } from "@gajae-code/tui";
+import { ProcessTerminal, TUI } from "@bworx-io/worx-tui";
 import { sleep } from "bun";
 
 // Initialize dark theme with full color support

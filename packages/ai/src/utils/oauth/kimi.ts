@@ -7,7 +7,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { scheduler } from "node:timers/promises";
-import { $pickCredentialEnv, getAgentDir, isEnoent } from "@gajae-code/utils";
+import { $pickCredentialEnv, getAgentDir, isEnoent } from "@bworx-io/worx-utils";
 import packageJson from "../../../package.json" with { type: "json" };
 import type { OAuthController, OAuthCredentials } from "./types";
 

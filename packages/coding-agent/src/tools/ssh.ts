@@ -1,7 +1,7 @@
-import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type { Component } from "@gajae-code/tui";
-import { Text } from "@gajae-code/tui";
-import { prompt } from "@gajae-code/utils";
+import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@bworx-io/worx-agent-core";
+import type { Component } from "@bworx-io/worx-tui";
+import { Text } from "@bworx-io/worx-tui";
+import { prompt } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import type { SSHHost } from "../capability/ssh";
 import { sshCapability } from "../capability/ssh";

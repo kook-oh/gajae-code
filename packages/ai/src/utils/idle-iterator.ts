@@ -1,4 +1,4 @@
-import { $env } from "@gajae-code/utils";
+import { $env } from "@bworx-io/worx-utils";
 import { STREAM_FIRST_EVENT_TIMEOUT_PROVIDER_CODE } from "./fallback-transport";
 
 const DEFAULT_STREAM_IDLE_TIMEOUT_MS = 120_000;

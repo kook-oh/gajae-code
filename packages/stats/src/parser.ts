@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { type AssistantMessage, getPriorityPremiumRequests, type ServiceTier } from "@gajae-code/ai";
-import { getSessionsDir, isEnoent } from "@gajae-code/utils";
+import { type AssistantMessage, getPriorityPremiumRequests, type ServiceTier } from "@bworx-io/worx-ai";
+import { getSessionsDir, isEnoent } from "@bworx-io/worx-utils";
 import type {
 	MessageStats,
 	SessionEntry,

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { stream } from "@gajae-code/ai/stream";
-import type { Context, Model } from "@gajae-code/ai/types";
+import { stream } from "@bworx-io/worx-ai/stream";
+import type { Context, Model } from "@bworx-io/worx-ai/types";
 
 const originalFetch = global.fetch;
 

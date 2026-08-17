@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import { reconcileTrailingToolCalls } from "../src/sdk/session";
 
 function assistantWithToolCall(id: string, name = "yield"): AgentMessage {

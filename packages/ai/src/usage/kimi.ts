@@ -1,4 +1,4 @@
-import { $credentialEnv } from "@gajae-code/utils";
+import { $credentialEnv } from "@bworx-io/worx-utils";
 import type {
 	UsageAmount,
 	UsageFetchContext,

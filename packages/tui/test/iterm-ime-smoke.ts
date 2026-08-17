@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 
-import { Editor } from "@gajae-code/tui/components/editor";
-import { Text } from "@gajae-code/tui/components/text";
-import { matchesKey } from "@gajae-code/tui/keys";
-import { ProcessTerminal } from "@gajae-code/tui/terminal";
-import { TUI } from "@gajae-code/tui/tui";
+import { Editor } from "@bworx-io/worx-tui/components/editor";
+import { Text } from "@bworx-io/worx-tui/components/text";
+import { matchesKey } from "@bworx-io/worx-tui/keys";
+import { ProcessTerminal } from "@bworx-io/worx-tui/terminal";
+import { TUI } from "@bworx-io/worx-tui/tui";
 import { defaultEditorTheme } from "./test-themes";
 
 Bun.env.WORX_TUI_IME_CURSOR ??= "1";

@@ -4,13 +4,13 @@
  * Extends the base AgentMessage type with coding-agent specific message types,
  * and provides a transformer to convert them to LLM-compatible messages.
  */
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import {
 	type BranchSummaryMessage,
 	type CompactionSummaryMessage,
 	renderBranchSummaryContext,
 	renderCompactionSummaryContext,
-} from "@gajae-code/agent-core/compaction/messages";
+} from "@bworx-io/worx-agent-core/compaction/messages";
 import type {
 	AssistantMessage,
 	ImageContent,
@@ -18,14 +18,14 @@ import type {
 	MessageAttribution,
 	TextContent,
 	ToolResultMessage,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 
 export {
 	type BranchSummaryMessage,
 	type CompactionSummaryMessage,
 	createBranchSummaryMessage,
 	createCompactionSummaryMessage,
-} from "@gajae-code/agent-core/compaction/messages";
+} from "@bworx-io/worx-agent-core/compaction/messages";
 
 import type { LoadedSubskillActivation } from "../extensibility/gjc-plugins";
 import type { OutputMeta } from "../tools/output-meta";
@@ -289,7 +289,7 @@ export interface FileMentionMessage {
 
 // Extend CustomAgentMessages via declaration merging
 // Legacy hookMessage is kept for migration; new code should use custom.
-declare module "@gajae-code/agent-core" {
+declare module "@bworx-io/worx-agent-core" {
 	interface CustomAgentMessages {
 		bashExecution: BashExecutionMessage;
 		pythonExecution: PythonExecutionMessage;

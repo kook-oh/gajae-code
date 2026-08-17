@@ -5,10 +5,10 @@ import {
 	type AgentTool,
 	getAgentTerminalOwnerContext,
 	type StreamFn,
-} from "@gajae-code/agent-core";
-import type { CursorExecHandlers, SimpleStreamOptions } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+} from "@bworx-io/worx-agent-core";
+import type { CursorExecHandlers, SimpleStreamOptions } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { createAssistantMessage } from "./helpers";
 
 async function waitForStreaming(agent: Agent): Promise<void> {

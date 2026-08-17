@@ -5,9 +5,9 @@
  * by providing authorization URL, token URL, and client credentials.
  */
 
-import type { OAuthCallbackFlowOptions } from "@gajae-code/ai/utils/oauth/callback-server";
-import { OAuthCallbackFlow } from "@gajae-code/ai/utils/oauth/callback-server";
-import type { OAuthController, OAuthCredentials } from "@gajae-code/ai/utils/oauth/types";
+import type { OAuthCallbackFlowOptions } from "@bworx-io/worx-ai/utils/oauth/callback-server";
+import { OAuthCallbackFlow } from "@bworx-io/worx-ai/utils/oauth/callback-server";
+import type { OAuthController, OAuthCredentials } from "@bworx-io/worx-ai/utils/oauth/types";
 
 const DEFAULT_PORT = 3000;
 const CALLBACK_PATH = "/callback";

@@ -1,5 +1,5 @@
-import type { TextContent } from "@gajae-code/ai/core";
-import type { Component } from "@gajae-code/tui";
+import type { TextContent } from "@bworx-io/worx-ai/core";
+import type { Component } from "@bworx-io/worx-tui";
 import {
 	Box,
 	Container,
@@ -9,7 +9,7 @@ import {
 	Text,
 	truncateToWidth,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { getMarkdownTheme, theme } from "../../modes/theme/theme";
 import type { CustomMessage, SkillPromptDetails } from "../../session/messages";
 

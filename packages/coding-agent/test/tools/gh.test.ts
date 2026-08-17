@@ -11,7 +11,7 @@ import {
 	parseSearchDateBound,
 } from "@bworx-io/worx-code/tools/gh";
 import * as git from "@bworx-io/worx-code/utils/git";
-import { getAgentDir, hashPath, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, hashPath, setAgentDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 
 // Isolate every `git` invocation in this file from the developer's host

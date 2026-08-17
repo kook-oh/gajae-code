@@ -1,7 +1,7 @@
 /**
  * Configure Telegram, Discord, or Slack notifications.
  */
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import {
 	assertStrictActivateThreadInvocation,
 	assertStrictBindThreadInvocation,

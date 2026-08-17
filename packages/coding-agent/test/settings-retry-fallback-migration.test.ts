@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { withFileLock } from "@bworx-io/worx-code/config/file-lock";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 
 let root = "";

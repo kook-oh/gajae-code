@@ -6,8 +6,8 @@ import {
 	matchesKey,
 	truncateToWidth,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { getMarkdownTheme, theme } from "../theme/theme";
 import type { TranscriptItemRegistry, TranscriptSourcePayload } from "../transcript-item-registry";
 import { DynamicBorder } from "./dynamic-border";

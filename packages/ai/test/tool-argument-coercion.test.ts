@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import type { RawArgumentValidationResult, Tool, ToolCall } from "@gajae-code/ai/types";
-import { validateToolArguments } from "@gajae-code/ai/utils/validation";
+import type { RawArgumentValidationResult, Tool, ToolCall } from "@bworx-io/worx-ai/types";
+import { validateToolArguments } from "@bworx-io/worx-ai/utils/validation";
 import * as z from "zod/v4";
 
 function captureMessage(run: () => void): string {

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { pruneHttpRequestDumps } from "@gajae-code/ai/utils/http-inspector";
+import { pruneHttpRequestDumps } from "@bworx-io/worx-ai/utils/http-inspector";
 
 /**
  * Every HTTP 400 wrote a dump of the full sanitized request body and nothing ever

@@ -8,8 +8,8 @@
 import { realpathSync } from "node:fs";
 import * as path from "node:path";
 import * as url from "node:url";
-import { isCanonicalMCPOAuthBinding, resolveMCPOAuthResourceOrigin, type TSchema } from "@gajae-code/ai/core";
-import { logger } from "@gajae-code/utils";
+import { isCanonicalMCPOAuthBinding, resolveMCPOAuthResourceOrigin, type TSchema } from "@bworx-io/worx-ai/core";
+import { logger } from "@bworx-io/worx-utils";
 import type { SourceMeta } from "../capability/types";
 import * as configValue from "../config/resolve-config-value";
 import type { CustomTool } from "../extensibility/custom-tools/types";

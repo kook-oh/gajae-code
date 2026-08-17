@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { TUI } from "@gajae-code/tui";
-import { __loaderPerfCounters, Loader } from "@gajae-code/tui/components/loader";
-import { visibleWidth } from "@gajae-code/tui/utils";
+import { TUI } from "@bworx-io/worx-tui";
+import { __loaderPerfCounters, Loader } from "@bworx-io/worx-tui/components/loader";
+import { visibleWidth } from "@bworx-io/worx-tui/utils";
 import { __animationSchedulerTestHooks } from "../src/animation-scheduler";
 import { VirtualTerminal } from "./virtual-terminal";
 

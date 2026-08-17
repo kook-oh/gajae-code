@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/bridge-client",
+	"name": "@bworx-io/worx-bridge-client",
 	"version": "0.13.1",
 	"description": "Transport-only v3 SDK WebSocket client",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {

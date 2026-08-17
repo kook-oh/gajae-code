@@ -1,4 +1,4 @@
-import { ThinkingLevel } from "@gajae-code/agent-core";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
 import {
 	type Api,
 	type Effort,
@@ -9,7 +9,7 @@ import {
 	type ThinkingControlMode,
 	UNK_CONTEXT_WINDOW,
 	UNK_MAX_TOKENS,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 import { formatModelProfileDisplayLabel, type ModelProfileDefinition } from "../config/model-profiles";
 import { SYNTHETIC_PROVIDER_ID } from "./model-profile-model";
 

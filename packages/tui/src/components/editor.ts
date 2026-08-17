@@ -1,4 +1,4 @@
-import { getProjectDir, logger, onDefaultTabWidthChange } from "@gajae-code/utils";
+import { getProjectDir, logger, onDefaultTabWidthChange } from "@bworx-io/worx-utils";
 import {
 	type AutocompleteProvider,
 	type AutocompleteSuggestionKind,

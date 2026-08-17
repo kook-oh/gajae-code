@@ -6,7 +6,7 @@ import {
 	checkOpenCodexStatus,
 	fetchOpenCodexModels,
 	resolveOpenCodexEndpoint,
-} from "@gajae-code/ai/providers/openai-opencodex-responses";
+} from "@bworx-io/worx-ai/providers/openai-opencodex-responses";
 
 const originalFetch = globalThis.fetch;
 const originalHome = process.env.OPENCODEX_HOME;

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getAgentDbPath, getAgentDir } from "@gajae-code/utils";
+import { getAgentDbPath, getAgentDir } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { type ModelsConfig, ModelsConfigSchema, type ProviderDiscovery } from "../config/models-config-schema";
 import { compareRankedProviders, famousProviderIndex } from "../config/provider-ranking";

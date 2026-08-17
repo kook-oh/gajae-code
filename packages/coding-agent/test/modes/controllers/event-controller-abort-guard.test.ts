@@ -13,13 +13,13 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import type { AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { TERMINAL } from "@gajae-code/tui";
+import { TERMINAL } from "@bworx-io/worx-tui";
 
 beforeAll(() => {
 	initTheme();

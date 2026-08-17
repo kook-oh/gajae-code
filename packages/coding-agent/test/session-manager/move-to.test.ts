@@ -11,7 +11,7 @@ import {
 } from "@bworx-io/worx-code/session/session-manager";
 import { stripOuterDoubleQuotes } from "@bworx-io/worx-code/tools/path-utils";
 import * as native from "@bworx-io/worx-code-natives";
-import { getConfigRootDir, getSessionsDir, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, getSessionsDir, setAgentDir } from "@bworx-io/worx-utils";
 import { resolveManagedScope } from "../../src/session/internal/managed-session-scope";
 import { makeAssistantMessage } from "./helpers";
 

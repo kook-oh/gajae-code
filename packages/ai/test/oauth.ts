@@ -8,9 +8,9 @@
  */
 import * as fs from "node:fs/promises";
 import path from "node:path";
-import { getOAuthApiKey } from "@gajae-code/ai/utils/oauth";
-import type { OAuthCredentials, OAuthProvider } from "@gajae-code/ai/utils/oauth/types";
-import { $flag, getAgentDir, isEnoent } from "@gajae-code/utils";
+import { getOAuthApiKey } from "@bworx-io/worx-ai/utils/oauth";
+import type { OAuthCredentials, OAuthProvider } from "@bworx-io/worx-ai/utils/oauth/types";
+import { $flag, getAgentDir, isEnoent } from "@bworx-io/worx-utils";
 
 /**
  * E2E tests require explicit opt-in via E2E=1 environment variable.

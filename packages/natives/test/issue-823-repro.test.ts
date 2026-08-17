@@ -172,8 +172,8 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 	});
 
 	it("prefers host optional package candidates before legacy bundled candidates", () => {
-		const optionalNativeDir = "/repo/node_modules/@gajae-code/natives-linux-x64/native";
-		const nativeDir = "/repo/node_modules/@gajae-code/natives/native";
+		const optionalNativeDir = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native";
+		const nativeDir = "/repo/node_modules/@bworx-io/worx-code-natives/native";
 		const candidates = resolveLoaderCandidates({
 			addonFilenames: getAddonFilenames({ tag: "linux-x64", arch: "x64", variant: "modern" }),
 			isCompiledBinary: false,
@@ -235,7 +235,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 
 	it("prefers the current workspace addon over a stale optional package addon", () => {
 		const localDir = "/repo/packages/natives/native";
-		const optionalDir = "/repo/node_modules/@gajae-code/natives-linux-x64/native";
+		const optionalDir = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native";
 		const filename = "pi_natives.linux-x64-modern.node";
 		const local = path.join(localDir, filename);
 		const optional = path.join(optionalDir, filename);
@@ -264,7 +264,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 
 	it("keeps workspace precedence when local and optional addons have the same sentinel", () => {
 		const local = "/repo/packages/natives/native/pi_natives.linux-x64.node";
-		const optional = "/repo/node_modules/@gajae-code/natives-linux-x64/native/pi_natives.linux-x64.node";
+		const optional = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native/pi_natives.linux-x64.node";
 		const attempted: string[] = [];
 		const loaded = loadFromCandidates({
 			candidates: [local, optional],
@@ -281,7 +281,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 	});
 
 	it("continues from a stale optional addon to a current local addon", () => {
-		const optional = "/repo/node_modules/@gajae-code/natives-linux-x64/native/pi_natives.linux-x64.node";
+		const optional = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native/pi_natives.linux-x64.node";
 		const local = "/repo/packages/natives/native/pi_natives.linux-x64.node";
 		const loaded = loadFromCandidates({
 			candidates: [optional, local],
@@ -297,7 +297,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 
 	it("falls back to a matching optional addon when no local addon is available", () => {
 		const local = "/repo/packages/natives/native/pi_natives.linux-x64.node";
-		const optional = "/repo/node_modules/@gajae-code/natives-linux-x64/native/pi_natives.linux-x64.node";
+		const optional = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native/pi_natives.linux-x64.node";
 		const loaded = loadFromCandidates({
 			candidates: [local, optional],
 			requireCandidate: candidate => {
@@ -313,7 +313,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 	});
 
 	it("loads a matching optional addon", () => {
-		const optional = "/repo/node_modules/@gajae-code/natives-linux-x64/native/pi_natives.linux-x64.node";
+		const optional = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native/pi_natives.linux-x64.node";
 		const loaded = loadFromCandidates({
 			candidates: [optional],
 			requireCandidate: () => ({ __piNativesVCurrent: () => undefined }),
@@ -326,7 +326,7 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 	});
 
 	it("aggregates diagnostics when every candidate has an incompatible sentinel", () => {
-		const staleOptional = "/repo/node_modules/@gajae-code/natives-linux-x64/native/pi_natives.linux-x64.node";
+		const staleOptional = "/repo/node_modules/@bworx-io/worx-code-natives-linux-x64/native/pi_natives.linux-x64.node";
 		const staleLegacy = "/usr/bin/pi_natives.linux-x64.node";
 		const loaded = loadFromCandidates({
 			candidates: [staleOptional, staleLegacy],
@@ -459,13 +459,13 @@ describe("issue 823: standalone-binary native loader path resolution", () => {
 	it("preserves Windows staging ahead of package candidates", () => {
 		const filename = "pi_natives.win32-x64-baseline.node";
 		const versionedDir = "C:\\Users\\u\\AppData\\Local\\gjc\\14.5.2";
-		const optionalDir = "C:\\repo\\node_modules\\@gajae-code\\natives-win32-x64\\native";
+		const optionalDir = "C:\\repo\\node_modules\\@bworx-io\\worx-code-natives-win32-x64\\native";
 		const candidates = resolveLoaderCandidates({
 			addonFilenames: [filename],
 			isCompiledBinary: false,
 			stageFromNodeModules: true,
 			optionalPackageNativeDirs: [optionalDir],
-			nativeDir: "C:\\repo\\node_modules\\@gajae-code\\natives\\native",
+			nativeDir: "C:\\repo\\node_modules\\@bworx-io\\worx-code-natives\\native",
 			execDir: "C:\\gjc",
 			versionedDir,
 			userDataDir: "C:\\Users\\u\\AppData\\Local\\gjc",

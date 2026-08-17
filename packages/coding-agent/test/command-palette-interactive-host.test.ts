@@ -1,5 +1,6 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type Mock, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
 import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import type { LoadedCustomCommand } from "@bworx-io/worx-code/extensibility/custom-commands";
@@ -13,9 +14,8 @@ import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { HistoryStorage } from "@bworx-io/worx-code/session/history-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import * as titleGenerator from "@bworx-io/worx-code/utils/title-generator";
-import { Agent } from "@gajae-code/agent-core";
-import { setKeybindings } from "@gajae-code/tui";
-import { TempDir } from "@gajae-code/utils";
+import { setKeybindings } from "@bworx-io/worx-tui";
+import { TempDir } from "@bworx-io/worx-utils";
 import { ModelRegistry } from "../src/config/model-registry";
 
 interface InteractivePaletteHost {

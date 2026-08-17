@@ -5,7 +5,7 @@
  *
  * @example
  * ```ts
- * import { isEnoent, isFsError } from "@gajae-code/utils";
+ * import { isEnoent, isFsError } from "@bworx-io/worx-utils";
  *
  * try {
  *     return await Bun.file(path).text();

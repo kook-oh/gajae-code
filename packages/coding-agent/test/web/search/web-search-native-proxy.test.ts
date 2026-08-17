@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { hookFetch } from "@gajae-code/utils";
+import { hookFetch } from "@bworx-io/worx-utils";
 import type { AuthStorage } from "../../../src/session/auth-storage";
 import { AnthropicProvider } from "../../../src/web/search/providers/anthropic";
 import { GeminiProvider } from "../../../src/web/search/providers/gemini";

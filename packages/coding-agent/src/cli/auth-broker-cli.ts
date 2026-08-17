@@ -30,8 +30,8 @@ import {
 	type OAuthProvider,
 	SqliteAuthCredentialStore,
 	startAuthBroker,
-} from "@gajae-code/ai/core";
-import { $which, APP_NAME, getAgentDbPath, getConfigRootDir, isEnoent, logger, VERSION } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { $which, APP_NAME, getAgentDbPath, getConfigRootDir, isEnoent, logger, VERSION } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
 import { resolveAuthBrokerConfig } from "../session/auth-broker-config";
@@ -188,7 +188,7 @@ async function runLogin(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 async function runLocalLogin(provider: OAuthProvider): Promise<void> {
 	// Spawn the pi-ai CLI in-process — it handles the per-provider OAuth dance
 	// and persists into the same SQLite store the broker uses.
-	const piAiCli = Bun.fileURLToPath(import.meta.resolve("@gajae-code/ai/cli"));
+	const piAiCli = Bun.fileURLToPath(import.meta.resolve("@bworx-io/worx-ai/cli"));
 	const proc = Bun.spawn({
 		cmd: [process.execPath, piAiCli, "login", provider],
 		stdin: "inherit",

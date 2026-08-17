@@ -16,7 +16,7 @@ import {
 
 import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
 
-import { getConfigRootDir, getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, getSessionsDir, getTerminalSessionsDir, Snowflake, setAgentDir } from "@bworx-io/worx-utils";
 import { listManagedCandidates, resolveManagedScope } from "../../src/session/internal/managed-session-scope";
 
 describe("loadEntriesFromFile", () => {

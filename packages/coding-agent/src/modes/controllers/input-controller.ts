@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { type AgentMessage, ThinkingLevel } from "@gajae-code/agent-core";
-import { type AutocompleteProvider, matchesKey, type SlashCommand } from "@gajae-code/tui";
-import { $pickenv, logger, sanitizeText } from "@gajae-code/utils";
+import { type AgentMessage, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { type AutocompleteProvider, matchesKey, type SlashCommand } from "@bworx-io/worx-tui";
+import { $pickenv, logger, sanitizeText } from "@bworx-io/worx-utils";
 import { type AppKeybinding, KEYBINDINGS } from "../../config/keybindings";
 import { isSettingsInitialized, settings } from "../../config/settings";
 import { resolveSubskillActivationForSkillInvocation } from "../../extensibility/gjc-plugins";

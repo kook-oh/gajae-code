@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { normalizeAnthropicToolSchema } from "@gajae-code/ai/providers/anthropic";
-import type { Tool } from "@gajae-code/ai/types";
+import { normalizeAnthropicToolSchema } from "@bworx-io/worx-ai/providers/anthropic";
+import type { Tool } from "@bworx-io/worx-ai/types";
 import {
 	flattenToolRootCombinators,
 	isZodSchema,
@@ -9,7 +9,7 @@ import {
 	normalizeSchemaForGoogle,
 	toolWireSchema,
 	zodToWireSchema,
-} from "@gajae-code/ai/utils/schema";
+} from "@bworx-io/worx-ai/utils/schema";
 import { z } from "zod/v4";
 
 describe("isZodSchema", () => {

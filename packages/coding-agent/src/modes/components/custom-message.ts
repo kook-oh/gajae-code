@@ -1,5 +1,5 @@
-import type { Component } from "@gajae-code/tui";
-import { Box, Container, Spacer } from "@gajae-code/tui";
+import type { Component } from "@bworx-io/worx-tui";
+import { Box, Container, Spacer } from "@bworx-io/worx-tui";
 import type { MessageRenderer } from "../../extensibility/extensions/types";
 import { theme } from "../../modes/theme/theme";
 import type { CustomMessage } from "../../session/messages";

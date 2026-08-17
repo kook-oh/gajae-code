@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { Text } from "../src/components/text";
 import { TUI } from "../src/tui";
 import { VirtualTerminal } from "./virtual-terminal";

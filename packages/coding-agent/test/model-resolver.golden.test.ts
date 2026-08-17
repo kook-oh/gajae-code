@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { Effort, type Model } from "@bworx-io/worx-ai";
 import {
 	resolveCliModel,
 	resolveModelFromSettings,
@@ -10,7 +11,6 @@ import {
 	splitSelectorThinkingSuffix,
 } from "@bworx-io/worx-code/config/model-resolver";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { Effort, type Model } from "@gajae-code/ai";
 
 const model = (provider: string, id: string): Model<"anthropic-messages"> => ({
 	id,

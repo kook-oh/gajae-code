@@ -4,7 +4,7 @@ import { type IrcSidebarTheme, IrcSplitViewComponent } from "@bworx-io/worx-code
 import { ToolExecutionComponent } from "@bworx-io/worx-code/modes/components/tool-execution";
 import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
 import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
-import { ImageProtocol, TERMINAL, type TUI } from "@gajae-code/tui";
+import { ImageProtocol, TERMINAL, type TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	resetSettingsForTest();

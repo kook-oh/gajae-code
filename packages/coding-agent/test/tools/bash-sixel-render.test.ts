@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { RenderResultOptions } from "@bworx-io/worx-agent-core";
 import { KeybindingsManager } from "@bworx-io/worx-code/config/keybindings";
 import { type IrcSidebarTheme, IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
 import { IrcObservationLedger } from "@bworx-io/worx-code/modes/irc-observation-ledger";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { bashToolRenderer } from "@bworx-io/worx-code/tools/bash";
 import { getOutputBlockContentWidth } from "@bworx-io/worx-code/tui/output-block";
-import type { RenderResultOptions } from "@gajae-code/agent-core";
-import { getKeybindings, ImageProtocol, setKeybindings, TERMINAL, visibleWidth } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import { getKeybindings, ImageProtocol, setKeybindings, TERMINAL, visibleWidth } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 
 type MutableTerminalInfo = {
 	imageProtocol: ImageProtocol | null;

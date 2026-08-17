@@ -60,7 +60,7 @@ describe("release build compile args", () => {
 	it("does not list models.json as an extra compile entrypoint", () => {
 		// Bun does not emit `.json` extra entrypoints into the compiled bunfs.
 		// The bundled model catalog is embedded via the `with { type: "file" }`
-		// import in @gajae-code/ai instead, so re-adding these args would regress
+		// import in @bworx-io/worx-ai instead, so re-adding these args would regress
 		// release binary startup.
 		expect(releaseEntrypoints).not.toContain("./packages/ai/src/models.json");
 		expect(releaseArgs).not.toContain("./packages/ai/src/models.json");

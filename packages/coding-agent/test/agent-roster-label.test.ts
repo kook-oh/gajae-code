@@ -7,7 +7,7 @@ import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 interface SessionRequest {
 	registry: AgentRegistry;

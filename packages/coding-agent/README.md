@@ -1,4 +1,4 @@
-# @gajae-code/coding-agent
+# @bworx-io/worx-code
 
 Core implementation package for the `gjc` coding agent in the `gajae-code` monorepo.
 
@@ -44,7 +44,7 @@ Recommended external mapping:
 Forward only a minimal, caller-sanitized payload. Do not include raw prompts, assistant transcripts, hidden prompts, tool outputs, raw logs, host paths, private config, webhook URLs, channel IDs, tokens, or secrets. A safe notification payload should be built by the extension/hook itself, for example:
 
 ```ts
-import type { ExtensionAPI } from "@gajae-code/coding-agent";
+import type { ExtensionAPI } from "@bworx-io/worx-code";
 
 type PublicLifecycleNotification = {
 	type: "turn_end" | "agent_end";

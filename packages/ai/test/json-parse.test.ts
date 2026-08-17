@@ -1,5 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { isCompleteJson, parseJsonWithRepair, parseStreamingJson, repairJson } from "@gajae-code/ai/utils/json-parse";
+import {
+	isCompleteJson,
+	parseJsonWithRepair,
+	parseStreamingJson,
+	repairJson,
+} from "@bworx-io/worx-ai/utils/json-parse";
 
 describe("JSON repair", () => {
 	it("leaves valid string escapes unchanged", () => {

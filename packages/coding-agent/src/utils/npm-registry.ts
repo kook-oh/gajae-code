@@ -32,7 +32,7 @@
  */
 import * as os from "node:os";
 import * as path from "node:path";
-import { $credentialEnv, isEnoent } from "@gajae-code/utils";
+import { $credentialEnv, isEnoent } from "@bworx-io/worx-utils";
 
 export const DEFAULT_NPM_REGISTRY = "https://registry.npmjs.org";
 

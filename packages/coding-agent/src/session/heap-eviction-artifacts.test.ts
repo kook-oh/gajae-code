@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ToolResultMessage } from "@gajae-code/ai/core";
+import type { ToolResultMessage } from "@bworx-io/worx-ai/core";
 import { ArtifactProtocolHandler } from "../internal-urls/artifact-protocol";
 import { parseInternalUrl } from "../internal-urls/parse";
 import type { EvictedToolOutputHandle } from "../tools/output-meta";

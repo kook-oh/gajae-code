@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/utils",
+	"name": "@bworx-io/worx-utils",
 	"version": "0.13.1",
 	"description": "Shared utilities for pi packages",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {

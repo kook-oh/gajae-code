@@ -1,4 +1,4 @@
-import { isRecord, ptree } from "@gajae-code/utils";
+import { isRecord, ptree } from "@bworx-io/worx-utils";
 
 export { isRecord };
 

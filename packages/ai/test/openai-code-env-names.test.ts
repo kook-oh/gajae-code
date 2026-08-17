@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { getOpenAICodexTransportDetails } from "@gajae-code/ai/providers/openai-codex-responses";
-import type { Model } from "@gajae-code/ai/types";
+import { getOpenAICodexTransportDetails } from "@bworx-io/worx-ai/providers/openai-codex-responses";
+import type { Model } from "@bworx-io/worx-ai/types";
 
 /**
  * The provider was renamed Codex -> "OpenAI code" and the documented env names

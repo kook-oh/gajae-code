@@ -1,5 +1,5 @@
-import { ThinkingLevel, type ThinkingLevel as ThinkingLevelValue } from "@gajae-code/agent-core";
-import type { Effort } from "@gajae-code/ai/core";
+import { ThinkingLevel, type ThinkingLevel as ThinkingLevelValue } from "@bworx-io/worx-agent-core";
+import type { Effort } from "@bworx-io/worx-ai/core";
 import {
 	type Component,
 	Container,
@@ -13,7 +13,7 @@ import {
 	type Tab,
 	TabBar,
 	Text,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { type SettingPath, settings } from "../../config/settings";
 import type {
 	SettingTab,

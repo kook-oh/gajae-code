@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import * as path from "node:path";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { clearMermaidCache } from "@bworx-io/worx-code/modes/theme/mermaid-cache";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { ImageProtocol, setTerminalImageProtocol, TERMINAL } from "@gajae-code/tui";
+import { ImageProtocol, setTerminalImageProtocol, TERMINAL } from "@bworx-io/worx-tui";
 
 const originalImageProtocol = TERMINAL.imageProtocol;
 

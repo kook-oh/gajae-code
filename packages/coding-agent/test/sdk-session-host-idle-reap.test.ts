@@ -2,7 +2,7 @@ import { expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { watchSessionHostClientAttachment } from "../src/commands/sdk";
 import {
 	publishSessionHostRuntimeEvidence,

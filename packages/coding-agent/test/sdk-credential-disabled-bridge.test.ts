@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { AuthStorage, type CredentialDisabledEvent } from "@bworx-io/worx-ai";
+import * as oauthUtils from "@bworx-io/worx-ai/utils/oauth";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { Extension, ExtensionError, ExtensionFactory } from "@bworx-io/worx-code/extensibility/extensions";
@@ -9,9 +11,7 @@ import { ExtensionRunner } from "@bworx-io/worx-code/extensibility/extensions";
 import { ExtensionRuntime } from "@bworx-io/worx-code/extensibility/extensions/loader";
 import { createAgentSession, discoverAuthStorage } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { AuthStorage, type CredentialDisabledEvent } from "@gajae-code/ai";
-import * as oauthUtils from "@gajae-code/ai/utils/oauth";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 import { brokerOwnerForTest } from "../src/sdk/broker/ensure";
 
 interface SessionDirs {

@@ -5,6 +5,9 @@
  * Eliminates ~2-3s CLI startup overhead per task by creating sessions
  * in-process and sharing auth/model infrastructure across tasks.
  */
+
+import type { AgentEvent, AgentMessage, ResolvedThinkingLevel, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Model } from "@bworx-io/worx-ai";
 import type { AgentSession, AgentSessionEvent, AuthStorage, SessionStats } from "@bworx-io/worx-code";
 import {
 	type CreateAgentSessionResult,
@@ -14,8 +17,6 @@ import {
 	SessionManager,
 	Settings,
 } from "@bworx-io/worx-code";
-import type { AgentEvent, AgentMessage, ResolvedThinkingLevel, ThinkingLevel } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai";
 
 export type InProcessEventListener = (event: AgentEvent) => void;
 

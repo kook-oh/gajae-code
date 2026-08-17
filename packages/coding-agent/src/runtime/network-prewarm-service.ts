@@ -1,4 +1,4 @@
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import type { Settings } from "../config/settings";
 import { createLazyService, type LazyService } from "./lazy-service";
 

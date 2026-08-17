@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { agentLoop } from "@gajae-code/agent-core/agent-loop";
-import type { AgentContext, AgentLoopConfig, AgentMessage } from "@gajae-code/agent-core/types";
-import type { AssistantMessage, Message } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
+import { agentLoop } from "@bworx-io/worx-agent-core/agent-loop";
+import type { AgentContext, AgentLoopConfig, AgentMessage } from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, Message } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
 import { createUserMessage } from "./helpers";
 
 // DeepSeek-family reasoning-content replay rejection. The proxy strips the

@@ -36,6 +36,6 @@ The reads are not an atomic snapshot. For every reported field, identify its sou
 
 ## Direct client references
 
-- TypeScript: `@gajae-code/coding-agent/sdk`
+- TypeScript: `@bworx-io/worx-code/sdk`
 - Python: `gjc_sdk`
 - Canonical templates: `gjc-sdk-author/templates/direct-sdk.ts` and `direct-sdk.py`

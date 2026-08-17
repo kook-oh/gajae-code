@@ -4,8 +4,8 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { APP_NAME, setProjectDir } from "@gajae-code/utils";
-import { Args, Command } from "@gajae-code/utils/cli";
+import { APP_NAME, setProjectDir } from "@bworx-io/worx-utils";
+import { Args, Command } from "@bworx-io/worx-utils/cli";
 import { assertLocalLaunchArgs, parseArgs } from "../cli/args";
 import { ROOT_LAUNCH_FLAGS } from "../cli/root-flags";
 import { launchDefaultTmuxIfNeeded } from "../gjc-runtime/launch-tmux";

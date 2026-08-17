@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { getBundledModel } from "@gajae-code/ai";
-import { postmortem, TempDir } from "@gajae-code/utils";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { postmortem, TempDir } from "@bworx-io/worx-utils";
 import { type Args, parseArgs } from "../src/cli/args";
 import { resetSettingsForTest, Settings } from "../src/config/settings";
 import { SETTINGS_SCHEMA } from "../src/config/settings-schema";

@@ -4,9 +4,9 @@ import {
 	isAnthropicCacheBreakpointOverflowError,
 	normalizeCacheControlTtlOrdering,
 	streamAnthropic,
-} from "@gajae-code/ai/providers/anthropic";
-import { clearGitLabDuoDirectAccessCache, streamGitLabDuo } from "@gajae-code/ai/providers/gitlab-duo";
-import type { CacheRetention, Context, Model, TJsonSchema } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/providers/anthropic";
+import { clearGitLabDuoDirectAccessCache, streamGitLabDuo } from "@bworx-io/worx-ai/providers/gitlab-duo";
+import type { CacheRetention, Context, Model, TJsonSchema } from "@bworx-io/worx-ai/types";
 
 const canonicalModel: Model<"anthropic-messages"> = {
 	id: "claude-sonnet-4-5",

@@ -12,10 +12,10 @@ import {
 	setTerminalImageProtocol,
 	TERMINAL,
 	TUI,
-} from "@gajae-code/tui";
-import type { Terminal, TerminalAppearance } from "@gajae-code/tui/terminal";
-import { visibleWidth } from "@gajae-code/tui/utils";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import type { Terminal, TerminalAppearance } from "@bworx-io/worx-tui/terminal";
+import { visibleWidth } from "@bworx-io/worx-tui/utils";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { VirtualTerminal } from "./virtual-terminal";
 
 class MutableLinesComponent implements Component {

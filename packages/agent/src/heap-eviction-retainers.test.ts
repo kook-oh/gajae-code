@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import type { AssistantMessage, Message, ToolResultMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import type { AssistantMessage, Message, ToolResultMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { Agent } from "./agent";
 import { agentLoop } from "./agent-loop";
 import { AppendOnlyContextManager } from "./append-only-context";

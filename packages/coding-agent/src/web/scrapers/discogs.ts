@@ -5,7 +5,7 @@
  * API docs: https://www.discogs.com/developers
  */
 
-import { tryParseJson } from "@gajae-code/utils";
+import { tryParseJson } from "@bworx-io/worx-utils";
 import type { RenderResult, SpecialHandler } from "./types";
 import { buildResult, loadPage } from "./types";
 

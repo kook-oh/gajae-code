@@ -2,6 +2,9 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import type { AssistantMessage, Message, ProviderPayload, ProviderSessionState, Usage } from "@bworx-io/worx-ai/types";
+import { createOpenAIResponsesHistoryPayload } from "@bworx-io/worx-ai/utils";
 import * as asyncModule from "@bworx-io/worx-code/async";
 import * as settingsModule from "@bworx-io/worx-code/config/settings";
 import * as internalUrls from "@bworx-io/worx-code/internal-urls";
@@ -18,10 +21,7 @@ import * as taskModule from "@bworx-io/worx-code/task";
 import * as agentsModule from "@bworx-io/worx-code/task/agents";
 import * as discoveryModule from "@bworx-io/worx-code/task/discovery";
 import * as eventBusModule from "@bworx-io/worx-code/utils/event-bus";
-import { getBundledModel } from "@gajae-code/ai/models";
-import type { AssistantMessage, Message, ProviderPayload, ProviderSessionState, Usage } from "@gajae-code/ai/types";
-import { createOpenAIResponsesHistoryPayload } from "@gajae-code/ai/utils";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 function createUsage(): Usage {
 	return {

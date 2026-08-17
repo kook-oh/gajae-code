@@ -10,7 +10,7 @@ import { resetVimRendererStateForTest, VimTool, vimToolRenderer } from "@bworx-i
 import { VimBuffer } from "@bworx-io/worx-code/vim/buffer";
 import { VimEngine } from "@bworx-io/worx-code/vim/engine";
 import { parseKeySequences } from "@bworx-io/worx-code/vim/parser";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 
 function textResult(result: { content: Array<{ type: string; text?: string }> }): string {
 	return result.content

@@ -1,10 +1,10 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
+import type { ImageContent, TextContent } from "@bworx-io/worx-ai/core";
 import type { htmlToMarkdown as htmlToMarkdownFn } from "@bworx-io/worx-code-natives";
-import type { AgentToolResult } from "@gajae-code/agent-core";
-import type { ImageContent, TextContent } from "@gajae-code/ai/core";
-import { type Component, Text } from "@gajae-code/tui";
-import { ptree, truncate } from "@gajae-code/utils";
+import { type Component, Text } from "@bworx-io/worx-tui";
+import { ptree, truncate } from "@bworx-io/worx-utils";
 import type { Settings } from "../config/settings";
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
 import { type Theme, theme } from "../modes/theme/theme";

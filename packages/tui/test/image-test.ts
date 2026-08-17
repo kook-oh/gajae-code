@@ -1,9 +1,9 @@
-import { getImageDimensions, TERMINAL } from "@gajae-code/tui";
-import { Image } from "@gajae-code/tui/components/image";
-import { Spacer } from "@gajae-code/tui/components/spacer";
-import { Text } from "@gajae-code/tui/components/text";
-import { ProcessTerminal } from "@gajae-code/tui/terminal";
-import { TUI } from "@gajae-code/tui/tui";
+import { getImageDimensions, TERMINAL } from "@bworx-io/worx-tui";
+import { Image } from "@bworx-io/worx-tui/components/image";
+import { Spacer } from "@bworx-io/worx-tui/components/spacer";
+import { Text } from "@bworx-io/worx-tui/components/text";
+import { ProcessTerminal } from "@bworx-io/worx-tui/terminal";
+import { TUI } from "@bworx-io/worx-tui/tui";
 
 const testImagePath = Bun.argv[2] || "/tmp/test-image.png";
 

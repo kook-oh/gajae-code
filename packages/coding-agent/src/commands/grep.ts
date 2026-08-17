@@ -2,7 +2,7 @@
  * Test grep tool.
  */
 import { GrepOutputMode } from "@bworx-io/worx-code-natives";
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { type GrepCommandArgs, runGrepCommand } from "../cli/grep-cli";
 import { initTheme } from "../modes/theme/theme";
 

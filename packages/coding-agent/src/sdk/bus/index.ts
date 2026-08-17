@@ -28,9 +28,9 @@ import * as fsPromises from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
+import { type RunSettlementProof, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { ImageContent, TextContent, Tool } from "@bworx-io/worx-ai/core";
 import type { NotificationServer as NativeNotificationServer } from "@bworx-io/worx-code-natives";
-import { type RunSettlementProof, ThinkingLevel } from "@gajae-code/agent-core";
-import type { ImageContent, TextContent, Tool } from "@gajae-code/ai/core";
 
 type NativeSdkBusBindings = Pick<
 	typeof import("@bworx-io/worx-code-natives"),
@@ -51,7 +51,7 @@ function sdkBusNatives(): NativeSdkBusBindings {
 
 type NotificationServer = NativeNotificationServer;
 
-import { $credentialEnv, logger, postmortem, VERSION } from "@gajae-code/utils";
+import { $credentialEnv, logger, postmortem, VERSION } from "@bworx-io/worx-utils";
 import { Settings, validateSettingPatch } from "../../config/settings";
 import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext } from "../../extensibility/extensions";
 import { INTERACTIVE_SELECTOR_RESUME_ORIGIN } from "../../extensibility/shared-events";
@@ -5140,12 +5140,12 @@ export function createNotificationsExtension(
 			});
 			// Required: the negotiated-capability callback is how the TS host learns
 			// each connection's caps for replay-frame gating. If the linked
-			// @gajae-code/natives binary predates it (linked/deduped installs where the
+			// @bworx-io/worx-code-natives binary predates it (linked/deduped installs where the
 			// version did not change), fail loudly with an actionable message instead of
 			// silently shipping a half-wired capability bridge.
 			if (typeof server.onNegotiatedCapabilities !== "function") {
 				throw new Error(
-					"@gajae-code/natives is out of date: missing onNegotiatedCapabilities. Rebuild the native addon (bun --cwd=packages/natives run build).",
+					"@bworx-io/worx-code-natives is out of date: missing onNegotiatedCapabilities. Rebuild the native addon (bun --cwd=packages/natives run build).",
 				);
 			}
 			server.onNegotiatedCapabilities((_err, connectionId, capabilities) => {

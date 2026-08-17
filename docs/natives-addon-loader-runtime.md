@@ -1,6 +1,6 @@
 # Natives Addon Loader Runtime
 
-This document covers the runtime loader shipped by `@gajae-code/natives`: how `native/index.js` decides which `.node` file to require, how compiled-binary embedded payloads are extracted, and what startup failures report.
+This document covers the runtime loader shipped by `@bworx-io/worx-code-natives`: how `native/index.js` decides which `.node` file to require, how compiled-binary embedded payloads are extracted, and what startup failures report.
 
 ## Implementation files
 
@@ -186,6 +186,6 @@ Compiled mode diagnostics include:
 
 Normal package/runtime diagnostics include:
 
-- reinstall hint (`bun install @gajae-code/natives`),
+- reinstall hint (`bun install @bworx-io/worx-code-natives`),
 - local rebuild command (`bun --cwd=packages/natives run build`),
 - optional x64 variant build hint (`TARGET_VARIANT=baseline|modern bun --cwd=packages/natives run build`).

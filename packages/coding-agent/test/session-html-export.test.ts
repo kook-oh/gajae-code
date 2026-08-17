@@ -8,7 +8,7 @@ import {
 	SessionManager,
 	type SessionMessageEntry,
 } from "@bworx-io/worx-code/session/session-manager";
-import { getBlobsDir, Snowflake } from "@gajae-code/utils";
+import { getBlobsDir, Snowflake } from "@bworx-io/worx-utils";
 
 function largeMarker(label: string): string {
 	return `${label}-${"x".repeat(520_000)}-end`;

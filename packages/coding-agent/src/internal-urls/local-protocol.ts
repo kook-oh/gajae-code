@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 import type { NativeDirectoryTreeSnapshot } from "@bworx-io/worx-code-natives";
-import { isEnoent } from "@gajae-code/utils";
+import { isEnoent } from "@bworx-io/worx-utils";
 import { AgentRegistry } from "../registry/agent-registry";
 import { parseInternalUrl } from "./parse";
 import { validateRelativePath } from "./skill-protocol";

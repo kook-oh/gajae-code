@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { isEnoent, logger, pathIsWithin } from "@gajae-code/utils";
+import { isEnoent, logger, pathIsWithin } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { type SecretEntry, SecretObfuscator } from "./obfuscator";
 import { compileSecretRegex } from "./regex";

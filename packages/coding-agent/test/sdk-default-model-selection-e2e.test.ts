@@ -2,7 +2,7 @@ import { afterEach, expect, setDefaultTimeout, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { closeModelCache, Effort } from "@gajae-code/ai";
+import { closeModelCache, Effort } from "@bworx-io/worx-ai";
 import { YAML } from "bun";
 import { ModelRegistry } from "../src/config/model-registry";
 import { resetSettingsForTest, Settings } from "../src/config/settings";

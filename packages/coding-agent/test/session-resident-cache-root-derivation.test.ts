@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 
 const originalAgentDir = getAgentDir();

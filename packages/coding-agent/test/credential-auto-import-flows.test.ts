@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AuthCredentialIfAbsentSnapshotResult } from "@gajae-code/ai";
-import { Container } from "@gajae-code/tui";
-import { logger, VERSION } from "@gajae-code/utils";
+import type { AuthCredentialIfAbsentSnapshotResult } from "@bworx-io/worx-ai";
+import { Container } from "@bworx-io/worx-tui";
+import { logger, VERSION } from "@bworx-io/worx-utils";
 
 import { handleCredentialsSetup } from "../src/cli/setup-cli";
 import { ProviderOnboardingSelectorComponent } from "../src/modes/components/provider-onboarding-selector";

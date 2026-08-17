@@ -1,5 +1,5 @@
 import { dlopen, ptr } from "bun:ffi";
-import { nativeProcessBindings } from "@gajae-code/utils/native-process";
+import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
 import { readLinuxProcStartTimeSync } from "../../gjc-runtime/linux-proc";
 
 const DARWIN_PROC_PIDTBSDINFO = 3;

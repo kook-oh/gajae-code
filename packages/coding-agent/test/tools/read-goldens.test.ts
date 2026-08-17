@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { AgentToolContext } from "@bworx-io/worx-agent-core";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { EditTool, getFileReadCache } from "@bworx-io/worx-code/edit";
 import { computeLineHash } from "@bworx-io/worx-code/hashline/hash";
@@ -12,7 +13,6 @@ import { wrapToolWithMetaNotice } from "@bworx-io/worx-code/tools/output-meta";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
 import * as markit from "@bworx-io/worx-code/utils/markit";
 import * as scrapers from "@bworx-io/worx-code/web/scrapers/types";
-import type { AgentToolContext } from "@gajae-code/agent-core";
 
 const markitContents = new Map<string, string>();
 const convertFileWithMarkit = markit.convertFileWithMarkit;

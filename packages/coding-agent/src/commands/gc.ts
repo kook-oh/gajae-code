@@ -1,4 +1,4 @@
-import { Command, Flags } from "@gajae-code/utils/cli";
+import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { isSettingsInitialized, settings } from "../config/settings";
 import { type GcDiskPolicy, runGjcGcCommand } from "../gjc-runtime/gc-runtime";
 

@@ -1,4 +1,4 @@
-import { Command } from "@gajae-code/utils/cli";
+import { Command } from "@bworx-io/worx-utils/cli";
 import { runGjcNativeSkillHookCli } from "../hooks/native-skill-hook";
 
 export default class CodexNativeHook extends Command {

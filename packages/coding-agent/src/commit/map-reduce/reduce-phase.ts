@@ -1,7 +1,7 @@
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Api, Model } from "@gajae-code/ai/core";
-import { completeSimple } from "@gajae-code/ai/core";
-import { prompt } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Api, Model } from "@bworx-io/worx-ai/core";
+import { completeSimple } from "@bworx-io/worx-ai/core";
+import { prompt } from "@bworx-io/worx-utils";
 import reduceSystemPrompt from "../../commit/prompts/reduce-system.md" with { type: "text" };
 import reduceUserPrompt from "../../commit/prompts/reduce-user.md" with { type: "text" };
 import type { ConventionalAnalysis, FileObservation } from "../../commit/types";

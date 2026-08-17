@@ -2,6 +2,9 @@ import { describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, TextContent, ToolCall, UserMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai";
 import { createAppendOnlyContextManager } from "@bworx-io/worx-code/append-only-mode";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
@@ -14,10 +17,7 @@ import {
 	type SessionMessageEntry,
 } from "@bworx-io/worx-code/session/session-manager";
 import { MemorySessionStorage } from "@bworx-io/worx-code/session/session-storage";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage, TextContent, ToolCall, UserMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai";
-import { getBlobsDir } from "@gajae-code/utils";
+import { getBlobsDir } from "@bworx-io/worx-utils";
 
 const TURN_PAYLOAD_CHARS = 200_000;
 const ONE_MIB_CHARS = 1_048_576;

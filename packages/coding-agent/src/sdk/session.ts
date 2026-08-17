@@ -8,7 +8,7 @@ import {
 	type AppendOnlyContextManager,
 	INTENT_FIELD,
 	ThinkingLevel,
-} from "@gajae-code/agent-core";
+} from "@bworx-io/worx-agent-core";
 import {
 	type AssistantMessage,
 	type AttemptScopeRef,
@@ -21,8 +21,8 @@ import {
 	type SimpleStreamOptions,
 	streamSimple,
 	type ToolResultMessage,
-} from "@gajae-code/ai/core";
-import type { Component } from "@gajae-code/tui";
+} from "@bworx-io/worx-ai/core";
+import type { Component } from "@bworx-io/worx-tui";
 import {
 	$flag,
 	getAgentDbPath,
@@ -32,7 +32,7 @@ import {
 	postmortem,
 	prompt,
 	Snowflake,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import {
 	createAppendOnlyContextManager,
 	providerSupportsAppendOnlyAuto,
@@ -924,7 +924,7 @@ function buildMCPPromptCommands(manager: MCPManager): LoadedCustomCommand[] {
  * const { session } = await createAgentSession();
  *
  * // With explicit model
- * import { getModel } from '@gajae-code/ai/core';
+ * import { getModel } from '@bworx-io/worx-ai/core';
  * const { session } = await createAgentSession({
  *   model: getModel('anthropic', 'Anthropic model-opus-4-5'),
  *   thinkingLevel: 'high',
@@ -3110,7 +3110,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			// branch. Statically-traceable require keeps it lazy AND bundled in
 			// compiled binaries (#1939 pattern).
 			const { getOpenAICodexTransportDetails, prewarmOpenAICodexResponses } =
-				require("@gajae-code/ai/providers/openai-codex-responses") as typeof import("@gajae-code/ai/providers/openai-codex-responses");
+				require("@bworx-io/worx-ai/providers/openai-codex-responses") as typeof import("@bworx-io/worx-ai/providers/openai-codex-responses");
 			const codexTransport = getOpenAICodexTransportDetails(codexModel, {
 				sessionId: providerSessionId,
 				baseUrl: codexModel.baseUrl,

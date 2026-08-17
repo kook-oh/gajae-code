@@ -19,7 +19,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { $credentialEnv, getAgentDir } from "@gajae-code/utils";
+import { $credentialEnv, getAgentDir } from "@bworx-io/worx-utils";
 import { tokenFingerprint } from "./config";
 import { isFreshLiveOwner, readOwnerFreshnessSnapshot } from "./telegram-daemon";
 import { runTelegramReferenceClient, type TelegramNotificationSound } from "./telegram-reference";

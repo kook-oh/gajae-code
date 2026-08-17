@@ -1,6 +1,6 @@
 import * as net from "node:net";
 import * as path from "node:path";
-import { nativeProcessBindings } from "@gajae-code/utils/native-process";
+import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
 import type { Browser, Page } from "puppeteer-core";
 import { ToolError, throwIfAborted } from "../tool-errors";
 

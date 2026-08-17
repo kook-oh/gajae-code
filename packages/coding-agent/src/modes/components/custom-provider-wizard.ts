@@ -1,4 +1,4 @@
-import { Container, Input, matchesKey, SecretInput, Spacer, Text, TruncatedText } from "@gajae-code/tui";
+import { Container, Input, matchesKey, SecretInput, Spacer, Text, TruncatedText } from "@bworx-io/worx-tui";
 import type { ProviderCompatibility, ProviderSetupInput } from "../../setup/provider-onboarding";
 import { theme } from "../theme/theme";
 import { matchesAppInterrupt } from "../utils/keybinding-matchers";

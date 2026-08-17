@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { hookFetch } from "@gajae-code/utils";
+import { hookFetch } from "@bworx-io/worx-utils";
 import * as geminiCliProvider from "../src/providers/google-gemini-cli";
 import {
 	ANTIGRAVITY_SYSTEM_INSTRUCTION,

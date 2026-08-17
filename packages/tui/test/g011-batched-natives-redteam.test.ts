@@ -9,9 +9,9 @@ import {
 	truncateToWidth,
 	visibleWidth,
 	visibleWidths,
-} from "@gajae-code/tui";
-import { ImageProtocol, TERMINAL } from "@gajae-code/tui/terminal-capabilities";
-import { getDefaultTabWidth, setDefaultTabWidth } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { ImageProtocol, TERMINAL } from "@bworx-io/worx-tui/terminal-capabilities";
+import { getDefaultTabWidth, setDefaultTabWidth } from "@bworx-io/worx-utils";
 import { VirtualTerminal } from "./virtual-terminal";
 
 const REPORT_PATH = "artifacts/g011-qa-report.json";

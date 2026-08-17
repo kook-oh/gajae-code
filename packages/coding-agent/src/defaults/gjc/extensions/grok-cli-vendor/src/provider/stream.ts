@@ -4,8 +4,8 @@ import type {
   Context,
   Model,
   SimpleStreamOptions,
-} from '@gajae-code/ai/core';
-import { streamOpenAIResponses } from '@gajae-code/ai/providers/openai-responses';
+} from '@bworx-io/worx-ai/core';
+import { streamOpenAIResponses } from '@bworx-io/worx-ai/providers/openai-responses';
 
 const GROK_CLI_VERSION = '0.2.33';
 

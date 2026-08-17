@@ -1,11 +1,11 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { CompactionCancelledError, type CompactionOutcome } from "@gajae-code/agent-core/compaction";
-import { getEnvApiKey, type ToolCall, type UsageLimit, type UsageReport } from "@gajae-code/ai/core";
-import type { ProviderDetails } from "@gajae-code/ai/provider-details";
-import { type Keybinding, Loader, Markdown, padding, Spacer, Text, visibleWidth } from "@gajae-code/tui";
-import { formatBytes, formatDuration, Snowflake, setProjectDir } from "@gajae-code/utils";
+import { CompactionCancelledError, type CompactionOutcome } from "@bworx-io/worx-agent-core/compaction";
+import { getEnvApiKey, type ToolCall, type UsageLimit, type UsageReport } from "@bworx-io/worx-ai/core";
+import type { ProviderDetails } from "@bworx-io/worx-ai/provider-details";
+import { type Keybinding, Loader, Markdown, padding, Spacer, Text, visibleWidth } from "@bworx-io/worx-tui";
+import { formatBytes, formatDuration, Snowflake, setProjectDir } from "@bworx-io/worx-utils";
 import { resolveAppendOnlyMode } from "../../append-only-mode";
 import { jobElapsedMs } from "../../async";
 import { reset as resetCapabilities } from "../../capability";
@@ -446,7 +446,7 @@ export class CommandController {
 				stats.sessionId,
 			);
 			const { getProviderDetails } =
-				require("@gajae-code/ai/provider-details") as typeof import("@gajae-code/ai/provider-details");
+				require("@bworx-io/worx-ai/provider-details") as typeof import("@bworx-io/worx-ai/provider-details");
 			const providerDetails = getProviderDetails({
 				model,
 				sessionId: stats.sessionId,

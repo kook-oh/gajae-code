@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { scheduler } from "node:timers/promises";
+import { Agent, type AgentTool } from "@bworx-io/worx-agent-core";
+import { type AssistantMessage, getBundledModel, type Model, type ToolCall } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { EditTool } from "@bworx-io/worx-code/edit";
@@ -16,11 +20,7 @@ import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { ReadTool } from "@bworx-io/worx-code/tools/read";
 import { SearchTool } from "@bworx-io/worx-code/tools/search";
-import { Agent, type AgentTool } from "@gajae-code/agent-core";
-import { type AssistantMessage, getBundledModel, type Model, type ToolCall } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import { z } from "zod";
 
 type AutoRetryStartEvent = Extract<AgentSessionEvent, { type: "auto_retry_start" }>;

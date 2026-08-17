@@ -500,7 +500,7 @@ Must define at least one of:
 
 ModelRegistry pipeline (on refresh):
 
-1. Load built-in providers/models from `@gajae-code/ai`.
+1. Load built-in providers/models from `@bworx-io/worx-ai`.
 2. Load `models.yml` custom config.
 3. Apply provider overrides (`baseUrl`, `headers`, `requestTransform`, `disableStrictTools`, `cacheRetention`) to built-in models.
 4. Apply `modelOverrides` (per provider + model id).

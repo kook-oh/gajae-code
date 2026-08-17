@@ -1,6 +1,6 @@
 import { lookup } from "node:dns/promises";
 import * as path from "node:path";
-import { pathIsWithin } from "@gajae-code/utils";
+import { pathIsWithin } from "@bworx-io/worx-utils";
 import { GjcPluginLoadError, type GjcPluginMcpManifestEntry } from "./types";
 
 /**

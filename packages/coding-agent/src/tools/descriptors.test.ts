@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import type { AgentTool } from "@gajae-code/agent-core";
-import { normalizeTools } from "@gajae-code/agent-core";
-import { validateToolArguments } from "@gajae-code/ai/core";
-import { toolWireSchema } from "@gajae-code/ai/utils/schema";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import { normalizeTools } from "@bworx-io/worx-agent-core";
+import { validateToolArguments } from "@bworx-io/worx-ai/core";
+import { toolWireSchema } from "@bworx-io/worx-ai/utils/schema";
 import { isComputerLoadablePlatform, isComputerSupportedPlatform } from "./computer";
 import {
 	BUILTIN_TOOL_DESCRIPTORS,

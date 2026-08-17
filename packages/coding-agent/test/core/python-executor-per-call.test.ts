@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { executePython } from "@bworx-io/worx-code/eval/py/executor";
 import type { KernelExecuteOptions, KernelExecuteResult } from "@bworx-io/worx-code/eval/py/kernel";
 import { PythonKernel } from "@bworx-io/worx-code/eval/py/kernel";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 interface KernelStub {
 	execute: (code: string, options?: KernelExecuteOptions) => Promise<KernelExecuteResult>;

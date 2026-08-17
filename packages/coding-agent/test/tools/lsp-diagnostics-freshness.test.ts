@@ -5,7 +5,7 @@ import * as lspClient from "@bworx-io/worx-code/lsp/client";
 import * as lspConfig from "@bworx-io/worx-code/lsp/config";
 import type { Diagnostic, LspClient, ServerConfig } from "@bworx-io/worx-code/lsp/types";
 import { fileToUri } from "@bworx-io/worx-code/lsp/utils";
-import { type ptree, TempDir } from "@gajae-code/utils";
+import { type ptree, TempDir } from "@bworx-io/worx-utils";
 
 const TEST_SERVER: ServerConfig = {
 	command: "test-lsp",

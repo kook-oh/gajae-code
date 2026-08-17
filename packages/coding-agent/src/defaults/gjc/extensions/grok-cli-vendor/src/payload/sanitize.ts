@@ -22,7 +22,7 @@
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { extname, isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Effort, THINKING_EFFORTS } from '@gajae-code/ai/model-thinking';
+import { Effort, THINKING_EFFORTS } from '@bworx-io/worx-ai/model-thinking';
 import { getMaxReasoningEffort, supportsReasoningEffort } from '../models/catalog.js';
 
 // ─── Content text extraction ─────────────────────────────────────────────────

@@ -1,5 +1,5 @@
-import type { ResolvedThinkingLevel } from "@gajae-code/agent-core";
-import { isRecord } from "@gajae-code/utils";
+import type { ResolvedThinkingLevel } from "@bworx-io/worx-agent-core";
+import { isRecord } from "@bworx-io/worx-utils";
 
 export type DefaultModelSelectionRollbackStage = "durable" | "session" | "live";
 

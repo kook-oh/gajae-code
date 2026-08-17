@@ -1,4 +1,4 @@
-import { once } from "@gajae-code/utils";
+import { once } from "@bworx-io/worx-utils";
 import type { ModelManagerOptions } from "../model-manager";
 import { fetchOpenCodexModels, OPENCODEX_MODEL_CACHE_TTL_MS } from "../providers/openai-opencodex-responses";
 import { fetchCodexModels } from "../utils/discovery/codex";

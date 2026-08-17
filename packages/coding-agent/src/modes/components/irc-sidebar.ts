@@ -10,7 +10,7 @@ import {
 	visibleWidth,
 	withTerminalGraphicsFallback,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import type { IrcObservationLedger, IrcObservationRecord } from "../irc-observation-ledger";
 import { formatIrcMessageBlock, projectIrcText } from "../utils/irc-message";
 

@@ -1,4 +1,4 @@
-import { Command } from "@gajae-code/utils/cli";
+import { Command } from "@bworx-io/worx-utils/cli";
 import {
 	isUltragoalCreateGoalsInvocation,
 	readUltragoalGjcObjective,

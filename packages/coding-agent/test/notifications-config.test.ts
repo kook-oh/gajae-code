@@ -2,8 +2,8 @@ import { afterEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getBundledModel } from "@gajae-code/ai";
-import { logger } from "@gajae-code/utils";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { logger } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { withFileLock } from "../src/config/file-lock";
 import {

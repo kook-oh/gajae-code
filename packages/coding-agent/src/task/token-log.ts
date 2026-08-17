@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { ChatUsageSnapshot, CostEstimate } from "@gajae-code/agent-core";
+import type { ChatUsageSnapshot, CostEstimate } from "@bworx-io/worx-agent-core";
 import { sessionRoot } from "../gjc-runtime/session-layout";
 import { resolveGjcSessionForRead, SessionResolutionError } from "../gjc-runtime/session-resolution";
 import type { TaskTokenLog, TaskTokenMetrics } from "./types";

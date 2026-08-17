@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
-import { detectOpenAICompat, resolveOpenAICompat } from "@gajae-code/ai/providers/openai-completions-compat";
-import type { Context, Model, Tool } from "@gajae-code/ai/types";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { streamOpenAICompletions } from "@bworx-io/worx-ai/providers/openai-completions";
+import { detectOpenAICompat, resolveOpenAICompat } from "@bworx-io/worx-ai/providers/openai-completions-compat";
+import type { Context, Model, Tool } from "@bworx-io/worx-ai/types";
 import * as z from "zod/v4";
 
 const echoTool: Tool = {

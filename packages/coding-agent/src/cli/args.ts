@@ -2,9 +2,9 @@
  * CLI argument parsing
  */
 import * as path from "node:path";
-import { type Effort, THINKING_EFFORTS } from "@gajae-code/ai/core";
-import { logger } from "@gajae-code/utils";
-import { CliParseError } from "@gajae-code/utils/cli";
+import { type Effort, THINKING_EFFORTS } from "@bworx-io/worx-ai/core";
+import { logger } from "@bworx-io/worx-utils";
+import { CliParseError } from "@bworx-io/worx-utils/cli";
 import { parseEffort } from "../thinking";
 import { BUILTIN_TOOLS } from "../tools";
 import { type ConsumerLaunchFlagName, LAUNCH_PARSE_FLAGS, launchFlagIsOwnedBy } from "./root-flags";

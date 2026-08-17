@@ -29,7 +29,7 @@ Main `gjc` CLI and product runtime.
 - `packages/coding-agent/package.json` exposes the `gjc` binary at `src/cli.ts` and the SDK/barrel entrypoint at `src/index.ts`.
 - `packages/coding-agent/src/cli.ts` is the executable bootstrap. It registers CLI commands such as `setup`, `deep-interview`, `ralplan`, `ultragoal`, `team`, and the default launch path.
 - `packages/coding-agent/src/main.ts` adapts CLI options into session creation and dispatches interactive, print, and ACP modes; external machine clients use the SDK WebSocket interface.
-- `packages/coding-agent/src/sdk/session.ts` assembles settings, model registry, auth, workspace/context discovery, skills, rules, tools, system prompt, and the underlying `@gajae-code/agent-core` agent.
+- `packages/coding-agent/src/sdk/session.ts` assembles settings, model registry, auth, workspace/context discovery, skills, rules, tools, system prompt, and the underlying `@bworx-io/worx-agent-core` agent.
 - `packages/coding-agent/src/tools/index.ts` is the built-in tool registry for file/code/runtime tools such as read, bash, edit, AST tools, eval, find/search, LSP, browser, task/subagent, recipe, IRC, todo, web search, and write. Memory backends are private integrations, not public coding-harness tools.
 - `packages/coding-agent/src/defaults/gjc-defaults.ts` embeds and installs the default workflow skills.
 - `packages/coding-agent/src/task/agents.ts` embeds bundled task-agent prompts. The public contract is `executor`, `architect`, `planner`, and `critic`; other bundled prompts are internal/runtime utilities.
@@ -49,7 +49,7 @@ Provider/model boundary for LLM access.
 
 ### `packages/agent/`
 
-Stateful agent runtime built on `@gajae-code/ai`.
+Stateful agent runtime built on `@bworx-io/worx-ai`.
 
 - `packages/agent/src/index.ts` exports the `Agent`, loop APIs, append-only context, compaction, telemetry, proxy utilities, thinking helpers, and shared types.
 - `packages/agent/src/agent-loop.ts` owns the turn loop: transform context, call the model stream, execute tool calls, append tool results, and emit lifecycle events.
@@ -88,7 +88,7 @@ Shared TypeScript utilities.
 
 Local observability dashboard for session and model usage.
 
-- `packages/stats/src/index.ts` exposes the `gjc-stats` CLI entrypoint and exports aggregation/server APIs.
+- `packages/stats/src/index.ts` exposes the `worx-stats` CLI entrypoint and exports aggregation/server APIs.
 - `packages/stats/src/aggregator.ts` parses session-derived request metrics and writes aggregated data through SQLite.
 - `packages/stats/src/server.ts` serves local dashboard API routes and static SPA assets.
 - `packages/stats/src/types.ts` and `packages/stats/src/shared-types.ts` define dashboard and aggregate metric shapes.
@@ -110,7 +110,7 @@ External machine clients use the SDK WebSocket interface documented in `docs/sdk
 
 A normal CLI session starts in `packages/coding-agent/src/cli.ts`, routes through command handling, then reaches `packages/coding-agent/src/main.ts`. `main.ts` converts CLI/runtime settings into `CreateAgentSessionOptions` and calls `createAgentSession()` in `packages/coding-agent/src/sdk/session.ts`.
 
-The SDK builds the session context, loads the default skills, creates built-in tools, resolves model/auth state through `@gajae-code/ai`, constructs the system prompt, and instantiates `@gajae-code/agent-core`. The agent loop streams model events, executes tools, records tool results, and hands state back to the selected interactive TUI, print, or ACP mode while exposing external control through the SDK WebSocket interface.
+The SDK builds the session context, loads the default skills, creates built-in tools, resolves model/auth state through `@bworx-io/worx-ai`, constructs the system prompt, and instantiates `@bworx-io/worx-agent-core`. The agent loop streams model events, executes tools, records tool results, and hands state back to the selected interactive TUI, print, or ACP mode while exposing external control through the SDK WebSocket interface.
 
 ## Verification and gates
 

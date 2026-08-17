@@ -15,7 +15,7 @@ function nativeSessionStorage(): typeof import("@bworx-io/worx-code-natives") {
 	return nativeSessionStorageBindings;
 }
 
-import { isEnoent, pathIsWithin, peekFile, toError } from "@gajae-code/utils";
+import { isEnoent, pathIsWithin, peekFile, toError } from "@bworx-io/worx-utils";
 import {
 	assertManagedDirectoryRoot,
 	type ManagedDirectoryRoot,

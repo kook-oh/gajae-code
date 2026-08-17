@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { Api, Model } from "@bworx-io/worx-ai";
 import { kNoAuth, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import {
 	type ModelLookupRegistry,
@@ -12,7 +13,6 @@ import {
 	type ConfiguredFallbackChain,
 	FallbackChainController,
 } from "@bworx-io/worx-code/session/fallback-chain-controller";
-import type { Api, Model } from "@gajae-code/ai";
 
 /**
  * Regression test for #985.

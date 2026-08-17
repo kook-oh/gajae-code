@@ -3,13 +3,13 @@ import * as fs from "node:fs/promises";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { Model } from "@bworx-io/worx-ai";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import type { Skill } from "@bworx-io/worx-code/extensibility/skills";
 import { SKILL_PROMPT_MESSAGE_TYPE } from "@bworx-io/worx-code/session/messages";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { SkillTool } from "@bworx-io/worx-code/tools/skill";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
-import type { Model } from "@gajae-code/ai";
 
 async function makeSkill(name: string, content: string): Promise<Skill> {
 	const dir = await mkdtemp(path.join(os.tmpdir(), `skill-tool-${name}-`));

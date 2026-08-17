@@ -1,4 +1,4 @@
-import { getMCPConfigPath } from "@gajae-code/utils";
+import { getMCPConfigPath } from "@bworx-io/worx-utils";
 import { listPrompts, listResources, listTools } from "../../runtime-mcp/client";
 import {
 	addMCPServer,

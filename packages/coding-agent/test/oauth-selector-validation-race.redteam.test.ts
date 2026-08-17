@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "bun:test";
+import { getOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
 import { clearProviderAuthHealth, getProviderAuthHealth } from "@bworx-io/worx-code/config/provider-auth-health";
 import { OAuthSelectorComponent } from "@bworx-io/worx-code/modes/components/oauth-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
 
 let testTheme = await getThemeByName("red-claw");
 

@@ -20,18 +20,18 @@ import {
 	type UserMessage,
 	validateToolArguments,
 	zodToWireSchema,
-} from "@gajae-code/ai";
+} from "@bworx-io/worx-ai";
 import {
 	COMPOSER_BASH_POLICY_RECOVERY_PROMPT,
 	isCurrentComposerBashPolicyBlockedError,
-} from "@gajae-code/ai/providers/composer-discipline";
+} from "@bworx-io/worx-ai/providers/composer-discipline";
 import {
 	isInvalidPromptError,
 	isReasoningContentReplayError,
 	neutralizeReservedControlTokens,
 	stripUnusableReasoningItems,
-} from "@gajae-code/ai/utils";
-import { sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/utils";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import type { AttemptScope } from "./attempt-scope";
 import {
 	createHarmonyAuditEvent,

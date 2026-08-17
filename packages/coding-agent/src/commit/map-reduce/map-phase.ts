@@ -1,7 +1,7 @@
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Api, AssistantMessage, Message, Model } from "@gajae-code/ai/core";
-import { completeSimple } from "@gajae-code/ai/core";
-import { prompt } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Api, AssistantMessage, Message, Model } from "@bworx-io/worx-ai/core";
+import { completeSimple } from "@bworx-io/worx-ai/core";
+import { prompt } from "@bworx-io/worx-utils";
 import fileObserverSystemPrompt from "../../commit/prompts/file-observer-system.md" with { type: "text" };
 import fileObserverUserPrompt from "../../commit/prompts/file-observer-user.md" with { type: "text" };
 import type { FileDiff, FileObservation } from "../../commit/types";

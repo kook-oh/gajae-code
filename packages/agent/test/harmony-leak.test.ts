@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import type { AssistantMessage, Model, ToolCall } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai";
+import type { AssistantMessage, Model, ToolCall } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai";
 import {
 	createHarmonyAuditEvent,
 	detectHarmonyLeak,

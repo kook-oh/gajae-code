@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { $credentialEnv } from "@gajae-code/utils";
+import { $credentialEnv } from "@bworx-io/worx-utils";
 import type { AwsCredentials } from "./aws-sigv4";
 
 export type AwsIniFile = Record<string, Record<string, string>>;

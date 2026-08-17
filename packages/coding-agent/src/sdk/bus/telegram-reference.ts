@@ -16,7 +16,7 @@
 
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import {
 	bold,
 	buildCompactChoiceGrid,

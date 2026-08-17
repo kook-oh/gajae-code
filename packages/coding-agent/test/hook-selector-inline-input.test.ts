@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it } from "bun:test";
 import { HookSelectorComponent } from "@bworx-io/worx-code/modes/components/hook-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
-import { CURSOR_MARKER, type TUI } from "@gajae-code/tui";
-import type { AutocompleteItem, AutocompleteProvider } from "@gajae-code/tui/autocomplete";
+import { CURSOR_MARKER, type TUI } from "@bworx-io/worx-tui";
+import type { AutocompleteItem, AutocompleteProvider } from "@bworx-io/worx-tui/autocomplete";
 
 beforeAll(async () => {
 	const themeInstance = await getThemeByName("red-claw");

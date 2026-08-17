@@ -1,7 +1,7 @@
 /**
  * Generate shell completion specs for external completion engines.
  */
-import { Args, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { commands, RootHelpCommand } from "../cli";
 import {
 	buildGjcFigSpec,

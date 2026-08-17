@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { Effort } from "@bworx-io/worx-ai";
 import { onAppendOnlyModeChanged, resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
-import { Effort } from "@gajae-code/ai";
 import {
 	getCustomThemesDir,
 	getDefaultTabWidth,
@@ -11,7 +11,7 @@ import {
 	logger,
 	Snowflake,
 	setDefaultTabWidth,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { withFileLock } from "../src/config/file-lock";
 import { createLightweightDaemonSettings } from "../src/sdk/bus/telegram-daemon-cli";

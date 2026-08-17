@@ -1,12 +1,12 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "bun:test";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { Container, Spacer, Text } from "@gajae-code/tui";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
+import { Container, Spacer, Text } from "@bworx-io/worx-tui";
 import {
 	__markdownPerfCounters,
 	__setMarkdownNowForTest,
 	clearRenderCache,
 	Markdown,
-} from "@gajae-code/tui/components/markdown";
+} from "@bworx-io/worx-tui/components/markdown";
 import { resetSettingsForTest, Settings, settings } from "../../../src/config/settings.js";
 import { AssistantMessageComponent } from "../../../src/modes/components/assistant-message.js";
 import { initTheme } from "../../../src/modes/theme/theme.js";

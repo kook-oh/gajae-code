@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getConfigRootDir, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, setAgentDir } from "@bworx-io/worx-utils";
 import { parseSearchArgs, runSearchCommand } from "../../../src/cli/web-search-cli";
 import Search from "../../../src/commands/web-search";
 import { resetSettingsForTest, Settings } from "../../../src/config/settings";

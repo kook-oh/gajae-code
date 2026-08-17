@@ -2,8 +2,8 @@
  * RLM `python` tool: the model-facing research execution tool. Wraps the shared
  * persistent Python kernel executor and records every call as a notebook cell.
  */
-import type { AgentToolResult } from "@gajae-code/agent-core";
-import { type Static, z } from "@gajae-code/ai/core";
+import type { AgentToolResult } from "@bworx-io/worx-agent-core";
+import { type Static, z } from "@bworx-io/worx-ai/core";
 import { executePython } from "../eval/py/executor";
 import { RLM_MANAGED_PYTHON_PACKAGES } from "../eval/py/runtime";
 import type { CustomTool } from "../extensibility/custom-tools/types";

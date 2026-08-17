@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { SqliteAuthCredentialStore } from "@gajae-code/ai";
-import { getAgentDbPath, setAgentDir } from "@gajae-code/utils";
+import { SqliteAuthCredentialStore } from "@bworx-io/worx-ai";
+import { getAgentDbPath, setAgentDir } from "@bworx-io/worx-utils";
 import {
 	buildCredentialAutoImportNotice,
 	CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING,

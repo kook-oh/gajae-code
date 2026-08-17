@@ -1,14 +1,14 @@
 /**
  * Simple chat interface demo using tui.ts
  */
-import { CombinedAutocompleteProvider } from "@gajae-code/tui/autocomplete";
-import { Editor } from "@gajae-code/tui/components/editor";
-import { Loader } from "@gajae-code/tui/components/loader";
-import { Markdown } from "@gajae-code/tui/components/markdown";
-import { Text } from "@gajae-code/tui/components/text";
-import { ProcessTerminal } from "@gajae-code/tui/terminal";
-import { TUI } from "@gajae-code/tui/tui";
-import { getProjectDir } from "@gajae-code/utils";
+import { CombinedAutocompleteProvider } from "@bworx-io/worx-tui/autocomplete";
+import { Editor } from "@bworx-io/worx-tui/components/editor";
+import { Loader } from "@bworx-io/worx-tui/components/loader";
+import { Markdown } from "@bworx-io/worx-tui/components/markdown";
+import { Text } from "@bworx-io/worx-tui/components/text";
+import { ProcessTerminal } from "@bworx-io/worx-tui/terminal";
+import { TUI } from "@bworx-io/worx-tui/tui";
+import { getProjectDir } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import { defaultEditorTheme, defaultMarkdownTheme } from "./test-themes";
 

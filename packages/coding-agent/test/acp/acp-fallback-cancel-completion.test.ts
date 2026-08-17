@@ -16,7 +16,7 @@ import {
 import { AcpAgent, acpRequestFailure } from "@bworx-io/worx-code/modes/acp/acp-agent";
 import { createAcpConnection } from "@bworx-io/worx-code/modes/acp/acp-mode";
 import { writeBrokerDiscovery } from "@bworx-io/worx-code/sdk/broker/discovery";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import { AcpSdkAdapterError } from "../../src/sdk/acp";
 
 type TestSocket = { send(message: string): void };

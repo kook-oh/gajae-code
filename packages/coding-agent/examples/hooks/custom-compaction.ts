@@ -12,9 +12,10 @@
  * Usage:
  *   gjc --hook examples/hooks/custom-compaction.ts
  */
+
+import { complete, getModel } from "@bworx-io/worx-ai";
 import type { HookAPI } from "@bworx-io/worx-code";
 import { convertToLlm, serializeConversation } from "@bworx-io/worx-code";
-import { complete, getModel } from "@gajae-code/ai";
 
 export default function (pi: HookAPI) {
 	pi.on("session_before_compact", async (event, ctx) => {

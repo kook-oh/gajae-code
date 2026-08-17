@@ -1,11 +1,11 @@
 import * as path from "node:path";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Api, Model } from "@gajae-code/ai/core";
-import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
-import type { OAuthProvider } from "@gajae-code/ai/utils/oauth/types";
-import type { Component, OverlayHandle, SlashCommand } from "@gajae-code/tui";
-import { Input, isPetMode, Loader, Spacer, Text } from "@gajae-code/tui";
-import { getAgentDbPath, getProjectDir, logger, VERSION } from "@gajae-code/utils";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Api, Model } from "@bworx-io/worx-ai/core";
+import { getOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
+import type { OAuthProvider } from "@bworx-io/worx-ai/utils/oauth/types";
+import type { Component, OverlayHandle, SlashCommand } from "@bworx-io/worx-tui";
+import { Input, isPetMode, Loader, Spacer, Text } from "@bworx-io/worx-tui";
+import { getAgentDbPath, getProjectDir, logger, VERSION } from "@bworx-io/worx-utils";
 import type { AppKeybinding } from "../../config/keybindings";
 import {
 	activateModelProfile,

@@ -2,8 +2,8 @@ import { describe, expect, it } from "bun:test";
 import {
 	emergencyCompactionReason,
 	DEFAULT_EMERGENCY_COMPACTION_LIMITS as LIM,
-} from "@gajae-code/agent-core/compaction";
-import type { Message } from "@gajae-code/ai";
+} from "@bworx-io/worx-agent-core/compaction";
+import type { Message } from "@bworx-io/worx-ai";
 import { AppendOnlyContextManager, type BuildOptions } from "../src/append-only-context";
 import type { AgentContext } from "../src/types";
 

@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { bundleIdentity } from "./lifecycle-reconciliation";
 import { verifyImplementationHash } from "./metadata";
 import { resolveWithinRoot } from "./paths";

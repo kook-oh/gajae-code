@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, ToolResultMessage } from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { loadExtensions } from "@bworx-io/worx-code/extensibility/extensions/loader";
@@ -9,11 +13,7 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent } from "@gajae-code/agent-core";
-import type { AssistantMessage, ToolResultMessage } from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { getProjectAgentDir, TempDir, withTimeout } from "@gajae-code/utils";
+import { getProjectAgentDir, TempDir, withTimeout } from "@bworx-io/worx-utils";
 
 const runtimeSignalStoreKey = "__gjcRuntimeSignals";
 

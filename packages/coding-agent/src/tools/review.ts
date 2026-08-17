@@ -8,10 +8,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import path from "node:path";
-import type { AgentTool } from "@gajae-code/agent-core";
-import type { Component } from "@gajae-code/tui";
-import { Container, Text } from "@gajae-code/tui";
-import { isRecord } from "@gajae-code/utils";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import type { Component } from "@bworx-io/worx-tui";
+import { Container, Text } from "@bworx-io/worx-tui";
+import { isRecord } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import type { Theme, ThemeColor } from "../modes/theme/theme";
 import { subprocessToolRegistry } from "../task/subprocess-tool-registry";

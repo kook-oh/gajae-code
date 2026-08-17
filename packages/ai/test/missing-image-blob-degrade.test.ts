@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { convertAnthropicMessages } from "@gajae-code/ai/providers/anthropic";
-import type { AssistantMessage, Model, ToolResultMessage } from "@gajae-code/ai/types";
+import { convertAnthropicMessages } from "@bworx-io/worx-ai/providers/anthropic";
+import type { AssistantMessage, Model, ToolResultMessage } from "@bworx-io/worx-ai/types";
 
 /**
  * A resident image externalized to a content-addressed blob is referenced by a

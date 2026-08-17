@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "bun:test";
 import { HookSelectorComponent } from "@bworx-io/worx-code/modes/components/hook-selector";
 import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
-import { type TUI, visibleWidth } from "@gajae-code/tui";
+import { type TUI, visibleWidth } from "@bworx-io/worx-tui";
 
 // =============================================================================
 // Helpers shared across required tests.

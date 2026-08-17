@@ -1,6 +1,6 @@
-import { Agent } from "@gajae-code/agent-core";
-import { Text } from "@gajae-code/tui";
-import { TempDir } from "@gajae-code/utils";
+import { Agent } from "@bworx-io/worx-agent-core";
+import { Text } from "@bworx-io/worx-tui";
+import { TempDir } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 import { ModelRegistry } from "../../../src/config/model-registry";

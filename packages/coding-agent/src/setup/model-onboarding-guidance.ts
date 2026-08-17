@@ -1,4 +1,4 @@
-import { formatProviderCredentialHint } from "@gajae-code/ai/stream";
+import { formatProviderCredentialHint } from "@bworx-io/worx-ai/stream";
 
 export const MODEL_ONBOARDING_API_PROVIDER_COMMAND =
 	"/provider add --compat <openai|anthropic> --provider <id> --base-url <url> --api-key-env <ENV> --model <model>";

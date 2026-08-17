@@ -15,8 +15,8 @@
  *   - Questions may time out and auto-select the recommended option (configurable, disabled in plan mode)
  */
 
-import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@gajae-code/agent-core";
-import type { RawArgumentValidationResult } from "@gajae-code/ai/types";
+import type { AgentTool, AgentToolContext, AgentToolResult, AgentToolUpdateCallback } from "@bworx-io/worx-agent-core";
+import type { RawArgumentValidationResult } from "@bworx-io/worx-ai/types";
 import {
 	type Component,
 	Container,
@@ -26,8 +26,8 @@ import {
 	Text,
 	visibleWidth,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
-import { logger, prompt, untilAborted } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { logger, prompt, untilAborted } from "@bworx-io/worx-utils";
 import {
 	formatDeepInterviewSelectorPrompt,
 	isDeepInterviewAskQuestion,

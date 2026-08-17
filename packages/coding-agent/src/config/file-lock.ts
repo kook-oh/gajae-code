@@ -2,7 +2,7 @@ import * as crypto from "node:crypto";
 import type { Stats } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { hasFsCode, isEnoent } from "@gajae-code/utils/fs-error";
+import { hasFsCode, isEnoent } from "@bworx-io/worx-utils/fs-error";
 
 export interface FileLockOptions {
 	staleMs?: number;

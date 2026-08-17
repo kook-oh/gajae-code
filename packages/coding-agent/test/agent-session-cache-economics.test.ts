@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { type AssistantMessage, getBundledModel, type ToolResultMessage, type Usage } from "@gajae-code/ai";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import { type AssistantMessage, getBundledModel, type ToolResultMessage, type Usage } from "@bworx-io/worx-ai";
 import { ModelRegistry } from "../src/config/model-registry";
 import { Settings } from "../src/config/settings";
 import { AgentSession, type SessionStats } from "../src/session/agent-session";

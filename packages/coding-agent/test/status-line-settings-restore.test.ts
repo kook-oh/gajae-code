@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { getProjectDir, setProjectDir } from "@gajae-code/utils";
+import { getProjectDir, setProjectDir } from "@bworx-io/worx-utils";
 import { resetSettingsForTest, Settings, settings } from "../src/config/settings";
 import { StatusLineComponent } from "../src/modes/components/tool-status-header";
 import { buildStatusLineSettings } from "../src/modes/controllers/selector-controller";

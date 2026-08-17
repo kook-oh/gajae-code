@@ -1,5 +1,5 @@
-import { wrapTextWithAnsi } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import { wrapTextWithAnsi } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { renderJsonTreeLines } from "../../tools/json-tree";
 import { renderStatusLine } from "../../tui";
 import type { Theme } from "../theme/theme";

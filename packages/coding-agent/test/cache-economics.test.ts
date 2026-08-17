@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import type { Model, Usage } from "@bworx-io/worx-ai";
 import {
 	buildCacheBehaviorWarning,
 	buildCacheEconomicsWarning,
@@ -7,7 +8,6 @@ import {
 	computeCacheMissCostSummary,
 	formatCacheWarningLine,
 } from "@bworx-io/worx-code/session/cache-economics";
-import type { Model, Usage } from "@gajae-code/ai";
 
 function usage(overrides: Partial<Usage>): Usage {
 	return {

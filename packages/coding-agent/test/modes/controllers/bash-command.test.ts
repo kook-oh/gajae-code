@@ -11,7 +11,7 @@ import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/them
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import type { SessionContext } from "@bworx-io/worx-code/session/session-manager";
-import { Container, type TUI } from "@gajae-code/tui";
+import { Container, type TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	const theme = await getThemeByName("red-claw");

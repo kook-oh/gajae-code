@@ -2,7 +2,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:te
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { DEFAULT_DISABLED_EXTENSIONS, DEFAULT_SKILL_DISCOVERY_SETTINGS } from "../src/config/skill-settings-defaults";
 import { activeSnapshotPath, modeStatePath, sessionSpecsDir, sessionStateDir } from "../src/gjc-runtime/session-layout";
 import { reconcileWorkflowSkillState } from "../src/gjc-runtime/state-runtime";

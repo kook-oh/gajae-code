@@ -17,7 +17,7 @@ import {
 	sessionSpecsDir,
 } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 
-import { getConfigRootDir, setAgentDir } from "@gajae-code/utils";
+import { getConfigRootDir, setAgentDir } from "@bworx-io/worx-utils";
 import { resetSettingsForTest } from "../../src/config/settings";
 
 const tempRoots: string[] = [];

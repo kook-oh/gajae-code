@@ -2135,7 +2135,7 @@
 					"properties": {
 						"enabled": {
 							"type": "boolean",
-							"description": "Cache rendered issue/PR view output in ~/.gjc/cache/github-cache.db so repeated reads are free",
+							"description": "Cache rendered issue/PR view output in ~/.worx/cache/github-cache.db so repeated reads are free",
 							"default": true
 						},
 						"softTtlSec": {

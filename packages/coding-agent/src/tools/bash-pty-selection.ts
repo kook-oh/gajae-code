@@ -1,4 +1,4 @@
-import { $pickenv } from "@gajae-code/utils/env";
+import { $pickenv } from "@bworx-io/worx-utils/env";
 
 /** Minimal UI-capability fields needed to decide whether bash can use the local PTY overlay. */
 export interface BashPtyContext {

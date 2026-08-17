@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, test, vi } from "bun:test";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { addChatChild, CollapsedChatHistoryComponent } from "@bworx-io/worx-code/modes/utils/ui-helpers";
-import { type Component, Container } from "@gajae-code/tui";
+import { type Component, Container } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	await initTheme();

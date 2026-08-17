@@ -1,6 +1,6 @@
 import { appendFile, mkdir, stat } from "node:fs/promises";
 import * as path from "node:path";
-import { getAgentDir, getConfigDirName } from "@gajae-code/utils";
+import { getAgentDir, getConfigDirName } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import type { SkillDiscoverySettings } from "../config/skill-settings-defaults";
 import { DEFAULT_DISABLED_EXTENSIONS, DEFAULT_SKILL_DISCOVERY_SETTINGS } from "../config/skill-settings-defaults";

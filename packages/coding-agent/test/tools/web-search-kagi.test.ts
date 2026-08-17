@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import type { AuthStorage } from "@gajae-code/ai";
-import { hookFetch } from "@gajae-code/utils";
+import type { AuthStorage } from "@bworx-io/worx-ai";
+import { hookFetch } from "@bworx-io/worx-utils";
 import { searchWithKagi } from "../../src/web/kagi";
 import { searchKagi } from "../../src/web/search/providers/kagi";
 import { SearchProviderError } from "../../src/web/search/types";

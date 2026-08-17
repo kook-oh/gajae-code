@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { getSSHConfigPath, logger, TempDir } from "@gajae-code/utils";
+import { getSSHConfigPath, logger, TempDir } from "@bworx-io/worx-utils";
 import { reset as resetCapabilities } from "../../src/capability";
 import type { SSHHost } from "../../src/capability/ssh";
 import { sshCapability } from "../../src/capability/ssh";

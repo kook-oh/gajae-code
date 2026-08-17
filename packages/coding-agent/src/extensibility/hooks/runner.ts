@@ -1,8 +1,8 @@
 /**
  * Hook runner - executes hooks and manages their lifecycle.
  */
-import type { AgentMessage } from "@gajae-code/agent-core";
-import type { Model } from "@gajae-code/ai/core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import type { Model } from "@bworx-io/worx-ai/core";
 import type { ModelRegistry } from "../../config/model-registry";
 import { createReadonlySessionManager, type SessionManager } from "../../session/session-manager";
 import { createNoOpUIContext } from "../utils";
@@ -391,7 +391,7 @@ export class HookRunner {
 	 */
 	async emitBeforeAgentStart(
 		prompt: string,
-		images?: import("@gajae-code/ai/core").ImageContent[],
+		images?: import("@bworx-io/worx-ai/core").ImageContent[],
 	): Promise<BeforeAgentStartEventResult | undefined> {
 		const ctx = this.#createContext();
 		let result: BeforeAgentStartEventResult | undefined;

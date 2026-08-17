@@ -4,7 +4,7 @@ import * as net from "node:net";
 import * as os from "node:os";
 import path from "node:path";
 import { PassThrough, Writable } from "node:stream";
-import { CliParseError, renderCommandHelp } from "@gajae-code/utils/cli";
+import { CliParseError, renderCommandHelp } from "@bworx-io/worx-utils/cli";
 import type { ServerWebSocket } from "bun";
 import Sdk, { parseSdkInternalArgv } from "../src/commands/sdk.js";
 import { Broker } from "../src/sdk/broker/broker";

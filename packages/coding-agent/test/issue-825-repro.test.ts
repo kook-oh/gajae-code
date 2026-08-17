@@ -19,10 +19,10 @@
  */
 
 import { beforeAll, describe, expect, mock, test } from "bun:test";
+import { AgentBusyError } from "@bworx-io/worx-agent-core";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { CompactionQueuedMessage, InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
-import { AgentBusyError } from "@gajae-code/agent-core";
 
 beforeAll(() => {
 	initTheme();

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import { Box, type Component, Container, Loader, type TUI } from "@gajae-code/tui";
+import { Box, type Component, Container, Loader, type TUI } from "@bworx-io/worx-tui";
 
 class ProbeComponent implements Component {
 	disposeCount = 0;

@@ -4,7 +4,7 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Process } from "@bworx-io/worx-code-natives";
-import { nativeProcessBindings } from "@gajae-code/utils/native-process";
+import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
 import { managedSecurityFailureClassification } from "../session/internal/managed-session-storage";
 import { readLinuxProcStartTime, readLinuxProcStartTimeSync } from "./linux-proc";
 import { resolveGjcTmuxBinary } from "./psmux-detect";

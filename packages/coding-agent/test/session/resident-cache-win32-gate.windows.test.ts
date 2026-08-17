@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { EphemeralBlobStore, MemoryBlobStore } from "@bworx-io/worx-code/session/blob-store";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, getResidentCacheRootDir, setAgentDir } from "@bworx-io/worx-utils";
 
 const originalAgentDir = getAgentDir();
 const temporaryDirectories: string[] = [];

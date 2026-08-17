@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import {
 	emergencyCompactionReason,
 	resetEmergencyRetainedMemoryDiagnosticsForTests,
-} from "@gajae-code/agent-core/compaction";
-import { logger } from "@gajae-code/utils";
+} from "@bworx-io/worx-agent-core/compaction";
+import { logger } from "@bworx-io/worx-utils";
 
 const MIB = 1024 * 1024;
 const sample = { heapUsedBytes: 0, providerBytes: 0, messageCount: 0, imageBytes: 0 };

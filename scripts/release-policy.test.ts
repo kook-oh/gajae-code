@@ -209,12 +209,12 @@ describe("stable release policy", () => {
 		const lock = `{
   "workspaces": {
     "packages/agent": {
-      "name": "@gajae-code/agent-core",
+      "name": "@bworx-io/worx-agent-core",
       "version": "0.12.20",
     },
   },
   "catalog": {
-    "@gajae-code/agent-core": "0.12.20",
+    "@bworx-io/worx-agent-core": "0.12.20",
     "lucide-react": "^1.14.0",
   },
   "packages": {
@@ -225,7 +225,7 @@ describe("stable release policy", () => {
 		const updated = releasedBunLockContent(lock, "0.12.20", "0.12.21");
 
 		expect(updated).toContain('"version": "0.12.21"');
-		expect(updated).toContain('"@gajae-code/agent-core": "0.12.21"');
+		expect(updated).toContain('"@bworx-io/worx-agent-core": "0.12.21"');
 		expect(updated).toContain('"lucide-react@1.28.0"');
 		expect(updated).toContain('"sha512-frozen"');
 	});
@@ -233,12 +233,12 @@ describe("stable release policy", () => {
 	test("fails closed when the Bun lock workspace or catalog versions do not match", () => {
 		const lock = `{
   "workspaces": { "packages/agent": { "version": "0.12.20" } },
-  "catalog": { "@gajae-code/agent-core": "0.12.19" },
+  "catalog": { "@bworx-io/worx-agent-core": "0.12.19" },
   "packages": {}
 }`;
 
 		expect(() => releasedBunLockContent(lock, "0.12.20", "0.12.21")).toThrow(
-			"no @gajae-code catalog versions matching 0.12.20",
+			"no @bworx-io catalog versions matching 0.12.20",
 		);
 		expect(() => releasedBunLockContent(lock, "0.12.18", "0.12.21")).toThrow(
 			"no workspace package versions matching 0.12.18",

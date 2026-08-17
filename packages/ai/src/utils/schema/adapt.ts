@@ -1,4 +1,4 @@
-import { $pickflag } from "@gajae-code/utils";
+import { $pickflag } from "@bworx-io/worx-utils";
 import { upgradeJsonSchemaTo202012 } from "./draft";
 import { tryEnforceStrictSchema } from "./normalize";
 

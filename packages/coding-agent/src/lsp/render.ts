@@ -8,8 +8,8 @@
  * - Collapsible/expandable views
  */
 
+import type { RenderResultOptions } from "@bworx-io/worx-agent-core";
 import type { HighlightColors } from "@bworx-io/worx-code-natives";
-import type { RenderResultOptions } from "@gajae-code/agent-core";
 
 type NativeLspRenderBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "highlightCode" | "supportsLanguage">;
 let nativeLspRenderBindings: NativeLspRenderBindings | undefined;
@@ -20,7 +20,7 @@ function nativeLspRender(): NativeLspRenderBindings {
 	return nativeLspRenderBindings;
 }
 
-import { type Component, Text } from "@gajae-code/tui";
+import { type Component, Text } from "@bworx-io/worx-tui";
 import { getLanguageFromPath, type Theme } from "../modes/theme/theme";
 import {
 	formatExpandHint,

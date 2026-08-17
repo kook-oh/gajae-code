@@ -1,8 +1,8 @@
 /**
  * Check for and install updates.
  */
-import { getProjectDir } from "@gajae-code/utils";
-import { Command, Flags } from "@gajae-code/utils/cli";
+import { getProjectDir } from "@bworx-io/worx-utils";
+import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { runUpdateCommand } from "../cli/update-cli";
 import { Settings } from "../config/settings";
 import { isUpdateChannel, UPDATE_CHANNELS, type UpdateChannel } from "../config/update-channel";

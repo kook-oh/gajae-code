@@ -35,7 +35,7 @@ import {
 	createGjcTmuxSession,
 	removeGjcTmuxSession,
 } from "@bworx-io/worx-code/gjc-runtime/tmux-sessions";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 
 function args(overrides: Partial<Args> = {}): Args {
 	return {

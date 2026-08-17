@@ -1,4 +1,4 @@
-import type { AuthCredentialSelector, AuthCredentialSelectorKind } from "@gajae-code/ai/core";
+import type { AuthCredentialSelector, AuthCredentialSelectorKind } from "@bworx-io/worx-ai/core";
 
 export interface CliCredentialSelector {
 	provider?: string;

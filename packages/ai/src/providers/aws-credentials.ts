@@ -22,7 +22,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { $env, isEnoent, logger } from "@gajae-code/utils";
+import { $env, isEnoent, logger } from "@bworx-io/worx-utils";
 import {
 	type AwsIniFile,
 	classifyAwsProfileCapability,

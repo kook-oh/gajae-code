@@ -1,4 +1,4 @@
-import { sanitizeText } from "@gajae-code/utils";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { type ModelSelectorValue, normalizeModelSelectorValue } from "./model-selector-value";
 import type { ModelsConfig, WORX_MODEL_ASSIGNMENT_TARGET_IDS } from "./models-config-schema";
 

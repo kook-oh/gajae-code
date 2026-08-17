@@ -9,7 +9,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
-import type { ImageContent } from "@gajae-code/ai/core";
+import type { ImageContent } from "@bworx-io/worx-ai/core";
 import {
 	$pickenv,
 	getAgentDir,
@@ -19,7 +19,7 @@ import {
 	postmortem,
 	setProjectDir,
 	VERSION,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import type { Args } from "./cli/args";
 import { processFileArguments } from "./cli/file-processor";

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { createLspWritethrough } from "@bworx-io/worx-code/lsp";
 import * as lspConfig from "@bworx-io/worx-code/lsp/config";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 
 describe("createLspWritethrough batching", () => {
 	let tempDir: TempDir;

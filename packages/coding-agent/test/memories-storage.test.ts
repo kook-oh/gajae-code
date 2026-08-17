@@ -13,7 +13,7 @@ import {
 	tryClaimGlobalPhase2Job,
 	upsertThreads,
 } from "@bworx-io/worx-code/memories/storage";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 const GLOBAL_KIND = "memory_consolidate_global";
 const PROJECT_CWD = "/repo";

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { type IndexedSession, SessionIndex } from "../broker/session-index";
 import { lifecycleRequestTimeoutMs } from "../broker/startup-budget";
 import { SdkClient, SdkClientError } from "../client/client";

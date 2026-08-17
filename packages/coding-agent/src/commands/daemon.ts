@@ -1,7 +1,7 @@
 /**
  * Manage GJC background daemons (status/list/stop/reload).
  */
-import { Args, CliParseError, Command, Flags } from "@gajae-code/utils/cli";
+import { Args, CliParseError, Command, Flags } from "@bworx-io/worx-utils/cli";
 import {
 	type DaemonCommandAction,
 	type DaemonCommandArgs,

@@ -1,4 +1,4 @@
-import { Box, Container, Spacer, Text } from "@gajae-code/tui";
+import { Box, Container, Spacer, Text } from "@bworx-io/worx-tui";
 import { theme } from "../../modes/theme/theme";
 import type { TodoItem } from "../../tools/todo-write";
 

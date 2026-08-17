@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { UsageProvider } from "@bworx-io/worx-ai";
+import * as oauth from "@bworx-io/worx-ai/utils/oauth";
+import type { OAuthCredentials } from "@bworx-io/worx-ai/utils/oauth/types";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import type { UsageProvider } from "@gajae-code/ai";
-import * as oauth from "@gajae-code/ai/utils/oauth";
-import type { OAuthCredentials } from "@gajae-code/ai/utils/oauth/types";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 describe("AuthStorage account rotation", () => {
 	let tempDir: string;

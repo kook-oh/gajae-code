@@ -3,7 +3,7 @@
  */
 import * as os from "node:os";
 import * as path from "node:path";
-import { getAgentDir, getMCPConfigPath, getProjectAgentDir, getProjectDir } from "@gajae-code/utils";
+import { getAgentDir, getMCPConfigPath, getProjectAgentDir, getProjectDir } from "@bworx-io/worx-utils";
 import { planMigration } from "../migrate/action-planner";
 import { getAdapter } from "../migrate/adapters/index";
 import { executeActions } from "../migrate/executor";

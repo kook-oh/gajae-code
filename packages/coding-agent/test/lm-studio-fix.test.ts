@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { hookFetch, Snowflake } from "@gajae-code/utils";
+import { hookFetch, Snowflake } from "@bworx-io/worx-utils";
 
 describe("ModelRegistry LM Studio Fixes", () => {
 	let tempDir: string;

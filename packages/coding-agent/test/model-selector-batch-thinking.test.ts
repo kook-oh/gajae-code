@@ -2,15 +2,15 @@ import { beforeAll, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { Effort, type Model } from "@bworx-io/worx-ai";
 import { type GjcModelAssignmentTargetId, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { Effort, type Model } from "@gajae-code/ai";
-import type { TUI } from "@gajae-code/tui";
-import { hookFetch } from "@gajae-code/utils";
+import type { TUI } from "@bworx-io/worx-tui";
+import { hookFetch } from "@bworx-io/worx-utils";
 
 const DOWN = "\x1b[B";
 

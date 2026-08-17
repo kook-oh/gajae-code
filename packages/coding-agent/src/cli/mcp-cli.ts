@@ -4,7 +4,7 @@
  * This surface only writes explicit user-provided server definitions to GJC's
  * own MCP config. It never imports or inherits live configs from other agents.
  */
-import { getMCPConfigPath, getProjectDir } from "@gajae-code/utils";
+import { getMCPConfigPath, getProjectDir } from "@bworx-io/worx-utils";
 import { getMCPServer, readMCPConfigFile, removeMCPServer, upsertMCPServer } from "../runtime-mcp/config-writer";
 import { redactMCPEndpoint } from "../runtime-mcp/redaction";
 import type { MCPConfigFile, MCPServerConfig } from "../runtime-mcp/types";

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "bun:test";
 import type { CommandPaletteComponent } from "@bworx-io/worx-code/modes/components/command-palette";
 import { SelectorController } from "@bworx-io/worx-code/modes/controllers/selector-controller";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
-import type { SlashCommand } from "@gajae-code/tui";
+import type { SlashCommand } from "@bworx-io/worx-tui";
 
 describe("SelectorController command palette", () => {
 	it("surfaces rejected handlers without an unhandled rejection", async () => {

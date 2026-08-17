@@ -4,8 +4,8 @@ import {
 	isAnthropicMaskedProxyRejection,
 	isAnthropicThinkingBlockMutationError,
 	isAnthropicThinkingSignatureInvalidError,
-} from "@gajae-code/ai/providers/anthropic";
-import type { AssistantMessage, Model, ToolResultMessage, UserMessage } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-ai/providers/anthropic";
+import type { AssistantMessage, Model, ToolResultMessage, UserMessage } from "@bworx-io/worx-ai/types";
 
 const model: Model<"anthropic-messages"> = {
 	api: "anthropic-messages",

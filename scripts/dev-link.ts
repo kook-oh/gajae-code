@@ -6,7 +6,7 @@
  * Makes the global `worx` command run THIS checkout's TypeScript source
  * (`packages/coding-agent/src/cli.ts`) instead of a compiled binary or a
  * published npm install. Running from source is the only mode that can
- * dynamically load `@gajae-code/natives` for skills — a `bun build --compile`
+ * dynamically load `@bworx-io/worx-code-natives` for skills — a `bun build --compile`
  * standalone binary cannot. If you don't need that, `--binary` links this
  * checkout's compiled `dist/worx` instead (build it first with
  * `bun run --cwd=packages/coding-agent build`).
@@ -318,7 +318,7 @@ function assertResolvedGjcMatchesTarget(winner: GjcHit | undefined, expectedReal
 
 function assertWorkspaceLinksLocal(): void {
 	const repoRootReal = realpath(repoRoot) ?? repoRoot;
-	const scopeDir = path.join(repoRoot, "node_modules", "@gajae-code");
+	const scopeDir = path.join(repoRoot, "node_modules", "@bworx-io");
 	let entries: string[];
 	try {
 		entries = fs.readdirSync(scopeDir);
@@ -342,7 +342,7 @@ function assertWorkspaceLinksLocal(): void {
 		console.error(`    ${link}`);
 		console.error(`      -> ${real}`);
 	}
-	console.error("  Fix: rm -rf node_modules/@gajae-code && bun install");
+	console.error("  Fix: rm -rf node_modules/@bworx-io && bun install");
 	process.exit(1);
 }
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import type { AssistantMessage, Model, Usage } from "@bworx-io/worx-ai";
 import { formatSessionDumpText } from "@bworx-io/worx-code/session/session-dump-format";
-import type { AssistantMessage, Model, Usage } from "@gajae-code/ai";
 
 const zeroUsage: Usage = {
 	input: 0,

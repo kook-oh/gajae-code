@@ -10,7 +10,7 @@ import { getThemeByName, initTheme, setThemeInstance, theme } from "@bworx-io/wo
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import type { CustomMessage } from "@bworx-io/worx-code/session/messages";
-import { Container, ImageProtocol, TERMINAL, type TUI } from "@gajae-code/tui";
+import { Container, ImageProtocol, TERMINAL, type TUI } from "@bworx-io/worx-tui";
 
 const SIXEL_START = "\x1bPq";
 const SIXEL_END = "\x1b\\";

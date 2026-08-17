@@ -1,4 +1,4 @@
-import { Container, type SelectItem, type SelectList } from "@gajae-code/tui";
+import { Container, type SelectItem, type SelectList } from "@bworx-io/worx-tui";
 import { FramedSelect } from "./chrome";
 
 /**

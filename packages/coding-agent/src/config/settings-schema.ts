@@ -1,5 +1,5 @@
-import type { Effort } from "@gajae-code/ai/model-thinking";
-import { PET_MODE_IDS, PET_SKIN_IDS, PET_SKINS } from "@gajae-code/tui/components/gajae-pet";
+import type { Effort } from "@bworx-io/worx-ai/model-thinking";
+import { PET_MODE_IDS, PET_SKIN_IDS, PET_SKINS } from "@bworx-io/worx-tui/components/gajae-pet";
 import { TASK_SIMPLE_MODES } from "../task/simple-mode";
 import { getThinkingLevelMetadata } from "../thinking-metadata";
 import { DEFAULT_EDIT_MODE_SETTING, EDIT_MODE_SETTINGS, EDIT_MODES, type EditMode } from "../utils/edit-mode";

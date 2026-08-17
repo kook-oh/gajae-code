@@ -2,8 +2,8 @@
  * Shared utilities for compaction and branch summarization.
  */
 
-import type { Message } from "@gajae-code/ai";
-import { prompt } from "@gajae-code/utils";
+import type { Message } from "@bworx-io/worx-ai";
+import { prompt } from "@bworx-io/worx-utils";
 import type { AgentMessage } from "../types";
 import fileOperationsTemplate from "./prompts/file-operations.md" with { type: "text" };
 import summarizationSystemPrompt from "./prompts/summarization-system.md" with { type: "text" };

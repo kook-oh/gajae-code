@@ -17,7 +17,7 @@
  * GJC's own mcp.json instead.
  */
 
-import { tryParseJson } from "@gajae-code/utils";
+import { tryParseJson } from "@bworx-io/worx-utils";
 import { registerProvider } from "../capability";
 import { readFile } from "../capability/fs";
 import type { Rule } from "../capability/rule";

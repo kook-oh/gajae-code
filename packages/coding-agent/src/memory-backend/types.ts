@@ -7,7 +7,7 @@
  * `start()` and tear it down on `clear()`.
  */
 
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import type { ModelRegistry } from "../config/model-registry";
 import type { Settings } from "../config/settings";
 import type { HindsightSessionState } from "../hindsight/state";

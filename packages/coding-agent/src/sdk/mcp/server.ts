@@ -1,5 +1,5 @@
 import path from "node:path";
-import { getAgentDir } from "@gajae-code/utils";
+import { getAgentDir } from "@bworx-io/worx-utils";
 import { ensureBroker } from "../broker/ensure";
 import { lifecycleRequestTimeoutMs } from "../broker/startup-budget";
 import { SdkClient, SdkClientError, type SdkSentRecord } from "../client/client";

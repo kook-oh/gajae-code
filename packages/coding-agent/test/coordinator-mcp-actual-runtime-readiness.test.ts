@@ -3,9 +3,9 @@ import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { Agent } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import { Agent } from "@bworx-io/worx-agent-core";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { ModelRegistry } from "../src/config/model-registry";
 import { Settings } from "../src/config/settings";
 import {

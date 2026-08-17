@@ -83,7 +83,7 @@ This external path is separate from GJC's native `/skill:deep-interview`: the na
 The examples below show the core extension patterns used by this directory.
 
 ```typescript
-import type { ExtensionAPI } from "@gajae-code/coding-agent";
+import type { ExtensionAPI } from "@bworx-io/worx-code";
 
 export default function (pi: ExtensionAPI) {
 	const z = pi.zod;

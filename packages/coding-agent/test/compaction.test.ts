@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import {
 	type CompactionSettings,
 	calculateContextTokens,
@@ -14,12 +14,12 @@ import {
 	type RemoteCompactionFallbackHealthHooks,
 	resolveThresholdTokens,
 	shouldCompact,
-} from "@gajae-code/agent-core/compaction/compaction";
-import * as ai from "@gajae-code/ai";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { encodeTextSignatureV1 } from "@gajae-code/ai/providers/openai-responses-shared";
-import type { AssistantMessage, Model, ProviderPayload, ToolResultMessage, Usage } from "@gajae-code/ai/types";
-import { hookFetch } from "@gajae-code/utils";
+} from "@bworx-io/worx-agent-core/compaction/compaction";
+import * as ai from "@bworx-io/worx-ai";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { encodeTextSignatureV1 } from "@bworx-io/worx-ai/providers/openai-responses-shared";
+import type { AssistantMessage, Model, ProviderPayload, ToolResultMessage, Usage } from "@bworx-io/worx-ai/types";
+import { hookFetch } from "@bworx-io/worx-utils";
 import {
 	buildSessionContext,
 	type CompactionEntry,

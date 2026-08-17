@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"private": true,
-	"name": "@gajae-code/typescript-edit-benchmark",
+	"name": "@bworx-io/worx-typescript-edit-benchmark",
 	"version": "0.0.1",
 	"description": "Edit benchmark suite using TypeScript source code mutations",
 	"author": "Yeachan-Heo",
@@ -30,14 +30,14 @@
 		"@babel/parser": "catalog:",
 		"@babel/traverse": "catalog:",
 		"@babel/types": "catalog:",
-		"@gajae-code/agent-core": "catalog:",
+		"@bworx-io/worx-agent-core": "catalog:",
 		"@bworx-io/worx-code": "catalog:",
-		"@gajae-code/utils": "catalog:",
+		"@bworx-io/worx-utils": "catalog:",
 		"diff": "catalog:",
 		"prettier": "catalog:",
 		"regexp-tree": "catalog:",
-		"@gajae-code/ai": "catalog:",
-		"@gajae-code/tui": "catalog:"
+		"@bworx-io/worx-ai": "catalog:",
+		"@bworx-io/worx-tui": "catalog:"
 	},
 	"devDependencies": {
 		"@types/babel__generator": "catalog:",
@@ -47,5 +47,5 @@
 	"engines": {
 		"bun": ">=1.3.14"
 	},
-	"homepage": "https://gajae-code.com"
+	"homepage": "https://github.com/bworx-io/worx-code"
 }

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Renamed the package to `@bworx-io/worx-stats` and the CLI bin to `worx-stats`.
+
 ## [0.13.1] - 2026-08-11
 
 ## [0.12.21] - 2026-08-09

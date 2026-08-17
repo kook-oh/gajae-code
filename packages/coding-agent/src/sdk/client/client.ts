@@ -1,1 +1,1 @@
-export * from "@gajae-code/bridge-client";
+export * from "@bworx-io/worx-bridge-client";

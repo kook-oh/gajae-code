@@ -6,8 +6,8 @@ import {
 	type AuthCredentialStore,
 	SqliteAuthCredentialStore,
 	type StoredAuthCredential,
-} from "@gajae-code/ai/core";
-import { getAgentDbPath, isRecord, logger } from "@gajae-code/utils";
+} from "@bworx-io/worx-ai/core";
+import { getAgentDbPath, isRecord, logger } from "@bworx-io/worx-utils";
 import type { RawSettings as Settings } from "../config/settings";
 
 /** Row shape for settings table queries */
@@ -31,7 +31,7 @@ const instances = new Map<string, AgentStorage>();
 
 /**
  * Unified SQLite storage for agent settings, model usage, and auth credentials.
- * Delegates auth credential operations to AuthCredentialStore from @gajae-code/ai.
+ * Delegates auth credential operations to AuthCredentialStore from @bworx-io/worx-ai.
  * Uses singleton pattern per database path; access via AgentStorage.open().
  */
 export class AgentStorage {

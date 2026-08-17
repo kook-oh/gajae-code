@@ -5,7 +5,7 @@ import {
 	type SelectItem,
 	shouldProbeSixelCapability,
 	TERMINAL,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 
 export type PetPixelProtocol = "sixel" | "kitty";
 

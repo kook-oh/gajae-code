@@ -6,6 +6,10 @@
  * behavior they have in the TUI.
  */
 import { afterEach, beforeEach, expect, it, spyOn } from "bun:test";
+import { Agent, type AgentTool } from "@bworx-io/worx-agent-core";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { createMockModel, type MockModelOptions } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { EditTool } from "@bworx-io/worx-code/edit";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
@@ -17,11 +21,7 @@ import type {
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
-import { Agent, type AgentTool } from "@gajae-code/agent-core";
-import { getBundledModel } from "@gajae-code/ai";
-import { createMockModel, type MockModelOptions } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { callSessionTool } from "../src/eval/js/tool-bridge";
 

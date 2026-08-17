@@ -10,8 +10,8 @@ import type {
 	AgentToolExecFn,
 	AgentToolResult,
 	AgentToolUpdateCallback,
-} from "@gajae-code/agent-core";
-import type { ImageContent, TextContent } from "@gajae-code/ai/core";
+} from "@bworx-io/worx-agent-core";
+import type { ImageContent, TextContent } from "@bworx-io/worx-ai/core";
 import { getDefault, type Settings } from "../config/settings";
 import { formatGroupedDiagnosticMessages } from "../lsp/utils";
 import type { Theme } from "../modes/theme/theme";

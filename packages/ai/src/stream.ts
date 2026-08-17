@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { $credentialEnv, $env, $pickCredentialEnv, extractHttpStatusFromError } from "@gajae-code/utils";
+import { $credentialEnv, $env, $pickCredentialEnv, extractHttpStatusFromError } from "@bworx-io/worx-utils";
 import { assertManagedAttempt, classifyFallbackTrigger, type TransportFailureFacts } from "./utils/fallback-transport";
 
 const managedAttemptValidated = Symbol("managedAttemptValidated");

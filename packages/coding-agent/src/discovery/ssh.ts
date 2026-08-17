@@ -5,7 +5,7 @@
  * Priority: 5 (low, project/user config discovery)
  */
 import * as path from "node:path";
-import { getSSHConfigPath, logger, tryParseJson } from "@gajae-code/utils";
+import { getSSHConfigPath, logger, tryParseJson } from "@bworx-io/worx-utils";
 import { registerProvider } from "../capability";
 import { readFile } from "../capability/fs";
 import { type SSHHost, sshCapability } from "../capability/ssh";

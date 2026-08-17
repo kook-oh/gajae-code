@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
+import { Agent, type AgentMessage } from "@bworx-io/worx-agent-core";
+import { calculateContextTokens, estimateMessageTokensHeuristic } from "@bworx-io/worx-agent-core/compaction";
+import { type AssistantMessage, getBundledModel, type Usage } from "@bworx-io/worx-ai";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { computeNonMessageTokens } from "@bworx-io/worx-code/modes/utils/context-usage";
@@ -6,9 +9,6 @@ import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { Agent, type AgentMessage } from "@gajae-code/agent-core";
-import { calculateContextTokens, estimateMessageTokensHeuristic } from "@gajae-code/agent-core/compaction";
-import { type AssistantMessage, getBundledModel, type Usage } from "@gajae-code/ai";
 
 const contextWindow = 200_000;
 const sessions: AgentSession[] = [];

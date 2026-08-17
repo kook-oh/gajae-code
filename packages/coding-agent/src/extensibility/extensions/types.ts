@@ -8,15 +8,14 @@
  * - Interact with the user via UI primitives
  */
 
-import type * as piCodingAgent from "@bworx-io/worx-code";
 import type {
 	AgentMessage,
 	AgentToolResult,
 	AgentToolUpdateCallback,
 	RunSettlementProof,
 	ThinkingLevel,
-} from "@gajae-code/agent-core";
-import type { CompactionResult } from "@gajae-code/agent-core/compaction";
+} from "@bworx-io/worx-agent-core";
+import type { CompactionResult } from "@bworx-io/worx-agent-core/compaction";
 import type {
 	Api,
 	AssistantMessageEvent,
@@ -31,9 +30,10 @@ import type {
 	Tool,
 	TSchema,
 	UsageReport,
-} from "@gajae-code/ai/core";
-import type { OAuthCredentials, OAuthLoginCallbacks } from "@gajae-code/ai/utils/oauth/types";
-import type { AutocompleteItem, Component, EditorTheme, KeyId, TUI } from "@gajae-code/tui";
+} from "@bworx-io/worx-ai/core";
+import type { OAuthCredentials, OAuthLoginCallbacks } from "@bworx-io/worx-ai/utils/oauth/types";
+import type * as piCodingAgent from "@bworx-io/worx-code";
+import type { AutocompleteItem, Component, EditorTheme, KeyId, TUI } from "@bworx-io/worx-tui";
 import type { KeybindingsManager } from "../../config/keybindings";
 import type { ModelRegistry } from "../../config/model-registry";
 import type { EditToolDetails } from "../../edit";
@@ -1033,7 +1033,7 @@ export interface ExtensionAPI {
 	// =========================================================================
 
 	/** File logger for error/warning/debug messages */
-	logger: typeof import("@gajae-code/utils").logger;
+	logger: typeof import("@bworx-io/worx-utils").logger;
 
 	/** Injected zod-backed typebox shim for legacy `Type.Object(...)` parameter authoring. */
 	typebox: typeof import("../typebox");

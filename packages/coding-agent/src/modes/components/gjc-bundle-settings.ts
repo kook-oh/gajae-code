@@ -1,4 +1,4 @@
-import { Container, type SelectItem, SelectList, Spacer, Text } from "@gajae-code/tui";
+import { Container, type SelectItem, SelectList, Spacer, Text } from "@bworx-io/worx-tui";
 import {
 	applyGjcBundleUpdate,
 	type GjcLifecycleContext,

@@ -2,8 +2,8 @@ import { createHash, randomUUID } from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getAgentDir, isKnownSinkPeerClosedError } from "@gajae-code/utils";
-import { normalizePathForComparison, VERSION } from "@gajae-code/utils/dirs";
+import { getAgentDir, isKnownSinkPeerClosedError } from "@bworx-io/worx-utils";
+import { normalizePathForComparison, VERSION } from "@bworx-io/worx-utils/dirs";
 
 import { withFileLock } from "../config/file-lock";
 import {

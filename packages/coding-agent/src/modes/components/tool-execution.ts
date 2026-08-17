@@ -1,4 +1,4 @@
-import type { AgentTool } from "@gajae-code/agent-core";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
 import {
 	type AnimationRegistration,
 	Box,
@@ -14,8 +14,8 @@ import {
 	TERMINAL,
 	Text,
 	type TUI,
-} from "@gajae-code/tui";
-import { getProjectDir, logger, sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { getProjectDir, logger, sanitizeText } from "@bworx-io/worx-utils";
 import { EDIT_MODE_STRATEGIES, type EditMode, type PerFileDiffPreview } from "../../edit";
 import { type EditRenderContext, getPerFileEditRenderArgs, getPerFileEditRenderContext } from "../../edit/renderer";
 import { getEditRequestTargetInventory, orderedDistinctPaths } from "../../edit/streaming";

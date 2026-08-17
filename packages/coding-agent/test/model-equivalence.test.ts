@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
+import type { Api, Model } from "@bworx-io/worx-ai";
 import {
 	buildCanonicalModelIndex,
 	compareEquivalentModelVariants,
 	getFinalSlashSegmentAliasKey,
 } from "@bworx-io/worx-code/config/model-equivalence";
-import type { Api, Model } from "@gajae-code/ai";
 
 function makeModel(provider: string, id: string, overrides: Partial<Model<Api>> = {}): Model<Api> {
 	return {

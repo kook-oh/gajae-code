@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { type Component, Container } from "@gajae-code/tui";
+import { type Component, Container } from "@bworx-io/worx-tui";
 
 class FixedLines implements Component {
 	#lines: string[];

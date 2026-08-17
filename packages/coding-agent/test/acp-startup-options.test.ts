@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import * as path from "node:path";
 import type { AgentSideConnection } from "@agentclientprotocol/sdk";
-import { type CliConfig, CliParseError } from "@gajae-code/utils/cli";
+import { type CliConfig, CliParseError } from "@bworx-io/worx-utils/cli";
 import { parseArgs } from "../src/cli/args";
 import Acp from "../src/commands/acp";
 import { resolveAcpStartupOptions } from "../src/main";

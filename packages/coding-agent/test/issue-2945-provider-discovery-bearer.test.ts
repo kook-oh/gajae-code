@@ -6,7 +6,7 @@ import * as path from "node:path";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest } from "@bworx-io/worx-code/config/settings";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 
 const EXPECTED_KEY = "issue-2945-local-key";
 const KEY_ENV = "ISSUE_2945_LLM_API_KEY";

@@ -1,5 +1,5 @@
-import { extractHttpStatusFromError } from "@gajae-code/utils/fetch-retry";
-import * as logger from "@gajae-code/utils/logger";
+import { extractHttpStatusFromError } from "@bworx-io/worx-utils/fetch-retry";
+import * as logger from "@bworx-io/worx-utils/logger";
 import type { Api, Model, ToolChoice, ToolChoiceCompat, ToolChoiceSupport, ToolChoiceSupportSource } from "../types";
 
 const supportRank: Record<ToolChoiceSupport, number> = {

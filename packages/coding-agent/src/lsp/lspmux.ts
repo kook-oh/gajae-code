@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { $flag, $which, logger } from "@gajae-code/utils";
+import { $flag, $which, logger } from "@bworx-io/worx-utils";
 import { TOML } from "bun";
 import { spawnOwnedProcess } from "../runtime/process-lifecycle";
 import { isProjectControlledPath } from "./path-trust";

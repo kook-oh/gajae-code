@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import * as path from "node:path";
-import { getAgentDir, pathIsWithin } from "@gajae-code/utils";
+import { getAgentDir, pathIsWithin } from "@bworx-io/worx-utils";
 import { GjcPluginLoadError, WORX_PLUGIN_MANIFEST_FILENAME } from "./types";
 
 export function gjcPluginUserRoot(): string {

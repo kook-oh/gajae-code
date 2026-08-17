@@ -12,7 +12,7 @@ import {
 import { getThemeByName, setThemeInstance, theme } from "@bworx-io/worx-code/modes/theme/theme";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
-import { Container, Text } from "@gajae-code/tui";
+import { Container, Text } from "@bworx-io/worx-tui";
 
 function createForkContext(fork: () => Promise<boolean>) {
 	const chatContainer = new Container();

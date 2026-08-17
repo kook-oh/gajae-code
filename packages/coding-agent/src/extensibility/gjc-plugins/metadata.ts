@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
-import { upgradeJsonSchemaTo202012 } from "@gajae-code/ai/utils/schema";
+import { upgradeJsonSchemaTo202012 } from "@bworx-io/worx-ai/utils/schema";
 import { resolveWithinRoot } from "./paths";
 import { GjcPluginLoadError, type JsonSchema202012, PluginImplementationHashMismatchError } from "./types";
 

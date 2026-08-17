@@ -9,7 +9,7 @@ import {
 	type ViewportAnchorRender,
 	type ViewportAnchorSource,
 	type ViewportAnchorSourceRenderer,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { getMarkdownTheme, type Theme } from "../modes/theme/theme";
 
 interface RoundQuestionModel {

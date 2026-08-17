@@ -10,7 +10,7 @@ It documents only active behavior.
 
 ## Resolution model and precedence
 
-Most runtime lookups use `$env` from `@gajae-code/utils` (`packages/utils/src/env.ts`).
+Most runtime lookups use `$env` from `@bworx-io/worx-utils` (`packages/utils/src/env.ts`).
 
 `$env` loading order:
 
@@ -492,7 +492,7 @@ LSP project configuration may control declarative matching, activation, and capa
 
 ## 6) Storage and config root paths
 
-These are consumed via `@gajae-code/utils/dirs` and affect where coding-agent stores data.
+These are consumed via `@bworx-io/worx-utils/dirs` and affect where coding-agent stores data.
 
 | Variable              | Default / behavior                                                            |
 | --------------------- | ----------------------------------------------------------------------------- |

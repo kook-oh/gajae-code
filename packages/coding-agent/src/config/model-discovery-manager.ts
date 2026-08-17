@@ -5,7 +5,7 @@ import {
 	type Model,
 	type ModelRefreshStrategy,
 	readModelCache,
-} from "@gajae-code/ai/core";
+} from "@bworx-io/worx-ai/core";
 
 export interface DiscoveryProvider {
 	provider: string;

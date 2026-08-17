@@ -34,7 +34,7 @@ cp permission-gate.ts ~/.worx/agent/hooks/
 See [docs/hooks.md](../../docs/hooks.md) for full documentation.
 
 ```typescript
-import type { HookAPI } from "@gajae-code/coding-agent/hooks";
+import type { HookAPI } from "@bworx-io/worx-code/hooks";
 
 export default function (pi: HookAPI) {
 	// Subscribe to events

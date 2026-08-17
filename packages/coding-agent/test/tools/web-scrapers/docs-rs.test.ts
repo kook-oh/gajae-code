@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import { ToolAbortError } from "../../../src/tools/tool-errors";
 import { handleDocsRs } from "../../../src/web/scrapers/docs-rs";
 import { MAX_BYTES } from "../../../src/web/scrapers/types";

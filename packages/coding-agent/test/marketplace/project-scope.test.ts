@@ -4,7 +4,7 @@
  * resolveActiveProjectRegistryPath: walk-up, .git fallback, null return, canonical path.
  * listAnthropic modelPluginRoots: project entries shadow user entries for same plugin ID.
  *
- * Note: helpers.ts imports @gajae-code/natives (Rust addon via glob).
+ * Note: helpers.ts imports @bworx-io/worx-code-natives (Rust addon via glob).
  * This file imports from helpers.ts directly — the native addon IS present in the
  * test environment (verified: `bun run import-helpers.ts` succeeds).
  */

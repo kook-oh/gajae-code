@@ -8,9 +8,9 @@ import {
 	type AutocompleteSuggestionKind,
 	CombinedAutocompleteProvider,
 	extractSlashCommandTokenPrefix,
-} from "@gajae-code/tui/autocomplete";
-import { Editor } from "@gajae-code/tui/components/editor";
-import { visibleWidth } from "@gajae-code/tui/utils";
+} from "@bworx-io/worx-tui/autocomplete";
+import { Editor } from "@bworx-io/worx-tui/components/editor";
+import { visibleWidth } from "@bworx-io/worx-tui/utils";
 import { defaultEditorTheme } from "./test-themes";
 
 describe("CombinedAutocompleteProvider", () => {

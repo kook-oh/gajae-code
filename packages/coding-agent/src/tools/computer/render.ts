@@ -1,5 +1,5 @@
-import type { Component } from "@gajae-code/tui";
-import { Text } from "@gajae-code/tui";
+import type { Component } from "@bworx-io/worx-tui";
+import { Text } from "@bworx-io/worx-tui";
 import type { RenderResultOptions } from "../../extensibility/custom-tools/types";
 import type { Theme } from "../../modes/theme/theme";
 import type { ComputerToolDetails } from "../computer";

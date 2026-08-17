@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { Container, Markdown, TUI, VIEWPORT_ANCHOR_PREFIX, type ViewportAnchorRow } from "@gajae-code/tui";
+import { Container, Markdown, TUI, VIEWPORT_ANCHOR_PREFIX, type ViewportAnchorRow } from "@bworx-io/worx-tui";
 import { defaultMarkdownTheme } from "./test-themes";
 import { VirtualTerminal } from "./virtual-terminal";
 

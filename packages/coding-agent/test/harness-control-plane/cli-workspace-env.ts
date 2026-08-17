@@ -41,7 +41,7 @@ function collectWorkspacePackages(repoRoot: string): LinkedWorkspacePackage[] {
 		if (!entry.isDirectory()) continue;
 		const packageDir = path.join(packagesDir, entry.name);
 		const name = readPackageName(path.join(packageDir, "package.json"));
-		if (!name?.startsWith("@gajae-code/")) continue;
+		if (!name?.startsWith("@bworx-io/")) continue;
 		packages.push({ name, packageDir });
 	}
 	return packages;
@@ -50,7 +50,7 @@ function collectWorkspacePackages(repoRoot: string): LinkedWorkspacePackage[] {
 function linkWorkspacePackages(scopeDir: string, packages: LinkedWorkspacePackage[]): void {
 	fs.mkdirSync(scopeDir, { recursive: true });
 	for (const pkg of packages) {
-		const unscopedName = pkg.name.slice("@gajae-code/".length);
+		const unscopedName = pkg.name.slice("@bworx-io/".length);
 		const linkPath = path.join(scopeDir, unscopedName);
 		try {
 			fs.symlinkSync(pkg.packageDir, linkPath, "dir");

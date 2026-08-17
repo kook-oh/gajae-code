@@ -2,13 +2,13 @@ import { afterEach, describe, expect, test, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { type AgentTool, INTENT_FIELD } from "@bworx-io/worx-agent-core";
 import {
 	buildSystemPrompt,
 	buildSystemPromptToolMetadata,
 	buildVolatileProjectContext,
 } from "@bworx-io/worx-code/system-prompt";
-import { type AgentTool, INTENT_FIELD } from "@gajae-code/agent-core";
-import { prompt } from "@gajae-code/utils";
+import { prompt } from "@bworx-io/worx-utils";
 import Handlebars from "handlebars";
 import * as z from "zod/v4";
 import { getBundledAgent } from "../src/task/agents";

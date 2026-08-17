@@ -2,8 +2,8 @@ import { Database } from "bun:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getBundledModel } from "@gajae-code/ai";
-import { getAgentDir, getStatsDbPath, setAgentDir, TempDir } from "@gajae-code/utils";
+import { getBundledModel } from "@bworx-io/worx-ai";
+import { getAgentDir, getStatsDbPath, setAgentDir, TempDir } from "@bworx-io/worx-utils";
 import { closeDb, getRecentRequests, initDb, insertMessageStats } from "../src/db";
 import type { MessageStats } from "../src/types";
 

@@ -4,14 +4,14 @@
  * Run: bun packages/agent/bench/append-only-clone.ts
  */
 import { benchRunMetadata, type BenchRunMetadata } from "./_meta";
-import { AppendOnlyContextManager, StablePrefix } from "@gajae-code/agent-core/append-only-context";
-import type { AgentContext } from "@gajae-code/agent-core/types";
-import type { Message, Tool } from "@gajae-code/ai";
+import { AppendOnlyContextManager, StablePrefix } from "@bworx-io/worx-agent-core/append-only-context";
+import type { AgentContext } from "@bworx-io/worx-agent-core/types";
+import type { Message, Tool } from "@bworx-io/worx-ai";
 
 const WARMUP_ITERATIONS = 10;
 const MEASURE_ITERATIONS = 80;
 const MESSAGE_COUNT = 1_000;
-const PACKAGE_NAME = "@gajae-code/agent-core";
+const PACKAGE_NAME = "@bworx-io/worx-agent-core";
 
 type BenchSample = {
 	fixture: string;

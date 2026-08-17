@@ -16,7 +16,7 @@ function safeProbeWindowsJobMemory(): WindowsJobMemoryProbeResult {
 	return { kind: "unsupported_platform", platform: process.platform };
 }
 
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import type { Settings } from "../config/settings";
 import { executeGjcTeamApiOperation, listGjcTeams, readGjcWorkerHeartbeat } from "../gjc-runtime/team-runtime";
 import { computeMemoryGuardDomain } from "../runtime/memory-domain";

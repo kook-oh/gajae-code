@@ -3,9 +3,10 @@
  *
  * Shows how to select a specific model and thinking level.
  */
+
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { getModel } from "@bworx-io/worx-ai";
 import { createAgentSession, discoverAuthStorage, discoverModels } from "@bworx-io/worx-code";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { getModel } from "@gajae-code/ai";
 
 // Set up auth storage and model registry
 const authStorage = await discoverAuthStorage();

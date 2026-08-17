@@ -1,9 +1,9 @@
 /**
  * Plain-text / markdown session formatting (same shape as /dump clipboard export).
  */
-import type { AgentMessage, ThinkingLevel } from "@gajae-code/agent-core";
-import { INTENT_FIELD } from "@gajae-code/agent-core";
-import type { AssistantMessage, Model } from "@gajae-code/ai/core";
+import type { AgentMessage, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { INTENT_FIELD } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage, Model } from "@bworx-io/worx-ai/core";
 import { buildCacheEconomicsWarning, type CacheWarningBuildState } from "./cache-economics";
 import {
 	type BashExecutionMessage,

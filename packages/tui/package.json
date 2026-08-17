@@ -1,9 +1,9 @@
 {
 	"type": "module",
-	"name": "@gajae-code/tui",
+	"name": "@bworx-io/worx-tui",
 	"version": "0.13.1",
 	"description": "Terminal User Interface library with differential rendering for efficient text-based applications",
-	"homepage": "https://github.com/bworx-io/worx-code#readme",
+	"homepage": "https://github.com/bworx-io/worx-code",
 	"author": "byteWORX and WORX Code Contributors",
 	"license": "MIT",
 	"repository": {
@@ -37,7 +37,7 @@
 	},
 	"dependencies": {
 		"@bworx-io/worx-code-natives": "catalog:",
-		"@gajae-code/utils": "catalog:",
+		"@bworx-io/worx-utils": "catalog:",
 		"lru-cache": "catalog:",
 		"marked": "catalog:"
 	},

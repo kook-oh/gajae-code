@@ -1,4 +1,4 @@
-import { $credentialEnv, $env, extractHttpStatusFromError, logger } from "@gajae-code/utils";
+import { $credentialEnv, $env, extractHttpStatusFromError, logger } from "@bworx-io/worx-utils";
 import OpenAI, { APIConnectionTimeoutError } from "openai";
 import type {
 	ChatCompletionAssistantMessageParam,

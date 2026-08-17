@@ -16,7 +16,7 @@
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { AgentMessage } from "@gajae-code/agent-core";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import {
 	type Component,
 	Container,
@@ -29,8 +29,8 @@ import {
 	Text,
 	truncateToWidth,
 	wrapTextWithAnsi,
-} from "@gajae-code/tui";
-import { isEnoent, prompt } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { isEnoent, prompt } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import { getConfigDirs } from "../../config";
 import type { ModelRegistry } from "../../config/model-registry";

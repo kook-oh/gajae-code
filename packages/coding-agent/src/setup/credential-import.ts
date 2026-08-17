@@ -16,8 +16,8 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AuthCredential, OAuthCredential } from "@gajae-code/ai/core";
-import { $credentialEnv, isEnoent } from "@gajae-code/utils";
+import type { AuthCredential, OAuthCredential } from "@bworx-io/worx-ai/core";
+import { $credentialEnv, isEnoent } from "@bworx-io/worx-utils";
 import { redactSecret } from "./provider-onboarding";
 
 /** gjc provider ids that external credentials map onto. */

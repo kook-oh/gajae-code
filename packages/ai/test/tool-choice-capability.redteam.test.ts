@@ -6,7 +6,7 @@ import type {
 	ToolChoice,
 	ToolChoiceCompat,
 	ToolChoiceSupport,
-} from "@gajae-code/ai";
+} from "@bworx-io/worx-ai";
 import {
 	clearToolChoiceIncapabilityRegistryForTests,
 	deriveToolChoiceSupport,
@@ -15,7 +15,7 @@ import {
 	markToolChoiceIncapability,
 	resolveToolChoice,
 	toolChoiceRegistryKey,
-} from "@gajae-code/ai";
+} from "@bworx-io/worx-ai";
 
 const supportRank: Record<ToolChoiceSupport, number> = {
 	none: 0,

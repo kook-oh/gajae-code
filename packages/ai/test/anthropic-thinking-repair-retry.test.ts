@@ -1,11 +1,18 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import type Anthropic from "@anthropic-ai/sdk";
-import { streamAnthropic } from "@gajae-code/ai/providers/anthropic";
-import type { AssistantMessage, Context, Model, ProviderSessionState, Tool, UserMessage } from "@gajae-code/ai/types";
+import { streamAnthropic } from "@bworx-io/worx-ai/providers/anthropic";
+import type {
+	AssistantMessage,
+	Context,
+	Model,
+	ProviderSessionState,
+	Tool,
+	UserMessage,
+} from "@bworx-io/worx-ai/types";
 import {
 	clearToolChoiceIncapabilityRegistryForTests,
 	getToolChoiceCapabilityOverride,
-} from "@gajae-code/ai/utils/tool-choice-capability";
+} from "@bworx-io/worx-ai/utils/tool-choice-capability";
 
 const model: Model<"anthropic-messages"> = {
 	api: "anthropic-messages",

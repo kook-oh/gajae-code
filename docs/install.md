@@ -8,7 +8,7 @@ gjc --version
 gjc --smoke-test
 ```
 
-The scoped package is also available as `@gajae-code/coding-agent`.
+The scoped package is also available as `@bworx-io/worx-code`.
 
 ## Supported platforms
 
@@ -77,7 +77,7 @@ The installer writes `gjc.js` plus a minimal `index.js` into inshellisense's def
 
 Interactive startup checks the npm registry for a newer GJC version in the background by default. This check is notify-only and non-mutating: GJC never installs or replaces itself during launch.
 
-- Recognized Bun global install → `gjc update` or `bun install -g @gajae-code/coding-agent@latest`.
+- Recognized Bun global install → `gjc update` or `bun install -g @bworx-io/worx-code@latest`.
 - Recognized Windows npm install → `gjc update` or the original npm package workflow.
 - Supported standalone binary installed by the bundled installer → `gjc update` or rerun the documented platform installer.
 - Source checkout or `dev:link` executable → update, pull, build, and link through that checkout's original workflow.

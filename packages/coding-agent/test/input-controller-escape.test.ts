@@ -9,7 +9,7 @@ import type {
 } from "@bworx-io/worx-code/modes/types";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { SubagentTool } from "@bworx-io/worx-code/tools/implementations";
-import type { SlashCommand } from "@gajae-code/tui";
+import type { SlashCommand } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	resetSettingsForTest();

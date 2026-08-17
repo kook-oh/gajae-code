@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
-import { type Component, TUI } from "@gajae-code/tui";
-import { Text } from "@gajae-code/tui/components/text";
-import { renderMetrics } from "@gajae-code/tui/metrics";
-import { ImageProtocol, TERMINAL } from "@gajae-code/tui/terminal-capabilities";
+import { type Component, TUI } from "@bworx-io/worx-tui";
+import { Text } from "@bworx-io/worx-tui/components/text";
+import { renderMetrics } from "@bworx-io/worx-tui/metrics";
+import { ImageProtocol, TERMINAL } from "@bworx-io/worx-tui/terminal-capabilities";
 import { VirtualTerminal } from "./virtual-terminal";
 
 /**

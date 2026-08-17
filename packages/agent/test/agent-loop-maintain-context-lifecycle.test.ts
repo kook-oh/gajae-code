@@ -1,6 +1,6 @@
 import { expect, it } from "bun:test";
-import { Agent, agentLoop, agentLoopContinue } from "@gajae-code/agent-core";
-import { createRunResourceLedger } from "@gajae-code/agent-core/run-resource-ledger";
+import { Agent, agentLoop, agentLoopContinue } from "@bworx-io/worx-agent-core";
+import { createRunResourceLedger } from "@bworx-io/worx-agent-core/run-resource-ledger";
 import type {
 	AgentContext,
 	AgentEvent,
@@ -9,10 +9,10 @@ import type {
 	AgentTool,
 	RunCancellationDomain,
 	StreamFn,
-} from "@gajae-code/agent-core/types";
-import type { AssistantMessage, Message } from "@gajae-code/ai";
-import { createMockModel } from "@gajae-code/ai/providers/mock";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+} from "@bworx-io/worx-agent-core/types";
+import type { AssistantMessage, Message } from "@bworx-io/worx-ai";
+import { createMockModel } from "@bworx-io/worx-ai/providers/mock";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { createAssistantMessage, createUserMessage } from "./helpers";
 
 function identityConverter(messages: AgentMessage[]): Message[] {

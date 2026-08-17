@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { Agent, type AgentTool, ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { Effort, type Model } from "@bworx-io/worx-ai";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
@@ -15,10 +18,7 @@ import {
 	type SessionStorageWriterOpenOptions,
 	SessionStorageWriterRetryableCloseError,
 } from "@bworx-io/worx-code/session/session-storage";
-import { Agent, type AgentTool, ThinkingLevel } from "@gajae-code/agent-core";
-import { Effort, type Model } from "@gajae-code/ai";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import { z } from "zod";
 import {
 	DEFAULT_MODEL_SELECTION_RECOVERY_MESSAGE,

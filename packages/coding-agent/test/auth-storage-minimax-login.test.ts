@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
-import { hookFetch, Snowflake } from "@gajae-code/utils";
+import { hookFetch, Snowflake } from "@bworx-io/worx-utils";
 
 describe("AuthStorage MiniMax login", () => {
 	let tempDir: string;

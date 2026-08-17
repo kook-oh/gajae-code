@@ -12,7 +12,7 @@ import { specialHandlers } from "@bworx-io/worx-code/web/scrapers";
 import * as scrapers from "@bworx-io/worx-code/web/scrapers/types";
 import * as scraperUtils from "@bworx-io/worx-code/web/scrapers/utils";
 import * as natives from "@bworx-io/worx-code-natives";
-import { hookFetch, ptree, Snowflake } from "@gajae-code/utils";
+import { hookFetch, ptree, Snowflake } from "@bworx-io/worx-utils";
 
 const withMissingSystemPython = () => {
 	const whichSpy = vi.spyOn(Bun, "which").mockImplementation(() => null);

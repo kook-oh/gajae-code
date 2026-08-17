@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
+import { Agent } from "@bworx-io/worx-agent-core";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
-import { Agent } from "@gajae-code/agent-core";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import { ModelRegistry } from "../src/config/model-registry";
 import { IrcSplitViewComponent } from "../src/modes/components/irc-sidebar";
 import { InteractiveMode } from "../src/modes/interactive-mode";

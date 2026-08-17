@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
 import { disposeAllKernelSessions, executePythonWithKernel } from "@bworx-io/worx-code/eval/py/executor";
 import { DEFAULT_MAX_BYTES } from "@bworx-io/worx-code/session/streaming-output";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import { FakeKernel } from "./helpers";
 
 describe("executePythonWithKernel", () => {

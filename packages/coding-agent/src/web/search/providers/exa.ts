@@ -6,7 +6,7 @@
  * Requests per-result summaries via `contents.summary` and synthesizes
  * them into a combined `answer` string on the SearchResponse.
  */
-import { type AuthStorage, getEnvApiKey } from "@gajae-code/ai/core";
+import { type AuthStorage, getEnvApiKey } from "@bworx-io/worx-ai/core";
 import { settings } from "../../../config/settings";
 
 import type { SearchResponse, SearchSource } from "../../../web/search/types";

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import * as path from "node:path";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import { TempDir } from "@gajae-code/utils";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import { TempDir } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import {
 	buildContributionPrepWorkerPrompt,

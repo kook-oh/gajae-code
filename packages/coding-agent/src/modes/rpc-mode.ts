@@ -1,6 +1,6 @@
 /** Preserved headless JSONL RPC transport for external process consumers. */
 import { createInterface } from "node:readline";
-import { Snowflake } from "@gajae-code/utils";
+import { Snowflake } from "@bworx-io/worx-utils";
 import type {
 	ExtensionUIContext,
 	ExtensionUIDialogOptions,

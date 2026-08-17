@@ -6,7 +6,7 @@ import * as lsp from "@bworx-io/worx-code/lsp";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
-import { TempDir } from "@gajae-code/utils";
+import { TempDir } from "@bworx-io/worx-utils";
 import {
 	getLspStartupWarningMessage,
 	LSP_STARTUP_EVENT_CHANNEL,

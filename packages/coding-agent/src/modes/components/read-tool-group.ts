@@ -1,5 +1,5 @@
-import type { Component } from "@gajae-code/tui";
-import { Container, Text } from "@gajae-code/tui";
+import type { Component } from "@bworx-io/worx-tui";
+import { Container, Text } from "@bworx-io/worx-tui";
 import { InternalUrlRouter } from "../../internal-urls";
 import { getLanguageFromPath, theme } from "../../modes/theme/theme";
 import { splitPathAndSel } from "../../tools/path-utils";

@@ -1,5 +1,5 @@
-import { ThinkingLevel, type ThinkingLevel as ThinkingLevelValue } from "@gajae-code/agent-core";
-import { Container, type SelectItem, SelectList, Text } from "@gajae-code/tui";
+import { ThinkingLevel, type ThinkingLevel as ThinkingLevelValue } from "@bworx-io/worx-agent-core";
+import { Container, type SelectItem, SelectList, Text } from "@bworx-io/worx-tui";
 import { getSelectListTheme, theme } from "../../modes/theme/theme";
 import { getThinkingLevelMetadata, type ThinkingLevelValue as ThinkingMetadataValue } from "../../thinking-metadata";
 import { DynamicBorder } from "./dynamic-border";

@@ -13,7 +13,7 @@
  */
 import { afterEach, describe, expect, it, vi } from "bun:test";
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import {
 	resolveSessionContextBudgetBytes,
 	SESSION_CONTEXT_MATERIALIZATION_BUDGET_BYTES_DEFAULT,

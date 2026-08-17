@@ -1,4 +1,4 @@
-import { renderMermaidAsciiSafe } from "@gajae-code/utils";
+import { renderMermaidAsciiSafe } from "@bworx-io/worx-utils";
 
 const cache = new Map<string, string | null>();
 

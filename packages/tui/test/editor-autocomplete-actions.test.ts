@@ -6,8 +6,8 @@ import {
 	type AutocompleteItem,
 	type AutocompleteProvider,
 	CombinedAutocompleteProvider,
-} from "@gajae-code/tui/autocomplete";
-import { Editor } from "@gajae-code/tui/components/editor";
+} from "@bworx-io/worx-tui/autocomplete";
+import { Editor } from "@bworx-io/worx-tui/components/editor";
 import { defaultEditorTheme } from "./test-themes";
 
 class HashActionProvider implements AutocompleteProvider {

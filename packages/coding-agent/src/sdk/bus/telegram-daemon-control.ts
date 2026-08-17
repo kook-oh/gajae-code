@@ -11,7 +11,7 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { nativeProcessBindings } from "@gajae-code/utils/native-process";
+import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
 import type { Settings } from "../../config/settings";
 import type {
 	BuiltInDaemonController,

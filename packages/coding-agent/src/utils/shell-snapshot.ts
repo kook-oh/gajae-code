@@ -8,7 +8,7 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { postmortem } from "@gajae-code/utils";
+import { postmortem } from "@bworx-io/worx-utils";
 
 const SNAPSHOT_TIMEOUT_MS = 2_000;
 const SNAPSHOT_ROOT_PREFIX = "gjc-shell-snapshots-";

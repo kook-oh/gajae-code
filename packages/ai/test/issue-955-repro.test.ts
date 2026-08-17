@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { getBundledModel } from "@gajae-code/ai/models";
-import { streamOpenAICompletions } from "@gajae-code/ai/providers/openai-completions";
-import type { Context, Model } from "@gajae-code/ai/types";
+import { getBundledModel } from "@bworx-io/worx-ai/models";
+import { streamOpenAICompletions } from "@bworx-io/worx-ai/providers/openai-completions";
+import type { Context, Model } from "@bworx-io/worx-ai/types";
 
 const originalFetch = global.fetch;
 

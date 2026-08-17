@@ -7,15 +7,15 @@
 
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ToolCallContext } from "@gajae-code/agent-core";
-import type { Component, Ellipsis } from "@gajae-code/tui";
-import { replaceTabs, truncateToWidth } from "@gajae-code/tui";
-import { pluralize } from "@gajae-code/utils";
+import type { ToolCallContext } from "@bworx-io/worx-agent-core";
+import type { Component, Ellipsis } from "@bworx-io/worx-tui";
+import { replaceTabs, truncateToWidth } from "@bworx-io/worx-tui";
+import { pluralize } from "@bworx-io/worx-utils";
 import { settings } from "../config/settings";
 import type { Theme } from "../modes/theme/theme";
 import { Hasher } from "../tui/utils";
 
-export { Ellipsis, replaceTabs, truncateToWidth, wrapTextWithAnsi } from "@gajae-code/tui";
+export { Ellipsis, replaceTabs, truncateToWidth, wrapTextWithAnsi } from "@bworx-io/worx-tui";
 export { formatScreenshot } from "./browser/screenshot-format";
 
 // =============================================================================
@@ -109,7 +109,7 @@ export function getDomain(url: string): string {
 // Formatting Utilities
 // =============================================================================
 
-export { formatAge, formatBytes, formatCount, formatDuration, pluralize } from "@gajae-code/utils";
+export { formatAge, formatBytes, formatCount, formatDuration, pluralize } from "@bworx-io/worx-utils";
 
 // =============================================================================
 // Theme Helper Utilities

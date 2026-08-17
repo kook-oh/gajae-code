@@ -7,7 +7,7 @@
 
 import * as fs from "node:fs/promises";
 import type * as path from "node:path";
-import { APP_NAME, getAgentDir } from "@gajae-code/utils";
+import { APP_NAME, getAgentDir } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import chalk from "chalk";
 import {

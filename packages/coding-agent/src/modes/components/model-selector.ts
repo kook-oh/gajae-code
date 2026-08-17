@@ -1,5 +1,5 @@
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { getSupportedEfforts, type Model, modelSupportsServiceTier, modelsAreEqual } from "@gajae-code/ai/core";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { getSupportedEfforts, type Model, modelSupportsServiceTier, modelsAreEqual } from "@bworx-io/worx-ai/core";
 import {
 	Container,
 	fuzzyFilter,
@@ -12,8 +12,8 @@ import {
 	Text,
 	type TUI,
 	truncateToWidth,
-} from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { isModelProfileProviderAvailable } from "../../config/model-profile-contract";
 import {
 	getModelProfilePresentation,

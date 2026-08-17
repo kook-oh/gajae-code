@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { ArgDescriptor, CommandCtor, CommandEntry, FlagDescriptor } from "@gajae-code/utils/cli";
+import type { ArgDescriptor, CommandCtor, CommandEntry, FlagDescriptor } from "@bworx-io/worx-utils/cli";
 
 export type FigName = string | string[];
 

@@ -1,4 +1,4 @@
-import { Box, Markdown, Spacer, Text } from "@gajae-code/tui";
+import { Box, Markdown, Spacer, Text } from "@bworx-io/worx-tui";
 import { getMarkdownTheme, theme } from "../../modes/theme/theme";
 import type { BranchSummaryMessage } from "../../session/messages";
 

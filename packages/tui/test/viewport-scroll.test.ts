@@ -25,8 +25,8 @@ import {
 	type ViewportAnchorRender,
 	type ViewportAnchorSource,
 	visibleWidth,
-} from "@gajae-code/tui";
-import { renderMetrics } from "@gajae-code/tui/metrics";
+} from "@bworx-io/worx-tui";
+import { renderMetrics } from "@bworx-io/worx-tui/metrics";
 import { defaultEditorTheme, defaultMarkdownTheme } from "./test-themes";
 import { VirtualTerminal } from "./virtual-terminal";
 

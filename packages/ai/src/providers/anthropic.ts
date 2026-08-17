@@ -19,7 +19,7 @@ import {
 	isUnexpectedSocketCloseMessage,
 	logger,
 	readSseEvents,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import {
 	hasOpus47ApiRestrictions,
 	mapEffortToAnthropicAdaptiveEffort,

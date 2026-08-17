@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { encodeResponse, encodeStream } from "@gajae-code/ai/providers/openai-responses-server";
-import { processResponsesStream } from "@gajae-code/ai/providers/openai-responses-shared";
-import type { AssistantMessage, Model, ThinkingContent } from "@gajae-code/ai/types";
-import { AssistantMessageEventStream } from "@gajae-code/ai/utils/event-stream";
+import { encodeResponse, encodeStream } from "@bworx-io/worx-ai/providers/openai-responses-server";
+import { processResponsesStream } from "@bworx-io/worx-ai/providers/openai-responses-shared";
+import type { AssistantMessage, Model, ThinkingContent } from "@bworx-io/worx-ai/types";
+import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import type { ResponseStreamEvent } from "openai/resources/responses/responses";
 
 const RAW_SENTINEL = "RAW_SENTINEL_DO_NOT_SURFACE";

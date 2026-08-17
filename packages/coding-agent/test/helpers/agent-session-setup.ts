@@ -1,4 +1,4 @@
-import type { AssistantMessage } from "@gajae-code/ai";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 
 /**
  * Shared factory for building a minimal mock `AssistantMessage`

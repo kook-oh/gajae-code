@@ -18,7 +18,7 @@
  * MCP runtime execution. Copy definitions into GJC's own mcp.json instead.
  */
 import * as path from "node:path";
-import { tryParseJson } from "@gajae-code/utils";
+import { tryParseJson } from "@bworx-io/worx-utils";
 import { registerProvider } from "../capability";
 import { type ContextFile, contextFileCapability } from "../capability/context-file";
 import { type Extension, type ExtensionManifest, extensionCapability } from "../capability/extension";

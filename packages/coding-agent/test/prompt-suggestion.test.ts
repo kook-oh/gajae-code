@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import * as ai from "@gajae-code/ai";
-import { type Api, getBundledModel, type Model } from "@gajae-code/ai";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import * as ai from "@bworx-io/worx-ai";
+import { type Api, getBundledModel, type Model } from "@bworx-io/worx-ai";
 import {
 	buildPromptSuggestionContext,
 	generatePromptSuggestion,

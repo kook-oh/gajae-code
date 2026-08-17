@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import type { Usage } from "@bworx-io/worx-ai";
+import { classifyFallbackTrigger } from "@bworx-io/worx-ai/utils/fallback-transport";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { resetSettingsForTest, Settings, settings } from "@bworx-io/worx-code/config/settings";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
@@ -12,8 +14,6 @@ import {
 	effectiveFallbackDelay,
 	FallbackChainController,
 } from "@bworx-io/worx-code/session/fallback-chain-controller";
-import type { Usage } from "@gajae-code/ai";
-import { classifyFallbackTrigger } from "@gajae-code/ai/utils/fallback-transport";
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1_000;
 const zeroPriceUsage: Usage = {

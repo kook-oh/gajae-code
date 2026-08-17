@@ -1,7 +1,7 @@
 /**
  * Model definitions for Grok CLI's API.
  */
-import { Effort } from '@gajae-code/ai/model-thinking';
+import { Effort } from '@bworx-io/worx-ai/model-thinking';
 
 // ─── Cost constants ($/M tokens) ──────────────────────────────────────────────
 

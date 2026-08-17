@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
-import { getAgentDir, isEnoent } from "@gajae-code/utils";
+import { getAgentDir, isEnoent } from "@bworx-io/worx-utils";
 import { BUNDLED_WORX_SKILL_CATALOG, type BundledGjcSkillCatalogEntry } from "./gjc-skills.generated";
 
 export const DEFAULT_WORX_DEFINITION_NAMES = ["deep-interview", "ralplan", "team", "ultragoal"] as const;

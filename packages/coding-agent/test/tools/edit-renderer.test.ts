@@ -1,12 +1,12 @@
 import { beforeAll, describe, expect, it } from "bun:test";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { EDIT_MODE_STRATEGIES } from "@bworx-io/worx-code/edit";
 import { editToolRenderer } from "@bworx-io/worx-code/edit/renderer";
 import { getEditRequestTargetInventory, type PerFileDiffPreview } from "@bworx-io/worx-code/edit/streaming";
 import { ToolExecutionComponent } from "@bworx-io/worx-code/modes/components/tool-execution";
 import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
-import type { AgentTool } from "@gajae-code/agent-core";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 
 beforeAll(async () => {
 	resetSettingsForTest();

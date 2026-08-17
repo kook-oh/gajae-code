@@ -1,4 +1,4 @@
-import { getAgentDir } from "@gajae-code/utils";
+import { getAgentDir } from "@bworx-io/worx-utils";
 import { readGuideCache } from "./cache";
 import { BUNDLED_GUIDE_MANIFESTS, GuideCatalog, guideFetchPolicy, isGuideFetchUrlAllowed } from "./catalog";
 import { GUIDE_CLIENT_VERSION, GUIDE_PINNED_KEYS } from "./verify";

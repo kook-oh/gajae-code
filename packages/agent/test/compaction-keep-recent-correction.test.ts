@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import type { CompactionSettings } from "@gajae-code/agent-core/compaction/compaction";
+import type { CompactionSettings } from "@bworx-io/worx-agent-core/compaction/compaction";
 import {
 	DEFAULT_COMPACTION_SETTINGS,
 	prepareCompaction,
 	TOKEN_CORRECTION_MAX_RATIO,
 	TOKEN_CORRECTION_MIN_RATIO,
-} from "@gajae-code/agent-core/compaction/compaction";
-import type { SessionEntry, SessionMessageEntry } from "@gajae-code/agent-core/compaction/entries";
-import type { AssistantMessage, Usage } from "@gajae-code/ai/types";
+} from "@bworx-io/worx-agent-core/compaction/compaction";
+import type { SessionEntry, SessionMessageEntry } from "@bworx-io/worx-agent-core/compaction/entries";
+import type { AssistantMessage, Usage } from "@bworx-io/worx-ai/types";
 
 const timestamp = "2026-06-12T00:00:00.000Z";
 const ts = Date.parse(timestamp);

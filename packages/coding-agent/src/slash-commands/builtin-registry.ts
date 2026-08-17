@@ -1,10 +1,10 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { ThinkingLevel } from "@gajae-code/agent-core";
-import { type Model, modelsAreEqual } from "@gajae-code/ai/core";
-import { getOAuthProviders } from "@gajae-code/ai/utils/oauth";
-import { PET_SKINS, type PetMode, Spacer, Text } from "@gajae-code/tui";
-import { setProjectDir } from "@gajae-code/utils";
+import { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import { type Model, modelsAreEqual } from "@bworx-io/worx-ai/core";
+import { getOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
+import { PET_SKINS, type PetMode, Spacer, Text } from "@bworx-io/worx-tui";
+import { setProjectDir } from "@bworx-io/worx-utils";
 import { jobElapsedMs } from "../async";
 import { activateModelProfile, materializeActiveModelProfileAssignments } from "../config/model-profile-activation";
 import { formatModelProfileDisplayLabel } from "../config/model-profiles";

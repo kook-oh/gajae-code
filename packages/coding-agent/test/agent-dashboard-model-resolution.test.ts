@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
+import type { Model } from "@bworx-io/worx-ai";
 import {
 	resolveAgentCreationModel,
 	updateAgentModelOverride,
 } from "@bworx-io/worx-code/modes/components/agent-dashboard";
-import type { Model } from "@gajae-code/ai";
 
 const availableModel = {
 	provider: "available-provider",

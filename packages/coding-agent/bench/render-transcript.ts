@@ -1,6 +1,6 @@
-import type { AgentTool } from "@gajae-code/agent-core";
-import type { AssistantMessage } from "@gajae-code/ai";
-import type { TUI } from "@gajae-code/tui";
+import type { AgentTool } from "@bworx-io/worx-agent-core";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
+import type { TUI } from "@bworx-io/worx-tui";
 import { initTheme } from "../src/modes/theme/theme";
 import { AssistantMessageComponent } from "../src/modes/components/assistant-message";
 import { ToolExecutionComponent } from "../src/modes/components/tool-execution";

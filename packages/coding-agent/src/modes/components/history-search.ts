@@ -9,8 +9,8 @@ import {
 	Text,
 	truncateToWidth,
 	visibleWidth,
-} from "@gajae-code/tui";
-import { getProjectDir } from "@gajae-code/utils";
+} from "@bworx-io/worx-tui";
+import { getProjectDir } from "@bworx-io/worx-utils";
 import { theme } from "../../modes/theme/theme";
 import { matchesAppInterrupt } from "../../modes/utils/keybinding-matchers";
 import type { HistoryEntry, HistoryStorage } from "../../session/history-storage";

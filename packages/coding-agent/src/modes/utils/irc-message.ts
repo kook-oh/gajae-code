@@ -1,7 +1,7 @@
 import * as crypto from "node:crypto";
-import type { AgentMessage } from "@gajae-code/agent-core";
-import { getSegmenter } from "@gajae-code/tui";
-import { sanitizeText } from "@gajae-code/utils";
+import type { AgentMessage } from "@bworx-io/worx-agent-core";
+import { getSegmenter } from "@bworx-io/worx-tui";
+import { sanitizeText } from "@bworx-io/worx-utils";
 import { associateSessionMessageObservationId, getSessionMessageObservationId } from "../../session/session-manager";
 
 const graphemeSegmenter = getSegmenter();

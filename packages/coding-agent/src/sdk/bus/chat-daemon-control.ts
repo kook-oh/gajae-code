@@ -4,7 +4,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import { nativeProcessBindings } from "@gajae-code/utils/native-process";
+import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
 
 type NativeChatDaemonBindings = Pick<typeof import("@bworx-io/worx-code-natives"), "exactUnlink">;
 let nativeChatDaemonBindings: NativeChatDaemonBindings | undefined;

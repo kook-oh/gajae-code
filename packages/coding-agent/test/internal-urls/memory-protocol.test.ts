@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { InternalUrlRouter } from "@bworx-io/worx-code/internal-urls";
 import { getMemoryRoot } from "@bworx-io/worx-code/memories";
 import type { AgentSession } from "@bworx-io/worx-code/session/agent-session";
-import { getAgentDir, setAgentDir } from "@gajae-code/utils";
+import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import { AgentRegistry } from "../../src/registry/agent-registry";
 
 interface MemoryFixture {

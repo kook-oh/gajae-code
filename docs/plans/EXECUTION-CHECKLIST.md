@@ -1,7 +1,7 @@
 # 엔진 피벗 실행 체크리스트 (정본)
 
 승인 계획: `docs/plans/ENGINE-PIVOT-PLAN.md` (rev.6) · 프로그램 지도: `docs/PROGRAM.md`
-최종 갱신: 2026-08-17 · 기준 커밋: `d8caa9eed`
+최종 갱신: 2026-08-18 · 기준 커밋: `10f3bd91f`
 
 > **자동 실행 규약.** 각 슬라이스는 *독립적으로 착수 가능하고, 명시된 수용 명령으로 스스로 통과/실패를 판정한다*.
 > 에이전트는 순서대로 하나씩 잡아 실행하고, 슬라이스 완료 시 이 문서의 체크박스를 같은 커밋에서 갱신한다.
@@ -20,18 +20,48 @@
 - [x] **리네임 S4: 경로·플러그인** — `.gjc/`→`.worx/`, `~/.gjc`→`~/.worx`, `plugins/worx-code`, `docs/MIGRATION-worx-rename.md`
 - [x] **보존 표면 S3 복원** — 헤드리스 JSONL(`--mode rpc`) 및 테스트
 - [x] **CI 제거** — GitHub Actions 워크플로 삭제 + 레포 레벨 `enabled=false`(과금 중단)
+- [x] **리네임 S5: 워크스페이스 스코프 통일** — `@gajae-code/*` → `@bworx-io/worx-*` (아래 슬라이스 5 참조)
 
 ---
 
-## 슬라이스 5 — 워크스페이스 스코프 통일 `@gajae-code/*` → `@bworx-io/*`
+## 슬라이스 5 — 워크스페이스 스코프 통일 `@gajae-code/*` → `@bworx-io/*` ✅
 
-가장 큰 잔여 리네임. 760파일이 `@gajae-code/`를 import 한다.
+가장 큰 잔여 리네임이었다. 1,616파일 · 8,318개 스코프 리터럴을 정확 문자열(`@gajae-code/`) 매칭으로 치환.
 
-- [ ] 패키지명 변경: `agent-core` `ai` `bridge-client` `stats` `tui` `utils` + 벤치마크 2종 → `@bworx-io/worx-*`
-- [ ] 전 import 경로 갱신 + `bun.lock` 재생성
-- [ ] `packages/gajae-code/` 빈 잔재 디렉터리 제거
-- [ ] **미지원 플랫폼 패키지 삭제** (G2: 2종만 지원) — `natives-darwin-x64` `natives-linux-arm64` `natives-win32-x64`
-- [ ] 수용: `bun install && bun --cwd=packages/coding-agent run check` 통과, `git grep -l '@gajae-code/' -- packages scripts | wc -l` = 0
+- [x] 패키지명 변경: `agent-core` `ai` `bridge-client` `stats` `tui` `utils` + 벤치마크 2종 → `@bworx-io/worx-*`
+- [x] 전 import 경로 갱신 + 루트 catalog 갱신 + `bun.lock` 재생성
+- [x] `packages/gajae-code/` 빈 잔재 디렉터리 제거
+- [x] **미지원 플랫폼 패키지 삭제** (G2: 2종만 지원) — `natives-darwin-x64` `natives-linux-arm64` `natives-win32-x64`
+      (`packages/natives` `optionalDependencies`와 `loader-state.js` `SUPPORTED_PLATFORMS`는 이미 2종이었음)
+- [x] 정규식·경로·npmrc 형태로 숨어 있던 스코프(`@gajae-code\/…` 이스케이프, `node_modules/@gajae-code`,
+      `@gajae-code:registry`, `gajae-code-*.tgz` pack 파일명) 갱신 — 문자열 스윕이 못 잡던 **기능성** 지점
+- [x] 스코프 게이트 재정렬: `rebrand-inventory`(scope/bin/root name + pivot 문서 allowlist), `verify-g002-gates`,
+      `release-evidence`의 `PUBLIC_PACKAGE_DEFINITIONS` 이름순 재정렬, `worx-stats` bin
+- [x] 수용: `bun install && bun --cwd=packages/coding-agent run check` 통과 ·
+      `bun run check:ts`는 기존 실패(`sdk-client.test.ts` 5건, HEAD 동일)를 제외한 전 게이트 통과 ·
+      `git grep -l '@gajae-code/' -- packages scripts` = **릴리스된 CHANGELOG 6개만** (아래 유지 근거)
+
+**의도적 잔존 (스윕 대상 아님)**
+
+| 대상 | 근거 |
+|---|---|
+| `packages/*/CHANGELOG.md` 6개의 릴리스 섹션 | 과거 사실 기록. `rebrand-inventory`의 `attribution-and-license`, `verify-gjc-sdk-rename`의 `isAllowed()`가 이미 changelog를 면제한다. `## [Unreleased]`에 리네임 항목을 추가했다. |
+| `legacy-pi-compat.ts`의 `PI_SCOPE_ALIASES` 내 `"gajae-code"` | **소비자 계약.** 서드파티 플러그인(plannotator·runfusion·juicesharp)이 구 스코프를 peerDependencies로 선언한다. 별칭 입력은 유지하고 canonical 타깃만 `@bworx-io/worx-*`로 옮겼다. |
+| `pi-scope-aliases.test.ts` / `worx-public-identity.test.ts` / `verify-gjc-sdk-rename.ts`의 구 스코프 리터럴 | 위 계약과 "구 이름 부재" 음성 단정을 지키려면 구 문자열이 필요하다. 레포 선례(`rebrand-inventory`의 `"@oh-my" + "-pi"`)대로 **문자열 결합**으로 표기해 게이트 0을 유지한다. |
+| `gajae-code/<preset>` 모델 네임스페이스, upstream 이슈 URL, harness kind, pet 위젯 등 | 스코프가 아닌 **브랜드 문자열** — 슬라이스 6 이후 범위. |
+
+**부수 시정 (슬라이스 5 착수 시 이미 깨져 있던 것)**
+- `check:ts`가 HEAD에서 실패 중이었다: CI 제거 커밋(`2f7ade09e`)이 `check-node20-baseline.ts`와
+  `ci-risk-canary-manifest.ts`를 삭제했지만 참조를 남겼다 → 고아 스크립트 `ci-virtual-integration.{ts,test.ts}` 삭제,
+  `check:ts`/`ci:check:full`의 `check:node20-baseline` 참조 제거.
+- 패키지 `homepage`가 `check-public-version-sync`의 기대값과 어긋나 있었다(`…#readme` vs 리포 URL) → 리포 URL로 정렬.
+- `default-gjc-definitions.test.ts`가 여전히 `gjc skills list`를 기대 → 실제 출력(`worx …`)으로 갱신.
+
+**기존 실패 (A/B로 HEAD와 동일 확인 — 이번 변경과 무관)**
+- `packages/coding-agent/test/sdk-client.test.ts` 5건 (HEAD 동일)
+- `scripts/release-policy.test.ts` / `release-publish-order.test.ts` 15건 — 삭제된 `.github/workflows/*`를 읽으려 함 + 설치 스크립트의 `GJC` 문구
+- `verify-g002-gates`의 `MCP quarantine` / `inline-local tools` 2건 (HEAD 동일)
+- `team-runtime` 계열 (이 맥에서 상시 실패, HEAD 동일)
 
 ## 슬라이스 6 — 내부 소문자 `gjc` 심볼·경로
 
@@ -115,7 +145,7 @@
 |---|---|
 | P0-FREEZE | ✅ 완료 |
 | P1b natives 빌드 | ✅ 2플랫폼 완료 / ⬜ 패키징·게이트·게시 (슬라이스 7) |
-| P1 리네임 | 🔶 4/6 슬라이스 완료 (남음: 스코프·내부 심볼) |
+| P1 리네임 | 🔶 5/6 슬라이스 완료 (남음: 내부 소문자 `gjc` 심볼 — 슬라이스 6) |
 | P1 exit 증명 | ⬜ 슬라이스 8 |
 | P1c 동기화 | ⬜ 슬라이스 9 |
 | P4 이관 | ⬜ 슬라이스 10 |

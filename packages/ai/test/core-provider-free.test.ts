@@ -17,7 +17,7 @@ function decode(value: Uint8Array): string {
 
 async function runCoreTrace(tracePath: string): Promise<TraceRecord[]> {
 	const result = Bun.spawnSync({
-		cmd: [process.execPath, "--preload", traceLoader, "-e", 'await import("@gajae-code/ai/core")'],
+		cmd: [process.execPath, "--preload", traceLoader, "-e", 'await import("@bworx-io/worx-ai/core")'],
 		cwd: repoRoot,
 		env: {
 			HOME: Bun.env.HOME ?? "",
@@ -41,7 +41,7 @@ async function runCoreTrace(tracePath: string): Promise<TraceRecord[]> {
 }
 
 describe("core provider-free loaded edge", () => {
-	test("importing @gajae-code/ai/core loads no provider implementation modules", async () => {
+	test("importing @bworx-io/worx-ai/core loads no provider implementation modules", async () => {
 		const tempDir = await mkdtemp(path.join(os.tmpdir(), "gajae-ai-core-trace-"));
 		const tracePath = path.join(tempDir, "trace.json");
 		try {

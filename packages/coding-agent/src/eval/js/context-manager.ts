@@ -1,4 +1,4 @@
-import { isCompiledBinary, logger, Snowflake } from "@gajae-code/utils";
+import { isCompiledBinary, logger, Snowflake } from "@bworx-io/worx-utils";
 import { registerResourceOwner } from "../../runtime/process-lifecycle";
 import type { ToolSession } from "../../tools";
 import { ToolAbortError, ToolError } from "../../tools/tool-errors";

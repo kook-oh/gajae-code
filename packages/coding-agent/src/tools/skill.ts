@@ -16,8 +16,8 @@
  * its mode-state or by running the handoff verb directly.
  */
 
-import type { AgentTool, AgentToolResult } from "@gajae-code/agent-core";
-import { prompt, untilAborted } from "@gajae-code/utils";
+import type { AgentTool, AgentToolResult } from "@bworx-io/worx-agent-core";
+import { prompt, untilAborted } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
 import { resolveSubskillActivationForSkillInvocation } from "../extensibility/gjc-plugins";
 import { findRuntimeSkillByName } from "../extensibility/runtime-skill-discovery";

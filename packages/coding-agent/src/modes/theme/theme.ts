@@ -1,9 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ThinkingLevel } from "@gajae-code/agent-core";
-import type { Effort } from "@gajae-code/ai/core";
-import type { EditorTheme, MarkdownTheme, SelectListTheme, SymbolTheme } from "@gajae-code/tui";
-import { adjustHsv, getCustomThemesDir, isEnoent, logger } from "@gajae-code/utils";
+import type { ThinkingLevel } from "@bworx-io/worx-agent-core";
+import type { Effort } from "@bworx-io/worx-ai/core";
+import type { EditorTheme, MarkdownTheme, SelectListTheme, SymbolTheme } from "@bworx-io/worx-tui";
+import { adjustHsv, getCustomThemesDir, isEnoent, logger } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import * as z from "zod/v4";
 // Embed theme JSON files at build time
@@ -2486,7 +2486,7 @@ export function getEditorTheme(): EditorTheme {
 	};
 }
 
-export function getSettingsListTheme(): import("@gajae-code/tui").SettingsListTheme {
+export function getSettingsListTheme(): import("@bworx-io/worx-tui").SettingsListTheme {
 	return {
 		label: (text: string, selected: boolean) => (selected ? theme.fg("accent", text) : text),
 		value: (text: string, selected: boolean) => (selected ? theme.fg("accent", text) : theme.fg("muted", text)),

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { streamOpenAICodexResponses } from "@gajae-code/ai/providers/openai-codex-responses";
-import type { Context, Model, ToolCall } from "@gajae-code/ai/types";
-import { getAgentDir, setAgentDir, TempDir } from "@gajae-code/utils";
+import { streamOpenAICodexResponses } from "@bworx-io/worx-ai/providers/openai-codex-responses";
+import type { Context, Model, ToolCall } from "@bworx-io/worx-ai/types";
+import { getAgentDir, setAgentDir, TempDir } from "@bworx-io/worx-utils";
 
 // The Codex Responses provider has its own stream handlers; the truncated
 // tool-call guard must cover it too. A `function_call` that never receives its

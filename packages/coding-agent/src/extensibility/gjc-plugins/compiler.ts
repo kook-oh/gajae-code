@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { parseFrontmatter, pathIsWithin } from "@gajae-code/utils";
+import { parseFrontmatter, pathIsWithin } from "@bworx-io/worx-utils";
 import { readSchemaDeclaration, schemaHash } from "./metadata";
 import { resolveWithinRoot } from "./paths";
 import { parseManifest, parseSubskillFrontmatter } from "./schema";

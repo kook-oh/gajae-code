@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 
-import { type Component, truncateToWidth, visibleWidth } from "@gajae-code/tui";
-import { formatCount, getProjectDir } from "@gajae-code/utils";
+import { type Component, truncateToWidth, visibleWidth } from "@bworx-io/worx-tui";
+import { formatCount, getProjectDir } from "@bworx-io/worx-utils";
 import {
 	type AppKeybinding,
 	KEYBINDINGS,

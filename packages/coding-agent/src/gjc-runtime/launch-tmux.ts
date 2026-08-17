@@ -1,8 +1,8 @@
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { VERSION } from "@gajae-code/utils/dirs";
-import { safeStderrWrite } from "@gajae-code/utils/safe-stderr";
+import { VERSION } from "@bworx-io/worx-utils/dirs";
+import { safeStderrWrite } from "@bworx-io/worx-utils/safe-stderr";
 import type { Args } from "../cli/args";
 import { readLinuxProcStartTimeSync } from "./linux-proc";
 import {

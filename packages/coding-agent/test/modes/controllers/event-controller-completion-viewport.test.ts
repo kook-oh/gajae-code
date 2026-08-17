@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "bun:test";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { resetSettingsForTest, Settings } from "@bworx-io/worx-code/config/settings";
 import { AssistantMessageComponent } from "@bworx-io/worx-code/modes/components/assistant-message";
 import { IrcSplitViewComponent } from "@bworx-io/worx-code/modes/components/irc-sidebar";
@@ -11,8 +12,7 @@ import {
 	associateSessionMessageViewportAnchorId,
 	getSessionMessageViewportAnchorId,
 } from "@bworx-io/worx-code/session/session-manager";
-import type { AssistantMessage } from "@gajae-code/ai";
-import { Container, shouldUseViewportRepaintForHost, Text, TUI } from "@gajae-code/tui";
+import { Container, shouldUseViewportRepaintForHost, Text, TUI } from "@bworx-io/worx-tui";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 
 function assistantMessage(text: string): AssistantMessage {

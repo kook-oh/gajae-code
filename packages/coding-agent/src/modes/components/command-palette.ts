@@ -7,7 +7,7 @@ import {
 	padding,
 	truncateToWidth,
 	visibleWidth,
-} from "@gajae-code/tui";
+} from "@bworx-io/worx-tui";
 import { sanitizeStatusText } from "../shared";
 import { theme } from "../theme/theme";
 import { DynamicBorder } from "./dynamic-border";

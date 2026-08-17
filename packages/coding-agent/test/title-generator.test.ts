@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "bun:test";
-import * as ai from "@gajae-code/ai";
-import { type Api, getBundledModel, type Model } from "@gajae-code/ai";
+import * as ai from "@bworx-io/worx-ai";
+import { type Api, getBundledModel, type Model } from "@bworx-io/worx-ai";
 import { formatSessionTerminalTitle, generateSessionTitle } from "../src/utils/title-generator";
 
 function getModelOrThrow(id: string): Model<Api> {

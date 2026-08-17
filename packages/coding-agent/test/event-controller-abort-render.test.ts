@@ -15,11 +15,11 @@
  *         `errorMessage` is NOT set (TTSR existing behavior unchanged).
  */
 import { describe, expect, it, vi } from "bun:test";
+import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import type { InteractiveModeContext } from "@bworx-io/worx-code/modes/types";
 import type { AgentSessionEvent } from "@bworx-io/worx-code/session/agent-session";
 import { SILENT_ABORT_MARKER } from "@bworx-io/worx-code/session/messages";
-import type { AssistantMessage } from "@gajae-code/ai";
 
 function makeAssistantMessage(overrides: Partial<AssistantMessage> = {}): AssistantMessage {
 	return {

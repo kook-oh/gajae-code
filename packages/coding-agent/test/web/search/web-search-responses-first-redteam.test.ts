@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { hookFetch } from "@gajae-code/utils";
+import { hookFetch } from "@bworx-io/worx-utils";
 import type { AuthStorage } from "../../../src/session/auth-storage";
 import { OpenAICompatibleSearchProvider } from "../../../src/web/search/providers/openai-compatible";
 import type { ActiveSearchModelContext } from "../../../src/web/search/types";

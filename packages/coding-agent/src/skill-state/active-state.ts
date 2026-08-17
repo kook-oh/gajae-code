@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import * as logger from "@gajae-code/utils/logger";
+import * as logger from "@bworx-io/worx-utils/logger";
 import {
 	activeSnapshotPath,
 	activeStateDir,

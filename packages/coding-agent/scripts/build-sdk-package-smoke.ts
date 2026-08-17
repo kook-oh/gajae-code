@@ -87,23 +87,23 @@ async function runSmoke(): Promise<Surface> {
 					name: "sdk-smoke",
 					private: true,
 					dependencies: {
-						"@gajae-code/agent-core": `file:${agentTarballPath}`,
-						"@gajae-code/ai": `file:${aiTarballPath}`,
-						"@gajae-code/bridge-client": `file:${bridgeClientTarballPath}`,
+						"@bworx-io/worx-agent-core": `file:${agentTarballPath}`,
+						"@bworx-io/worx-ai": `file:${aiTarballPath}`,
+						"@bworx-io/worx-bridge-client": `file:${bridgeClientTarballPath}`,
 						[packageName]: `file:${codingAgentTarballPath}`,
-						"@gajae-code/tui": `file:${tuiTarballPath}`,
+						"@bworx-io/worx-tui": `file:${tuiTarballPath}`,
 						"@bworx-io/worx-code-natives": `file:${nativesTarballPath}`,
 						[platformPackageName]: `file:${platformTarballPath}`,
-						"@gajae-code/utils": `file:${utilsTarballPath}`,
+						"@bworx-io/worx-utils": `file:${utilsTarballPath}`,
 					},
 					overrides: {
-						"@gajae-code/agent-core": `file:${agentTarballPath}`,
-						"@gajae-code/ai": `file:${aiTarballPath}`,
-						"@gajae-code/bridge-client": `file:${bridgeClientTarballPath}`,
-						"@gajae-code/tui": `file:${tuiTarballPath}`,
+						"@bworx-io/worx-agent-core": `file:${agentTarballPath}`,
+						"@bworx-io/worx-ai": `file:${aiTarballPath}`,
+						"@bworx-io/worx-bridge-client": `file:${bridgeClientTarballPath}`,
+						"@bworx-io/worx-tui": `file:${tuiTarballPath}`,
 						"@bworx-io/worx-code-natives": `file:${nativesTarballPath}`,
 						[platformPackageName]: `file:${platformTarballPath}`,
-						"@gajae-code/utils": `file:${utilsTarballPath}`,
+						"@bworx-io/worx-utils": `file:${utilsTarballPath}`,
 					},
 				},
 				null,
@@ -116,7 +116,7 @@ async function runSmoke(): Promise<Surface> {
 		const installedPackage = JSON.parse(
 			await fs.readFile(path.join(tempDir, "node_modules", packageName, "package.json"), "utf8"),
 		) as { exports?: Record<string, unknown> };
-		const installedAgentPackagePath = path.join(tempDir, "node_modules", "@gajae-code", "agent-core");
+		const installedAgentPackagePath = path.join(tempDir, "node_modules", "@bworx-io", "worx-agent-core");
 		const installedAgentPackageJsonPath = path.join(installedAgentPackagePath, "package.json");
 		const installedAgentPackage = JSON.parse(await fs.readFile(installedAgentPackageJsonPath, "utf8")) as {
 			name?: string;
@@ -159,7 +159,7 @@ async function runSmoke(): Promise<Surface> {
 		) {
 			throw new Error("packed smoke installed a mismatched agent-core package");
 		}
-		if (installedAgentPackage.name !== "@gajae-code/agent-core") {
+		if (installedAgentPackage.name !== "@bworx-io/worx-agent-core") {
 			throw new Error("packed smoke agent-core package identity is invalid");
 		}
 		if (installedPackage.exports?.["./session/internal/*"] !== null) {
@@ -172,7 +172,7 @@ async function runSmoke(): Promise<Surface> {
 		);
 		await fs.appendFile(
 			probePath,
-			`\nconst rootBefore = JSON.stringify(await snapshot());\nconst rootListing = await root.listManagedSessionCandidates({ scope: resolved.scope });\nif (rootListing.kind !== "complete" || rootListing.owned.length !== listing.owned.length || rootListing.owned[0]?.sessionId !== listing.owned[0]?.sessionId || rootListing.owned[0]?.path !== listing.owned[0]?.path) throw new Error("packed root readonly listing diverged from SDK listing");\nconst rootAfter = JSON.stringify(await snapshot());\nif (rootAfter !== rootBefore) throw new Error("packed root readonly listing mutated the filesystem");\nconst bridgeClient = await import("@gajae-code/bridge-client");\nif (sdk.SdkClient !== bridgeClient.SdkClient) throw new Error("SdkClient class identity differs between sdk and bridge-client");\n`,
+			`\nconst rootBefore = JSON.stringify(await snapshot());\nconst rootListing = await root.listManagedSessionCandidates({ scope: resolved.scope });\nif (rootListing.kind !== "complete" || rootListing.owned.length !== listing.owned.length || rootListing.owned[0]?.sessionId !== listing.owned[0]?.sessionId || rootListing.owned[0]?.path !== listing.owned[0]?.path) throw new Error("packed root readonly listing diverged from SDK listing");\nconst rootAfter = JSON.stringify(await snapshot());\nif (rootAfter !== rootBefore) throw new Error("packed root readonly listing mutated the filesystem");\nconst bridgeClient = await import("@bworx-io/worx-bridge-client");\nif (sdk.SdkClient !== bridgeClient.SdkClient) throw new Error("SdkClient class identity differs between sdk and bridge-client");\n`,
 		);
 		const surface = JSON.parse(run(["bun", "run", probePath], tempDir)) as Surface;
 		assertExport(Object.fromEntries(surface.root.map(name => [name, true])), "createAgentSession", "root");

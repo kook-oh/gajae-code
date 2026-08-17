@@ -7,7 +7,7 @@ import type { InteractiveModeContext, IrcArrivalSnapshot } from "@bworx-io/worx-
 import { parseIrcMessage } from "@bworx-io/worx-code/modes/utils/irc-message";
 import { UiHelpers } from "@bworx-io/worx-code/modes/utils/ui-helpers";
 import type { CustomMessage } from "@bworx-io/worx-code/session/messages";
-import { Container, Text, TUI } from "@gajae-code/tui";
+import { Container, Text, TUI } from "@bworx-io/worx-tui";
 import { VirtualTerminal } from "../../../../tui/test/virtual-terminal";
 
 beforeAll(() => initTheme());

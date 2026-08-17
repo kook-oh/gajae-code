@@ -1,8 +1,8 @@
-import type { AgentToolContext, ToolCallContext } from "@gajae-code/agent-core";
+import type { AgentToolContext, ToolCallContext } from "@bworx-io/worx-agent-core";
 import type { CustomToolContext } from "../extensibility/custom-tools/types";
 import type { ExtensionUIContext } from "../extensibility/extensions/types";
 
-declare module "@gajae-code/agent-core" {
+declare module "@bworx-io/worx-agent-core" {
 	interface AgentToolContext extends CustomToolContext {
 		ui?: ExtensionUIContext;
 		hasUI?: boolean;

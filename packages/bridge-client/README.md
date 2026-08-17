@@ -1,9 +1,9 @@
-# @gajae-code/bridge-client
+# @bworx-io/worx-bridge-client
 
-`@gajae-code/bridge-client` is the standalone SDK v3 WebSocket transport client for Gajae Code. It exports `SdkClient`, `SdkClientError`, and the associated frame, request, reconnect, and options types.
+`@bworx-io/worx-bridge-client` is the standalone SDK v3 WebSocket transport client for Gajae Code. It exports `SdkClient`, `SdkClientError`, and the associated frame, request, reconnect, and options types.
 
 ```ts
-import { SdkClient } from "@gajae-code/bridge-client";
+import { SdkClient } from "@bworx-io/worx-bridge-client";
 
 const client = await SdkClient.connect(endpoint.url, endpoint.token);
 try {
@@ -28,7 +28,7 @@ This package is transport-only. It does not import, instantiate, dispatch to, or
 
 It is SDK v3 only. The historical BridgeClient/backend-bridge protocol, RPC ingress, and compatibility behavior are intentionally unsupported and must not be restored. Use the documented SDK v3 WebSocket endpoint and frames instead.
 
-`@gajae-code/coding-agent/sdk` re-exports this package for compatibility; both entrypoints expose the same `SdkClient` class identity.
+`@bworx-io/worx-code/sdk` re-exports this package for compatibility; both entrypoints expose the same `SdkClient` class identity.
 
 ## Durable create, attach, and submit orchestration
 

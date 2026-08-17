@@ -1,8 +1,8 @@
-// MUST be first: pins terminal-capability env before @gajae-code/tui evaluates.
+// MUST be first: pins terminal-capability env before @bworx-io/worx-tui evaluates.
 import "./render-goldens-env";
 import { describe, expect, it } from "bun:test";
-import { type Component, Editor, type MouseEvent, Text, TUI } from "@gajae-code/tui";
-import type { Terminal, TerminalAppearance } from "@gajae-code/tui/terminal";
+import { type Component, Editor, type MouseEvent, Text, TUI } from "@bworx-io/worx-tui";
+import type { Terminal, TerminalAppearance } from "@bworx-io/worx-tui/terminal";
 import { defaultEditorTheme } from "./test-themes";
 import { VirtualTerminal } from "./virtual-terminal";
 

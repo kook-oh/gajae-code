@@ -3,38 +3,39 @@ import * as os from "node:os";
 import * as path from "node:path";
 import * as url from "node:url";
 
-// Canonical scope for in-process pi packages. Plugins published against any of
-// the aliased scopes below (mariozechner's original publish, earendil-works'
-// fork, or the canonical @gajae-code scope itself) are remapped to this scope and
-// resolved against the bundled copy that ships inside the gjc binary. This
-// keeps plugins running against the exact runtime state of the host (single
+// Canonical scope for the in-process worx packages. Plugins published against
+// any of the aliased scopes below (mariozechner's original publish,
+// earendil-works' fork, or the pre-pivot gajae-code scope) are remapped to this
+// scope and resolved against the bundled copy that ships inside the worx binary.
+// This keeps plugins running against the exact runtime state of the host (single
 // module registry, single tool registry, etc.) regardless of which historical
 // scope name they happened to declare in their peerDependencies.
-const CANONICAL_PI_SCOPE = "@gajae-code";
+const CANONICAL_PI_SCOPE = "@bworx-io";
 const CANONICAL_CODING_AGENT_SPECIFIER = "@bworx-io/worx-code";
 
-// Scopes that have historically been used to publish (or alias) the same set
-// of internal pi-* packages. `@gajae-code` is intentionally included so that
-// direct imports of the canonical name still flow through `Bun.resolveSync`
-// against the host binary, avoiding a duplicate copy being pulled in from a
-// plugin's own node_modules tree at install time.
+// Scopes that have historically been used to publish (or alias) the same set of
+// internal pi-* packages. `gajae-code` stays listed because third-party plugins
+// published against the pre-pivot scope declare it in their peerDependencies;
+// dropping it would break their resolution. Routing those specifiers through
+// `Bun.resolveSync` against the host binary also avoids dragging a duplicate
+// copy in from a plugin's own node_modules tree at install time.
 const PI_SCOPE_ALIASES = ["gajae-code", "mariozechner", "earendil-works"] as const;
 
-// Internal package basenames historically used by Pi plugins plus the current
-// Gajae package basenames bundled inside the gjc binary.
+// Legacy package basenames used by Pi and pre-pivot plugins, mapped onto the
+// current worx basenames bundled inside the worx binary.
 const PI_PACKAGE_NAME_REMAPS: ReadonlyMap<string, string> = new Map<string, string>([
-	["agent-core", "agent-core"],
-	["ai", "ai"],
+	["agent-core", "worx-agent-core"],
+	["ai", "worx-ai"],
 	["coding-agent", "coding-agent"],
 	["gajae-code", "coding-agent"],
-	["natives", "natives"],
-	["pi-agent-core", "agent-core"],
-	["pi-ai", "ai"],
-	["pi-natives", "natives"],
-	["pi-tui", "tui"],
-	["pi-utils", "utils"],
-	["tui", "tui"],
-	["utils", "utils"],
+	["natives", "worx-code-natives"],
+	["pi-agent-core", "worx-agent-core"],
+	["pi-ai", "worx-ai"],
+	["pi-natives", "worx-code-natives"],
+	["pi-tui", "worx-tui"],
+	["pi-utils", "worx-utils"],
+	["tui", "worx-tui"],
+	["utils", "worx-utils"],
 ]);
 
 const PI_PACKAGE_NAMES = [...PI_PACKAGE_NAME_REMAPS.keys()] as const;
@@ -52,7 +53,7 @@ const PI_SUBPATH_REMAPS: ReadonlyMap<string, string> = new Map<string, string>([
 	// `@mariozechner/pi-ai/oauth` re-exported `./utils/oauth/index.js`.
 	// Our pi-ai keeps the implementation under `utils/oauth` but never added a
 	// root-level re-export, so map the upstream subpath onto it directly.
-	["pi-ai/oauth", "ai/utils/oauth"],
+	["pi-ai/oauth", "worx-ai/utils/oauth"],
 ]);
 
 const LEGACY_PI_SPECIFIER_FILTER = new RegExp(`^@(?:${PI_SCOPE_ALTERNATION})/(?:${PI_PACKAGE_ALTERNATION})(?:/.*)?$`);
@@ -274,7 +275,7 @@ function resolveLegacyPiSpecifier(args: { path: string; importer: string }): { p
 		return undefined;
 	}
 
-	// Primary: resolve the canonical @gajae-code/* specifier from the host binary
+	// Primary: resolve the canonical @bworx-io/* specifier from the host binary
 	// location. Works in dev mode and in source-link installs.
 	try {
 		return { path: getResolvedSpecifier(remappedSpecifier) };

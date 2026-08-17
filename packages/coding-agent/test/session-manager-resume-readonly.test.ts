@@ -26,7 +26,7 @@ import {
 	getSessionsDir,
 	getTerminalSessionsDir,
 	setAgentDir,
-} from "@gajae-code/utils";
+} from "@bworx-io/worx-utils";
 import { resolveManagedScope } from "../src/session/internal/managed-session-scope";
 import { ManagedSessionDescendantStore } from "../src/session/internal/managed-session-storage";
 

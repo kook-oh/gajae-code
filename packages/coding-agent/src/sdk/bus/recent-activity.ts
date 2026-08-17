@@ -23,7 +23,7 @@ function verifyOwnerOnlyPathSecurityNative(
 	return nativeVerifyOwnerOnlyPathSecurity(...args);
 }
 
-import { getAgentDir, getSessionsDir } from "@gajae-code/utils";
+import { getAgentDir, getSessionsDir } from "@bworx-io/worx-utils";
 import { FileSessionStorage, type SessionStorageSnapshot } from "../../session/session-storage";
 import {
 	type LogicalSessionCandidate,

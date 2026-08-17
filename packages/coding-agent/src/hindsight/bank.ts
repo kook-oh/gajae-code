@@ -18,7 +18,7 @@
  */
 
 import * as path from "node:path";
-import { logger } from "@gajae-code/utils";
+import { logger } from "@bworx-io/worx-utils";
 import type { HindsightApi } from "./client";
 import type { HindsightConfig } from "./config";
 

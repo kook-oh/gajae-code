@@ -7,7 +7,7 @@ import { editToolRenderer } from "@bworx-io/worx-code/edit/renderer";
 import { ToolExecutionComponent } from "@bworx-io/worx-code/modes/components/tool-execution";
 import * as themeModule from "@bworx-io/worx-code/modes/theme/theme";
 import { toolRenderers } from "@bworx-io/worx-code/tools/renderers";
-import type { TUI } from "@gajae-code/tui";
+import type { TUI } from "@bworx-io/worx-tui";
 
 async function getUiTheme() {
 	await themeModule.initTheme(false, undefined, undefined, "red-claw", "blue-crab");
@@ -201,7 +201,7 @@ describe("apply_patch rendering", () => {
 					op: "update",
 					diff: [
 						" 10|}",
-						'+11|import { CODEX_INSTRUCTIONS } from "@gajae-code/ai/providers/openai-codex-responses";',
+						'+11|import { CODEX_INSTRUCTIONS } from "@bworx-io/worx-ai/providers/openai-codex-responses";',
 						" 12|\t$env,",
 						" 228|\toutput_format: typeof OPENAI_IMAGE_OUTPUT_FORMAT;",
 						"+235|\tinstructions?: string;",

@@ -1,12 +1,12 @@
 // Advisory perf baselines: recording only; hard gating deferred to perf-gates.test.ts.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { __animationSchedulerTestHooks } from "@gajae-code/tui";
-import { __editorPerfCounters, Editor } from "@gajae-code/tui/components/editor";
-import { __loaderPerfCounters, Loader } from "@gajae-code/tui/components/loader";
-import { __markdownPerfCounters, clearRenderCache, Markdown } from "@gajae-code/tui/components/markdown";
-import { renderMetrics } from "@gajae-code/tui/metrics";
-import { __textHelperPerfCounters } from "@gajae-code/tui/utils";
-import { $flag } from "@gajae-code/utils";
+import { __animationSchedulerTestHooks } from "@bworx-io/worx-tui";
+import { __editorPerfCounters, Editor } from "@bworx-io/worx-tui/components/editor";
+import { __loaderPerfCounters, Loader } from "@bworx-io/worx-tui/components/loader";
+import { __markdownPerfCounters, clearRenderCache, Markdown } from "@bworx-io/worx-tui/components/markdown";
+import { renderMetrics } from "@bworx-io/worx-tui/metrics";
+import { __textHelperPerfCounters } from "@bworx-io/worx-tui/utils";
+import { $flag } from "@bworx-io/worx-utils";
 import { makeRecordedSession, type ReplayFixture, runReplay } from "./replay-harness";
 import { defaultEditorTheme, defaultMarkdownTheme } from "./test-themes";
 

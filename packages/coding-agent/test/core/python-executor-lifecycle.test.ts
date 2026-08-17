@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import { disposeAllKernelSessions, executePython } from "@bworx-io/worx-code/eval/py/executor";
 import type { KernelExecuteResult } from "@bworx-io/worx-code/eval/py/kernel";
 import * as pythonKernel from "@bworx-io/worx-code/eval/py/kernel";
-import { getProjectDir } from "@gajae-code/utils";
+import { getProjectDir } from "@bworx-io/worx-utils";
 
 class FakeKernel {
 	execute = vi.fn(async () => this.result);
