@@ -124,14 +124,14 @@ export default class McpServe extends Command {
 
 		if (flags.check) {
 			if (!flags.json) {
-				const serverName = server === "sdk" ? "gjc-sdk-mcp" : COORDINATOR_MCP_SERVER_NAME;
+				const serverName = server === "sdk" ? "worx-sdk-mcp" : COORDINATOR_MCP_SERVER_NAME;
 				const toolCount = server === "sdk" ? SDK_MCP_TOOL_NAMES.length : COORDINATOR_MCP_TOOL_NAMES.length;
 				process.stdout.write(`server: ${serverName}\ntools: ${toolCount}\n`);
 				return;
 			}
 			const payload =
 				server === "sdk"
-					? { ok: true, server: { name: "gjc-sdk-mcp" }, readOnly: false, tools: [...SDK_MCP_TOOL_NAMES] }
+					? { ok: true, server: { name: "worx-sdk-mcp" }, readOnly: false, tools: [...SDK_MCP_TOOL_NAMES] }
 					: await buildCoordinatorCheckPayload();
 			writeJson(payload);
 			return;

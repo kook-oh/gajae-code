@@ -85,13 +85,13 @@ describe("update-cli release lookup", () => {
 });
 
 describe("update-cli install target detection", () => {
-	it("uses bun update when prioritized gjc is inside bun global bin", () => {
+	it("uses bun update when prioritized worx is inside bun global bin", () => {
 		const method = resolveUpdateMethodForTest("/Users/test/.bun/bin/gjc", "/Users/test/.bun/bin");
 
 		expect(method).toBe("bun");
 	});
 
-	it("uses binary update when prioritized gjc is outside bun global bin", () => {
+	it("uses binary update when prioritized worx is outside bun global bin", () => {
 		const method = resolveUpdateMethodForTest("/Users/test/.local/bin/gjc", "/Users/test/.bun/bin");
 
 		expect(method).toBe("binary");
@@ -106,7 +106,7 @@ describe("update-cli install target detection", () => {
 	it("detects a Windows npm wrapper shim and avoids one-file binary replacement", () => {
 		const seenRoots: Array<{ packageName: string; packageRoot: string }> = [];
 		const target = resolveNpmManagedTargetForTest(
-			"C:\\Users\\alice\\AppData\\Roaming\\npm\\gjc.cmd",
+			"C:\\Users\\alice\\AppData\\Roaming\\npm\\worx.cmd",
 			"win32",
 			(packageName, packageRoot) => {
 				seenRoots.push({ packageName, packageRoot });
@@ -121,9 +121,9 @@ describe("update-cli install target detection", () => {
 		});
 	});
 
-	it("detects PowerShell npm wrapper shims so gjc.ps1 is updated through npm too", () => {
+	it("detects PowerShell npm wrapper shims so worx.ps1 is updated through npm too", () => {
 		const target = resolveNpmManagedTargetForTest(
-			"C:\\Users\\alice\\AppData\\Roaming\\npm\\gjc.ps1",
+			"C:\\Users\\alice\\AppData\\Roaming\\npm\\worx.ps1",
 			"win32",
 			packageName => packageName === "gajae-code",
 		);
@@ -133,7 +133,7 @@ describe("update-cli install target detection", () => {
 
 	it("does not classify missing Windows node_modules roots as npm-managed", () => {
 		const target = resolveNpmManagedTargetForTest(
-			"C:\\Users\\alice\\AppData\\Roaming\\npm\\gjc.cmd",
+			"C:\\Users\\alice\\AppData\\Roaming\\npm\\worx.cmd",
 			"win32",
 			() => false,
 		);
@@ -308,7 +308,7 @@ describe("update-cli package-manager verification", () => {
 			expect(result.ok).toBe(true);
 			expect(verificationCalls).toBe(1);
 			expect(output.filter(line => line.includes("Updated to 0.7.8"))).toHaveLength(1);
-			expect(output.filter(line => line.includes("Restart gjc to use the new version"))).toHaveLength(1);
+			expect(output.filter(line => line.includes("Restart worx to use the new version"))).toHaveLength(1);
 		} finally {
 			logSpy.mockRestore();
 		}
@@ -331,11 +331,11 @@ describe("update-cli package-manager verification", () => {
 						return { ok: false, actual: "0.7.7", path: "/Users/test/.bun/bin/gjc" };
 					},
 				}),
-			).rejects.toThrow("bun install exited successfully, but the selected gjc runtime failed verification");
+			).rejects.toThrow("bun install exited successfully, but the selected worx runtime failed verification");
 			expect(verificationCalls).toBe(1);
 			expect(output.join("\n")).not.toContain("install failed with exit code 0");
 			expect(output.filter(line => line.includes("Updated to"))).toHaveLength(0);
-			expect(output.filter(line => line.includes("Restart gjc"))).toHaveLength(0);
+			expect(output.filter(line => line.includes("Restart worx"))).toHaveLength(0);
 		} finally {
 			logSpy.mockRestore();
 		}
@@ -411,11 +411,11 @@ describe("update-cli command verification failures", () => {
 			expect(exitCodes).toEqual([1]);
 			expect(refreshCalls).toBe(0);
 			expect(errors.join("\n")).toContain(
-				"install exited successfully, but the selected gjc runtime failed verification",
+				"install exited successfully, but the selected worx runtime failed verification",
 			);
 			expect(errors.join("\n")).toContain("still reports 0.0.1 (expected 999.0.0)");
 			expect(errors.join("\n")).not.toContain("install failed with exit code 0");
-			expect(output.filter(line => line.includes("Updated to") || line.includes("Restart gjc"))).toHaveLength(0);
+			expect(output.filter(line => line.includes("Updated to") || line.includes("Restart worx"))).toHaveLength(0);
 		} finally {
 			logSpy.mockRestore();
 			errorSpy.mockRestore();
@@ -480,10 +480,10 @@ describe("update-cli command verification failures", () => {
 			expect(errors.join("\n")).toContain("--smoke-test failed");
 			expect(errors.join("\n")).toContain("native addon mismatch");
 			expect(errors.join("\n")).toContain(
-				"install exited successfully, but the selected gjc runtime failed verification",
+				"install exited successfully, but the selected worx runtime failed verification",
 			);
 			expect(errors.join("\n")).not.toContain("install failed with exit code 0");
-			expect(output.filter(line => line.includes("Updated to") || line.includes("Restart gjc"))).toHaveLength(0);
+			expect(output.filter(line => line.includes("Updated to") || line.includes("Restart worx"))).toHaveLength(0);
 		} finally {
 			logSpy.mockRestore();
 			errorSpy.mockRestore();
@@ -494,7 +494,7 @@ describe("update-cli command verification failures", () => {
 describe("update-cli binary replacement", () => {
 	it("restores the previous binary when the replacement fails verification", async () => {
 		const dir = await makeTempDir();
-		const targetPath = path.join(dir, "gjc");
+		const targetPath = path.join(dir, "worx");
 		const tempPath = `${targetPath}.new`;
 		const backupPath = `${targetPath}.bak`;
 		await Bun.write(targetPath, "old binary");
@@ -508,7 +508,7 @@ describe("update-cli binary replacement", () => {
 				expectedVersion: "15.1.8",
 				verifyInstalledVersion: async () => ({ ok: false, path: targetPath }),
 			}),
-		).rejects.toThrow("restored previous gjc binary");
+		).rejects.toThrow("restored previous worx binary");
 
 		expect(await Bun.file(targetPath).text()).toBe("old binary");
 		expect(await Bun.file(tempPath).exists()).toBe(false);
@@ -517,7 +517,7 @@ describe("update-cli binary replacement", () => {
 
 	it("keeps a verified replacement when backup cleanup hits EPERM", async () => {
 		const dir = await makeTempDir();
-		const targetPath = path.join(dir, "gjc.cmd");
+		const targetPath = path.join(dir, "worx.cmd");
 		const tempPath = `${targetPath}.new`;
 		const backupPath = `${targetPath}.bak`;
 		await Bun.write(targetPath, "old binary");
@@ -554,7 +554,7 @@ describe("update-cli binary replacement", () => {
 
 	it("keeps the replacement only after it reports the expected version", async () => {
 		const dir = await makeTempDir();
-		const targetPath = path.join(dir, "gjc");
+		const targetPath = path.join(dir, "worx");
 		const tempPath = `${targetPath}.new`;
 		const backupPath = `${targetPath}.bak`;
 		await Bun.write(targetPath, "old binary");
@@ -577,7 +577,7 @@ describe("update-cli binary replacement", () => {
 describe("update-cli download durability", () => {
 	it("fsyncs a written file without altering its contents", async () => {
 		const dir = await makeTempDir();
-		const filePath = path.join(dir, "gjc.new");
+		const filePath = path.join(dir, "worx.new");
 		await Bun.write(filePath, "downloaded binary bytes");
 
 		await fsyncFileForTest(filePath);
@@ -961,10 +961,10 @@ describe("update-cli channel robustness", () => {
 
 describe("update-cli reported version parsing", () => {
 	it("parses stable and nightly prerelease version output", () => {
-		expect(parseReportedVersionForTest("gjc/0.12.11")).toBe("0.12.11");
-		expect(parseReportedVersionForTest("gjc/0.12.12-nightly.20260805044024.123456789.g6dd873fd26b8\n")).toBe(
+		expect(parseReportedVersionForTest("worx/0.12.11")).toBe("0.12.11");
+		expect(parseReportedVersionForTest("worx/0.12.12-nightly.20260805044024.123456789.g6dd873fd26b8\n")).toBe(
 			"0.12.12-nightly.20260805044024.123456789.g6dd873fd26b8",
 		);
-		expect(parseReportedVersionForTest("gjc: no version")).toBeUndefined();
+		expect(parseReportedVersionForTest("worx: no version")).toBeUndefined();
 	});
 });

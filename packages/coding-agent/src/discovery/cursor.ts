@@ -13,7 +13,7 @@
  * - settings: From settings.json if present
  *
  * MCP servers are intentionally NOT inherited live from Cursor config: GJC owns
- * MCP runtime execution. Use `gjc mcp import cursor` to copy definitions into
+ * MCP runtime execution. Use `worx mcp import cursor` to copy definitions into
  * GJC's own mcp.json instead.
  */
 

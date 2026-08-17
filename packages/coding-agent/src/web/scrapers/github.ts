@@ -87,7 +87,7 @@ export async function fetchGitHubApi(
 
 		const headers: Record<string, string> = {
 			Accept: "application/vnd.github.v3+json",
-			"User-Agent": "gjc-web-fetch/1.0",
+			"User-Agent": "worx-web-fetch/1.0",
 		};
 
 		// Use GITHUB_TOKEN if available

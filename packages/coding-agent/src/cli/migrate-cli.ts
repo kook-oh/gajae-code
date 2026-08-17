@@ -1,5 +1,5 @@
 /**
- * `gjc migrate` — import MCP servers and skills from other coding agents.
+ * `worx migrate` — import MCP servers and skills from other coding agents.
  */
 import * as os from "node:os";
 import * as path from "node:path";

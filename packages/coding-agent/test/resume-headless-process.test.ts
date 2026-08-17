@@ -74,7 +74,7 @@ describe("headless bare resume", () => {
 		for (const versionFlag of ["--version", "-v"]) {
 			const version = await runHeadlessBareResume(["--resume", versionFlag]);
 			expect(version.exitCode).toBe(0);
-			expect(version.stdout).toMatch(/^gjc\/\d+\.\d+\.\d+\n$/);
+			expect(version.stdout).toMatch(/^worx\/\d+\.\d+\.\d+\n$/);
 			expect(version.stderr).toBe("");
 		}
 

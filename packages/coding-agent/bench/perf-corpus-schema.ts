@@ -181,7 +181,7 @@ export interface ThresholdLedgerReference {
 }
 
 export interface PerfCorpusReport {
-	schema: "gjc.perf-corpus/3";
+	schema: "worx.perf-corpus/3";
 	generatedAt: string;
 	gitSha: string;
 	gitDirty: boolean;
@@ -215,7 +215,7 @@ export interface PerfCorpusReport {
 	thresholdLedger?: ThresholdLedgerReference[];
 }
 
-export const PERF_CORPUS_SCHEMA = "gjc.perf-corpus/3" as const;
+export const PERF_CORPUS_SCHEMA = "worx.perf-corpus/3" as const;
 
 export const REQUIRED_FIXTURE_CLASSES: readonly FixtureClass[] = ["startup-session-load", "streaming-ttft", "large-transcript"];
 export const REQUIRED_MEMORY_SURFACES: readonly MemorySurface[] = [
@@ -529,7 +529,7 @@ export function validatePerfCorpusReport(report: PerfCorpusReport): { ok: boolea
 	rejectUnexpectedKeys(report, REPORT_FIELDS, "report", errors);
 	rejectUnexpectedKeys(report.runner, RUNNER_FIELDS, "runner", errors);
 	const schema = (report as { schema?: unknown }).schema;
-	if (schema === "gjc.perf-corpus/2") {
+	if (schema === "worx.perf-corpus/2") {
 		errors.push(`schema "${schema}" is incompatible with the v3 validator; expected "${PERF_CORPUS_SCHEMA}"`);
 	} else if (schema !== PERF_CORPUS_SCHEMA) {
 		errors.push(`invalid schema "${String(schema)}", expected "${PERF_CORPUS_SCHEMA}"`);

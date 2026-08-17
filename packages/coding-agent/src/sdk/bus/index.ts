@@ -4715,7 +4715,7 @@ export function createNotificationsExtension(
 		 * Existing-thread preparation.
 		 *
 		 * A prepared session withholds its readiness signal so
-		 * `gjc notify bind-thread` can adopt an operator-supplied Slack root before
+		 * `worx notify bind-thread` can adopt an operator-supplied Slack root before
 		 * any stock root is published; activation then publishes readiness once and
 		 * the daemon adopts that root.
 		 *
@@ -6040,7 +6040,7 @@ export function createNotificationsExtension(
 				}
 				if (!enabledWithoutLocalOff) {
 					ctx.ui.notify(
-						"Notifications are not configured. Run `gjc notify setup` or set WORX_NOTIFICATIONS=1.",
+						"Notifications are not configured. Run `worx notify setup` or set WORX_NOTIFICATIONS=1.",
 						"warning",
 					);
 					return;

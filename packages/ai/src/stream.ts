@@ -187,7 +187,7 @@ export function getEnvApiKey(provider: string): string | undefined {
 
 /**
  * Enumerate every provider that has an env-var fallback for `getEnvApiKey`.
- * Used by `gjc auth-broker migrate --include-env` to discover env-sourced keys
+ * Used by `worx auth-broker migrate --include-env` to discover env-sourced keys
  * that should be uploaded to the broker.
  */
 export function listProvidersWithEnvKey(): string[] {
@@ -237,7 +237,7 @@ export function formatProviderCredentialHint(provider: string): string {
 	}
 	if (isOpenCodeSubscription) {
 		parts.push(
-			`Or run \`gjc auth-broker login ${provider}\` once before headless/print mode to store the key interactively.`,
+			`Or run \`worx auth-broker login ${provider}\` once before headless/print mode to store the key interactively.`,
 		);
 	}
 	return parts.join(" ");

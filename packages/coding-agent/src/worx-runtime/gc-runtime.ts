@@ -1,5 +1,5 @@
 /**
- * `gjc gc` runtime — a global, liveness-only, dry-run-by-default garbage
+ * `worx gc` runtime — a global, liveness-only, dry-run-by-default garbage
  * collector for stale GJC session/PID records.
  *
  * Design (see .worx/plans/ralplan/2026-06-13-1347-954f/pending-approval.md):
@@ -482,7 +482,7 @@ export async function runWorxGcCommand(
 		parsed = parseGcArgs(argv);
 	} catch (error) {
 		const message = error instanceof GcUsageError ? error.message : String(error);
-		return { stdout: "", stderr: `gjc gc: ${message}\n`, status: 2 };
+		return { stdout: "", stderr: `worx gc: ${message}\n`, status: 2 };
 	}
 
 	if (parsed.help) {
@@ -517,10 +517,10 @@ export async function runWorxGcCommand(
 
 export function gcHelpText(): string {
 	return [
-		"gjc gc - garbage-collect stale GJC session/PID records",
+		"worx gc - garbage-collect stale GJC session/PID records",
 		"",
 		"USAGE",
-		"  $ gjc gc [--prune|--force] [--disk] [--repair-session-index] [--json]",
+		"  $ worx gc [--prune|--force] [--disk] [--repair-session-index] [--json]",
 
 		"",
 		"FLAGS",
@@ -568,7 +568,7 @@ export async function defaultGcAdapters(): Promise<GcStoreAdapter[]> {
 }
 
 // =============================================================================
-// Disk-retention axis (`gjc gc --disk`)
+// Disk-retention axis (`worx gc --disk`)
 // =============================================================================
 //
 // A second, explicitly opt-in axis. The PID-liveness axis above answers "is the
@@ -707,7 +707,7 @@ const GC_DISK_MARK_REMARK_ROUNDS = 2;
  */
 const GC_DISK_MARK_QUIESCENCE_MS = 50;
 
-/** Bound every recursive size walk so a pathological tree cannot stall `gjc gc`. */
+/** Bound every recursive size walk so a pathological tree cannot stall `worx gc`. */
 const GC_DISK_MAX_WALK_ENTRIES = 200_000;
 
 /** Cap per-surface record rendering; the JSON output always carries every record. */
@@ -919,7 +919,7 @@ async function collectGcSessionReferences(agentDir: string, env: NodeJS.ProcessE
 	}
 
 	// 3. `local://` session roots: one directory per session id.
-	const localRoots = path.join(env.TMPDIR?.trim() || os.tmpdir(), "gjc-local");
+	const localRoots = path.join(env.TMPDIR?.trim() || os.tmpdir(), "worx-local");
 	try {
 		for (const name of await fsp.readdir(localRoots)) ids.add(name);
 	} catch (error) {
@@ -1358,7 +1358,7 @@ async function confirmGcDiskStoreQuiet(input: {
  * `--prune`: an unproven reference is treated as a real one.
  *
  * The session walk is a snapshot, and a snapshot goes stale: a session started
- * or appended to while `gjc gc` was measuring the store can reference a blob the
+ * or appended to while `worx gc` was measuring the store can reference a blob the
  * mark never saw. So the mark re-walks the store, absorbs whatever appeared or
  * grew, and only sweeps once the store stops moving under it. Drift that
  * outlasts {@link GC_DISK_MARK_REMARK_ROUNDS} is incomplete evidence, not a
@@ -2107,8 +2107,8 @@ export function buildGcDiskReportText(disk: GcDiskReport): string {
 	const lines: string[] = [];
 	lines.push(
 		disk.dry_run
-			? "gjc gc --disk — report only (no bytes reclaimed; pass --prune to reclaim)"
-			: "gjc gc --disk --prune — reclaim",
+			? "worx gc --disk — report only (no bytes reclaimed; pass --prune to reclaim)"
+			: "worx gc --disk --prune — reclaim",
 	);
 	lines.push(
 		`  policy: sessions.maxAgeDays=${disk.policy.sessions_max_age_days} ` +

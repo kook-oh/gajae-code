@@ -660,7 +660,7 @@ export function buildWorxContinuationPrompt(reservation: Record<string, unknown>
 		incident_hash: incident,
 		attempt,
 	});
-	return `${WORX_TEAM_CONTINUATION_PROMPT} ACK now: gjc team api worker-continuation-ack --input '${input}' --json.`;
+	return `${WORX_TEAM_CONTINUATION_PROMPT} ACK now: worx team api worker-continuation-ack --input '${input}' --json.`;
 }
 
 function canonicalJson(value: unknown): string {
@@ -1110,13 +1110,13 @@ export async function shutdownWorxTeamWorkers(
 		type: "team_shutdown",
 		message:
 			phase === "complete"
-				? "Shut down native gjc team runtime after completed tasks"
-				: "Shut down native gjc team runtime with incomplete tasks",
+				? "Shut down native worx team runtime after completed tasks"
+				: "Shut down native worx team runtime with incomplete tasks",
 		data,
 	});
 	await runtime.appendTelemetry(dir, {
 		type: "team_shutdown",
-		message: `Native gjc team runtime stopped with phase ${phase}`,
+		message: `Native worx team runtime stopped with phase ${phase}`,
 		data: { shutdown_request_id: requestId, graceful_shutdown_complete: graceful },
 	});
 	return runtime.readSnapshot(config.team_name, cwd, env);

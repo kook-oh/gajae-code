@@ -385,7 +385,7 @@ describe("ultragoal terminal critic gate", () => {
 		const blocked = await checkpoint(root, passingLiveQualityGate());
 		expect(blocked.status).toBe(1);
 		expect(blocked.stderr).toContain(
-			"terminal-critic ceiling reached; requires human/leader gjc ultragoal record-critic-gate-override",
+			"terminal-critic ceiling reached; requires human/leader worx ultragoal record-critic-gate-override",
 		);
 
 		await recordUltragoalCriticGateOverride({

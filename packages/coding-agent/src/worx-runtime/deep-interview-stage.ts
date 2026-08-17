@@ -26,7 +26,7 @@ import {
 import { CommandError, flagValue, hasFlag, isPlainObject } from "./workflow-cli-common";
 
 /**
- * Staged JSON transitions for deep-interview state (`gjc deep-interview stage|check|apply|discard`).
+ * Staged JSON transitions for deep-interview state (`worx deep-interview stage|check|apply|discard`).
  *
  * Design contract (post-#3040 revert; deliberately NOT the typed-flag surface):
  * - The payload is one JSON document supplied whole (`--input '<json>'` or `@file`),
@@ -162,7 +162,7 @@ async function parseJsonInput(rawInput: string, cwd: string): Promise<Record<str
 /**
  * Envelope lifecycle fields the runtime owns exclusively. A staged payload may
  * carry interview data only; phase transitions go through their dedicated verbs
- * (`--write`, `gjc state handoff/clear`), never through a staged patch.
+ * (`--write`, `worx state handoff/clear`), never through a staged patch.
  */
 const RUNTIME_OWNED_ENVELOPE_KEYS = [
 	"current_phase",
@@ -346,7 +346,7 @@ async function readCurrentState(cwd: string, sessionId: string): Promise<Current
 		throw new DeepInterviewStageError(
 			"DI_STAGE_STATE_CORRUPT",
 			`deep-interview state is corrupt or tampered: ${read.error}`,
-			'repair or clear it with `gjc state clear --force --mode deep-interview`, then re-seed with `gjc deep-interview "<idea>"`',
+			'repair or clear it with `worx state clear --force --mode deep-interview`, then re-seed with `worx deep-interview "<idea>"`',
 		);
 	}
 	if (read.kind === "absent")
@@ -421,7 +421,7 @@ function computeMergedEnvelope(
 		throw new DeepInterviewStageError(
 			"DI_STAGE_MERGE_REJECTED",
 			`staged payload violates a core invariant: ${error instanceof Error ? error.message : String(error)}`,
-			"fix the payload and re-stage (`gjc deep-interview discard` then `stage`)",
+			"fix the payload and re-stage (`worx deep-interview discard` then `stage`)",
 		);
 	}
 	if (healed) merged.intent_contract_healed_at = nowIso;
@@ -448,7 +448,7 @@ function computeMergedEnvelope(
 		throw new DeepInterviewStageError(
 			"DI_STAGE_MERGE_REJECTED",
 			`merged state violates a bounded-input invariant: ${error instanceof Error ? error.message : String(error)}`,
-			"fix the payload and re-stage (`gjc deep-interview discard` then `stage`)",
+			"fix the payload and re-stage (`worx deep-interview discard` then `stage`)",
 		);
 	}
 	return merged;
@@ -530,7 +530,7 @@ async function handleStage(args: readonly string[], cwd: string): Promise<Record
 				throw new DeepInterviewStageError(
 					"DI_STAGE_DRAFT_EXISTS",
 					`a staged draft already exists (draft_id=${existingDraft.draft.draft_id}, transition=${existingDraft.draft.transition}, created_at=${existingDraft.draft.created_at})`,
-					"apply it (`gjc deep-interview apply`) or discard it (`gjc deep-interview discard`) before staging again",
+					"apply it (`worx deep-interview apply`) or discard it (`worx deep-interview discard`) before staging again",
 				);
 			}
 			// A corrupt draft never blocks staging: it cannot be applied anyway, so
@@ -540,7 +540,7 @@ async function handleStage(args: readonly string[], cwd: string): Promise<Record
 				throw new DeepInterviewStageError(
 					"DI_STAGE_STATE_MISSING",
 					`no deep-interview state exists for session ${sessionId}; only --for initialize-context may stage against absent state`,
-					'seed the interview first with `gjc deep-interview "<idea>"` or stage --for initialize-context',
+					'seed the interview first with `worx deep-interview "<idea>"` or stage --for initialize-context',
 				);
 			}
 			const nowIso = new Date().toISOString();
@@ -587,14 +587,14 @@ function requireDraftRead(read: DraftReadResult, sessionId: string): DeepIntervi
 		throw new DeepInterviewStageError(
 			"DI_STAGE_NO_DRAFT",
 			`no staged draft exists for session ${sessionId}`,
-			"stage one first: `gjc deep-interview stage --for <transition> --input '<json>'`",
+			"stage one first: `worx deep-interview stage --for <transition> --input '<json>'`",
 		);
 	}
 	if (read.kind === "corrupt") {
 		throw new DeepInterviewStageError(
 			"DI_STAGE_DRAFT_CORRUPT",
 			`the staged draft is unreadable: ${read.error}`,
-			"discard it (`gjc deep-interview discard`) and re-stage",
+			"discard it (`worx deep-interview discard`) and re-stage",
 		);
 	}
 	return read.draft;
@@ -665,7 +665,7 @@ async function handleApply(args: readonly string[], cwd: string): Promise<Record
 				throw new DeepInterviewStageError(
 					"DI_STAGE_REVISION_CONFLICT",
 					`state moved since staging (revision ${draft.staged_against_revision} -> ${current.revision} or content changed); the draft was invalidated`,
-					"re-stage against current state: `gjc deep-interview stage --for <transition> --input '<json>'`",
+					"re-stage against current state: `worx deep-interview stage --for <transition> --input '<json>'`",
 				);
 			}
 			const nowIso = new Date().toISOString();
@@ -682,7 +682,7 @@ async function handleApply(args: readonly string[], cwd: string): Promise<Record
 						cwd,
 						skill: "deep-interview",
 						owner: "worx-runtime",
-						command: `gjc deep-interview apply (${draft.transition})`,
+						command: `worx deep-interview apply (${draft.transition})`,
 						sessionId,
 						nowIso,
 						mutationId: draft.draft_id,
@@ -703,7 +703,7 @@ async function handleApply(args: readonly string[], cwd: string): Promise<Record
 					throw new DeepInterviewStageError(
 						"DI_STAGE_REVISION_CONFLICT",
 						`state revision moved since staging; the draft was invalidated (${error.message})`,
-						"re-stage against current state: `gjc deep-interview stage --for <transition> --input '<json>'`",
+						"re-stage against current state: `worx deep-interview stage --for <transition> --input '<json>'`",
 					);
 				}
 				throw error;
@@ -828,7 +828,7 @@ async function handleWrite(args: readonly string[], cwd: string): Promise<Record
 				throw new DeepInterviewStageError(
 					"DI_STAGE_DRAFT_EXISTS",
 					`a staged draft is pending (draft_id=${pendingDraft.draft.draft_id}); direct write would race it`,
-					"apply it (`gjc deep-interview apply`) or discard it (`gjc deep-interview discard`) first",
+					"apply it (`worx deep-interview apply`) or discard it (`worx deep-interview discard`) first",
 				);
 			}
 			const current = await readCurrentState(cwd, sessionId);
@@ -866,7 +866,7 @@ async function handleWrite(args: readonly string[], cwd: string): Promise<Record
 					cwd,
 					skill: "deep-interview",
 					owner: "worx-runtime",
-					command: `gjc deep-interview write${reset ? " --reset" : ""}`,
+					command: `worx deep-interview write${reset ? " --reset" : ""}`,
 					sessionId,
 					nowIso,
 					mutationId: syntheticDraft.draft_id,
@@ -914,7 +914,7 @@ async function syncStageHud(cwd: string, sessionId: string, envelope: Record<str
 			active: phase !== "complete",
 			phase,
 			sessionId,
-			source: "gjc-deep-interview-native",
+			source: "worx-deep-interview-native",
 			hud: deriveDeepInterviewHud(envelope, { phase }),
 		});
 	} catch {
@@ -922,7 +922,7 @@ async function syncStageHud(cwd: string, sessionId: string, envelope: Record<str
 	}
 }
 
-/** Thin lifecycle passthroughs: same runtime plumbing, gjc deep-interview surface. */
+/** Thin lifecycle passthroughs: same runtime plumbing, worx deep-interview surface. */
 async function handleLifecyclePassthrough(
 	verb: "clear" | "handoff",
 	args: readonly string[],

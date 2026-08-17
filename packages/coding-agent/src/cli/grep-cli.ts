@@ -1,7 +1,7 @@
 /**
  * Grep CLI command handlers.
  *
- * Handles `gjc grep` subcommand for testing grep tool on Windows.
+ * Handles `worx grep` subcommand for testing grep tool on Windows.
  */
 import * as path from "node:path";
 import { GrepOutputMode, grep } from "@bworx-io/worx-code-natives";

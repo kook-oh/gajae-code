@@ -44,7 +44,7 @@ async function resolveIn(home: string, repo: string, configDir: string | undefin
 
 describe("config root is resolved under home", () => {
 	it("reads ralplan settings from <home>/<WORX_CONFIG_DIR>", async () => {
-		const { home, repo } = scenario({ "gjc.ralplan.maxIterations": 9 });
+		const { home, repo } = scenario({ "worx.ralplan.maxIterations": 9 });
 		const result = (await resolveIn(home, repo, ".myconfig")).ralplan as { maxIterations: number; source: string };
 
 		expect(result.maxIterations).toBe(9);
@@ -52,7 +52,7 @@ describe("config root is resolved under home", () => {
 	});
 
 	it("reads ultragoal settings from <home>/<WORX_CONFIG_DIR>", async () => {
-		const { home, repo } = scenario({ "gjc.ultragoal.nudgeBudget": 7 });
+		const { home, repo } = scenario({ "worx.ultragoal.nudgeBudget": 7 });
 		const result = (await resolveIn(home, repo, ".myconfig")).ultragoal as { budget: number; source: string };
 
 		expect(result.budget).toBe(7);
@@ -60,7 +60,7 @@ describe("config root is resolved under home", () => {
 	});
 
 	it("keeps using the default config dir name when unset", async () => {
-		const { home, repo } = scenario({ "gjc.ralplan.maxIterations": 4 }, ".worx");
+		const { home, repo } = scenario({ "worx.ralplan.maxIterations": 4 }, ".worx");
 		const result = (await resolveIn(home, repo, undefined)).ralplan as { maxIterations: number; source: string };
 
 		expect(result.maxIterations).toBe(4);

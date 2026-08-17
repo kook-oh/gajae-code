@@ -27,16 +27,16 @@ export default class Agents extends Command {
 	};
 
 	static examples = [
-		"# Export bundled agents into user config (default)\n  gjc agents unpack",
-		"# Export bundled agents into project config\n  gjc agents unpack --project",
-		"# Overwrite existing local agent files\n  gjc agents unpack --project --force",
-		"# Export into a custom directory\n  gjc agents unpack --dir ./tmp/agents --json",
+		"# Export bundled agents into user config (default)\n  worx agents unpack",
+		"# Export bundled agents into project config\n  worx agents unpack --project",
+		"# Overwrite existing local agent files\n  worx agents unpack --project --force",
+		"# Export into a custom directory\n  worx agents unpack --dir ./tmp/agents --json",
 	];
 
 	async run(): Promise<void> {
 		const { args, flags } = await this.parse(Agents);
 		if (!args.action) {
-			renderCommandHelp("gjc", "agents", Agents);
+			renderCommandHelp("worx", "agents", Agents);
 			return;
 		}
 

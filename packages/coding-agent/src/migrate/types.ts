@@ -1,5 +1,5 @@
 /**
- * Shared types for `gjc migrate`.
+ * Shared types for `worx migrate`.
  *
  * Imports MCP servers and skills from other coding agents (Claude Code, Codex,
  * OpenCode) into native GJC config. See the consensus plan under

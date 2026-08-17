@@ -151,7 +151,7 @@ function qualityGate(): Record<string, unknown> {
 			e2eStatus: "passed",
 			redTeamStatus: "passed",
 			evidence: "dogfood gate drove a web surface artifact bundle and replayed the CLI argv command",
-			e2eCommands: ["gjc ultragoal checkpoint --status complete dogfood"],
+			e2eCommands: ["worx ultragoal checkpoint --status complete dogfood"],
 			redTeamCommands: ["bun -e console.log ultragoal-cli-ok replayed by the gate"],
 			artifactRefs: [
 				{

@@ -4,7 +4,7 @@ import { runNativeDeepInterviewCommand } from "../worx-runtime/deep-interview-ru
 export default class DeepInterview extends Command {
 	static description = `Run native GJC deep-interview workflow.
 
-All deep-interview state operations go through this command — no gjc state needed:
+All deep-interview state operations go through this command — no worx state needed:
   read                Print the persisted envelope, revision, content sha, and any pending draft
   write               One-shot incremental JSON merge into state (--reset replaces; the locked
                       intent contract survives a reset)
@@ -46,14 +46,14 @@ session_id, or WORX_SESSION_ID.`;
 		json: Flags.boolean({ description: "Output JSON" }),
 	};
 	static examples = [
-		'$ gjc deep-interview --trace --standard "<idea>"',
-		"$ gjc deep-interview read --json",
-		'$ gjc deep-interview write --input \'{"state":{"threshold":0.05}}\' --json',
-		'$ gjc deep-interview stage --for record-round --input \'{"state":{"rounds":[{"round":1,"round_key":"r1"}]}}\' --json',
-		"$ gjc deep-interview check --json",
-		"$ gjc deep-interview apply --json",
-		"$ gjc deep-interview --write --stage final --slug my-feature --spec ./final-spec.md",
-		"$ gjc deep-interview --write --stage final --slug my-feature --spec ./final-spec.md --deliberate",
+		'$ worx deep-interview --trace --standard "<idea>"',
+		"$ worx deep-interview read --json",
+		'$ worx deep-interview write --input \'{"state":{"threshold":0.05}}\' --json',
+		'$ worx deep-interview stage --for record-round --input \'{"state":{"rounds":[{"round":1,"round_key":"r1"}]}}\' --json',
+		"$ worx deep-interview check --json",
+		"$ worx deep-interview apply --json",
+		"$ worx deep-interview --write --stage final --slug my-feature --spec ./final-spec.md",
+		"$ worx deep-interview --write --stage final --slug my-feature --spec ./final-spec.md --deliberate",
 	];
 
 	async run(): Promise<void> {

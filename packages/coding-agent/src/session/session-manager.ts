@@ -1174,7 +1174,7 @@ class DiskBackedIdUniquenessCheck {
 	#failed = false;
 
 	constructor() {
-		const root = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-index-ids-"));
+		const root = fs.mkdtempSync(path.join(os.tmpdir(), "worx-index-ids-"));
 		try {
 			for (let bucket = 0; bucket < DiskBackedIdUniquenessCheck.BUCKETS; bucket++) {
 				const bucketPath = path.join(root, bucket.toString(16).padStart(2, "0"));
@@ -2026,7 +2026,7 @@ export const BOUNDED_RESUME_TRANSCRIPT_MAX_BYTES = 2 * 1024 * 1024 * 1024 + 1024
 const EAGER_RESUME_TRANSCRIPT_MAX_BYTES = MANAGED_ARTIFACT_MAX_FILE_BYTES;
 
 export const SESSION_OVERSIZED_RECOVERY_MESSAGE =
-	"The selected session transcript is too large to resume safely. Use `gjc export <session-file>` to export its content into a new session, or remove/archive it after confirming its content is no longer needed.";
+	"The selected session transcript is too large to resume safely. Use `worx export <session-file>` to export its content into a new session, or remove/archive it after confirming its content is no longer needed.";
 
 export class SessionAppendPersistenceError extends Error {
 	readonly phase: SessionAppendPersistenceFailurePhase;
@@ -15412,7 +15412,7 @@ export class SessionManager {
 		if (!this.#ephemeralArtifactInit) {
 			let init: Promise<ArtifactManager | null>;
 			init = fs.promises
-				.mkdtemp(path.join(os.tmpdir(), "gjc-session-artifacts-"))
+				.mkdtemp(path.join(os.tmpdir(), "worx-session-artifacts-"))
 				.then(async dir => {
 					try {
 						await SessionManagerTestHooks.beforeEphemeralArtifactManagerInstall?.(dir);
@@ -19024,7 +19024,7 @@ export class SessionManager {
 		try {
 			destination =
 				input.destination === undefined
-					? explicitDestination(path.join(os.tmpdir(), `gjc-memory-guard-${input.checkpoint.session_id}`))
+					? explicitDestination(path.join(os.tmpdir(), `worx-memory-guard-${input.checkpoint.session_id}`))
 					: destinationFor(getProjectDir(), input.destination, storage);
 		} catch {
 			return { kind: "blocked", reason: "destination-unavailable" };

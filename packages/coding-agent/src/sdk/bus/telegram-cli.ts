@@ -85,7 +85,7 @@ export function parseArgs(argv: string[]): CliArgs {
 function printHelpAndExit(): never {
 	process.stdout.write(
 		[
-			"gjc notifications — Telegram reference client",
+			"worx notifications — Telegram reference client",
 			"",
 			"  --bot-token <token>     Telegram bot token (or env WORX_TG_BOT_TOKEN)",
 			"  --chat-id <id>          Target chat id (or env WORX_TG_CHAT_ID; auto-resolved if omitted)",
@@ -196,7 +196,7 @@ async function main(): Promise<void> {
 	const chatId = args.chatId ?? $credentialEnv("WORX_TG_CHAT_ID") ?? (await resolveChatId(botToken, apiBase));
 	if (!args.force && (await activeDaemonOwnsToken({ botToken, chatId }))) {
 		process.stderr.write(
-			"an active gjc notifications daemon already owns this bot token; running a second poller will cause Telegram 409 conflicts. Re-run with --force to override.\n",
+			"an active worx notifications daemon already owns this bot token; running a second poller will cause Telegram 409 conflicts. Re-run with --force to override.\n",
 		);
 		process.exit(1);
 	}

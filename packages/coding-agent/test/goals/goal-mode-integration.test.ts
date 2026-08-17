@@ -224,7 +224,7 @@ describe("InteractiveMode goal mode integration", () => {
 		expect(await toolNamesFor(harness)).toContain("goal");
 	});
 
-	it("arms the active goal tool after gjc ultragoal create-goals succeeds", async () => {
+	it("arms the active goal tool after worx ultragoal create-goals succeeds", async () => {
 		const cliPath = path.resolve(import.meta.dir, "..", "..", "src", "cli.ts");
 		const result = await harness.session.executeBash(
 			`bun ${JSON.stringify(cliPath)} ultragoal create-goals --brief "Complete ultragoal regression"`,

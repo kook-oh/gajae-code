@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { logger } from "@bworx-io/worx-utils";
 
 /** Prefix of every computer-use screenshot fallback directory created under the OS temp dir. */
-export const SCREENSHOT_FALLBACK_DIR_PREFIX = "gjc-computer-screenshots-";
+export const SCREENSHOT_FALLBACK_DIR_PREFIX = "worx-computer-screenshots-";
 
 let screenshotFallbackDirsCreated = false;
 
@@ -33,7 +33,7 @@ export interface ScreenshotGcOptions {
 
 /**
  * Disk-only GC for stale computer-use screenshot fallback directories. Scans the temp dir for
- * `gjc-computer-screenshots-*` directories and removes those whose mtime is older than `staleMs`.
+ * `worx-computer-screenshots-*` directories and removes those whose mtime is older than `staleMs`.
  * Never throws on a per-directory failure; the whole sweep is best-effort.
  */
 export async function cleanupStaleScreenshotFallbackDirs(

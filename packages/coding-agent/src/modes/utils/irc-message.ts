@@ -83,7 +83,7 @@ function stringDetail(details: unknown, key: string): string {
 
 function legacyObservationId(fields: readonly string[]): string {
 	const hash = crypto.createHash("sha256");
-	hash.update("gjc:irc:legacy-observation:v1\0");
+	hash.update("worx:irc:legacy-observation:v1\0");
 	for (const field of fields) {
 		hash.update(String(Buffer.byteLength(field, "utf8")));
 		hash.update(":");

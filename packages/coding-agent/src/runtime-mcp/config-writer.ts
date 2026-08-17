@@ -164,7 +164,7 @@ export type UpsertMCPServerResult =
  * Add an MCP server, or overwrite an existing one only when `force` is set.
  *
  * Collision-aware wrapper over {@link addMCPServer} / {@link updateMCPServer} used by
- * `gjc migrate`. Never connects to the server. Reuses the underlying writers so the
+ * `worx migrate`. Never connects to the server. Reuses the underlying writers so the
  * rest of the config file (including `disabledServers`) is preserved on update.
  *
  * @throws Error if the server name or config is invalid (validated before any write).

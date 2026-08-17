@@ -2230,7 +2230,7 @@ export class DiscordNotificationDaemon {
 }
 
 function decodeCustomId(value: string): { generation: number; actionId: string; actionNonce: string } | undefined {
-	const match = /^gjc:(\d+):([^:]+):([0-9a-f-]{36})$/.exec(value);
+	const match = /^worx:(\d+):([^:]+):([0-9a-f-]{36})$/.exec(value);
 	if (!match) return undefined;
 	const generation = Number(match[1]);
 	return Number.isSafeInteger(generation) && generation >= 0
@@ -2264,7 +2264,7 @@ function actionComponents(
 			components: [
 				{
 					type: 3,
-					customId: `gjc:${generation}:${actionId}:${actionNonce}`,
+					customId: `worx:${generation}:${actionId}:${actionNonce}`,
 					placeholder: "Choose an option",
 					minValues: 1,
 					maxValues: 1,
@@ -2289,5 +2289,5 @@ function componentAnswer(value: string | number): string | number {
 function discordEffectNonce(effectId: string): string {
 	// Discord nonces are bounded; hash the durable effect identifier rather than
 	// truncating its potentially shared prefix.
-	return `gjc-${createHash("sha256").update(effectId).digest("hex").slice(0, 21)}`;
+	return `worx-${createHash("sha256").update(effectId).digest("hex").slice(0, 21)}`;
 }

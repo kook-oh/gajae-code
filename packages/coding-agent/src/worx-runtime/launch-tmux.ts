@@ -319,7 +319,7 @@ function sanitizeTmuxDiagnostic(stderr: string | undefined): string {
 function formatTmuxLaunchDiagnostic(stage: string, stderr?: string): string {
 	const detail = sanitizeTmuxDiagnostic(stderr);
 	const suffix = detail ? ` ${detail}` : "";
-	return `gjc --tmux failed after creating tmux session: ${stage}.${suffix}\n`;
+	return `worx --tmux failed after creating tmux session: ${stage}.${suffix}\n`;
 }
 
 function failedRetryDiagnostic(retry: TmuxSpawnResult, retryProbe: TmuxSpawnResult): string | undefined {
@@ -331,8 +331,8 @@ function isExplicitTmuxRequest(context: TmuxLaunchContext): boolean {
 }
 
 /**
- * Detect a corrupted gjc.cmd / gjc.bat wrapper at well-known PATH locations.
- * On Windows, `gjc.cmd` / `gjc.bat` files at the front of PATH that turn out
+ * Detect a corrupted worx.cmd / worx.bat wrapper at well-known PATH locations.
+ * On Windows, `worx.cmd` / `worx.bat` files at the front of PATH that turn out
  * to be PE-binary garbage (e.g. a 194MB PE image written over the wrapper)
  * cause cmd.exe to hang silently when invoked from PowerShell — cmd reads
  * the binary as text and never returns, so the user sees the prompt return
@@ -350,7 +350,7 @@ function detectCorruptedWorxWrapper(): string | null {
 	if (!pathEnv) return null;
 	const seen = new Set<string>();
 	for (const dir of pathEnv.split(path.delimiter)) {
-		for (const name of ["gjc.cmd", "gjc.bat"]) {
+		for (const name of ["worx.cmd", "worx.bat"]) {
 			const full = path.join(dir, name);
 			if (seen.has(full)) continue;
 			seen.add(full);
@@ -359,13 +359,13 @@ function detectCorruptedWorxWrapper(): string | null {
 				if (!stat.isFile()) continue;
 				if (stat.size < 1024) continue;
 				if (stat.size > 64 * 1024) {
-					return `Detected suspicious gjc wrapper at ${full}: ${stat.size} bytes (expected <1KB). The wrapper may be corrupted; cmd.exe will hang reading it as text. Recreate it from the gjc-tmux.cmd template.`;
+					return `Detected suspicious worx wrapper at ${full}: ${stat.size} bytes (expected <1KB). The wrapper may be corrupted; cmd.exe will hang reading it as text. Recreate it from the worx-tmux.cmd template.`;
 				}
 				const head = fs.readFileSync(full);
 				if (head.byteLength < 2) continue;
 				const view = new Uint8Array(head);
 				if (view[0] === 0x4d && view[1] === 0x5a) {
-					return `Detected PE-binary gjc wrapper at ${full} (MZ header, ${stat.size} bytes). cmd.exe will hang reading it as text. Recreate the wrapper from the gjc-tmux.cmd template.`;
+					return `Detected PE-binary worx wrapper at ${full} (MZ header, ${stat.size} bytes). cmd.exe will hang reading it as text. Recreate the wrapper from the worx-tmux.cmd template.`;
 				}
 			} catch {}
 		}
@@ -375,13 +375,13 @@ function detectCorruptedWorxWrapper(): string | null {
 function formatTmuxUnavailableDiagnostic(platform: NodeJS.Platform): string {
 	if (platform === "win32") {
 		return (
-			`gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session. ` +
+			`worx --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session. ` +
 			"GJC searched for psmux, pmux, and tmux on PATH. " +
 			"Install psmux (https://github.com/psmux/psmux) for native Windows tmux support, or use WSL with real tmux. " +
 			"You can also point GJC at a specific binary via WORX_TMUX_COMMAND.\n"
 		);
 	}
-	return "gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n";
+	return "worx --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n";
 }
 
 function shellQuote(value: string): string {
@@ -402,7 +402,7 @@ export function applyWorxTmuxProfile(context: WorxTmuxProfileContext): WorxTmuxP
 	const branchSlug = context.branch ? buildWorxTmuxSessionSlug(context.branch) : (context.branchSlug ?? null);
 	// The psmux UX filter (mouse / set-clipboard / mode-style /
 	// set-window-option) now lives in buildWorxTmuxProfileCommands so every
-	// caller — gjc --tmux planning, gjc session create, gjc team bootstrap —
+	// caller — worx --tmux planning, worx session create, worx team bootstrap —
 	// applies the same drop set when the active multiplexer is psmux. We pass
 	// the resolved tmuxCommand through the new opts seam so the filter
 	// engages for this exact command, not whatever the resolver returns at
@@ -454,7 +454,7 @@ function resolveCurrentWorxCommand(context: CommandResolutionContext): string[] 
 		return pathModule.isAbsolute(normalized) || path.isAbsolute(normalized);
 	};
 	const isWorxExecutable = (value: string | undefined): value is string =>
-		isRealAbsolutePath(value) && /^gjc(?:[._-]|$)/i.test(pathModule.basename(value.trim()));
+		isRealAbsolutePath(value) && /^worx(?:[._-]|$)/i.test(pathModule.basename(value.trim()));
 
 	const runtime = context.argv[0]?.trim();
 	const entrypoint = context.argv[1]?.trim();
@@ -557,13 +557,13 @@ function sanitizeTmuxWindowTitleSegment(value: string): string {
 
 function sanitizeTmuxWindowProjectName(project: string): string {
 	const trimmed = project.trim();
-	if (!trimmed || /^\.+$/.test(trimmed)) return "gjc";
+	if (!trimmed || /^\.+$/.test(trimmed)) return "worx";
 	if (trimmed.startsWith(".")) return sanitizeTmuxWindowTitleSegment(`dot-${trimmed.replace(/^\.+/, "")}`);
 	return sanitizeTmuxWindowTitleSegment(trimmed);
 }
 
 function buildWorxTmuxPrefixedTitle(prefix: string, cwd: string, branch: string | null | undefined): string {
-	const project = sanitizeTmuxWindowProjectName(path.basename(path.resolve(cwd)) || "gjc");
+	const project = sanitizeTmuxWindowProjectName(path.basename(path.resolve(cwd)) || "worx");
 	const projectTitle = `${prefix}${project}`;
 	const trimmedBranch = sanitizeTmuxWindowTitleSegment(branch?.trim() ?? "");
 	if (!trimmedBranch) return truncateVisible(projectTitle, WORX_TMUX_WINDOW_LABEL_MAX_WIDTH);
@@ -710,7 +710,7 @@ function renameExistingTmuxWindowIfNeeded(context: TmuxLaunchContext): void {
 	// Note: Windows is intentionally allowed here. Psmux supports
 	// `rename-window` and we want the leader window to inherit the
 	// sanitized project-branch title even on native Windows, where
-	// gjc --tmux runs through PowerShell to a psmux backend.
+	// worx --tmux runs through PowerShell to a psmux backend.
 
 	const tty = context.tty ?? { stdin: Boolean(process.stdin.isTTY), stdout: Boolean(process.stdout.isTTY) };
 	if (!isInteractiveRootLaunch(context.parsed, tty)) return;
@@ -991,7 +991,7 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 	const sessionName = buildWorxTmuxSessionName(env, { branch });
 	// Pick the most appropriate tmux binary for this platform. On native Windows
 	// the resolver walks psmux / pmux / tmux and uses the first one present on
-	// PATH, so the default `gjc --tmux` flow lands on a real multiplexer even
+	// PATH, so the default `worx --tmux` flow lands on a real multiplexer even
 	// without an explicit WORX_TMUX_COMMAND override.
 	const resolvedBinary = resolveWorxTmuxBinary({ platform, env });
 	const tmuxCommand = resolvedBinary.command;
@@ -1027,7 +1027,7 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 			extraEnv: {
 				[WORX_COORDINATOR_SESSION_ID_ENV]: sessionId,
 				[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]: sessionStateFile,
-				// Carry the GJC-managed session name into the child so `gjc team`
+				// Carry the GJC-managed session name into the child so `worx team`
 				// can target the correct leader session by name. Under psmux on
 				// Windows the inherited TMUX_PANE can resolve to the wrong/default
 				// session, which would split/send workers into the wrong session.
@@ -1628,7 +1628,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 		// Native tmux must atomically disclose its immutable `$N` identity. Do not
 		// downgrade to the reusable session name or mutate the unidentified session.
 		(context.diagnosticWriter ?? safeStderrWrite)(
-			"gjc --tmux failed after creating tmux session: native session identity was unavailable; preserving session for recovery.\n",
+			"worx --tmux failed after creating tmux session: native session identity was unavailable; preserving session for recovery.\n",
 		);
 		return true;
 	}
@@ -1749,7 +1749,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 		// user sees the actual psmux rejection (e.g. "cannot create session:
 		// server is shutting down") instead of a silent exit. The wrapper
 		// probe gives the user a deterministic hint when the silent-exit
-		// symptom is actually caused by a corrupted gjc.cmd / gjc.bat on
+		// symptom is actually caused by a corrupted worx.cmd / worx.bat on
 		// PATH (a 194MB PE-binary at the wrapper path produces cmd.exe
 		// hangs that look like a tmux/psmux failure from the user's seat).
 		const stderr = created.stderr;

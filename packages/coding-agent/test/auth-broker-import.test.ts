@@ -48,7 +48,7 @@ describe("auth-broker import (CLIProxyAPI)", () => {
 		return file;
 	}
 
-	test("imports a directory of CLIProxyAPI JSONs and maps types to gjc providers", async () => {
+	test("imports a directory of CLIProxyAPI JSONs and maps types to worx providers", async () => {
 		await writeCliProxyJson("claude-sample.json", {
 			type: "claude",
 			access_token: "claude-access-1",

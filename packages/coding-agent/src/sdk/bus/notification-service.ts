@@ -1,7 +1,7 @@
 /**
  * Shared notification service contract.
  *
- * Transport-agnostic, secret-safe operations consumed by BOTH the `gjc notify`
+ * Transport-agnostic, secret-safe operations consumed by BOTH the `worx notify`
  * CLI and the cross-mode `/notify` slash command (TUI + ACP). Every result is
  * free of raw secrets: bot tokens are only ever shown masked (`maskToken`) or
  * as a non-reversible fingerprint (`tokenFingerprint`).
@@ -1702,7 +1702,7 @@ export async function recoverNotifications(opts: RecoveryOptions): Promise<Notif
 			ownerId: state.ownerId,
 			pid: state.pid,
 			...(blockingReason
-				? { blockingReason, markerAgeMs, forceCommand: "gjc notify recovery --force-daemon-lock" }
+				? { blockingReason, markerAgeMs, forceCommand: "worx notify recovery --force-daemon-lock" }
 				: {}),
 		};
 	} else {

@@ -1,7 +1,7 @@
 /**
  * Plugin CLI command handlers.
  *
- * Handles `gjc plugin <command>` subcommands for plugin lifecycle management.
+ * Handles `worx plugin <command>` subcommands for plugin lifecycle management.
  */
 
 import { APP_NAME, getProjectDir } from "@bworx-io/worx-utils";
@@ -459,7 +459,7 @@ async function handleUpgrade(args: string[], flags: PluginCommandArgs["flags"]):
 			if (flags.scope) {
 				console.error(
 					chalk.yellow(
-						`Warning: --scope is ignored when upgrading all plugins. Use 'gjc plugin upgrade <id> --scope ${flags.scope}' to target a specific plugin and scope.`,
+						`Warning: --scope is ignored when upgrading all plugins. Use 'worx plugin upgrade <id> --scope ${flags.scope}' to target a specific plugin and scope.`,
 					),
 				);
 			}
@@ -726,7 +726,7 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 	const worxBundles: WorxBundleSummary[] = await listWorxBundles({ cwd });
 
 	if (flags.json) {
-		console.log(JSON.stringify({ npm: npmPlugins, marketplace: mktPlugins, gjc: worxBundles }, null, 2));
+		console.log(JSON.stringify({ npm: npmPlugins, marketplace: mktPlugins, worx: worxBundles }, null, 2));
 		return;
 	}
 
@@ -825,14 +825,14 @@ async function handleDoctor(
 			: await getWorxPluginMigrationStatuses(getProjectDir(), { migrate: false });
 		for (const status of statuses) {
 			checks.push({
-				name: `gjc-plugin:${status.scope}:${status.plugin}:migration`,
+				name: `worx-plugin:${status.scope}:${status.plugin}:migration`,
 				status: status.status === "migrated" ? "ok" : "error",
 				message: `${flags.migratePlugins ? "migration pre-flight: " : ""}${migrationDoctorCheckMessage(status)}`,
 			});
 		}
 	} catch (error) {
 		checks.push({
-			name: "gjc-plugin:migration",
+			name: "worx-plugin:migration",
 			status: "error",
 			message: `Unable to inspect GJC plugin migration status: ${error instanceof Error ? error.message : String(error)}`,
 		});

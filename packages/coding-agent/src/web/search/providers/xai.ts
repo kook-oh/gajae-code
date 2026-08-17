@@ -414,7 +414,7 @@ export async function searchXai(params: XaiSearchParams): Promise<SearchResponse
 	if (!auth) {
 		throw new SearchProviderError(
 			"xai",
-			"xAI search credentials not found. Set XAI_API_KEY or login with 'gjc /login xai'.",
+			"xAI search credentials not found. Set XAI_API_KEY or login with 'worx /login xai'.",
 			401,
 		);
 	}

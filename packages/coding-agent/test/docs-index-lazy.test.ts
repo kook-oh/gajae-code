@@ -47,7 +47,7 @@ function isTracked(relativePath: string): boolean {
 describe("internal-urls docs index loading", () => {
 	it("does not load the generated docs corpus when importing the barrel", () => {
 		const stdout = runBunEval(`
-			const marker = Symbol.for("gjc.docs-index.generated.loaded");
+			const marker = Symbol.for("worx.docs-index.generated.loaded");
 			Reflect.deleteProperty(globalThis, marker);
 			await import("@bworx-io/worx-code/internal-urls");
 			const loaded = Reflect.get(globalThis, marker) === true;
@@ -58,10 +58,10 @@ describe("internal-urls docs index loading", () => {
 		expect(result.loaded).toBe(false);
 	});
 
-	it("loads the generated docs corpus when resolving gjc docs", () => {
+	it("loads the generated docs corpus when resolving worx docs", () => {
 		const stdout = runBunEval(`
 			const { InternalUrlRouter } = await import("@bworx-io/worx-code/internal-urls");
-			const resource = await InternalUrlRouter.instance().resolve("gjc://");
+			const resource = await InternalUrlRouter.instance().resolve("worx://");
 			console.log(JSON.stringify({
 				contentType: resource.contentType,
 				contentLength: resource.content.length,

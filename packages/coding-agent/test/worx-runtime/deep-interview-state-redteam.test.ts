@@ -200,7 +200,7 @@ describe("deep-interview redteam: idempotency and lossless shape normalization",
 			current_phase: "interviewing",
 			version: 2,
 			updated_at: "2026-07-06T06:47:40.342Z",
-			receipt: { owner: "worx-state-cli", command: "gjc state deep-interview write" },
+			receipt: { owner: "worx-state-cli", command: "worx state deep-interview write" },
 			state_revision: 3,
 			state: {
 				rounds: [
@@ -255,7 +255,7 @@ describe("deep-interview redteam: idempotency and lossless shape normalization",
 		expect(state.custom_extension).toEqual({ keep: true });
 		// Envelope-level reserved keys remain legitimately at the top level.
 		expect(normalized.skill).toBe("deep-interview");
-		expect(normalized.receipt).toEqual({ owner: "worx-state-cli", command: "gjc state deep-interview write" });
+		expect(normalized.receipt).toEqual({ owner: "worx-state-cli", command: "worx state deep-interview write" });
 		// Idempotent: a second normalization pass is a fixed point.
 		expect(normalizeDeepInterviewEnvelope(clone(normalized))).toEqual(normalized);
 	});
@@ -473,7 +473,7 @@ describe("deep-interview redteam: reconcile and state write HUD parity", () => {
 		},
 	];
 
-	it("produces identical active-state HUD chips through reconcile and gjc state write", async () => {
+	it("produces identical active-state HUD chips through reconcile and worx state write", async () => {
 		for (const payload of payloads) {
 			const writeCwd = await tempDir();
 			const write = await runNativeStateCommand(

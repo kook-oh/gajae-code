@@ -25,7 +25,7 @@ async function createActiveRun(): Promise<string> {
 	// human_blocked pause gate (the nudge layer has its own dedicated coverage in
 	// ultragoal-nudge-guard.test.ts).
 	await fs.mkdir(path.join(cwd, ".worx"), { recursive: true });
-	await fs.writeFile(path.join(cwd, ".worx", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 0 }));
+	await fs.writeFile(path.join(cwd, ".worx", "settings.json"), JSON.stringify({ "worx.ultragoal.nudgeBudget": 0 }));
 	await createUltragoalPlan({ cwd, brief: "Implement the story" });
 	return cwd;
 }

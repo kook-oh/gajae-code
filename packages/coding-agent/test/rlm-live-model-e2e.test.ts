@@ -3,7 +3,7 @@
  *
  * Gated behind WORX_RLM_LIVE=1 because it makes real LLM calls (creds + network)
  * and is therefore not part of the default CI suite. When enabled, it builds a
- * real RLM session via the same SDK path the `gjc rlm` command uses (research
+ * real RLM session via the same SDK path the `worx rlm` command uses (research
  * preset: distinct system prompt + hard-gated python/read/web_search/read-only bash/goal toolset),
  * lets the real model drive the `python` tool over a real CSV, and asserts the
  * notebook + report capture genuine, model-computed results.

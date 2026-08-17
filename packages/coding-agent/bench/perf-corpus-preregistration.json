@@ -1,7 +1,7 @@
 {
   "schema": "gjc.perf-corpus-preregistration/1",
   "analysisSchema": "gjc.perf-corpus-rlm-analysis/1",
-  "reportSchema": "gjc.perf-corpus/3",
+  "reportSchema": "worx.perf-corpus/3",
   "frozenBeforeOutcomes": true,
   "digestBinding": {
     "method": "external-sha256-receipts-after-freeze",

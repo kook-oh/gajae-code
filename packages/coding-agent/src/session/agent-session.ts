@@ -594,7 +594,7 @@ export interface AgentSessionConfig {
 	/** Bound terminal worker-integration settlement for embedded hosts and deterministic lifecycle tests. */
 	workerIntegrationTimeoutMs?: number;
 	/**
-	 * Override the runtime-owned `gjc team` worker heartbeat reporter. Defaults to a
+	 * Override the runtime-owned `worx team` worker heartbeat reporter. Defaults to a
 	 * reporter derived from the team worker environment, or none outside a worker pane.
 	 */
 	teamWorkerHeartbeatReporter?: WorxTeamWorkerHeartbeatReporter;
@@ -1264,7 +1264,7 @@ function buildSessionMetadata(
 			// is derived solely from the OAuth UUID the user already consented to
 			// share with Anthropic. Omitted when no OAuth credential is available
 			// (API-key callers) to avoid sending a hash of an empty string.
-			userId.device_id = crypto.createHash("sha256").update(`gjc-device-id-v1:${accountUuid}`).digest("hex");
+			userId.device_id = crypto.createHash("sha256").update(`worx-device-id-v1:${accountUuid}`).digest("hex");
 		}
 	}
 	return { user_id: JSON.stringify(userId) };
@@ -2113,7 +2113,7 @@ export class AgentSession {
 	#turnIndex = 0;
 	#workerIntegrationScheduler: WorkerIntegrationRequestScheduler;
 	#workerIntegrationRequestedForTurn = false;
-	/** Runtime-owned team worker heartbeat; `undefined` outside a `gjc team` worker pane. */
+	/** Runtime-owned team worker heartbeat; `undefined` outside a `worx team` worker pane. */
 	#teamWorkerHeartbeat: WorxTeamWorkerHeartbeatReporter | undefined;
 	#teamWorkerTurnsInFlight = 0;
 	#unregisterTeamWorkerAsyncJobChange: (() => void) | undefined;
@@ -3579,7 +3579,7 @@ export class AgentSession {
 	 *  Does NOT push to the agent's steering/followUp queue — that happens
 	 *  separately inside `sendCustomMessage`. */
 	enqueueCustomMessageDisplay(text: string, mode: "steer" | "followUp"): string {
-		const tag = `gjc-cmd-${Date.now()}-${++this.#customDisplayTagCounter}`;
+		const tag = `worx-cmd-${Date.now()}-${++this.#customDisplayTagCounter}`;
 		const displayText = text.trim();
 		if (!displayText) return tag;
 		const entry = this.#createQueuedDisplayEntry(displayText, tag);
@@ -8752,7 +8752,7 @@ export class AgentSession {
 		const sessionId = this.sessionManager.getSessionId();
 		// Canonical GJC workflow skills (deep-interview, ralplan, ultragoal, team)
 		// own their `.worx/state/skill-active-state.json` row through the
-		// `gjc state handoff` and `gjc state clear` runtime verbs. The prompt
+		// `worx state handoff` and `worx state clear` runtime verbs. The prompt
 		// observer must not overwrite an existing row (that clobbered handoff
 		// lineage `handoff_from`/`handoff_at` and desynced the HUD). But a fresh
 		// `/skill:<name>` invocation has no row yet, so seed `.worx/state`

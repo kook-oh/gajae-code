@@ -34,7 +34,7 @@ test("normal root launch creates a current SessionManager for root token logs", 
 });
 
 // Regression for the PR #1148 stage-17 blocker: a `/session_create` child is a
-// bare `gjc` launch with WORX_SESSION_ID/WORX_LIFECYCLE_REQUEST_ID. With autoResume
+// bare `worx` launch with WORX_SESSION_ID/WORX_LIFECYCLE_REQUEST_ID. With autoResume
 // enabled and existing history in the cwd, the child must NOT auto-resume the old
 // session (which would diverge the daemon/tmux id from the header id); it must
 // create a fresh session that adopts the pre-allocated id.

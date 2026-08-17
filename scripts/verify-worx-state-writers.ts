@@ -172,7 +172,7 @@ function main(): void {
 
 	const offending = findings.filter(f => !f.allowed);
 
-	console.log(`gjc .worx/** writer inventory - scanned ${path.relative(repoRoot, SCAN_ROOT)}`);
+	console.log(`worx .worx/** writer inventory - scanned ${path.relative(repoRoot, SCAN_ROOT)}`);
 	console.log(`Found ${findings.length} candidate write site(s) across ${byFile.size} file(s).`);
 	console.log(`Allowlisted sanctioned writer: ${ALLOWED_WRITER_RELATIVE}`);
 	console.log(`Known-allowed non-writer sites: ${KNOWN_ALLOWED_SITES.size}\n`);

@@ -449,7 +449,7 @@ export async function runWorxNativeSkillHookCli(): Promise<void> {
 				reason: "GJC native hook received malformed JSON input.",
 				hookSpecificOutput: {
 					hookEventName: "Unknown",
-					additionalContext: `stdin JSON parsing failed inside gjc codex-native-hook: ${parseError.message}`,
+					additionalContext: `stdin JSON parsing failed inside worx codex-native-hook: ${parseError.message}`,
 				},
 			})}\n`,
 		);

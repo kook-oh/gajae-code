@@ -623,7 +623,7 @@ describe("GJC tmux session management", () => {
 	});
 	it("builds a BOM-free encoded command for psmux with literal PowerShell values and arguments", () => {
 		const encoded = buildWindowsPowerShellInnerCommand({
-			command: ["C:\\Program Files\\GJC\\O'Brien\\gjc.exe"],
+			command: ["C:\\Program Files\\GJC\\O'Brien\\worx.exe"],
 			args: ["--resume", "operator's session", "--label=O'Brien"],
 			environment: {
 				WORX_PSMUX_COMMAND: "C:\\Program Files\\O'Brien\\psmux.exe",
@@ -642,7 +642,7 @@ describe("GJC tmux session management", () => {
 		expect(script).toContain("$env:WORX_PSMUX_COMMAND = 'C:\\Program Files\\O''Brien\\psmux.exe'");
 		expect(script).toContain("$env:WORX_TEST_VALUE = 'operator''s value'");
 		expect(script).toContain(
-			"& 'C:\\Program Files\\GJC\\O''Brien\\gjc.exe' '--resume' 'operator''s session' '--label=O''Brien'",
+			"& 'C:\\Program Files\\GJC\\O''Brien\\worx.exe' '--resume' 'operator''s session' '--label=O''Brien'",
 		);
 	});
 
@@ -680,7 +680,7 @@ describe("GJC tmux session management", () => {
 		if (!generation) throw new Error("expected generated owner identity");
 		expect(innerCommand).toBe(
 			buildWindowsPowerShellInnerCommand({
-				command: ["gjc"],
+				command: ["worx"],
 				environment: {
 					WORX_TMUX_LAUNCHED: "1",
 					WORX_TMUX_OWNER_GENERATION: generation,

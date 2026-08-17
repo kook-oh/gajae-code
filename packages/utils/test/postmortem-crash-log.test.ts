@@ -7,7 +7,7 @@ import { CRASH_LOG_MAX_BYTES, CRASH_RECORD_MAX_BYTES, recordFatalCrash } from ".
 function tempCrashLog(): string {
 	const dir = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-crash-log-"));
 	// Nested path proves the writer creates missing parent directories.
-	return path.join(dir, "agent", "gjc-crash.log");
+	return path.join(dir, "agent", "worx-crash.log");
 }
 
 const POSTMORTEM_SOURCE = path.resolve(import.meta.dir, "../src/postmortem.ts");
@@ -267,7 +267,7 @@ describe("recordFatalCrash", () => {
 		const fileAsParent = tempCrashLog();
 		fs.mkdirSync(path.dirname(fileAsParent), { recursive: true });
 		fs.writeFileSync(fileAsParent, "i am a file");
-		const bogus = path.join(fileAsParent, "nested", "gjc-crash.log");
+		const bogus = path.join(fileAsParent, "nested", "worx-crash.log");
 		const result = recordFatalCrash("Uncaught Exception", new Error("x"), { path: bogus });
 		expect(result).toBeUndefined();
 	});
@@ -281,7 +281,7 @@ describe("fatal handler process fixtures", () => {
 		const result = spawnBun(script, {
 			env: { WORX_CODING_AGENT_DIR: path.join(dir, "agent") },
 		});
-		return { ...result, crashLog: path.join(dir, "agent", "gjc-crash.log") };
+		return { ...result, crashLog: path.join(dir, "agent", "worx-crash.log") };
 	}
 
 	it("persists an uncaught exception to the crash log before exiting 1", () => {

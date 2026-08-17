@@ -2434,7 +2434,7 @@ describe("lifecycle control runtime", () => {
 			expect(recorded).toContain("display-message -p -t $42");
 			expect(recorded).toContain("if-shell -t $42 -F");
 			expect(recorded).toContain("WORX_COORDINATOR_SESSION_ID='darwin-resume'");
-			expect(recorded).toContain("gjc '--resume' 'darwin-resume'");
+			expect(recorded).toContain("worx '--resume' 'darwin-resume'");
 			for (const name of [
 				"WORX_TMUX_OWNER_GENERATION",
 				"WORX_TMUX_OWNER_STATE_DIR",

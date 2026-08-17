@@ -426,7 +426,7 @@ describe("GJC native skill-state hooks", () => {
 		try {
 			await expect(readVisibleSkillActiveState(root, "test-session")).resolves.toBeNull();
 			expect(warn).toHaveBeenCalledTimes(1);
-			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid skill-active-state at");
+			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("worx skill-state: invalid skill-active-state at");
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("invalid JSON");
 		} finally {
 			warn.mockRestore();
@@ -515,7 +515,7 @@ describe("GJC native skill-state hooks", () => {
 			);
 			expect(allowed.outputJson).toBeNull();
 			expect(warn).toHaveBeenCalledTimes(1);
-			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid mode-state at");
+			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("worx skill-state: invalid mode-state at");
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("invalid JSON");
 		} finally {
 			warn.mockRestore();
@@ -549,7 +549,7 @@ describe("GJC native skill-state hooks", () => {
 			);
 			expect(allowed.outputJson).toBeNull();
 			expect(warn).toHaveBeenCalledTimes(1);
-			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid mode-state at");
+			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("worx skill-state: invalid mode-state at");
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("current_phase");
 		} finally {
 			warn.mockRestore();
@@ -835,7 +835,7 @@ describe("GJC native skill-state hooks", () => {
 				String((allowed.outputJson?.hookSpecificOutput as { additionalContext?: unknown }).additionalContext ?? ""),
 			).toContain("WORX state recovery");
 			expect(warn).toHaveBeenCalledTimes(2);
-			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid mode-state at");
+			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("worx skill-state: invalid mode-state at");
 			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("current_phase");
 		} finally {
 			warn.mockRestore();
@@ -978,7 +978,7 @@ describe("GJC native skill-state hooks", () => {
 		expect(blocked.reason).toBe("workflow-state-target");
 	});
 
-	it("blocks direct workflow state JSON writes and points to gjc state", async () => {
+	it("blocks direct workflow state JSON writes and points to worx state", async () => {
 		const root = await cwd();
 		const blocked = await getWorkflowMutationDecision({
 			cwd: root,
@@ -1391,7 +1391,7 @@ disabledExtensions:
 			stopReason: "worx_skill_deep_interview_uncrystallized",
 		});
 		expect(String(blocked.outputJson?.reason ?? "")).toContain("crystalliz");
-		expect(String(blocked.outputJson?.reason ?? "")).toContain("gjc deep-interview --write");
+		expect(String(blocked.outputJson?.reason ?? "")).toContain("worx deep-interview --write");
 	});
 
 	it("Stop releases a deep-interview that reached a terminal phase with a crystallized spec", async () => {
@@ -1820,11 +1820,11 @@ disabledExtensions:
 		};
 
 		expect(parsed.hooks.UserPromptSubmit?.flatMap(entry => entry.hooks.map(hook => hook.command))).toEqual([
-			"gjc codex-native-hook",
+			"worx codex-native-hook",
 			"echo user-prompt",
 		]);
 		expect(parsed.hooks.Stop?.flatMap(entry => entry.hooks.map(hook => hook.command))).toEqual([
-			"gjc codex-native-hook",
+			"worx codex-native-hook",
 			"echo user-stop",
 		]);
 		expect(readWorxManagedCodexHooksStatus(merged.content, "/tmp/hooks.json")).toMatchObject({

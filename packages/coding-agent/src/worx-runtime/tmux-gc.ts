@@ -1,5 +1,5 @@
 /**
- * GC adapter for gjc-tagged tmux sessions. Destructive cleanup is authorized
+ * GC adapter for worx-tagged tmux sessions. Destructive cleanup is authorized
  * only for detached pane-less sessions whose exact runtime marker revalidates a
  * terminal state. Project/branch/orphan heuristics are discovery signals only.
  */

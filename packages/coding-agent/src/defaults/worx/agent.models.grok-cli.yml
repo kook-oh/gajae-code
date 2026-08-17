@@ -9,7 +9,7 @@ providers:
     auth: oauth
     headers:
       x-xai-token-auth: xai-grok-cli
-      x-grok-client-identifier: gjc-grok-cli
+      x-grok-client-identifier: worx-grok-cli
       x-grok-client-version: 0.2.33
     models:
       - id: grok-composer-2.5-fast

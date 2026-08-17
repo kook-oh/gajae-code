@@ -2,9 +2,9 @@ import type { Effort } from "../model-thinking";
 import type { AssistantMessage, AssistantMessageEventStream, CacheRetention, Context, ServiceTier } from "../types";
 
 /**
- * Wire types for the gjc auth-gateway.
+ * Wire types for the worx auth-gateway.
  *
- * The gateway sits between unauthenticated clients (containerized gjc,
+ * The gateway sits between unauthenticated clients (containerized worx,
  * llm-git, …) and the broker. It accepts provider-format HTTP requests
  * (OpenAI chat-completions / Anthropic messages / OpenAI Responses),
  * dispatches them through pi-ai's `streamSimple()`, and translates the

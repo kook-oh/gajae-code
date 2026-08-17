@@ -375,7 +375,7 @@ function toolSchema(name: CoordinatorToolName): {
 	const mpreset = {
 		type: "string",
 		description:
-			"Optional GJC model profile (`gjc --mpreset <profile>`). Unknown names are rejected with the available-profile listing.",
+			"Optional GJC model profile (`worx --mpreset <profile>`). Unknown names are rejected with the available-profile listing.",
 	};
 
 	const common = { type: "object", properties: {} as Record<string, unknown> };
@@ -3382,7 +3382,7 @@ export function createCoordinatorMcpServer(options: CoordinatorMcpServerOptions 
 	 *
 	 * The Coordinator never writes a chat mapping and never fakes a readiness
 	 * signal: it proves exact endpoint authority, then delegates to the same
-	 * activation exchange the `gjc notify activate-thread` CLI uses. The session's
+	 * activation exchange the `worx notify activate-thread` CLI uses. The session's
 	 * own activation gate remains the authority on whether a binding exists.
 	 */
 	async function activatePreparedCoordinatorSession(

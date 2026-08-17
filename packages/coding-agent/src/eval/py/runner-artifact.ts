@@ -6,7 +6,7 @@ import RUNNER_SCRIPT from "./runner.py" with { type: "text" };
 
 const DIRECTORY_MODE = 0o700;
 const FILE_MODE = 0o600;
-const DIRECTORY_PREFIX = "gjc-python-runner-";
+const DIRECTORY_PREFIX = "worx-python-runner-";
 
 interface RunnerScriptArtifact {
 	directory: string;

@@ -12,7 +12,7 @@ describe("Extragoal skill template", () => {
 		const defaultSkillNames = defaultSkillEntries.map(entry => entry.split("/")[0]).sort();
 
 		expect(defaultSkillNames).toEqual(expectedWorkflowSkills);
-		expect(template).toContain("Extragoal is **not** a bundled workflow skill; `gjc extragoal` does not exist.");
+		expect(template).toContain("Extragoal is **not** a bundled workflow skill; `worx extragoal` does not exist.");
 		// Install path must target the scanned user-level location, frontmatter-first.
 		expect(template).toContain("mkdir -p ~/.worx/agent/skills/extragoal");
 		expect(template).toContain(
@@ -50,7 +50,7 @@ describe("Extragoal skill template", () => {
 		expect(template).toContain("Any fix invalidates the previous signature.");
 		expect(template).toContain("never commit `.worx/_session-*` gate artifacts");
 		expect(template).toContain("The one-shot session's `default` model authors the verdict");
-		expect(template).toContain("gjc -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find");
+		expect(template).toContain("worx -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find");
 		expect(template).toContain(
 			"Adding `--mpreset reviewer` on top is an **optional enhancement**, not a prerequisite",
 		);
@@ -84,6 +84,6 @@ describe("Extragoal skill template", () => {
 		expect(template).toContain("No browser automation, Playwright, or Repomix dependency is added to GJC core");
 		expect(template).toContain("Maximum **2 re-sign rounds**");
 		expect(template).toContain("Pro and Fable lanes receive the bundle");
-		expect(template).toContain("gjc -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find");
+		expect(template).toContain("worx -p --no-session --model openai-codex/gpt-5.5:xhigh --tools read,search,find");
 	});
 });

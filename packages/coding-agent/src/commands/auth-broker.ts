@@ -1,5 +1,5 @@
 /**
- * `gjc auth-broker` — manage the gjc credential vault.
+ * `worx auth-broker` — manage the worx credential vault.
  */
 import { Args, Command, Flags, renderCommandHelp } from "@bworx-io/worx-utils/cli";
 import {
@@ -11,7 +11,7 @@ import {
 import { initTheme } from "../modes/theme/theme";
 
 export default class AuthBroker extends Command {
-	static description = "Manage the gjc auth-broker (credential vault)";
+	static description = "Manage the worx auth-broker (credential vault)";
 
 	static args = {
 		action: Args.string({
@@ -52,23 +52,23 @@ export default class AuthBroker extends Command {
 	};
 
 	static examples = [
-		"# Boot the broker against the local SQLite store\n  gjc auth-broker serve",
-		"# Boot on a non-default port\n  gjc auth-broker serve --bind=127.0.0.1:9000",
-		"# Print the bearer token\n  gjc auth-broker token",
-		"# Rotate the bearer token\n  gjc auth-broker token --regenerate",
-		"# Local login (run on the broker host)\n  gjc auth-broker login anthropic",
-		"# Remote login over SSH tunnel\n  gjc auth-broker login anthropic --via=user@broker",
-		"# Import a CLIProxyAPI auth dump\n  gjc auth-broker import ~/.cliproxy/auth",
-		"# Import a single CLIProxyAPI JSON, overriding the provider mapping\n  gjc auth-broker import ~/.cliproxy/auth/claude-foo.json --provider anthropic",
-		"# Preview a migration from local store + env vars to the configured broker\n  gjc auth-broker migrate --from-local --include-env --dry-run",
-		"# Apply the migration\n  gjc auth-broker migrate --from-local --include-env",
-		"# Health-check the configured remote broker\n  gjc auth-broker status",
+		"# Boot the broker against the local SQLite store\n  worx auth-broker serve",
+		"# Boot on a non-default port\n  worx auth-broker serve --bind=127.0.0.1:9000",
+		"# Print the bearer token\n  worx auth-broker token",
+		"# Rotate the bearer token\n  worx auth-broker token --regenerate",
+		"# Local login (run on the broker host)\n  worx auth-broker login anthropic",
+		"# Remote login over SSH tunnel\n  worx auth-broker login anthropic --via=user@broker",
+		"# Import a CLIProxyAPI auth dump\n  worx auth-broker import ~/.cliproxy/auth",
+		"# Import a single CLIProxyAPI JSON, overriding the provider mapping\n  worx auth-broker import ~/.cliproxy/auth/claude-foo.json --provider anthropic",
+		"# Preview a migration from local store + env vars to the configured broker\n  worx auth-broker migrate --from-local --include-env --dry-run",
+		"# Apply the migration\n  worx auth-broker migrate --from-local --include-env",
+		"# Health-check the configured remote broker\n  worx auth-broker status",
 	];
 
 	async run(): Promise<void> {
 		const { args, flags } = await this.parse(AuthBroker);
 		if (!args.action) {
-			renderCommandHelp("gjc", "auth-broker", AuthBroker);
+			renderCommandHelp("worx", "auth-broker", AuthBroker);
 			return;
 		}
 		const action = args.action as AuthBrokerAction;

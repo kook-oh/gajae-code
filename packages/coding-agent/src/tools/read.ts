@@ -2615,7 +2615,7 @@ export class ReadTool implements AgentTool<typeof readSchema, ReadToolDetails> {
 			);
 		}
 
-		// Handle internal URLs (agent://, artifact://, memory://, rule://, local://, gjc://, issue://, pr://).
+		// Handle internal URLs (agent://, artifact://, memory://, rule://, local://, worx://, issue://, pr://).
 		// Use the internal-URL-aware splitter so malformed selectors are peeled
 		// off the URL and surfaced via parseSel rather than confusing handlers.
 		const internalRouter = InternalUrlRouter.instance();

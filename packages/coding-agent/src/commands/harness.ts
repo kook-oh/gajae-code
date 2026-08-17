@@ -1,5 +1,5 @@
 /**
- * `gjc harness <verb>` — AI-native stateless JSON CLI for the coding-harness
+ * `worx harness <verb>` — AI-native stateless JSON CLI for the coding-harness
  * operations control plane (v1, gajae-code adapter).
  *
  * Every verb emits the universal contract `{ ok, state, evidence, nextAllowedActions }`.
@@ -333,18 +333,18 @@ interface OwnerExitEvidence {
 
 function ownerExitGuidance(reason: string, startupBlocker: boolean): string {
 	if (startupBlocker) {
-		return "owner started and reported live but exited before accepting the first prompt; run `gjc harness recover --session <id>` to respawn the owner, then resubmit the prompt";
+		return "owner started and reported live but exited before accepting the first prompt; run `worx harness recover --session <id>` to respawn the owner, then resubmit the prompt";
 	}
 	switch (reason) {
 		case "owner-exited-after-prompt-acceptance":
-			return "owner exited after accepting a prompt; run `gjc harness recover --session <id>` to preserve in-flight work and classify the vanish before resubmitting";
+			return "owner exited after accepting a prompt; run `worx harness recover --session <id>` to preserve in-flight work and classify the vanish before resubmitting";
 		case "owner-lease-expired":
 		case "owner-endpoint-unreachable":
-			return "owner lease is stale or its endpoint did not route; run `gjc harness recover --session <id>` to respawn or take over the owner";
+			return "owner lease is stale or its endpoint did not route; run `worx harness recover --session <id>` to respawn or take over the owner";
 		case "owner-liveness-unknown-permission-denied":
 			return "owner liveness cannot be probed (permission denied); verify the owner process out-of-band before recover";
 		default:
-			return "no live owner holds this session; run `gjc harness recover --session <id>` to (re)spawn an owner, then resubmit";
+			return "no live owner holds this session; run `worx harness recover --session <id>` to (re)spawn an owner, then resubmit";
 	}
 }
 
@@ -661,10 +661,10 @@ export default class Harness extends Command {
 	};
 
 	static examples = [
-		`gjc harness start --input '{"harness":"gajae-code","workspace":".","branch":"feat/x"}'`,
-		"gjc harness observe --session <id>",
-		`gjc harness classify --input '{"observation":{"ownerLive":false,"gitDelta":"dirty","risk":"vanished-dirty"}}'`,
-		"gjc harness events --session <id> --follow",
+		`worx harness start --input '{"harness":"gajae-code","workspace":".","branch":"feat/x"}'`,
+		"worx harness observe --session <id>",
+		`worx harness classify --input '{"observation":{"ownerLive":false,"gitDelta":"dirty","risk":"vanished-dirty"}}'`,
+		"worx harness events --session <id> --follow",
 	];
 
 	async run(): Promise<void> {
@@ -732,7 +732,7 @@ export default class Harness extends Command {
 				preflight,
 				guidance: preflight.ok
 					? "workspace metadata is normalized"
-					: "fix blockers before gjc harness start; branch must match the actual checkout and issueOrPr must be numeric or a recognized PR/issue form",
+					: "fix blockers before worx harness start; branch must match the actual checkout and issueOrPr must be numeric or a recognized PR/issue form",
 			},
 		});
 		if (!preflight.ok) process.exitCode = 1;
@@ -985,7 +985,7 @@ export default class Harness extends Command {
 				socketKey: null,
 				reason: "tmux-owner-native_session_identity_unavailable",
 			};
-		const socketKey = `gjc-owner-${randomBytes(24).toString("hex")}`;
+		const socketKey = `worx-owner-${randomBytes(24).toString("hex")}`;
 		const ownerStateDir = root;
 		let baseline: OwnerGenerationBaseline;
 		try {
@@ -1256,7 +1256,7 @@ export default class Harness extends Command {
 				evidence: {
 					preflight: { ...preflight, blockers: fatalBlockers, ok: false },
 					guidance:
-						"fix blockers before start; run gjc harness preflight with the same input for branch and issue/PR diagnostics",
+						"fix blockers before start; run worx harness preflight with the same input for branch and issue/PR diagnostics",
 				},
 			});
 			process.exitCode = 1;

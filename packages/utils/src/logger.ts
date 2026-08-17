@@ -6,7 +6,7 @@
  * (the auth broker, etc.) call {@link setTransports} to swap in a console
  * transport so a process supervisor (pm2, journald, k8s) captures the logs.
  *
- * Each entry includes `process.pid` so concurrent gjc instances stay
+ * Each entry includes `process.pid` so concurrent worx instances stay
  * traceable.
  */
 import { AsyncLocalStorage } from "node:async_hooks";
@@ -77,7 +77,7 @@ function makeLogFormat(winston: WinstonModule): winston.Logform.Format {
 function makeFileTransport(DailyRotateFile: DailyRotateFileCtor, dir?: string): Transport {
 	return new DailyRotateFile({
 		dirname: ensureDir(dir ?? getLogsDir()),
-		filename: "gjc.%DATE%.log",
+		filename: "worx.%DATE%.log",
 		datePattern: "YYYY-MM-DD",
 		maxSize: "10m",
 		maxFiles: 5,

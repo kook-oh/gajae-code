@@ -32,7 +32,7 @@ function env(overrides: Record<string, string>) {
 }
 
 async function fixture(root: string, mode = "direct", runner = "sleep 30") {
-	const bin = path.join(root, "bin", "gjc");
+	const bin = path.join(root, "bin", "worx");
 	await executable(bin, `#!/usr/bin/env bash
 set -euo pipefail
 if [[ "${"$"}{1:-}" == --internal-tmux-owner-isolation ]]; then
@@ -216,7 +216,7 @@ describe("gjc-session create public owner lifecycle", () => {
 		const legacyRoutingArgs = Bun.spawnSync(["bash", createScript, "x", root, "channel", "@mention"], { stderr: "pipe" });
 		expect(legacyRoutingArgs.exitCode).toBe(2); expect(legacyRoutingArgs.stderr.toString()).toContain("<session-name> <worktree-path>");
 		const missing = Bun.spawnSync(["bash", createScript, "x", root], { env: env({ WORX_BIN: "/definitely-not-a-gjc-executable" }), stderr: "pipe" });
-		expect(missing.exitCode).toBe(1); expect(missing.stderr.toString()).toContain("gjc not found");
+		expect(missing.exitCode).toBe(1); expect(missing.stderr.toString()).toContain("worx not found");
 		const binary = await fixture(root);
 		const nongit = Bun.spawnSync(["bash", createScript, "x", root], { env: env({ WORX_BIN: binary }), stderr: "pipe" });
 		expect(nongit.exitCode).toBe(1); expect(nongit.stderr.toString()).toContain("not a git worktree");
@@ -421,7 +421,7 @@ test("reconciles an immediately replaced missing owner before publishing the nex
 test("publishes one coherent generation-bound creation failure and removes stale completion aliases", async () => {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-create-failure-receipt-")); roots.push(root);
 	const dir = await worktree(root); const state = path.join(root, "state"); const name = `failure-${Date.now()}`; sessions.push({ name, socket: `gjc-${name}` });
-	const bin = path.join(root, "bin", "gjc");
+	const bin = path.join(root, "bin", "worx");
 	await executable(bin, `#!/usr/bin/env python3
 import datetime, json, os, sys
 if "--internal-tmux-owner-isolation" not in sys.argv: raise SystemExit(0)
@@ -551,7 +551,7 @@ count=0; [[ -f "${probeCount}" ]] && count="$(<"${probeCount}")"; count=$((count
 exit 1
 `,
 		);
-		const adapter = path.join(root, "gjc");
+		const adapter = path.join(root, "worx");
 		await executable(adapter, "#!/usr/bin/env bash\nprintf '{\"ok\":true}\\n'\n");
 		const postmortem = path.join(root, "postmortem.sh");
 		await executable(

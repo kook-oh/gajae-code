@@ -70,7 +70,7 @@ function findAuditEntry(
 	return entries.find(entry => entry.category === "state" && entry.verb === verb && entry.owner === "worx-state-cli");
 }
 
-describe("G5 gjc state receipts", () => {
+describe("G5 worx state receipts", () => {
 	it("persists receipts and audit entries for write, clear, and handoff", async () => {
 		await withTempCwd(async cwd => {
 			const write = await runNativeStateCommand(
@@ -171,7 +171,7 @@ describe("workflow receipt path contract", () => {
 				cwd: process.cwd(),
 				skill: "ralplan",
 				owner: "worx-state-cli",
-				command: "gjc state ralplan write",
+				command: "worx state ralplan write",
 				sessionId: " ",
 			}),
 		).toThrow("non-empty GJC session id");

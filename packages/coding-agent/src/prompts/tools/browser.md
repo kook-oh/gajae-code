@@ -12,7 +12,7 @@ Drives a real Chromium tab with full puppeteer access via JS execution.
 - Inside `run`, `tab` exposes high-level helpers (`goto`, `observe`, `id`, `click`, `type`, `fill`, `press`, `waitFor`, `screenshot`, `extract`, …); reach for `page` (raw puppeteer Page) when they don't cover it.
 - Selectors accept CSS as well as puppeteer query handlers: `aria/Sign in`, `text/Continue`, `xpath/…`, `pierce/…`.
 - Runtime diagnostics are opt-in: pass `diagnostics: true` to `open` to subscribe the tab to page `Runtime.exceptionThrown` and `console.error` events. The next successful `act`/`run` response then includes at most 20 `runtimeDiagnostics` entries plus `runtimeDiagnosticsDropped`, then drains them. Entries contain only kind, time, origin-only URL, line/column, and a built-in error class from a fixed allowlist — never path segments, query strings, messages, console arguments, values, or stacks. Output is byte-bounded and marks truncation explicitly.
-- Full reference — helpers, browser kinds, CDP/security details, and more examples — read `gjc://tools/browser.md`.
+- Full reference — helpers, browser kinds, CDP/security details, and more examples — read `worx://tools/browser.md`.
 </instruction>
 
 <critical>

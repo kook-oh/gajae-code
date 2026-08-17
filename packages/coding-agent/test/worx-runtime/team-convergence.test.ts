@@ -28,8 +28,8 @@ afterEach(async () => {
 	cleanupRoot = undefined;
 });
 
-describe("native gjc team mode-state convergence", () => {
-	it("keeps gjc state team read aligned with dry-run team start and status snapshots", async () => {
+describe("native worx team mode-state convergence", () => {
+	it("keeps worx state team read aligned with dry-run team start and status snapshots", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-convergence-"));
 		const started = await startWorxTeam({
 			workerCount: 1,

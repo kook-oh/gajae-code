@@ -1,5 +1,5 @@
 /**
- * Entry points for the gjc commit command.
+ * Entry points for the worx commit command.
  */
 
 export { runCommitCommand } from "./pipeline";

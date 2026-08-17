@@ -558,7 +558,7 @@ export class PluginManager {
 				status: hasManifest ? "ok" : "warning",
 				message: hasManifest
 					? `v${pluginPkg.version}${pluginPkg.description ? ` - ${pluginPkg.description}` : ""}`
-					: `v${pluginPkg.version} - No gjc/pi manifest (not an gjc plugin)`,
+					: `v${pluginPkg.version} - No worx/pi manifest (not an worx plugin)`,
 			});
 
 			// Check tools path exists if specified

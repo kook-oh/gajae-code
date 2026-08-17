@@ -6,8 +6,8 @@ import * as fs from "node:fs";
  *
  * Recent psmux releases (see docs/compatibility.md in the psmux repo) close
  * the round-trip gap for set-option / show-options user options and the
- * set-window-option profile values gjc emits, which is what unblocks the
- * native Windows gjc --tmux path. This module detects that capability so gjc
+ * set-window-option profile values worx emits, which is what unblocks the
+ * native Windows worx --tmux path. This module detects that capability so worx
  * can pick psmux when tmux is missing on Windows, and so callers can decide
  * whether to treat a given tmux binary as psmux (affecting e.g. the untagged
  * diagnostic wording and namespace handling).
@@ -310,7 +310,7 @@ export interface ResolvedTmuxBinary {
  * Resolve the tmux command GJC should invoke. Honors the existing
  * WORX_TMUX_COMMAND / WORX_TEAM_TMUX_COMMAND overrides; on Windows when no
  * override is set, psmux (installed as psmux, pmux, or tmux) is picked
- * automatically so the default gjc --tmux flow lands on a real multiplexer.
+ * automatically so the default worx --tmux flow lands on a real multiplexer.
  */
 export function resolveWorxTmuxBinary(options: ResolveWorxTmuxBinaryOptions = {}): ResolvedTmuxBinary {
 	const env = options.env ?? process.env;

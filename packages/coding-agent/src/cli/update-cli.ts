@@ -1,7 +1,7 @@
 /**
  * Update CLI command handler.
  *
- * Handles `gjc update` to check for and install updates.
+ * Handles `worx update` to check for and install updates.
  * Uses bun if available, otherwise downloads binary from GitHub releases.
  */
 import * as fs from "node:fs";
@@ -141,7 +141,7 @@ function isPathInDirectory(filePath: string, directoryPath: string): boolean {
 	if (isPathInDirectoryLexical(filePath, directoryPath)) return true;
 	// Layer realpath resolution on top of the lexical guard. On Windows, ~/.bun
 	// is a junction when Bun is installed via Scoop, so `bun pm bin -g` and the
-	// PATH-resolved gjc path can refer to the same directory through different
+	// PATH-resolved worx path can refer to the same directory through different
 	// strings. path.resolve does not traverse junctions/symlinks; realpath does.
 	// Resolve the file's parent directory to tolerate the file itself not yet
 	// existing (e.g. a fresh install path) while still catching link-traversed
@@ -332,17 +332,17 @@ function getBinaryName(platform: NodeJS.Platform = process.platform, arch: strin
 }
 
 /**
- * Resolve the path that `gjc` maps to in the user's PATH.
+ * Resolve the path that `worx` maps to in the user's PATH.
  */
 function resolveWorxPath(): string | undefined {
 	return $which(APP_NAME) ?? undefined;
 }
 
 /**
- * Parse the version reported by `gjc --version` ("gjc/X.Y.Z" or a nightly prerelease variant).
+ * Parse the version reported by `worx --version` ("worx/X.Y.Z" or a nightly prerelease variant).
  */
 function parseReportedVersion(output: string): string | undefined {
-	// Output format: "gjc/X.Y.Z" (stable) or "gjc/X.Y.Z-nightly.<ts>.<run>.g<sha>" (nightly prerelease)
+	// Output format: "worx/X.Y.Z" (stable) or "worx/X.Y.Z-nightly.<ts>.<run>.g<sha>" (nightly prerelease)
 	const match = output.trim().match(/\/(\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)/);
 	return match?.[1];
 }
@@ -352,7 +352,7 @@ export function parseReportedVersionForTest(output: string): string | undefined 
 }
 
 /**
- * Run the resolved gjc binary and check if it reports the expected version.
+ * Run the resolved worx binary and check if it reports the expected version.
  */
 async function verifyInstalledVersion(expectedVersion: string): Promise<InstalledVersionVerification> {
 	const ompPath = resolveWorxPath();
@@ -626,7 +626,7 @@ async function updateViaNpm(packageName: string, expectedVersion: string): Promi
  *
  * Critical on network filesystems (e.g. NFS home directories): `pipeline`
  * resolving does not guarantee the downloaded bytes are durable on the
- * server, so the post-install `gjc --version` check can exec a binary whose
+ * server, so the post-install `worx --version` check can exec a binary whose
  * pages are not yet consistent. The child then faults, the version check
  * fails, and the update is rolled back with "could not verify updated
  * version" even though the download itself succeeded. Explicitly fsyncing
@@ -894,7 +894,7 @@ export async function runUpdateCommand(
 /**
  * Refresh opted-in on-disk default workflow skill copies after a successful
  * update. The four default skills ship embedded in the binary, so most users
- * need nothing here. But users who ran `gjc setup defaults` have on-disk copies
+ * need nothing here. But users who ran `worx setup defaults` have on-disk copies
  * under the agent dir that shadow the embedded defaults; those would otherwise
  * go stale after an update. Only rewrite files that already exist and differ —
  * never materialize new copies for users who never opted in.

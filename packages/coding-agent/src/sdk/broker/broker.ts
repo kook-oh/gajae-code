@@ -1881,7 +1881,7 @@ export class Broker {
 					elevationRequestId: directive.elevationRequestId,
 					answer: directive.answer,
 					presentedDigest: directive.presentedDigest,
-					answerer: { source: "local_operator", attestedBy: "gjc-sdk-session-cli" },
+					answerer: { source: "local_operator", attestedBy: "worx-sdk-session-cli" },
 				});
 				if (!response.ok) throw new Error(response.error.message);
 				await fs.rm(file, { force: true });

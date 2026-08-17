@@ -1,11 +1,11 @@
 /**
- * Protocol handler for gjc:// URLs.
+ * Protocol handler for worx:// URLs.
  *
  * Serves statically embedded documentation files bundled at build time.
  *
  * URL forms:
- * - gjc:// - Lists all available documentation files
- * - gjc://<file>.md - Reads a specific documentation file
+ * - worx:// - Lists all available documentation files
+ * - worx://<file>.md - Reads a specific documentation file
  */
 import * as path from "node:path";
 import type { InternalResource, InternalUrl, ProtocolHandler } from "./types";
@@ -23,12 +23,12 @@ function loadDocsIndex(): Promise<DocsIndex> {
 }
 
 /**
- * Handler for gjc:// URLs.
+ * Handler for worx:// URLs.
  *
  * Resolves documentation file names to their content, or lists available docs.
  */
 export class WorxProtocolHandler implements ProtocolHandler {
-	readonly scheme = "gjc";
+	readonly scheme = "worx";
 	readonly immutable = true;
 
 	async resolve(url: InternalUrl): Promise<InternalResource> {
@@ -50,7 +50,7 @@ export class WorxProtocolHandler implements ProtocolHandler {
 			throw new Error("No documentation files found");
 		}
 
-		const listing = EMBEDDED_DOC_FILENAMES.map(f => `- [${f}](gjc://${f})`).join("\n");
+		const listing = EMBEDDED_DOC_FILENAMES.map(f => `- [${f}](worx://${f})`).join("\n");
 		const content = `# Documentation\n\n${EMBEDDED_DOC_FILENAMES.length} files available:\n\n${listing}\n`;
 
 		return {
@@ -64,12 +64,12 @@ export class WorxProtocolHandler implements ProtocolHandler {
 	async #readDoc(filename: string, url: InternalUrl): Promise<InternalResource> {
 		// Validate: no traversal, no absolute paths
 		if (path.isAbsolute(filename)) {
-			throw new Error("Absolute paths are not allowed in gjc:// URLs");
+			throw new Error("Absolute paths are not allowed in worx:// URLs");
 		}
 
 		const normalized = path.posix.normalize(filename.replaceAll("\\", "/"));
 		if (normalized === ".." || normalized.startsWith("../") || normalized.includes("/../")) {
-			throw new Error("Path traversal (..) is not allowed in gjc:// URLs");
+			throw new Error("Path traversal (..) is not allowed in worx:// URLs");
 		}
 
 		const { EMBEDDED_DOC_FILENAMES, EMBEDDED_DOCS } = await loadDocsIndex();
@@ -82,7 +82,7 @@ export class WorxProtocolHandler implements ProtocolHandler {
 			const suffix =
 				suggestions.length > 0
 					? `\nDid you mean: ${suggestions.join(", ")}`
-					: "\nUse gjc:// to list available files.";
+					: "\nUse worx:// to list available files.";
 			throw new Error(`Documentation file not found: ${filename}${suffix}`);
 		}
 

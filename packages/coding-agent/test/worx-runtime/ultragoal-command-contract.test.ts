@@ -48,7 +48,7 @@ describe("ultragoal terminal critic command contract", () => {
 
 		expect(verdict.status).toBe(0);
 		expect(verdict.stdout).toContain(
-			"gjc ultragoal record-critic-verdict --terminus <completion|pause> --verdict <OKAY|ITERATE|REJECT> --evidence <text>",
+			"worx ultragoal record-critic-verdict --terminus <completion|pause> --verdict <OKAY|ITERATE|REJECT> --evidence <text>",
 		);
 		expect(verdict.stdout).toContain("--blockers-json=<value>");
 		expect(verdict.stdout).toContain("--goal-id=<value>");
@@ -58,7 +58,7 @@ describe("ultragoal terminal critic command contract", () => {
 		expect(verdict.stdout).toContain("OKAY, ITERATE, or REJECT");
 
 		expect(override.status).toBe(0);
-		expect(override.stdout).toContain("gjc ultragoal record-critic-gate-override --evidence <text> [--json]");
+		expect(override.stdout).toContain("worx ultragoal record-critic-gate-override --evidence <text> [--json]");
 		expect(override.stdout).toContain("--evidence=<value>");
 		expect(override.stdout).toContain("--json");
 

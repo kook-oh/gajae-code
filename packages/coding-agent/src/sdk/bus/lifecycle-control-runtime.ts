@@ -398,10 +398,10 @@ function tmuxSessionNameFor(sessionId: string): string {
 	return `worx_lc_${sessionId}`;
 }
 
-/** Build the `gjc` argv for a create target (existing path / worktree / dir).
+/** Build the `worx` argv for a create target (existing path / worktree / dir).
  *
  *  The launched session id is carried via `WORX_SESSION_ID` in the child env (see
- *  {@link daemonSpawnCreate}); the root `gjc` launcher has no `--session-id`
+ *  {@link daemonSpawnCreate}); the root `worx` launcher has no `--session-id`
  *  flag, so it must never appear in argv. Only flags the launch parser actually
  *  supports are emitted (`--worktree <branch>` for worktree targets,
  *  `--mpreset <profile>` for model presets). */
@@ -1172,7 +1172,7 @@ export function daemonSpawnCreate(
 				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
 				[WORX_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
 				[WORX_TMUX_OWNER_SERVER_KEY_ENV]: "default",
-				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["gjc", ...args]),
+				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["worx", ...args]),
 				[MANAGED_OWNER_RUN_ID_ENV]: runId,
 				[MANAGED_OWNER_INCARNATION_ENV]: incarnation,
 				...(predecessor
@@ -1188,7 +1188,7 @@ export function daemonSpawnCreate(
 			const managedEnvPairs = Object.entries(managedChildEnv)
 				.map(([key, value]) => `${key}=${shellQuote(value)}`)
 				.join(" ");
-			const command = `cd ${shellQuote(cwd)} && exec env ${managedEnvPairs} gjc ${shellQuote(MANAGED_OWNER_SUPERVISOR_ARG)}`;
+			const command = `cd ${shellQuote(cwd)} && exec env ${managedEnvPairs} worx ${shellQuote(MANAGED_OWNER_SUPERVISOR_ARG)}`;
 			await completeLifecycleSpawnTransaction({
 				tmux,
 				env,
@@ -1208,7 +1208,7 @@ export function daemonSpawnCreate(
 		} else {
 			if (frame.target.kind === "plain_dir") fs.mkdirSync(cwd, { recursive: true });
 			const directEnvPairs = directLifecycleEnvArguments(commonChildEnv);
-			const directCommand = `cd ${shellQuote(cwd)} && exec env ${directEnvPairs} gjc ${args.map(shellQuote).join(" ")}`;
+			const directCommand = `cd ${shellQuote(cwd)} && exec env ${directEnvPairs} worx ${args.map(shellQuote).join(" ")}`;
 			await completeNonLinuxLifecycleSpawn({
 				tmux,
 				env,
@@ -1349,7 +1349,7 @@ export function daemonResumeSession(
 		}
 		// Dead: resolve the id/prefix against saved session history BEFORE cold
 		// restart, so an unknown or ambiguous prefix fails closed instead of
-		// blindly spawning `gjc --resume <prefix>` against a non-authoritative id.
+		// blindly spawning `worx --resume <prefix>` against a non-authoritative id.
 		let resumeId = target.sessionIdOrPrefix;
 		let resumeCwd = target.path;
 		if (!target.path && !opts.agentDir && !opts.sessionsRoot) return { notFound: true };
@@ -1400,7 +1400,7 @@ export function daemonResumeSession(
 				[WORX_TMUX_OWNER_GENERATION_ENV]: generation,
 				[WORX_TMUX_OWNER_STATE_DIR_ENV]: stateDir,
 				[WORX_TMUX_OWNER_SERVER_KEY_ENV]: "default",
-				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["gjc", "--resume", resumeId]),
+				[MANAGED_OWNER_COMMAND_ENV]: JSON.stringify(["worx", "--resume", resumeId]),
 				[MANAGED_OWNER_RUN_ID_ENV]: runId,
 				[MANAGED_OWNER_INCARNATION_ENV]: incarnation,
 				...(predecessor
@@ -1416,7 +1416,7 @@ export function daemonResumeSession(
 			const managedEnvPairs = Object.entries(managedChildEnv)
 				.map(([key, value]) => `${key}=${shellQuote(value)}`)
 				.join(" ");
-			const command = `cd ${shellQuote(resolvedResumeCwd)} && exec env ${managedEnvPairs} gjc ${shellQuote(MANAGED_OWNER_SUPERVISOR_ARG)}`;
+			const command = `cd ${shellQuote(resolvedResumeCwd)} && exec env ${managedEnvPairs} worx ${shellQuote(MANAGED_OWNER_SUPERVISOR_ARG)}`;
 			await completeLifecycleSpawnTransaction({
 				tmux,
 				env,
@@ -1432,7 +1432,7 @@ export function daemonResumeSession(
 			});
 		} else {
 			const directEnvPairs = directLifecycleEnvArguments(commonChildEnv);
-			const directCommand = `cd ${shellQuote(resolvedResumeCwd)} && exec env ${directEnvPairs} gjc ${shellQuote("--resume")} ${shellQuote(resumeId)}`;
+			const directCommand = `cd ${shellQuote(resolvedResumeCwd)} && exec env ${directEnvPairs} worx ${shellQuote("--resume")} ${shellQuote(resumeId)}`;
 			await completeNonLinuxLifecycleSpawn({
 				tmux,
 				env,

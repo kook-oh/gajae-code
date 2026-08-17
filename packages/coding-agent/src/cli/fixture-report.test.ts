@@ -196,7 +196,7 @@ describe("runFixtureReport CLI degradation", () => {
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const originalCwd = process.cwd();
-	const dir = await mkdtemp(join(tmpdir(), "gjc-fixture-report-"));
+	const dir = await mkdtemp(join(tmpdir(), "worx-fixture-report-"));
 	process.chdir(dir);
 	try {
 		await fn(dir);

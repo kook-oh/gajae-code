@@ -45,7 +45,7 @@ async function captureMcpServeCheck(argv: string[]): Promise<string> {
 		return true;
 	}) as typeof process.stdout.write;
 	try {
-		await new McpServe(argv, { bin: "gjc", version: "test", commands: new Map() }).run();
+		await new McpServe(argv, { bin: "worx", version: "test", commands: new Map() }).run();
 		return stdout;
 	} finally {
 		process.stdout.write = write;

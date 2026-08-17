@@ -384,7 +384,7 @@ export interface WorxPluginRegistry {
 export type WorxPluginSurfaceExtensionId = string;
 
 /** Canonical GJC bundle identity: kind is fixed, target is (scope, name). */
-export const WORX_BUNDLE_KIND = "gjc-bundle";
+export const WORX_BUNDLE_KIND = "worx-bundle";
 
 export interface WorxBundleIdentity {
 	kind: typeof WORX_BUNDLE_KIND;

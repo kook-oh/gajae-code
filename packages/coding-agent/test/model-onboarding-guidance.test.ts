@@ -52,7 +52,7 @@ function createSessionOptions(agentDir: string, options?: { modelPattern?: strin
 
 function expectProviderOnboardingGuidance(text: string): void {
 	expect(text).toContain("/provider add --compat <openai|anthropic>");
-	expect(text).toContain("gjc setup provider");
+	expect(text).toContain("worx setup provider");
 	expect(text).toContain("/provider login [provider-id]");
 	expect(text).toContain("/login [provider-id]");
 	expect(text).toContain("/model");
@@ -101,7 +101,7 @@ describe("model onboarding guidance", () => {
 		expect(text).toContain("https://opencode.ai/auth");
 		expect(text).toContain("OPENCODE_API_KEY");
 		expect(text).toContain("project .env is intentionally ignored");
-		expect(text).toContain("gjc auth-broker login opencode-go");
+		expect(text).toContain("worx auth-broker login opencode-go");
 	});
 
 	it("updates /model status output with provider setup and login routes", async () => {

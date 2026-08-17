@@ -893,7 +893,7 @@ function getExtensionForMime(mimeType: string): string {
 
 async function saveImageToTemp(image: InlineImageData): Promise<string> {
 	const ext = getExtensionForMime(image.mimeType);
-	const filename = `gjc-image-${Snowflake.next()}.${ext}`;
+	const filename = `worx-image-${Snowflake.next()}.${ext}`;
 	const filepath = path.join(os.tmpdir(), filename);
 	await Bun.write(filepath, Buffer.from(image.data, "base64"));
 	return filepath;

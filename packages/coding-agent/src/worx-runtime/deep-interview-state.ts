@@ -190,7 +190,7 @@ const HOISTED_STATE_FIELDS = [
  * Envelope-reserved keys that are never legitimate interview `state` fields.
  *
  * A malformed write that wraps a whole envelope under `state`
- * (`gjc state deep-interview write --input '{"state": <envelope>}'`) leaks these
+ * (`worx state deep-interview write --input '{"state": <envelope>}'`) leaks these
  * into the nested state. Because normalization otherwise preserves unknown
  * nested fields, they would accrete a recursive `state.state` chain (plus stale
  * `receipt`/`skill`/`version`/... duplicates) that no later merge or write ever

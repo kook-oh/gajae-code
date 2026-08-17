@@ -676,7 +676,7 @@ describe("InteractiveMode.setEditorComponent", () => {
 
 	it("keeps closed rounded composer chrome for one-line, multiline, and narrow prompts", () => {
 		for (const [width, text] of [
-			[48, "Ask gjc to improve the composer"],
+			[48, "Ask worx to improve the composer"],
 			[48, "first line\nsecond line"],
 			[28, "narrow terminal composer"],
 		] as const) {

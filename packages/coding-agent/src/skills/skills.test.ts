@@ -11,7 +11,7 @@ function makeContext(): any {
 
 describe("skill descriptors", () => {
 	test("frontmatter scanning is bounded and does not read the body", async () => {
-		const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-skill-descriptor-"));
+		const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "worx-skill-descriptor-"));
 		try {
 			const skillDir = path.join(root, "bounded");
 			await fs.mkdir(skillDir, { recursive: true });
@@ -55,7 +55,7 @@ describe("skill descriptors", () => {
 	});
 
 	test("unterminated frontmatter stops at the total scan cap", async () => {
-		const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "gjc-skill-unterminated-"));
+		const root = await fs.mkdtemp(path.join(process.env.TMPDIR ?? "/tmp", "worx-skill-unterminated-"));
 		try {
 			const skillDir = path.join(root, "unterminated");
 			await fs.mkdir(skillDir, { recursive: true });

@@ -8,7 +8,7 @@ import { validateAdapterControl, validateAdapterSecretFields } from "../protocol
 import { adapterDispositionError, findOperation } from "../protocol/operation-registry";
 
 const PROTOCOL_VERSION = "2024-11-05";
-const SERVER_NAME = "gjc-sdk-mcp";
+const SERVER_NAME = "worx-sdk-mcp";
 const ENDPOINT_CREDENTIAL_OPERATION = "session.get_endpoint";
 
 type Arguments = Record<string, unknown>;
@@ -386,7 +386,7 @@ export function createSdkMcpServer(options: SdkMcpServerOptions = {}) {
 
 /**
  * Runs the SDK MCP server over stdio (newline-delimited JSON-RPC), the shipped
- * `gjc mcp-serve sdk` entrypoint. Pure SDK client: session control/query flows
+ * `worx mcp-serve sdk` entrypoint. Pure SDK client: session control/query flows
  * through the broker and v3 WebSockets only.
  */
 export async function runSdkMcpStdio(options: SdkMcpServerOptions = {}): Promise<void> {

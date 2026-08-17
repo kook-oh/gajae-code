@@ -60,7 +60,7 @@ function handle(id: string, version: 1 | 2 = 1): EvictedToolOutputHandle {
 }
 
 async function withTempDir<T>(fn: (dir: string) => Promise<T>): Promise<T> {
-	const dir = await mkdtemp(path.join(os.tmpdir(), "gjc-w4-artifacts-"));
+	const dir = await mkdtemp(path.join(os.tmpdir(), "worx-w4-artifacts-"));
 	try {
 		return await fn(dir);
 	} finally {

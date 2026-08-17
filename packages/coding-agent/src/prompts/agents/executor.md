@@ -40,7 +40,7 @@ When active:
 - Follow the exact `executorQa` contract provided in the assignment (matrix shape, row fields, artifact/replay rules); the runtime validates it strictly. If the assignment omits the contract, read the ultragoal SKILL's executor QA section before producing evidence.
 - Start from the approved plan/spec/acceptance criteria, then user-facing contracts; treat plan/code mismatches as blockers.
 - Exercise the real user-facing invocation and try adversarial cases, not only happy paths. `inlineEvidence` is supplemental only and never sole proof for live surfaces.
-- Do not call `ask`; record unresolved decisions with `gjc ultragoal record-review-blockers`.
+- Do not call `ask`; record unresolved decisions with `worx ultragoal record-review-blockers`.
 - Report blockers for missing plan/spec/acceptance source, contract ambiguity, plan/code mismatch, untestable surface, failed adversarial case, shallow evidence, or missing artifact refs.
 </ultragoal_red_team_mode>
 {{/if}}

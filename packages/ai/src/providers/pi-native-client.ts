@@ -1,7 +1,7 @@
 /**
  * Client half of the pi-native auth-gateway protocol.
  *
- * Dispatches a {@link streamSimple}-shaped request to an `gjc auth-gateway`
+ * Dispatches a {@link streamSimple}-shaped request to an `worx auth-gateway`
  * via `POST /v1/pi/stream`, reads the SSE event stream back, and pushes the
  * parsed events into a local {@link AssistantMessageEventStream} — the same
  * stream type every other provider client produces. Callers downstream of
@@ -123,7 +123,7 @@ function buildHeaders(model: Model<Api>, apiKey: string | undefined): Record<str
 }
 
 /**
- * Stream a turn through an `gjc auth-gateway` over the pi-native protocol.
+ * Stream a turn through an `worx auth-gateway` over the pi-native protocol.
  *
  * The returned {@link AssistantMessageEventStream} receives each parsed
  * `AssistantMessageEvent` verbatim from the gateway; the terminal `done` /

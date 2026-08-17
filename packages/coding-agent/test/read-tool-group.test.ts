@@ -259,7 +259,7 @@ describe("ReadToolGroupComponent", () => {
 
 describe("readArgsTargetInternalUrl", () => {
 	it.each([
-		["gjc://docs/tools/read.md"],
+		["worx://docs/tools/read.md"],
 		["issue://123"],
 		["pr://can1357/gajae-code/456"],
 		["agent://abc"],

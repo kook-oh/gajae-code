@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-// Subpath import keeps this module native-free for the gjc-state-gates shards:
+// Subpath import keeps this module native-free for the worx-state-gates shards:
 // the package barrel pulls procmgr/ptree → @bworx-io/worx-code-natives.
 import * as logger from "@bworx-io/worx-utils/logger";
 import type { WorkflowHudSummary } from "../skill-state/active-state";
@@ -83,7 +83,7 @@ import { assertSafePathComponent, CommandError, flagValue, hasFlag, isPlainObjec
 import { getSkillManifest, isKnownWorkflowState, isValidTransition } from "./workflow-manifest";
 
 /**
- * Native implementation of the `gjc state read|write|clear` command surface.
+ * Native implementation of the `worx state read|write|clear` command surface.
  *
  * Simple file-receipt operations against session-scoped state under
  * `.worx/_session-{id}/state/`. This is the sanctioned CLI mediator for
@@ -109,7 +109,7 @@ class StateCommandError extends CommandError {
 const GRAPH_FORMATS = new Set(["ascii", "mermaid", "dot"]);
 function assertKnownFlags(classification: StateArgvClassification): void {
 	const [unknownFlag] = classification.unknownFlags;
-	if (unknownFlag) throw new StateCommandError(2, `unknown gjc state flag: ${unknownFlag}`);
+	if (unknownFlag) throw new StateCommandError(2, `unknown worx state flag: ${unknownFlag}`);
 }
 
 function isKnownMode(mode: string): mode is CanonicalWorxWorkflowSkill {
@@ -273,7 +273,7 @@ async function describeStaleClearState(
  * (console transport off by default) so interactive sessions never paint raw
  * bytes into the alternate-screen stream (#3002). CLI command handlers may also
  * collect the warning via an `onWarning` sink to surface it on the structured
- * {@link StateCommandResult.stderr} channel, so `gjc state` automation still
+ * {@link StateCommandResult.stderr} channel, so `worx state` automation still
  * distinguishes corrupt state from absent state.
  */
 function emitStateWarning(warning: string, context?: Record<string, unknown>): void {
@@ -414,7 +414,7 @@ function pushPhaseDriftProblem(options: {
 			"stale_active_state",
 			options.pathValue,
 			`${options.entryKind} for ${options.entrySkill} phase ${options.entryPhase} differs from canonical mode-state phase ${options.statePhase}`,
-			`gjc state ${options.skill} clear`,
+			`worx state ${options.skill} clear`,
 			options.skill,
 		),
 	);
@@ -443,7 +443,7 @@ async function collectDoctorSummary(
 					"schema_violation",
 					filePath,
 					`mode-state JSON is unreadable: ${raw.error}`,
-					`gjc state ${currentSkill} migrate`,
+					`worx state ${currentSkill} migrate`,
 					currentSkill,
 				),
 			);
@@ -457,7 +457,7 @@ async function collectDoctorSummary(
 					"schema_violation",
 					filePath,
 					validation.error ?? `invalid ${currentSkill} state envelope`,
-					`gjc state ${currentSkill} migrate`,
+					`worx state ${currentSkill} migrate`,
 					currentSkill,
 				),
 			);
@@ -470,7 +470,7 @@ async function collectDoctorSummary(
 					"checksum_mismatch",
 					filePath,
 					`expected sha256 ${mismatch.expected} but found ${mismatch.actual}`,
-					`gjc state ${currentSkill} migrate`,
+					`worx state ${currentSkill} migrate`,
 					currentSkill,
 				),
 			);
@@ -493,7 +493,7 @@ async function collectDoctorSummary(
 					"orphan_journal",
 					journalPath,
 					"transaction journal has no matching live mutation",
-					"gjc state prune --hard",
+					"worx state prune --hard",
 				),
 			);
 		}
@@ -522,7 +522,7 @@ async function collectDoctorSummary(
 						"stale_active_state",
 						entryPath,
 						`active entry for ${entrySkill} does not match a live active mode-state`,
-						canonical ? `gjc state ${canonical} clear` : "gjc state prune --hard",
+						canonical ? `worx state ${canonical} clear` : "worx state prune --hard",
 						canonical ?? undefined,
 					),
 				);
@@ -554,7 +554,7 @@ async function collectDoctorSummary(
 							"stale_active_state",
 							snapshotPath,
 							`active snapshot lists ${entrySkill} but no raw per-skill active entry exists`,
-							canonical ? `gjc state ${canonical} clear` : "gjc state prune --hard",
+							canonical ? `worx state ${canonical} clear` : "worx state prune --hard",
 							canonical ?? undefined,
 						),
 					);
@@ -762,7 +762,7 @@ function parseLimitFlag(args: readonly string[], defaultLimit = 50): number {
 	if (raw === undefined) return defaultLimit;
 	const parsed = Number(raw);
 	if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 500) {
-		throw new StateCommandError(2, "gjc state --limit requires an integer from 1 to 500");
+		throw new StateCommandError(2, "worx state --limit requires an integer from 1 to 500");
 	}
 	return parsed;
 }
@@ -778,7 +778,7 @@ function parseSinceFlag(args: readonly string[]): string | undefined {
 		return new Date(Date.now() - amount * multiplier).toISOString();
 	}
 	if (Number.isNaN(Date.parse(raw)))
-		throw new StateCommandError(2, "gjc state --since requires an ISO timestamp or duration like 30m, 6h, 7d");
+		throw new StateCommandError(2, "worx state --since requires an ISO timestamp or duration like 30m, 6h, 7d");
 	return new Date(raw).toISOString();
 }
 
@@ -983,7 +983,7 @@ async function syncWorkflowSkillState(options: {
 
 /**
  * Reconcile a workflow skill's mode-state + active-state/HUD from a caller-derived
- * payload. Unlike `gjc state write`, this is a derived repair: callers reconcile from
+ * payload. Unlike `worx state write`, this is a derived repair: callers reconcile from
  * an authoritative source (e.g. the ultragoal plan/ledger), where intermediate
  * aggregate phases like ultragoal `active -> pending` are legitimate, so it bypasses
  * ONLY verb transition-edge validation while preserving schema validation,
@@ -1036,7 +1036,7 @@ async function reconcileWorkflowSkillStateUnlocked(
 		cwd,
 		skill: mode,
 		owner: "worx-runtime",
-		command: `gjc ${mode} (reconcile)`,
+		command: `worx ${mode} (reconcile)`,
 		sessionId,
 		nowIso: nowIsoStr,
 		mutationId,
@@ -1076,7 +1076,7 @@ async function reconcileWorkflowSkillStateUnlocked(
 			cwd,
 			skill: mode,
 			owner: "worx-runtime",
-			command: `gjc ${mode} (reconcile)`,
+			command: `worx ${mode} (reconcile)`,
 			sessionId,
 			nowIso: nowIsoStr,
 			mutationId,
@@ -1137,7 +1137,7 @@ async function handleRead(args: readonly string[], cwd: string): Promise<StateCo
 	const mode = selectors.mode ?? (await inferModeFromActiveState(cwd, selectors.worxSessionId));
 	const fields = parseFieldsFlag(args);
 	// Corrupt-state warnings are TUI-safe file-logged inside the readers; the CLI
-	// path also surfaces them on the command result so `gjc state read`
+	// path also surfaces them on the command result so `worx state read`
 	// automation can tell corrupt state from absent state (#3002).
 	const warnings: string[] = [];
 	const warningStderr = (): Pick<StateCommandResult, "stderr"> =>
@@ -1189,7 +1189,7 @@ async function handleStatus(args: readonly string[], cwd: string): Promise<State
 	if (!mode) {
 		throw new StateCommandError(
 			2,
-			"gjc state status requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
+			"worx state status requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
 		);
 	}
 	const filePath = modeStateFile(cwd, mode, selectors.worxSessionId);
@@ -1211,12 +1211,12 @@ async function handleStatus(args: readonly string[], cwd: string): Promise<State
 async function handleWrite(args: readonly string[], cwd: string): Promise<StateCommandResult> {
 	const selectors = await resolveSelectors(args, cwd, "write");
 	const { worxSessionId: sessionId, threadId, turnId, payload } = selectors;
-	if (!payload) throw new StateCommandError(2, "gjc state write requires --input '<json>'");
+	if (!payload) throw new StateCommandError(2, "worx state write requires --input '<json>'");
 	const mode = selectors.mode ?? (await inferModeFromActiveState(cwd, sessionId));
 	if (!mode)
 		throw new StateCommandError(
 			2,
-			"gjc state write requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
+			"worx state write requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
 		);
 
 	if (mode === "deep-interview") {
@@ -1245,7 +1245,7 @@ async function handleWrite(args: readonly string[], cwd: string): Promise<StateC
 				cwd,
 				skill: mode,
 				owner: "worx-state-cli",
-				command: `gjc state ${mode} write`,
+				command: `worx state ${mode} write`,
 				sessionId,
 				nowIso: nowIsoStr,
 				mutationId,
@@ -1385,7 +1385,7 @@ async function handleClear(args: readonly string[], cwd: string): Promise<StateC
 	if (!mode)
 		throw new StateCommandError(
 			2,
-			"gjc state clear requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
+			"worx state clear requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
 		);
 
 	const filePath = modeStateFile(cwd, mode, sessionId);
@@ -1423,7 +1423,7 @@ async function handleClear(args: readonly string[], cwd: string): Promise<StateC
 				cwd,
 				skill: mode,
 				owner: "worx-state-cli",
-				command: `gjc state ${mode} clear`,
+				command: `worx state ${mode} clear`,
 				sessionId,
 				nowIso: clearedAt,
 				mutationId,
@@ -1538,7 +1538,7 @@ async function assertDeepInterviewHandoffReady(state: Record<string, unknown>): 
  *     old skill entirely or the new skill entirely, never both as active.
  *   - As a phase: `current_phase: "handoff"` is set by this verb when demoting
  *     the caller. Agents writing `current_phase: "handoff"` manually via
- *     `gjc state <skill> write` are declaring "I am ready to be handed off";
+ *     `worx state <skill> write` are declaring "I am ready to be handed off";
  *     the next agent-initiated `skill` tool call will then satisfy the phase
  *     guard and may chain.
  *
@@ -1555,18 +1555,18 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 	if (!caller) {
 		throw new StateCommandError(
 			2,
-			"gjc state handoff requires --mode <caller>, positional <caller>, input.skill, or an active workflow in the current session active state",
+			"worx state handoff requires --mode <caller>, positional <caller>, input.skill, or an active workflow in the current session active state",
 		);
 	}
 	const calleeRaw = flagValue(args, "--to")?.trim();
 	if (!calleeRaw) {
-		throw new StateCommandError(2, "gjc state handoff requires --to <callee>");
+		throw new StateCommandError(2, "worx state handoff requires --to <callee>");
 	}
 	assertSafePathComponent(calleeRaw, "to");
 	const callee = calleeRaw;
 	const calleeIsWorkflow = isKnownMode(callee);
 	if (callee === caller) {
-		throw new StateCommandError(2, `gjc state handoff: --to must differ from caller (both are "${caller}")`);
+		throw new StateCommandError(2, `worx state handoff: --to must differ from caller (both are "${caller}")`);
 	}
 
 	const callerPath = modeStateFile(cwd, caller, sessionId);
@@ -1582,7 +1582,7 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 	if (callerRead.kind === "absent") {
 		throw new StateCommandError(
 			2,
-			`gjc state ${caller} handoff: caller is not active (no mode-state file at ${callerPath})`,
+			`worx state ${caller} handoff: caller is not active (no mode-state file at ${callerPath})`,
 		);
 	}
 	const existingCaller = callerRead.kind === "valid" ? callerRead.value : {};
@@ -1593,7 +1593,7 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 		cwd,
 		skill: caller,
 		owner: "worx-state-cli",
-		command: `gjc state ${caller} handoff --to ${callee}`,
+		command: `worx state ${caller} handoff --to ${callee}`,
 		sessionId,
 		nowIso: handoffAt,
 		mutationId,
@@ -1687,7 +1687,7 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 	}
 
 	if (!calleePath) {
-		throw new StateCommandError(2, `gjc state handoff failed to resolve workflow callee path for ${callee}`);
+		throw new StateCommandError(2, `worx state handoff failed to resolve workflow callee path for ${callee}`);
 	}
 	const calleeRead = await readExistingStateForMutation(calleePath);
 	if (calleeRead.kind === "corrupt" && !forced) {
@@ -1701,7 +1701,7 @@ async function handleHandoffUnlocked(args: readonly string[], cwd: string): Prom
 		cwd,
 		skill: callee,
 		owner: "worx-state-cli",
-		command: `gjc state ${caller} handoff --to ${callee}`,
+		command: `worx state ${caller} handoff --to ${callee}`,
 		sessionId,
 		nowIso: handoffAt,
 		mutationId,
@@ -1876,7 +1876,7 @@ async function handleHandoff(args: readonly string[], cwd: string): Promise<Stat
 async function handleContract(args: readonly string[], cwd: string): Promise<StateCommandResult> {
 	const { mode } = await resolveSelectors(args, cwd, "read");
 	if (!mode) {
-		throw new StateCommandError(2, "gjc state contract requires --mode <skill>, positional <skill>, or input.skill");
+		throw new StateCommandError(2, "worx state contract requires --mode <skill>, positional <skill>, or input.skill");
 	}
 	const payload = { skill: mode, contract: describeWorkflowStateContract(mode) };
 	return {
@@ -1892,7 +1892,7 @@ function parseNonNegativeIntegerFlag(args: readonly string[], flag: string): num
 	if (value === undefined) return undefined;
 	const parsed = Number(value);
 	if (!Number.isInteger(parsed) || parsed < 0) {
-		throw new StateCommandError(2, `gjc state ${flag} requires a non-negative integer value`);
+		throw new StateCommandError(2, `worx state ${flag} requires a non-negative integer value`);
 	}
 	return parsed;
 }
@@ -2108,7 +2108,7 @@ async function handlePrune(args: readonly string[], cwd: string): Promise<StateC
 	if (!mode) {
 		throw new StateCommandError(
 			2,
-			"gjc state prune requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
+			"worx state prune requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
 		);
 	}
 	const filePath = modeStateFile(cwd, mode, selectors.worxSessionId);
@@ -2147,7 +2147,7 @@ async function handlePrune(args: readonly string[], cwd: string): Promise<StateC
 		if (await matchesSelector(stat, async () => JSON.parse(await fs.readFile(filePath, "utf-8")))) {
 			const archivedPath = await softDelete(
 				filePath,
-				{ skill: mode, reason: "gjc state prune", status: status ?? null, older_than_days: olderThanDays ?? null },
+				{ skill: mode, reason: "worx state prune", status: status ?? null, older_than_days: olderThanDays ?? null },
 				{ cwd, audit },
 			);
 			deleted = [archivedPath];
@@ -2174,7 +2174,7 @@ async function handleMigrate(args: readonly string[], cwd: string): Promise<Stat
 	if (!mode) {
 		throw new StateCommandError(
 			2,
-			"gjc state migrate requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
+			"worx state migrate requires --mode <skill>, positional <skill>, input.skill, or an active workflow in the current session active state",
 		);
 	}
 	const filePath = modeStateFile(cwd, mode, selectors.worxSessionId);

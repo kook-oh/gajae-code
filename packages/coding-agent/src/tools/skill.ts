@@ -134,12 +134,12 @@ export class SkillTool implements AgentTool<typeof skillSchema, SkillToolDetails
 
 			// Phase guard + atomic native handoff only apply to canonical workflow
 			// skills. Runtime project/user skills do not have a native mode-state,
-			// so there is no `gjc state <skill>` command to run for them.
+			// so there is no `worx state <skill>` command to run for them.
 			if (activeSkill && isCanonicalWorxWorkflowSkill(activeSkill)) {
 				const phase = (this.#session.getActiveSkillPhase?.() ?? "running").trim().toLowerCase();
 				if (!TERMINAL_PHASES.has(phase)) {
 					throw new ToolError(
-						`skill tool: refusing to chain from "${activeSkill}" (phase=${phase}) into "${requestedName}". Finalize the current skill (gjc state ${activeSkill} write --input '{"current_phase":"handoff"}' --json) or run gjc state ${activeSkill} handoff --to ${requestedName} --json directly before chaining.`,
+						`skill tool: refusing to chain from "${activeSkill}" (phase=${phase}) into "${requestedName}". Finalize the current skill (worx state ${activeSkill} write --input '{"current_phase":"handoff"}' --json) or run worx state ${activeSkill} handoff --to ${requestedName} --json directly before chaining.`,
 					);
 				}
 				const cwd = this.#session.cwd;

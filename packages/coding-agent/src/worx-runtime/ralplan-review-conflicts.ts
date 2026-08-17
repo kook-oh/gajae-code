@@ -298,7 +298,7 @@ export function parseReviewConflictJson(raw: string): unknown {
 }
 
 /**
- * Authoritative provenance required by `gjc ralplan --write --stage disposition`.
+ * Authoritative provenance required by `worx ralplan --write --stage disposition`.
  *
  * Without this, a disposition document can claim arbitrary path/hash strings and
  * join the wrong Architect/Critic pass (#3013 adversarial review).

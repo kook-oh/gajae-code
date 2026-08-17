@@ -39,7 +39,7 @@ async function readAuditEntries(cwd: string): Promise<Array<Record<string, unkno
 		.map(line => JSON.parse(line) as Record<string, unknown>);
 }
 
-describe("gjc state integrity", () => {
+describe("worx state integrity", () => {
 	it("blocks out-of-band edits on the next mode-state write unless forced", async () => {
 		await withTempCwd(async cwd => {
 			const first = await runNativeStateCommand(

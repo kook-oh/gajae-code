@@ -1,7 +1,7 @@
 /**
  * Discover and import existing Claude Code / Codex CLI credentials.
  *
- * This is the testable core behind `gjc setup credentials` (CLI, primary entry)
+ * This is the testable core behind `worx setup credentials` (CLI, primary entry)
  * and the TUI provider-onboarding "import existing credentials" action. It never
  * prints or returns raw tokens: callers receive redacted summaries plus opaque
  * {@link AuthCredential} payloads that go straight into the store.
@@ -20,7 +20,7 @@ import type { AuthCredential, OAuthCredential } from "@bworx-io/worx-ai/core";
 import { $credentialEnv, isEnoent } from "@bworx-io/worx-utils";
 import { redactSecret } from "./provider-onboarding";
 
-/** gjc provider ids that external credentials map onto. */
+/** worx provider ids that external credentials map onto. */
 export type ExternalProvider = "anthropic" | "openai-codex";
 
 /** Where a discovered credential came from. */
@@ -37,7 +37,7 @@ export const EXTERNAL_PROVIDER_LABELS: Record<ExternalProvider, string> = {
 	"openai-codex": "Codex (ChatGPT)",
 };
 
-/** A credential that can be safely imported into gjc's store. */
+/** A credential that can be safely imported into worx's store. */
 export interface ImportableCredential {
 	provider: ExternalProvider;
 	origin: CredentialOrigin;
@@ -401,7 +401,7 @@ function pushOutcome(result: CredentialDiscoveryResult, outcome: ImportableCrede
  * the same boundary provider authentication already uses.
  *
  * Relative values are rejected. Claude Code and Codex resolve them against the
- * process cwd, which for gjc is the user's project directory; honouring that
+ * process cwd, which for worx is the user's project directory; honouring that
  * would reintroduce the project-controlled redirect the trust boundary exists
  * to prevent. An explicit `options.env` (tests, embedders) is consulted verbatim
  * instead of the ambient environment.

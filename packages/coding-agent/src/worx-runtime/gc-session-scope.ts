@@ -4,7 +4,7 @@ import * as path from "node:path";
 import { MANAGED_ARTIFACT_MAX_TOTAL_BYTES } from "../session/internal/managed-session-storage";
 
 /**
- * Managed-scope capacity reporting for `gjc gc`.
+ * Managed-scope capacity reporting for `worx gc`.
  *
  * A managed session scope is snapshotted in full every time a session starts,
  * and the snapshot fails closed once the tree exceeds the managed byte budget.
@@ -12,7 +12,7 @@ import { MANAGED_ARTIFACT_MAX_TOTAL_BYTES } from "../session/internal/managed-se
  * directory can cross the budget without the operator doing anything unusual —
  * and the first symptom is a launch that aborts, with no prior warning.
  *
- * `gjc gc` already reports on state the operator cannot see, so surfacing scope
+ * `worx gc` already reports on state the operator cannot see, so surfacing scope
  * usage here gives that warning a home. This module only measures; nothing in
  * the gc prune path acts on what it reports.
  */

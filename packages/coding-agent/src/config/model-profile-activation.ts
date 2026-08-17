@@ -539,7 +539,7 @@ function resolveProxyProviderId(settings: Pick<Settings, "get" | "getGlobal" | "
 	const id = value.trim().toLowerCase();
 	if (!/^[a-z0-9][a-z0-9._-]*$/.test(id)) {
 		throw new Error(
-			`modelProfile.proxyProvider must be a lowercase provider id (got "${value.trim()}"). Configure an OpenAI-compatible proxy with \`gjc setup provider\`, then set its id here.`,
+			`modelProfile.proxyProvider must be a lowercase provider id (got "${value.trim()}"). Configure an OpenAI-compatible proxy with \`worx setup provider\`, then set its id here.`,
 		);
 	}
 	return id;
@@ -908,7 +908,7 @@ export async function prepareModelProfileActivation(
 			const configuredProxyProviders = options.modelRegistry.getConfiguredProviderIds?.();
 			if (!configuredProxyProviders?.includes(proxyProvider)) {
 				throw new Error(
-					`modelProfile.proxyProvider "${proxyProvider}" is not configured. Configure it with \`gjc setup provider\` before activating a preset.`,
+					`modelProfile.proxyProvider "${proxyProvider}" is not configured. Configure it with \`worx setup provider\` before activating a preset.`,
 				);
 			}
 		}

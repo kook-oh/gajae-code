@@ -164,7 +164,7 @@ export async function migrateAndPersistLegacyState(
 			cwd: args.cwd,
 			skill: canonicalSkill,
 			owner: "worx-state-cli",
-			command: `gjc state ${canonicalSkill} migrate`,
+			command: `worx state ${canonicalSkill} migrate`,
 			sessionId: args.sessionId,
 		},
 		audit: {

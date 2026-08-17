@@ -453,9 +453,7 @@
 					"properties": {
 						"ambiguityThreshold": {
 							"type": "number",
-							"default": 0.05,
-							"exclusiveMinimum": 0,
-							"maximum": 1
+							"default": 0.05
 						}
 					},
 					"additionalProperties": false

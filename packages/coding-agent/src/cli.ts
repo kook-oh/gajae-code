@@ -339,7 +339,7 @@ async function runSmokeTest(): Promise<void> {
 	process.stdout.write("smoke-test: ok\n");
 }
 
-/** Normalize the sole `gjc resume` alias into the value-less launch intent. */
+/** Normalize the sole `worx resume` alias into the value-less launch intent. */
 export function normalizeResumeAlias(argv: readonly string[]): string[] {
 	return argv.length === 1 && argv[0] === "resume" ? ["--resume"] : [...argv];
 }
@@ -370,9 +370,9 @@ function routeLegacyRootArgv(argv: readonly string[]): string[] | undefined {
 /**
  * Map the common mistaken `models` subcommand spelling to non-agent listing.
  *
- * Agents frequently run `gjc models` from the bash tool expecting a catalog.
+ * Agents frequently run `worx models` from the bash tool expecting a catalog.
  * Without this route, `models` was a positional launch prompt and nested agents
- * re-invoked `gjc models`, spawning an unbounded process chain (#3857).
+ * re-invoked `worx models`, spawning an unbounded process chain (#3857).
  * Always rewrite to `launch --list-models` so the invocation exits after a
  * bounded listing and never starts an interactive agent session.
  */

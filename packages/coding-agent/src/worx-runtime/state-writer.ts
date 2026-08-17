@@ -697,14 +697,14 @@ export async function writeWorkflowEnvelopeAtomic(
 			);
 		}
 		// #658: internal runtime writers (ralplan/ultragoal/deep-interview/team) persist
-		// envelopes directly, bypassing the `gjc state` CLI transition gate (`isValidTransition`,
+		// envelopes directly, bypassing the `worx state` CLI transition gate (`isValidTransition`,
 		// historically the sole call site in state-runtime.ts). Re-assert that gate on every
 		// sanctioned envelope write so internal writes cannot persist invalid state-machine phase
-		// transitions silently. Forced writes (`gjc state ... --force`, reconcile repairs) carry
+		// transitions silently. Forced writes (`worx state ... --force`, reconcile repairs) carry
 		// `audit.forced` and bypass, mirroring the CLI's `use --force to bypass`.
 		//
 		// The gate governs ACTIVE workflow progression only. Deactivation/teardown writes
-		// (`active: false`, e.g. `gjc state clear`, which persists the universal `complete`
+		// (`active: false`, e.g. `worx state clear`, which persists the universal `complete`
 		// sentinel that is not a per-skill manifest state) leave the transition graph and are
 		// intentionally exempt.
 		if (options?.audit?.forced !== true && parsed.data.active === true) {

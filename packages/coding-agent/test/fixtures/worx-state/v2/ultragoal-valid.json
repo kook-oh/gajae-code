@@ -19,7 +19,7 @@
     "version": 1,
     "skill": "ultragoal",
     "owner": "worx-state-cli",
-    "command": "gjc state ultragoal write --input '<json>'",
+    "command": "worx state ultragoal write --input '<json>'",
     "state_path": "/repo/.worx/state/sessions/sess-corpus-ultragoal/active-state.json",
     "storage_path": "/repo/.worx/state/sessions/sess-corpus-ultragoal/ultragoal-state.json",
     "mutated_at": "2026-06-04T12:00:00.000Z",

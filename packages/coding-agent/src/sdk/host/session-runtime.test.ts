@@ -138,7 +138,7 @@ test("a reason attached after a prompt settled is never replaced by a later fail
 });
 
 test("redacts a persisted host failure during hydration", async () => {
-	const stateRoot = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-reconciliation-"));
+	const stateRoot = await mkdtemp(path.join(os.tmpdir(), "worx-sdk-reconciliation-"));
 	const sessionId = "hydrated-failure";
 	try {
 		await Bun.write(
@@ -255,7 +255,7 @@ describe("SessionSdkSessionRuntime", () => {
 		await Promise.all([nativeRuntime.stop(), loopbackRuntime.stop()]);
 	});
 	test("failed extension stop retains retry state before replacement start", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-extension-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-sdk-extension-"));
 		const handlers = new Map<string, (event: unknown, ctx: any) => Promise<void> | void>();
 		const api = {
 			on(event: string, handler: (event: unknown, ctx: any) => Promise<void> | void) {
@@ -322,7 +322,7 @@ describe("SessionSdkSessionRuntime", () => {
 		}
 	});
 	test("keeps a local SDK-only host alive through broker failure and registers after recovery", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-broker-recovery-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-sdk-broker-recovery-"));
 		const agentDir = path.join(cwd, ".worx", "agent");
 		await mkdir(path.dirname(agentDir), { recursive: true });
 		await writeFile(agentDir, "blocked");
@@ -379,7 +379,7 @@ describe("SessionSdkSessionRuntime", () => {
 	});
 
 	test("rejects lifecycle-required SDK-only startup when broker registration fails", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-sdk-broker-required-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-sdk-broker-required-"));
 		const agentDir = path.join(cwd, ".worx", "agent");
 		await mkdir(path.dirname(agentDir), { recursive: true });
 		await writeFile(agentDir, "blocked");
@@ -521,7 +521,7 @@ async function settledStatus(
 
 describe("post-acceptance invocation terminalization", () => {
 	test("a prompt killed by a provider stream interrupt reports a terminal failed status", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-prompt-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-prompt-"));
 		try {
 			const harness = await invocationHarness("terminalize-prompt", cwd, {
 				sendUserMessage: async (_content, options) => {
@@ -550,7 +550,7 @@ describe("post-acceptance invocation terminalization", () => {
 	});
 
 	test("an aborted prompt reports a terminal failed status instead of hanging", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-abort-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-abort-"));
 		try {
 			const inflight = Promise.withResolvers<void>();
 			const harness = await invocationHarness("terminalize-abort", cwd, {
@@ -575,7 +575,7 @@ describe("post-acceptance invocation terminalization", () => {
 	});
 
 	test("a failed skill invocation still reports a terminal failed status", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-skill-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-skill-"));
 		try {
 			const harness = await invocationHarness("terminalize-skill", cwd, {
 				invokeSkill: async (_name, _args, options) => {
@@ -597,7 +597,7 @@ describe("post-acceptance invocation terminalization", () => {
 		}
 	});
 	test("a completed prompt reports a terminal successful status", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-completed-prompt-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-completed-prompt-"));
 		try {
 			const harness = await invocationHarness("terminalize-completed-prompt", cwd, {
 				sendUserMessage: async (_content, options) => {
@@ -618,7 +618,7 @@ describe("post-acceptance invocation terminalization", () => {
 		}
 	});
 	test("a queued follow-up prompt is not terminalized before the turn runs", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-followup-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-followup-"));
 		try {
 			const turnRunning = Promise.withResolvers<void>();
 			const harness = await invocationHarness("terminalize-followup", cwd, {
@@ -645,7 +645,7 @@ describe("post-acceptance invocation terminalization", () => {
 		}
 	});
 	test("a prompt queued as steer while streaming is not terminalized before the turn runs", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-prompt-while-busy-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-prompt-while-busy-"));
 		try {
 			const harness = await invocationHarness("terminalize-prompt-while-busy", cwd, {
 				sendUserMessage: async (_content, options) => {
@@ -667,7 +667,7 @@ describe("post-acceptance invocation terminalization", () => {
 		}
 	});
 	test("a queued prompt stays non-terminal even if isIdle flips during the accept window", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-race-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-race-"));
 		let idle = false;
 		try {
 			const harness = await invocationHarness("terminalize-race", cwd, {
@@ -694,7 +694,7 @@ describe("post-acceptance invocation terminalization", () => {
 	});
 
 	test("a pre-acceptance failure rejects the submission without creating a record", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-preflight-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-preflight-"));
 		try {
 			const harness = await invocationHarness("terminalize-preflight", cwd, {
 				sendUserMessage: async () => {
@@ -713,7 +713,7 @@ describe("post-acceptance invocation terminalization", () => {
 	});
 
 	test("a later provider error enriches but never re-opens an already terminal prompt", async () => {
-		const cwd = await mkdtemp(path.join(os.tmpdir(), "gjc-terminalize-once-"));
+		const cwd = await mkdtemp(path.join(os.tmpdir(), "worx-terminalize-once-"));
 		try {
 			const inflight = Promise.withResolvers<void>();
 			const harness = await invocationHarness("terminalize-once", cwd, {

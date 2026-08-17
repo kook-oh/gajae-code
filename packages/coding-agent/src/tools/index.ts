@@ -498,8 +498,8 @@ function parseLegacyEvalEnvFlags(env: Record<string, string | undefined>): EvalB
  * Returns `null` when no env override is set so the caller can defer to settings.
  */
 export function resolveEvalBackendsFromEnv(env: Record<string, string | undefined>): EvalBackendsAllowance | null {
-	const gjc = parseWorxPy(env);
-	if (gjc) return { python: gjc.py, js: gjc.js };
+	const worx = parseWorxPy(env);
+	if (worx) return { python: worx.py, js: worx.js };
 	return parseLegacyEvalEnvFlags(env);
 }
 

@@ -10,7 +10,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { type GitRepository, head, repo } from "../utils/git";
 
-export const REPOSITORY_BINDING_SCHEMA = "gjc.repository_binding.v1" as const;
+export const REPOSITORY_BINDING_SCHEMA = "worx.repository_binding.v1" as const;
 
 export interface RepositoryBinding {
 	schema: typeof REPOSITORY_BINDING_SCHEMA;

@@ -184,7 +184,7 @@ async function resolveArchiveSearchPaths(
 		}
 
 		if (!tempDir) {
-			tempDir = await mkdtemp(path.join(tmpdir(), "gjc-search-archive-"));
+			tempDir = await mkdtemp(path.join(tmpdir(), "worx-search-archive-"));
 		}
 		// Per-entry filename keeps the scratch path unique even when two selectors
 		// resolve to members with the same basename.

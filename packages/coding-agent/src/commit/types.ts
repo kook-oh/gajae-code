@@ -1,5 +1,5 @@
 /**
- * Types for the gjc commit pipeline.
+ * Types for the worx commit pipeline.
  */
 export type CommitType =
 	| "feat"

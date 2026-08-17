@@ -267,12 +267,12 @@ export async function handleLifecycleRequest(
 	const baseAudit = {
 		schemaVersion: 2 as const,
 		ts: new Date(nowMs).toISOString(),
-		chatRef: auditRedactionRef(deps.auditRedactionKey, "gjc.lifecycle.audit.v2.chat\0", frame.chatId),
+		chatRef: auditRedactionRef(deps.auditRedactionKey, "worx.lifecycle.audit.v2.chat\0", frame.chatId),
 		updateId: frame.updateId,
-		requestRef: auditRedactionRef(deps.auditRedactionKey, "gjc.lifecycle.audit.v2.request\0", canonicalRequestBytes),
+		requestRef: auditRedactionRef(deps.auditRedactionKey, "worx.lifecycle.audit.v2.request\0", canonicalRequestBytes),
 		verb: frame.type,
 		targetKind,
-		targetRef: auditRedactionRef(deps.auditRedactionKey, "gjc.lifecycle.audit.v2.target\0", canonicalTargetBytes),
+		targetRef: auditRedactionRef(deps.auditRedactionKey, "worx.lifecycle.audit.v2.target\0", canonicalTargetBytes),
 	} as const;
 
 	// 1. Strict paired-chat gating — BEFORE touching paths/processes or the ledger.

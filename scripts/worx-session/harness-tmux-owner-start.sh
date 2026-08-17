@@ -58,15 +58,15 @@ mkdir -p "$root"
 input="$(node -e 'const [workspace, branch, base, issueOrPr, sessionId] = process.argv.slice(1); process.stdout.write(JSON.stringify({harness:"gajae-code",workspace,branch,base,issueOrPr: issueOrPr || undefined,sessionId,detach:false}))' "$workspace" "$branch_label" "$base" "$issue_or_pr" "$sid")"
 (
   cd "$workspace"
-  WORX_HARNESS_STATE_ROOT="$root" gjc harness start --input "$input" --json
+  WORX_HARNESS_STATE_ROOT="$root" worx harness start --input "$input" --json
 ) >"/tmp/${session_name}.worx-start.json"
 
 tmux kill-session -t "$session_name" 2>/dev/null || true
-printf -v owner_command '%q ' env "WORX_HARNESS_STATE_ROOT=$root" gjc harness __owner --session "$sid"
+printf -v owner_command '%q ' env "WORX_HARNESS_STATE_ROOT=$root" worx harness __owner --session "$sid"
 tmux new-session -d -s "$session_name" -n owner -c "$workspace" "exec $owner_command"
 
 for _ in $(seq 1 30); do
-  if WORX_HARNESS_STATE_ROOT="$root" gjc harness observe --session "$sid" --json >"/tmp/${session_name}.worx-observe.json" 2>/dev/null; then
+  if WORX_HARNESS_STATE_ROOT="$root" worx harness observe --session "$sid" --json >"/tmp/${session_name}.worx-observe.json" 2>/dev/null; then
     if node -e 'const fs=require("fs"); const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); process.exit(j.state?.ownerLive ? 0 : 1)' "/tmp/${session_name}.worx-observe.json"; then
       break
     fi

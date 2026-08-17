@@ -330,7 +330,7 @@ function runListSessions(format: string, env: NodeJS.ProcessEnv = process.env): 
 	// default `name: N windows (created ...)` shape. Detect that case and
 	// synthesize a tab-separated row so downstream parseSessionLine /
 	// hydrateSessionFromExactOptions can recover the @gjc-* ownership tags
-	// via follow-up show-options calls. Without this fallback gjc session
+	// via follow-up show-options calls. Without this fallback worx session
 	// list / status return an empty list on psmux even when sessions exist.
 	if (lines.length > 0 && !lines[0].includes("\t")) {
 		const binary = resolveWorxTmuxBinary({ env });
@@ -541,10 +541,10 @@ export function createWorxTmuxSession(
 	const shellQuote = (value: string): string => `'${value.replace(/'/g, `'\\''`)}'`;
 	const command =
 		platform === "win32"
-			? buildWindowsPowerShellInnerCommand({ command: ["gjc"], environment: childEnvironment })
+			? buildWindowsPowerShellInnerCommand({ command: ["worx"], environment: childEnvironment })
 			: `exec env ${Object.entries(childEnvironment)
 					.map(([name, value]) => `${name}=${shellQuote(value)}`)
-					.join(" ")} gjc`;
+					.join(" ")} worx`;
 	const tmuxArgv = [
 		tmuxCommand,
 		...buildTmuxProviderCommand(provider, "new-session", [

@@ -1188,10 +1188,10 @@ describe("notification-service recovery lock TOCTOU (owner-bound)", () => {
 		});
 		expect(report.daemon.action).toBe("left-contended");
 		expect(report.daemon.blockingReason).toBe("transition-marker-unavailable-or-contended");
-		expect(report.daemon.forceCommand).toBe("gjc notify recovery --force-daemon-lock");
+		expect(report.daemon.forceCommand).toBe("worx notify recovery --force-daemon-lock");
 		const text = formatNotificationRecoveryReport(report);
 		expect(text).toContain("blocking reason: transition-marker-unavailable-or-contended");
-		expect(text).toContain("safe escape: gjc notify recovery --force-daemon-lock");
+		expect(text).toContain("safe escape: worx notify recovery --force-daemon-lock");
 		expect(unlinked).not.toContain(paths.lock);
 	});
 

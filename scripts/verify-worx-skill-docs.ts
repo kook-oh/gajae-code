@@ -18,7 +18,7 @@ const repoRoot = path.join(import.meta.dir, "..");
 const skillsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills");
 const skills = new Set<string>(CANONICAL_WORX_WORKFLOW_SKILLS);
 
-type AdvisorySkill = "gjc-sdk-session" | "gjc-sdk-guides";
+type AdvisorySkill = "worx-sdk-session" | "worx-sdk-guides";
 type DocumentedSkill = CanonicalWorxWorkflowSkill | AdvisorySkill;
 
 interface CommandRef {
@@ -45,17 +45,17 @@ function stripInlineCode(line: string): string {
 }
 
 function isRoleSelectorVerb(line: string, commandEndIndex: number): boolean {
-	return line.slice(0, commandEndIndex).endsWith("gjc team executor") && /\bgjc\s+team\s+executor\s+["'`]/u.test(line);
+	return line.slice(0, commandEndIndex).endsWith("worx team executor") && /\bgjc\s+team\s+executor\s+["'`]/u.test(line);
 }
 
 /** Generated advisory plugin skills rendered by `scripts/generate-worx-plugins.ts`. */
 const ADVISORY_SKILLS = new Set<string>([
-	"gjc-sdk-session",
-	"gjc-sdk-guides",
+	"worx-sdk-session",
+	"worx-sdk-guides",
 ]);
 const ADVISORY_SKILL_DIRS = [
-	"gjc-sdk-session",
-	"gjc-sdk-guides",
+	"worx-sdk-session",
+	"worx-sdk-guides",
 ];
 
 const FORBIDDEN_DAEMON_SESSION_ROUTE = /\bgjc\s+daemon\s+session\b/gu;
@@ -65,9 +65,9 @@ const FORBIDDEN_DAEMON_SESSION_ROUTE = /\bgjc\s+daemon\s+session\b/gu;
 const FORBIDDEN_CREDENTIAL_VALUE =
 	/(?:\b(?:token|secret|password|api[_-]?key|credential)\b\s*[:=]\s*(?:"[^"]{4,}"|'[^']{4,}'|\S{6,}))|\b(?:print|render|echo|output|display|show)\s+the\s+(?:endpoint|session)\s+credential\b/giu;
 const FORBIDDEN_MUTATION_CMD =
-	/\b(?:gjc\s+config\b|gjc\s+settings\b|gjc\s+setup\b|gjc\s+gc\b|gjc\s+plugin\s+(?:install|remove|enable|disable)\b|gjc\s+notify\s+setup\b|gjc\s+update\b)/gu;
+	/\b(?:worx\s+config\b|worx\s+settings\b|worx\s+setup\b|worx\s+gc\b|worx\s+plugin\s+(?:install|remove|enable|disable)\b|worx\s+notify\s+setup\b|worx\s+update\b)/gu;
 const FORBIDDEN_GUIDE_EXECUTION =
-	/\b(?:run|execute|invoke|start|launch|dispatch|run\s+through|work\s+through)\s+(?:the\s+)?(?:advisory\s+)?(?:guide|guide\s+skills?|gjc-sdk-guides?)\b/giu;
+	/\b(?:run|execute|invoke|start|launch|dispatch|run\s+through|work\s+through)\s+(?:the\s+)?(?:advisory\s+)?(?:guide|guide\s+skills?|worx-sdk-guides?)\b/giu;
 
 function collectSdkSessionVerbRefs(file: string, content: string): CommandRef[] {
 	const refs: CommandRef[] = [];
@@ -90,7 +90,7 @@ function collectSdkSessionVerbRefs(file: string, content: string): CommandRef[] 
 			refs.push({
 				file: relative,
 				line: i + 1,
-				skill: "gjc-sdk-session",
+				skill: "worx-sdk-session",
 				verb: target !== "" && verb === "raw" ? `raw ${target}` : verb,
 				command,
 				valid,
@@ -99,7 +99,7 @@ function collectSdkSessionVerbRefs(file: string, content: string): CommandRef[] 
 				refs.push({
 					file: relative,
 					line: i + 1,
-					skill: "gjc-sdk-session",
+					skill: "worx-sdk-session",
 					verb: `raw ${target}`,
 					command,
 					valid: false,
@@ -114,7 +114,7 @@ function collectSdkSkillContentGates(file: string, content: string): string[] {
 	const violations: string[] = [];
 	const relative = path.relative(repoRoot, file);
 	if (FORBIDDEN_DAEMON_SESSION_ROUTE.test(content))
-		violations.push(`${relative}: references the removed \`gjc daemon session\` route`);
+		violations.push(`${relative}: references the removed \`worx daemon session\` route`);
 	for (const match of content.matchAll(FORBIDDEN_CREDENTIAL_VALUE)) {
 		violations.push(`${relative}:${lineOf(content, match.index ?? 0)}: embeds or reveals a secret-shaped value (${match[0].slice(0, 80)})`);
 	}
@@ -185,19 +185,19 @@ function main(): void {
 
 	// Generated advisory plugin skills (inventory + content gates).
 	for (const dir of ADVISORY_SKILL_DIRS) {
-		const file = path.join(repoRoot, "plugins", "gajae-code", "skills", dir, "SKILL.md");
+		const file = path.join(repoRoot, "plugins", "worx-code", "skills", dir, "SKILL.md");
 		const content = fs.readFileSync(file, "utf8");
 		commandRefs.push(...collectSdkSessionVerbRefs(file, content));
 		mutationRefs.push(...collectDirectWorxMutations(file, content));
 		advisoryContentGates.push(...collectSdkSkillContentGates(file, content));
 	}
 	const missingAdvisory = ADVISORY_SKILL_DIRS.filter(
-		dir => !fs.existsSync(path.join(repoRoot, "plugins", "gajae-code", "skills", dir, "SKILL.md")),
+		dir => !fs.existsSync(path.join(repoRoot, "plugins", "worx-code", "skills", dir, "SKILL.md")),
 	);
 
 	const drift = commandRefs.filter(ref => !ref.valid);
-	console.log(`gjc skill docs verifier - scanned ${path.relative(repoRoot, skillsRoot)}/*/SKILL.md`);
-	console.log(`Found ${commandRefs.length} gjc command reference(s).`);
+	console.log(`worx skill docs verifier - scanned ${path.relative(repoRoot, skillsRoot)}/*/SKILL.md`);
+	console.log(`Found ${commandRefs.length} worx command reference(s).`);
 	console.log(`Found ${mutationRefs.length} direct .worx shell mutation example(s).\n`);
 	if (missingAdvisory.length > 0) {
 		console.log(`MISSING advisory plugin skill(s): ${missingAdvisory.join(", ")}`);

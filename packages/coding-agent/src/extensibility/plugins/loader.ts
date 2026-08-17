@@ -80,7 +80,7 @@ export async function getEnabledPlugins(cwd: string): Promise<InstalledPlugin[]>
 		const manifest: PluginManifest | undefined = pluginPkg.gjc || pluginPkg.pi;
 
 		if (!manifest) {
-			// Not an gjc plugin, skip
+			// Not an worx plugin, skip
 			continue;
 		}
 

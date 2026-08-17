@@ -16,7 +16,7 @@ const baseConfig = (overrides: Partial<HindsightConfig> = {}): HindsightConfig =
 	retainMode: "full-session",
 	retainEveryNTurns: 3,
 	retainOverlapTurns: 2,
-	retainContext: "gjc",
+	retainContext: "worx",
 	recallBudget: "mid",
 	recallMaxTokens: 1024,
 	recallTypes: ["world", "experience"],
@@ -40,7 +40,7 @@ describe("computeBankScope", () => {
 		});
 
 		it("falls back to the default bank name when bankId is unset", () => {
-			expect(computeBankScope(baseConfig(), "/whatever")).toEqual({ bankId: "gjc" });
+			expect(computeBankScope(baseConfig(), "/whatever")).toEqual({ bankId: "worx" });
 		});
 
 		it("applies the configured prefix", () => {
@@ -88,7 +88,7 @@ describe("computeBankScope", () => {
 	describe("scoping=per-project-tagged", () => {
 		it("keeps the base bank id and emits project tags with `any` match", () => {
 			expect(computeBankScope(baseConfig({ scoping: "per-project-tagged" }), "/work/proj")).toEqual({
-				bankId: "gjc",
+				bankId: "worx",
 				retainTags: ["project:proj"],
 				recallTags: ["project:proj"],
 				recallTagsMatch: "any",
@@ -113,7 +113,7 @@ describe("deriveBankId (legacy wrapper)", () => {
 	it("returns the bankId field of the resolved scope", () => {
 		expect(deriveBankId(baseConfig({ bankId: "team", bankIdPrefix: "prod" }), "/cwd")).toBe("prod-team");
 		expect(deriveBankId(baseConfig({ scoping: "per-project" }), "/work/proj")).toBe("gjc-proj");
-		expect(deriveBankId(baseConfig({ scoping: "per-project-tagged" }), "/work/proj")).toBe("gjc");
+		expect(deriveBankId(baseConfig({ scoping: "per-project-tagged" }), "/work/proj")).toBe("worx");
 	});
 });
 

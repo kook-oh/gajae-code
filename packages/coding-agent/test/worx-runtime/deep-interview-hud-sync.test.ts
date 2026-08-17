@@ -91,7 +91,7 @@ describe("deep-interview recorder -> HUD sync", () => {
 	});
 });
 
-describe("deep-interview gjc state write preserves recorder rounds", () => {
+describe("deep-interview worx state write preserves recorder rounds", () => {
 	it("does not drop recorder-written rounds on a partial scoring write", async () => {
 		const cwd = await tempDir();
 		const statePath = modeStatePath(cwd, TEST_SESSION_ID, "deep-interview");

@@ -105,7 +105,7 @@ describe("rlm artifacts", () => {
 	});
 });
 
-describe("rlm gjc session resolution (regression: standalone `gjc rlm`)", () => {
+describe("rlm worx session resolution (regression: standalone `worx rlm`)", () => {
 	let priorSessionId: string | undefined;
 
 	beforeEach(() => {
@@ -117,7 +117,7 @@ describe("rlm gjc session resolution (regression: standalone `gjc rlm`)", () => 
 		else delete process.env.WORX_SESSION_ID;
 	});
 
-	// Regression for `gjc rlm "..."` crashing with
+	// Regression for `worx rlm "..."` crashing with
 	// `SessionResolutionError: a session id is required to write state` when no
 	// GJC session is established (no parent agent / WORX_SESSION_ID unset).
 	test("resolveRlmArtifactPaths throws missing_for_write when no session is set", () => {

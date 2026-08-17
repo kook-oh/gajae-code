@@ -1,7 +1,7 @@
 # 엔진 피벗 실행 체크리스트 (정본)
 
 승인 계획: `docs/plans/ENGINE-PIVOT-PLAN.md` (rev.6) · 프로그램 지도: `docs/PROGRAM.md`
-최종 갱신: 2026-08-18 · 기준 커밋: `10f3bd91f`
+최종 갱신: 2026-08-18 · 기준 커밋: `0a217c764`
 
 > **자동 실행 규약.** 각 슬라이스는 *독립적으로 착수 가능하고, 명시된 수용 명령으로 스스로 통과/실패를 판정한다*.
 > 에이전트는 순서대로 하나씩 잡아 실행하고, 슬라이스 완료 시 이 문서의 체크박스를 같은 커밋에서 갱신한다.
@@ -21,6 +21,7 @@
 - [x] **보존 표면 S3 복원** — 헤드리스 JSONL(`--mode rpc`) 및 테스트
 - [x] **CI 제거** — GitHub Actions 워크플로 삭제 + 레포 레벨 `enabled=false`(과금 중단)
 - [x] **리네임 S5: 워크스페이스 스코프 통일** — `@gajae-code/*` → `@bworx-io/worx-*` (아래 슬라이스 5 참조)
+- [x] **리네임 S6: 내부 `gjc` 심볼·경로** — 디렉터리·파일명·`Gjc*` 심볼·커맨드 텍스트 (아래 슬라이스 6 참조)
 
 ---
 
@@ -45,9 +46,9 @@
 
 | 대상 | 근거 |
 |---|---|
-| `packages/*/CHANGELOG.md` 6개의 릴리스 섹션 | 과거 사실 기록. `rebrand-inventory`의 `attribution-and-license`, `verify-worx-sdk-rename`의 `isAllowed()`가 이미 changelog를 면제한다. `## [Unreleased]`에 리네임 항목을 추가했다. |
+| `packages/*/CHANGELOG.md` 6개의 릴리스 섹션 | 과거 사실 기록. `rebrand-inventory`의 `attribution-and-license`, `verify-gjc-sdk-rename`의 `isAllowed()`가 이미 changelog를 면제한다. `## [Unreleased]`에 리네임 항목을 추가했다. |
 | `legacy-pi-compat.ts`의 `PI_SCOPE_ALIASES` 내 `"gajae-code"` | **소비자 계약.** 서드파티 플러그인(plannotator·runfusion·juicesharp)이 구 스코프를 peerDependencies로 선언한다. 별칭 입력은 유지하고 canonical 타깃만 `@bworx-io/worx-*`로 옮겼다. |
-| `pi-scope-aliases.test.ts` / `worx-public-identity.test.ts` / `verify-worx-sdk-rename.ts`의 구 스코프 리터럴 | 위 계약과 "구 이름 부재" 음성 단정을 지키려면 구 문자열이 필요하다. 레포 선례(`rebrand-inventory`의 `"@oh-my" + "-pi"`)대로 **문자열 결합**으로 표기해 게이트 0을 유지한다. |
+| `pi-scope-aliases.test.ts` / `worx-public-identity.test.ts` / `verify-gjc-sdk-rename.ts`의 구 스코프 리터럴 | 위 계약과 "구 이름 부재" 음성 단정을 지키려면 구 문자열이 필요하다. 레포 선례(`rebrand-inventory`의 `"@oh-my" + "-pi"`)대로 **문자열 결합**으로 표기해 게이트 0을 유지한다. |
 | `gajae-code/<preset>` 모델 네임스페이스, upstream 이슈 URL, harness kind, pet 위젯 등 | 스코프가 아닌 **브랜드 문자열** — 슬라이스 6 이후 범위. |
 
 **부수 시정 (슬라이스 5 착수 시 이미 깨져 있던 것)**
@@ -55,7 +56,7 @@
   `ci-risk-canary-manifest.ts`를 삭제했지만 참조를 남겼다 → 고아 스크립트 `ci-virtual-integration.{ts,test.ts}` 삭제,
   `check:ts`/`ci:check:full`의 `check:node20-baseline` 참조 제거.
 - 패키지 `homepage`가 `check-public-version-sync`의 기대값과 어긋나 있었다(`…#readme` vs 리포 URL) → 리포 URL로 정렬.
-- `default-worx-definitions.test.ts`가 여전히 `gjc skills list`를 기대 → 실제 출력(`worx …`)으로 갱신.
+- `default-gjc-definitions.test.ts`가 여전히 `gjc skills list`를 기대 → 실제 출력(`worx …`)으로 갱신.
 
 **기존 실패 (A/B로 HEAD와 동일 확인 — 이번 변경과 무관)**
 - `packages/coding-agent/test/sdk-client.test.ts` 5건 (HEAD 동일)
@@ -63,16 +64,46 @@
 - `verify-g002-gates`의 `MCP quarantine` / `inline-local tools` 2건 (HEAD 동일)
 - `team-runtime` 계열 (이 맥에서 상시 실패, HEAD 동일)
 
-## 슬라이스 6 — 내부 소문자 `gjc` 심볼·경로
+## 슬라이스 6 — 내부 소문자 `gjc` 심볼·경로 ✅
 
-소비자 영향 0(전부 내부). 규모: `worx-runtime/` 129파일, 파일명 `gjc-*` 295개, `Worx*` 심볼 120파일.
+소비자 영향 0(전부 내부). 3단 원자 커밋으로 진행: 경로 → 파일명 → 심볼.
 
-- [ ] 디렉터리 `src/worx-runtime/` → `src/worx-runtime/` (git mv + import 갱신)
-- [ ] 파일명 `gjc-*.ts` / `gjc-*.test.ts` → `worx-*` (git mv)
-- [ ] 타입·심볼 `Worx*` → `Worx*` (LSP rename 우선, 텍스트 치환 금지)
-- [ ] `scripts/*gjc*` → `*worx*`, `sdk-skills/worx-sdk-author` 등 경로
-- [ ] **제외**: `package.json`의 `gjc` 매니페스트 키, ACP `_meta.gjc`, codex-handoff `gjc_session_id`/`gjc_turn_id`
-- [ ] 수용: `check` 통과 + `worx-behavior-identity` 스윕 green + 잔존 목록이 위 제외 항목만
+- [x] 디렉터리 `src/gjc-runtime/` → `src/worx-runtime/` (git mv + import 갱신)
+      · 함께 이동: `test/gjc-runtime/`, `src/extensibility/gjc-plugins/`, `src/defaults/gjc/`,
+      `test/fixtures/gjc-{plugins,state}`, 런타임 플러그인 루트 `.worx/gjc-plugins` 와 lock 파일
+- [x] 파일명 `gjc-*.ts` / `gjc-*.test.ts` → `worx-*` (git mv, 65개)
+      · 함께: `verify-gjc-*`/`generate-gjc-*` 스크립트, `scripts/gjc-session`, `scripts/gjc-sdk-skills`,
+      `sdk-skills/gjc-sdk-*`, `crates/gjc-sdk`, `python/gjc-sdk`(+`gjc_sdk` 모듈), 생성 플러그인 스킬 3종
+- [x] 타입·심볼 `Gjc*` → `Worx*` (약 160종) + `…Gjc…`/`gjc_*`/`__gjc_*` 식별자
+      · **LSP rename 대신 토큰 앵커 치환**을 썼다: 대문자 `Gjc` 는 소문자 계약(`gjc_session_id` 등)과
+      충돌할 수 없고, 소문자는 "대문자 or 언더스코어 단어가 뒤따르는 경우"로만 매칭 + 계약 2종을
+      lookahead 로 제외했다. ~500종에 LSP rename 을 개별 적용하는 것은 비현실적이었다.
+- [x] `scripts/*gjc*` → `*worx*`, `sdk-skills/worx-sdk-author` 등 경로
+- [x] 상태 수신증 owner 값 `gjc-state-cli|gjc-runtime|gjc-hook` → `worx-*`
+      (기존 파일은 `receiptWithRequiredFields` 가 미지 owner 를 기본값으로 정규화 — 폴백 레이어 추가 아님)
+- [x] 사용자·에이전트에게 보이는 커맨드 텍스트 `gjc <subcommand>` → `worx <subcommand>`
+      (번들 SKILL.md 4종, 역할 프롬프트, `commands/`·`cli/` 헬프, 생성 command-ref)
+- [x] **제외**: `package.json`의 `gjc` 매니페스트/설정 키, ACP `_meta.gjc`, codex-handoff `gjc_session_id`/`gjc_turn_id`
+- [x] 수용: `bun --cwd=packages/coding-agent run check` 통과 · `worx-behavior-identity`/`worx-public-identity` green ·
+      `rebrand-inventory --strict` green · `check:plugins`(16) · `check:sdk-skills`(28) · `verify-worx-skill-docs` green
+
+**함께 고쳐진 실제 결함 (리네임이 드러낸 것)**
+- `task/gjc-command.ts` 의 `DEFAULT_CMD` 가 여전히 `gjc` 를 spawn 하고 있었다 — 바이너리는 `worx` 다.
+- inshellisense 완성 스펙이 `gjc` 커맨드 이름을 발행하고 있었다. XDG init·fixture-report·DAP clientID 동일.
+- Codex 관리형 훅 매처가 자기가 쓰는 명령(`worx codex-native-hook`)을 인식하지 못해 중복 삽입되고 있었다.
+- 생성 스킬의 command-ref 가 존재하지 않는 `gjc state ...` 를 에이전트에게 지시하고 있었다.
+
+**의도적 잔존 (슬라이스 6 제외 목록)**
+
+| 대상 | 근거 |
+|---|---|
+| `package.json`의 `gjc` 매니페스트 키, 설정 루트 키 `gjc.*`(`gjc.ralplan.*`, `gjc.deepInterview.*`) | 계획 §9 제외 항목. 서드파티 플러그인/확장 매니페스트가 읽는다. |
+| ACP `_meta.gjc`, `_gjc/sdk/{global,control,query}` ext-method | S2 보존 표면. worx-ide(ORCA)가 이름으로 호출한다. 변경하려면 양쪽 동시 릴리스가 필요하다. |
+| codex-handoff `gjc_session_id`/`gjc_turn_id` | 영속 필드. 계획 §9 제외. |
+| tmux user option `@gjc-session-id`/`@gjc-session-state-file`/`@gjc-profile` | 살아 있는 tmux 세션의 입양 태그. 이 맥에서 tmux 계열 테스트가 상시 실패라 리네임을 검증할 수 없다. |
+| OOO 브리지 `--runtime gjc`, hindsight 기본 bank `gjc` | 외부 런타임 식별자 / 외부 메모리 네임스페이스. |
+| 릴리스 자산 이름 `gjc-linux-x64` 등(install 스크립트·update-cli·loader 다운로드 URL) | **슬라이스 7(P1b 패키징)** 소관 — 실제 게시 자산명과 함께 결정한다. |
+| 테스트 `mkdtemp` 접두사(`gjc-…-`), 레거시 탐지기(`worx-behavior-identity`, `verify-worx-sdk-rename`), `@mariozechner/gajae-code` 별칭 | 동작 무관 문자열 / 구 이름을 알아야 하는 검출기. |
 
 ## 슬라이스 7 — P1b 패키징·무결성 계약 (계획 §4b)
 
@@ -131,7 +162,7 @@
 - [ ] Phase 0: temporal 미러포크(T0) + 자체 이미지 빌드 + **Go 스파이크**(언어 확정 게이트, 1주 박스)
 - [ ] Phase 1: auth v1(SSO→JWT/JWKS·RBAC) + 문서 코어 v1 + Review Hub v1 + SSE v1
 - [ ] Phase 2: 워크플로 스파인(DesignChange + SpecImplement) + AX 문서 MCP + 칸반 프로젝션 + Temporal 인가 T1
-  - **선행 의존**: 슬라이스 6 완료 전에는 MCP 툴명이 다시 바뀔 수 있으므로, AX Phase 2 착수 전 엔진 툴명 확정 필요
+  - **선행 의존 해소**: 슬라이스 6 완료로 MCP 툴명(`worx_coordinator_*` / `worx_delegate_*`)이 확정됐다 — AX Phase 2 착수 가능
 - [ ] Phase 3~5: 에이전트-인-닥 / 자가개선·DSL / 확장
 
 ### E-lane (엔진 기능 요구)
@@ -145,7 +176,7 @@
 |---|---|
 | P0-FREEZE | ✅ 완료 |
 | P1b natives 빌드 | ✅ 2플랫폼 완료 / ⬜ 패키징·게이트·게시 (슬라이스 7) |
-| P1 리네임 | 🔶 5/6 슬라이스 완료 (남음: 내부 소문자 `gjc` 심볼 — 슬라이스 6) |
+| P1 리네임 | ✅ 6/6 슬라이스 완료 (잔존은 슬라이스 6 제외 목록 + 슬라이스 7 소관 릴리스 자산명) |
 | P1 exit 증명 | ⬜ 슬라이스 8 |
 | P1c 동기화 | ⬜ 슬라이스 9 |
 | P4 이관 | ⬜ 슬라이스 10 |

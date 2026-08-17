@@ -1,7 +1,7 @@
 /**
  * Web search CLI command handlers.
  *
- * Handles `gjc q`/`gjc web-search` subcommands for testing web search providers.
+ * Handles `worx q`/`worx web-search` subcommands for testing web search providers.
  */
 
 import { APP_NAME } from "@bworx-io/worx-utils";

@@ -39,7 +39,7 @@ For `workflow.gate_answer`, use the durable workflow gate ID and pass `expectedS
 - `session.resume`
 - `session.close`
 
-Use the existing daemon-owned SDK lifecycle surface or the pure-SDK `gjc daemon session global` command family as documented. Do not pretend lifecycle operations share the per-session endpoint or one idempotency model.
+Use the existing daemon-owned SDK lifecycle surface or the pure-SDK `worx daemon session global` command family as documented. Do not pretend lifecycle operations share the per-session endpoint or one idempotency model.
 
 ## Explicitly excluded
 

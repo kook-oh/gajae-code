@@ -183,7 +183,7 @@ describe("daemon runtime detection", () => {
 		expect(source.reloadPicksUpSourceEdits).toBe(true);
 		expect(source.warning).toBeUndefined();
 		expect(source.argsPrefix).toHaveLength(1);
-		expect(source.argsPrefix[0]).toEndWith(path.join("packages", "coding-agent", "bin", "gjc.js"));
+		expect(source.argsPrefix[0]).toEndWith(path.join("packages", "coding-agent", "bin", "worx.js"));
 
 		const compiled = resolveWorxRuntimeSpawnInfo("/opt/gjc/gjc");
 		expect(compiled.mode).toBe("compiled");
@@ -2801,7 +2801,7 @@ describe("runDaemonCommand", () => {
 });
 
 describe("cli registration", () => {
-	test("gjc daemon is registered in the explicit command registry", () => {
+	test("worx daemon is registered in the explicit command registry", () => {
 		const cliSource = fs.readFileSync(path.join(import.meta.dir, "../src/cli.ts"), "utf8");
 		expect(cliSource).toContain('{ name: "daemon"');
 		expect(cliSource).toContain('import("./commands/daemon")');

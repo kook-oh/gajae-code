@@ -263,7 +263,7 @@ export function renderUltragoalStatusMarkdown(summary: {
 	nudgeTargetKind?: string;
 }): string {
 	if (!summary.exists)
-		return `# ultragoal status\n\n- status: missing\n- No ultragoal plan found at ${summary.paths.goalsPath}. Run \`gjc ultragoal create-goals --brief "..."\` first.\n`;
+		return `# ultragoal status\n\n- status: missing\n- No ultragoal plan found at ${summary.paths.goalsPath}. Run \`worx ultragoal create-goals --brief "..."\` first.\n`;
 	const counts = Object.entries(summary.counts)
 		.map(([key, value]) => `${key}=${value}`)
 		.join(" ");

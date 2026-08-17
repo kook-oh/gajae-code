@@ -154,7 +154,7 @@ function weakestDimensionFromTopology(
 
 /**
  * Single source of deep-interview HUD derivation. Reads a complete (normalized)
- * mode-state envelope so recorder, `gjc state write`, reconcile, seed, and handoff
+ * mode-state envelope so recorder, `worx state write`, reconcile, seed, and handoff
  * all produce identical chips. Topology-aware `target`/`weakest` come from
  * `state.topology`; `legacy_missing` topology omits those chips (no synthetic values).
  */

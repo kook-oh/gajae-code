@@ -19,13 +19,13 @@ import type { GcCollectResult, GcContext, GcError, GcRecord, GcStoreAdapter } fr
  * started is still inside its grace window.
  */
 
-const LOCAL_ROOT_PARENT = "gjc-local";
+const LOCAL_ROOT_PARENT = "worx-local";
 const LEGACY_MIGRATION_MARKER = ".worx-local-legacy-migrated-v1";
 
 /** Directories younger than this are left alone so a live session is never raced. */
 const GRACE_MS = 24 * 60 * 60 * 1000;
 
-/** Bound the scan so a pathological directory cannot stall `gjc gc`. */
+/** Bound the scan so a pathological directory cannot stall `worx gc`. */
 const MAX_ENTRIES = 20_000;
 
 function localRootParent(env: NodeJS.ProcessEnv): string {

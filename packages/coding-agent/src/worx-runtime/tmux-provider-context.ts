@@ -88,7 +88,7 @@ function requireSafePathComponent(value: string, name: string): string {
 }
 
 function randomNamespace(): string {
-	return `gjc-${crypto.randomBytes(16).toString("hex")}`;
+	return `worx-${crypto.randomBytes(16).toString("hex")}`;
 }
 
 /** Resolve a structured provider. Native tmux remains byte-for-byte argv compatible. */
@@ -244,7 +244,7 @@ function parseRecord(data: Uint8Array): ProviderRecord {
 		typeof value.session_id !== "string" ||
 		typeof value.owner_generation !== "string" ||
 		typeof value.namespace !== "string" ||
-		!/^gjc-[a-f0-9]{32}$/.test(value.namespace) ||
+		!/^worx-[a-f0-9]{32}$/.test(value.namespace) ||
 		value.target_syntax !== "-L" ||
 		typeof value.executable_path !== "string" ||
 		!(path.win32.isAbsolute(value.executable_path) || path.isAbsolute(value.executable_path)) ||

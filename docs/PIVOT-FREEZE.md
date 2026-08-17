@@ -147,27 +147,27 @@ git grep -n -E '=== "gjc"|!== "gjc"|startsWith\("gjc' -- ':!docs/**'
 
 The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:1656`;
 `packages/coding-agent/src/coordinator-mcp/server.ts:826`;
-`packages/coding-agent/src/worx-runtime/team-runtime.ts:384,433`;
-`packages/coding-agent/src/worx-runtime/tmux-sessions.ts:943`;
+`packages/coding-agent/src/gjc-runtime/team-runtime.ts:384,433`;
+`packages/coding-agent/src/gjc-runtime/tmux-sessions.ts:943`;
 `packages/coding-agent/src/hooks/skill-state.ts:175`;
 `packages/coding-agent/src/sdk/transport/auth-preface.ts:69`;
 `packages/coding-agent/src/session/agent-session.ts:13990`;
 `packages/coding-agent/src/tools/bash-allowed-prefixes.ts:272`;
 `packages/coding-agent/test/core/python-runner-artifact.test.ts:49`;
-`packages/coding-agent/test/worx-runtime/launch-tmux.test.ts:125`;
+`packages/coding-agent/test/gjc-runtime/launch-tmux.test.ts:125`;
 `packages/coding-agent/test/shell-snapshot.test.ts:49,71,92`;
 `scripts/generate-worx-plugins.ts:24`; and
 `scripts/verify-worx-plugins.ts:57,65`.
 
-[V] `git grep -n 'gjc-sdk-transport/' -- ':!docs/**'` finds the production protocol definition at `packages/coding-agent/src/sdk/transport/auth-preface.ts:6,69`, plus its TypeScript fixture/tests and Python SDK implementation/tests: `packages/coding-agent/test/fixtures/sdk-frame-vectors/transport-shapes.json:6`, `packages/coding-agent/test/sdk-frame-vectors.test.ts:118`, `packages/coding-agent/test/sdk-serve-transport.test.ts:345,347,378,402,421,422,440`, `python/worx-sdk/worx_sdk/transport.py:87`, and `python/worx-sdk/tests/test_vectors.py:52`.
+[V] `git grep -n 'gjc-sdk-transport/' -- ':!docs/**'` finds the production protocol definition at `packages/coding-agent/src/sdk/transport/auth-preface.ts:6,69`, plus its TypeScript fixture/tests and Python SDK implementation/tests: `packages/coding-agent/test/fixtures/sdk-frame-vectors/transport-shapes.json:6`, `packages/coding-agent/test/sdk-frame-vectors.test.ts:118`, `packages/coding-agent/test/sdk-serve-transport.test.ts:345,347,378,402,421,422,440`, `python/gjc-sdk/gjc_sdk/transport.py:87`, and `python/gjc-sdk/tests/test_vectors.py:52`.
 
 [V] MCP public-name count was measured from the two declaration sources:
 
 ```sh
-{ git grep -h -o -E 'worx_[a-z0-9_]+' -- packages/coding-agent/src/coordinator/contract.ts; git grep -h -o -E 'worx_[a-z0-9_]+' -- packages/coding-agent/src/sdk/mcp/server.ts; } | sort -u | wc -l
+{ git grep -h -o -E 'gjc_[a-z0-9_]+' -- packages/coding-agent/src/coordinator/contract.ts; git grep -h -o -E 'gjc_[a-z0-9_]+' -- packages/coding-agent/src/sdk/mcp/server.ts; } | sort -u | wc -l
 ```
 
-Output: `27` unique `worx_`-prefixed MCP tool names (23 coordinator, 4 SDK).
+Output: `27` unique `gjc_`-prefixed MCP tool names (23 coordinator, 4 SDK).
 [V] `git grep -h -o -E 'WORX_[A-Z_]+' -- 'packages/*/src/**' | sort -u | wc -l`
 outputs `276` unique identifiers across package source. This supersedes the
 plan's preliminary count of 282 and the narrower coding-agent-only count of

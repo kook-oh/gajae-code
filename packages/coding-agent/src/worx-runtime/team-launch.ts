@@ -356,8 +356,8 @@ export async function startWorxTeamLaunch(
 	await runtime.appendEvent(dir, {
 		type: "team_started",
 		message: options.dryRun
-			? "Created native gjc team dry-run state without starting tmux workers"
-			: "Started native gjc team runtime",
+			? "Created native worx team dry-run state without starting tmux workers"
+			: "Started native worx team runtime",
 		data: {
 			worker_count: options.workerCount,
 			agent_type: options.agentType,
@@ -367,7 +367,7 @@ export async function startWorxTeamLaunch(
 	});
 	await runtime.appendTelemetry(dir, {
 		type: "team_runtime",
-		message: options.dryRun ? "Native gjc team dry-run state initialized" : "Native gjc team runtime initialized",
+		message: options.dryRun ? "Native worx team dry-run state initialized" : "Native worx team runtime initialized",
 		data: {
 			state_root: stateRoot,
 			worker_command: config.worker_command,

@@ -25,7 +25,7 @@ export function streamGrokCli(
   const sessionId = options?.sessionId;
   const headers: Record<string, string> = {
     ...options?.headers,
-    'x-grok-client-identifier': 'gjc-grok-cli',
+    'x-grok-client-identifier': 'worx-grok-cli',
     'x-grok-client-version': GROK_CLI_VERSION,
     'x-xai-token-auth': 'xai-grok-cli',
     'x-grok-model-override': model.id,

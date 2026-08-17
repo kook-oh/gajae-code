@@ -197,7 +197,7 @@ describe("SDK surface parity", () => {
 		await Promise.all([nativeRuntime.stop(), loopbackRuntime.stop()]);
 	});
 	test("native adapter malformed-frame errors match loopback protocol-error shape", async () => {
-		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-native-parity-"));
+		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "worx-sdk-native-parity-"));
 		const sessionId = `native-parity-${randomUUID()}`;
 		const handlers = new Map<string, (event: unknown, ctx: any) => Promise<void> | void>();
 		const callbacks = new WeakMap<

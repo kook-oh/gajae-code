@@ -21,8 +21,8 @@ describe("external controller integration docs", () => {
 		const guide = await readRepoFile("docs", "bot-integration.md");
 
 		expect(guide).toContain("# External controller integration guide");
-		expect(guide).toContain("gjc mcp-serve coordinator");
-		expect(guide).toContain("gjc setup hermes");
+		expect(guide).toContain("worx mcp-serve coordinator");
+		expect(guide).toContain("worx setup hermes");
 		expect(guide).toContain("compatibility alias, not a separate contract");
 		expect(guide).toContain("Generic smoke strategy");
 		expect(guide).toContain("Contract smoke");
@@ -32,7 +32,7 @@ describe("external controller integration docs", () => {
 		expect(guide).toContain("SDK WebSocket integration");
 		expect(guide).toContain("have been removed");
 		expect(guide).not.toContain("RPC lifecycle below");
-		expect(guide).not.toContain("gjc --mode " + "rpc");
+		expect(guide).not.toContain("worx --mode " + "rpc");
 		expect(guide).not.toContain("docs/rpc.md");
 		expect(guide).not.toContain("docs/bridge.md");
 		expect(guide).toContain("worx_coordinator_register_session");
@@ -84,7 +84,7 @@ describe("external controller integration docs", () => {
 
 		expect(guide).toContain("docs-only");
 		expect(guide).toContain("aside mcp");
-		expect(guide).toContain("gjc mcp add aside aside mcp --project");
+		expect(guide).toContain("worx mcp add aside aside mcp --project");
 		expect(guide).toContain("browser actions and form submissions");
 		expect(guide).toContain("login flows, credential autofill, MFA");
 		expect(guide).toContain("payments, purchases, subscriptions, billing changes");
@@ -110,7 +110,7 @@ describe("external controller integration docs", () => {
 		expect(readiness).toContain("ACP");
 		expect(readiness).toContain("have been removed");
 
-		for (const command of ["gjc mcp-serve coordinator", "gjc --mode acp", "gjc acp"]) {
+		for (const command of ["worx mcp-serve coordinator", "worx --mode acp", "worx acp"]) {
 			expect(readiness).toContain(command);
 		}
 

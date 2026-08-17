@@ -113,10 +113,10 @@ describe("parseAgentFields", () => {
 		const fields = parseAgentFields({
 			name: "reviewer",
 			description: "desc",
-			bashAllowedPrefixes: ["gjc ralplan --write", " gjc state "],
+			bashAllowedPrefixes: ["worx ralplan --write", " worx state "],
 		});
 
 		expect(fields).toBeDefined();
-		expect(fields?.bashAllowedPrefixes).toEqual(["gjc ralplan --write", "gjc state"]);
+		expect(fields?.bashAllowedPrefixes).toEqual(["worx ralplan --write", "worx state"]);
 	});
 });

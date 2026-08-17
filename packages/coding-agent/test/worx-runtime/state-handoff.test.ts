@@ -65,7 +65,7 @@ async function readJson(filePath: string): Promise<Record<string, unknown> | nul
 	}
 }
 
-describe("gjc state handoff", () => {
+describe("worx state handoff", () => {
 	it("transitions caller -> callee atomically across mode-state and active-state", async () => {
 		await withTempCwd(async cwd => {
 			const callerPath = modeStatePath(cwd, TEST_SESSION_ID, "deep-interview");

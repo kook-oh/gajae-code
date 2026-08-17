@@ -457,9 +457,9 @@ function boundCrashRecord(report: string): string {
 
 /**
  * Append a fatal-crash record to the dedicated, rotation-immune crash log
- * (`~/.worx/agent/gjc-crash.log`).
+ * (`~/.worx/agent/worx-crash.log`).
  *
- * The daily logger file is gzip-archived at date rollover by every gjc process
+ * The daily logger file is gzip-archived at date rollover by every worx process
  * independently; that shared-archive race can truncate a day's log to an empty
  * `.gz`, destroying the `logger.error` crash record written here. This
  * append-only file is never rotated, so a crash stays diagnosable regardless.

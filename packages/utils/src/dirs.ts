@@ -7,9 +7,9 @@
  *
  * On Linux, if XDG_DATA_HOME / XDG_STATE_HOME / XDG_CACHE_HOME environment
  * variables are set, paths are redirected to XDG-compliant locations under
- * $XDG_*_HOME/gjc/. This requires running `gjc config migrate` first to
+ * $XDG_*_HOME/gjc/. This requires running `worx config migrate` first to
  * move data to the new locations. No filesystem existence checks are performed
- * — if the env var is set, gjc trusts that the migration has been done.
+ * — if the env var is set, worx trusts that the migration has been done.
  */
 
 import * as fs from "node:fs";
@@ -18,7 +18,7 @@ import * as path from "node:path";
 import { engines, version } from "../package.json" with { type: "json" };
 import { parseEnvFile } from "./env-file";
 
-/** App name (e.g. "gjc") */
+/** App name (e.g. "worx") */
 export const APP_NAME: string = "worx";
 
 /** Config directory name (e.g. ".worx") */
@@ -31,10 +31,10 @@ export const VERSION: string = version;
 export const MIN_BUN_VERSION: string = engines.bun.replace(/[^0-9.]/g, "");
 
 /**
- * Build the diagnostic shown when the Bun runtime executing `gjc` is older
+ * Build the diagnostic shown when the Bun runtime executing `worx` is older
  * than {@link MIN_BUN_VERSION}. This is the most common Windows native-install
  * failure (issue #525): `bun install -g gajae-code` probes a recent Bun while
- * the `gjc` launcher resolves an older Bun still on PATH. The message names the
+ * the `worx` launcher resolves an older Bun still on PATH. The message names the
  * exact detected runtime path and gives a platform-specific upgrade + PATH fix
  * instead of a bare `bun upgrade`.
  *
@@ -56,16 +56,16 @@ export function formatBunRuntimeError(opts: {
 	if (platform === "win32") {
 		lines.push(
 			"",
-			"The 'gjc' launcher is using an older Bun than the one used to install it.",
+			"The 'worx' launcher is using an older Bun than the one used to install it.",
 			"Upgrade Bun, then restart your terminal so PATH and the runtime refresh:",
 			"",
 			'  powershell -c "irm bun.sh/install.ps1|iex"',
 			"",
 			"After restarting the terminal, verify both versions match:",
 			"  bun --version",
-			"  gjc --version",
+			"  worx --version",
 			"",
-			"If 'gjc' still loads the old runtime, make sure %USERPROFILE%\\.bun\\bin is",
+			"If 'worx' still loads the old runtime, make sure %USERPROFILE%\\.bun\\bin is",
 			"first on PATH and remove any stale Bun installs shadowing it.",
 		);
 	} else {
@@ -76,7 +76,7 @@ export function formatBunRuntimeError(opts: {
 			"",
 			"Then verify:",
 			"  bun --version",
-			"  gjc --version",
+			"  worx --version",
 		);
 	}
 	return `${lines.join("\n")}\n`;
@@ -327,7 +327,7 @@ function trustedAgentDirOverrideFor(name: "WORX_CODING_AGENT_DIR" | "PI_CODING_A
  * `PI_CODING_AGENT_DIR` is the legacy alias this module's own header documents,
  * and parts of the product already resolve it (`gc-runtime.ts:370`,
  * `deep-interview-runtime.ts:384`). Reading only the `WORX_` spelling here split
- * the agent directory in two: `gjc gc` operated on the aliased directory while
+ * the agent directory in two: `worx gc` operated on the aliased directory while
  * everything reaching `getAgentDir()` stayed on the default.
  */
 function trustedAgentDirOverride(): string | undefined {
@@ -415,7 +415,7 @@ export function getPluginsPackageJson(): string {
 
 /** Plugin lock file (~/.worx/plugins/gjc-plugins.lock.json). */
 export function getPluginsLockfile(): string {
-	return path.join(getPluginsDir(), "gjc-plugins.lock.json");
+	return path.join(getPluginsDir(), "worx-plugins.lock.json");
 }
 
 /** Get the remote mount directory (~/.worx/remote). */
@@ -591,9 +591,9 @@ export function getTerminalSessionsDir(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "terminal-sessions", "state");
 }
 
-/** Get the crash log path (~/.worx/agent/gjc-crash.log). */
+/** Get the crash log path (~/.worx/agent/worx-crash.log). */
 export function getCrashLogPath(agentDir?: string): string {
-	return dirs.agentSubdir(agentDir, "gjc-crash.log", "state");
+	return dirs.agentSubdir(agentDir, "worx-crash.log", "state");
 }
 
 /** Get the debug log path (~/.worx/agent/gjc-debug.log). */

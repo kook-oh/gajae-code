@@ -1,7 +1,7 @@
 /**
  * Setup CLI command handler.
  *
- * Handles `gjc setup [component]` to install the normal defaults or optional feature dependencies.
+ * Handles `worx setup [component]` to install the normal defaults or optional feature dependencies.
  */
 
 import * as path from "node:path";
@@ -253,7 +253,7 @@ async function checkPythonSetup(): Promise<PythonCheckResult> {
  * Install Python packages using uv (preferred) or pip.
  */
 // Python installation helper removed: the subprocess runner has no Python
-// package dependencies beyond a working interpreter. `gjc setup python --check`
+// package dependencies beyond a working interpreter. `worx setup python --check`
 // remains as a probe; users install optional libs (pandas, matplotlib, ...)
 // directly via pip or the in-process `%pip` magic.
 
@@ -565,7 +565,7 @@ async function confirmImport(count: number): Promise<boolean> {
 
 /**
  * Discover existing Claude Code / Codex CLI credentials and import them into the
- * gjc credential store after a redacted preview + confirmation. Falls back to
+ * worx credential store after a redacted preview + confirmation. Falls back to
  * manual-setup guidance when nothing importable is found.
  */
 export interface CredentialsSetupDependencies {

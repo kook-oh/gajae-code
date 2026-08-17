@@ -40,7 +40,7 @@ describe("managed session directory SDK", () => {
 			const agentDir = path.join(os.homedir(), ".worx", "agent");
 			const cwd = path.join(root, "workspace");
 			temporaryDirectories.push(root);
-			await fs.mkdir(path.join(xdgData, "gjc"), { recursive: true });
+			await fs.mkdir(path.join(xdgData, "worx"), { recursive: true });
 			await fs.mkdir(cwd, { recursive: true });
 			const previousAgentDir = getAgentDir();
 			const previousXdgData = process.env.XDG_DATA_HOME;
@@ -50,7 +50,7 @@ describe("managed session directory SDK", () => {
 				const resolved = await resolveManagedSessionScope({ cwd, agentDir });
 				expect(resolved).toMatchObject({
 					kind: "resolved",
-					scope: { sessionsRoot: path.join(xdgData, "gjc", "sessions") },
+					scope: { sessionsRoot: path.join(xdgData, "worx", "sessions") },
 				});
 			} finally {
 				if (previousXdgData === undefined) delete process.env.XDG_DATA_HOME;

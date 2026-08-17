@@ -15,7 +15,7 @@ import { registerUsageCommand } from './usage.js';
 
 const GROK_BUILD_XAI_AUTHORIZE_PARAMS = {
   plan: 'generic',
-  referrer: 'gjc-grok-cli',
+  referrer: 'worx-grok-cli',
 } satisfies Readonly<Record<string, string>>;
 
 const GROK_BUILD_XAI_REFRESH_PARAMS = {

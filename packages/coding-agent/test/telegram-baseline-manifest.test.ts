@@ -413,7 +413,7 @@ describe("gjc-sdk rename scanner", () => {
 		const legacyPath = path.join("src", "notifications", "legacy.ts");
 		const legacyPosixPath = legacyPath.replaceAll("\\", "/");
 		await fs.mkdir(path.join(scanRoot, path.dirname(legacyPath)), { recursive: true });
-		await Bun.write(path.join(scanRoot, legacyPath), `${["use", ["gjc", "notifications"].join("_")].join(" ")}\n`);
+		await Bun.write(path.join(scanRoot, legacyPath), `${["use", ["worx", "notifications"].join("_")].join(" ")}\n`);
 		const scanner = path.join(packageRoot, "scripts", "verify-worx-sdk-rename.ts");
 		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 
@@ -424,7 +424,7 @@ describe("gjc-sdk rename scanner", () => {
 			`${legacyPosixPath}: forbidden filename ${JSON.stringify(["src", "notifications", ""].join("/"))}`,
 		);
 		expect(output(result)).toContain(
-			`${legacyPosixPath}:1: forbidden ${JSON.stringify(["gjc", "notifications"].join("_"))}`,
+			`${legacyPosixPath}:1: forbidden ${JSON.stringify(["worx", "notifications"].join("_"))}`,
 		);
 	});
 });

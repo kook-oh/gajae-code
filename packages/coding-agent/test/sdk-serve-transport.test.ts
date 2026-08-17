@@ -486,7 +486,7 @@ describe("SDK serve CLI and discovery", () => {
 			return true;
 		};
 		try {
-			renderCommandHelp("gjc", "sdk", Sdk);
+			renderCommandHelp("worx", "sdk", Sdk);
 		} finally {
 			(process.stdout as unknown as { write: typeof stdout }).write = stdout;
 		}

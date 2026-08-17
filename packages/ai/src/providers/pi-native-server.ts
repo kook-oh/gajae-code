@@ -45,7 +45,7 @@ export interface PiNativeParsedRequest {
  * provider-session map) and gateway-owned controls (`apiKey`, `signal`) are
  * intentionally absent — those are server-side concerns. Anything outside this
  * allow-list is dropped silently rather than 400ing, so clients can forward
- * `SimpleStreamOptions` from older / newer gjc builds without per-version
+ * `SimpleStreamOptions` from older / newer worx builds without per-version
  * conditionals.
  */
 const ALLOWED_OPTION_KEYS: ReadonlySet<keyof SimpleStreamOptions> = new Set([

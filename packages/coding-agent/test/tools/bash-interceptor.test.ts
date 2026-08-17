@@ -140,7 +140,7 @@ describe("BashTool head/tail stripping", () => {
 describe("BashTool restricted role-agent allowlist", () => {
 	function createRestrictedBashTool(
 		cwd = process.cwd(),
-		bashAllowedPrefixes = ["gjc ralplan --write", "gjc state"],
+		bashAllowedPrefixes = ["worx ralplan --write", "worx state"],
 		bashRestrictionProfile?: ToolSession["bashRestrictionProfile"],
 	): BashTool {
 		const session = {
@@ -173,8 +173,8 @@ describe("BashTool restricted role-agent allowlist", () => {
 		const tool = createRestrictedBashTool();
 
 		expect(tool.description).toContain("This session's bash tool is restricted");
-		expect(tool.description).toContain("gjc ralplan --write");
-		expect(tool.description).toContain("gjc state");
+		expect(tool.description).toContain("worx ralplan --write");
+		expect(tool.description).toContain("worx state");
 	});
 
 	it("blocks non-allowlisted commands before execution", async () => {
@@ -255,8 +255,8 @@ describe("BashTool restricted role-agent allowlist", () => {
 	it("blocks ralplan invocations that are not artifact writes", async () => {
 		const tool = createRestrictedBashTool();
 
-		await expect(tool.execute("tool-call", { command: "gjc ralplan --consensus 'task'" })).rejects.toThrow(
-			"gjc ralplan --write",
+		await expect(tool.execute("tool-call", { command: "worx ralplan --consensus 'task'" })).rejects.toThrow(
+			"worx ralplan --write",
 		);
 	});
 
@@ -265,7 +265,7 @@ describe("BashTool restricted role-agent allowlist", () => {
 
 		await expect(
 			tool.execute("tool-call", {
-				command: "gjc ralplan --write --stage architect --stage_n 1 --artifact ok",
+				command: "worx ralplan --write --stage architect --stage_n 1 --artifact ok",
 				env: { PATH: "/tmp/fake" },
 			}),
 		).rejects.toThrow("only allows the WORX_RALPLAN_ARTIFACT env override");

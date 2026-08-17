@@ -305,7 +305,7 @@ async function createGitRepo(): Promise<string> {
 	const repo = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-git-"));
 	cleanupRoots.add(repo);
 	runGit(repo, ["init"]);
-	runGit(repo, ["config", "user.email", "gjc@example.test"]);
+	runGit(repo, ["config", "user.email", "worx@example.test"]);
 	runGit(repo, ["config", "user.name", "GJC Test"]);
 	await Bun.write(path.join(repo, "README.md"), "# test\n");
 	runGit(repo, ["add", "README.md"]);
@@ -483,7 +483,7 @@ afterEach(async () => {
 	}
 });
 
-describe("native gjc team runtime", () => {
+describe("native worx team runtime", () => {
 	it("creates GJC-scoped team state, task mailboxes, and telemetry without delegating to legacy runtimes", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const snapshot = await startWorxTeam({
@@ -513,7 +513,7 @@ describe("native gjc team runtime", () => {
 		expect(manifest.dry_run).toBe(true);
 
 		const telemetry = await Bun.file(path.join(snapshot.state_dir, "telemetry.jsonl")).text();
-		expect(telemetry).toContain("Native gjc team dry-run state initialized");
+		expect(telemetry).toContain("Native worx team dry-run state initialized");
 		expect(telemetry).toContain('"dry_run":true');
 	});
 
@@ -656,7 +656,7 @@ describe("native gjc team runtime", () => {
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("blocked");
 	});
 
-	it("persists the active worker command so tmux workers use the same gjc entrypoint", async () => {
+	it("persists the active worker command so tmux workers use the same worx entrypoint", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const snapshot = await startWorxTeam({
 			workerCount: 1,
@@ -693,7 +693,7 @@ describe("native gjc team runtime", () => {
 			worker_count: 1,
 			max_workers: 1,
 			state_root: "C:\\state",
-			worker_command: "'C:\\Program Files\\gjc\\gjc.exe'",
+			worker_command: "'C:\\Program Files\\worx\\worx.exe'",
 			worker_cli_plan: ["worx"],
 			tmux_command: "psmux",
 			tmux_session: "win-session",
@@ -721,8 +721,8 @@ describe("native gjc team runtime", () => {
 
 		const command = buildWorkerCommand(config, worker, "win32");
 
-		expect(command).toContain("; & 'C:\\Program Files\\gjc\\gjc.exe'");
-		expect(command).not.toContain("; 'C:\\Program Files\\gjc\\gjc.exe' ");
+		expect(command).toContain("; & 'C:\\Program Files\\worx\\worx.exe'");
+		expect(command).not.toContain("; 'C:\\Program Files\\worx\\worx.exe' ");
 		expect(command).toContain("'You are worker-1 in worx team win-team.");
 	});
 
@@ -736,7 +736,7 @@ describe("native gjc team runtime", () => {
 			worker_count: 1,
 			max_workers: 1,
 			state_root: "/state",
-			worker_command: "gjc",
+			worker_command: "worx",
 			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
@@ -786,7 +786,7 @@ describe("native gjc team runtime", () => {
 			max_workers: 1,
 			state_root: "/state",
 			gjc_session_id: "owner-'$(echo hostile)",
-			worker_command: "gjc",
+			worker_command: "worx",
 			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
@@ -831,7 +831,7 @@ describe("native gjc team runtime", () => {
 			worker_count: 1,
 			max_workers: 1,
 			state_root: "/state",
-			worker_command: "gjc",
+			worker_command: "worx",
 			worker_cli_plan: ["worx"],
 			tmux_command: "tmux",
 			tmux_session: "sess",
@@ -1647,7 +1647,7 @@ describe("native gjc team runtime", () => {
 		expect(tmuxLog).not.toContain("split-window");
 	});
 
-	it("self-heals a missing @gjc-profile tag when the leader pane was launched by gjc --tmux", async () => {
+	it("self-heals a missing @gjc-profile tag when the leader pane was launched by worx --tmux", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { worxProfile: false });
 
@@ -2756,7 +2756,7 @@ describe("native gjc team runtime", () => {
 		});
 		expect(jsonResult.stderr).toBe("");
 		expect(`${jsonResult.stdout}${jsonResult.stderr}`).not.toContain("Uncaught Exception");
-		expect(`${jsonResult.stdout}${jsonResult.stderr}`).not.toContain("gjc-crash.log");
+		expect(`${jsonResult.stdout}${jsonResult.stderr}`).not.toContain("worx-crash.log");
 
 		const textResult = await runTeamApiCli(["get-task", "--input", "{}"]);
 		expect(textResult.exitCode).toBe(1);
@@ -3863,9 +3863,9 @@ describe("resolveWorxWorkerCommand invocation authority", () => {
 				{},
 				"win32",
 				["B:\\~BUN\\bun.exe", "\\$bunfs\\root\\gjc-windows-x64.exe"],
-				"C:\\Program Files\\GJC\\gjc.exe",
+				"C:\\Program Files\\GJC\\worx.exe",
 			),
-		).toBe("'C:\\Program Files\\GJC\\gjc.exe'");
+		).toBe("'C:\\Program Files\\GJC\\worx.exe'");
 	});
 
 	it("preserves the exact source runtime and script argv", () => {
@@ -3919,10 +3919,10 @@ describe("resolveWorxWorkerCommand invocation authority", () => {
 			{},
 			"win32",
 			["B:\\~BUN\\bun.exe", "\\$bunfs\\root\\gjc-windows-x64.exe"],
-			"C:\\Program Files\\GJC\\gjc.exe",
+			"C:\\Program Files\\GJC\\worx.exe",
 		);
 
-		expect(command).toBe("'C:\\Program Files\\GJC\\gjc.exe'");
+		expect(command).toBe("'C:\\Program Files\\GJC\\worx.exe'");
 		expect(command).not.toMatch(/B:\/~BUN|B:\\~BUN|\/\$bunfs|\\\$bunfs/i);
 	});
 });

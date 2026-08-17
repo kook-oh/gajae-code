@@ -78,7 +78,7 @@ type BtwTerminalDeliveryReceipt = {
 	outcome: "accepted" | "not_delivered" | "uncertain" | "partial_accepted" | "stale";
 };
 
-const BTW_TERMINAL_DELIVERY_TEST_OBSERVER = Symbol.for("gjc.test.btw-terminal-delivery-observer");
+const BTW_TERMINAL_DELIVERY_TEST_OBSERVER = Symbol.for("worx.test.btw-terminal-delivery-observer");
 
 type DeliveryTuple = {
 	sessionId: string;

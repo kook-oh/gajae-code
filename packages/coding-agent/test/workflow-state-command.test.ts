@@ -34,7 +34,7 @@ function runState(cwd: string, args: string[]) {
 	});
 }
 
-describe("gjc state workflow command", () => {
+describe("worx state workflow command", () => {
 	it("writes readable canonical state and receipt for workflow skills through documented invocation", async () => {
 		await withTempCwd(async cwd => {
 			for (const skill of workflowSkills) {
@@ -70,7 +70,7 @@ describe("gjc state workflow command", () => {
 					current_phase: initialPhases[skill],
 				});
 				expect(modeState.blocked_reason ?? modeState.state?.blocked_reason).toBe("execution approval missing");
-				expect(modeState.receipt.command).toBe(`gjc state ${skill} write`);
+				expect(modeState.receipt.command).toBe(`worx state ${skill} write`);
 
 				const activeState = await Bun.file(
 					path.join(sessionStateDir(cwd, `session-${skill}`), "skill-active-state.json"),

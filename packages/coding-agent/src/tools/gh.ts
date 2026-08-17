@@ -225,7 +225,7 @@ const RUN_SUCCESS_CONCLUSIONS = new Set(["success", "neutral", "skipped"]);
 const RUN_FAILURE_CONCLUSIONS = new Set(["failure", "timed_out", "cancelled", "action_required", "startup_failure"]);
 const JOB_FAILURE_CONCLUSIONS = new Set(["failure", "timed_out", "cancelled", "action_required"]);
 
-const PR_CREATE_BASE_CONFIG_KEYS = ["github.prBase", "gh.prBase", "gjc.github.prBase"] as const;
+const PR_CREATE_BASE_CONFIG_KEYS = ["github.prBase", "gh.prBase", "worx.github.prBase"] as const;
 const ISSUE_CLOSING_REFERENCE_PATTERN =
 	/(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+(?:https:\/\/github\.com\/([^\s/]+\/[^\s/]+)\/issues\/)?#(\d+)\b/gi;
 

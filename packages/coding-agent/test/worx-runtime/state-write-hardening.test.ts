@@ -56,7 +56,7 @@ async function writeRawState(root: string, mode: string, state: unknown) {
 	);
 }
 
-describe("gjc state write hardening", () => {
+describe("worx state write hardening", () => {
 	it("allows a valid manifest transition", async () => {
 		const root = await tempDir();
 		await writeState(root, "ralplan", { current_phase: "planner" });

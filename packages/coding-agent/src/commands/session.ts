@@ -70,12 +70,12 @@ export default class Session extends Command {
 	};
 
 	static examples = [
-		"gjc session list",
-		"gjc session create",
-		"gjc session status <session>",
-		"gjc session attach <session>",
-		"gjc session remove <session>",
-		"gjc session force-close <session> --session-id <id>",
+		"worx session list",
+		"worx session create",
+		"worx session status <session>",
+		"worx session attach <session>",
+		"worx session remove <session>",
+		"worx session force-close <session> --session-id <id>",
 	];
 
 	async run(): Promise<void> {

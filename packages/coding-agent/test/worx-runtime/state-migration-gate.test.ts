@@ -39,7 +39,7 @@ async function readAuditEntries(cwd: string): Promise<Array<Record<string, unkno
 		.map(line => JSON.parse(line) as Record<string, unknown>);
 }
 
-describe("G7 gjc state migration gate", () => {
+describe("G7 worx state migration gate", () => {
 	it("normalizes legacy state purely and persists migration only through the state command", async () => {
 		await withTempCwd(async cwd => {
 			const statePath = modeStatePath(cwd, TEST_SESSION_ID, "ralplan");
@@ -129,7 +129,7 @@ describe("G7 gjc state migration gate", () => {
 					skill: "ralplan",
 					owner: "worx-state-cli",
 					status: "fresh",
-					command: "gjc state ralplan write",
+					command: "worx state ralplan write",
 					state_path: statePath,
 					storage_path: statePath,
 					mutated_at: "2026-06-05T00:00:00.000Z",

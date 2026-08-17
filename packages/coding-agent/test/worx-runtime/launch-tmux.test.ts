@@ -980,15 +980,15 @@ describe("default GJC tmux launch", () => {
 	it("plans native Windows --tmux launches when tmux is available", () => {
 		// The historical direct-launch fallback only fires when no tmux binary
 		// resolves on PATH. When psmux / tmux is available,
-		// buildDefaultTmuxLaunchPlan returns a plan that bootstraps gjc through
+		// buildDefaultTmuxLaunchPlan returns a plan that bootstraps worx through
 		// PowerShell. Set tmuxAvailable: true here to mirror a host with psmux.
 		const plan = buildDefaultTmuxLaunchPlan({
 			parsed: args({ messages: ["hello world"], tmux: true }),
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "C:\\repo",
 			env: {},
-			argv: ["C:\\Program Files\\GJC\\gjc.exe"],
-			execPath: "C:\\Program Files\\GJC\\gjc.exe",
+			argv: ["C:\\Program Files\\GJC\\worx.exe"],
+			execPath: "C:\\Program Files\\GJC\\worx.exe",
 			platform: "win32",
 			tty: interactiveTty,
 			tmuxAvailable: true,
@@ -1005,7 +1005,7 @@ describe("default GJC tmux launch", () => {
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "/repo",
 			env: {},
-			argv: ["gjc", "/$bunfs/root/gjc-linux-x64"],
+			argv: ["worx", "/$bunfs/root/gjc-linux-x64"],
 			execPath: "/home/me/.local/bin/gjc",
 			platform: "darwin",
 			tty: interactiveTty,
@@ -1029,7 +1029,7 @@ describe("default GJC tmux launch", () => {
 				rawArgs: ["--tmux"],
 				cwd: "/repo",
 				env: {},
-				argv: ["gjc", "/$bunfs/root/gjc-linux-x64"],
+				argv: ["worx", "/$bunfs/root/gjc-linux-x64"],
 				execPath: "/$bunfs/root/gjc-linux-x64",
 				platform: "darwin",
 				tty: interactiveTty,
@@ -1276,8 +1276,8 @@ describe("default GJC tmux launch", () => {
 			rawArgs: ["--tmux", "hello world"],
 			cwd: "C:\\repo",
 			env: { WORX_TMUX_COMMAND: "psmux" },
-			argv: ["C:\\Program Files\\GJC\\gjc.exe"],
-			execPath: "C:\\Program Files\\GJC\\gjc.exe",
+			argv: ["C:\\Program Files\\GJC\\worx.exe"],
+			execPath: "C:\\Program Files\\GJC\\worx.exe",
 			platform: "win32",
 			tty: interactiveTty,
 			tmuxAvailable: true,
@@ -1417,7 +1417,7 @@ describe("default GJC tmux launch", () => {
 			expect(calls.some(call => call.args[0] === "attach-session")).toBe(true);
 			expect(calls.some(call => call.args[0] === "if-shell")).toBe(false);
 			expect(writeSpy).not.toHaveBeenCalled();
-			expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: attach failed.");
+			expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: attach failed.");
 		} finally {
 			Object.defineProperty(stdout, "isTTY", { configurable: true, value: previousIsTTY });
 		}
@@ -1952,7 +1952,7 @@ describe("default GJC tmux launch", () => {
 		expect(calls.some(call => call.args[0] === "new-session")).toBe(true);
 		expect(calls.some(call => call.args[0] === "kill-session")).toBe(false);
 		expect(diagnostics).toHaveLength(1);
-		expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: profile tagging failed.");
+		expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: profile tagging failed.");
 		expect(diagnostics[0].length).toBeLessThan(320);
 	});
 
@@ -2022,7 +2022,7 @@ describe("default GJC tmux launch", () => {
 		expect(calls.some(call => call.args[0] === "attach-session")).toBe(true);
 		expect(calls.some(call => call.args[0] === "if-shell")).toBe(false);
 		expect(diagnostics).toHaveLength(1);
-		expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: attach failed.");
+		expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: attach failed.");
 		expect(diagnostics[0].length).toBeLessThan(320);
 	});
 
@@ -2055,7 +2055,7 @@ describe("default GJC tmux launch", () => {
 		expect(calls.some(call => call.args[0] === "attach-session")).toBe(true);
 		expect(calls.some(call => call.args[0] === "kill-session")).toBe(false);
 		expect(diagnostics).toHaveLength(1);
-		expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: attach disconnected.");
+		expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: attach disconnected.");
 	});
 
 	it.each([
@@ -2205,7 +2205,7 @@ describe("default GJC tmux launch", () => {
 		expect(calls.some(call => call.args[0] === "attach-session")).toBe(true);
 		expect(calls.some(call => call.args[0] === "kill-session")).toBe(false);
 		expect(diagnostics).toHaveLength(1);
-		expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: attach disconnected.");
+		expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: attach disconnected.");
 	});
 
 	it("preserves a live newly created managed session when attach exits after PTY close", () => {
@@ -2237,7 +2237,7 @@ describe("default GJC tmux launch", () => {
 		expect(calls.filter(call => call.args[0] === "has-session").length).toBeGreaterThanOrEqual(2);
 		expect(calls.some(call => call.args[0] === "kill-session")).toBe(false);
 		expect(diagnostics).toHaveLength(1);
-		expect(diagnostics[0]).toStartWith("gjc --tmux failed after creating tmux session: attach disconnected.");
+		expect(diagnostics[0]).toStartWith("worx --tmux failed after creating tmux session: attach disconnected.");
 	});
 
 	it("does not throw when the default tmux diagnostic write hits a closed stderr", () => {
@@ -2290,7 +2290,7 @@ describe("default GJC tmux launch", () => {
 		expect(handled).toBe(true);
 		expect(calls).toEqual([]);
 		expect(diagnostics).toEqual([
-			"gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n",
+			"worx --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n",
 		]);
 	});
 
@@ -2311,7 +2311,7 @@ describe("default GJC tmux launch", () => {
 
 		expect(plan).toBeUndefined();
 		expect(diagnostics).toEqual([
-			"gjc --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n",
+			"worx --tmux requested but no tmux executable was found; cannot continue without a tmux-backed session.\n",
 		]);
 	});
 
@@ -2325,8 +2325,8 @@ describe("default GJC tmux launch", () => {
 			rawArgs: [],
 			cwd: "C:\\repo",
 			env: {},
-			argv: ["C:\\Program Files\\GJC\\gjc.exe"],
-			execPath: "C:\\Program Files\\GJC\\gjc.exe",
+			argv: ["C:\\Program Files\\GJC\\worx.exe"],
+			execPath: "C:\\Program Files\\GJC\\worx.exe",
 			platform: "win32",
 			tty: interactiveTty,
 			tmuxAvailable: false,
@@ -2401,7 +2401,7 @@ describe("default GJC tmux launch", () => {
 });
 
 it("emits a BOM-less UTF-16LE encoded command and a direct `&` invocation for native Windows --tmux plans", () => {
-	// Regression: gjc --tmux on native Windows + psmux previously failed with
+	// Regression: worx --tmux on native Windows + psmux previously failed with
 	// the literal text "﻿$env:WORX_TMUX_LAUNCHED : The term '﻿$env:...' is not
 	// recognized" appearing in the psmux pane, because the encoded command
 	// was prefixed with a UTF-16LE BOM (0xFF 0xFE). pwsh does not strip the
@@ -2415,8 +2415,8 @@ it("emits a BOM-less UTF-16LE encoded command and a direct `&` invocation for na
 		rawArgs: ["--tmux"],
 		cwd: "C:\\repo",
 		env: {},
-		argv: ["C:\\Program Files\\GJC\\gjc.exe"],
-		execPath: "C:\\Program Files\\GJC\\gjc.exe",
+		argv: ["C:\\Program Files\\GJC\\worx.exe"],
+		execPath: "C:\\Program Files\\GJC\\worx.exe",
 		platform: "win32",
 		tty: interactiveTty,
 		tmuxAvailable: true,
@@ -2497,7 +2497,7 @@ it("captures psmux stderr in the attach-failed diagnostic", () => {
 });
 
 it("surfaces a wrapper-corruption warning in the new-session diagnostic on Windows", () => {
-	// Regression: when gjc.cmd / gjc.bat on PATH has been overwritten with
+	// Regression: when worx.cmd / worx.bat on PATH has been overwritten with
 	// PE-binary garbage (a 194MB PE image or similar), cmd.exe hangs reading
 	// it as text and the user sees a silent exit. The wrapper-corruption
 	// probe must surface a clear hint in the diagnostic so the user can
@@ -2505,7 +2505,7 @@ it("surfaces a wrapper-corruption warning in the new-session diagnostic on Windo
 	// script.
 	if (process.platform !== "win32") return;
 	const dir = fs.mkdtempSync(path.join(require("os").tmpdir(), "gjc-wrapper-probe-"));
-	const wrapperPath = path.join(dir, "gjc.cmd");
+	const wrapperPath = path.join(dir, "worx.cmd");
 	// Write 4KB of PE-binary garbage (MZ header + zero padding).
 	const garbage = Buffer.alloc(4096);
 	garbage[0] = 0x4d;
@@ -3009,7 +3009,7 @@ it.each([
 	expect(handled).toBe(true);
 	expect(calls.map(call => call[0])).toEqual(["new-session"]);
 	expect(diagnostics).toEqual([
-		"gjc --tmux failed after creating tmux session: native session identity was unavailable; preserving session for recovery.\n",
+		"worx --tmux failed after creating tmux session: native session identity was unavailable; preserving session for recovery.\n",
 	]);
 });
 
@@ -3560,7 +3560,7 @@ describe("tmux owner isolation launch gate", () => {
 				lifecyclePaths(root, sessionId, generation).generationFile,
 				`${JSON.stringify({ schema_version: 1, generation, session_id: sessionId, published_at: "2026-07-19T00:00:00.000Z" })}\n`,
 			);
-			const command = ["gjc", "--resume"];
+			const command = ["worx", "--resume"];
 			const commandSha256 = createHash("sha256").update(JSON.stringify(command)).digest("hex");
 			fs.writeFileSync(
 				path.join(ownerRoot, `child-${predecessorToken}.binding.json`),

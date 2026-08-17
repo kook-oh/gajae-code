@@ -139,7 +139,7 @@ process.exitCode = await child.exited;`;
 			});
 			const blockedOutput = `${blocked.stdout.toString()}\n${blocked.stderr.toString()}`;
 			expect(blocked.exitCode, blockedOutput).toBe(75);
-			expect(blockedOutput).not.toContain("gjc/");
+			expect(blockedOutput).not.toContain("worx/");
 		} finally {
 			await fs.rm(stateDir, { recursive: true, force: true });
 		}
@@ -291,7 +291,7 @@ process.exitCode = await child.exited;`;
 		expect(output).toContain(".worx/_session-{sessionid}/state/team");
 		expect(output).toContain("do not commit");
 		expect(output).toContain("existing tmux/GJC --tmux session");
-		expect(output).toContain("gjc --tmux");
+		expect(output).toContain("worx --tmux");
 	}, 30_000);
 
 	it("routes legacy team help before root help fast paths", () => {
@@ -500,7 +500,7 @@ process.exitCode = await child.exited;`;
 		expect(unknownVerb.exitCode, unknownOutput).toBe(2);
 		expect(unknownVerb.stderr.toString()).toContain("Expected verb to be one of");
 
-		// `gjc daemon session` is deleted without an alias (DR-13).
+		// `worx daemon session` is deleted without an alias (DR-13).
 		const daemonSession = Bun.spawnSync(["bun", cliEntry, "daemon", "session", "list"], {
 			cwd: repoRoot,
 			stderr: "pipe",

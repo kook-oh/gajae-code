@@ -156,7 +156,7 @@ describe("setup CLI parsing", () => {
 					"--repo",
 					"gajae-code",
 					"--session-command",
-					"gjc --model openai/gpt-5.5",
+					"worx --model openai/gpt-5.5",
 					"--worktree-name",
 					"hermes-gajae-code",
 					"--mutation",
@@ -169,7 +169,7 @@ describe("setup CLI parsing", () => {
 					root: ["/tmp/repo"],
 					profile: "bot",
 					repo: "gajae-code",
-					sessionCommand: "gjc --model openai/gpt-5.5",
+					sessionCommand: "worx --model openai/gpt-5.5",
 					worktreeName: "hermes-gajae-code",
 					mutation: ["sessions,reports"],
 					json: true,
@@ -201,7 +201,7 @@ describe("setup CLI parsing", () => {
 		it("preserves explicit Hermes session commands exactly", async () => {
 			tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-coordinator-setup-"));
 			const stdout = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-			const sessionCommand = "gjc --model anthropic/claude-sonnet-4";
+			const sessionCommand = "worx --model anthropic/claude-sonnet-4";
 
 			await runSetupCommand({
 				component: "hermes",

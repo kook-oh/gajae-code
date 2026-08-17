@@ -847,7 +847,7 @@ def _start_parent_watchdog() -> None:
                 return
             time.sleep(10)
 
-    thread = threading.Thread(target=watch, name="gjc-parent-watchdog", daemon=True)
+    thread = threading.Thread(target=watch, name="worx-parent-watchdog", daemon=True)
     thread.start()
 
 

@@ -56,12 +56,12 @@ export function envDisabled(value: string | undefined): boolean {
  * Resolve the tmux (or tmux-compatible multiplexer) command GJC should invoke.
  *
  * This is the shared entry point used by every GJC code path that needs to talk
- * to a multiplexer: `gjc --tmux` planning, `gjc session ...`, `gjc team ...`,
+ * to a multiplexer: `worx --tmux` planning, `worx session ...`, `worx team ...`,
  * the lifecycle controller, and the harness resident owner. Routing all of
  * them through the same resolver means a single `WORX_TMUX_COMMAND` override or
  * a single Windows psmux / pmux detection wins for the whole process — the
- * failure mode where `gjc --tmux` creates a psmux-backed session and then
- * `gjc session status` fails because it queries literal `tmux` is closed off.
+ * failure mode where `worx --tmux` creates a psmux-backed session and then
+ * `worx session status` fails because it queries literal `tmux` is closed off.
  *
  * Explicit `WORX_TMUX_COMMAND` / `WORX_TEAM_TMUX_COMMAND` overrides are honored on
  * every platform. On native Windows without an override the resolver walks
@@ -124,7 +124,7 @@ export const WORX_TMUX_UNTAGGED_REASON = "worx_tmux_session_untagged";
 export function buildWorxTmuxUntaggedSessionHint(tmuxCommand: string): string {
 	return (
 		`the active multiplexer "${tmuxCommand}" lists this session but did not return GJC's ${WORX_TMUX_PROFILE_OPTION} ownership tag; ` +
-		"GJC-managed sessions and `gjc team` require a tmux provider that round-trips tmux user options. " +
+		"GJC-managed sessions and `worx team` require a tmux provider that round-trips tmux user options. " +
 		"On Windows psmux, GJC persists a ProviderAuthority that binds the exact executable identity and an isolated `-L <namespace>` server namespace for the owner generation. " +
 		"Recover through GJC so it reuses that persisted authority; do not retry against ambient tmux/psmux or a raw `-L` namespace. " +
 		"WORX_TMUX_COMMAND and WORX_TEAM_TMUX_COMMAND are binary overrides, not shell command lines."
@@ -233,7 +233,7 @@ export function buildWorxTmuxRequiredProfileCommands(
  * 3.3.0. psmux does not support the tmux `set-window-option` command at all
  * (it reports "unknown command: set-window-option") and silently drops several
  * `set-option` keys. The list lives here so every code path that tags a tmux
- * session (gjc --tmux planning, gjc session create, gjc team bootstrap)
+ * session (worx --tmux planning, worx session create, worx team bootstrap)
  * applies the same filter.
  */
 const PSMUX_UNSUPPORTED_PROFILE_KEYS = new Set(["mouse", "set-clipboard", "mode-style"]);
@@ -269,12 +269,12 @@ export function buildWorxTmuxProfileCommands(
 		});
 	// psmux does not implement set-window-option and historically drops
 	// mouse / set-clipboard / mode-style. Filter the UX profile commands
-	// centrally so every code path that tags a session (gjc --tmux planning,
-	// gjc session create, gjc team bootstrap) drops the same set. The
+	// centrally so every code path that tags a session (worx --tmux planning,
+	// worx session create, worx team bootstrap) drops the same set. The
 	// WORX_PSMUX_PROFILE_FORCE override lets the operator opt back in when
 	// running on a psmux build that has caught up. The ownership-tag
-	// round-trip (set-option @gjc-*) is never filtered, since gjc session /
-	// gjc team rely on it.
+	// round-trip (set-option @gjc-*) is never filtered, since worx session /
+	// worx team rely on it.
 	// The filter is opt-in: callers that explicitly pass `opts.tmuxCommand`
 	// name a psmux-class multiplexer (psmux / pmux) when they want the UX
 	// profile filtered. Auto-detect on Windows hosts where psmux happens

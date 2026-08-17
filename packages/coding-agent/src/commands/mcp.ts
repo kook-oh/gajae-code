@@ -11,10 +11,10 @@ export default class MCP extends Command {
 	static delegateHelp = true;
 
 	static examples = [
-		"gjc mcp add context7 npx -y @upstash/context7-mcp",
-		"gjc mcp add docs --type http --url https://example.test/mcp --header Authorization=Bearer_TOKEN",
-		"gjc mcp list --json",
-		"gjc mcp remove context7",
+		"worx mcp add context7 npx -y @upstash/context7-mcp",
+		"worx mcp add docs --type http --url https://example.test/mcp --header Authorization=Bearer_TOKEN",
+		"worx mcp list --json",
+		"worx mcp remove context7",
 	];
 
 	static args = {
@@ -90,7 +90,7 @@ export default class MCP extends Command {
 		process.stdout.write(`Store standalone MCP server definitions in GJC config without loading them at runtime
 
 USAGE
-  $ gjc mcp [add|list|remove] [NAME] [COMMAND_OR_URL] [ARGS...] [FLAGS]
+  $ worx mcp [add|list|remove] [NAME] [COMMAND_OR_URL] [ARGS...] [FLAGS]
 
 COMMANDS
   add     Store an explicit user-provided MCP server definition
@@ -112,13 +112,13 @@ FLAGS
       --sharing=<value>  per-session | shared (default: per-session)
 
 EXAMPLES
-  $ gjc mcp add context7 npx -y @upstash/context7-mcp
-  $ gjc mcp add docs --type http --url https://example.test/mcp --header Authorization=Bearer_TOKEN
-  $ gjc mcp list --json
-  $ gjc mcp remove context7
+  $ worx mcp add context7 npx -y @upstash/context7-mcp
+  $ worx mcp add docs --type http --url https://example.test/mcp --header Authorization=Bearer_TOKEN
+  $ worx mcp list --json
+  $ worx mcp remove context7
 
 STORAGE/RUNTIME
-  This command stores only the server definition supplied on this invocation. It does not import or inherit Claude Code, Codex, OpenCode, or other live MCP configs. Normal standalone gjc sessions do not load stored MCP registrations today. Public output redacts env, header, auth, and OAuth credential values.
+  This command stores only the server definition supplied on this invocation. It does not import or inherit Claude Code, Codex, OpenCode, or other live MCP configs. Normal standalone worx sessions do not load stored MCP registrations today. Public output redacts env, header, auth, and OAuth credential values.
 `);
 	}
 }

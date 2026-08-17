@@ -3528,7 +3528,7 @@ export class MemorySessionStorage implements SessionStorage {
  * Outcome of a disk-retention retirement attempt.
  *
  * `kept` means the transcript survived and nothing of the session was
- * destroyed, with the exact reason so `gjc gc --disk` can report it.
+ * destroyed, with the exact reason so `worx gc --disk` can report it.
  * `cleanup_pending` means the delete authority already detached or removed the
  * session's artifact tree (or quarantined the transcript) before it stopped:
  * the record survives, the session does not, and a caller must NOT report that
@@ -3602,7 +3602,7 @@ function planSessionRetirement(
  * Non-mutating projection of {@link retireSessionTranscript}: would the
  * retention pass's own preconditions let this transcript be retired at all?
  *
- * `gjc gc --disk` runs it so a dry run reports the verdict a prune would reach
+ * `worx gc --disk` runs it so a dry run reports the verdict a prune would reach
  * instead of promising bytes the delete authority will refuse to release. The
  * authority's verdict (containment, identity, artifact tree) is deliberately
  * not predicted here — it is re-derived against live state at delete time.

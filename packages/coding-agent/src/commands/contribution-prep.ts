@@ -14,7 +14,7 @@ export default class ContributionPrep extends Command {
 		"artifact-root": Flags.string({ description: "Directory where contribute-pr artifacts are written" }),
 	};
 
-	static examples = ["gjc contribute-pr", "gjc contribute-pr --no-spawn"];
+	static examples = ["worx contribute-pr", "worx contribute-pr --no-spawn"];
 
 	async run(): Promise<void> {
 		const { flags } = await this.parse(ContributionPrep);

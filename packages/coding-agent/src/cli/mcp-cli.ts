@@ -58,7 +58,7 @@ const SENSITIVE_KEY_PATTERN =
 const STORAGE_ONLY_RUNTIME_DISCLOSURE: RuntimeDisclosure = {
 	runtimeStatus: "storage-only",
 	runtimeLoadedByStandalone: false,
-	runtimeNote: "Stored MCP registrations are not loaded by normal standalone gjc sessions today.",
+	runtimeNote: "Stored MCP registrations are not loaded by normal standalone worx sessions today.",
 };
 
 function resolvePath(args: MCPCommandArgs): ScopedPath {
@@ -94,7 +94,7 @@ function buildServerConfig(args: MCPCommandArgs): MCPServerConfig {
 	if (type === "stdio") {
 		const command = args.flags.command ?? args.commandArgs?.[0];
 		if (!command) {
-			throw new MCPArgsError("`gjc mcp add` requires --command <cmd> or a positional command for stdio servers.");
+			throw new MCPArgsError("`worx mcp add` requires --command <cmd> or a positional command for stdio servers.");
 		}
 		const config: MCPServerConfig = {
 			...shared,
@@ -112,7 +112,7 @@ function buildServerConfig(args: MCPCommandArgs): MCPServerConfig {
 
 	const url = args.flags.url ?? args.commandArgs?.[0];
 	if (!url) {
-		throw new MCPArgsError(`\`gjc mcp add --type ${type}\` requires --url <url> or a positional URL.`);
+		throw new MCPArgsError(`\`worx mcp add --type ${type}\` requires --url <url> or a positional URL.`);
 	}
 	const headers = parsePairs(args.flags.header, "header");
 	if (type === "http") {
@@ -239,7 +239,7 @@ function renderDetails(entry: RedactedServerEntry): string {
 }
 
 async function runAdd(args: MCPCommandArgs, scoped: ScopedPath): Promise<void> {
-	if (!args.name) throw new MCPArgsError("`gjc mcp add` requires a server name.");
+	if (!args.name) throw new MCPArgsError("`worx mcp add` requires a server name.");
 	const config = buildServerConfig(args);
 	const result = await upsertMCPServer(scoped.path, args.name, config, { force: args.flags.force });
 	const redacted = redactMCPServerConfig(config);
@@ -259,12 +259,12 @@ async function runAdd(args: MCPCommandArgs, scoped: ScopedPath): Promise<void> {
 	if (result.status === "skipped") {
 		process.stdout.write(
 			`MCP server "${args.name}" already exists in ${scoped.scope} config. Pass --force to overwrite. ` +
-				"Status: storage-only; normal standalone gjc sessions do not load stored MCP registrations today.\n",
+				"Status: storage-only; normal standalone worx sessions do not load stored MCP registrations today.\n",
 		);
 		return;
 	}
 	process.stdout.write(
-		`MCP server "${args.name}" ${result.status} in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone gjc sessions do not load stored MCP registrations today.\n`,
+		`MCP server "${args.name}" ${result.status} in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone worx sessions do not load stored MCP registrations today.\n`,
 	);
 }
 
@@ -277,12 +277,12 @@ async function runList(args: MCPCommandArgs, scoped: ScopedPath): Promise<void> 
 	}
 	if (entries.length === 0) {
 		process.stdout.write(
-			`No MCP servers registered in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone gjc sessions do not load stored MCP registrations today.\n`,
+			`No MCP servers registered in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone worx sessions do not load stored MCP registrations today.\n`,
 		);
 		return;
 	}
 	process.stdout.write(
-		`MCP servers in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone gjc sessions do not load stored MCP registrations today.\n`,
+		`MCP servers in ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone worx sessions do not load stored MCP registrations today.\n`,
 	);
 	for (const entry of entries) {
 		process.stdout.write(`${renderDetails(entry)}\n`);
@@ -290,7 +290,7 @@ async function runList(args: MCPCommandArgs, scoped: ScopedPath): Promise<void> 
 }
 
 async function runRemove(args: MCPCommandArgs, scoped: ScopedPath): Promise<void> {
-	if (!args.name) throw new MCPArgsError("`gjc mcp remove` requires a server name.");
+	if (!args.name) throw new MCPArgsError("`worx mcp remove` requires a server name.");
 	const existing = await getMCPServer(scoped.path, args.name);
 	if (!existing) {
 		throw new MCPArgsError(`MCP server "${args.name}" not found in ${scoped.scope} config.`);
@@ -311,7 +311,7 @@ async function runRemove(args: MCPCommandArgs, scoped: ScopedPath): Promise<void
 		return;
 	}
 	process.stdout.write(
-		`Removed MCP server "${args.name}" from ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone gjc sessions do not load stored MCP registrations today.\n`,
+		`Removed MCP server "${args.name}" from ${scoped.scope} config: ${scoped.path}\nStatus: storage-only; normal standalone worx sessions do not load stored MCP registrations today.\n`,
 	);
 	process.stdout.write(`${renderDetails(entry)}\n`);
 }

@@ -262,7 +262,7 @@ describe("GoalTool", () => {
 			await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 			await fs.writeFile(
 				path.join(root, ".worx", "settings.json"),
-				JSON.stringify({ "gjc.ultragoal.nudgeBudget": 0 }),
+				JSON.stringify({ "worx.ultragoal.nudgeBudget": 0 }),
 			);
 			await startNextUltragoalGoal({ cwd: root, sessionId });
 			const harness = createRuntimeHarness({
@@ -280,7 +280,7 @@ describe("GoalTool", () => {
 			);
 
 			await expect(tool.execute("call-complete", { op: "complete" })).rejects.toThrow(
-				"gjc ultragoal checkpoint --status complete --quality-gate-json <file>",
+				"worx ultragoal checkpoint --status complete --quality-gate-json <file>",
 			);
 			expect(harness.getState()?.goal.status).toBe("active");
 		} finally {

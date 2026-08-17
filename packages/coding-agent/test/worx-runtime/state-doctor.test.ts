@@ -96,7 +96,7 @@ async function writeStampedState(root: string, skill: string, value: Record<stri
 	return modeStatePath(root, TEST_SESSION_ID, skill);
 }
 
-describe("gjc state doctor", () => {
+describe("worx state doctor", () => {
 	it("reports clean state with zero exit and deterministic JSON summary", async () => {
 		const root = await tempDir();
 		const statePath = await writeStampedState(root, "deep-interview", {
@@ -153,7 +153,7 @@ describe("gjc state doctor", () => {
 			expect(parsed.problems).not.toEqual(
 				expect.arrayContaining([expect.objectContaining({ type: "stale_active_state" })]),
 			);
-			expect(result.stdout).not.toContain("gjc state ralplan clear");
+			expect(result.stdout).not.toContain("worx state ralplan clear");
 		} finally {
 			if (prior === undefined) process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 			else process.env.WORX_SESSION_ID = prior;
@@ -169,13 +169,13 @@ describe("gjc state doctor", () => {
 		const text = await runDoctorUnchanged(root, ["doctor"]);
 		expect(text.status).toBe(1);
 		expect(text.stdout).toContain("kind=orphan_journal");
-		expect(text.stdout).toContain("fix=gjc state prune --hard");
+		expect(text.stdout).toContain("fix=worx state prune --hard");
 
 		const json = await runDoctorUnchanged(root, ["doctor", "--json"]);
 		const parsed = JSON.parse(json.stdout ?? "{}");
 		expect(parsed.ok).toBe(false);
 		expect(parsed.problems).toEqual([
-			expect.objectContaining({ type: "orphan_journal", path: journalPath, fixCommand: "gjc state prune --hard" }),
+			expect.objectContaining({ type: "orphan_journal", path: journalPath, fixCommand: "worx state prune --hard" }),
 		]);
 	});
 
@@ -199,7 +199,7 @@ describe("gjc state doctor", () => {
 				type: "checksum_mismatch",
 				skill: "ralplan",
 				path: statePath,
-				fixCommand: "gjc state ralplan migrate",
+				fixCommand: "worx state ralplan migrate",
 			}),
 		]);
 	});
@@ -218,7 +218,7 @@ describe("gjc state doctor", () => {
 				type: "schema_violation",
 				skill: "ultragoal",
 				path: statePath,
-				fixCommand: "gjc state ultragoal migrate",
+				fixCommand: "worx state ultragoal migrate",
 			}),
 		]);
 	});
@@ -239,8 +239,8 @@ describe("gjc state doctor", () => {
 		const text = await runDoctorUnchanged(root, ["doctor"]);
 		expect(text.status).toBe(1);
 		expect(text.stdout).toContain("kind=stale_active_state");
-		expect(text.stdout).toContain("fix=gjc state team clear");
-		expect(text.stdout).toContain("fix=gjc state ralplan clear");
+		expect(text.stdout).toContain("fix=worx state team clear");
+		expect(text.stdout).toContain("fix=worx state ralplan clear");
 
 		const json = await runDoctorUnchanged(root, ["doctor", "--json"]);
 		const parsed = JSON.parse(json.stdout ?? "{}");
@@ -249,13 +249,13 @@ describe("gjc state doctor", () => {
 				type: "stale_active_state",
 				skill: "ralplan",
 				path: path.join(stateRoot, "skill-active-state.json"),
-				fixCommand: "gjc state ralplan clear",
+				fixCommand: "worx state ralplan clear",
 			}),
 			expect.objectContaining({
 				type: "stale_active_state",
 				skill: "team",
 				path: activeEntryPath,
-				fixCommand: "gjc state team clear",
+				fixCommand: "worx state team clear",
 			}),
 		]);
 	});

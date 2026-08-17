@@ -293,7 +293,7 @@ describe("tool prompt descriptions", () => {
 		expect(browserDescription).toContain("only a Chrome process GJC launched");
 		expect(browserDescription).toContain("NEVER use it for a daily Chrome profile");
 		expect(browserDescription).toContain("cookies and authenticated accounts");
-		expect(browserDescription).toContain("gjc://tools/browser.md");
+		expect(browserDescription).toContain("worx://tools/browser.md");
 		expect(browserDescription).toContain('"action":"run"');
 	});
 

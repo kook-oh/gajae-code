@@ -42,7 +42,7 @@ function envelopeState(stdout: string | undefined): Record<string, unknown> {
 	return parsed;
 }
 
-describe("native gjc state runtime", () => {
+describe("native worx state runtime", () => {
 	it("reads an empty receipt as {}", async () => {
 		const root = await tempDir();
 		const result = await runNativeStateCommand(["read", "--json"], root);
@@ -669,7 +669,7 @@ describe("native gjc state runtime", () => {
 			}),
 		);
 
-		// Bundled prompt shape: gjc state write --input '<json>' (no --mode)
+		// Bundled prompt shape: worx state write --input '<json>' (no --mode)
 		const result = await runNativeStateCommand(
 			["write", "--input", JSON.stringify({ phase: "architect", active: true })],
 			root,

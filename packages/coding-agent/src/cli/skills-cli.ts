@@ -1,5 +1,5 @@
 /**
- * Handles `gjc skills` for inspecting bundled workflow skill definitions.
+ * Handles `worx skills` for inspecting bundled workflow skill definitions.
  */
 import {
 	DEFAULT_WORX_DEFINITION_NAMES,

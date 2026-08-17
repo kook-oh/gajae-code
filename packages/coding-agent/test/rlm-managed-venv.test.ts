@@ -1,7 +1,7 @@
 /**
  * G004: managed per-workspace venv resolution.
  *
- * Verifies BYO (VIRTUAL_ENV / .venv) precedence and, absent a BYO env, that gjc
+ * Verifies BYO (VIRTUAL_ENV / .venv) precedence and, absent a BYO env, that worx
  * auto-creates and uses a per-workspace venv under <cwd>/.worx/python-env, with a
  * sys.executable assertion proving the kernel interpreter is the managed one.
  * Uses no network: the managed env is created with `python -m venv` and seeded

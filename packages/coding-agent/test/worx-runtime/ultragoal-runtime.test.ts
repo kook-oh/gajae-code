@@ -3261,7 +3261,7 @@ describe("native GJC ultragoal runtime", () => {
 		const result = await runNativeUltragoalCommand(["checkpoint", "--help"], root);
 
 		expect(result.status).toBe(0);
-		expect(result.stdout).toContain("gjc ultragoal checkpoint --goal-id");
+		expect(result.stdout).toContain("worx ultragoal checkpoint --goal-id");
 		expect(result.stdout).toContain("--quality-gate-json");
 		expect(result.stdout).toContain("COMPLETE CHECKPOINT RECEIPTS");
 		expect(result.stdout).toContain("obligation");
@@ -3275,7 +3275,7 @@ describe("native GJC ultragoal runtime", () => {
 
 		expect(topLevel.status).toBe(0);
 		expect(topLevel.stdout).toContain("classify-blocker");
-		expect(topLevel.stdout).toContain("gjc ultragoal classify-blocker --help");
+		expect(topLevel.stdout).toContain("worx ultragoal classify-blocker --help");
 		expect(commandSpecific.status).toBe(0);
 		expect(commandSpecific.stdout).toContain("--classification <human_blocked|resolvable>");
 		expect(commandSpecific.stdout).toContain("--evidence <text>");

@@ -53,7 +53,10 @@ function normalizeHooksMap(root: JsonObject): Record<string, unknown> {
 
 function commandIsWorxManaged(value: unknown): boolean {
 	if (typeof value !== "string") return false;
-	return /\bgjc(?:\.exe)?\b/.test(value) && /\bcodex-native-hook\b/.test(value);
+	// Recognizes the command this module emits plus the pre-pivot spelling, so a
+	// stale managed hook written by an older build is replaced instead of being
+	// preserved as a user hook and duplicated.
+	return new RegExp(`\\b(?:worx|${"gjc"})(?:\\.exe)?\\b`).test(value) && /\bcodex-native-hook\b/.test(value);
 }
 
 function entryContainsWorxManagedHook(value: unknown): boolean {
@@ -62,7 +65,7 @@ function entryContainsWorxManagedHook(value: unknown): boolean {
 }
 
 function managedCommand(): string {
-	return "gjc codex-native-hook";
+	return "worx codex-native-hook";
 }
 
 function managedEntry(event: WorxManagedCodexHookEvent): CodexHookEntry {

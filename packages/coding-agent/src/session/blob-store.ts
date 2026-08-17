@@ -1605,7 +1605,7 @@ export function resolveResidentImageDataSync(
 }
 
 // =============================================================================
-// Canonical-store mark-and-sweep primitives (`gjc gc --disk`)
+// Canonical-store mark-and-sweep primitives (`worx gc --disk`)
 // =============================================================================
 //
 // The resident-cache sweep above bounds *cache* directories. These primitives

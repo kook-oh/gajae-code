@@ -228,7 +228,7 @@ describe("perf corpus schema + runner", () => {
 				"-c",
 				"user.name=GJC Test",
 				"-c",
-				"user.email=gjc@example.invalid",
+				"user.email=worx@example.invalid",
 				"commit",
 				"--quiet",
 				"-m",
@@ -1122,9 +1122,9 @@ describe("perf corpus schema + runner", () => {
 		expect(validatePerfCorpusReport(profileMismatch).errors).toContain(
 			`fixture ${fixture.fixtureId}: memoryBaseline.profile must match runner.profile`,
 		);
-		const v2Schema = { ...report, schema: "gjc.perf-corpus/2" } as unknown as PerfCorpusReport;
+		const v2Schema = { ...report, schema: "worx.perf-corpus/2" } as unknown as PerfCorpusReport;
 		expect(validatePerfCorpusReport(v2Schema).errors).toContain(
-			'schema "gjc.perf-corpus/2" is incompatible with the v3 validator; expected "gjc.perf-corpus/3"',
+			'schema "worx.perf-corpus/2" is incompatible with the v3 validator; expected "worx.perf-corpus/3"',
 		);
 		const missingRunnerProfile = {
 			...report,

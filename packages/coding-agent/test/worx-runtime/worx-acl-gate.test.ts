@@ -28,7 +28,7 @@ function tool(name: string, extra: Record<string, unknown> = {}): AgentTool {
 	} as AgentTool;
 }
 
-describe("G2 gjc ACL gate", () => {
+describe("G2 worx ACL gate", () => {
 	it("blocks mutation tools targeting .worx paths", async () => {
 		await withTempCwd(async cwd => {
 			const blockedCases: Array<[AgentTool, unknown]> = [

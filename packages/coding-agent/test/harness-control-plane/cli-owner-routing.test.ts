@@ -114,7 +114,7 @@ afterEach(async () => {
 	await rm(root, { recursive: true, force: true });
 });
 
-describe("gjc harness CLI -> live owner routing", () => {
+describe("worx harness CLI -> live owner routing", () => {
 	it("submit routes to the live owner and is accepted via single-flight", async () => {
 		const res = await runHarness(["submit", "--session", SID, "--input", JSON.stringify({ prompt: "do it" })]);
 		expect(res.code).toBe(0);

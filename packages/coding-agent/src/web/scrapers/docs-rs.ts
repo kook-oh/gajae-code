@@ -393,7 +393,7 @@ export const handleDocsRs: SpecialHandler = async (
 		const response = await fetch(jsonUrl, {
 			signal: requestSignal,
 			headers: {
-				"User-Agent": "gjc-web-fetch/1.0",
+				"User-Agent": "worx-web-fetch/1.0",
 				Accept: "application/gzip",
 				"Accept-Encoding": "identity",
 			},

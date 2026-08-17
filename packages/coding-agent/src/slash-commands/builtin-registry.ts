@@ -690,7 +690,7 @@ const BUILTIN_SLASH_COMMAND_REGISTRY: ReadonlyArray<SlashCommandSpec> = [
 				}
 				case "setup":
 					return usage(
-						"Run `gjc notify setup` in a terminal to pair a Telegram bot token with a private chat (interactive; requires a TTY).",
+						"Run `worx notify setup` in a terminal to pair a Telegram bot token with a private chat (interactive; requires a TTY).",
 						runtime,
 					);
 				default:

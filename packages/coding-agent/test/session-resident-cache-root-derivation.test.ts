@@ -84,8 +84,8 @@ describe.skipIf(process.platform === "win32")("resident cache root derivation", 
 		const root = makeTempDir();
 		const xdgCacheHome = path.join(root, "xdg-cache");
 		const xdgDataHome = path.join(root, "xdg-data");
-		const xdgCacheRoot = path.join(xdgCacheHome, "gjc");
-		const xdgDataRoot = path.join(xdgDataHome, "gjc");
+		const xdgCacheRoot = path.join(xdgCacheHome, "worx");
+		const xdgDataRoot = path.join(xdgDataHome, "worx");
 		ensurePrivateDirectory(xdgCacheRoot);
 		ensurePrivateDirectory(xdgDataRoot);
 		process.env.XDG_CACHE_HOME = xdgCacheHome;

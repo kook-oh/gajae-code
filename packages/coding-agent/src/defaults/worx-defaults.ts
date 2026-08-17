@@ -43,7 +43,7 @@ export interface InstallDefaultWorxDefinitionsOptions {
 	/**
 	 * Only rewrite default definition files that already exist on disk but whose
 	 * content differs from the embedded defaults. Files that are absent are left
-	 * absent (status "missing"). Used by `gjc update` to refresh opted-in copies
+	 * absent (status "missing"). Used by `worx update` to refresh opted-in copies
 	 * without materializing new on-disk copies for users who never installed them.
 	 */
 	refreshOnly?: boolean;

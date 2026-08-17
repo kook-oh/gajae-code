@@ -54,7 +54,7 @@ const DELEGATE_META: DelegateMeta[] = [
 	},
 ];
 /**
- * Inventory of `gjc sdk session` semantic verbs plus the raw hatch kinds,
+ * Inventory of `worx sdk session` semantic verbs plus the raw hatch kinds,
  * mirrored from the SDK session CLI (`SdkSessionCliAction` / raw kinds in
  * `packages/coding-agent/src/sdk/cli/session-cli.ts`). The advisory
  * `worx-sdk-session` skill is rendered from this inventory and
@@ -179,13 +179,13 @@ function sdkSessionSkillDoc(): string {
 	const rawKinds = SDK_SESSION_RAW_KINDS.join("|");
 	return `---
 name: worx-sdk-session
-description: Operate GJC SDK sessions from the CLI (\`gjc sdk session ${verbs}\` plus the explicit raw ${rawKinds} hatch). Advisory reference: broker-bound, credential-free output; mutating verbs run only when explicitly invoked.
+description: Operate GJC SDK sessions from the CLI (\`worx sdk session ${verbs}\` plus the explicit raw ${rawKinds} hatch). Advisory reference: broker-bound, credential-free output; mutating verbs run only when explicitly invoked.
 ---
 
 # GJC SDK session CLI (advisory)
 
 Advisory reference for interacting with live GJC SDK sessions through the
-broker-bound \`gjc sdk session\` command family. This skill is informational:
+broker-bound \`worx sdk session\` command family. This skill is informational:
 it never prints endpoint credentials or changes configuration, and it never
 references removed command routes. Mutating commands are only documented and
 run when the operator explicitly invokes them.
@@ -199,28 +199,28 @@ never prints. \`--agent-dir\` selects the broker state directory.
 
 ## Semantic verbs
 
-- \`gjc sdk session list\` — broker \`session.list\` projected to the versioned,
+- \`worx sdk session list\` — broker \`session.list\` projected to the versioned,
   credential-free row DTO (session id, locator, pid, liveness, tombstone,
   activity, heartbeat, identity provenance, ambiguity).
-- \`gjc sdk session inspect <sessionId>\` — one indexed row; when the broker is
+- \`worx sdk session inspect <sessionId>\` — one indexed row; when the broker is
   absent, falls back to a credential-free offline projection from the local
   endpoint discovery record.
-- \`gjc sdk session send <sessionId> --text <prompt>\` — ordered \`turn.prompt\`
+- \`worx sdk session send <sessionId> --text <prompt>\` — ordered \`turn.prompt\`
   carrying a caller-chosen operation reference (ULID). \`--wait\` polls
   \`turn.prompt_status\` until terminal or the wait window elapses; it never
   cancels a running turn.
-- \`gjc sdk session status <sessionId> <opRef>\` — lossless \`turn.prompt_status\`
+- \`worx sdk session status <sessionId> <opRef>\` — lossless \`turn.prompt_status\`
   for a previously submitted operation reference.
-- \`gjc sdk session tail <sessionId>\` — retained transcript replay from the
+- \`worx sdk session tail <sessionId>\` — retained transcript replay from the
   durable checkpoint followed by live event-ring frames. \`--strict\` fails
   closed on retention gaps, \`--until-idle\` exits at a terminal turn state,
   \`--all-events\` widens the emitted event kinds, and \`--cursor\` resumes from a
   saved checkpoint token that is re-minted per connection.
-- \`gjc sdk session elevate <sessionId> --kind <control|global> --op <operation> --json-input ... --confirm\` — creates an exact-digest grant request and, only on an attended TTY, submits a private 0600 operator directive consumed by the broker. The returned request id is passed to an allowlisted raw control with \`--elevation-request-id\`.
+- \`worx sdk session elevate <sessionId> --kind <control|global> --op <operation> --json-input ... --confirm\` — creates an exact-digest grant request and, only on an attended TTY, submits a private 0600 operator directive consumed by the broker. The returned request id is passed to an allowlisted raw control with \`--elevation-request-id\`.
 
 ## Raw hatch
 
-\`gjc sdk session raw ${rawKinds}\` dispatches one SDK operation with \`--op\`
+\`worx sdk session raw ${rawKinds}\` dispatches one SDK operation with \`--op\`
 (control/global) or \`--query\` (query) plus a JSON input source. Lifecycle
 globals require \`--idempotency-key\`; destructive control operations accept
 \`--confirm\`. Endpoint-disclosure operations are refused by default and stay
@@ -264,7 +264,7 @@ executable and no workflow skill is invoked.
 
 - \`docs/sdk.md\` — SDK overview: endpoint discovery, protocol, query and
   control surfaces, broker launch isolation, managed notification adapters.
-- \`docs/sdk-session-cli.md\` — the \`gjc sdk session\` command family: semantic
+- \`docs/sdk-session-cli.md\` — the \`worx sdk session\` command family: semantic
   verbs, raw hatch, lossless statuses, broker authority, checkpoint gaps, and
   elevation behavior.
 - \`docs/sdk-embedding.md\` — embedding GJC in-process.
@@ -290,7 +290,7 @@ hand; run \`bun run generate-plugins\` and commit the result. CI runs
 - \`.claude-plugin/plugin.json\` — Claude Code manifest.
 - \`.codex-plugin/plugin.json\` — Codex manifest.
 - \`.mcp.json\` — Claude coordinator MCP wiring (\${CLAUDE_PROJECT_DIR}).
-- \`.codex.mcp.json\` — Codex coordinator MCP wiring (host-neutral; \`gjc setup codex\` rewrites concrete roots).
+- \`.codex.mcp.json\` — Codex coordinator MCP wiring (host-neutral; \`worx setup codex\` rewrites concrete roots).
 - \`commands/\`, \`skills/\` — host-facing delegate command + skill docs, including
   the advisory \`worx-sdk-session\` (SDK session CLI reference) and
   \`worx-sdk-guides\` (trusted SDK guide index) skills.
@@ -337,7 +337,7 @@ export function renderPluginFiles(): Map<string, string> {
 						"Delegate GJC planning/execution/team workflows via coordinator MCP, plus advisory SDK session CLI and guide skills.",
 					version,
 					author: { name: "Gajae Code" },
-					keywords: ["gjc", "delegation", "mcp", "planning", "agents", "sdk"],
+					keywords: ["worx", "delegation", "mcp", "planning", "agents", "sdk"],
 				},
 			],
 		}),
@@ -372,7 +372,7 @@ export function renderPluginFiles(): Map<string, string> {
 	);
 
 	// Per-host MCP wiring. Claude uses its ${CLAUDE_PROJECT_DIR} token; Codex gets a
-	// host-neutral file that `gjc setup codex` rewrites with a concrete workdir root.
+	// host-neutral file that `worx setup codex` rewrites with a concrete workdir root.
 	files.set(path.join(dir, ".mcp.json"), json(claudeMcpServers("${CLAUDE_PROJECT_DIR}")));
 	files.set(path.join(dir, ".codex.mcp.json"), json(codexMcpServers("${PWD}")));
 	for (const meta of DELEGATE_META) {

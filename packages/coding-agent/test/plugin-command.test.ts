@@ -6,7 +6,7 @@ import type { CliConfig } from "@bworx-io/worx-utils/cli";
 import Plugin from "../src/commands/plugin";
 
 const TEST_CONFIG: CliConfig = {
-	bin: "gjc",
+	bin: "worx",
 	version: "0.0.0-test",
 	commands: new Map(),
 };
@@ -75,25 +75,25 @@ describe("Plugin command scope parsing", () => {
 		const jsonList = await runPluginCommand(["list", "--json"], cwd);
 		expect(jsonList.exitCode).toBe(0);
 		expect(jsonList.stderr).toBe("");
-		// `gjc` now carries safe lifecycle summaries keyed by canonical identity
+		// `worx` now carries safe lifecycle summaries keyed by canonical identity
 		// (kind, scope, name) rather than raw registry entries.
 		const parsed = JSON.parse(jsonList.stdout) as {
-			gjc?: Array<{ identity: { kind: string; scope: string; name: string }; version: string }>;
+			worx?: Array<{ identity: { kind: string; scope: string; name: string }; version: string }>;
 		};
-		expect(parsed.gjc).toEqual([
+		expect(parsed.worx).toEqual([
 			expect.objectContaining({
-				identity: { kind: "gjc-bundle", scope: "project", name: "valid-six-surface-bundle" },
+				identity: { kind: "worx-bundle", scope: "project", name: "valid-six-surface-bundle" },
 				version: "1.0.0",
 			}),
 		]);
 		// Safe summaries never expose the raw source locator or the install path.
 		expect(jsonList.stdout).not.toContain("pluginRoot");
 		expect(jsonList.stdout).not.toContain("copiedFiles");
-		// Assert on the `gjc` envelope specifically. The sibling `npm` and
+		// Assert on the `worx` envelope specifically. The sibling `npm` and
 		// `marketplace` arrays are pre-existing surfaces owned elsewhere, so a
 		// whole-document scan would conflate their behavior with this one.
-		const listed = JSON.parse(jsonList.stdout) as { gjc?: unknown[] };
-		const worxJson = JSON.stringify(listed.gjc ?? []);
+		const listed = JSON.parse(jsonList.stdout) as { worx?: unknown[] };
+		const worxJson = JSON.stringify(listed.worx ?? []);
 		expect(worxJson).not.toContain("manifestPath");
 		expect(worxJson).not.toContain(os.homedir());
 		expect(worxJson).not.toMatch(/"uri"\s*:/);
@@ -114,7 +114,7 @@ describe("Plugin command scope parsing", () => {
 
 		const listed = await runPluginCommand(["list", "--json"], cwd, agentDir);
 		expect(listed.exitCode).toBe(0);
-		expect(JSON.parse(listed.stdout)).toMatchObject({ gjc: [] });
+		expect(JSON.parse(listed.stdout)).toMatchObject({ worx: [] });
 	});
 
 	// An unqualified uninstall of a name present in both scopes must refuse
@@ -133,7 +133,7 @@ describe("Plugin command scope parsing", () => {
 		expect(ambiguous.stderr).toContain("installed in both scopes");
 
 		const listed = await runPluginCommand(["list", "--json"], cwd, agentDir);
-		const scopes = (JSON.parse(listed.stdout) as { gjc: Array<{ identity: { scope: string } }> }).gjc.map(
+		const scopes = (JSON.parse(listed.stdout) as { worx: Array<{ identity: { scope: string } }> }).worx.map(
 			bundle => bundle.identity.scope,
 		);
 		expect(scopes.toSorted()).toEqual(["project", "user"]);
@@ -154,7 +154,7 @@ describe("Plugin command scope parsing", () => {
 
 		const listed = await runPluginCommand(["list", "--json"], cwd, agentDir);
 		expect(
-			(JSON.parse(listed.stdout) as { gjc: Array<{ identity: { scope: string } }> }).gjc.map(
+			(JSON.parse(listed.stdout) as { worx: Array<{ identity: { scope: string } }> }).worx.map(
 				bundle => bundle.identity.scope,
 			),
 		).toEqual(["user"]);
@@ -181,9 +181,9 @@ describe("Plugin command scope parsing", () => {
 
 		const listed = await runPluginCommand(["list", "--json"], cwd, agentDir);
 		expect(JSON.parse(listed.stdout)).toMatchObject({
-			gjc: [
+			worx: [
 				expect.objectContaining({
-					identity: { kind: "gjc-bundle", scope: "user", name: "valid-six-surface-bundle" },
+					identity: { kind: "worx-bundle", scope: "user", name: "valid-six-surface-bundle" },
 				}),
 			],
 		});
@@ -196,7 +196,7 @@ describe("Plugin command scope parsing", () => {
 		await fs.mkdir(registryRoot, { recursive: true });
 		await fs.writeFile(path.join(registryRoot, "registry.json"), "{");
 
-		const result = await runPluginCommand(["uninstall", "not-a-gjc-bundle"], cwd, agentDir);
+		const result = await runPluginCommand(["uninstall", "not-a-worx-bundle"], cwd, agentDir);
 
 		expect(`${result.stdout}${result.stderr}`).toMatch(/Uninstalled|Failed to uninstall/);
 		expect(`${result.stdout}${result.stderr}`).not.toContain("Corrupt GJC plugin registry");

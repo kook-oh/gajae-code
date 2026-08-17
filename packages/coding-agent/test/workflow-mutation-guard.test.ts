@@ -227,7 +227,7 @@ describe("workflow mutation guard", () => {
 		await writeActiveDeepInterview(cwd);
 
 		// Neutral temp scratch outside the project tree stays writable so specs can be
-		// staged and fed to `gjc deep-interview --write --spec <path>`.
+		// staged and fed to `worx deep-interview --write --spec <path>`.
 		for (const rawPath of [path.join(os.tmpdir(), "deep-interview-scratch.md"), "/tmp/deep-interview-scratch.md"]) {
 			const decision = await getWorkflowMutationDecision({
 				cwd,
@@ -641,7 +641,7 @@ describe("workflow mutation guard", () => {
 			});
 			expect(decision.blocked).toBe(false);
 			expect(warn).toHaveBeenCalledTimes(1);
-			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("gjc skill-state: invalid mode-state at");
+			expect(String(warn.mock.calls[0]?.[0] ?? "")).toContain("worx skill-state: invalid mode-state at");
 		} finally {
 			warn.mockRestore();
 		}
@@ -716,7 +716,7 @@ describe("workflow mutation guard", () => {
 			cwd,
 			sessionId: "session-a",
 			tool: tool("bash"),
-			args: { command: "gjc ralplan --write --stage planner --stage_n 1 --artifact /tmp/plan.md" },
+			args: { command: "worx ralplan --write --stage planner --stage_n 1 --artifact /tmp/plan.md" },
 		});
 		expect(worxBash.blocked).toBe(false);
 	});
@@ -869,17 +869,17 @@ describe("workflow mutation guard", () => {
 		expect(decision.blocked).toBe(false);
 	});
 
-	it("blocks product-mutating bash during a planning phase but allows sanctioned gjc and artifact writes", async () => {
+	it("blocks product-mutating bash during a planning phase but allows sanctioned worx and artifact writes", async () => {
 		const cwd = await makeTempRoot();
 		await writeActiveSkill(cwd, "ralplan", "planner");
 
 		for (const command of [
-			"gjc ralplan --write --stage planner --artifact /tmp/p.md ; tee src/product.ts",
+			"worx ralplan --write --stage planner --artifact /tmp/p.md ; tee src/product.ts",
 			"echo x > src/product.ts",
-			"gjc state read && echo x | tee src/product.ts",
-			"gjc state read && echo x > .worx/state/foo.json",
-			"gjc ralplan --write --stage planner --artifact /tmp/p.md\ntouch src/product.ts",
-			"gjc state read\nrm .worx/state/foo.json",
+			"worx state read && echo x | tee src/product.ts",
+			"worx state read && echo x > .worx/state/foo.json",
+			"worx ralplan --write --stage planner --artifact /tmp/p.md\ntouch src/product.ts",
+			"worx state read\nrm .worx/state/foo.json",
 			"sed -i s/a/b/ src/product.ts",
 			'python -c \'open("src/product.ts", "w").write("x")\'',
 			"dd if=/dev/null of=src/product.ts",
@@ -900,17 +900,17 @@ describe("workflow mutation guard", () => {
 		}
 
 		for (const command of [
-			"gjc ralplan --write --stage planner --artifact /tmp/p.md",
+			"worx ralplan --write --stage planner --artifact /tmp/p.md",
 			"cat sample.md > .worx/specs/deep-interview-sample.md",
 			// Reading and inspecting must never be blocked during a planning phase,
 			// including commands the scanner does not model and read-only wrappers.
-			"gjc deep-interview inspect --selector summary --json",
+			"worx deep-interview inspect --selector summary --json",
 			"cat package.json | jq .name",
 			"git status --short",
-			"bash -c 'gjc deep-interview inspect --json'",
-			'bun -e \'const p=Bun.spawnSync(["gjc","state","read"]); process.stdout.write(p.stdout)\'',
+			"bash -c 'worx deep-interview inspect --json'",
+			'bun -e \'const p=Bun.spawnSync(["worx","state","read"]); process.stdout.write(p.stdout)\'',
 			// Shell metacharacters inside a single-quoted argument value are inert data.
-			"gjc deep-interview draft edit --op set --path /a --value 'uses `bun run release`; a > b | c'",
+			"worx deep-interview draft edit --op set --path /a --value 'uses `bun run release`; a > b | c'",
 		]) {
 			const allowed = await getWorkflowMutationDecision({
 				cwd,

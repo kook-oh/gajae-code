@@ -478,7 +478,7 @@ export async function runSessionHost(
 		try {
 			opened = await openLifecycleSessionManager(request, cwd, agentDir);
 			if (request.mcpServers && request.mcpServers.length > 0) {
-				mcpConfigDirectory = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "gjc-acp-mcp-")));
+				mcpConfigDirectory = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "worx-acp-mcp-")));
 				mcpConfigPath = path.join(mcpConfigDirectory, "mcp.json");
 				await Bun.write(
 					mcpConfigPath,
@@ -721,7 +721,7 @@ function parsePositiveTimeout(raw: string | undefined, flagName: string): number
 }
 
 class SdkServeHelp extends Command {
-	static description = "gjc sdk serve --stdio | --socket <path> [--session <id>] [--pending-ceiling <bytes>]";
+	static description = "worx sdk serve --stdio | --socket <path> [--session <id>] [--pending-ceiling <bytes>]";
 	static flags = {
 		stdio: Flags.boolean({ description: "Serve SDK frames over standard input and output" }),
 		socket: Flags.string({ description: "Serve SDK frames over a Unix socket path" }),
@@ -733,7 +733,7 @@ class SdkServeHelp extends Command {
 
 class SdkSessionHelp extends Command {
 	static description =
-		"Manage SDK sessions: `gjc sdk session list|inspect|send|status|tail|elevate`, or the explicit raw hatch `gjc sdk session raw control|query|global`. The session CLI is broker-bound, credential-free by default, and elevation approval requires an attended operator.";
+		"Manage SDK sessions: `worx sdk session list|inspect|send|status|tail|elevate`, or the explicit raw hatch `worx sdk session raw control|query|global`. The session CLI is broker-bound, credential-free by default, and elevation approval requires an attended operator.";
 	static args = {
 		verb: Args.string({
 			description: "Session verb",
@@ -858,7 +858,7 @@ class SdkGuidesCommand extends Command {
 
 export default class Sdk extends Command {
 	static description =
-		"gjc sdk serve --stdio | --socket <path> [--session <id>]; gjc sdk session list|inspect|send|status|tail; gjc sdk guides refresh|list|show|status|trust";
+		"worx sdk serve --stdio | --socket <path> [--session <id>]; worx sdk session list|inspect|send|status|tail; worx sdk guides refresh|list|show|status|trust";
 	static hidden = false;
 	static delegateHelp = true;
 	static args = { action: Args.string({ required: false, options: ["serve", "session", "guides"] }) };
@@ -882,7 +882,7 @@ export default class Sdk extends Command {
 						: action === "guides"
 							? SdkGuidesCommand
 							: Sdk;
-			renderCommandHelp("gjc", helpAction, helpCommand);
+			renderCommandHelp("worx", helpAction, helpCommand);
 			return;
 		}
 		if (action === "session") {

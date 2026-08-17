@@ -200,7 +200,7 @@ async function fileTextIfExists(filePath: string): Promise<string | undefined> {
 }
 
 function indexDeclaresWorx(content: string): boolean {
-	return /["']gjc["']/.test(content);
+	return /["']worx["']/.test(content);
 }
 
 async function resolveIndexStatus(indexPath: string, force: boolean | undefined): Promise<InshellisenseIndexStatus> {
@@ -212,7 +212,7 @@ async function resolveIndexStatus(indexPath: string, force: boolean | undefined)
 	if (indexDeclaresWorx(existing)) return "already-compatible";
 	if (force) return "overwritten";
 	throw new Error(
-		`inshellisense index already exists at ${indexPath} and does not list gjc; rerun with --force to overwrite it or pass --dir to install into a GJC-only specs directory`,
+		`inshellisense index already exists at ${indexPath} and does not list worx; rerun with --force to overwrite it or pass --dir to install into a GJC-only specs directory`,
 	);
 }
 
@@ -221,7 +221,7 @@ export async function installWorxInshellisenseSpec(
 	options: InstallWorxInshellisenseSpecOptions = {},
 ): Promise<InstallWorxInshellisenseSpecResult> {
 	const directory = path.resolve(options.dir ?? defaultInshellisenseSpecDir());
-	const specPath = path.join(directory, "gjc.js");
+	const specPath = path.join(directory, "worx.js");
 	const indexPath = path.join(directory, "index.js");
 	const indexStatus = await resolveIndexStatus(indexPath, options.force);
 

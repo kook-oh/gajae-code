@@ -203,7 +203,7 @@ function inbound(threadId: string, id: string, generation = 1, customId?: string
 			id: `interaction-${id}`,
 			token: `token-${id}`,
 			customId:
-				customId ?? actionCustomIds.get(threadId) ?? `gjc:${generation}:ask:00000000-0000-0000-0000-000000000000`,
+				customId ?? actionCustomIds.get(threadId) ?? `worx:${generation}:ask:00000000-0000-0000-0000-000000000000`,
 			value: "yes",
 		},
 	};
@@ -340,7 +340,7 @@ describe("DiscordNotificationDaemon fake-provider acceptance", () => {
 						components: [
 							{
 								type: 3,
-								customId: expect.stringMatching(/^gjc:4:ask:[0-9a-f-]{36}$/),
+								customId: expect.stringMatching(/^worx:4:ask:[0-9a-f-]{36}$/),
 								placeholder: "Choose an option",
 								minValues: 1,
 								maxValues: 1,
@@ -1336,7 +1336,7 @@ describe("DiscordNotificationDaemon fake-provider acceptance", () => {
 					actionId: "ask-retry",
 					options: ["Yes"],
 				});
-				const retryCustomId = `gjc:1:ask-retry:${retry.pendingActionNonce!}`;
+				const retryCustomId = `worx:1:ask-retry:${retry.pendingActionNonce!}`;
 				provider.deferInteraction = async () => {
 					throw new Error("Discord API request failed (400)");
 				};
@@ -1363,7 +1363,7 @@ describe("DiscordNotificationDaemon fake-provider acceptance", () => {
 					options: ["Yes"],
 				});
 				expect(uncertain.pendingActionNonce).toBeDefined();
-				const uncertainCustomId = `gjc:1:ask-uncertain:${uncertain.pendingActionNonce!}`;
+				const uncertainCustomId = `worx:1:ask-uncertain:${uncertain.pendingActionNonce!}`;
 				provider.deferInteraction = async () => {};
 				const originalSend = (await endpoint()).send;
 				const throwingEndpoint = async (): Promise<DiscordEndpointBinding> => ({

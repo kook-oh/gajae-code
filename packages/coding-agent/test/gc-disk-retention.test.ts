@@ -204,7 +204,7 @@ function fakeAdapter(store: GcStore, records: GcRecord[], prune?: () => Promise<
 	};
 }
 
-describe("gjc gc --disk (report only)", () => {
+describe("worx gc --disk (report only)", () => {
 	test("mutates nothing and reports reclaimable bytes per surface", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -249,7 +249,7 @@ describe("gjc gc --disk (report only)", () => {
 			await writeSession(fixture, "repo-a", "stale-session", { ageDays: 90 });
 			const result = await runWorxGcCommand(["--disk"], fixture.root, fixture.env, [], policy());
 			expect(result.status).toBe(0);
-			expect(result.stdout).toContain("gjc gc --disk — report only");
+			expect(result.stdout).toContain("worx gc --disk — report only");
 			expect(result.stdout).toContain("Session transcripts");
 			expect(result.stdout).toContain("Content-addressed blobs");
 			expect(result.stdout).toContain("Cached native versions");
@@ -261,7 +261,7 @@ describe("gjc gc --disk (report only)", () => {
 	});
 });
 
-describe("gjc gc --disk --prune (sessions)", () => {
+describe("worx gc --disk --prune (sessions)", () => {
 	test("reclaims only transcripts passing both the age policy and the reference check", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -336,7 +336,7 @@ describe("gjc gc --disk --prune (sessions)", () => {
 	});
 });
 
-describe("gjc gc --disk --prune (blob mark and sweep)", () => {
+describe("worx gc --disk --prune (blob mark and sweep)", () => {
 	test("removes only blobs unreferenced by every surviving session", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -720,7 +720,7 @@ describe("gjc gc --disk --prune (blob mark and sweep)", () => {
 	}, 30000);
 });
 
-describe("gjc gc --disk --prune (blob sweep on incomplete evidence)", () => {
+describe("worx gc --disk --prune (blob sweep on incomplete evidence)", () => {
 	test("keeps a blob whose only reference lives in an unreadable project directory", async () => {
 		const fixture = await makeTestRoot();
 		const projectDir = path.join(fixture.sessionsRoot, "repo-a");
@@ -797,7 +797,7 @@ describe("gjc gc --disk --prune (blob sweep on incomplete evidence)", () => {
 	});
 });
 
-describe("gjc gc --disk dry-run parity", () => {
+describe("worx gc --disk dry-run parity", () => {
 	for (const evidence of ["complete", "incomplete"] as const) {
 		test(`--disk reports exactly what --disk --prune removes (${evidence} evidence)`, async () => {
 			// Two identical state roots: one is only reported on, the other pruned.
@@ -919,7 +919,7 @@ describe("gjc gc --disk dry-run parity", () => {
 	});
 });
 
-describe("gjc gc --disk --prune (half-completed retirement)", () => {
+describe("worx gc --disk --prune (half-completed retirement)", () => {
 	test("a session whose artifacts were destroyed is reported as failed, not kept", async () => {
 		const fixture = await makeTestRoot();
 		const transcript = await writeSession(fixture, "repo-a", "old-session", { ageDays: 120 });
@@ -958,7 +958,7 @@ describe("gjc gc --disk --prune (half-completed retirement)", () => {
 	});
 });
 
-describe("gjc gc --disk (path containment)", () => {
+describe("worx gc --disk (path containment)", () => {
 	test("never follows a symlinked project directory or transcript out of the state root", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -1000,7 +1000,7 @@ describe("gjc gc --disk (path containment)", () => {
 	});
 });
 
-describe("gjc gc --disk (natives retention)", () => {
+describe("worx gc --disk (natives retention)", () => {
 	test("keeps the running version plus the configured number of predecessors", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -1081,7 +1081,7 @@ describe("gjc gc --disk (natives retention)", () => {
 	});
 });
 
-describe("gjc gc --disk (backups retention)", () => {
+describe("worx gc --disk (backups retention)", () => {
 	test("ages out backup roots and *.bak siblings, keeping recent ones", async () => {
 		const fixture = await makeTestRoot();
 		try {
@@ -1579,7 +1579,7 @@ describe("gjc gc --disk (backups retention)", () => {
 	});
 });
 
-describe("gjc gc --disk (session tool artifacts)", () => {
+describe("worx gc --disk (session tool artifacts)", () => {
 	const payload = {
 		"1.bash.log": "b".repeat(100),
 		"2.bash.log": "b".repeat(200),

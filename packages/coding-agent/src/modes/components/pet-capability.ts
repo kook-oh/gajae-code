@@ -15,7 +15,7 @@ export const PET_SAVED_UNAVAILABLE_DESCRIPTION =
 export const PET_UNAVAILABLE_WARNING =
 	"⚠ Pets aren’t available in this terminal. Its image support isn’t compatible with Gajae Pet’s overlay rendering yet. Try Kitty, Ghostty, WezTerm, or a terminal with compatible Sixel support.";
 const PET_MULTIPLEXER_UNAVAILABLE_WARNING =
-	"⚠ Gajae Pet graphics are unavailable inside tmux, screen, or zellij because image escapes are not forwarded end to end. Run gjc outside the multiplexer, or set PI_FORCE_IMAGE_PROTOCOL=sixel only when the full terminal chain supports Sixel.";
+	"⚠ Gajae Pet graphics are unavailable inside tmux, screen, or zellij because image escapes are not forwarded end to end. Run worx outside the multiplexer, or set PI_FORCE_IMAGE_PROTOCOL=sixel only when the full terminal chain supports Sixel.";
 
 export function getPetUnavailableWarning(env: NodeJS.ProcessEnv = Bun.env): string {
 	return isUnderTerminalMultiplexer(env) ? PET_MULTIPLEXER_UNAVAILABLE_WARNING : PET_UNAVAILABLE_WARNING;

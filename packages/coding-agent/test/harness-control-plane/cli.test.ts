@@ -172,7 +172,7 @@ async function seedOwnerDiedBeforeFirstPrompt(sessionId: string): Promise<void> 
 	});
 }
 
-describe("gjc harness CLI (foundation)", () => {
+describe("worx harness CLI (foundation)", () => {
 	it("isolates overlapping workspace links and leaves pre-existing repository links untouched", async () => {
 		const fakeRepo = await mkdtemp(path.join(tmpdir(), "harness-cli-env-repo-"));
 		try {

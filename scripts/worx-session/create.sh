@@ -10,7 +10,7 @@ source "$SCRIPT_DIR/postmortem.sh"
 [[ $# -eq 2 ]] || { echo "Usage: $0 <session-name> <worktree-path>" >&2; exit 2; }
 SESSION="$1"
 WORKDIR="$2"
-WORX_BIN="${WORX_BIN-$(command -v gjc || true)}"
+WORX_BIN="${WORX_BIN-$(command -v worx || true)}"
 TMUX_BIN="${WORX_SESSION_TMUX_BIN:-tmux}"
 STATE_DIR="${WORX_SESSION_STATE_DIR:-$WORKDIR/.worx-session-state/$SESSION}"
 RUNTIME_STATE_JSON="$STATE_DIR/runtime-state.json"
@@ -27,7 +27,7 @@ show_recovery_hint() {
 }
 
 if [[ -z "$WORX_BIN" ]] || { [[ "$WORX_BIN" == */* ]] && [[ ! -x "$WORX_BIN" ]]; } || { [[ "$WORX_BIN" != */* ]] && ! command -v "$WORX_BIN" >/dev/null 2>&1; }; then
-  echo "gjc not found in PATH; set WORX_BIN" >&2
+  echo "worx not found in PATH; set WORX_BIN" >&2
   exit 1
 fi
 [[ -d "$WORKDIR" ]] || { echo "directory not found: $WORKDIR" >&2; exit 1; }
@@ -704,7 +704,7 @@ chmod 700 "$STATE_DIR/supervisor.py"
 
 LAUNCH=(env "WORX_SESSION_NAME=$SESSION" "WORX_SESSION_WORKDIR=$WORKDIR" "WORX_SESSION_BRANCH=$BRANCH" "WORX_SESSION_STATE_DIR=$STATE_DIR" "WORX_SESSION_OWNER_GENERATION=$OWNER_GENERATION" "WORX_SESSION_RUNTIME_FRESH_AFTER=$CREATED_AT" "WORX_SESSION_STARTED_JSON=$STATE_DIR/started.json" "WORX_SESSION_TERMINAL_JSON=$STATE_DIR/terminal.json" "WORX_SESSION_TERMINAL_CANONICAL_JSON=$LIFECYCLE_DIR/terminal-$OWNER_GENERATION.json" "WORX_SESSION_FINAL_JSON=$STATE_DIR/final.json" "WORX_SESSION_FINAL_CANONICAL_JSON=$LIFECYCLE_DIR/final-$OWNER_GENERATION.json" "WORX_SESSION_GENERATION_JSON=$GENERATION_JSON" "WORX_COORDINATOR_SESSION_ID=$SESSION" "WORX_COORDINATOR_SESSION_BRANCH=$BRANCH" "WORX_COORDINATOR_SESSION_STATE_FILE=$RUNTIME_STATE_JSON" "WORX_TMUX_OWNER_GENERATION=$OWNER_GENERATION" "WORX_TMUX_OWNER_STATE_DIR=$STATE_DIR" "WORX_TMUX_OWNER_SERVER_KEY=$SOCKET_KEY" "WORX_SESSION_PROMPT_ACCEPTED_JSON=$STATE_DIR/prompt-accepted.json" "WORX_SESSION_WORKTREE_BASELINE_DIRTY=$WORKTREE_BASELINE_DIRTY" "WORX_SESSION_WORX_BIN=$WORX_BIN" "WORX_SESSION_RUNNER_SH=$STATE_DIR/runner.sh" "WORX_SESSION_POSTMORTEM_SH=$SCRIPT_DIR/postmortem.sh" python3 "$STATE_DIR/supervisor.py")
 LAUNCH_SHELL="$(shell_join "${LAUNCH[@]}")"
-TMUX_ARGV=("$TMUX_BIN" -L "$SOCKET_KEY" new-session -d -P -F '#{session_id}' -s "$SESSION" -c "$WORKDIR" -n gjc "$LAUNCH_SHELL")
+TMUX_ARGV=("$TMUX_BIN" -L "$SOCKET_KEY" new-session -d -P -F '#{session_id}' -s "$SESSION" -c "$WORKDIR" -n worx "$LAUNCH_SHELL")
 PLAN_LINE="$(python3 - "$SESSION" "$OWNER_GENERATION" "$WORKDIR" "$STATE_DIR" "$SOCKET_KEY" "$GENERATION_BASELINE_JSON" "${TMUX_ARGV[@]}" <<'PY'
 import json, sys
 session, generation, cwd, state_dir, socket_key, baseline, *argv = sys.argv[1:]

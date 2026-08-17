@@ -2,8 +2,8 @@
  * Print mode (single-shot): Send prompts, output result, exit.
  *
  * Used for:
- * - `gjc -p "prompt"` - text output
- * - `gjc --mode json "prompt"` - JSON event stream
+ * - `worx -p "prompt"` - text output
+ * - `worx --mode json "prompt"` - JSON event stream
  */
 import { type AssistantMessage, type ImageContent, isContextOverflow } from "@bworx-io/worx-ai/core";
 import { isKnownSinkPeerClosedError, logger, sanitizeText } from "@bworx-io/worx-utils";
@@ -32,7 +32,7 @@ export interface PrintModeOptions {
 }
 
 /**
- * Exit code used when a non-interactive **text-mode** run (`gjc -p`) terminates
+ * Exit code used when a non-interactive **text-mode** run (`worx -p`) terminates
  * because the model context window is exhausted and automatic compaction could
  * not bring the request under the limit. Distinct from the generic failure code
  * (1) so text-mode callers can detect context exhaustion specifically instead of

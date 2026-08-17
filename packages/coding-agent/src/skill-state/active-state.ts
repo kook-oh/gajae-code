@@ -461,7 +461,7 @@ async function readRawActiveStateForHandoff(filePath: string, strict: boolean): 
 	} catch (err) {
 		if (!strict) {
 			logger.warn(
-				`gjc skill-state: invalid skill-active-state at ${filePath}: invalid JSON: ${(err as Error).message}`,
+				`worx skill-state: invalid skill-active-state at ${filePath}: invalid JSON: ${(err as Error).message}`,
 			);
 			return null;
 		}

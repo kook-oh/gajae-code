@@ -1,8 +1,8 @@
 /**
- * Runtime-owned `gjc team` worker heartbeat.
+ * Runtime-owned `worx team` worker heartbeat.
  *
  * Worker liveness used to be published only when the model remembered to call
- * `gjc team api update-worker-heartbeat` between turns. A worker inside a
+ * `worx team api update-worker-heartbeat` between turns. A worker inside a
  * single tool call longer than `WORX_TEAM_HEARTBEAT_STALE_MS` (default 120s) was
  * therefore reported as stale and had its task claim requeued mid-flight — even
  * though the claim lease it invalidated is 30 minutes long. This module makes
@@ -26,7 +26,7 @@ export interface WorxTeamWorkerIdentity {
 	workerId: string;
 }
 
-/** Resolves the team identity injected into a worker pane by `gjc team` startup. */
+/** Resolves the team identity injected into a worker pane by `worx team` startup. */
 export function resolveWorxTeamWorkerIdentity(
 	env: NodeJS.ProcessEnv = process.env,
 ): WorxTeamWorkerIdentity | undefined {

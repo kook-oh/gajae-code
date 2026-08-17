@@ -35,7 +35,7 @@ import {
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");
 const ownerIsolationCliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");
-const packagedWorxEntry = path.join(repoRoot, "packages", "coding-agent", "bin", "gjc.js");
+const packagedWorxEntry = path.join(repoRoot, "packages", "coding-agent", "bin", "worx.js");
 const mainEntry = path.join(repoRoot, "packages", "coding-agent", "src", "main.ts");
 const ownerIsolationFlag = "--internal-tmux-owner-isolation";
 const invalidJsonLineResponse =

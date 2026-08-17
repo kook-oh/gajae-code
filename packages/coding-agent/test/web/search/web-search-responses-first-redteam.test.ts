@@ -15,7 +15,7 @@ const ctx: ActiveSearchModelContext = {
 	modelId: "gpt-redteam",
 	api: "openai-completions",
 	baseUrl: "https://proxy.example/v1",
-	headers: { "X-Trace": "redteam", "X-Client": "gjc" },
+	headers: { "X-Trace": "redteam", "X-Client": "worx" },
 };
 
 function searchParams(activeModelContext: ActiveSearchModelContext = ctx) {
@@ -209,14 +209,14 @@ describe("OpenAI-compatible responses-first red-team", () => {
 				method: "POST",
 				authorization: "Bearer sk-proxy",
 				trace: "redteam",
-				client: "gjc",
+				client: "worx",
 			},
 			{
 				url: "https://proxy.example/v1/chat/completions",
 				method: "POST",
 				authorization: "Bearer sk-proxy",
 				trace: "redteam",
-				client: "gjc",
+				client: "worx",
 			},
 		]);
 	});

@@ -523,7 +523,7 @@ function reportFor(
 	};
 	runner.runtimeControlIdentity = memoryRuntimeControlIdentity(runner);
 	return {
-		schema: "gjc.perf-corpus/3",
+		schema: "worx.perf-corpus/3",
 		generatedAt: new Date(Date.UTC(2026, 6, 27, 0, 0, blockIndex)).toISOString(),
 		gitSha,
 		gitDirty: false,
@@ -604,7 +604,7 @@ async function writeCorpus(
 	}
 	const sealedAt = new Date(cursorMs).toISOString();
 	const ledgerPayload: JsonObject = {
-		schema: "gjc.perf-corpus-attempt-ledger/1",
+		schema: "worx.perf-corpus-attempt-ledger/1",
 		version: 1,
 		complete: true,
 		sealedAt,
@@ -627,7 +627,7 @@ async function writeCorpus(
 	};
 	const ledgerRaw = await writeSealedJson(path.join(directory, "perf-corpus-attempt-ledger.json"), ledgerPayload);
 	const manifestPayload: JsonObject = {
-		schema: "gjc.perf-corpus-raw-manifest/1",
+		schema: "worx.perf-corpus-raw-manifest/1",
 		version: 1,
 		complete: true,
 		sealedAt,
@@ -1652,7 +1652,7 @@ describe("trusted perf-corpus RLM analysis driver", () => {
 		const raw = await fs.readFile(early, "utf8");
 		await fs.writeFile(
 			early,
-			raw.replace('"schema":"gjc.perf-corpus/3"', '"schema":"gjc.perf-corpus/3","schema":"gjc.perf-corpus/3"'),
+			raw.replace('"schema":"worx.perf-corpus/3"', '"schema":"worx.perf-corpus/3","schema":"worx.perf-corpus/3"'),
 		);
 		await mutateReport(input, "soak-24.json", report => {
 			report.runner.memorySurfaceOrder = [...report.runner.memorySurfaceOrder].reverse();

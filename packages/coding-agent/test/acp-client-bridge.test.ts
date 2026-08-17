@@ -19,7 +19,7 @@ describe("ACP client bridge permission requests", () => {
 		} as unknown as AgentSideConnection;
 
 		const bridge = createAcpClientBridge(connection, "session-1", {
-			_meta: { gjc: { permissionHandling: "prompt" } },
+			_meta: { worx: { permissionHandling: "prompt" } },
 		});
 
 		const outcome = await bridge.requestPermission!(
@@ -53,7 +53,7 @@ describe("ACP client bridge permission requests", () => {
 			},
 		} as unknown as AgentSideConnection;
 		const bridge = createAcpClientBridge(connection, "session-1", {
-			_meta: { gjc: { permissionHandling: "prompt" } },
+			_meta: { worx: { permissionHandling: "prompt" } },
 		});
 
 		expect(
@@ -65,9 +65,9 @@ describe("ACP client bridge permission requests", () => {
 	});
 
 	it("only enables ACP permission requests in prompt mode", () => {
-		expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "prompt" } } }, true);
-		expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "auto" } } }, false);
-		expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "always-allow" } } }, false);
+		expectPermissionPrompt({ _meta: { worx: { permissionHandling: "prompt" } } }, true);
+		expectPermissionPrompt({ _meta: { worx: { permissionHandling: "auto" } } }, false);
+		expectPermissionPrompt({ _meta: { worx: { permissionHandling: "always-allow" } } }, false);
 	});
 
 	it("uses WORX_ACP_PERMISSION_MODE when client metadata is absent", () => {
@@ -95,14 +95,14 @@ describe("ACP client bridge permission requests", () => {
 		const previous = process.env.WORX_ACP_PERMISSION_MODE;
 		try {
 			process.env.WORX_ACP_PERMISSION_MODE = "prompt";
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "auto" } } }, false);
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "always-allow" } } }, false);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: "auto" } } }, false);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: "always-allow" } } }, false);
 			process.env.WORX_ACP_PERMISSION_MODE = "always-allow";
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "prompt" } } }, true);
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "invalid" } } }, true);
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: "AUTO" } } }, true);
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: " always-allow " } } }, true);
-			expectPermissionPrompt({ _meta: { gjc: { permissionHandling: null } } }, true);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: "prompt" } } }, true);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: "invalid" } } }, true);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: "AUTO" } } }, true);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: " always-allow " } } }, true);
+			expectPermissionPrompt({ _meta: { worx: { permissionHandling: null } } }, true);
 		} finally {
 			if (previous === undefined) delete process.env.WORX_ACP_PERMISSION_MODE;
 			else process.env.WORX_ACP_PERMISSION_MODE = previous;

@@ -216,7 +216,7 @@ export async function migrateWorxPluginEntries(
 	};
 }
 
-/** Read-only status helper used by `gjc plugin doctor`. */
+/** Read-only status helper used by `worx plugin doctor`. */
 export async function migrationStatusForEntry(entry: WorxPluginRegistryEntry): Promise<WorxPluginMigrationStatus> {
 	if (entry.migration?.status === "failed") {
 		return {

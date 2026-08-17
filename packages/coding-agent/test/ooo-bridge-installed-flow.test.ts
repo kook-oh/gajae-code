@@ -106,7 +106,7 @@ describe("installed ooo bridge flow", () => {
 			{
 				type: "stdio",
 				command: "/opt/ouroboros/bin/ouroboros",
-				args: ["mcp", "serve", "--runtime", "gjc"],
+				args: ["mcp", "serve", "--runtime", "worx"],
 				cwd: "/tmp/ooo-installed-flow",
 			},
 			{ signal: expect.any(AbortSignal) },

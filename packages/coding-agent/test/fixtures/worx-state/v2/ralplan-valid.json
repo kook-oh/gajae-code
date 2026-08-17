@@ -20,7 +20,7 @@
     "version": 1,
     "skill": "ralplan",
     "owner": "worx-state-cli",
-    "command": "gjc state ralplan write --input '<json>'",
+    "command": "worx state ralplan write --input '<json>'",
     "state_path": "/repo/.worx/state/sessions/sess-corpus-ralplan/active-state.json",
     "storage_path": "/repo/.worx/state/sessions/sess-corpus-ralplan/ralplan-state.json",
     "mutated_at": "2026-06-04T10:00:00.000Z",

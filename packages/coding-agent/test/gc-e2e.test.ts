@@ -55,7 +55,7 @@ async function seedDeadLease(base: string, registryDir: string, deadPid: number)
 	return leaseFile;
 }
 
-describe("gjc gc end-to-end (harness lease adapter)", () => {
+describe("worx gc end-to-end (harness lease adapter)", () => {
 	test("dry-run reports a dead lease as would_remove and deletes nothing", async () => {
 		const base = await makeTemp();
 		const registryDir = path.join(base, "reg");

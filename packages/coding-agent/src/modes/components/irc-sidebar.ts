@@ -134,7 +134,7 @@ function semanticProjectionToken(lines: readonly SemanticLine[]): string {
 		if (value !== undefined) hash.update(value, "utf8");
 	};
 
-	hash.update("gjc:irc:sidebar-semantic-projection:v1\0");
+	hash.update("worx:irc:sidebar-semantic-projection:v1\0");
 	length.writeUInt32BE(lines.length);
 	hash.update(length);
 	for (const line of lines) {

@@ -352,7 +352,7 @@ const HEADER_MAX_BYTES = 64 * 1024;
 
 function scopeDigest(platform: "posix" | "win32", canonicalPath: string): string {
 	const bytes = createHash("sha256")
-		.update("gjc-managed-session-scope\0identity-v1\0", "utf8")
+		.update("worx-managed-session-scope\0identity-v1\0", "utf8")
 		.update(platform, "utf8")
 		.update("\0", "utf8")
 		.update(canonicalPath, "utf8")

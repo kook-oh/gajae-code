@@ -335,7 +335,7 @@ describe("discoverExternalCredentials", () => {
 	});
 
 	// Claude Code and Codex both relocate their own credential file through the
-	// environment, and Orca-style account switchers rely on that redirect. gjc
+	// environment, and Orca-style account switchers rely on that redirect. worx
 	// used to read `~/.claude` / `~/.codex` unconditionally, so it imported the
 	// wrong account whenever the launching shell selected another one.
 	describe("relocated external CLI config roots", () => {
@@ -609,10 +609,10 @@ describe("auto-import OAuth filter and orchestrator", () => {
 	test("notice is emitted only when imported and includes exact rotation warning", () => {
 		expect(buildCredentialAutoImportNotice({ imported: [] })).toBeUndefined();
 		const notice = buildCredentialAutoImportNotice({ imported: [oauthCredential()] });
-		expect(notice).toContain("Imported 1 external OAuth credential(s) into gjc");
+		expect(notice).toContain("Imported 1 external OAuth credential(s) into worx");
 		expect(notice).toContain(CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING);
 		expect(CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING).toBe(
-			"Refreshing in gjc may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.",
+			"Refreshing in worx may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.",
 		);
 	});
 

@@ -24,7 +24,7 @@ function escapeAttr(value: string): string {
 export function sanitizePromptBody(text: string): string {
 	// Strip control chars (except tab/newline), then XML-escape &, <, > so a
 	// malicious body can NEVER emit a closing delimiter or fake <system>/
-	// <developer>/<gjc-subskill> tag that escapes the lower-authority block.
+	// <developer>/<worx-subskill> tag that escapes the lower-authority block.
 	// The set spans C0, DEL, and C1. Carriage return can rewrite a rendered line,
 	// and U+009B is a single-byte CSI that introduces an escape sequence without
 	// any preceding ESC, so omitting either leaves the same injection open.

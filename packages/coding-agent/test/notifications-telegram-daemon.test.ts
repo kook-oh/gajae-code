@@ -5044,7 +5044,7 @@ describe("telegram daemon", () => {
 		// A prior owner (pid 111) crashed but left its state + lock behind. On Linux its
 		// PID is briefly reused, so the first ownership probe sees it alive and refuses
 		// with an ownership block; it then dies. This is exactly the case that used to
-		// hard-block SDK startup until a manual `gjc notify recovery`.
+		// hard-block SDK startup until a manual `worx notify recovery`.
 		writeLiveOwner(agentDir, {
 			pid: 111,
 			ownerId: "crashed",
@@ -5174,7 +5174,7 @@ describe("telegram daemon", () => {
 			expect(spawns).toBe(0);
 			expect(fs.existsSync(endpoint)).toBe(true);
 			expect(warnSpy).toHaveBeenCalledWith(
-				expect.stringContaining("startup recovery unsafe (unsafe-endpoint); run `gjc notify recovery`"),
+				expect.stringContaining("startup recovery unsafe (unsafe-endpoint); run `worx notify recovery`"),
 			);
 		} finally {
 			warnSpy.mockRestore();

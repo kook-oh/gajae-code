@@ -97,7 +97,7 @@ const semanticRootIds = (mode: InteractiveMode) =>
 // anchor row text, the COMPLETE geometry (grapheme and cell start AND end plus
 // frameRow), and the committed frame digest, under a versioned domain literal so
 // the digest cannot be repurposed in another context.
-export const SEMANTIC_ANCHOR_DOMAIN = "gjc.sticky-viewport.semantic-anchor.v1";
+export const SEMANTIC_ANCHOR_DOMAIN = "worx.sticky-viewport.semantic-anchor.v1";
 // Netstring framing (`<byteLength>:<value>,`). A plain `a:b:c` join is ambiguous
 // as soon as any field may itself contain `:` — which namespaces and painted row
 // text both do — so distinct field tuples could otherwise share a preimage.

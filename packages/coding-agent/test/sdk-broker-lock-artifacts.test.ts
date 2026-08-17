@@ -366,7 +366,7 @@ describe("lifecycle ledger quarantine bound", () => {
 		await new LifecycleLedger(agentDir, { maxCorruptBytes }).open();
 
 		const quarantined = await Bun.file(corrupt).text();
-		expect(quarantined).toContain("[gjc: quarantined row truncated at the corrupt-ledger cap]");
+		expect(quarantined).toContain("[worx: quarantined row truncated at the corrupt-ledger cap]");
 		expect(Bun.file(corrupt).size).toBeLessThan(maxCorruptBytes + 128);
 	});
 

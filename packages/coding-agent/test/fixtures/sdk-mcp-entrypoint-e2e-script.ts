@@ -1,4 +1,4 @@
-// Entrypoint-level proof: `gjc mcp-serve sdk` speaks JSON-RPC over stdio and its
+// Entrypoint-level proof: `worx mcp-serve sdk` speaks JSON-RPC over stdio and its
 // session control reaches a recorded SDK WebSocket (no coordinator paths).
 import { mkdir, mkdtemp, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";

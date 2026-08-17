@@ -25,7 +25,7 @@ const PROVIDER_ONBOARDING_OPTIONS: ProviderOnboardingOption[] = [
 	},
 	{
 		label: "Add API-compatible provider",
-		description: "Show the /provider add and gjc setup provider commands.",
+		description: "Show the /provider add and worx setup provider commands.",
 		action: "api-guide",
 	},
 	{

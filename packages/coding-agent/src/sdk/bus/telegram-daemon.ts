@@ -595,7 +595,7 @@ async function fetchWithRetry(
 
 export { type DaemonPaths, daemonPaths } from "./daemon-paths";
 export function deriveLifecycleAuditRedactionKey(botToken: string): Uint8Array {
-	return crypto.createHmac("sha256", botToken).update("gjc.lifecycle.audit.v2.key", "utf8").digest();
+	return crypto.createHmac("sha256", botToken).update("worx.lifecycle.audit.v2.key", "utf8").digest();
 }
 
 /**
@@ -2211,7 +2211,7 @@ export async function reapStaleNotificationArtifacts(input: {
 
 /**
  * Startup / ownership self-heal: prune dead roots and reap leak artifacts so
- * `gjc daemon reload` recovers a degraded install without manual surgery (#2956).
+ * `worx daemon reload` recovers a degraded install without manual surgery (#2956).
  */
 export async function healTelegramDaemonNotificationState(input: {
 	settings: Settings;
@@ -3898,7 +3898,7 @@ export async function spawnTelegramDaemonOwner(
 
 /**
  * Owner-bound reclamation of a confirmed-dead daemon owner, mirroring the
- * daemon step of `gjc notify recovery`. It returns a structured, actionable
+ * daemon step of `worx notify recovery`. It returns a structured, actionable
  * result and removes only identity-verified dead-owner artifacts while holding
  * the transition fence; live, successor, unknown, or unreadable evidence is
  * retained.
@@ -4090,7 +4090,7 @@ async function ensureTelegramDaemonRunningDetailedOnce(
 		}
 		if (!preflight.recovered && preflight.reason !== "not-confirmed-dead") {
 			logger.warn(
-				`notifications: startup recovery unsafe (${preflight.reason}); run \`gjc notify recovery\` for diagnostics`,
+				`notifications: startup recovery unsafe (${preflight.reason}); run \`worx notify recovery\` for diagnostics`,
 			);
 			return "blocked_identity";
 		}
@@ -4163,7 +4163,7 @@ async function ensureTelegramDaemonRunningDetailedOnce(
 	}
 	if (spawned.result === "blocked") {
 		logger.warn(
-			`notifications: failed to ensure Telegram daemon: ${recoveryReason ? `stale recovery ${recoveryReason}; run \`gjc notify recovery\`` : spawned.warnings.join("; ")}`,
+			`notifications: failed to ensure Telegram daemon: ${recoveryReason ? `stale recovery ${recoveryReason}; run \`worx notify recovery\`` : spawned.warnings.join("; ")}`,
 		);
 		return "blocked_identity";
 	}
@@ -4713,7 +4713,7 @@ interface BtwTerminalDeliveryReceipt {
 	outcome: BtwTerminalDeliveryOutcome;
 }
 
-const BTW_TERMINAL_DELIVERY_TEST_OBSERVER = Symbol.for("gjc.test.btw-terminal-delivery-observer");
+const BTW_TERMINAL_DELIVERY_TEST_OBSERVER = Symbol.for("worx.test.btw-terminal-delivery-observer");
 
 export interface TelegramDaemonOptions {
 	settings: Settings;
@@ -8851,7 +8851,7 @@ export class TelegramNotificationDaemon {
 		if (existing) return existing;
 		// mkdtemp creates a directory with an unguessable suffix and 0700 perms;
 		// chmod defensively in case of an unusual platform/umask.
-		const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "gjc-telegram-"));
+		const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "worx-telegram-"));
 		await fs.promises.chmod(dir, 0o700).catch(() => undefined);
 		this.attachmentDirs.set(sessionId, dir);
 		return dir;

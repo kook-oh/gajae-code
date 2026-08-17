@@ -3,7 +3,7 @@ import type { CanonicalWorxWorkflowSkill } from "./active-state";
 /**
  * Canonical initial phase for each GJC workflow skill. Used by both
  * `recordSkillActivation` (UserPromptSubmit hook seeding initial mode-state)
- * and the `gjc state <caller> handoff --to <callee>` runtime when promoting
+ * and the `worx state <caller> handoff --to <callee>` runtime when promoting
  * the callee.
  *
  * Keeping this mapping in a neutral skill-state module avoids cycles between

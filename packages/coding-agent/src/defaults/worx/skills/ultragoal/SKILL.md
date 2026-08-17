@@ -21,23 +21,23 @@ Existing aggregate plans with the legacy enumerated objective are migrated to th
 
 ## Corrupt current-session state recovery
 
-When ultragoal detects its own current-session state is corrupt, tampered, unreadable, or stale on resume, run `gjc state clear --force --mode ultragoal` before reseeding or restarting. Scope the clear to the current session via `--session-id`, the command payload, or `WORX_SESSION_ID`; it clears only ultragoal state for that session and never clears other skills or sessions.
+When ultragoal detects its own current-session state is corrupt, tampered, unreadable, or stale on resume, run `worx state clear --force --mode ultragoal` before reseeding or restarting. Scope the clear to the current session via `--session-id`, the command payload, or `WORX_SESSION_ID`; it clears only ultragoal state for that session and never clears other skills or sessions.
 
 ## Always-used command examples
 
-Use these exact `gjc ultragoal` commands before spending tool calls rediscovering syntax:
+Use these exact `worx ultragoal` commands before spending tool calls rediscovering syntax:
 
 ```sh
-gjc ultragoal status
-gjc ultragoal status --json
-gjc ultragoal create-goals --brief "<brief>"
-gjc ultragoal create-goals --brief-file <path>
-gjc ultragoal complete-goals
-gjc ultragoal complete-goals --retry-failed
-gjc ultragoal quality-gate validate --quality-gate-json <quality-gate-json-or-path> [--goal-id <id>] [--json]
-gjc ultragoal checkpoint --goal-id <id> --status complete --evidence "<evidence>" --quality-gate-json <quality-gate-json-or-path>
-gjc ultragoal checkpoint --goal-id <id> --status failed --evidence "<blocker/evidence>"
-gjc ultragoal record-review-blockers --goal-id <id> --title "Resolve final review blockers" --objective "<blocker-resolution objective>" --evidence "<review findings>"
+worx ultragoal status
+worx ultragoal status --json
+worx ultragoal create-goals --brief "<brief>"
+worx ultragoal create-goals --brief-file <path>
+worx ultragoal complete-goals
+worx ultragoal complete-goals --retry-failed
+worx ultragoal quality-gate validate --quality-gate-json <quality-gate-json-or-path> [--goal-id <id>] [--json]
+worx ultragoal checkpoint --goal-id <id> --status complete --evidence "<evidence>" --quality-gate-json <quality-gate-json-or-path>
+worx ultragoal checkpoint --goal-id <id> --status failed --evidence "<blocker/evidence>"
+worx ultragoal record-review-blockers --goal-id <id> --title "Resolve final review blockers" --objective "<blocker-resolution objective>" --evidence "<review findings>"
 ```
 
 Use these exact goal-tool calls for the inline goal state:
@@ -80,10 +80,10 @@ goal({"op":"resume"})
    Stories become `G001`, `G002`, … in order.
 
 2. Run one of:
-   - `gjc ultragoal create-goals --brief "<brief>"`
-   - `gjc ultragoal create-goals --brief-file <path>`
-   - `cat <brief> | gjc ultragoal create-goals --from-stdin`
-   - `gjc ultragoal create-goals --gjc-goal-mode per-story --brief "<brief>"` only when one GJC goal context per story is explicitly preferred
+   - `worx ultragoal create-goals --brief "<brief>"`
+   - `worx ultragoal create-goals --brief-file <path>`
+   - `cat <brief> | worx ultragoal create-goals --from-stdin`
+   - `worx ultragoal create-goals --gjc-goal-mode per-story --brief "<brief>"` only when one GJC goal context per story is explicitly preferred
 3. Inspect `.worx/_session-{sessionid}/ultragoal/goals.json` and refine if needed.
 
 ### Create-goals granularity: merge validation-coupled stories
@@ -99,9 +99,9 @@ Fanning out executor slices inside a single merged goal keeps one review/QA boun
 
 ## Complete goals
 
-Loop until `gjc ultragoal status` reports all goals complete:
+Loop until `worx ultragoal status` reports all goals complete:
 
-1. Run `gjc ultragoal complete-goals`.
+1. Run `worx ultragoal complete-goals`.
 2. Read the printed handoff.
 3. Call `goal({"op":"get"})`.
 4. If no active GJC goal exists, call `goal({"op":"create","objective":"<printed payload objective>"})` with the printed payload. In aggregate mode, if the same aggregate objective is already active, continue the current GJC story without creating a new GJC goal. If `goal({"op":"get"})` shows a stale dropped goal (status `"dropped"`) and a new aggregate must start, no extra cleanup is needed — `goal({"op":"create"})` succeeds directly. If a previous aggregate is still active and you genuinely need a fresh start in the same session, call `goal({"op":"drop"})` first, then `goal({"op":"create"})`.
@@ -109,26 +109,26 @@ Loop until `gjc ultragoal status` reports all goals complete:
 6. Run a completion audit against the story objective and real artifacts/tests.
 7. Before any `--status complete` checkpoint, run the mandatory final cleanup/review gate below. In aggregate mode, do **not** call `goal({"op":"complete"})` for intermediate stories; checkpoint each story while the aggregate objective is still `active`. On the final story, create the final aggregate receipt first; only after that receipt exists may `goal({"op":"complete"})` run.
 8. Checkpoint the durable ledger. Complete checkpoints require `--quality-gate-json` only:
-   `gjc ultragoal checkpoint --goal-id <id> --status complete --evidence "<evidence>" --quality-gate-json <quality-gate-json-or-path>`
-   A successful complete checkpoint is story completion, not automatic run completion. Read the checkpoint output: when it prints `Next ultragoal goal: <id>`, continue that active story under the same aggregate GJC goal; when it prints `All ultragoal goals are complete`, the durable run is terminal. `gjc ultragoal complete-goals` remains the supported manual next-story command if continuation output was missed.
+   `worx ultragoal checkpoint --goal-id <id> --status complete --evidence "<evidence>" --quality-gate-json <quality-gate-json-or-path>`
+   A successful complete checkpoint is story completion, not automatic run completion. Read the checkpoint output: when it prints `Next ultragoal goal: <id>`, continue that active story under the same aggregate GJC goal; when it prints `All ultragoal goals are complete`, the durable run is terminal. `worx ultragoal complete-goals` remains the supported manual next-story command if continuation output was missed.
 9. If blocked or failed, checkpoint failure:
-   `gjc ultragoal checkpoint --goal-id <id> --status failed --evidence "<blocker/evidence>"`
+   `worx ultragoal checkpoint --goal-id <id> --status failed --evidence "<blocker/evidence>"`
 10. For legacy per-story completed-goal blockers, preserve the non-terminal blocker with:
-   `gjc ultragoal checkpoint --goal-id <id> --status blocked --evidence "<completed legacy GJC goal blocks goal create in this thread>"`
-11. Resume failed goals with `gjc ultragoal complete-goals --retry-failed`.
+   `worx ultragoal checkpoint --goal-id <id> --status blocked --evidence "<completed legacy GJC goal blocks goal create in this thread>"`
+11. Resume failed goals with `worx ultragoal complete-goals --retry-failed`.
 
 ## Blocker triage and pause discipline
 
 An active Ultragoal run must not give up on a blocker by pausing the goal and asking the user. Classify every blocker before deciding what to do, and default to `resolvable` when unsure:
 
-- **`resolvable`** — anything the agent can act on: failing tests, missing implementation, a dependency to install, an ambiguous-but-inferable detail, investigation. **Never pause.** Exhaust autonomous resolution first: investigate, `gjc ultragoal steer --kind add_subgoal --title "Investigate blocker" --objective "..." --evidence "..." --rationale "..."`, delegate an `executor`, or preserve the blocker durably with `gjc ultragoal checkpoint --status blocked` / `gjc ultragoal record-review-blockers` and keep scheduling the next goal.
+- **`resolvable`** — anything the agent can act on: failing tests, missing implementation, a dependency to install, an ambiguous-but-inferable detail, investigation. **Never pause.** Exhaust autonomous resolution first: investigate, `worx ultragoal steer --kind add_subgoal --title "Investigate blocker" --objective "..." --evidence "..." --rationale "..."`, delegate an `executor`, or preserve the blocker durably with `worx ultragoal checkpoint --status blocked` / `worx ultragoal record-review-blockers` and keep scheduling the next goal.
 - **`human_blocked`** — only the user can act: credentials/secrets, a manual or physical step, an external approval/decision, access the agent lacks. Pause is the last resort and is gated.
 
 `goal({"op":"pause"})` is **blocked at runtime** while an Ultragoal run is active unless the latest `blocker_classified` ledger event is `human_blocked` and a later bound clean pause terminal critic verdict is recorded for it (see [Terminal critic gate](#terminal-critic-gate)). `assertUltragoalPauseAllowed` first consumes a pre-existing give-up nudge (a durable ledger write) before it runs the read-only pause diagnostic; only `isUltragoalPauseBlocked` is a pure reader. To pause, first record the human-only classification and capture its event id, then record the terminal critic's clean bound pause verdict, and only then pause:
 
 ```sh
-gjc ultragoal classify-blocker --classification human_blocked --evidence "<the specific human-only dependency>" [--goal-id <id>]
-gjc ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId> --verdict OKAY --evidence "<terminal critic evidence>"
+worx ultragoal classify-blocker --classification human_blocked --evidence "<the specific human-only dependency>" [--goal-id <id>]
+worx ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId> --verdict OKAY --evidence "<terminal critic evidence>"
 goal({"op":"pause"})
 ```
 
@@ -136,7 +136,7 @@ Recording `--classification resolvable` is an audit note only; it never authoriz
 
 ## Dynamic steering
 
-Use `gjc ultragoal steer` when real findings or blockers prove the current story decomposition should change while the aggregate objective and constraints stay fixed. Steering is explicit-only and evidence-backed; broad natural-language requests are rejected instead of guessed.
+Use `worx ultragoal steer` when real findings or blockers prove the current story decomposition should change while the aggregate objective and constraints stay fixed. Steering is explicit-only and evidence-backed; broad natural-language requests are rejected instead of guessed.
 
 Allowed mutation kinds are:
 
@@ -150,12 +150,12 @@ Allowed mutation kinds are:
 Examples:
 
 ```sh
-gjc ultragoal steer --kind add_subgoal --title "Investigate blocker" --objective "Validate the blocker and report evidence." --evidence "log/test output" --rationale "The blocker changes the safe execution order." --json
-gjc ultragoal steer --kind split_subgoal --goal-id G002 --replacements-json '[{"title":"Fix parser","objective":"Resolve parser blocker."},{"title":"Verify parser","objective":"Run focused parser verification."}]' --evidence "Implementation split found two separable risks" --rationale "Splitting keeps each sub-goal independently verifiable." --json
-gjc ultragoal steer --kind reorder_pending --order-json '["G003","G002"]' --evidence "Dependency order changed after investigation" --rationale "G003 must land before G002 can proceed safely." --json
-gjc ultragoal steer --kind revise_pending_wording --goal-id G002 --title "Clarify blocker story" --evidence "The current title hides the actual blocker" --rationale "Clear wording keeps the ledger auditable." --json
-gjc ultragoal steer --kind annotate_ledger --evidence "User changed release ordering at runtime" --rationale "The aggregate objective is unchanged, but the execution history needs an audit note." --json
-gjc ultragoal steer --kind mark_blocked_superseded --goal-id G004 --evidence "The blocked work is no longer required because replacement evidence covers it" --rationale "No replacement sub-goal is needed; superseding only the blocked sub-goal unblocks final completion without changing the aggregate objective." --json
+worx ultragoal steer --kind add_subgoal --title "Investigate blocker" --objective "Validate the blocker and report evidence." --evidence "log/test output" --rationale "The blocker changes the safe execution order." --json
+worx ultragoal steer --kind split_subgoal --goal-id G002 --replacements-json '[{"title":"Fix parser","objective":"Resolve parser blocker."},{"title":"Verify parser","objective":"Run focused parser verification."}]' --evidence "Implementation split found two separable risks" --rationale "Splitting keeps each sub-goal independently verifiable." --json
+worx ultragoal steer --kind reorder_pending --order-json '["G003","G002"]' --evidence "Dependency order changed after investigation" --rationale "G003 must land before G002 can proceed safely." --json
+worx ultragoal steer --kind revise_pending_wording --goal-id G002 --title "Clarify blocker story" --evidence "The current title hides the actual blocker" --rationale "Clear wording keeps the ledger auditable." --json
+worx ultragoal steer --kind annotate_ledger --evidence "User changed release ordering at runtime" --rationale "The aggregate objective is unchanged, but the execution history needs an audit note." --json
+worx ultragoal steer --kind mark_blocked_superseded --goal-id G004 --evidence "The blocked work is no longer required because replacement evidence covers it" --rationale "No replacement sub-goal is needed; superseding only the blocked sub-goal unblocks final completion without changing the aggregate objective." --json
 ```
 
 `--directive-json` and UserPromptSubmit structured steering are planned/deferred routing surfaces, not part of the native typed `--kind` CLI path described above.
@@ -245,7 +245,7 @@ A deferred gate is just the proof the runtime cannot know: that targeted verific
 }
 ```
 
-`deferredToBatch.ranLanes` lists the lanes you actually ran (`targetedVerification`, plus optionally `aiSlopCleaner` / `iteration`); declaration and evidence must match in both directions. `ranLanes` can never claim `architectReview` or `executorQa`, and a deferred gate can never contain `architectReview`, `executorQa`, or `validationBatchClose` — review always belongs to the boundary, and deferring never manufactures approvals. Any optional field you do supply must match reality; a wrong value fails closed. Check with `gjc ultragoal quality-gate validate` before checkpointing.
+`deferredToBatch.ranLanes` lists the lanes you actually ran (`targetedVerification`, plus optionally `aiSlopCleaner` / `iteration`); declaration and evidence must match in both directions. `ranLanes` can never claim `architectReview` or `executorQa`, and a deferred gate can never contain `architectReview`, `executorQa`, or `validationBatchClose` — review always belongs to the boundary, and deferring never manufactures approvals. Any optional field you do supply must match reality; a wrong value fails closed. Check with `worx ultragoal quality-gate validate` before checkpointing.
 
 ### Validation batches (explicit phase/module boundaries)
 
@@ -254,7 +254,7 @@ When one ledger is large enough that a single end-of-run boundary is too coarse,
 Create a batch explicitly:
 
 ```sh
-gjc ultragoal create-goals --brief-file <path> --validation-batch-json '[{"schemaVersion":1,"batchId":"VB001","memberIds":["G001","G002","G003"],"finalGoalId":"G003"}]'
+worx ultragoal create-goals --brief-file <path> --validation-batch-json '[{"schemaVersion":1,"batchId":"VB001","memberIds":["G001","G002","G003"],"finalGoalId":"G003"}]'
 ```
 
 Checkpoint contract summary — the full contract lives in the `validation-batch-contracts` fragment (`skill-fragments/ultragoal/validation-batch-contracts.md`); load it before checkpointing any batch member:
@@ -273,10 +273,10 @@ Use ultragoal and team together for a durable Ultragoal story that benefits from
 The leader checkpoints Ultragoal from Team evidence plus the current-session GJC goal snapshot; durable state remains leader-owned in `goals.json` and `ledger.jsonl`:
 
 ```sh
-gjc ultragoal checkpoint --goal-id <id> --status complete --evidence "<team evidence mentioning .worx/_session-{sessionid}/ultragoal and <id>>" --quality-gate-json <quality-gate-json-or-path>
+worx ultragoal checkpoint --goal-id <id> --status complete --evidence "<team evidence mentioning .worx/_session-{sessionid}/ultragoal and <id>>" --quality-gate-json <quality-gate-json-or-path>
 ```
 
-Workers do not own ultragoal goal state, do not create worker ultragoal ledgers, and do not checkpoint Ultragoal. Workers must not run `gjc ultragoal checkpoint`; checkpoint authority stays with the leader after worker tasks are terminal. Team launch remains explicit; Ultragoal does not auto-launch Team and performs no hidden goal mutation.
+Workers do not own ultragoal goal state, do not create worker ultragoal ledgers, and do not checkpoint Ultragoal. Workers must not run `worx ultragoal checkpoint`; checkpoint authority stays with the leader after worker tasks are terminal. Team launch remains explicit; Ultragoal does not auto-launch Team and performs no hidden goal mutation.
 
 ## Internal Ultragoal sub-skill fragments
 
@@ -308,24 +308,24 @@ One generation freezes the change set and reviews it exactly once:
    - Native/desktop/tui surfaces require a structurally valid screenshot, PTY capture with terminal control codes, or app-automation transcript.
    - API/package surfaces require a real artifact file or typed receipt whose artifact `kind` contains one of `api`, `package`, `consumer`, `black-box`, or `test-report`; examples: `api-package-test-report`, `package-consumer-report`, `black-box-api-receipt`. Algorithm/math surfaces require a real artifact file or typed receipt whose artifact `kind` contains one of `property`, `boundary`, `edge`, `adversarial`, `failure`, `math`, `algorithm`, or `test-report`; examples: `property-test-report`, `algorithm-boundary-report`. Bare `inlineEvidence` text alone is not sufficient for any surface.
    - The mandatory **computer-use** red-team suite (`kill-switch-bypass`, `suspended-enforcement`, `permission-revoked`, …) is conditional, not universal: require it only when computer/desktop control is genuinely part of the product surface being dogfooded. For every other product type, prove the change through the matching live surface instead — browser-use automation for web/GUI, bash/CLI live invocation or argv replay for CLI, and real artifacts or typed receipts for API/package/algorithm/math. Editing docs, prompts, or skills that merely mention computer-use does not by itself make the computer-use suite applicable; pick the red-team surface that matches what the change actually ships.
-   - **The runtime decides applicability from the change set, and it fails closed.** Judgement about "what the change actually ships" does not override it, so check the paths before assuming the suite is skippable. `gjc ultragoal checkpoint --status complete` requires the suite whenever the computed change set touches computer source (`crates/pi-natives/src/computer/**`), the computer tool (`packages/coding-agent/src/tools/computer.ts`, `packages/coding-agent/src/tools/computer/**`), or a **shared behavior registry** — `packages/coding-agent/src/config/settings-schema.ts`, `packages/coding-agent/src/tools/index.ts`, `packages/coding-agent/src/tools/renderers.ts`. The registries are deliberately unconditional: they mix computer and non-computer entries, and a path-only or uninspectable change cannot prove computer controls were untouched, so *any* edit to them demands the suite even when the diff contains nothing computer-related. The suite is also required whenever change-set capture was incomplete. Generated bindings (`packages/natives/native/index.{d.ts,js}`), prompt/skill/doc files, and every other path do not trigger it on their own.
-   - Practical consequence: a change that is not about computer-use at all — say a new settings key in `settings-schema.ts` — will still be gated on the seven mandatory cases. Do **not** fabricate them to get past the gate, and do not weaken the gate. Either supply a genuine suite, or treat it as a blocker and escalate to the operator (`gjc ultragoal record-critic-gate-override` exists for an authorized override).
+   - **The runtime decides applicability from the change set, and it fails closed.** Judgement about "what the change actually ships" does not override it, so check the paths before assuming the suite is skippable. `worx ultragoal checkpoint --status complete` requires the suite whenever the computed change set touches computer source (`crates/pi-natives/src/computer/**`), the computer tool (`packages/coding-agent/src/tools/computer.ts`, `packages/coding-agent/src/tools/computer/**`), or a **shared behavior registry** — `packages/coding-agent/src/config/settings-schema.ts`, `packages/coding-agent/src/tools/index.ts`, `packages/coding-agent/src/tools/renderers.ts`. The registries are deliberately unconditional: they mix computer and non-computer entries, and a path-only or uninspectable change cannot prove computer controls were untouched, so *any* edit to them demands the suite even when the diff contains nothing computer-related. The suite is also required whenever change-set capture was incomplete. Generated bindings (`packages/natives/native/index.{d.ts,js}`), prompt/skill/doc files, and every other path do not trigger it on their own.
+   - Practical consequence: a change that is not about computer-use at all — say a new settings key in `settings-schema.ts` — will still be gated on the seven mandatory cases. Do **not** fabricate them to get past the gate, and do not weaken the gate. Either supply a genuine suite, or treat it as a blocker and escalate to the operator (`worx ultragoal record-critic-gate-override` exists for an authorized override).
 7. The executor QA/red-team lane must report a matrix using `executorQa.contractCoverage`, `executorQa.surfaceEvidence`, `executorQa.adversarialCases`, and `executorQa.artifactRefs`. Not-applicable rows are allowed only in `contractCoverage` and `surfaceEvidence`; each `status: "not_applicable"` row requires `contractRef` plus `reason`. `adversarialCases` rows cannot be not-applicable.
 8. **Join before repairing.** Fold all three lane verdicts and the final code review into the strict gate under `iteration.reviewCohort` (`reviewGeneration`, `sourceHash`, `joined: true`, and the three `lanes`). No lane may checkpoint on its own, and no fix work starts until the findings are joined. Clean means `architectReview.architectureStatus`, `architectReview.productStatus`, and `architectReview.codeStatus` are all `"CLEAR"`, `architectReview.recommendation` is `"APPROVE"`, executor QA statuses are `"passed"`, iteration is `"passed"` with `fullRerun: true`, the cohort is joined with every lane clean and hash-bound, every evidence field is non-empty, every required matrix row is present, and every blockers array is empty. `COMMENT`, `WATCH`, `REQUEST CHANGES`, `BLOCK`, missing evidence, missing or shallow matrix rows, plan/code mismatches, or non-empty blockers are non-clean.
 9. If the joined findings contain any blocker, do **not** checkpoint `complete` and do **not** call `goal({"op":"complete"})`. Record **one consolidated blocker batch** for all findings from the whole cohort instead of one story per lane:
    ```sh
-   gjc ultragoal record-review-blockers --goal-id <id> --title "Resolve verification blockers" --objective "<blocker-resolution objective>" --evidence "<joined cohort findings>"
+   worx ultragoal record-review-blockers --goal-id <id> --title "Resolve verification blockers" --objective "<blocker-resolution objective>" --evidence "<joined cohort findings>"
    ```
 
    Review-blocker recursion cap (#3613): `record-review-blockers` dedups identical-objective blockers (same trimmed objective + same blocked goal + open status) and bounds the number of unresolved review_blocker descents per blocked goal to **3**. Descents 1..3 may exist; an attempt to create a 4th throws a typed `review_blocker_recursion_cap` terminal handoff (CLI exit 1, operator-visible marker) — never silently auto-completing findings. When the cap fires, record a human pause/escalation or resolve existing blockers before recording more.
 10. One consolidated fix batch produces exactly **one new generation**. Re-freeze the fixed source as a new `sourceHash`, bump `reviewGeneration`, and set `deltaOnly: true` with `priorGenerationSourceHash` and the `deltaPaths` actually changed. Generation 2+ reviews are **delta-only**: they may not pull in unrelated scope without an explicit `scopeExpansion` carrying `severity`, `novelty`, and `justification`. Repeat until a generation joins clean.
 11. Only after a generation joins clean, checkpoint the story as complete with a structured quality gate. The terminal critic runs **once** on that final joined generation; when `criticReview.sourceHash` is present it must match the cohort's `sourceHash`. The checkpoint creates a receipt in `ledger.jsonl`; `goals.json.status` alone is not proof. In aggregate mode, the final aggregate receipt must exist before the agent calls `goal({"op":"complete"})` to reconcile the inline UX goal state.
 
-While an Ultragoal run is active, the `ask` tool is blocked for all agents. Record unresolved review decisions as durable blockers with `gjc ultragoal record-review-blockers` instead of prompting interactively.
+While an Ultragoal run is active, the `ask` tool is blocked for all agents. Record unresolved review decisions as durable blockers with `worx ultragoal record-review-blockers` instead of prompting interactively.
 
 The native `checkpoint --status complete` command rejects missing or shallow gates, and reports **all** structural, evidence, surface, cohort, and declaration errors in one run rather than one per attempt. Each diagnostic carries a stable `path`, a stable machine-readable `code`, and a human `message`.
 
-Validate before you checkpoint. `gjc ultragoal quality-gate validate --quality-gate-json <json-or-path> [--goal-id <id>] [--json]` applies exactly the same rules as `checkpoint --status complete` (including deferred-vs-boundary gate selection and artifact existence checks) but is strictly read-only: it never touches `goals.json`, `ledger.jsonl`, or goal state. It exits non-zero with the full diagnostics list when invalid, so authoring a gate is one pass instead of an edit/retry loop. `--quality-gate-json` must include:
+Validate before you checkpoint. `worx ultragoal quality-gate validate --quality-gate-json <json-or-path> [--goal-id <id>] [--json]` applies exactly the same rules as `checkpoint --status complete` (including deferred-vs-boundary gate selection and artifact existence checks) but is strictly read-only: it never touches `goals.json`, `ledger.jsonl`, or goal state. It exits non-zero with the full diagnostics list when invalid, so authoring a gate is one pass instead of an edit/retry loop. `--quality-gate-json` must include:
 
 ```json
 {
@@ -407,19 +407,19 @@ Before assembling the final-aggregate `--quality-gate-json`, the leader delegate
 
 ### Pause/blocked terminus
 
-At a `human_blocked` terminus, the leader first runs `gjc ultragoal classify-blocker --classification human_blocked` (capturing that classification's ledger `eventId`), then delegates the terminal critic and records its verdict with `gjc ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId>` before calling `goal({"op":"pause"})`. The pause is allowed only when a later fresh `critic_verdict` ledger receipt exists with `terminus: "pause"`, `verdict: "OKAY"`, non-empty evidence, an empty blockers array, the current `planGeneration`, and a `classificationEventId` bound to the latest `blocker_classified` event, which must be `human_blocked`. Freshness is scoped to the final required-goal state, so required-goal or steer changes stale the receipt, and a newer classification supersedes an older verdict.
+At a `human_blocked` terminus, the leader first runs `worx ultragoal classify-blocker --classification human_blocked` (capturing that classification's ledger `eventId`), then delegates the terminal critic and records its verdict with `worx ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId>` before calling `goal({"op":"pause"})`. The pause is allowed only when a later fresh `critic_verdict` ledger receipt exists with `terminus: "pause"`, `verdict: "OKAY"`, non-empty evidence, an empty blockers array, the current `planGeneration`, and a `classificationEventId` bound to the latest `blocker_classified` event, which must be `human_blocked`. Freshness is scoped to the final required-goal state, so required-goal or steer changes stale the receipt, and a newer classification supersedes an older verdict.
 
-The critic must verify that the `human_blocked` classification is genuine, including catching false pauses where needed resources exist locally or the asserted blocker is resolvable. A `REJECT` (or `ITERATE`) verdict refuses the terminal pause; the run keeps executing. The pause (`goal({"op":"pause"})`) is the gated terminal park-and-wait exit — a per-goal `gjc ultragoal checkpoint --status blocked` remains available as non-terminal blocker bookkeeping that never signals run completion and keeps the blocker outstanding until resolved.
+The critic must verify that the `human_blocked` classification is genuine, including catching false pauses where needed resources exist locally or the asserted blocker is resolvable. A `REJECT` (or `ITERATE`) verdict refuses the terminal pause; the run keeps executing. The pause (`goal({"op":"pause"})`) is the gated terminal park-and-wait exit — a per-goal `worx ultragoal checkpoint --status blocked` remains available as non-terminal blocker bookkeeping that never signals run completion and keeps the blocker outstanding until resolved.
 
 ### Invocation and containment
 
 At each terminus, the leader gives the read-only `critic` role agent `brief.md`, `goals.json`, `ledger.jsonl`, and the cumulative change set. For completion, invoke it before assembling the final-aggregate gate JSON. For pause, invoke it after the `human_blocked` classification and before `goal({"op":"pause"})`. The terminal critic must not spawn nested `ralplan`, `team`, `deep-interview`, or `ultragoal` workflows. This creates no interactive surface: `ask` remains blocked while an Ultragoal run is active.
 
-On repeat terminus attempts within the same run (after an `ITERATE`/`REJECT` reopen cycle or a superseded pause classification), **resume the prior terminal-critic subagent when resumable** instead of freshly spawning one: the critic already holds `brief.md`, `goals.json`, the ledger history, and its own prior findings, so re-invocation only needs the delta (new ledger events, the updated cumulative change set, and evidence addressing the prior blockers). Resume via existing `subagent` resume/steer controls; on `context_unavailable`, `not_found`, `no_runner`, or `resume_failed` — or after a process restart — fall back to a fresh `critic` spawn with the full context bundle. A resumed terminal critic remains read-only, keeps the same containment rules, and must issue a fresh verdict against the current state — a prior `ITERATE` is never carried forward as pre-judged, and each verdict is still recorded through `gjc ultragoal record-critic-verdict`.
+On repeat terminus attempts within the same run (after an `ITERATE`/`REJECT` reopen cycle or a superseded pause classification), **resume the prior terminal-critic subagent when resumable** instead of freshly spawning one: the critic already holds `brief.md`, `goals.json`, the ledger history, and its own prior findings, so re-invocation only needs the delta (new ledger events, the updated cumulative change set, and evidence addressing the prior blockers). Resume via existing `subagent` resume/steer controls; on `context_unavailable`, `not_found`, `no_runner`, or `resume_failed` — or after a process restart — fall back to a fresh `critic` spawn with the full context bundle. A resumed terminal critic remains read-only, keeps the same containment rules, and must issue a fresh verdict against the current state — a prior `ITERATE` is never carried forward as pre-judged, and each verdict is still recorded through `worx ultragoal record-critic-verdict`.
 
 ### Non-OKAY loop and ceiling
 
-For completion-side `ITERATE` or `REJECT`, the leader MUST first record the terminal verdict so the run-level counter observes it: `gjc ultragoal record-critic-verdict --terminus completion --verdict <ITERATE|REJECT> --evidence "<critic findings>"`; then record the findings with `gjc ultragoal record-review-blockers` and reopen the run. The dedicated counter ceiling is 5, independently of the give-up nudge budget, and is **RUN-LEVEL**: it counts every non-OKAY terminal-critic verdict across the whole run and all reopen cycles. On reaching that ceiling, both pause and final completion are blocked until a human or leader records `gjc ultragoal record-critic-gate-override --evidence "<authorization evidence>"`. There is no automatic pause override.
+For completion-side `ITERATE` or `REJECT`, the leader MUST first record the terminal verdict so the run-level counter observes it: `worx ultragoal record-critic-verdict --terminus completion --verdict <ITERATE|REJECT> --evidence "<critic findings>"`; then record the findings with `worx ultragoal record-review-blockers` and reopen the run. The dedicated counter ceiling is 5, independently of the give-up nudge budget, and is **RUN-LEVEL**: it counts every non-OKAY terminal-critic verdict across the whole run and all reopen cycles. On reaching that ceiling, both pause and final completion are blocked until a human or leader records `worx ultragoal record-critic-gate-override --evidence "<authorization evidence>"`. There is no automatic pause override.
 
 This gate is always fail-closed and has no grandfathering: in-flight runs must obtain a terminal verdict when they reach a terminus.
 
@@ -429,7 +429,7 @@ Gating active-aggregate `goal drop` after nudge exhaustion is a known follow-up 
 
 ## Review mode
 
-`gjc ultragoal review` runs the same hardened gate against an already implemented PR, branch, or worktree. Use `--pr <number>` for a PR, `--branch <ref>` for a branch diff, omit both for the current worktree, and pass `--spec <path>` when a real contract exists. `--mode review-only` emits the verdict/findings without creating fix work; `--mode review-start` records review blockers for follow-up. Review mode validates the same `executorQa` shape and live-surface artifacts as `checkpoint --status complete`. A thin or derived-only contract can never clean-pass: the verdict is capped at `inconclusive: weak-contract` until a supplied spec or equivalent strong acceptance criteria are available.
+`worx ultragoal review` runs the same hardened gate against an already implemented PR, branch, or worktree. Use `--pr <number>` for a PR, `--branch <ref>` for a branch diff, omit both for the current worktree, and pass `--spec <path>` when a real contract exists. `--mode review-only` emits the verdict/findings without creating fix work; `--mode review-start` records review blockers for follow-up. Review mode validates the same `executorQa` shape and live-surface artifacts as `checkpoint --status complete`. A thin or derived-only contract can never clean-pass: the verdict is capped at `inconclusive: weak-contract` until a supplied spec or equivalent strong acceptance criteria are available.
 
 Receipts are freshness-scoped:
 - Per-goal receipts remain fresh for their target goal unless that goal, its blocker metadata, or its supersession metadata changes.
@@ -442,10 +442,10 @@ Receipts are freshness-scoped:
 When the aggregate ultragoal is complete OR the user requests return to planning/clarification, mark ultragoal ready for handoff so the skill tool's chain guard permits the backward transition:
 
 ```
-gjc state ultragoal write --input '{"current_phase":"handoff"}' --json
+worx state ultragoal write --input '{"current_phase":"handoff"}' --json
 ```
 
-The skill tool then dispatches `/skill:ralplan` or `/skill:deep-interview` same-turn and runs `gjc state ultragoal handoff --to <ralplan|deep-interview> --json` in-process to atomically demote ultragoal, promote the callee, and sync both `.worx/_session-{sessionid}/state/skill-active-state.json` files. You do not need to run the handoff verb yourself.
+The skill tool then dispatches `/skill:ralplan` or `/skill:deep-interview` same-turn and runs `worx state ultragoal handoff --to <ralplan|deep-interview> --json` in-process to atomically demote ultragoal, promote the callee, and sync both `.worx/_session-{sessionid}/state/skill-active-state.json` files. You do not need to run the handoff verb yourself.
 
 ## Constraints
 

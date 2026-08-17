@@ -175,13 +175,13 @@ describe("system Handlebars prompt templates", () => {
 		const sub = prompt.render(template, { ...baseRenderContext, subagent: true });
 
 		// Top-level agent keeps concise routing and soul blocks.
-		expect(full).toContain("<gjc-runtime>");
+		expect(full).toContain("<worx-runtime>");
 		expect(full).toContain("<routing>");
 		expect(full).toContain("<soul>");
 		expect(full).not.toContain("<role-agent-surface>");
 
 		// Subagent base prompt drops runtime routing and soul.
-		expect(sub).not.toContain("<gjc-runtime>");
+		expect(sub).not.toContain("<worx-runtime>");
 		expect(sub).not.toContain("<routing>");
 		expect(sub).not.toContain("<soul>");
 

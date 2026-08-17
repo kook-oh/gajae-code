@@ -1,5 +1,5 @@
 /**
- * Resolve auth-broker connection configuration for the local gjc client.
+ * Resolve auth-broker connection configuration for the local worx client.
  *
  * Precedence (highest first):
  *   1. `WORX_AUTH_BROKER_URL` / `WORX_AUTH_BROKER_TOKEN` env vars.
@@ -25,7 +25,7 @@ export interface AuthBrokerClientConfig {
 	token: string;
 }
 
-/** Path to the local bearer token file. Created on the broker host by `gjc auth-broker token`. */
+/** Path to the local bearer token file. Created on the broker host by `worx auth-broker token`. */
 export function getAuthBrokerTokenFilePath(): string {
 	return path.join(getConfigRootDir(), "auth-broker.token");
 }

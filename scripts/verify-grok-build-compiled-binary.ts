@@ -27,13 +27,13 @@ try {
 	]);
 	const combined = `${stdout}\n${stderr}`;
 	if (exitCode !== 0) {
-		throw new Error(`compiled gjc --list-models failed with ${exitCode}:\n${combined}`);
+		throw new Error(`compiled worx --list-models failed with ${exitCode}:\n${combined}`);
 	}
 	if (combined.includes("Bundled Grok Build default is missing")) {
-		throw new Error(`compiled gjc used missing filesystem defaults:\n${combined}`);
+		throw new Error(`compiled worx used missing filesystem defaults:\n${combined}`);
 	}
 	if (!combined.includes("grok-build") || !combined.includes("grok-composer-2.5-fast")) {
-		throw new Error(`compiled gjc did not list bundled Grok Build models:\n${combined}`);
+		throw new Error(`compiled worx did not list bundled Grok Build models:\n${combined}`);
 	}
 	console.log("PASS compiled Grok Build list-models smoke");
 } finally {

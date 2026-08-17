@@ -100,7 +100,7 @@ describe("skill HUD bar renderer", () => {
 							version: 1,
 							skill: "deep-interview",
 							owner: "worx-state-cli",
-							command: "gjc state deep-interview write",
+							command: "worx state deep-interview write",
 							state_path: ".worx/state/skill-active-state.json",
 							storage_path: ".worx/state/deep-interview-state.json",
 							mutated_at: new Date().toISOString(),
@@ -121,7 +121,7 @@ describe("skill HUD bar renderer", () => {
 	});
 
 	it("shows only the callee after a D->R handoff (caller demoted to inactive entry, HUD filters it out)", () => {
-		// After `gjc state deep-interview handoff --to ralplan`, the caller
+		// After `worx state deep-interview handoff --to ralplan`, the caller
 		// entry is preserved in active_skills with active:false and handoff_to
 		// lineage for audit; the HUD filters on active!==false so only ralplan
 		// appears in the rendered bar.
@@ -143,7 +143,7 @@ describe("skill HUD bar renderer", () => {
 	});
 
 	it("collapses the planning pipeline to the most-recently-activated stage", () => {
-		// `gjc ralplan` then `gjc ultragoal` activate their own rows without
+		// `worx ralplan` then `worx ultragoal` activate their own rows without
 		// running the handoff verb, so both arrive at the HUD active. Only the
 		// current (newest) stage should render.
 		const rendered = Bun.stripANSI(

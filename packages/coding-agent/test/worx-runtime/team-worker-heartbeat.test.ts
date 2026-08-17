@@ -235,7 +235,7 @@ describe("runtime-owned heartbeat records", () => {
 	});
 });
 
-describe("gjc team launch to reporter contract", () => {
+describe("worx team launch to reporter contract", () => {
 	it("exports exactly the worker env the reporter resolves its identity from", async () => {
 		const root = await startDryRunTeam("launch-contract-team");
 		const config = (await Bun.file(

@@ -185,7 +185,7 @@ describe("compiled daemon smoke coverage", () => {
 				}
 			).version;
 			const xdgDataHome = path.join(temp, "xdg");
-			const nativeCache = path.join(xdgDataHome, "gjc", "natives", nativeVersion);
+			const nativeCache = path.join(xdgDataHome, "worx", "natives", nativeVersion);
 			fs.mkdirSync(nativeCache, { recursive: true });
 			const nativeSrcDir = path.join(repoRoot, "packages/natives/native");
 			for (const nativeFile of fs.readdirSync(nativeSrcDir)) {

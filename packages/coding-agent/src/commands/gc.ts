@@ -36,14 +36,14 @@ export default class Gc extends Command {
 	};
 
 	static examples = [
-		"gjc gc",
-		"gjc gc --json",
-		"gjc gc --prune",
-		"gjc gc --prune --json",
-		"gjc gc --disk",
-		"gjc gc --disk --json",
-		"gjc gc --disk --prune",
-		"gjc gc --repair-session-index --json",
+		"worx gc",
+		"worx gc --json",
+		"worx gc --prune",
+		"worx gc --prune --json",
+		"worx gc --disk",
+		"worx gc --disk --json",
+		"worx gc --disk --prune",
+		"worx gc --repair-session-index --json",
 	];
 
 	async run(): Promise<void> {

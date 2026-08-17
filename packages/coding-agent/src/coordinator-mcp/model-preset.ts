@@ -64,7 +64,7 @@ export type CoordinatorMpresetResolution =
  * explicit empty/whitespace string is a caller error and is rejected rather
  * than silently launching at the default tier. Legacy aliases are canonicalized
  * exactly like the CLI (e.g. `codex-standard` -> `codex-medium`) so coordinator
- * selection stays in parity with `gjc --mpreset <profile>`; the resolved value
+ * selection stays in parity with `worx --mpreset <profile>`; the resolved value
  * is the canonical profile name. Unknown names are rejected with the
  * available-profile listing and never reach a spawned child command, and a
  * broken registry fails closed with `model_profile_registry_error`.

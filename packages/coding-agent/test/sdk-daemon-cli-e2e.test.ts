@@ -24,7 +24,7 @@ function closeCaptureFd(fd: number): void {
 	}
 }
 
-/** Spawns `gjc <argv...>` with the fixture agent dir in the environment. */
+/** Spawns `worx <argv...>` with the fixture agent dir in the environment. */
 async function runCli(repo: string, agentDir: string, args: string[]): Promise<CliResult> {
 	const captureDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-sdk-cli-capture-"));
 	const stdoutPath = path.join(captureDir, "stdout");
@@ -57,7 +57,7 @@ async function runCli(repo: string, agentDir: string, args: string[]): Promise<C
 
 type PromptStatusRecord = { status: string; [key: string]: unknown };
 
-describe("SDK session CLI (gjc sdk session)", () => {
+describe("SDK session CLI (worx sdk session)", () => {
 	let root: string;
 	let agentDir: string;
 	let stateRoot: string;

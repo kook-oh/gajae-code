@@ -48,7 +48,7 @@ afterEach(async () => {
 });
 
 const escapedTempRoot = os.tmpdir().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const activeTempArtifact = new RegExp(`${escapedTempRoot}/(?:skill-tool|gjc)-[^\\n"]+`, "g");
+const activeTempArtifact = new RegExp(`${escapedTempRoot}/(?:skill-tool|worx)-[^\\n"]+`, "g");
 
 function scrub(text: string): string {
 	return text
@@ -138,7 +138,7 @@ describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 		const ralplanReceiptPayload = parseRequiredJson(ralplanReceipt.stdout, "ralplan receipt stdout");
 		const ralplanReceiptBinding = ralplanReceiptPayload.repository_binding;
 		expect(ralplanReceiptBinding).toEqual({
-			schema: "gjc.repository_binding.v1",
+			schema: "worx.repository_binding.v1",
 			worktreeRoot: root,
 			commonDir: null,
 			displayPath: root,
@@ -166,7 +166,7 @@ describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 			  "stage_n": 2,
 			  "sha256": "<sha256>",
 			  "repository_binding": {
-			    "schema": "gjc.repository_binding.v1",
+			    "schema": "worx.repository_binding.v1",
 			    "worktreeRoot": "/tmp/SCRUBBED",
 			    "commonDir": null,
 			    "displayPath": "/tmp/SCRUBBED"
@@ -210,7 +210,7 @@ describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 		const ralplanSeedPayload = parseRequiredJson(ralplanSeed.stdout, "ralplan seed stdout");
 		expect(ralplanSeedPayload.repository_binding).toEqual(ralplanReceiptBinding);
 		expect(scrub(ralplanSeed.stdout ?? "")).toMatchInlineSnapshot(`
-			"{"ok":true,"session_id":"test-session","skill":"ralplan","mode":"short","state_path":"/tmp/SCRUBBED","run_id":"run-b","handoff":"/skill:ralplan","repository_binding":{"schema":"gjc.repository_binding.v1","worktreeRoot":"/tmp/SCRUBBED","commonDir":null,"displayPath":"/tmp/SCRUBBED"}}
+			"{"ok":true,"session_id":"test-session","skill":"ralplan","mode":"short","state_path":"/tmp/SCRUBBED","run_id":"run-b","handoff":"/skill:ralplan","repository_binding":{"schema":"worx.repository_binding.v1","worktreeRoot":"/tmp/SCRUBBED","commonDir":null,"displayPath":"/tmp/SCRUBBED"}}
 			"
 			`);
 
@@ -379,7 +379,7 @@ describe("CONSUMER/KEY-FIELD MATRIX for compact handoff payloads", () => {
 		expect(skillDoc).toContain("planner");
 		expect(skillDoc).toContain("architect");
 		expect(skillDoc).toContain("critic");
-		expect(skillDoc).toContain("gjc ralplan --write");
+		expect(skillDoc).toContain("worx ralplan --write");
 		expect(skillDoc).toContain("run_id");
 		expect(skillDoc).toContain("path");
 		expect(skillDoc).toContain("sha256");

@@ -11,7 +11,7 @@ executable and no workflow skill is invoked.
 
 - `docs/sdk.md` — SDK overview: endpoint discovery, protocol, query and
   control surfaces, broker launch isolation, managed notification adapters.
-- `docs/sdk-session-cli.md` — the `gjc sdk session` command family: semantic
+- `docs/sdk-session-cli.md` — the `worx sdk session` command family: semantic
   verbs, raw hatch, lossless statuses, broker authority, checkpoint gaps, and
   elevation behavior.
 - `docs/sdk-embedding.md` — embedding GJC in-process.

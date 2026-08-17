@@ -5,10 +5,10 @@ export default class Ralplan extends Command {
 	static description = "Run native GJC RALPLAN consensus planning workflow";
 	static strict = false;
 	static examples = [
-		'$ gjc ralplan "<task description>"',
-		'$ gjc ralplan --interactive --deliberate "<task description>"',
-		'$ gjc ralplan --write --stage planner --stage_n 1 --artifact "<markdown or path>"',
-		"$ gjc ralplan --write --stage critic --stage_n 1 --artifact-env WORX_RALPLAN_ARTIFACT",
+		'$ worx ralplan "<task description>"',
+		'$ worx ralplan --interactive --deliberate "<task description>"',
+		'$ worx ralplan --write --stage planner --stage_n 1 --artifact "<markdown or path>"',
+		"$ worx ralplan --write --stage critic --stage_n 1 --artifact-env WORX_RALPLAN_ARTIFACT",
 	];
 
 	async run(): Promise<void> {

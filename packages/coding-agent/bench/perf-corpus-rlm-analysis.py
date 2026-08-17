@@ -21,7 +21,7 @@ from statistics import NormalDist
 from typing import Any, Sequence
 
 ANALYSIS_SCHEMA = "gjc.perf-corpus-rlm-analysis/1"
-REPORT_SCHEMA = "gjc.perf-corpus/3"
+REPORT_SCHEMA = "worx.perf-corpus/3"
 PREREG_SCHEMA = "gjc.perf-corpus-preregistration/1"
 SURFACES = ("cli", "agent-session", "blob-store", "worker", "telegram-daemon", "tui", "shared-native")
 ELIGIBLE_SURFACES = ("agent-session", "tui")

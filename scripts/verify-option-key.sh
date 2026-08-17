@@ -192,14 +192,14 @@ else
   fail=1
 fi
 
-if command -v gjc >/dev/null 2>&1; then
-  printf 'GJC: '; gjc --version
-  if ! gjc --smoke-test; then
-    printf '%s\n' 'FAIL: gjc --smoke-test failed.' >&2
+if command -v worx >/dev/null 2>&1; then
+  printf 'GJC: '; worx --version
+  if ! worx --smoke-test; then
+    printf '%s\n' 'FAIL: worx --smoke-test failed.' >&2
     fail=1
   fi
 else
-  printf '%s\n' 'FAIL: gjc is not on PATH.' >&2
+  printf '%s\n' 'FAIL: worx is not on PATH.' >&2
   fail=1
 fi
 

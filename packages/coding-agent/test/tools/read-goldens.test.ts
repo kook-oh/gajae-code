@@ -490,7 +490,7 @@ async function captureSurface(entry: Entry, tool: { description: string }): Prom
 			const text = await new Response(process.stdout).text();
 			const error = await new Response(process.stderr).text();
 			await process.exited;
-			if (process.exitCode !== 0) throw new Error(`gjc read --help failed: ${error}`);
+			if (process.exitCode !== 0) throw new Error(`worx read --help failed: ${error}`);
 			return surfaceCaptured(text);
 		}
 		default:

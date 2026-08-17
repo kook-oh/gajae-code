@@ -171,7 +171,7 @@ const REFERENCE_CHUNK_MARKER = "gjc-rss-reference-0123456789abcdef";
 const REFERENCE_LARGE_LINE_COUNT = 29_960;
 const BASH_OUTPUT_BYTES = 8_388_608;
 const BASH_OUTPUT_MARKER = `WORX_RSS_BASH_BYTES=${BASH_OUTPUT_BYTES}`;
-const binaryPath = path.join(repoRoot, "packages", "coding-agent", "dist", "gjc");
+const binaryPath = path.join(repoRoot, "packages", "coding-agent", "dist", "worx");
 const buildCommand = "bun --cwd=packages/coding-agent run build";
 const deferredS6Reason = "requires W7/W8 authorization and daemon implementation";
 const allMeasuredScenarios: ScenarioId[] = ["S1", "S2", "S3", "S4", "S5", "S7"];

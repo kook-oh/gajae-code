@@ -2,7 +2,7 @@
  * Pure parse + summarize for ledger-backed skill observability.
  *
  * Workflow progress for ultragoal/ralplan cannot be observed via subagent tool
- * events (those skills persist through `bash`-backed `gjc` CLI calls whose tool
+ * events (those skills persist through `bash`-backed `worx` CLI calls whose tool
  * `details` carry no structured payload). The durable source of truth is the
  * append-only ledgers:
  *   - ultragoal: `.worx/ultragoal/ledger.jsonl`

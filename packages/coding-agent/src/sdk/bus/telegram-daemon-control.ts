@@ -166,7 +166,7 @@ export interface TelegramDaemonControlDeps {
 	 * Stable process id encoded into freshly-spawned daemon owner ids.
 	 *
 	 * The daemon-internal entrypoint rejects numeric owner ids whose process is
-	 * already gone. `gjc daemon reload` is a short-lived CLI process, so using its
+	 * already gone. `worx daemon reload` is a short-lived CLI process, so using its
 	 * own pid can race the child startup and make the replacement exit immediately.
 	 */
 	ownerPid?: number;
@@ -449,7 +449,7 @@ export class TelegramDaemonController implements BuiltInDaemonController {
 		attestedLegacyUpgrade = false,
 	): Promise<TelegramGenerationReloadResult> {
 		// A generation upgrade MUST replace an incompatible older-generation owner to
-		// avoid a permanent single-poller deadlock. Unlike a manual `gjc daemon
+		// avoid a permanent single-poller deadlock. Unlike a manual `worx daemon
 		// reload`, this automatic path force-escalates to SIGKILL when the old owner
 		// ignores the cooperative SIGTERM within the graceful timeout, so SDK startup
 		// self-recovers instead of failing closed and asking the operator to rerun

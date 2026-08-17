@@ -8,10 +8,10 @@ export default class Migrate extends Command {
 	static description = "Import MCP servers and skills from Claude Code, Codex, or OpenCode";
 
 	static examples = [
-		"gjc migrate --from claude-code",
-		"gjc migrate --from codex --from opencode",
-		"gjc migrate --from all --dry-run --json",
-		"gjc migrate --from claude-code --project --force",
+		"worx migrate --from claude-code",
+		"worx migrate --from codex --from opencode",
+		"worx migrate --from all --dry-run --json",
+		"worx migrate --from claude-code --project --force",
 	];
 
 	static flags = {

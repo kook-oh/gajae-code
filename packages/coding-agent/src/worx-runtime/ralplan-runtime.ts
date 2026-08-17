@@ -44,18 +44,18 @@ import { probeWorxTeamAvailability } from "./team-runtime";
 import { assertSafePathComponent, CommandError, flagValue, hasFlag } from "./workflow-cli-common";
 import { getSkillManifest } from "./workflow-manifest";
 /**
- * Native implementation of `gjc ralplan`.
+ * Native implementation of `worx ralplan`.
  *
  * Two invocation shapes are handled natively:
  *
- * 1. **Consensus handoff**: `gjc ralplan [--interactive] [--deliberate] [--architect <kind>]
+ * 1. **Consensus handoff**: `worx ralplan [--interactive] [--deliberate] [--architect <kind>]
  *    [--critic <kind>] [--session-id <id>] "<task>"` validates the documented flag surface,
  *    seeds `.worx/state/ralplan-state.json`, and updates the shared HUD rail via
  *    `syncSkillActiveState`. The CLI never *runs* the Planner / Architect / Critic loop itself —
  *    that lives in the bundled `/skill:ralplan` skill — but it accepts every documented flag so
  *    scripted users see a useful response and the active run is visible to the TUI.
  *
- * 2. **Artifact write**: `gjc ralplan --write --stage <type> --stage_n <N>
+ * 2. **Artifact write**: `worx ralplan --write --stage <type> --stage_n <N>
  *    (--artifact <path-or-string> | --artifact-env WORX_RALPLAN_ARTIFACT)
  *    [--run-id <id>] [--session-id <id>] [--lane-verdict <token>] [--json]` persists Planner / Architect
  *    / Critic / disposition / revision / post-interview / ADR / final artifacts under
@@ -84,13 +84,13 @@ const KNOWN_STAGES = [
 type RalplanStage = (typeof KNOWN_STAGES)[number];
 /** Default consensus iterations (planner + revision openers) per run. Matches SKILL.md re-review cap. */
 export const RALPLAN_DEFAULT_MAX_ITERATIONS = 5;
-/** Inclusive upper bound for `gjc.ralplan.maxIterations` settings overrides. */
+/** Inclusive upper bound for `worx.ralplan.maxIterations` settings overrides. */
 export const RALPLAN_MAX_ITERATIONS_LIMIT = 20;
 /** Operator-visible stuck signal for headless/CI orchestration (#3165). */
 export const PLANNING_STUCK_MARKER = "PLANNING-STUCK";
 /** Default architect/critic review passes per consensus iteration. */
 export const RALPLAN_DEFAULT_MAX_REVIEW_PASSES_PER_LANE = 1;
-/** Inclusive upper bound for `gjc.ralplan.maxReviewPassesPerLane` settings overrides. */
+/** Inclusive upper bound for `worx.ralplan.maxReviewPassesPerLane` settings overrides. */
 export const RALPLAN_MAX_REVIEW_PASSES_PER_LANE_LIMIT = 10;
 export type RalplanAutoHandoffTarget = "off" | "ultragoal" | "team";
 
@@ -391,11 +391,11 @@ async function readSettingsMaxIterations(settingsPath: string): Promise<number |
 	try {
 		const raw = await Bun.file(settingsPath).text();
 		const parsed = JSON.parse(raw) as Record<string, unknown>;
-		const flat = parseMaxIterationsValue(parsed["gjc.ralplan.maxIterations"]);
+		const flat = parseMaxIterationsValue(parsed["worx.ralplan.maxIterations"]);
 		if (flat !== null) return flat;
-		const gjc = parsed.worx;
-		if (gjc && typeof gjc === "object") {
-			const ralplan = (gjc as Record<string, unknown>).ralplan;
+		const worx = parsed.worx;
+		if (worx && typeof worx === "object") {
+			const ralplan = (worx as Record<string, unknown>).ralplan;
 			if (ralplan && typeof ralplan === "object") {
 				return parseMaxIterationsValue((ralplan as Record<string, unknown>).maxIterations);
 			}
@@ -440,7 +440,7 @@ function parsePresentRalplanAutoHandoff(value: unknown): RalplanAutoHandoffSetti
 	return target === undefined
 		? {
 				kind: "invalid",
-				reason: "expected gjc.ralplan.autoHandoff to be one of off, ultragoal, team",
+				reason: "expected worx.ralplan.autoHandoff to be one of off, ultragoal, team",
 			}
 		: { kind: "valid", value: target };
 }
@@ -448,12 +448,12 @@ function parsePresentRalplanAutoHandoff(value: unknown): RalplanAutoHandoffSetti
 function parseRalplanAutoHandoffSettings(parsed: unknown): RalplanAutoHandoffSetting {
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return { kind: "absent" };
 	const settings = parsed as Record<string, unknown>;
-	if (Object.hasOwn(settings, "gjc.ralplan.autoHandoff")) {
-		return parsePresentRalplanAutoHandoff(settings["gjc.ralplan.autoHandoff"]);
+	if (Object.hasOwn(settings, "worx.ralplan.autoHandoff")) {
+		return parsePresentRalplanAutoHandoff(settings["worx.ralplan.autoHandoff"]);
 	}
-	const gjc = settings.worx;
-	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
-	const ralplan = (gjc as Record<string, unknown>).ralplan;
+	const worx = settings.worx;
+	if (!worx || typeof worx !== "object" || Array.isArray(worx)) return { kind: "absent" };
+	const ralplan = (worx as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };
 	const ralplanSettings = ralplan as Record<string, unknown>;
 	if (!Object.hasOwn(ralplanSettings, "autoHandoff")) return { kind: "absent" };
@@ -544,7 +544,7 @@ function parsePresentMaxReviewPassesPerLane(value: unknown): RalplanReviewPasses
 		? {
 				kind: "invalid",
 				reason:
-					"expected gjc.ralplan.maxReviewPassesPerLane to be an integer between 1 and " +
+					"expected worx.ralplan.maxReviewPassesPerLane to be an integer between 1 and " +
 					RALPLAN_MAX_REVIEW_PASSES_PER_LANE_LIMIT,
 			}
 		: { kind: "valid", value: parsed };
@@ -553,12 +553,12 @@ function parsePresentMaxReviewPassesPerLane(value: unknown): RalplanReviewPasses
 function parseMaxReviewPassesPerLaneSettings(parsed: unknown): RalplanReviewPassesPerLaneSetting {
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return { kind: "absent" };
 	const settings = parsed as Record<string, unknown>;
-	if (Object.hasOwn(settings, "gjc.ralplan.maxReviewPassesPerLane")) {
-		return parsePresentMaxReviewPassesPerLane(settings["gjc.ralplan.maxReviewPassesPerLane"]);
+	if (Object.hasOwn(settings, "worx.ralplan.maxReviewPassesPerLane")) {
+		return parsePresentMaxReviewPassesPerLane(settings["worx.ralplan.maxReviewPassesPerLane"]);
 	}
-	const gjc = settings.worx;
-	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
-	const ralplan = (gjc as Record<string, unknown>).ralplan;
+	const worx = settings.worx;
+	if (!worx || typeof worx !== "object" || Array.isArray(worx)) return { kind: "absent" };
+	const ralplan = (worx as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };
 	const ralplanSettings = ralplan as Record<string, unknown>;
 	if (!Object.hasOwn(ralplanSettings, "maxReviewPassesPerLane")) return { kind: "absent" };
@@ -922,7 +922,13 @@ async function persistActiveRunId(cwd: string, sessionId: string, runId: string,
 			await writeWorkflowEnvelopeAtomic(statePath, existing, {
 				cwd,
 				lockHeld: true,
-				receipt: { cwd, skill: "ralplan", owner: "worx-runtime", command: "gjc ralplan persist-run-id", sessionId },
+				receipt: {
+					cwd,
+					skill: "ralplan",
+					owner: "worx-runtime",
+					command: "worx ralplan persist-run-id",
+					sessionId,
+				},
 				audit: { category: "state", verb: "write", owner: "worx-runtime", skill: "ralplan", sessionId },
 			});
 		},
@@ -1181,7 +1187,7 @@ async function applyPersistedRoleStateUpdate(
 					cwd,
 					skill: "ralplan",
 					owner: "worx-runtime",
-					command: `gjc ralplan ${update.role}-state`,
+					command: `worx ralplan ${update.role}-state`,
 					sessionId,
 				},
 				audit: { category: "state", verb: "write", owner: "worx-runtime", skill: "ralplan", sessionId },
@@ -1225,7 +1231,7 @@ async function applyLaneVerdictUpdate(
 			await writeWorkflowEnvelopeAtomic(statePath, existing, {
 				cwd,
 				lockHeld: true,
-				receipt: { cwd, skill: "ralplan", owner: "worx-runtime", command: "gjc ralplan lane-verdict", sessionId },
+				receipt: { cwd, skill: "ralplan", owner: "worx-runtime", command: "worx ralplan lane-verdict", sessionId },
 				audit: { category: "state", verb: "write", owner: "worx-runtime", skill: "ralplan", sessionId },
 			});
 			return true;
@@ -1281,7 +1287,13 @@ async function recordRalplanPlanningStuck(
 			await writeWorkflowEnvelopeAtomic(statePath, existing, {
 				cwd,
 				lockHeld: true,
-				receipt: { cwd, skill: "ralplan", owner: "worx-runtime", command: "gjc ralplan planning-stuck", sessionId },
+				receipt: {
+					cwd,
+					skill: "ralplan",
+					owner: "worx-runtime",
+					command: "worx ralplan planning-stuck",
+					sessionId,
+				},
 				audit: { category: "state", verb: "write", owner: "worx-runtime", skill: "ralplan", sessionId },
 			});
 		},
@@ -1355,7 +1367,7 @@ async function persistRalplanFinalAdmission(
 					cwd,
 					skill: "ralplan",
 					owner: "worx-runtime",
-					command: "gjc ralplan final-admission",
+					command: "worx ralplan final-admission",
 					sessionId,
 				},
 				audit: { category: "state", verb: "write", owner: "worx-runtime", skill: "ralplan", sessionId },
@@ -2019,7 +2031,7 @@ async function handleArtifactWrite(args: readonly string[], cwd: string): Promis
 	// under-count and fail open after prior planner/revision writes.
 	//
 	// Gate evaluation, artifact write, and ledger append are sequential within one
-	// `gjc ralplan --write` invocation. This is NOT exclusive across processes: no
+	// `worx ralplan --write` invocation. This is NOT exclusive across processes: no
 	// run-scoped lock or CAS admission exists, intentionally matching #3165's
 	// check-then-persist exposure.
 	const [onDiskOpeners, onDiskLaneArtifacts, iterationLimit, laneLimit] = await Promise.all([
@@ -2207,7 +2219,7 @@ function extractPositionalTask(args: readonly string[]): string {
 		}
 		if (arg === "--interactive" || arg === "--deliberate" || arg === "--write" || arg === "--json") continue;
 		if (arg.startsWith("-")) {
-			throw new RalplanCommandError(2, `unknown flag for gjc ralplan: ${arg}`);
+			throw new RalplanCommandError(2, `unknown flag for worx ralplan: ${arg}`);
 		}
 		parts.push(arg);
 	}
@@ -2216,7 +2228,7 @@ function extractPositionalTask(args: readonly string[]): string {
 
 function resolveConsensusArgs(args: readonly string[], cwd: string): ConsensusHandoffArgs {
 	if (hasFlag(args, "--lane-verdict")) {
-		throw new RalplanCommandError(2, "--lane-verdict is only supported with gjc ralplan --write.");
+		throw new RalplanCommandError(2, "--lane-verdict is only supported with worx ralplan --write.");
 	}
 	const architectKind = flagValue(args, "--architect")?.trim() || undefined;
 	if (architectKind && !KNOWN_ARCHITECT_KINDS.has(architectKind)) {
@@ -2255,7 +2267,7 @@ async function seedRalplanState(
 	resolved: ConsensusHandoffArgs,
 ): Promise<{ statePath: string; runId: string; repositoryBinding: RepositoryBinding }> {
 	const statePath = ralplanStatePath(cwd, resolved.sessionId);
-	// Reuse an existing run id when present so a re-invocation of `gjc ralplan "task"` doesn't
+	// Reuse an existing run id when present so a re-invocation of `worx ralplan "task"` doesn't
 	// orphan in-progress artifacts under a fresh run id.
 	const existingRunId = await readActiveRunId(cwd, resolved.sessionId);
 	const runId = existingRunId ?? resolved.sessionId ?? defaultRunId();
@@ -2287,7 +2299,7 @@ async function seedRalplanState(
 			cwd,
 			skill: "ralplan",
 			owner: "worx-runtime",
-			command: "gjc ralplan seed",
+			command: "worx ralplan seed",
 			sessionId: resolved.sessionId,
 		},
 		audit: {
@@ -2305,7 +2317,7 @@ async function seedRalplanState(
 async function handleConsensusHandoff(args: readonly string[], cwd: string): Promise<RalplanCommandResult> {
 	const resolved = resolveConsensusArgs(args, cwd);
 	if (!resolved.task) {
-		throw new RalplanCommandError(2, 'gjc ralplan requires a task description, e.g. `gjc ralplan "<task>"`.');
+		throw new RalplanCommandError(2, 'worx ralplan requires a task description, e.g. `worx ralplan "<task>"`.');
 	}
 	const { statePath, runId, repositoryBinding } = await seedRalplanState(cwd, resolved);
 	const mode = resolved.deliberate ? "deliberate" : "short";

@@ -1535,7 +1535,7 @@ async function checkpointWorkerForMemoryGuard(
 	if (classification.kind === "eligible") {
 		const added = runGitResult(worker.worktree_path, ["add", "--", ...classification.files]);
 		if (!added.ok) return { ok: false, reason: "checkpoint_git_add_failed" };
-		const message = `gjc(team): memory-guard checkpoint ${worker.id} [${taskId ?? "unknown"}]`;
+		const message = `worx(team): memory-guard checkpoint ${worker.id} [${taskId ?? "unknown"}]`;
 		const committed = runGitResult(worker.worktree_path, [
 			"commit",
 			"--no-verify",
@@ -2207,7 +2207,7 @@ export async function persistWorxTeamModeStateSummary(snapshot: WorxTeamSnapshot
 				cwd,
 				skill: "team",
 				owner: "worx-runtime",
-				command: "gjc team sync-team-summary",
+				command: "worx team sync-team-summary",
 				sessionId,
 				nowIso: updatedAt,
 			},
@@ -2514,7 +2514,7 @@ async function ensureWorkerWorktree(
 
 function buildTeamTmuxLeaderRequirementMessage(detail?: string): string {
 	const suffix = detail?.trim() ? `:${detail.trim()}` : "";
-	return `worx_team_requires_tmux_leader: start a tmux session first (run \`gjc --tmux\`, or launch tmux yourself), then run \`gjc team ...\` inside it, or use \`gjc team --dry-run\` for state-only smoke tests${suffix}`;
+	return `worx_team_requires_tmux_leader: start a tmux session first (run \`worx --tmux\`, or launch tmux yourself), then run \`worx team ...\` inside it, or use \`worx team --dry-run\` for state-only smoke tests${suffix}`;
 }
 function providerExecutableArgv(authority: ProviderAuthority): string[] {
 	if (
@@ -2573,7 +2573,7 @@ function readCurrentTmuxLeaderContext(
 ): WorxTmuxLeaderContext {
 	if (!path.isAbsolute(tmuxCommand) && Bun.which(tmuxCommand) === null)
 		throw new Error(buildTeamTmuxLeaderRequirementMessage(`tmux_not_installed:${tmuxCommand}`));
-	// Prefer the explicit GJC-managed session name propagated by `gjc --tmux`
+	// Prefer the explicit GJC-managed session name propagated by `worx --tmux`
 	// (WORX_TMUX_ACTIVE_SESSION). Under psmux on Windows the inherited TMUX_PANE
 	// can resolve to the wrong/default session, so querying the tagged session
 	// by name is authoritative for GJC-launched leaders. Fall back to TMUX_PANE,
@@ -2599,7 +2599,7 @@ function readCurrentTmuxLeaderContext(
 	if (result.exitCode !== 0) {
 		// Distinguish "you are not inside any tmux session" from a genuine tmux
 		// query failure so the caller gets actionable guidance instead of raw
-		// tmux stderr. `gjc team` needs a tmux leader; outside tmux there is none.
+		// tmux stderr. `worx team` needs a tmux leader; outside tmux there is none.
 		const insideTmux = Boolean(env.TMUX?.trim() || env.TMUX_PANE?.trim() || activeSession);
 		const stderr = result.stderr.toString().trim();
 		throw new Error(
@@ -2614,12 +2614,12 @@ function readCurrentTmuxLeaderContext(
 		throw new Error(buildTeamTmuxLeaderRequirementMessage(`invalid_tmux_context:${result.stdout.toString().trim()}`));
 	if (verifyProfile && readWorxTmuxProfileValue(authority, sessionName) !== WORX_TMUX_PROFILE_VALUE) {
 		// Adopt any real tmux leader as a GJC team leader — including a session
-		// the user created outside `gjc --tmux` — by writing GJC's @gjc-profile
+		// the user created outside `worx --tmux` — by writing GJC's @gjc-profile
 		// ownership tag and reading it back. A provider that round-trips tmux
 		// user options (real tmux) keeps the tag and is adopted; one that does
 		// not (e.g. psmux on Windows) drops it, so the readback still fails and
 		// the leader is rejected as unmanaged. This also self-heals a genuine
-		// `gjc --tmux` pane that lost its @gjc-profile tag mid-startup.
+		// `worx --tmux` pane that lost its @gjc-profile tag mid-startup.
 		const tagged = tagTmuxSessionAsWorxLeader(authority, sessionName);
 		if (!tagged || readWorxTmuxProfileValue(authority, sessionName) !== WORX_TMUX_PROFILE_VALUE)
 			throw new Error(
@@ -2683,7 +2683,7 @@ function isAbsoluteRealPath(candidate: string | undefined, pathModule: typeof pa
 	return Boolean(normalized && !isBunVirtualPath(normalized) && pathModule.isAbsolute(normalized));
 }
 function isWorxExecutablePath(candidate: string | undefined, pathModule: typeof path): candidate is string {
-	return isAbsoluteRealPath(candidate, pathModule) && /^gjc(?:[._-]|$)/i.test(pathModule.basename(candidate.trim()));
+	return isAbsoluteRealPath(candidate, pathModule) && /^worx(?:[._-]|$)/i.test(pathModule.basename(candidate.trim()));
 }
 
 function formatWorkerExecutable(platform: NodeJS.Platform, executable: string): string {
@@ -3189,7 +3189,7 @@ async function startTmuxSession(
 		});
 		await appendTelemetry(dir, {
 			type: "tmux_started",
-			message: "Started gjc team worker panes in current tmux window",
+			message: "Started worx team worker panes in current tmux window",
 			data: {
 				tmux_target: config.tmux_target,
 				panes: workers.map(worker => worker.pane_id).filter(Boolean),
@@ -3516,7 +3516,7 @@ function autoCommitDirtyWorker(worker: WorxTeamWorker): {
 	if (classification.kind !== "eligible") return { ...empty, classification };
 	if (!runGitResult(worker.worktree_path, ["add", "--", ...classification.files]).ok)
 		return { ...empty, classification };
-	const message = `gjc(team): auto-checkpoint ${worker.id} [${worker.assigned_tasks[0] ?? "unknown"}]`;
+	const message = `worx(team): auto-checkpoint ${worker.id} [${worker.assigned_tasks[0] ?? "unknown"}]`;
 	if (!runGitResult(worker.worktree_path, ["commit", "--no-verify", "-m", message]).ok)
 		return { ...empty, classification };
 	return {
@@ -3588,7 +3588,7 @@ async function integrateWorxWorkerCommits(
 		}
 		if (isAncestor(worker.worktree_path, leaderHead, workerHead)) {
 			const mergeRef = workerMergeRef(worker, workerHead);
-			const merge = runGitResult(leaderCwd, ["merge", "--no-ff", "-m", `gjc(team): merge ${worker.id}`, mergeRef]);
+			const merge = runGitResult(leaderCwd, ["merge", "--no-ff", "-m", `worx(team): merge ${worker.id}`, mergeRef]);
 			if (merge.ok) {
 				const newLeaderHead = resolveHead(leaderCwd);
 				if (newLeaderHead && newLeaderHead !== leaderHead && isAncestor(leaderCwd, workerHead, "HEAD")) {

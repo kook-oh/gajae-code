@@ -890,7 +890,7 @@ export class SessionIndex {
 				await this.#replayUnderLock();
 				if (this.#corruptSuffix)
 					throw new Error(
-						"Cannot append to corrupt session index log; run `gjc gc --repair-session-index` to quarantine evidence and retain the valid prefix",
+						"Cannot append to corrupt session index log; run `worx gc --repair-session-index` to quarantine evidence and retain the valid prefix",
 					);
 				const unsigned: Omit<SessionIndexEvent, "checksum"> = {
 					...input,

@@ -62,7 +62,7 @@ function bundle(
 	} = {},
 ): WorxBundleSummary {
 	return {
-		identity: { kind: "gjc-bundle", scope, name },
+		identity: { kind: "worx-bundle", scope, name },
 		version: "1.2.0",
 		description: options.description ?? "Deterministic catalog bundle",
 		enabled: options.enabled ?? true,

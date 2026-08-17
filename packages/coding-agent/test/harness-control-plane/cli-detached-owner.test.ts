@@ -229,7 +229,7 @@ afterEach(async () => {
 	}
 });
 
-describe.skipIf(process.platform !== "linux")("gjc harness start --detach (detached owner lifecycle, B1)", () => {
+describe.skipIf(process.platform !== "linux")("worx harness start --detach (detached owner lifecycle, B1)", () => {
 	it("spawns a tmux-resident owner; submit + finalize route to it cross-process; retire stops it", async () => {
 		const started = await runHarness([
 			"start",

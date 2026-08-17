@@ -26,15 +26,15 @@ export default class Skills extends Command {
 	};
 
 	static examples = [
-		"# List bundled workflow skills\n  gjc skills list",
-		"# Read an embedded workflow skill without requiring .worx files\n  gjc skills read ultragoal",
-		"# Machine-readable embedded skill content\n  gjc skills read ralplan --json",
+		"# List bundled workflow skills\n  worx skills list",
+		"# Read an embedded workflow skill without requiring .worx files\n  worx skills read ultragoal",
+		"# Machine-readable embedded skill content\n  worx skills read ralplan --json",
 	];
 
 	async run(): Promise<void> {
 		const { args, flags } = await this.parse(Skills);
 		if (!args.action) {
-			renderCommandHelp("gjc", "skills", Skills);
+			renderCommandHelp("worx", "skills", Skills);
 			return;
 		}
 

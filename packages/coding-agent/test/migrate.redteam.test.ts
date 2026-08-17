@@ -1,5 +1,5 @@
 /**
- * Red-team / adversarial tests for `gjc migrate`. These try to break the feature:
+ * Red-team / adversarial tests for `worx migrate`. These try to break the feature:
  * secret leakage, path traversal, all-malformed input, and cross-source collisions.
  */
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";

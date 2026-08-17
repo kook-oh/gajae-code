@@ -91,17 +91,17 @@ export class SkillDiscoveryTool implements AgentTool<typeof skillDiscoverySchema
 	#disabledPolicyNotice(source: "all" | "project" | "user"): string | undefined {
 		const policy = this.#getRuntimeSkillPolicy();
 		if (policy.enabled !== true) {
-			return "Runtime skill discovery is disabled: `skills.enabled` is false, so no skill directories were searched. Enable it with `gjc config set skills.enabled true` (project and user scopes additionally require `skills.enablePiProject` / `skills.enablePiUser`).";
+			return "Runtime skill discovery is disabled: `skills.enabled` is false, so no skill directories were searched. Enable it with `worx config set skills.enabled true` (project and user scopes additionally require `skills.enablePiProject` / `skills.enablePiUser`).";
 		}
 		const skipped: string[] = [];
 		const commands: string[] = [];
 		if ((source === "all" || source === "project") && policy.enablePiProject !== true) {
 			skipped.push("project (`skills.enablePiProject` is false)");
-			commands.push("`gjc config set skills.enablePiProject true`");
+			commands.push("`worx config set skills.enablePiProject true`");
 		}
 		if ((source === "all" || source === "user") && policy.enablePiUser !== true) {
 			skipped.push("user (`skills.enablePiUser` is false)");
-			commands.push("`gjc config set skills.enablePiUser true`");
+			commands.push("`worx config set skills.enablePiUser true`");
 		}
 		if (skipped.length === 0) return undefined;
 		return `Skill discovery skipped disabled scope(s): ${skipped.join(", ")}. Enable them with ${commands.join(" and ")}.`;

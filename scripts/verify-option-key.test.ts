@@ -80,8 +80,8 @@ function writeBunStub(binDir: string): void {
 
 function writeWorxStub(binDir: string): void {
 	makeExecutable(
-		path.join(binDir, "gjc"),
-		'#!/bin/sh\ncase "$1" in\n  --version) echo "gjc/0.12.16"; exit 0;;\n  --smoke-test) exit 0;;\nesac\nexit 0\n',
+		path.join(binDir, "worx"),
+		'#!/bin/sh\ncase "$1" in\n  --version) echo "worx/0.12.16"; exit 0;;\n  --smoke-test) exit 0;;\nesac\nexit 0\n',
 	);
 }
 
@@ -373,7 +373,7 @@ describe("verify-option-key.sh", () => {
 	describe("non-Darwin execution fails", () => {
 		test("missing defaults command fails with exit 1", async () => {
 			const { root, binDir } = makeSandbox();
-			// Do NOT write a defaults stub — only bun and gjc
+			// Do NOT write a defaults stub — only bun and worx
 			writeBunStub(binDir);
 			writeWorxStub(binDir);
 

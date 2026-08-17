@@ -6,7 +6,7 @@
  * could ever name an existing one. A session that opts in is *prepared*
  * instead: its id, endpoint, and broker registration are discoverable authority
  * while readiness stays withheld, which leaves exactly one root claim for
- * `gjc notify bind-thread` to fill. Activation then publishes readiness once,
+ * `worx notify bind-thread` to fill. Activation then publishes readiness once,
  * and the daemon adopts the bound root instead of replacing it.
  *
  * Nothing here mutates a mapping. The gate only reads the daemon-owned store to

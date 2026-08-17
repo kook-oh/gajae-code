@@ -17,7 +17,7 @@ function stdoutText(spy: { mock: { calls: Array<[unknown, ...unknown[]]> } }): s
 	return spy.mock.calls.map((call: [unknown, ...unknown[]]) => String(call[0] ?? "")).join("");
 }
 
-describe("gjc mcp CLI helpers", () => {
+describe("worx mcp CLI helpers", () => {
 	beforeEach(async () => {
 		tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-mcp-cli-"));
 		agentDir = path.join(tmpDir, "agent");
@@ -64,7 +64,7 @@ describe("gjc mcp CLI helpers", () => {
 		expect(stdoutText(stdout)).toContain('"runtimeStatus": "storage-only"');
 		expect(stdoutText(stdout)).toContain('"runtimeLoadedByStandalone": false');
 		expect(stdoutText(stdout)).toContain(
-			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone gjc sessions today."',
+			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone worx sessions today."',
 		);
 
 		stdout.mockClear();
@@ -75,7 +75,7 @@ describe("gjc mcp CLI helpers", () => {
 		expect(stdoutText(stdout)).toContain('"runtimeStatus": "storage-only"');
 		expect(stdoutText(stdout)).toContain('"runtimeLoadedByStandalone": false');
 		expect(stdoutText(stdout)).toContain(
-			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone gjc sessions today."',
+			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone worx sessions today."',
 		);
 
 		stdout.mockClear();
@@ -86,7 +86,7 @@ describe("gjc mcp CLI helpers", () => {
 		expect(stdoutText(stdout)).toContain('"runtimeStatus": "storage-only"');
 		expect(stdoutText(stdout)).toContain('"runtimeLoadedByStandalone": false');
 		expect(stdoutText(stdout)).toContain(
-			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone gjc sessions today."',
+			'"runtimeNote": "Stored MCP registrations are not loaded by normal standalone worx sessions today."',
 		);
 		expect((await readMCPConfigFile(configPath)).mcpServers).toEqual({});
 	});
@@ -120,7 +120,7 @@ describe("gjc mcp CLI helpers", () => {
 		const output = stdoutText(stdout);
 		expect(output).toContain("docs\thttp\thttps://example.test/%3Credacted%3E");
 		expect(output).toContain("Status: storage-only");
-		expect(output).toContain("normal standalone gjc sessions do not load stored MCP registrations today");
+		expect(output).toContain("normal standalone worx sessions do not load stored MCP registrations today");
 		expect(output).toContain('"Authorization": "<redacted>"');
 		expect(output).toContain('"X-Public": "<redacted>"');
 		expect(output).not.toContain("Bearer real-token");

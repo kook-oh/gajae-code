@@ -1,12 +1,12 @@
 /**
  * npm registry resolution for update checks.
  *
- * The install half of `gjc update` shells out to bun/npm, so it already honours
+ * The install half of `worx update` shells out to bun/npm, so it already honours
  * whatever registry the user configured. The *version check* half did not — it
  * fetched `registry.npmjs.org` directly. On networks that mirror or block the
  * public registry (corporate Nexus/Artifactory proxies, air-gapped setups) the
  * check fails even though the install that follows it would have worked, so
- * `gjc update` reports `Failed to fetch release info:` and exits 1.
+ * `worx update` reports `Failed to fetch release info:` and exits 1.
  *
  * This module resolves the registry — and its credentials — the way npm does,
  * so the check agrees with the install.

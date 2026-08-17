@@ -1,5 +1,5 @@
 /**
- * `gjc auth-broker` command handlers.
+ * `worx auth-broker` command handlers.
  *
  * Sub-verbs:
  *   - `serve [--bind=…]` — boots the broker against the local SQLite store.
@@ -172,7 +172,7 @@ async function runToken(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 async function runLogin(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 	const providerArg = flags.provider;
 	if (!providerArg) {
-		throw new Error("Usage: gjc auth-broker login <provider> [--via=user@host]");
+		throw new Error("Usage: worx auth-broker login <provider> [--via=user@host]");
 	}
 	const oauthProviders = new Set<string>(getOAuthProviders().map(p => p.id));
 	if (!oauthProviders.has(providerArg)) {
@@ -239,7 +239,7 @@ async function runRemoteLogin(provider: string, via: string, dryRun: boolean): P
 async function runLogout(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 	const providerArg = flags.provider;
 	if (!providerArg) {
-		throw new Error("Usage: gjc auth-broker logout <provider>");
+		throw new Error("Usage: worx auth-broker logout <provider>");
 	}
 	const store = await SqliteAuthCredentialStore.open(getAgentDbPath());
 	try {
@@ -253,7 +253,7 @@ async function runLogout(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 // ─── CLIProxyAPI import ─────────────────────────────────────────────────
 
 /**
- * Maps the `type` field of a CLIProxyAPI credential JSON to the gjc provider id.
+ * Maps the `type` field of a CLIProxyAPI credential JSON to the worx provider id.
  * The filename also encodes the type (e.g. `Anthropic model-foo@bar.json`), but the
  * in-file `type` is authoritative — we only fall back to filename if absent.
  */
@@ -349,7 +349,7 @@ async function loadImportPlan(
 		if (!provider) {
 			skipped.push({
 				file,
-				reason: `cannot determine gjc provider from type=${json.type ?? "?"} (pass --provider to override)`,
+				reason: `cannot determine worx provider from type=${json.type ?? "?"} (pass --provider to override)`,
 			});
 			continue;
 		}
@@ -395,7 +395,7 @@ function describeImportEntry(entry: ImportPlanEntry): string {
 async function runImport(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 	const target = flags.source;
 	if (!target) {
-		throw new Error("Usage: gjc auth-broker import <file|dir> [--provider=<id>] [--include-disabled] [--dry-run]");
+		throw new Error("Usage: worx auth-broker import <file|dir> [--provider=<id>] [--include-disabled] [--dry-run]");
 	}
 	const resolvedTarget = path.resolve(target.startsWith("~") ? target.replace(/^~/, os.homedir()) : target);
 	const { entries, skipped } = await loadImportPlan(resolvedTarget, flags.provider, flags.includeDisabled === true);
@@ -539,7 +539,7 @@ async function runMigrate(flags: AuthBrokerCommandArgs["flags"]): Promise<void> 
 	}
 	if (flags.fromLocal !== true) {
 		throw new Error(
-			"`gjc auth-broker migrate` requires an explicit source. Pass `--from-local` to migrate from the local SQLite store and env vars.",
+			"`worx auth-broker migrate` requires an explicit source. Pass `--from-local` to migrate from the local SQLite store and env vars.",
 		);
 	}
 

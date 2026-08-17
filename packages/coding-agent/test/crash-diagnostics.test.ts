@@ -12,7 +12,7 @@ import { executeBash } from "@bworx-io/worx-code/exec/bash-executor";
 const tempDirs: string[] = [];
 
 async function makeTempDir(): Promise<string> {
-	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-crash-diagnostics-test-"));
+	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-crash-diagnostics-test-"));
 	tempDirs.push(dir);
 	return dir;
 }
@@ -91,7 +91,7 @@ describe("crash diagnostics", () => {
 			);
 
 			expect(crashed.path).not.toBeNull();
-			const defaultDir = path.join(tempRoot, "gjc-crash-diagnostics");
+			const defaultDir = path.join(tempRoot, "worx-crash-diagnostics");
 			expect(crashed.path?.startsWith(`${defaultDir}${path.sep}`)).toBe(true);
 			expect(await modeOf(defaultDir)).toBe(0o700);
 			expect(await modeOf(crashed.path as string)).toBe(0o600);

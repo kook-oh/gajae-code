@@ -264,8 +264,8 @@ describe("default GJC definitions", () => {
 			expect(agent?.tools).not.toContain("edit");
 			expect(agent?.tools).not.toContain("write");
 			expect(agent?.bashAllowedPrefixes).toEqual([
-				"gjc ralplan --write",
-				"gjc state",
+				"worx ralplan --write",
+				"worx state",
 				"git status",
 				"git log",
 				"git show",
@@ -298,7 +298,7 @@ describe("default GJC definitions", () => {
 			"git blame src/foo.ts",
 			"git rev-parse HEAD",
 			"git ls-files",
-			"gjc ralplan --write --stage architect --stage_n 1 --artifact 'verdict'",
+			"worx ralplan --write --stage architect --stage_n 1 --artifact 'verdict'",
 		];
 		const blocked = [
 			"git commit -m x",
@@ -427,7 +427,7 @@ Project executor override body.
 		expect(ultragoal).toContain("## Boundary verification (aggregate default)");
 		expect(ultragoal).toContain("### Validation batches (explicit phase/module boundaries)");
 		expect(ultragoal).toContain("## Boundary completion cohort gate");
-		expect(ultragoal).toContain("gjc ultragoal quality-gate validate");
+		expect(ultragoal).toContain("worx ultragoal quality-gate validate");
 		expect(ultragoal).toContain(
 			"reports **all** structural, evidence, surface, cohort, and declaration errors in one run",
 		);
@@ -547,7 +547,7 @@ Project executor override body.
 			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ralplan", "SKILL.md"),
 		).text();
 		expect(ralplan).toContain("counts as opting into execution for that skill");
-		expect(ralplan).toContain("gjc.ralplan.autoHandoff");
+		expect(ralplan).toContain("worx.ralplan.autoHandoff");
 		expect(ralplan).toContain("`off` (default), `ultragoal`, or `team`");
 		expect(ralplan).toContain("A `team` target degrades to `off`");
 		expect(ralplan).toContain("`team_unavailable:<reason>`");
@@ -576,7 +576,7 @@ Project executor override body.
 		expect(team).toContain("current-session active GJC goal snapshot");
 		expect(ultragoal).toContain("current-session GJC goal snapshot");
 		for (const content of [team, ultragoal]) {
-			expect(content).toContain("Workers must not run `gjc ultragoal checkpoint`");
+			expect(content).toContain("Workers must not run `worx ultragoal checkpoint`");
 			expect(content).toContain("checkpoint authority stays with the leader");
 			expect(content).toContain("Ultragoal does not auto-launch Team");
 			expect(content).toContain("performs no hidden goal mutation");
@@ -595,17 +595,17 @@ Project executor override body.
 		}
 		expect(content).toContain("/skill:ralplan");
 		expect(content).toContain("/skill:team");
-		expect(content).toContain("`gjc ralplan` is a native CLI");
+		expect(content).toContain("`worx ralplan` is a native CLI");
 		expect(content).toContain("Direct `.worx/` file edits are forbidden unless an explicit force override is active");
 		expect(content).toContain("do not edit `.worx/_session-{sessionid}/state` directly without force override");
-		expect(content).toContain("gjc deep-interview clear --force");
-		expect(content).toContain("gjc deep-interview read --json");
-		expect(content).toContain("gjc deep-interview write --input");
+		expect(content).toContain("worx deep-interview clear --force");
+		expect(content).toContain("worx deep-interview read --json");
+		expect(content).toContain("worx deep-interview write --input");
 		expect(content).toContain("`--reset` only when deliberately replacing state");
-		expect(content).not.toContain("gjc state read");
-		expect(content).not.toContain("gjc state write");
-		expect(content).not.toContain("gjc state clear");
-		expect(content).not.toContain("gjc state deep-interview");
+		expect(content).not.toContain("worx state read");
+		expect(content).not.toContain("worx state write");
+		expect(content).not.toContain("worx state clear");
+		expect(content).not.toContain("worx state deep-interview");
 		expect(content).toContain("default `0.05`");
 		expect(content).toContain("language.instruction");
 		expect(content).toContain(
@@ -654,13 +654,13 @@ Project executor override body.
 		const content = ralplan?.content ?? "";
 
 		expect(content).toContain(
-			"gjc ralplan --write --session-id <owner-session-id> --run-id <run-id> --stage <type> --stage_n <N> --artifact",
+			"worx ralplan --write --session-id <owner-session-id> --run-id <run-id> --stage <type> --stage_n <N> --artifact",
 		);
 		expect(content).toContain("--stage planner");
 		expect(content).toContain("--stage architect");
 		expect(content).toContain("--stage critic");
 		expect(content).toContain("do not directly edit `.worx/_session-{sessionid}/plans`");
-		expect(content).toContain("gjc state clear --force --mode ralplan");
+		expect(content).toContain("worx state clear --force --mode ralplan");
 		expect(content).toContain('workflowGate: { stage: "ralplan", kind: "approval" }');
 		expect(content).toContain("A role subagent's own session id is transcript/resume identity only");
 		expect(content).toContain("RPC/headless clients receive a `ralplan`/`approval` workflow gate");

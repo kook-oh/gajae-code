@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe("resolveSeedsForScope", () => {
 	it("global scoping emits only seeds whose scopes include 'global', and never project-tagged ones", () => {
-		const scope: BankScope = { bankId: "gjc" };
+		const scope: BankScope = { bankId: "worx" };
 		const seeds = resolveSeedsForScope(scope, "global");
 		expect(seeds.length).toBeGreaterThan(0);
 		// project-conventions is per-project only — must not appear.
@@ -42,16 +42,16 @@ describe("resolveSeedsForScope", () => {
 
 	it("per-project-tagged scoping bakes the scope's retainTags into projectTagged seeds and leaves untagged seeds bare", () => {
 		const scope: BankScope = {
-			bankId: "gjc",
-			retainTags: ["project:gjc"],
-			recallTags: ["project:gjc"],
+			bankId: "worx",
+			retainTags: ["project:worx"],
+			recallTags: ["project:worx"],
 			recallTagsMatch: "any",
 		};
 		const seeds = resolveSeedsForScope(scope, "per-project-tagged");
 		const projectConv = seeds.find(s => s.id === "project-conventions");
 		const userPrefs = seeds.find(s => s.id === "user-preferences");
 		expect(projectConv).toBeDefined();
-		expect(projectConv?.tags).toEqual(["project:gjc"]);
+		expect(projectConv?.tags).toEqual(["project:worx"]);
 		// user-preferences is intentionally untagged so the refresh reads the
 		// whole bank, not just the project subset.
 		expect(userPrefs?.tags).toEqual([]);
@@ -96,19 +96,19 @@ function makeFakeApi(existing: MentalModelSummary[]): { api: HindsightApi; calls
 
 describe("ensureMentalModels", () => {
 	it("creates only the seeds that are missing on the bank", async () => {
-		const { api, calls } = makeFakeApi([{ id: "user-preferences", bank_id: "gjc", name: "User Preferences" }]);
+		const { api, calls } = makeFakeApi([{ id: "user-preferences", bank_id: "worx", name: "User Preferences" }]);
 		await ensureMentalModels(
 			api,
-			"gjc",
+			"worx",
 			[
 				{ id: "user-preferences", name: "User Preferences", sourceQuery: "q1", tags: [] },
-				{ id: "project-conventions", name: "Project Conventions", sourceQuery: "q2", tags: ["project:gjc"] },
+				{ id: "project-conventions", name: "Project Conventions", sourceQuery: "q2", tags: ["project:worx"] },
 			],
 			false,
 		);
 		expect(calls.created).toHaveLength(1);
 		expect(calls.created[0].id).toBe("project-conventions");
-		expect(calls.created[0].tags).toEqual(["project:gjc"]);
+		expect(calls.created[0].tags).toEqual(["project:worx"]);
 	});
 
 	it("does not modify existing models even if their fields drift from the seed list", async () => {
@@ -117,7 +117,7 @@ describe("ensureMentalModels", () => {
 		const { api, calls } = makeFakeApi([
 			{
 				id: "user-preferences",
-				bank_id: "gjc",
+				bank_id: "worx",
 				name: "Old Name",
 				source_query: "old query",
 				tags: ["legacy"],
@@ -125,7 +125,7 @@ describe("ensureMentalModels", () => {
 		]);
 		await ensureMentalModels(
 			api,
-			"gjc",
+			"worx",
 			[{ id: "user-preferences", name: "User Preferences", sourceQuery: "new query", tags: [] }],
 			false,
 		);
@@ -145,7 +145,7 @@ describe("ensureMentalModels", () => {
 		} as unknown as HindsightApi;
 
 		await expect(
-			ensureMentalModels(api, "gjc", [{ id: "x", name: "X", sourceQuery: "q", tags: [] }], false),
+			ensureMentalModels(api, "worx", [{ id: "x", name: "X", sourceQuery: "q", tags: [] }], false),
 		).resolves.toBeUndefined();
 		expect(calls.created).toHaveLength(0);
 	});

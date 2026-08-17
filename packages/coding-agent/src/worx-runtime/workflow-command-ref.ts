@@ -48,8 +48,8 @@ const skillPath = (skill: CanonicalWorxWorkflowSkill): string =>
 	`packages/coding-agent/src/defaults/worx/skills/${skill}/SKILL.md`;
 
 const stateWrite = (skill: CanonicalWorxWorkflowSkill): CommandRefCommand => ({
-	tokens: ["gjc", "state", skill, "write", "--input", `'{"current_phase":"handoff"}'`, "--json"],
-	rendered: `gjc state ${skill} write --input '{"current_phase":"handoff"}' --json`,
+	tokens: ["worx", "state", skill, "write", "--input", `'{"current_phase":"handoff"}'`, "--json"],
+	rendered: `worx state ${skill} write --input '{"current_phase":"handoff"}' --json`,
 	visibility: "public",
 	includeWhen: "implemented-only",
 	note: "Marks the workflow ready for the skill-tool chain guard.",
@@ -59,8 +59,8 @@ const stateHandoff = (
 	skill: CanonicalWorxWorkflowSkill,
 	targets: readonly CanonicalWorxWorkflowSkill[],
 ): CommandRefCommand => ({
-	tokens: ["gjc", "state", skill, "handoff", "--to", `<${targets.join("|")}>`, "--json"],
-	rendered: `gjc state ${skill} handoff --to <${targets.join("|")}> --json`,
+	tokens: ["worx", "state", skill, "handoff", "--to", `<${targets.join("|")}>`, "--json"],
+	rendered: `worx state ${skill} handoff --to <${targets.join("|")}> --json`,
 	visibility: "public",
 	includeWhen: "implemented-only",
 	note: "Bridge command run in-process by the skill tool after slash-skill dispatch.",
@@ -73,14 +73,14 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 		sourcePath: skillPath("deep-interview"),
 		renderOrder: 10,
 		markers: {
-			start: "<!-- gjc:cmdref:start state -->",
-			end: "<!-- gjc:cmdref:end state -->",
+			start: "<!-- worx:cmdref:start state -->",
+			end: "<!-- worx:cmdref:end state -->",
 		},
 		commands: [
 			stateWrite("deep-interview"),
 			{
 				tokens: [
-					"gjc",
+					"worx",
 					"deep-interview",
 					"--write",
 					"--stage",
@@ -93,7 +93,7 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 					"--json",
 				],
 				rendered:
-					"gjc deep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json",
+					"worx deep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json",
 				visibility: "public",
 				includeWhen: "implemented-only",
 				note: "Sanctioned deliberate deep-interview to ralplan bridge.",
@@ -102,11 +102,11 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 		examples: [
 			{
 				label: "handoff state write",
-				bytes: '```\ngjc state deep-interview write --input \'{"current_phase":"handoff"}\' --json\n```',
+				bytes: '```\nworx state deep-interview write --input \'{"current_phase":"handoff"}\' --json\n```',
 			},
 			{
 				label: "deliberate bridge",
-				bytes: "```\ngjc \\\ndeep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json\n```",
+				bytes: "```\nworx \\\ndeep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json\n```",
 			},
 		],
 		aliasesAndBridges: [
@@ -114,7 +114,7 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 				from: "deep-interview",
 				to: "ralplan",
 				rendered:
-					"gjc deep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json",
+					"worx deep-interview --write --stage final --slug {slug} --spec <markdown-or-path> --deliberate --json",
 			},
 		],
 		notes: [
@@ -126,16 +126,16 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 		blockId: "state",
 		sourcePath: skillPath("ralplan"),
 		renderOrder: 10,
-		markers: { start: "<!-- gjc:cmdref:start state -->", end: "<!-- gjc:cmdref:end state -->" },
+		markers: { start: "<!-- worx:cmdref:start state -->", end: "<!-- worx:cmdref:end state -->" },
 		commands: [stateWrite("ralplan"), stateHandoff("ralplan", ["team", "ultragoal"])],
 		examples: [
 			{
 				label: "handoff state write",
-				bytes: '```\ngjc state ralplan write --input \'{"current_phase":"handoff"}\' --json\n```',
+				bytes: '```\nworx state ralplan write --input \'{"current_phase":"handoff"}\' --json\n```',
 			},
 		],
 		aliasesAndBridges: [
-			{ from: "ralplan", to: "team|ultragoal", rendered: "gjc state ralplan handoff --to <team|ultragoal> --json" },
+			{ from: "ralplan", to: "team|ultragoal", rendered: "worx state ralplan handoff --to <team|ultragoal> --json" },
 		],
 		notes: [
 			"Before invoking `/skill:team` or `/skill:ultragoal`, mark ralplan ready for handoff so the skill tool's chain guard permits the transition.",
@@ -146,19 +146,19 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 		blockId: "state",
 		sourcePath: skillPath("ultragoal"),
 		renderOrder: 10,
-		markers: { start: "<!-- gjc:cmdref:start state -->", end: "<!-- gjc:cmdref:end state -->" },
+		markers: { start: "<!-- worx:cmdref:start state -->", end: "<!-- worx:cmdref:end state -->" },
 		commands: [stateWrite("ultragoal"), stateHandoff("ultragoal", ["ralplan", "deep-interview"])],
 		examples: [
 			{
 				label: "handoff state write",
-				bytes: '```\ngjc state ultragoal write --input \'{"current_phase":"handoff"}\' --json\n```',
+				bytes: '```\nworx state ultragoal write --input \'{"current_phase":"handoff"}\' --json\n```',
 			},
 		],
 		aliasesAndBridges: [
 			{
 				from: "ultragoal",
 				to: "ralplan|deep-interview",
-				rendered: "gjc state ultragoal handoff --to <ralplan|deep-interview> --json",
+				rendered: "worx state ultragoal handoff --to <ralplan|deep-interview> --json",
 			},
 		],
 		notes: [
@@ -170,19 +170,19 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 		blockId: "state",
 		sourcePath: skillPath("team"),
 		renderOrder: 10,
-		markers: { start: "<!-- gjc:cmdref:start state -->", end: "<!-- gjc:cmdref:end state -->" },
+		markers: { start: "<!-- worx:cmdref:start state -->", end: "<!-- worx:cmdref:end state -->" },
 		commands: [stateWrite("team"), stateHandoff("team", ["ralplan", "deep-interview", "ultragoal"])],
 		examples: [
 			{
 				label: "handoff state write",
-				bytes: '```\ngjc state team write --input \'{"current_phase":"handoff"}\' --json\n```',
+				bytes: '```\nworx state team write --input \'{"current_phase":"handoff"}\' --json\n```',
 			},
 		],
 		aliasesAndBridges: [
 			{
 				from: "team",
 				to: "ralplan|deep-interview|ultragoal",
-				rendered: "gjc state team handoff --to <ralplan|deep-interview|ultragoal> --json",
+				rendered: "worx state team handoff --to <ralplan|deep-interview|ultragoal> --json",
 			},
 		],
 		notes: [

@@ -220,7 +220,7 @@ describe("GJC bundle Settings component", () => {
 		select(component);
 		await settle();
 		expect(lifecycle.bundleToggleCalls).toEqual([
-			{ identity: { kind: "gjc-bundle", scope: "user", name: "shared-name" }, enabled: false },
+			{ identity: { kind: "worx-bundle", scope: "user", name: "shared-name" }, enabled: false },
 		]);
 		component.handleInput("\x1b");
 		expect(rendered(component)).toContain("shared-name (project)");

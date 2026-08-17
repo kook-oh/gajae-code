@@ -78,7 +78,7 @@ export async function resolveTaskTokenLogDir(
 ): Promise<string | undefined> {
 	// Prefer the canonical SessionManager id so root turns land in the SAME
 	// `<session>/token-logs` dir the task executor uses for subagent turns and
-	// that `gjc --fixture <id>` reads from. Fall back to the env/latest-active
+	// that `worx --fixture <id>` reads from. Fall back to the env/latest-active
 	// session only when no manager id is available (e.g. lifecycle launches where
 	// the SDK adopts a pre-allocated id internally). Never let a best-effort
 	// telemetry side channel crash startup — swallow every SessionResolutionError.

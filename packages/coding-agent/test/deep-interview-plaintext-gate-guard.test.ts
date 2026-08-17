@@ -77,7 +77,7 @@ Selected: Yes, crystallize`;
 	});
 
 	it("does not flag ordinary CLI or documentation help containing an Options section", () => {
-		const text = `Usage: gjc deep-interview [prompt]
+		const text = `Usage: worx deep-interview [prompt]
 
 Options:
   --help     Show help.

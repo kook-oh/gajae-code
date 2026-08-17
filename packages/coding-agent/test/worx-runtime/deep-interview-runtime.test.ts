@@ -58,7 +58,7 @@ afterAll(() => {
 	else delete process.env.WORX_SESSION_ID;
 });
 
-describe("native gjc deep-interview runtime", () => {
+describe("native worx deep-interview runtime", () => {
 	it("advertises the deep-interview spec persistence and handoff surface in command help", async () => {
 		const source = await fs.readFile(path.join(codingAgentRoot, "src/commands/deep-interview.ts"), "utf-8");
 		// The lightweight CLI help renderer advertises exactly the static flags/examples declared by the command.
@@ -588,12 +588,12 @@ describe("native gjc deep-interview runtime", () => {
 		expect(state.state.codebase_context).toBeUndefined();
 	});
 
-	it("honors gjc.deepInterview.ambiguityThreshold in project .worx/settings.json", async () => {
+	it("honors worx.deepInterview.ambiguityThreshold in project .worx/settings.json", async () => {
 		const root = await tempDir();
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
+			JSON.stringify({ worx: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 		const result = await runNativeDeepInterviewCommand(["--standard", "--json", "idea"], root);
 		expect(result.status).toBe(0);
@@ -607,11 +607,11 @@ describe("native gjc deep-interview runtime", () => {
 		const agentDir = await tempDir();
 		setAgentDir(agentDir);
 		resetSettingsForTest();
-		await fs.writeFile(path.join(agentDir, "config.yml"), "gjc:\n  deepInterview:\n    ambiguityThreshold: 0.2\n");
+		await fs.writeFile(path.join(agentDir, "config.yml"), "worx:\n  deepInterview:\n    ambiguityThreshold: 0.2\n");
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
+			JSON.stringify({ worx: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 
 		resetSettingsForTest();
@@ -628,7 +628,7 @@ describe("native gjc deep-interview runtime", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ gjc: { deepInterview: { ambiguityThreshold: 0.08 } } }),
+			JSON.stringify({ worx: { deepInterview: { ambiguityThreshold: 0.08 } } }),
 		);
 		const result = await runNativeDeepInterviewCommand(
 			["--threshold", "0.25", "--threshold-source", "flag:explicit", "--json", "idea"],

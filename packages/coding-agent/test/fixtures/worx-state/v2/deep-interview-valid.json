@@ -17,7 +17,7 @@
     "version": 1,
     "skill": "deep-interview",
     "owner": "worx-state-cli",
-    "command": "gjc state deep-interview write --input '<json>'",
+    "command": "worx state deep-interview write --input '<json>'",
     "state_path": "/repo/.worx/state/sessions/sess-corpus-deep/active-state.json",
     "storage_path": "/repo/.worx/state/sessions/sess-corpus-deep/deep-interview-state.json",
     "mutated_at": "2026-06-04T11:00:00.000Z",

@@ -28,14 +28,14 @@ function parsePositiveTimeout(raw: string | undefined, flagName: string): number
 
 export default class Daemon extends Command {
 	static description =
-		"Manage GJC background daemons. Routine use: `gjc daemon status` to check, `gjc daemon restart` to reload (spawns one if none is running). `stop`/`list` and the escalation flags below are advanced primitives.";
+		"Manage GJC background daemons. Routine use: `worx daemon status` to check, `worx daemon restart` to reload (spawns one if none is running). `stop`/`list` and the escalation flags below are advanced primitives.";
 
 	static examples = [
-		"# Check the daemon (concise per-daemon result)\n  gjc daemon status",
-		"# Reload, spawning a fresh owner if none is running\n  gjc daemon restart",
-		"# Full runtime detail and the roots list\n  gjc daemon status --verbose",
-		"# Machine-readable output for automation\n  gjc daemon status --json",
-		"# Stop, hard-killing an unresponsive owner\n  gjc daemon stop --force",
+		"# Check the daemon (concise per-daemon result)\n  worx daemon status",
+		"# Reload, spawning a fresh owner if none is running\n  worx daemon restart",
+		"# Full runtime detail and the roots list\n  worx daemon status --verbose",
+		"# Machine-readable output for automation\n  worx daemon status --json",
+		"# Stop, hard-killing an unresponsive owner\n  worx daemon stop --force",
 	];
 
 	static args = {

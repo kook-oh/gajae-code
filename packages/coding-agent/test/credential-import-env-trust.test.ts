@@ -5,10 +5,10 @@ import * as path from "node:path";
 
 /**
  * External credential discovery reads `CLAUDE_CONFIG_DIR` and `CODEX_HOME` so an
- * account switcher that relocates Claude Code / Codex CLI is the account gjc
+ * account switcher that relocates Claude Code / Codex CLI is the account worx
  * imports. `Bun.env === process.env` and the env module merges the caller's
  * `cwd/.env` into it, so without a trust boundary a repository could point
- * discovery at a credential file it ships and have gjc import it as the user's
+ * discovery at a credential file it ships and have worx import it as the user's
  * own account.
  *
  * `projectEnv` is parsed at module load from `process.cwd()`, so these drive a

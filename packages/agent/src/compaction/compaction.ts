@@ -818,7 +818,7 @@ export interface SummaryOptions {
  * history back into a single summary request; on strict backends (e.g.
  * OpenAI-code/Codex `context_length_exceeded`) that request itself overflows and
  * throws, so context-overflow recovery cannot produce a summary and the agent
- * fails to compact-and-continue — a non-interactive `gjc -p` run then terminates
+ * fails to compact-and-continue — a non-interactive `worx -p` run then terminates
  * on the very overflow the recovery was meant to absorb.
  *
  * The budget reserves the summary's own output tokens plus prompt/system/template

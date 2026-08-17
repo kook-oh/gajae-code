@@ -147,7 +147,7 @@ function activeAskDiagnostic(input: {
 		goalsPath: input.goalsPath,
 		ledgerPath: input.ledgerPath,
 		goalIds: input.goalIds,
-		message: `${input.reason} Use \`gjc ultragoal record-review-blockers\` instead of asking the user.`,
+		message: `${input.reason} Use \`worx ultragoal record-review-blockers\` instead of asking the user.`,
 	};
 }
 
@@ -504,7 +504,7 @@ export async function readUltragoalVerificationState(input: {
 				state: "active_missing_final_receipt",
 				message: `Ultragoal still has incomplete required goals: ${runState.incompleteGoals
 					.map(goal => goal.id)
-					.join(", ")}. Run \`gjc ultragoal complete-goals\` to continue.`,
+					.join(", ")}. Run \`worx ultragoal complete-goals\` to continue.`,
 			};
 		}
 		return {
@@ -522,7 +522,7 @@ export async function readUltragoalVerificationState(input: {
 	if (runState.incompleteGoals.length > 0) {
 		return {
 			state: "active_missing_final_receipt",
-			message: `Ultragoal still has incomplete required goals: ${runState.incompleteGoals.map(goal => goal.id).join(", ")}. Run \`gjc ultragoal complete-goals\` to continue.`,
+			message: `Ultragoal still has incomplete required goals: ${runState.incompleteGoals.map(goal => goal.id).join(", ")}. Run \`worx ultragoal complete-goals\` to continue.`,
 			goalId: receiptTarget.goal.id,
 		};
 	}
@@ -800,7 +800,7 @@ export function formatUltragoalNudgeMessage(input: {
 	const reason = NUDGE_SURFACE_REASON[input.surface];
 	return [
 		`Ultragoal try-harder nudge (${input.attempt}/${input.budget}) for ${input.goalId}: ${label} was refused before the normal gate.`,
-		`Resolving this is part of the goal, not a reason to stop. Try a different approach first: inspect the failure, run a focused test or replay, find local credentials/config if access is the blocker, split the obstacle with \`gjc ultragoal steer --kind add_subgoal\`, delegate an executor, or record concrete review blockers.`,
+		`Resolving this is part of the goal, not a reason to stop. Try a different approach first: inspect the failure, run a focused test or replay, find local credentials/config if access is the blocker, split the obstacle with \`worx ultragoal steer --kind add_subgoal\`, delegate an executor, or record concrete review blockers.`,
 		`Reason: ${reason}.`,
 	].join("\n");
 }
@@ -876,7 +876,7 @@ export async function assertCanCompleteCurrentGoal(input: {
 	});
 	if (nudge.nudged) throw new Error(nudge.message);
 	throw new Error(
-		`${diagnostic.message} Run \`gjc ultragoal checkpoint --status complete --quality-gate-json <file>\` first, or record review blockers and rerun verification.`,
+		`${diagnostic.message} Run \`worx ultragoal checkpoint --status complete --quality-gate-json <file>\` first, or record review blockers and rerun verification.`,
 	);
 }
 
@@ -923,7 +923,7 @@ export async function isUltragoalPauseBlocked(cwd: string): Promise<UltragoalPau
 		return {
 			blocked: true,
 			reason:
-				"The Ultragoal run hit the terminal-critic ceiling; requires human/leader `gjc ultragoal record-critic-gate-override` before further terminal attempts.",
+				"The Ultragoal run hit the terminal-critic ceiling; requires human/leader `worx ultragoal record-critic-gate-override` before further terminal attempts.",
 		};
 	}
 
@@ -979,8 +979,8 @@ export async function assertUltragoalPauseAllowed(cwd: string): Promise<void> {
 	throw new Error(
 		[
 			diagnostic.reason,
-			"Resolvable blockers must be worked, not paused: investigate, `gjc ultragoal steer --kind add_subgoal`, delegate an executor, or `gjc ultragoal record-review-blockers`.",
-			'If the blocker is genuinely human-only, record `gjc ultragoal classify-blocker --classification human_blocked --evidence "<human-only dependency>"`, then record a clean bound `gjc ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId> --verdict OKAY --evidence "<critic evidence>"` before pausing.',
+			"Resolvable blockers must be worked, not paused: investigate, `worx ultragoal steer --kind add_subgoal`, delegate an executor, or `worx ultragoal record-review-blockers`.",
+			'If the blocker is genuinely human-only, record `worx ultragoal classify-blocker --classification human_blocked --evidence "<human-only dependency>"`, then record a clean bound `worx ultragoal record-critic-verdict --terminus pause --classification-event-id <eventId> --verdict OKAY --evidence "<critic evidence>"` before pausing.',
 		].join("\n"),
 	);
 }

@@ -65,7 +65,7 @@ export function crashDiagnosticsEnabled(env: NodeJS.ProcessEnv = process.env): b
 }
 
 export function getCrashDiagnosticsDirectory(env: NodeJS.ProcessEnv = process.env): string {
-	return env[CRASH_DIAGNOSTICS_DIR_ENV] ?? path.join(os.tmpdir(), "gjc-crash-diagnostics");
+	return env[CRASH_DIAGNOSTICS_DIR_ENV] ?? path.join(os.tmpdir(), "worx-crash-diagnostics");
 }
 
 export function classifyProcessCrash(input: CrashClassificationInput): CrashClassification {

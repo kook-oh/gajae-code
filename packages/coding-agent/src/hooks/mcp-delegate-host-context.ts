@@ -3,12 +3,12 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { sessionStateDir } from "../worx-runtime/session-layout";
 
-export const WORX_MCP_DELEGATE_FLOW_ACTIVATION = "$gjc-mcp-delegate-flow";
+export const WORX_MCP_DELEGATE_FLOW_ACTIVATION = "$worx-mcp-delegate-flow";
 
 const SESSION_ID_PATTERN = /^[A-Za-z0-9._-]{1,256}$/;
 const MAX_HOST_CONTEXT_BYTES = 8192;
 const MAX_HOST_CONTEXTS = 64;
-const ACTIVATION_PATTERN = /(?:^|[^A-Za-z0-9_-])\$gjc-mcp-delegate-flow(?=$|[^A-Za-z0-9_-])/;
+const ACTIVATION_PATTERN = /(?:^|[^A-Za-z0-9_-])\$worx-mcp-delegate-flow(?=$|[^A-Za-z0-9_-])/;
 
 export interface McpDelegateHostContextV1 {
 	schema_version: 1;

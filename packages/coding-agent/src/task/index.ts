@@ -2,7 +2,7 @@
  * Task tool - Delegate tasks to specialized agents.
  *
  * Discovers agent definitions from:
- *   - Bundled agents (shipped with gjc-coding-agent)
+ *   - Bundled agents (shipped with worx-coding-agent)
  *   - ~/.worx/agent/agents/*.md (user-level)
  *   - .worx/agents/*.md (project-level)
  *
@@ -624,7 +624,7 @@ export class TaskTool implements AgentTool<TaskToolSchemaInstance, TaskToolDetai
 	async #allocateSessionLifetimeArtifacts(state: SessionLifetimeArtifactsState): Promise<string | null> {
 		let dir: string;
 		try {
-			dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-task-session-"));
+			dir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-task-session-"));
 		} catch {
 			state.dir = undefined;
 			state.manager = undefined;
@@ -2158,7 +2158,7 @@ export class TaskTool implements AgentTool<TaskToolSchemaInstance, TaskToolDetai
 							};
 						} catch (mergeErr) {
 							// Agent succeeded but branch commit failed — clean up stale branch
-							const branchName = `gjc/task/${task.id}`;
+							const branchName = `worx/task/${task.id}`;
 							await git.branch.tryDelete(repoRoot, branchName);
 							const msg = mergeErr instanceof Error ? mergeErr.message : String(mergeErr);
 							capturedResult = { ...capturedResult, error: `Merge failed: ${msg}` };

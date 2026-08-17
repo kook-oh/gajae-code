@@ -656,7 +656,7 @@ function getSettingsTabs(): Tab[] {
 			return { id, label: `${icon} ${meta.label}` };
 		}),
 		{ id: "plugins", label: `${theme.icon.package} Plugins` },
-		{ id: "gjc-bundles", label: `${theme.icon.package} GJC Bundles` },
+		{ id: "worx-bundles", label: `${theme.icon.package} GJC Bundles` },
 	];
 }
 
@@ -763,7 +763,7 @@ export class SettingsSelectorComponent extends Container {
 	#notificationsEditor: NotificationsSettingsEditorComponent | null = null;
 	#statusPreviewContainer: Container | null = null;
 	#statusPreviewText: Text | null = null;
-	#currentTabId: SettingTab | "plugins" | "gjc-bundles" = "appearance";
+	#currentTabId: SettingTab | "plugins" | "worx-bundles" = "appearance";
 	#textInputActive = false;
 	#activeProviderOrderEditor: Container | null = null;
 
@@ -780,7 +780,7 @@ export class SettingsSelectorComponent extends Container {
 		// Tab bar
 		this.#tabBar = new TabBar("Settings", getSettingsTabs(), getTabBarTheme());
 		this.#tabBar.onTabChange = () => {
-			this.#switchToTab(this.#tabBar.getActiveTab().id as SettingTab | "plugins" | "gjc-bundles");
+			this.#switchToTab(this.#tabBar.getActiveTab().id as SettingTab | "plugins" | "worx-bundles");
 		};
 
 		this.addChild(this.#tabBar);
@@ -795,7 +795,7 @@ export class SettingsSelectorComponent extends Container {
 		this.addChild(new DynamicBorder());
 	}
 
-	#switchToTab(tabId: SettingTab | "plugins" | "gjc-bundles"): void {
+	#switchToTab(tabId: SettingTab | "plugins" | "worx-bundles"): void {
 		if (this.#currentTabId === "notifications" && tabId !== "notifications" && !this.#disposeNotificationsEditor()) {
 			return;
 		}
@@ -832,7 +832,7 @@ export class SettingsSelectorComponent extends Container {
 
 		if (tabId === "plugins") {
 			this.#showPluginsTab();
-		} else if (tabId === "gjc-bundles") {
+		} else if (tabId === "worx-bundles") {
 			this.#showWorxBundlesTab();
 		} else if (tabId === "notifications") {
 			this.#showNotificationsTab();
@@ -1302,7 +1302,7 @@ export class SettingsSelectorComponent extends Container {
 
 	/** Re-evaluate condition gates against the current settings and refresh the active list. */
 	#refreshCurrentTabItems(defs?: SettingDef[]): void {
-		if (this.#currentTabId === "plugins" || this.#currentTabId === "gjc-bundles" || !this.#currentList) return;
+		if (this.#currentTabId === "plugins" || this.#currentTabId === "worx-bundles" || !this.#currentList) return;
 		this.#currentList.setItems(
 			this.#buildItemsForTab(defs ?? getSettingsForTab(this.#currentTabId), this.#currentTabId),
 		);
@@ -1403,7 +1403,7 @@ export class SettingsSelectorComponent extends Container {
 			this.#notificationsEditor.handleInput(data);
 			return;
 		}
-		if (this.#worxBundleComponent && this.#currentTabId === "gjc-bundles") {
+		if (this.#worxBundleComponent && this.#currentTabId === "worx-bundles") {
 			if (tabNavigation) {
 				if (this.#worxBundleComponent.navigationLocked) {
 					this.#worxBundleComponent.handleInput(data);

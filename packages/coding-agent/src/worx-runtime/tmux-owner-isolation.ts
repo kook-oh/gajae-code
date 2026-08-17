@@ -100,7 +100,7 @@ export function classifyCgroup(input: { platform: NodeJS.Platform; cgroupText?: 
 			classification: "unsafe_service",
 			diagnostic: "service_cgroup_inheritance",
 		};
-	const scope = paths.find(value => /(?:^|\/)(?:user|session|app|init|gjc)[^/]*\.scope(?:\/|$)/.test(value));
+	const scope = paths.find(value => /(?:^|\/)(?:user|session|app|init|worx)[^/]*\.scope(?:\/|$)/.test(value));
 	const vteScope = paths.find(value =>
 		/^\/user\.slice\/user-(\d+)\.slice\/user@\1\.service(?:\/[^/]+)*\/vte-spawn-[A-Za-z0-9_.-]+\.scope$/.test(value),
 	);
@@ -433,7 +433,7 @@ export function planTmuxOwnerIsolationSync(request: PlanRequest, probe: OwnerIso
 			generation: request.owner_generation,
 			attempt,
 		});
-		const expectedScope = `gjc-owner-${token}.scope`;
+		const expectedScope = `worx-owner-${token}.scope`;
 		const bootstrap: BootstrapRequest = {
 			schema_version: 1,
 			op: "bootstrap",
@@ -693,7 +693,7 @@ export async function planTmuxOwnerIsolation(request: PlanRequest, probe: OwnerI
 			expires_at: new Date(Date.now() + 7_000).toISOString(),
 		};
 		await writeAttempt(request.state_dir, request.session_id, request.owner_generation, attempt);
-		const expectedScope = `gjc-owner-${token}.scope`;
+		const expectedScope = `worx-owner-${token}.scope`;
 		const bootstrap: BootstrapRequest = {
 			schema_version: 1,
 			op: "bootstrap",
@@ -788,7 +788,7 @@ export async function bootstrapTmuxOwnerIsolation(
 			!baselineMatches ||
 			!validPersistedAttempt(recordedAttempt, request) ||
 			derivedSession !== request.attempt.session_name ||
-			request.expected_scope !== `gjc-owner-${request.attempt.token}.scope`
+			request.expected_scope !== `worx-owner-${request.attempt.token}.scope`
 		)
 			return {
 				schema_version: 1,

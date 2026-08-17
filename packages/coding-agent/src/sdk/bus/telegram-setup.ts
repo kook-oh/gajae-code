@@ -236,7 +236,7 @@ function toBot(value: unknown): TelegramBot | undefined {
 }
 
 export async function withTelegramSetupLease<T>(token: string, operation: () => Promise<T>): Promise<T> {
-	const dir = path.join(os.tmpdir(), "gjc-telegram-setup");
+	const dir = path.join(os.tmpdir(), "worx-telegram-setup");
 	await fs.mkdir(dir, { recursive: true, mode: 0o700 });
 	return await withFileLock(path.join(dir, tokenFingerprint(token.trim())), operation);
 }

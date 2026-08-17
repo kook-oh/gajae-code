@@ -26,7 +26,7 @@ const REPLACEMENT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0
  * `PLACEHOLDER_DOMAIN` so a value minted under one construction can never be
  * confused with a value minted under the other, even with the same key.
  */
-const REPLACEMENT_DOMAIN = "gjc.secret-obfuscation.replacement.v1\0";
+const REPLACEMENT_DOMAIN = "worx.secret-obfuscation.replacement.v1\0";
 
 /** One HMAC-SHA256 digest block length in bytes. */
 const REPLACEMENT_DIGEST_BYTES = 32;
@@ -118,7 +118,7 @@ function generateDeterministicReplacement(secret: string, key: Uint8Array): stri
 // Placeholder format
 // ═══════════════════════════════════════════════════════════════════════════
 
-const PLACEHOLDER_DOMAIN = "gjc.secret-obfuscation.placeholder.v1\0";
+const PLACEHOLDER_DOMAIN = "worx.secret-obfuscation.placeholder.v1\0";
 const PLACEHOLDER_RE = /#GJC1_[A-Za-z0-9_-]{22}#/g;
 
 /** Build a versioned, authenticated placeholder whose identity depends only on the key and secret. */

@@ -87,7 +87,7 @@ describe("SYSTEM.md prompt assembly", () => {
 		await expect(loadProjectContextFiles({ cwd: projectDir })).resolves.toEqual([]);
 	});
 
-	it("loads gjc's own user-global AGENTS.md before project context files", async () => {
+	it("loads worx's own user-global AGENTS.md before project context files", async () => {
 		const projectDir = path.join(tempDir, "project");
 		fs.mkdirSync(projectDir, { recursive: true });
 		fs.writeFileSync(path.join(projectDir, "AGENTS.md"), "Project instructions");

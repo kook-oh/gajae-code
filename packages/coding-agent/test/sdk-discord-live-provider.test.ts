@@ -168,14 +168,14 @@ describe("DiscordLiveProvider protocol", () => {
 			threadId: "thread",
 			content: "Choose",
 			components: [
-				{ type: 1, components: [{ type: 3, customId: "gjc:4:ask", options: [{ label: "Yes", value: "yes" }] }] },
+				{ type: 1, components: [{ type: 3, customId: "worx:4:ask", options: [{ label: "Yes", value: "yes" }] }] },
 			],
 		});
 		const payload = JSON.parse(String(requests[0]?.init.body)) as {
 			components: Array<{ components: Array<{ custom_id: string; options: Array<{ value: string }> }> }>;
 		};
 		expect(payload.components[0]?.components[0]).toMatchObject({
-			custom_id: "gjc:4:ask",
+			custom_id: "worx:4:ask",
 			options: [{ value: "yes" }],
 		});
 		await live.start(async event => {
@@ -194,14 +194,14 @@ describe("DiscordLiveProvider protocol", () => {
 				channel_id: "thread",
 				channel: { parent_id: "parent" },
 				member: { user: { id: "member" } },
-				data: { custom_id: "gjc:4:ask", values: ["yes"] },
+				data: { custom_id: "worx:4:ask", values: ["yes"] },
 			},
 		});
 		await Promise.resolve();
 		expect(events[0]?.interaction).toEqual({
 			id: "interaction",
 			token: "interaction-token",
-			customId: "gjc:4:ask",
+			customId: "worx:4:ask",
 			value: "yes",
 		});
 		await live.stop();
@@ -324,7 +324,7 @@ describe("DiscordLiveProvider protocol", () => {
 				channel_id: "thread",
 				channel: { parent_id: "parent" },
 				member: { user: { id: "member" } },
-				data: { custom_id: "gjc:1:ask", value: "yes" },
+				data: { custom_id: "worx:1:ask", value: "yes" },
 			},
 		});
 		await Bun.sleep(10);

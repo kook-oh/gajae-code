@@ -1,5 +1,5 @@
 /**
- * Host plugin setup for `gjc setup claude` and `gjc setup codex`.
+ * Host plugin setup for `worx setup claude` and `worx setup codex`.
  *
  * Renders install guidance and a fail-closed coordinator MCP config preview for
  * the canonical generated plugin bundle under `plugins/`. This is intentionally
@@ -110,8 +110,8 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 		mutationPolicy:
 			"Fail-closed: delegation is read-only until you set WORX_COORDINATOR_MCP_MUTATIONS=sessions and pass allow_mutation:true per call.",
 		notes: [
-			"Verified on Codex CLI 0.139.0: marketplace add + plugin add install the plugin (enabled) and `codex mcp list` registers gjc-coordinator with the fail-closed env.",
-			"The bundled .codex.mcp.json workdir root is host-neutral; `gjc setup codex` renders a concrete root, and operators should re-run the local marketplace smoke on their target Codex version.",
+			"Verified on Codex CLI 0.139.0: marketplace add + plugin add install the plugin (enabled) and `codex mcp list` registers worx-coordinator with the fail-closed env.",
+			"The bundled .codex.mcp.json workdir root is host-neutral; `worx setup codex` renders a concrete root, and operators should re-run the local marketplace smoke on their target Codex version.",
 		],
 		...(flags.check
 			? {
@@ -119,7 +119,7 @@ export function buildHostPluginSetup(host: HostPluginKind, flags: HostPluginSetu
 						manifestPath,
 						marketplacePath,
 						path.join(pluginDir, ".codex.mcp.json"),
-						path.join(pluginDir, "skills", "gjc-delegation", "SKILL.md"),
+						path.join(pluginDir, "skills", "worx-delegation", "SKILL.md"),
 					]),
 				}
 			: {}),

@@ -645,7 +645,7 @@ function isMeaningfulCliReplayInvariant(invariant: JsonObject, stdout: string, f
 		const flags = invariant.flags === undefined ? "" : requiredStringField(invariant, "flags", fieldName);
 		if (!/^[im]*$/.test(flags)) throw new Error(`qualityGate ${fieldName}.flags may only contain i and m`);
 		const expression = new RegExp(value, flags);
-		if (expression.test("") || expression.test("gjc-replay-random-nonce-7f3a9c")) return false;
+		if (expression.test("") || expression.test("worx-replay-random-nonce-7f3a9c")) return false;
 		const match = expression.exec(stdout);
 		return match !== null && match[0].length >= 4;
 	}
@@ -805,7 +805,7 @@ export async function validateCliReplay(
 	void options.live;
 	const replay = parseCliReplayRecord(record, fieldName);
 	await resolveUnderCwd(cwd, replay.replayCwd, fieldName);
-	const executionCwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-cli-replay-"));
+	const executionCwd = await fs.mkdtemp(path.join(os.tmpdir(), "worx-cli-replay-"));
 	try {
 		const subprocess = Bun.spawn(resolveCliReplayCommand(replay.command), {
 			cwd: executionCwd,

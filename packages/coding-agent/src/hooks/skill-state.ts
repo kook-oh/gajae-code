@@ -229,7 +229,7 @@ function skillStatePath(cwd: string, sessionId: string): string {
 }
 
 function warnInvalidState(kind: string, filePath: string, error: string): void {
-	logger.warn(`gjc skill-state: invalid ${kind} at ${filePath}: ${error}`);
+	logger.warn(`worx skill-state: invalid ${kind} at ${filePath}: ${error}`);
 }
 
 export interface StateRecoveryDiagnostic {
@@ -472,7 +472,7 @@ async function seedSkillActivationState(
 export async function recordSkillActivation(input: RecordSkillActivationInput): Promise<SkillActiveState | null> {
 	const match = detectPrimarySkillKeyword(input.text);
 	if (!match) return null;
-	return await seedSkillActivationState(match.skill, match.keyword, "gjc-skill-state-hook", input);
+	return await seedSkillActivationState(match.skill, match.keyword, "worx-skill-state-hook", input);
 }
 
 export interface EnsureWorkflowSkillActivationInput {
@@ -492,7 +492,7 @@ export interface EnsureWorkflowSkillActivationInput {
  * active, instead of relying on the skill prompt to run its own state-init steps.
  *
  * The seed is non-destructive: if an active entry for this skill already exists
- * (for example after a `gjc state handoff` promotion that carries
+ * (for example after a `worx state handoff` promotion that carries
  * `handoff_from`/`handoff_at` lineage), nothing is written so lineage is
  * preserved. Non-workflow skills are ignored.
  */
@@ -509,7 +509,7 @@ export async function ensureWorkflowSkillActivationState(
 			(existing ? entryMatchesContext(entry, existing, resolvedSessionId, input.threadId) : true),
 	);
 	if (alreadyActive) return existing;
-	return await seedSkillActivationState(skill, `/skill:${skill}`, "gjc-skill-invocation", {
+	return await seedSkillActivationState(skill, `/skill:${skill}`, "worx-skill-invocation", {
 		cwd: input.cwd,
 		sessionId: resolvedSessionId,
 		threadId: input.threadId,
@@ -642,7 +642,7 @@ async function detectUncrystallizedDeepInterviewStop(
 		.toLowerCase();
 	if (DEEP_INTERVIEW_ABORT_PHASES.has(phase)) return null;
 	if (await deepInterviewSpecCrystallized(state, cwd)) return null;
-	return `the deep-interview run reached a terminal phase ("${phase || "unknown"}") without crystallizing a usable spec/handoff. Run \`gjc deep-interview --write --stage final\` (optionally \`--handoff ralplan\`) to persist the distilled interview spec, hand off through the deep-interview policy, or explicitly cancel/clear the interview before stopping`;
+	return `the deep-interview run reached a terminal phase ("${phase || "unknown"}") without crystallizing a usable spec/handoff. Run \`worx deep-interview --write --stage final\` (optionally \`--handoff ralplan\`) to persist the distilled interview spec, hand off through the deep-interview policy, or explicitly cancel/clear the interview before stopping`;
 }
 
 async function readVisibleModeState(

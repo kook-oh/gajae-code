@@ -297,7 +297,7 @@ describe("ooo bridge extension contract", () => {
 			{
 				type: "stdio",
 				command: "/opt/ouroboros/bin/ouroboros",
-				args: ["mcp", "serve", "--runtime", "gjc"],
+				args: ["mcp", "serve", "--runtime", "worx"],
 				cwd: ctx.cwd,
 			},
 			{ signal: expect.any(AbortSignal) },

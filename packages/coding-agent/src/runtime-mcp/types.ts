@@ -64,7 +64,7 @@ export interface MCPServerConfigBase {
 	/**
 	 * Whether an explicit runtime MCP consumer should connect this server
 	 * automatically when that consumer starts (default: true). Normal standalone
-	 * `gjc`, `gjc --tmux`, and print-mode sessions do not consume `gjc mcp`
+	 * `worx`, `worx --tmux`, and print-mode sessions do not consume `worx mcp`
 	 * registrations today.
 	 */
 	autoload?: boolean;

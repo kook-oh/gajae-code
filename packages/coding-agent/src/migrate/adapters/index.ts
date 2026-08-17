@@ -1,5 +1,5 @@
 /**
- * Source adapters for `gjc migrate`.
+ * Source adapters for `worx migrate`.
  *
  * Each adapter reads GLOBAL/home config for one source agent and returns
  * normalized MCP + skill candidates plus source-level diagnostics. Adapters never

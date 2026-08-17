@@ -1108,7 +1108,7 @@ export class RevisionStore {
 
 	async #spillDirectory(): Promise<string> {
 		if (!this.#directory) {
-			this.#directory = await mkdtemp(join(tmpdir(), "gjc-sdk-snapshots-"));
+			this.#directory = await mkdtemp(join(tmpdir(), "worx-sdk-snapshots-"));
 			// Only temp spill directories are swept on abnormal exit; a caller-supplied
 			// storageDir is durable and never enters this set.
 			processSpillDirectories.add(this.#directory);

@@ -327,7 +327,7 @@ describe("SkillDiscoveryTool", () => {
 
 			await makeSkill(path.join(home, ".decoy-agent", "skills"), "decoy", "Decoy user skill");
 			await makeSkill(path.join(home, ".decoy-pi-agent", "skills"), "pi-decoy", "PI decoy user skill");
-			await makeSkill(path.join(home, ".xdg-decoy", "gjc", "agent", "skills"), "xdg-decoy", "XDG decoy user skill");
+			await makeSkill(path.join(home, ".xdg-decoy", "worx", "agent", "skills"), "xdg-decoy", "XDG decoy user skill");
 
 			const result = await new SkillDiscoveryTool(createSession(cwd, { settings: runtimeSkillSettings() })).execute(
 				"call",

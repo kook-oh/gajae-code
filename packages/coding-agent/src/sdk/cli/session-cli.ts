@@ -1030,7 +1030,7 @@ async function runElevate(agentDir: string, sessionId: string, args: SdkSessionC
 }
 
 /**
- * Runs the `gjc sdk session` command family: semantic verbs (list, inspect,
+ * Runs the `worx sdk session` command family: semantic verbs (list, inspect,
  * send, status, tail) plus the explicit raw control/query/global hatch.
  */
 export async function runSdkSessionCli(

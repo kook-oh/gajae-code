@@ -347,7 +347,7 @@ export async function searchCodex(params: SearchParams): Promise<SearchResponse>
 	const auth = await findCodexAuth(params.authStorage, params.sessionId, params.signal);
 	if (!auth) {
 		throw new Error(
-			"No Codex OAuth credentials found. Login with 'gjc /login openai-codex' to enable Codex web search.",
+			"No Codex OAuth credentials found. Login with 'worx /login openai-codex' to enable Codex web search.",
 		);
 	}
 

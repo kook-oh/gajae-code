@@ -13,7 +13,7 @@
  * - extension-modules: From plugins/ subdirectories
  *
  * MCP servers are intentionally NOT inherited live from OpenCode config: GJC
- * owns MCP runtime execution. Use `gjc mcp import opencode` to copy definitions
+ * owns MCP runtime execution. Use `worx mcp import opencode` to copy definitions
  * into GJC's own mcp.json instead.
  *
  * Priority: 55 (tool-specific provider)

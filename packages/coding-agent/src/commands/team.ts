@@ -33,7 +33,7 @@ async function syncTeamHud(snapshot: WorxTeamSnapshot): Promise<void> {
 			active: snapshot.phase !== "complete" && snapshot.phase !== "cancelled",
 			phase: snapshot.phase,
 			hud: await buildTeamHudSummary(snapshot, events.at(-1)),
-			source: "gjc-team",
+			source: "worx-team",
 		});
 		await persistWorxTeamModeStateSummary(snapshot, process.cwd());
 	} catch {
@@ -96,13 +96,13 @@ export default class Team extends Command {
 	};
 
 	static examples = [
-		"gjc --tmux  # start the required tmux-backed leader session first",
-		'gjc team 3:executor "Implement the approved plan"',
-		"gjc team status <team-name> --json",
-		"gjc team monitor <team-name> --json",
-		'gjc team api claim-task --input \'{"team_name":"demo","worker_id":"worker-1"}\' --json',
-		'gjc team 2:executor --dry-run --json "Preview state only"',
-		"gjc team shutdown <team-name>",
+		"worx --tmux  # start the required tmux-backed leader session first",
+		'worx team 3:executor "Implement the approved plan"',
+		"worx team status <team-name> --json",
+		"worx team monitor <team-name> --json",
+		'worx team api claim-task --input \'{"team_name":"demo","worker_id":"worker-1"}\' --json',
+		'worx team 2:executor --dry-run --json "Preview state only"',
+		"worx team shutdown <team-name>",
 	];
 
 	async run(): Promise<void> {
@@ -131,7 +131,7 @@ export default class Team extends Command {
 			}
 			writeText([
 				renderTeamStatusMarkdown(snapshot).trimEnd(),
-				"- mode: read-only status; use `gjc team monitor <team>` or `gjc team resume <team>` for recovery/integration",
+				"- mode: read-only status; use `worx team monitor <team>` or `worx team resume <team>` for recovery/integration",
 			]);
 			void formatTaskCounts(snapshot.task_counts);
 			return;

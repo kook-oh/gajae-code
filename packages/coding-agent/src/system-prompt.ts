@@ -259,7 +259,7 @@ export interface ProjectContextFilesResult {
  * Native user-global files (`~/.worx/agent/AGENTS.md`) come first, then project
  * files sorted by depth (descending) so files closer to cwd appear last/more
  * prominent. User-home files from foreign providers (`~/.claude/CLAUDE.md`,
- * `~/.codex/AGENTS.md`, …) stay excluded — only gjc's own user config applies.
+ * `~/.codex/AGENTS.md`, …) stay excluded — only worx's own user config applies.
  */
 export async function loadProjectContextFilesResult(
 	options: LoadContextFilesOptions = {},
@@ -392,7 +392,7 @@ export interface BuildSystemPromptOptions {
 	workspaceTree?: WorkspaceTree | Promise<WorkspaceTree>;
 	/**
 	 * Render a trimmed role-agent base prompt for subagent sessions: omits the
-	 * workflow-surface/routing/self-awareness (`<gjc-runtime>`) and `<soul>` blocks
+	 * workflow-surface/routing/self-awareness (`<worx-runtime>`) and `<soul>` blocks
 	 * that only apply to the top-level interactive/print agent. Tool safety, repo
 	 * safety, and the completion contract are retained. Default: false.
 	 */

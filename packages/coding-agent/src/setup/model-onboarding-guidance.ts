@@ -4,7 +4,7 @@ export const MODEL_ONBOARDING_API_PROVIDER_COMMAND =
 	"/provider add --compat <openai|anthropic> --provider <id> --base-url <url> --api-key-env <ENV> --model <model>";
 export const MODEL_ONBOARDING_PROVIDER_PRESET_COMMAND = "/provider add --preset <id>";
 
-export const MODEL_ONBOARDING_SETUP_COMMAND = "gjc setup provider";
+export const MODEL_ONBOARDING_SETUP_COMMAND = "worx setup provider";
 export const MODEL_ONBOARDING_OAUTH_COMMAND = "/provider login [provider-id] or /login [provider-id]";
 
 export function formatModelOnboardingGuidance(): string {

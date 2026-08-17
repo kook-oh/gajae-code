@@ -11,7 +11,7 @@ import * as path from "node:path";
 export interface WorxRuntimeSpawnInfo {
 	execPath: string;
 	mode: "source" | "compiled";
-	/** Prefix prepended before the gjc subcommand args; `[Bun.main]` in source mode, otherwise `[]`. */
+	/** Prefix prepended before the worx subcommand args; `[Bun.main]` in source mode, otherwise `[]`. */
 	argsPrefix: string[];
 	/** True only when respawn loads edited TypeScript directly (source/dev mode). */
 	reloadPicksUpSourceEdits: boolean;
@@ -23,7 +23,7 @@ const COMPILED_RELOAD_WARNING =
 	"Compiled binary: reload respawns the same binary. Rebuild the binary first for amended source to take effect.";
 
 /**
- * Resolve how to spawn a detached gjc subcommand for the current runtime.
+ * Resolve how to spawn a detached worx subcommand for the current runtime.
  *
  * Source/dev mode (bun/node) prepends the entry script (`Bun.main`) so the
  * respawn loads edited source. A compiled single-file binary self-spawns its

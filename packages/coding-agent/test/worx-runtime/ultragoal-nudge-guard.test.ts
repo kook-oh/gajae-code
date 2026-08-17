@@ -41,7 +41,7 @@ async function tempDir(): Promise<string> {
 async function setProjectBudget(cwd: string, budget: number): Promise<void> {
 	const worxDir = path.join(cwd, ".worx");
 	await fs.mkdir(worxDir, { recursive: true });
-	await fs.writeFile(path.join(worxDir, "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": budget }));
+	await fs.writeFile(path.join(worxDir, "settings.json"), JSON.stringify({ "worx.ultragoal.nudgeBudget": budget }));
 }
 
 const SINGLE_BRIEF = "Implement the story";
@@ -178,7 +178,7 @@ describe("ultragoal nudge guard", () => {
 		).rejects.toThrow(/try-harder nudge/);
 		await expect(
 			assertCanCompleteCurrentGoal({ cwd, currentGoal: DEFAULT_OBJECTIVE_GOAL, sessionId: TEST_SESSION_ID }),
-		).rejects.toThrow(/`gjc ultragoal checkpoint --status complete --quality-gate-json <file>`/);
+		).rejects.toThrow(/`worx ultragoal checkpoint --status complete --quality-gate-json <file>`/);
 		const ledger = await readUltragoalLedger(cwd, TEST_SESSION_ID);
 		expect(ledger.filter(event => event.event === "nudge" && event.surface === "premature_complete").length).toBe(1);
 	});
@@ -327,7 +327,10 @@ describe("ultragoal nudge guard", () => {
 
 		const home = await tempDir();
 		await fs.mkdir(path.join(home, ".worx"), { recursive: true });
-		await fs.writeFile(path.join(home, ".worx", "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": 3 }));
+		await fs.writeFile(
+			path.join(home, ".worx", "settings.json"),
+			JSON.stringify({ "worx.ultragoal.nudgeBudget": 3 }),
+		);
 		const probe = path.join(import.meta.dir, "..", "fixtures", "config-root-settings-probe.ts");
 		const userOnly = Bun.spawn([process.execPath, probe], {
 			cwd,
@@ -371,7 +374,7 @@ describe("ultragoal nudge guard", () => {
 	});
 
 	// AC6: status surfaces the same target/count the guard consumes.
-	it("AC6: gjc ultragoal status reports the consumed nudge target and count", async () => {
+	it("AC6: worx ultragoal status reports the consumed nudge target and count", async () => {
 		const cwd = await tempDir();
 		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 		await createUltragoalPlan({ cwd, brief: SINGLE_BRIEF });

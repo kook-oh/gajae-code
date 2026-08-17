@@ -413,7 +413,7 @@ describe("checkBashAllowedPrefixes", () => {
 	});
 
 	it("blocks backslash escape smuggling", () => {
-		const result = checkBashAllowedPrefixes("gjc state ralplan\\ clear --json", ROLE_AGENT_PREFIXES);
+		const result = checkBashAllowedPrefixes("worx state ralplan\\ clear --json", ROLE_AGENT_PREFIXES);
 
 		expect(result.allowed).toBe(false);
 		expect(result.reason).toContain("backslash escapes");

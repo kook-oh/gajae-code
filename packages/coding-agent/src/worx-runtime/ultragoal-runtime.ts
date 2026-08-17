@@ -391,12 +391,12 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 	try {
 		const raw = await Bun.file(settingsPath).text();
 		const parsed = JSON.parse(raw) as Record<string, unknown>;
-		// Support both the flat dotted key and a nested gjc.ultragoal.nudgeBudget shape.
-		const flat = parseNudgeBudgetValue(parsed["gjc.ultragoal.nudgeBudget"]);
+		// Support both the flat dotted key and a nested worx.ultragoal.nudgeBudget shape.
+		const flat = parseNudgeBudgetValue(parsed["worx.ultragoal.nudgeBudget"]);
 		if (flat !== null) return flat;
-		const gjc = parsed.worx;
-		if (gjc && typeof gjc === "object") {
-			const ultragoal = (gjc as Record<string, unknown>).ultragoal;
+		const worx = parsed.worx;
+		if (worx && typeof worx === "object") {
+			const ultragoal = (worx as Record<string, unknown>).ultragoal;
 			if (ultragoal && typeof ultragoal === "object") {
 				return parseNudgeBudgetValue((ultragoal as Record<string, unknown>).nudgeBudget);
 			}
@@ -410,7 +410,7 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 /**
  * Resolve the per-story nudge budget. Project `./.worx/settings.json` overrides the
  * user settings (`$WORX_CONFIG_DIR/settings.json` or `~/.worx/settings.json`), else the
- * default. Mirrors the `gjc.deepInterview.ambiguityThreshold` user+project precedence.
+ * default. Mirrors the `worx.deepInterview.ambiguityThreshold` user+project precedence.
  */
 export async function resolveUltragoalNudgeBudget(cwd: string): Promise<{ budget: number; source: string }> {
 	const projectPath = path.join(worxRoot(cwd), "settings.json");
@@ -1273,7 +1273,7 @@ export async function startNextUltragoalGoal(input: {
 	nextAction: UltragoalCompleteNextAction;
 }> {
 	const plan = await readUltragoalPlan(input.cwd, input.sessionId);
-	if (!plan) throw new Error("No ultragoal plan found. Run `gjc ultragoal create-goals --brief ...` first.");
+	if (!plan) throw new Error("No ultragoal plan found. Run `worx ultragoal create-goals --brief ...` first.");
 	// Fail closed: delegated execution requires stamped repository authority (#2901).
 	if (!plan.repositoryBinding) {
 		throw new Error(
@@ -2680,7 +2680,7 @@ async function validateCompletionQualityGate(
 			found.add(
 				"criticReview",
 				"terminal_critic_ceiling",
-				"checkpoint --status complete blocked: terminal-critic ceiling reached; requires human/leader gjc ultragoal record-critic-gate-override before completion",
+				"checkpoint --status complete blocked: terminal-critic ceiling reached; requires human/leader worx ultragoal record-critic-gate-override before completion",
 			);
 		}
 		const criticReview = qualityGateObject(gate.criticReview);
@@ -3360,7 +3360,7 @@ export async function checkpointUltragoalGoal(input: {
 	qualityGateJson?: string;
 }): Promise<UltragoalPlan> {
 	const plan = await readUltragoalPlan(input.cwd);
-	if (!plan) throw new Error("No ultragoal plan found. Run `gjc ultragoal create-goals --brief ...` first.");
+	if (!plan) throw new Error("No ultragoal plan found. Run `worx ultragoal create-goals --brief ...` first.");
 	const goal = plan.goals.find(item => item.id === input.goalId);
 	if (!goal) throw new Error(`No ultragoal goal found for ${input.goalId}.`);
 	const evidence = input.evidence.trim();
@@ -3753,7 +3753,7 @@ export async function addUltragoalSubgoal(input: {
 	rationale: string;
 }): Promise<UltragoalPlan> {
 	const plan = await readUltragoalPlan(input.cwd);
-	if (!plan) throw new Error("No ultragoal plan found. Run `gjc ultragoal create-goals --brief ...` first.");
+	if (!plan) throw new Error("No ultragoal plan found. Run `worx ultragoal create-goals --brief ...` first.");
 	return (await addUltragoalSubgoalToPlan({ ...input, plan })).plan;
 }
 
@@ -3974,7 +3974,7 @@ export async function recordUltragoalReviewBlockers(input: {
 	// (no checkpoint, no writePlan, no appendLedger) and a cap-hit throws before any
 	// partial write corrupts goals.json/ledger. Read-check-then-write on this snapshot.
 	const prePlan = await readUltragoalPlan(input.cwd);
-	if (!prePlan) throw new Error("No ultragoal plan found. Run `gjc ultragoal create-goals --brief ...` first.");
+	if (!prePlan) throw new Error("No ultragoal plan found. Run `worx ultragoal create-goals --brief ...` first.");
 	// Dedup BEFORE the budget check: an identical-objective open review_blocker already
 	// descending from this blocked goal is returned idempotently — mirroring
 	// recordReviewFindingGoals' findOpenReviewBlockerGoal path and the checkpoint #645
@@ -4201,8 +4201,8 @@ async function readOptionalExecutorQa(cwd: string, value: string | undefined): P
 			e2eStatus: "passed",
 			redTeamStatus: "passed",
 			evidence: "review evidence bundle was not supplied; runtime reports this as a finding",
-			e2eCommands: ["gjc ultragoal review"],
-			redTeamCommands: ["gjc ultragoal review"],
+			e2eCommands: ["worx ultragoal review"],
+			redTeamCommands: ["worx ultragoal review"],
 			artifactRefs: [],
 			contractCoverage: [],
 			surfaceEvidence: [],
@@ -4624,7 +4624,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal checkpoint --goal-id <id> --status <status> --evidence <text> [FLAGS]",
+			"  $ worx ultragoal checkpoint --goal-id <id> --status <status> --evidence <text> [FLAGS]",
 			"",
 			"FLAGS",
 			"      --goal-id=<value>            Durable .worx/ultragoal goal id, e.g. G001",
@@ -4639,8 +4639,8 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"  Complete checkpoints validate the target durable goals.json record before writing a receipt.",
 			"",
 			"EXAMPLES",
-			'  $ gjc ultragoal checkpoint --goal-id G001 --status blocked --evidence "waiting on review"',
-			'  $ gjc ultragoal checkpoint --goal-id G001 --status complete --evidence "tests passed" --quality-gate-json ./quality-gate.json --json',
+			'  $ worx ultragoal checkpoint --goal-id G001 --status blocked --evidence "waiting on review"',
+			'  $ worx ultragoal checkpoint --goal-id G001 --status complete --evidence "tests passed" --quality-gate-json ./quality-gate.json --json',
 			"",
 		].join("\n");
 	}
@@ -4649,7 +4649,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal review [--pr <n> | --branch <ref>] [--spec <path>] [--executor-qa-json <json-or-path>] [FLAGS]",
+			"  $ worx ultragoal review [--pr <n> | --branch <ref>] [--spec <path>] [--executor-qa-json <json-or-path>] [FLAGS]",
 			"",
 			"FLAGS",
 			"      --pr=<value>                  Review a GitHub PR; falls back to local diff when gh is unavailable",
@@ -4669,7 +4669,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal classify-blocker --classification <human_blocked|resolvable> --evidence <text> [FLAGS]",
+			"  $ worx ultragoal classify-blocker --classification <human_blocked|resolvable> --evidence <text> [FLAGS]",
 			"",
 			"FLAGS",
 			"      --classification=<value>     Required. human_blocked must be the latest blocker_classified event; pause also requires a later bound clean pause terminal critic OKAY verdict; resolvable never authorizes pause",
@@ -4678,8 +4678,8 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"      --json                       Output a machine-readable receipt",
 			"",
 			"EXAMPLES",
-			'  $ gjc ultragoal classify-blocker --classification resolvable --evidence "failing test can be fixed autonomously"',
-			'  $ gjc ultragoal classify-blocker --classification human_blocked --evidence "user must provide production API credentials" --goal-id G001',
+			'  $ worx ultragoal classify-blocker --classification resolvable --evidence "failing test can be fixed autonomously"',
+			'  $ worx ultragoal classify-blocker --classification human_blocked --evidence "user must provide production API credentials" --goal-id G001',
 			"",
 		].join("\n");
 	}
@@ -4688,7 +4688,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal record-critic-verdict --terminus <completion|pause> --verdict <OKAY|ITERATE|REJECT> --evidence <text> [--blockers-json <json>] [--goal-id <id>] [--classification-event-id <id>]",
+			"  $ worx ultragoal record-critic-verdict --terminus <completion|pause> --verdict <OKAY|ITERATE|REJECT> --evidence <text> [--blockers-json <json>] [--goal-id <id>] [--classification-event-id <id>]",
 			"",
 			"FLAGS",
 			"      --terminus=<value>           Required. completion or pause",
@@ -4700,7 +4700,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"      --json                       Output a machine-readable receipt",
 			"",
 			"EXAMPLES",
-			'  $ gjc ultragoal record-critic-verdict --terminus completion --verdict OKAY --evidence "all final-aggregate checkpoint evidence is current"',
+			'  $ worx ultragoal record-critic-verdict --terminus completion --verdict OKAY --evidence "all final-aggregate checkpoint evidence is current"',
 			"",
 		].join("\n");
 	}
@@ -4709,14 +4709,14 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal record-critic-gate-override --evidence <text> [--json]",
+			"  $ worx ultragoal record-critic-gate-override --evidence <text> [--json]",
 			"",
 			"FLAGS",
 			"      --evidence=<value>           Required. Human/leader authorization evidence for the terminal-critic ceiling override",
 			"      --json                       Output a machine-readable receipt",
 			"",
 			"EXAMPLES",
-			'  $ gjc ultragoal record-critic-gate-override --evidence "leader approved another terminal attempt after reviewing all five findings"',
+			'  $ worx ultragoal record-critic-gate-override --evidence "leader approved another terminal attempt after reviewing all five findings"',
 			"",
 		].join("\n");
 	}
@@ -4726,8 +4726,8 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"Run native GJC Ultragoal workflow commands",
 			"",
 			"USAGE",
-			"  $ gjc ultragoal quality-gate init [--surface <name> ...] --out <path>",
-			"  $ gjc ultragoal quality-gate validate --quality-gate-json <json-or-path> [--goal-id <id>] [--json]",
+			"  $ worx ultragoal quality-gate init [--surface <name> ...] --out <path>",
+			"  $ worx ultragoal quality-gate validate --quality-gate-json <json-or-path> [--goal-id <id>] [--json]",
 			"",
 			"FLAGS",
 			"      --surface=<value>            Surface to scaffold (repeatable; default web)",
@@ -4737,8 +4737,8 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 			"      --json                       Machine-readable output",
 			"",
 			"EXAMPLES",
-			"  $ gjc ultragoal quality-gate init --surface web --surface api --out ./quality-gate.json",
-			"  $ gjc ultragoal quality-gate validate --quality-gate-json ./quality-gate.json --json",
+			"  $ worx ultragoal quality-gate init --surface web --surface api --out ./quality-gate.json",
+			"  $ worx ultragoal quality-gate validate --quality-gate-json ./quality-gate.json --json",
 			"",
 		].join("\n");
 	}
@@ -4747,7 +4747,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 		"Run native GJC Ultragoal workflow commands",
 		"",
 		"USAGE",
-		"  $ gjc ultragoal <command> [FLAGS]",
+		"  $ worx ultragoal <command> [FLAGS]",
 		"",
 		"COMMANDS",
 		"  status",
@@ -4764,7 +4764,7 @@ function renderUltragoalHelp(args: readonly string[]): string | null {
 		"  quality-gate validate",
 
 		"",
-		"Run `gjc ultragoal checkpoint --help`, `gjc ultragoal review --help`, `gjc ultragoal classify-blocker --help`, `gjc ultragoal record-critic-verdict --help`, or `gjc ultragoal record-critic-gate-override --help`, or `gjc ultragoal quality-gate --help` for command-specific requirements.",
+		"Run `worx ultragoal checkpoint --help`, `worx ultragoal review --help`, `worx ultragoal classify-blocker --help`, `worx ultragoal record-critic-verdict --help`, or `worx ultragoal record-critic-gate-override --help`, or `worx ultragoal quality-gate --help` for command-specific requirements.",
 		"",
 	].join("\n");
 }
@@ -4829,15 +4829,15 @@ function renderCompleteHandoff(
 			receipt.blocked_goals = nextAction.blockedGoals.map(summarizeBlockedGoalForHandoff);
 			receipt.blocked_goal_ids = nextAction.blockedGoals.map(goal => goal.id);
 			receipt.recovery_hints = [
-				"gjc ultragoal classify-blocker --help",
-				"gjc ultragoal record-review-blockers --help",
-				"gjc ultragoal steer --kind add_subgoal --help",
-				"gjc ultragoal steer --kind mark_blocked_superseded --help",
+				"worx ultragoal classify-blocker --help",
+				"worx ultragoal record-review-blockers --help",
+				"worx ultragoal steer --kind add_subgoal --help",
+				"worx ultragoal steer --kind mark_blocked_superseded --help",
 			];
 		}
 		if (nextAction.kind === "retry-failed" && nextAction.failedGoals) {
 			receipt.failed_goal_ids = nextAction.failedGoals.map(goal => goal.id);
-			receipt.recovery_hints = ["gjc ultragoal complete-goals --retry-failed"];
+			receipt.recovery_hints = ["worx ultragoal complete-goals --retry-failed"];
 		}
 		if (nextAction.kind === "final-aggregate-receipt") {
 			receipt.recovery_hints = [
@@ -4861,7 +4861,7 @@ function renderCompleteHandoff(
 		return [
 			`ultragoal next-action=execute-goal goal-id=${nextAction.goal.id}`,
 			`objective=${nextAction.goal.objective}`,
-			`gjc-objective=${result.plan.worxObjective}`,
+			`worx-objective=${result.plan.worxObjective}`,
 			"checkpoint requires=architectReview:CLEAR+APPROVE,executorQa:passed",
 			"",
 		].join("\n");
@@ -4882,7 +4882,7 @@ function renderCompleteHandoff(
 		return [
 			"ultragoal next-action=retry-failed",
 			`failed-goal-ids=${ids}`,
-			"hint=run `gjc ultragoal complete-goals --retry-failed` after the failure is addressed",
+			"hint=run `worx ultragoal complete-goals --retry-failed` after the failure is addressed",
 			"",
 		].join("\n");
 	}
@@ -4920,11 +4920,11 @@ function renderCheckpointContinuation(
 			lines.push(
 				result.startedNext
 					? "The next ultragoal goal is active; continue the current aggregate GJC goal and checkpoint this story when verified."
-					: "Run `gjc ultragoal complete-goals` to activate the next ultragoal story.",
+					: "Run `worx ultragoal complete-goals` to activate the next ultragoal story.",
 			);
 		}
 	} else if (status === "failed") {
-		lines.push("Resume failed goals with `gjc ultragoal complete-goals --retry-failed` after the blocker is fixed.");
+		lines.push("Resume failed goals with `worx ultragoal complete-goals --retry-failed` after the blocker is fixed.");
 	} else if (status === "blocked" || status === "review_blocked") {
 		lines.push(
 			"Blocked ultragoal work must be resolved with explicit blocker work or steering before final completion.",
@@ -4937,7 +4937,7 @@ function renderCheckpointContinuation(
 async function executeUltragoalSteeringCommand(args: readonly string[], cwd: string): Promise<SteeringCommandResult> {
 	const kind = parseNativeSteeringKind(flagValue(args, "--kind"));
 	const plan = await readUltragoalPlan(cwd);
-	if (!plan) throw new Error("No ultragoal plan found. Run `gjc ultragoal create-goals --brief ...` first.");
+	if (!plan) throw new Error("No ultragoal plan found. Run `worx ultragoal create-goals --brief ...` first.");
 	const evidence = flagValue(args, "--evidence") ?? "";
 	const rationale = flagValue(args, "--rationale") ?? "";
 	try {
@@ -5165,7 +5165,7 @@ async function dispatchUltragoalCommand(args: string[], cwd: string): Promise<Ul
 				if (subcommand !== "validate") {
 					return {
 						status: 1,
-						stderr: `Unknown gjc ultragoal quality-gate subcommand: ${subcommand ?? "(missing)"}; supported: init, validate\n`,
+						stderr: `Unknown worx ultragoal quality-gate subcommand: ${subcommand ?? "(missing)"}; supported: init, validate\n`,
 					};
 				}
 				const qualityGateJson = flagValue(args, "--quality-gate-json");
@@ -5290,7 +5290,7 @@ async function dispatchUltragoalCommand(args: string[], cwd: string): Promise<Ul
 				};
 			}
 			default:
-				return { status: 1, stderr: `Unknown gjc ultragoal command: ${command}\n` };
+				return { status: 1, stderr: `Unknown worx ultragoal command: ${command}\n` };
 		}
 	} catch (error) {
 		return { status: 1, stderr: `${error instanceof Error ? error.message : String(error)}\n` };
@@ -5313,9 +5313,9 @@ const RECONCILE_COMMANDS = new Set([
 
 /**
  * Derive a workflow-state payload from the ultragoal plan/ledger and reconcile the
- * ultragoal mode-state + active-state/HUD so `gjc state ultragoal read`, the
+ * ultragoal mode-state + active-state/HUD so `worx state ultragoal read`, the
  * skill-tool chain guard, and the HUD chip mirror the plan/ledger. Session scope
- * follows `gjc state` (`WORX_SESSION_ID`). This is a derived repair: it never changes
+ * follows `worx state` (`WORX_SESSION_ID`). This is a derived repair: it never changes
  * the triggering command's status/stdout, but a failure is surfaced (stderr + a
  * `reconcile_failed` ledger audit event) rather than silently swallowed. `status` is
  * therefore a read PLUS a derived repair; it never mutates goals.json/ledger.jsonl

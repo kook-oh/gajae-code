@@ -633,7 +633,7 @@ function initializeLocalRootSyncWhenLegacyAbsent(options: LocalProtocolOptions, 
 }
 
 export function resolveLocalRoot(options: LocalProtocolOptions): string {
-	return explicitLocalRoot(options) ?? path.join(os.tmpdir(), "gjc-local", safeSessionId(options));
+	return explicitLocalRoot(options) ?? path.join(os.tmpdir(), "worx-local", safeSessionId(options));
 }
 
 export function resolveLocalUrlToPath(input: string | InternalUrl, options: LocalProtocolOptions): string {

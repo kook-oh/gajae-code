@@ -506,7 +506,7 @@ async function resolveExtensionEntries(dir: string): Promise<string[] | null> {
  * Discovery rules:
  * 1. Direct files: `extensions/*.ts` or `*.js` → load
  * 2. Subdirectory with index: `extensions/<ext>/index.ts` or `index.js` → load
- * 3. Subdirectory with package.json: `extensions/<ext>/package.json` with "gjc"/"pi" field → load declared paths
+ * 3. Subdirectory with package.json: `extensions/<ext>/package.json` with "worx"/"pi" field → load declared paths
  *
  * No recursion beyond one level. Complex packages must use package.json manifest.
  */

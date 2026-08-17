@@ -307,11 +307,11 @@ describe("canonical lifecycle correlation", () => {
 			expect(canonicalTarget(variant.frame)).toBe(variant.target);
 			expect(canonicalRequest(variant.frame)).toBe(variant.request);
 			expect(requestHash(variant.frame)).toBe(variant.hash);
-			expect(auditRedactionRef(new Uint8Array(32).fill(1), "gjc.lifecycle.audit.v2.target\0", variant.target)).toBe(
+			expect(auditRedactionRef(new Uint8Array(32).fill(1), "worx.lifecycle.audit.v2.target\0", variant.target)).toBe(
 				variant.targetRef,
 			);
 			expect(
-				auditRedactionRef(new Uint8Array(32).fill(1), "gjc.lifecycle.audit.v2.request\0", variant.request),
+				auditRedactionRef(new Uint8Array(32).fill(1), "worx.lifecycle.audit.v2.request\0", variant.request),
 			).toBe(variant.requestRef);
 
 			const { deps: d, audit } = deps({ auditRedactionKey: new Uint8Array(32).fill(1) });

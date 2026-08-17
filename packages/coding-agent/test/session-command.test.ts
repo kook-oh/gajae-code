@@ -114,7 +114,7 @@ async function runSessionCommand(argv: string[]): Promise<string> {
 		return true;
 	});
 	try {
-		const command = new SessionCommand(argv, { bin: "gjc", version: "0.0.0-test", commands: new Map() });
+		const command = new SessionCommand(argv, { bin: "worx", version: "0.0.0-test", commands: new Map() });
 		await command.run();
 		return output;
 	} finally {
@@ -131,7 +131,7 @@ afterEach(() => {
 	tmuxSessions.__setMutationServerProofForTests(null);
 });
 
-describe("gjc session command", () => {
+describe("worx session command", () => {
 	it("emits exact list JSON DTOs with flags before action", async () => {
 		mockSpawnSync(() =>
 			spawnResult(0, `${sessionLine("gajae_code_test", "feature/demo")}untagged\t1\t0\t1770000001\t\troot\t1\t\t\n`),

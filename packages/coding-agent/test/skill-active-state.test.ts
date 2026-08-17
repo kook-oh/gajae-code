@@ -153,7 +153,7 @@ describe("GJC skill-active state", () => {
 
 	it("shows only the callee when a skill is seeded session-less then handed off under a session", async () => {
 		await withTempCwd(async cwd => {
-			// `gjc deep-interview` run without --session-id seeds a global row, then
+			// `worx deep-interview` run without --session-id seeds a global row, then
 			// the in-TUI skill chain hands off under a concrete session id. The
 			// demotion must supersede the global row so the HUD stops showing the
 			// already-handed-off skill.

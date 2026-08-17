@@ -23,13 +23,13 @@ export default class Read extends Command {
 	};
 
 	static examples = [
-		"gjc read src/foo.ts",
-		"gjc read src/foo.ts --truncation head",
-		"gjc read src/foo.ts:50-100",
-		"gjc read src/foo.ts:raw",
-		"gjc read https://example.com",
-		"gjc read path/to/archive.zip:dir/file.ts",
-		"gjc read path/to/db.sqlite:users:42",
+		"worx read src/foo.ts",
+		"worx read src/foo.ts --truncation head",
+		"worx read src/foo.ts:50-100",
+		"worx read src/foo.ts:raw",
+		"worx read https://example.com",
+		"worx read path/to/archive.zip:dir/file.ts",
+		"worx read path/to/db.sqlite:users:42",
 	];
 
 	async run(): Promise<void> {

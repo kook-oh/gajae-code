@@ -287,7 +287,7 @@ describe("startup credential auto-import marker matrix", () => {
 		expect(result.refreshCalls).toEqual(["offline"]);
 		expect(result.notice).toContain(CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING);
 		expect(CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING).toBe(
-			"Refreshing in gjc may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.",
+			"Refreshing in worx may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.",
 		);
 		expect(result.marker.resolution).toBe("accepted");
 	});

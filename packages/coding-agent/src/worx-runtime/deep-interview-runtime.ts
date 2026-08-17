@@ -29,7 +29,7 @@ import { assertSafePathComponent, CommandError, flagValue, hasFlag } from "./wor
 export * from "./deep-interview-recorder";
 
 /**
- * Native implementation of `gjc deep-interview`.
+ * Native implementation of `worx deep-interview`.
  *
  * The CLI itself does not run the Socratic interview; that lives inside the `/skill:deep-interview`
  * skill executed by the agent. This handler validates the documented argument-hint surface
@@ -486,7 +486,7 @@ async function resolveSpecWriteArgs(args: readonly string[], cwd: string): Promi
 			continue;
 		}
 		if (arg.startsWith("-") && !allowedFlags.has(arg)) {
-			throw new DeepInterviewCommandError(2, `unknown flag for gjc deep-interview --write: ${arg}`);
+			throw new DeepInterviewCommandError(2, `unknown flag for worx deep-interview --write: ${arg}`);
 		}
 	}
 
@@ -555,7 +555,7 @@ async function resolveDeepInterviewArgs(args: readonly string[], cwd: string): P
 		if (arg === "--trace") continue;
 		if (arg === "--quick" || arg === "--standard" || arg === "--deep" || arg === "--json") continue;
 		if (arg.startsWith("-")) {
-			throw new DeepInterviewCommandError(2, `unknown flag for gjc deep-interview: ${arg}`);
+			throw new DeepInterviewCommandError(2, `unknown flag for worx deep-interview: ${arg}`);
 		}
 		ideaParts.push(arg);
 	}
@@ -704,7 +704,7 @@ export async function persistDeepInterviewSpec(
 			cwd,
 			skill: "deep-interview",
 			owner: "worx-runtime",
-			command: "gjc deep-interview persist-spec-state",
+			command: "worx deep-interview persist-spec-state",
 			sessionId: resolved.sessionId,
 			nowIso: createdAt,
 		},
@@ -781,7 +781,7 @@ async function seedDeepInterviewState(cwd: string, resolved: ResolvedDeepIntervi
 			cwd,
 			skill: "deep-interview",
 			owner: "worx-runtime",
-			command: "gjc deep-interview seed",
+			command: "worx deep-interview seed",
 			sessionId: resolved.sessionId,
 			nowIso: now,
 		},
@@ -899,7 +899,7 @@ export async function runNativeDeepInterviewCommand(
 		if (!resolved.idea) {
 			throw new DeepInterviewCommandError(
 				2,
-				'gjc deep-interview requires an idea, e.g. `gjc deep-interview "<idea>"`.',
+				'worx deep-interview requires an idea, e.g. `worx deep-interview "<idea>"`.',
 			);
 		}
 		const statePath = await seedDeepInterviewState(cwd, resolved);

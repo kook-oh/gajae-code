@@ -54,7 +54,7 @@ describe("state-schema (A1)", () => {
 			version: 1,
 			skill: "ralplan",
 			owner: "worx-state-cli",
-			command: "gjc state ralplan write",
+			command: "worx state ralplan write",
 			state_path: "/x/.worx/state/ralplan-state.json",
 			storage_path: "/x/.worx/state/ralplan-state.json",
 			mutated_at: "2026-01-01T00:00:00.000Z",

@@ -28,7 +28,7 @@ afterEach(async () => {
 	await Promise.all(tempRoots.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
 });
 
-describe("gjc state read markdown", () => {
+describe("worx state read markdown", () => {
 	it("defaults read output to markdown and keeps --json parseable", async () => {
 		const root = await tempDir();
 		await runNativeStateCommand(
@@ -77,10 +77,10 @@ describe("gjc state read markdown", () => {
 		expect(state.current_phase).toBe("approval");
 	});
 
-	it("rejects unknown gjc state flags", async () => {
+	it("rejects unknown worx state flags", async () => {
 		const root = await tempDir();
 		const result = await runNativeStateCommand(["read", "--mode", "deep-interview", "--bogus"], root);
 		expect(result.status).toBe(2);
-		expect(result.stderr).toContain("unknown gjc state flag: --bogus");
+		expect(result.stderr).toContain("unknown worx state flag: --bogus");
 	});
 });

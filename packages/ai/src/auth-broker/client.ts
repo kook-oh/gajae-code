@@ -1,8 +1,8 @@
 /**
- * HTTP client for the gjc auth-broker server.
+ * HTTP client for the worx auth-broker server.
  *
  * Used by {@link RemoteAuthCredentialStore} (snapshot pulls) and by
- * `gjc auth-broker status` (liveness checks). All endpoints except
+ * `worx auth-broker status` (liveness checks). All endpoints except
  * `/v1/healthz` require a bearer token.
  */
 import { readSseEvents } from "@bworx-io/worx-utils";

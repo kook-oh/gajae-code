@@ -1,7 +1,7 @@
 /**
  * Notify CLI command handlers.
  *
- * Handles `gjc notify` setup/status and the hidden daemon entrypoint.
+ * Handles `worx notify` setup/status and the hidden daemon entrypoint.
  */
 import { createInterface } from "node:readline/promises";
 import { APP_NAME } from "@bworx-io/worx-utils/dirs";
@@ -592,7 +592,7 @@ async function runTelegramSetup(cmd: NotifyCommandArgs, deps: NotifyCommandDeps)
 		if (!persisted && observed === undefined && commitAttempted) {
 			throw new Error(
 				"Telegram notification settings may or may not have been saved, and the stored configuration could not be read; " +
-					`run \`gjc notify status\` before retrying: ${detail}`,
+					`run \`worx notify status\` before retrying: ${detail}`,
 			);
 		}
 		throw new Error(
@@ -981,7 +981,7 @@ ${chalk.bold("Examples:")}
   ${APP_NAME} notify setup slack --slack-bot-token <token> --slack-app-token <token> --slack-workspace-id <id> --slack-channel-id <id> [--slack-authorized-user-id <id>]
   ${APP_NAME} notify status
   ${APP_NAME} notify health --provider discord --probe
-  ${APP_NAME} notify test --provider slack --message "hello from gjc"
+  ${APP_NAME} notify test --provider slack --message "hello from worx"
   ${APP_NAME} notify recovery
   ${APP_NAME} notify bind-thread --session-id 01J... --thread-ts 1785573662.132329
   ${APP_NAME} notify activate-thread --session-id 01J...

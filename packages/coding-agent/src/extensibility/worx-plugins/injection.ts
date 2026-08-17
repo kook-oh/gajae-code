@@ -33,7 +33,7 @@ export function wrapSubskillBlock(
 	},
 	body: string,
 ): string {
-	return `\n\n---\n\n<gjc-subskill plugin="${escapeAttribute(activation.plugin)}" name="${escapeAttribute(activation.subskillName)}" parent="${escapeAttribute(activation.parent)}" phase="${escapeAttribute(activation.phase)}" arg="${escapeAttribute(activation.activationArg)}">\n${sanitizePromptBody(body)}\n</gjc-subskill>`;
+	return `\n\n---\n\n<worx-subskill plugin="${escapeAttribute(activation.plugin)}" name="${escapeAttribute(activation.subskillName)}" parent="${escapeAttribute(activation.parent)}" phase="${escapeAttribute(activation.phase)}" arg="${escapeAttribute(activation.activationArg)}">\n${sanitizePromptBody(body)}\n</gjc-subskill>`;
 }
 
 export async function resolveCurrentPhaseForParent(input: {

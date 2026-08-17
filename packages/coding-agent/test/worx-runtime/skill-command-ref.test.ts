@@ -50,8 +50,8 @@ describe("workflow command-reference proof spike", () => {
 		const first = renderCommandRefBlock("ralplan");
 		const second = renderCommandRefBlock("ralplan");
 		expect(first).toEqual(second);
-		expect(first.bytes).toContain("<!-- gjc:cmdref:start state -->");
-		expect(first.bytes).toContain("gjc state ralplan write --input");
+		expect(first.bytes).toContain("<!-- worx:cmdref:start state -->");
+		expect(first.bytes).toContain("worx state ralplan write --input");
 		expect(first.bytes.endsWith("\n")).toBe(true);
 	});
 

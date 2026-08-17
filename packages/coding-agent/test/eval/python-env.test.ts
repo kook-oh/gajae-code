@@ -14,30 +14,30 @@ const RESOLVERS = [
 	{
 		kernel: resolveKernelSkipCheck,
 		tool: resolvePythonSkipCheck,
-		gjc: "WORX_PYTHON_SKIP_CHECK",
+		worx: "WORX_PYTHON_SKIP_CHECK",
 		pi: "PI_PYTHON_SKIP_CHECK",
 	},
 	{
 		kernel: resolveKernelIpcTrace,
 		tool: resolvePythonIpcTrace,
-		gjc: "WORX_PYTHON_IPC_TRACE",
+		worx: "WORX_PYTHON_IPC_TRACE",
 		pi: "PI_PYTHON_IPC_TRACE",
 	},
 	{
 		kernel: resolveKernelIntegrationGate,
 		tool: resolvePythonIntegrationGate,
-		gjc: "WORX_PYTHON_INTEGRATION",
+		worx: "WORX_PYTHON_INTEGRATION",
 		pi: "PI_PYTHON_INTEGRATION",
 	},
 ] as const;
 
 describe("Python environment flag resolvers", () => {
 	it("shares the kernel resolver with tool exports for hostile GJC/PI values", () => {
-		for (const { kernel, tool, gjc, pi } of RESOLVERS) {
+		for (const { kernel, tool, worx, pi } of RESOLVERS) {
 			expect(tool).toBe(kernel);
-			expect(tool({ [gjc]: "0", [pi]: "1" })).toBe(true);
-			expect(tool({ [gjc]: " \tYeS\n" })).toBe(true);
-			expect(tool({ [gjc]: "false", [pi]: " 0 " })).toBe(false);
+			expect(tool({ [worx]: "0", [pi]: "1" })).toBe(true);
+			expect(tool({ [worx]: " \tYeS\n" })).toBe(true);
+			expect(tool({ [worx]: "false", [pi]: " 0 " })).toBe(false);
 		}
 	});
 });

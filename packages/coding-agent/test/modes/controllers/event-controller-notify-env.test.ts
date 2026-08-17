@@ -1,7 +1,7 @@
 /**
  * Tests for the per-run completion-notification opt-out `WORX_NOTIFY=off`.
  *
- * Non-interactive fleet runs (`gjc -p --no-session`) inherit the global
+ * Non-interactive fleet runs (`worx -p --no-session`) inherit the global
  * `completion.notify=on` / `completion.notifyCommand` and therefore fire a
  * notification per run (e.g. a command that opens a fresh Telegram topic). The env
  * var gives those runs a config-untouched, child-inheritable way to stay silent —

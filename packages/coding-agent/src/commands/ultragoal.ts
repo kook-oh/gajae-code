@@ -12,7 +12,7 @@ import { runNativeUltragoalCommand } from "../worx-runtime/ultragoal-runtime";
 export default class Ultragoal extends Command {
 	static description = "Run native GJC Ultragoal workflow commands";
 	static strict = false;
-	static examples = ["$ gjc ultragoal status --json"];
+	static examples = ["$ worx ultragoal status --json"];
 	static delegateHelp = true;
 
 	async run(): Promise<void> {

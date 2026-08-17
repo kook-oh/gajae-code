@@ -314,7 +314,7 @@ export const WORKFLOW_MANIFEST: Record<CanonicalWorxWorkflowSkill, SkillManifest
 			{ name: "brief-file", type: "string", appliesToVerbs: ["create-goals"] },
 			{ name: "from-stdin", type: "boolean", appliesToVerbs: ["create-goals"] },
 			{
-				name: "gjc-goal-mode",
+				name: "worx-goal-mode",
 				type: "enum",
 				enumValues: ["aggregate", "per-story"],
 				appliesToVerbs: ["create-goals"],

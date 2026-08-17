@@ -83,7 +83,7 @@ export function extractRlmFlags(argv: string[]): ExtractedRlmFlags {
 			dataPath = arg.slice("--data=".length);
 		} else if (arg === "--resume" || arg === "-r") {
 			const next = argv[i + 1];
-			if (!next || next.startsWith("-")) throw new Error("gjc rlm --resume requires an RLM session id.");
+			if (!next || next.startsWith("-")) throw new Error("worx rlm --resume requires an RLM session id.");
 			resumeSessionId = next;
 			i += 1;
 		} else if (arg.startsWith("--resume=")) {
@@ -242,7 +242,7 @@ async function writeRlmMetadata(input: {
 
 /**
  * RLM artifacts are scoped under a GJC session directory and resolving their
- * paths is a *write* (it must pick a concrete session). When `gjc rlm` runs
+ * paths is a *write* (it must pick a concrete session). When `worx rlm` runs
  * standalone — no parent agent, no `WORX_SESSION_ID` in the environment — there is
  * no session to resolve and `resolveWorxSessionForWrite` throws
  * `missing_for_write`. Establish a dedicated GJC session id in that case and pin
@@ -304,7 +304,7 @@ export async function runRlmCommand(argv: string[]): Promise<void> {
 	}
 	// Piped stdin (non-TTY), explicit --print, and explicit --mode run as autonomous
 	// research. Positional argv messages seed the interactive RLM shell, so
-	// `gjc rlm "question"` still loads the TUI instead of being coerced into
+	// `worx rlm "question"` still loads the TUI instead of being coerced into
 	// print mode.
 	const pipedStdin = process.stdin.isTTY === false;
 	const autonomous = prepareRlmLaunchMode(parsed, pipedStdin);

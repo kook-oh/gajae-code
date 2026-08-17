@@ -213,7 +213,7 @@ function normalizeOsCategory(platform: NodeJS.Platform): string {
 /**
  * Replicates ZCode's `buildZCodeSourceHeaders()` + GLM `X-ZCode-Agent` tag
  * (host bundle `Bl` / `buildConnectivitySourceHeaders` for GLM providers), so
- * api.z.ai sees gjc's glm-zcode requests as the ZCode client. Dynamic values
+ * api.z.ai sees worx's glm-zcode requests as the ZCode client. Dynamic values
  * (platform/arch, locale, timezone, OS version) are resolved at runtime exactly
  * as ZCode does; printable-ASCII-only and conditionally omitted when empty.
  */

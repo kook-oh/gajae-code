@@ -375,7 +375,7 @@ describe("SkillTool", () => {
 				"Decoy.",
 			);
 			const xdgDecoyPath = await makeRuntimeSkill(
-				path.join(xdgConfigHome, "gjc", "agent", "skills"),
+				path.join(xdgConfigHome, "worx", "agent", "skills"),
 				"xdg-decoy",
 				"XDG decoy",
 				"Decoy.",

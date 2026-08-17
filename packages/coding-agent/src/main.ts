@@ -1228,7 +1228,7 @@ async function buildSessionOptions(
 }
 
 /**
- * Research-mode (RLM) preset hook. Lets `gjc rlm` augment the session options
+ * Research-mode (RLM) preset hook. Lets `worx rlm` augment the session options
  * (system prompt, restricted toolset, custom python tool) and assert the tool
  * boundary once the session's tool registry is fully assembled.
  */
@@ -1670,7 +1670,7 @@ export async function runRootCommand(
 		sessionOptions.deferMcpConfigStartup = true;
 	}
 	const hasRootStartupProfile = Boolean(settingsInstance.get("modelProfile.default") || parsedArgs.mpreset);
-	// ACP is not carved out: `gjc acp` is broker-backed and never builds a local
+	// ACP is not carved out: `worx acp` is broker-backed and never builds a local
 	// session here, and the broker-launched lifecycle child defers memory startup
 	// unconditionally (createLifecycleAgentSession) so readiness never waits on
 	// the memory pipeline's LLM work.

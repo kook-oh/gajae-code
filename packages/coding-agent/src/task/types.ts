@@ -81,7 +81,7 @@ const spawnPlanSchema = z
 
 const repositoryBindingSchema = z
 	.object({
-		schema: z.literal("gjc.repository_binding.v1"),
+		schema: z.literal("worx.repository_binding.v1"),
 		worktreeRoot: z.string().min(1).describe("canonical git worktree root"),
 		commonDir: z.string().min(1).nullable().describe("git common dir, or null outside a git checkout"),
 		relativeSubdir: z.string().min(1).optional().describe("optional repo-relative subdirectory; not an absolute cwd"),
@@ -526,7 +526,7 @@ export interface SingleResult {
 	 * and fail-closed validation (#2901).
 	 */
 	repositoryBinding?: {
-		schema: "gjc.repository_binding.v1";
+		schema: "worx.repository_binding.v1";
 		worktreeRoot: string;
 		commonDir: string | null;
 		relativeSubdir?: string;

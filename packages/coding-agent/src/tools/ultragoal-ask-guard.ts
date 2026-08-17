@@ -37,7 +37,7 @@ export function formatUltragoalAskBlockMessage(diagnostic: UltragoalAskBlockDiag
 	return [
 		diagnostic.message,
 		`Ultragoal ask guard blocked ask (source: ${diagnostic.source}; reason: ${diagnostic.reason}).`,
-		"Use `gjc ultragoal record-review-blockers` to record the blocker instead of asking the user.",
+		"Use `worx ultragoal record-review-blockers` to record the blocker instead of asking the user.",
 	].join("\n");
 }
 

@@ -19,13 +19,13 @@ import {
 } from "./workflow-state-contract";
 
 export const DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE =
-	"Deep-interview phase boundary: continue gathering context/questions/risks and emit a handoff/spec before code edits. Mutation tools and patch execution are blocked while deep-interview is active; finalize specs through `gjc deep-interview --write --stage final` or hand off to an execution phase.";
+	"Deep-interview phase boundary: continue gathering context/questions/risks and emit a handoff/spec before code edits. Mutation tools and patch execution are blocked while deep-interview is active; finalize specs through `worx deep-interview --write --stage final` or hand off to an execution phase.";
 export const WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE =
 	".worx workflow state and artifacts are runtime-owned. Agent mutation tools cannot edit `.worx/**`; use the sanctioned `worx` CLI instead.";
 export const RALPLAN_MUTATION_BLOCK_MESSAGE =
-	"Ralplan planning phase boundary: keep refining the consensus plan and persist plan artifacts through `gjc ralplan --write` (stage scratch files under a temp dir if needed). Product-code mutation tools and patch execution are blocked while ralplan is active; mutate only after the plan is approved and execution begins.";
+	"Ralplan planning phase boundary: keep refining the consensus plan and persist plan artifacts through `worx ralplan --write` (stage scratch files under a temp dir if needed). Product-code mutation tools and patch execution are blocked while ralplan is active; mutate only after the plan is approved and execution begins.";
 export const ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE =
-	"Ultragoal goal-planning phase boundary: finish goal planning and record goals through `gjc ultragoal` before editing code. Product-code mutation tools and patch execution are blocked until goal planning completes and execution begins.";
+	"Ultragoal goal-planning phase boundary: finish goal planning and record goals through `worx ultragoal` before editing code. Product-code mutation tools and patch execution are blocked until goal planning completes and execution begins.";
 
 /** Resolve the phase-boundary block message for the active planning skill. */
 function planningPhaseBlockMessage(skill: CanonicalWorxWorkflowSkill): string {
@@ -158,7 +158,7 @@ function modeStatePath(cwd: string, skill: string, sessionId: string): string {
 }
 
 function warnInvalidModeState(filePath: string, error: string): void {
-	logger.warn(`gjc skill-state: invalid mode-state at ${filePath}: ${error}`);
+	logger.warn(`worx skill-state: invalid mode-state at ${filePath}: ${error}`);
 }
 
 async function readValidatedModeState(filePath: string): Promise<ModeState | null> {
@@ -1227,8 +1227,8 @@ export async function getWorkflowMutationDecision(
 		};
 	}
 	// Neutral temp scratch (outside the project tree) stays writable so agents can
-	// stage artifacts and feed their path to the sanctioned `gjc ... --write` CLIs.
-	// Read-only / `gjc` bash extract no targets and fall through to allowed here.
+	// stage artifacts and feed their path to the sanctioned `worx ... --write` CLIs.
+	// Read-only / `worx` bash extract no targets and fall through to allowed here.
 	const blockedTargets = await planningBlockedTargets(input.cwd, targets);
 	if (blockedTargets.length === 0) {
 		return { blocked: false, targets: targets.paths };

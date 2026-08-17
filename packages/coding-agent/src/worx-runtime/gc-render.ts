@@ -1,5 +1,5 @@
 /**
- * Text rendering for `gjc gc` reports. JSON output is produced directly in
+ * Text rendering for `worx gc` reports. JSON output is produced directly in
  * `gc-runtime.ts`; this module owns the human-readable grouped report.
  */
 
@@ -41,9 +41,9 @@ function renderRecord(record: GcRecord): string {
 export function buildGcReportText(report: GcReport): string {
 	const lines: string[] = [];
 	if (report.operation === "repair_session_index") {
-		lines.push("gjc gc — session-index repair (other stores are report-only)");
+		lines.push("worx gc — session-index repair (other stores are report-only)");
 	} else {
-		lines.push(report.dry_run ? "gjc gc — dry run (no changes made; pass --prune to remove)" : "gjc gc — prune");
+		lines.push(report.dry_run ? "worx gc — dry run (no changes made; pass --prune to remove)" : "worx gc — prune");
 	}
 	lines.push("");
 
@@ -64,7 +64,7 @@ export function buildGcReportText(report: GcReport): string {
 		if (index.quarantine_path) lines.push(`  Quarantined suffix: ${index.quarantine_path}`);
 		if (index.reason) lines.push(`  ${index.reason}`);
 		if (index.status === "corrupt")
-			lines.push("  Run `gjc gc --repair-session-index` to quarantine the corrupt suffix.");
+			lines.push("  Run `worx gc --repair-session-index` to quarantine the corrupt suffix.");
 		if (index.status === "unsupported")
 			lines.push("  Upgrade GJC before attempting a repair; no index data was changed.");
 		if (index.status === "repaired")

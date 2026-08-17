@@ -14,7 +14,7 @@ interface ServeArguments {
 }
 
 function usageError(message: string): never {
-	throw new CliParseError(`gjc sdk serve: ${message}`);
+	throw new CliParseError(`worx sdk serve: ${message}`);
 }
 
 function readFlagValue(argv: string[], index: number, flag: string): string {

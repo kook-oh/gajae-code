@@ -23,7 +23,7 @@ import {
 } from "./credential-import";
 
 export const CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING =
-	"Refreshing in gjc may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.";
+	"Refreshing in worx may log out the Claude/Codex CLI because OAuth refresh tokens can rotate.";
 export const CREDENTIAL_AUTO_IMPORT_PERSISTENCE_WARNING =
 	"Credential import preference could not be saved; external credentials may be offered again.";
 export const CREDENTIAL_AUTO_IMPORT_REFRESH_WARNING =
@@ -412,7 +412,7 @@ export function buildCredentialAutoImportNotice(
 	const providers = [
 		...new Set(result.imported.map(c => EXTERNAL_PROVIDER_LABELS[c.provider as ExternalProvider] ?? c.provider)),
 	];
-	const success = `Imported ${result.imported.length} external OAuth credential(s) into gjc: ${providers.join(", ")}.`;
+	const success = `Imported ${result.imported.length} external OAuth credential(s) into worx: ${providers.join(", ")}.`;
 	return `${success}\n${CREDENTIAL_AUTO_IMPORT_ROTATION_WARNING}`;
 }
 

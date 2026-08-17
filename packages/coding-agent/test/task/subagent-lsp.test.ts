@@ -165,7 +165,7 @@ function mockIsolation(): void {
 	vi.spyOn(worktreeModule, "captureDeltaPatch").mockResolvedValue({ rootPatch: "", nestedPatches: [] });
 	vi.spyOn(worktreeModule, "cleanupIsolation").mockResolvedValue();
 	const binding: repositoryBindingModule.RepositoryBinding = {
-		schema: "gjc.repository_binding.v1",
+		schema: "worx.repository_binding.v1",
 		worktreeRoot: "/repo",
 		commonDir: null,
 		displayPath: "/repo",

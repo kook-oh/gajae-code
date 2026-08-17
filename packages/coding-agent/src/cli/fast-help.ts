@@ -84,7 +84,7 @@ Environment Variables:
   WORX_PLAN_MODEL              - Override planning model (see --plan)
   WORX_NO_PTY                  - Disable PTY-based interactive bash execution
   --tmux                       - Launch interactive startup inside a fresh tmux session
-  gjc session                  - List, inspect, create, remove, or attach tagged GJC-managed tmux sessions
+  worx session                  - List, inspect, create, remove, or attach tagged GJC-managed tmux sessions
   WORX_LAUNCH_POLICY           - Launch policy for --tmux startup: tmux or direct
   WORX_TMUX_SESSION            - Explicit tmux session name override for --tmux startup
   WORX_TMUX_PROFILE            - Apply GJC tmux scroll/mouse/clipboard profile to --tmux sessions (set 0/off to skip)

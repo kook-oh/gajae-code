@@ -336,8 +336,8 @@ function uninstallFailure(
 					: "the previous state could not be restored";
 	const recovery =
 		kind === "metadata"
-			? `Repair the GJC ${identity.scope} registry, then retry gjc plugin uninstall ${identity.name} --${identity.scope}`
-			: `Check GJC plugin directory permissions, then retry gjc plugin uninstall ${identity.name} --${identity.scope}`;
+			? `Repair the GJC ${identity.scope} registry, then retry worx plugin uninstall ${identity.name} --${identity.scope}`
+			: `Check GJC plugin directory permissions, then retry worx plugin uninstall ${identity.name} --${identity.scope}`;
 	return fail("invalid_target", `Could not uninstall GJC bundle "${identity.name}" because ${detail}`, recovery);
 }
 
@@ -407,7 +407,7 @@ function notInstalled(identity: WorxBundleIdentity): WorxLifecycleError {
 	return fail(
 		"not_installed",
 		`GJC bundle "${identity.name}" is not installed in the ${identity.scope} scope`,
-		`gjc plugin install <source> --${identity.scope}`,
+		`worx plugin install <source> --${identity.scope}`,
 	);
 }
 
@@ -415,7 +415,7 @@ function alreadyInstalled(name: string, scope: WorxPluginScope): WorxLifecycleEr
 	return fail(
 		"already_installed_use_upgrade",
 		`GJC bundle "${name}" is already installed in the ${scope} scope`,
-		`gjc plugin upgrade ${name} --${scope}`,
+		`worx plugin upgrade ${name} --${scope}`,
 	);
 }
 
@@ -444,7 +444,7 @@ async function withSourceAvailability<T>(
 				error: fail(
 					"source_unavailable",
 					`The stored source for GJC bundle "${identity.name}" could not be resolved`,
-					`gjc plugin install <source> --${identity.scope}`,
+					`worx plugin install <source> --${identity.scope}`,
 				),
 			};
 		}
@@ -454,7 +454,7 @@ async function withSourceAvailability<T>(
 				error: fail(
 					"invalid_target",
 					`Stored source for GJC bundle "${identity.name}" is no longer a valid plugin target`,
-					`gjc plugin install <source> --${identity.scope}`,
+					`worx plugin install <source> --${identity.scope}`,
 				),
 			};
 		}
@@ -564,7 +564,7 @@ export async function installWorxBundle(
 						error: fail(
 							"already_installed_use_upgrade",
 							`GJC bundle "${existing.name}" is already installed in the ${scope} scope`,
-							`gjc plugin upgrade ${existing.name} --${scope}`,
+							`worx plugin upgrade ${existing.name} --${scope}`,
 						),
 					};
 				}
@@ -617,7 +617,7 @@ export async function previewWorxBundleUpdate(
 					error: fail(
 						"identity_mismatch",
 						`Source now declares "${bundle.name}" but "${entry.name}" is installed; install the new bundle and uninstall the old one`,
-						`gjc plugin install <source> --${identity.scope}`,
+						`worx plugin install <source> --${identity.scope}`,
 					),
 				};
 			}
@@ -689,7 +689,7 @@ export async function applyWorxBundleUpdate(
 						error: fail(
 							"identity_mismatch",
 							`Source now declares "${bundle.name}" but "${existing.name}" is installed; install the new bundle and uninstall the old one`,
-							`gjc plugin install <source> --${identity.scope}`,
+							`worx plugin install <source> --${identity.scope}`,
 						),
 					};
 				}

@@ -13,7 +13,7 @@ import {
 } from "./token-log";
 
 async function withTempDir<T>(fn: (dir: string) => Promise<T>): Promise<T> {
-	const dir = await mkdtemp(join(tmpdir(), "gjc-token-log-"));
+	const dir = await mkdtemp(join(tmpdir(), "worx-token-log-"));
 	try {
 		return await fn(dir);
 	} finally {

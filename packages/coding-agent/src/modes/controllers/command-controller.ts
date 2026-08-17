@@ -160,7 +160,7 @@ export class CommandController {
 		try {
 			let tmpFile: string;
 			try {
-				tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-share-"));
+				tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-share-"));
 				if (process.platform !== "win32") await fs.chmod(tempDir, 0o700);
 				tmpFile = path.join(tempDir, "session.html");
 				const file = await fs.open(tmpFile, "wx", 0o600);

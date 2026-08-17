@@ -1012,7 +1012,7 @@ export class UiHelpers {
 				theme.bold(theme.fg("warning", "Update Available")) +
 					"\n" +
 					theme.fg("muted", `New version ${newVersion} is available. Run: `) +
-					theme.fg("accent", "gjc update"),
+					theme.fg("accent", "worx update"),
 				1,
 				0,
 			),

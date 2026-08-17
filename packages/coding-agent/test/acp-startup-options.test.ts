@@ -26,7 +26,7 @@ import {
 const model = { provider: "openai-codex", id: "gpt-5.6" } as CreateAgentSessionOptions["model"];
 
 const TEST_CONFIG: CliConfig = {
-	bin: "gjc",
+	bin: "worx",
 	version: "0.0.0-test",
 	commands: new Map(),
 };
@@ -50,19 +50,21 @@ function providerNames(capabilities: unknown, env: NodeJS.ProcessEnv = {}): stri
 }
 
 test("ACP registers the permission channel for form-less clients regardless of permission mode", () => {
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "prompt" } } })).toContain("permission");
+	expect(providerNames({ _meta: { worx: { permissionHandling: "prompt" } } })).toContain("permission");
 	// Form-less clients always get the permission channel so selector asks can
 	// be answered even in auto/always-allow mode (the mode only gates tools).
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "auto" } } })).toContain("permission");
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "always-allow" } } })).toContain("permission");
+	expect(providerNames({ _meta: { worx: { permissionHandling: "auto" } } })).toContain("permission");
+	expect(providerNames({ _meta: { worx: { permissionHandling: "always-allow" } } })).toContain("permission");
 	expect(providerNames(undefined, { WORX_ACP_PERMISSION_MODE: "prompt" })).toContain("permission");
 	expect(providerNames(undefined, { WORX_ACP_PERMISSION_MODE: "auto" })).toContain("permission");
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "invalid" } } })).toContain("permission");
+	expect(providerNames({ _meta: { worx: { permissionHandling: "invalid" } } })).toContain("permission");
 	// A form-eliciting client in allow mode keeps only the ui channel.
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "auto" } }, elicitation: { form: {} } })).not.toContain(
+	expect(providerNames({ _meta: { worx: { permissionHandling: "auto" } }, elicitation: { form: {} } })).not.toContain(
 		"permission",
 	);
-	expect(providerNames({ _meta: { gjc: { permissionHandling: "auto" } }, elicitation: { form: {} } })).toContain("ui");
+	expect(providerNames({ _meta: { worx: { permissionHandling: "auto" } }, elicitation: { form: {} } })).toContain(
+		"ui",
+	);
 });
 
 test("ACP registers the SDK UI provider only for clients with form elicitation", () => {
@@ -153,9 +155,9 @@ test("ACP maps non-prompt permission handling to the SDK allow policy", async ()
 	const adapter = {
 		control: async (_operation: string, input: Record<string, unknown>) => modes.push(String(input.mode)),
 	} as never;
-	await applyAcpPermissionMode(adapter, { _meta: { gjc: { permissionHandling: "prompt" } } } as never);
-	await applyAcpPermissionMode(adapter, { _meta: { gjc: { permissionHandling: "auto" } } } as never);
-	await applyAcpPermissionMode(adapter, { _meta: { gjc: { permissionHandling: "always-allow" } } } as never);
+	await applyAcpPermissionMode(adapter, { _meta: { worx: { permissionHandling: "prompt" } } } as never);
+	await applyAcpPermissionMode(adapter, { _meta: { worx: { permissionHandling: "auto" } } } as never);
+	await applyAcpPermissionMode(adapter, { _meta: { worx: { permissionHandling: "always-allow" } } } as never);
 	expect(modes).toEqual(["prompt", "allow", "allow"]);
 });
 

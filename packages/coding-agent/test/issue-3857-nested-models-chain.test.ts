@@ -7,10 +7,10 @@ const repoRoot = path.resolve(import.meta.dir, "..", "..", "..");
 const cliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");
 
 /**
- * Regression for #3857: `gjc models` from a nested GJC tool environment must not
- * start an interactive agent (and therefore must not re-spawn `gjc models`).
+ * Regression for #3857: `worx models` from a nested GJC tool environment must not
+ * start an interactive agent (and therefore must not re-spawn `worx models`).
  */
-describe("issue #3857 nested gjc models chain", () => {
+describe("issue #3857 nested worx models chain", () => {
 	it("exits after listing when invoked as `models` under a simulated GJC session env", async () => {
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-issue-3857-"));
 		const agentDir = path.join(home, ".worx", "agent");
@@ -51,7 +51,7 @@ describe("issue #3857 nested gjc models chain", () => {
 		}
 	}, 90_000);
 
-	it("does not leave a grandchild gjc process after models exits", async () => {
+	it("does not leave a grandchild worx process after models exits", async () => {
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-issue-3857-child-"));
 		const agentDir = path.join(home, ".worx", "agent");
 		const marker = `issue-3857-models-${process.pid}-${Date.now()}`;

@@ -40,7 +40,7 @@ async function readJson<T>(filePath: string): Promise<T> {
 	return JSON.parse(await fs.readFile(filePath, "utf-8")) as T;
 }
 
-describe("gjc state no-lock concurrency fuzz", () => {
+describe("worx state no-lock concurrency fuzz", () => {
 	it("preserves all per-skill active entries when concurrent writers rebuild the derived snapshot", async () => {
 		const root = await tempDir();
 		const nowIso = new Date("2026-06-03T00:00:00.000Z").toISOString();

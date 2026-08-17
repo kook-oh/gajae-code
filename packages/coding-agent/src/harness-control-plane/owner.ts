@@ -8,7 +8,7 @@
  *  - be the SOLE writer of the severity event stream,
  *  - heartbeat the lease.
  *
- * Stateless `gjc harness` CLI calls reach the owner via {@link resolveOwner} + the endpoint.
+ * Stateless `worx harness` CLI calls reach the owner via {@link resolveOwner} + the endpoint.
  */
 
 import { execFileSync } from "node:child_process";

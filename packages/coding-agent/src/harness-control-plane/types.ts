@@ -98,7 +98,7 @@ export type ReceiptFamily =
 	| "review-failure"
 	| "phase-rollup";
 
-/** The CLI verbs / primitives exposed by `gjc harness <verb>`. */
+/** The CLI verbs / primitives exposed by `worx harness <verb>`. */
 export type HarnessVerb =
 	| "start"
 	| "submit"

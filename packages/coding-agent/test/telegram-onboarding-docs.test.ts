@@ -50,11 +50,11 @@ describe("Telegram onboarding docs", () => {
 		expect(onboarding).toContain("does not poll, kill, reload, or take over the\nowner");
 		expect(onboarding).toContain("The raw token is never printed by GJC status/setup output after it is stored");
 		expect(onboarding).toContain(
-			"`gjc notify setup`, `gjc notify status`, `gjc notify health`, `gjc notify\ntest`, and `gjc notify recovery`",
+			"`worx notify setup`, `worx notify status`, `worx notify health`, `worx notify\ntest`, and `worx notify recovery`",
 		);
 
 		expect(sdk).toContain("The recommended interactive path is `/settings` → **Notifications**");
-		expect(sdk).toContain("`gjc notify setup` remains the authoritative CLI fallback for headless and");
+		expect(sdk).toContain("`worx notify setup` remains the authoritative CLI fallback for headless and");
 		expect(sdk).toContain("Project notification keys are\nignored and runtime notification overrides are rejected");
 		expect(sdk).toContain("A foreign or unknown owner is never killed, reloaded, or taken over");
 	});

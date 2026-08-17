@@ -200,7 +200,7 @@ describe("default launch worktrees", () => {
 	});
 
 	it("reports a private, platform-neutral error for a broken bucket symlink without deleting it", async () => {
-		const repo = await createRepo("gjc launch 'broken-bucket-symlink-");
+		const repo = await createRepo("worx launch 'broken-bucket-symlink-");
 		const bucket = path.join(path.dirname(repo), `${path.basename(repo)}.gajae-code-worktrees`);
 		const missingTarget = path.join(path.dirname(repo), "private-missing-cold-storage-target");
 		await fs.symlink(missingTarget, bucket, process.platform === "win32" ? "junction" : "dir");

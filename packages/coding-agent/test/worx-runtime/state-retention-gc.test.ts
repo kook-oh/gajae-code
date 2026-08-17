@@ -51,7 +51,7 @@ async function exists(filePath: string): Promise<boolean> {
 	}
 }
 
-describe("native gjc state retention gc", () => {
+describe("native worx state retention gc", () => {
 	it("dry-runs and prunes only manifest-retention eligible state files", async () => {
 		const root = await tempDir();
 		const oldLog = await writeFileWithAge(root, "logs/old.jsonl", 45, '{"old":true}\n');

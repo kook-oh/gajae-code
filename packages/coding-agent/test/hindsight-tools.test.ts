@@ -35,7 +35,7 @@ function makeConfig(overrides: Partial<HindsightConfig> = {}): HindsightConfig {
 		retainMode: "full-session",
 		retainEveryNTurns: 3,
 		retainOverlapTurns: 2,
-		retainContext: "gjc",
+		retainContext: "worx",
 		recallBudget: "mid",
 		recallMaxTokens: 1024,
 		recallTypes: ["world", "experience"],

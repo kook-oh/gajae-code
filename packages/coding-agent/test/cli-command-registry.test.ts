@@ -2,13 +2,13 @@ import { describe, expect, it } from "bun:test";
 import { commands, routeRootArgv } from "../src/cli";
 
 describe("CLI command registry", () => {
-	it("registers the `plugin` command so `gjc plugin …` resolves instead of routing to launch", () => {
+	it("registers the `plugin` command so `worx plugin …` resolves instead of routing to launch", () => {
 		// Regression: `src/commands/plugin.ts` existed (and was unit-tested in
 		// isolation) but was never added to the `commands` registry in cli.ts.
-		// `isSubcommand()` therefore returned false for "plugin", so `gjc plugin
+		// `isSubcommand()` therefore returned false for "plugin", so `worx plugin
 		// install …` fell through to the default `launch` command and was treated
 		// as a chat message. The TUI plugin panel meanwhile advertised
-		// `gjc plugin install <package>`, an unreachable command.
+		// `worx plugin install <package>`, an unreachable command.
 		const entry = commands.find(c => c.name === "plugin");
 		expect(entry).toBeDefined();
 	});
@@ -32,11 +32,11 @@ describe("CLI command registry", () => {
 		expect(cmd?.description ?? "").toMatch(/MCP/i);
 	});
 
-	it("registers the `stats` command so `gjc stats` resolves instead of routing to launch", () => {
+	it("registers the `stats` command so `worx stats` resolves instead of routing to launch", () => {
 		// Regression: `src/commands/stats.ts` (and the `@bworx-io/worx-stats`
 		// dependency it drives via `src/cli/stats-cli.ts`) existed, but the
 		// entry was never added to the `commands` registry in cli.ts.
-		// `isSubcommand()` therefore returned false for "stats", so `gjc stats`
+		// `isSubcommand()` therefore returned false for "stats", so `worx stats`
 		// fell through to the default `launch` command and was treated as a chat
 		// message — the usage-statistics command was completely unreachable.
 		const entry = commands.find(c => c.name === "stats");
@@ -53,7 +53,7 @@ describe("CLI command registry", () => {
 		// Regression (#3975): `src/commands/auth-broker.ts` and its handlers in
 		// `src/cli/auth-broker-cli.ts` existed, but the entry was never added to
 		// the `commands` registry in cli.ts. `isSubcommand()` therefore returned
-		// false for "auth-broker", so `gjc auth-broker serve|token|login|…` was
+		// false for "auth-broker", so `worx auth-broker serve|token|login|…` was
 		// rewritten to `launch` and billed a chat turn instead of executing the
 		// credential action. docs/auth-broker-gateway.md documents the verbs.
 		const entry = commands.find(c => c.name === "auth-broker");
@@ -72,7 +72,7 @@ describe("CLI command registry", () => {
 
 	it("registers `auth-gateway` so documented verbs resolve instead of routing to launch", () => {
 		// Regression (#3975): same missing-registry-entry pattern as auth-broker.
-		// `gjc auth-gateway serve|token|status|check` fell through to launch.
+		// `worx auth-gateway serve|token|status|check` fell through to launch.
 		const entry = commands.find(c => c.name === "auth-gateway");
 		expect(entry).toBeDefined();
 		expect(routeRootArgv(["auth-gateway", "serve"])).toEqual(["auth-gateway", "serve"]);

@@ -247,10 +247,10 @@ const ProviderConfigSchema = z
 		modelOverrides: z.record(z.string(), ModelOverrideSchema).optional(),
 		disableStrictTools: z.boolean().optional(),
 		/**
-		 * Streaming transport override. When set to `"pi-native"`, gjc dispatches
+		 * Streaming transport override. When set to `"pi-native"`, worx dispatches
 		 * every model under this provider via the auth-gateway's
 		 * `POST /v1/pi/stream` endpoint instead of the per-provider SDK. The
-		 * provider's `baseUrl` must point at a compatible `gjc auth-gateway`
+		 * provider's `baseUrl` must point at a compatible `worx auth-gateway`
 		 * and `apiKey` must carry the gateway bearer.
 		 */
 		transport: z.literal("pi-native").optional(),

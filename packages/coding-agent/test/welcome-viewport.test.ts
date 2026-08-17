@@ -104,7 +104,7 @@ describe("WelcomeComponent viewport sizing", () => {
 		});
 		const rendered = welcome.render(120).map(stripRenderControls).join("\n");
 
-		expect(rendered).toContain("gjc v1.2.3 · release build · GJC Forge");
+		expect(rendered).toContain("worx v1.2.3 · release build · GJC Forge");
 		expect(rendered).not.toContain("dev build");
 	});
 
@@ -113,7 +113,7 @@ describe("WelcomeComponent viewport sizing", () => {
 		const welcome = new WelcomeComponent("1.2.3", "test-model", "test-provider", [], [], "ascii");
 		const rendered = welcome.render(120).map(stripRenderControls).join("\n");
 
-		expect(rendered).toContain("gjc v1.2.3 · release build · GJC Forge");
+		expect(rendered).toContain("worx v1.2.3 · release build · GJC Forge");
 		expect(rendered).not.toContain("dev build");
 	});
 

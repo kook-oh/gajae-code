@@ -85,13 +85,13 @@ function mockIsolation(): void {
 	vi.spyOn(worktreeModule, "ensureIsolation").mockResolvedValue(ISOLATION);
 	vi.spyOn(worktreeModule, "cleanupIsolation").mockResolvedValue();
 	vi.spyOn(repositoryBindingModule, "resolveTaskRepositoryBinding").mockResolvedValue({
-		schema: "gjc.repository_binding.v1",
+		schema: "worx.repository_binding.v1",
 		worktreeRoot: "/repo",
 		commonDir: null,
 		displayPath: "/repo",
 	});
 	vi.spyOn(repositoryBindingModule, "assertExecutionRootMatchesRepositoryBinding").mockResolvedValue({
-		schema: "gjc.repository_binding.v1",
+		schema: "worx.repository_binding.v1",
 		worktreeRoot: "/repo",
 		commonDir: null,
 		displayPath: "/repo",
@@ -289,7 +289,7 @@ describe("isolated task persistence recovery", () => {
 		vi.spyOn(executorModule, "runSubprocess").mockResolvedValue(makeResult("BranchThrow", 0));
 		const nestedPatches = [{ relativePath: "vendor/nested", patch: "nested recovery patch" }];
 		vi.spyOn(worktreeModule, "commitToBranch").mockResolvedValue({
-			branchName: "gjc/task/BranchThrow",
+			branchName: "worx/task/BranchThrow",
 			nestedPatches,
 		});
 		vi.spyOn(worktreeModule, "captureDeltaPatch").mockResolvedValue({
@@ -310,7 +310,7 @@ describe("isolated task persistence recovery", () => {
 	it("keeps stash-pop-conflicted merged branches recovery-only", async () => {
 		mockIsolation();
 		vi.spyOn(executorModule, "runSubprocess").mockResolvedValue(makeResult("StashConflict", 0));
-		const branchName = "gjc/task/StashConflict";
+		const branchName = "worx/task/StashConflict";
 		vi.spyOn(worktreeModule, "commitToBranch").mockResolvedValue({ branchName, nestedPatches: [] });
 		vi.spyOn(worktreeModule, "captureDeltaPatch").mockResolvedValue({
 			rootPatch: "stash conflict recovery patch",

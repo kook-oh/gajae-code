@@ -56,7 +56,7 @@ async function admit(stateDir: string, token?: string): Promise<{ admitted: bool
 
 async function writeBinding(root: string, token: string, patch: Record<string, unknown> = {}): Promise<void> {
 	await fs.mkdir(root, { recursive: true });
-	const command = ["gjc", "--resume"];
+	const command = ["worx", "--resume"];
 	await fs.writeFile(
 		path.join(root, `child-${token}.binding.json`),
 		`${JSON.stringify({ schema_version: 2, generation: "generation-2681", session_id: "session-2681", run_id: "run-2681", endpoint_incarnation: "incarnation-2681", child_token: token, command, command_sha256: crypto.createHash("sha256").update(JSON.stringify(command)).digest("hex"), supervisor_pid: 1, supervisor_start_time: "1", created_at: new Date().toISOString(), ...patch })}\n`,
@@ -106,7 +106,7 @@ async function writeSigabrtReceipt(root: string, token: string): Promise<void> {
 			child_token: token,
 			command_sha256: crypto
 				.createHash("sha256")
-				.update(JSON.stringify(["gjc", "--resume"]))
+				.update(JSON.stringify(["worx", "--resume"]))
 				.digest("hex"),
 			supervisor_pid: 1,
 			supervisor_start_time: "1",

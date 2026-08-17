@@ -513,7 +513,7 @@ export async function appendOrMergeDeepInterviewRound(
 			}
 		}
 	}
-	await persistEnvelope(cwd, statePath, envelope, options.sessionId, "gjc deep-interview record-answer");
+	await persistEnvelope(cwd, statePath, envelope, options.sessionId, "worx deep-interview record-answer");
 	try {
 		await syncRecorderHud(cwd, envelope, options.sessionId);
 	} catch {
@@ -599,7 +599,7 @@ export async function enrichDeepInterviewRoundScoring(
 	inner.rounds = nextRounds;
 	inner.current_ambiguity = clampResult.effective;
 	inner.ambiguity_floor = breakdown;
-	await persistEnvelope(cwd, statePath, envelope, options.sessionId, "gjc deep-interview score-round");
+	await persistEnvelope(cwd, statePath, envelope, options.sessionId, "worx deep-interview score-round");
 	await syncRecorderHud(cwd, envelope, options.sessionId);
 	return { record };
 }

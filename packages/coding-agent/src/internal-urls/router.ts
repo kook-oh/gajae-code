@@ -1,5 +1,5 @@
 /**
- * Internal URL router for internal protocols (agent://, artifact://, memory://, rule://, gjc://, local://).
+ * Internal URL router for internal protocols (agent://, artifact://, memory://, rule://, worx://, local://).
  *
  * One process-global router with one handler per scheme. Access via
  * `InternalUrlRouter.instance()`. Handlers are stateless; per-session and

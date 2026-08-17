@@ -45,7 +45,7 @@ const MAX_PAGINATION_PAGES = 100,
 
 /** Client info sent during initialization */
 const CLIENT_INFO = {
-	name: "gjc-coding-agent",
+	name: "worx-coding-agent",
 	version: "1.0.0",
 };
 function isRecord(value: unknown): value is Record<string, unknown> {

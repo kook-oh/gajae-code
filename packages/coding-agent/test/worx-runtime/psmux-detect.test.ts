@@ -785,8 +785,8 @@ describe("resolveWorxTmuxCommand (shared session/team resolver)", () => {
 	it("returns psmux on native Windows when psmux resolves and tmux.exe alias does not", () => {
 		// Reproduces the case the review flagged: a Windows host with psmux
 		// installed but no tmux.exe alias on PATH. The shared resolver must
-		// pick psmux so gjc session ... and gjc team ... talk to the same
-		// multiplexer that gjc --tmux just created.
+		// pick psmux so worx session ... and worx team ... talk to the same
+		// multiplexer that worx --tmux just created.
 		__setBinaryResolverForTests(candidate =>
 			candidate === "psmux" || candidate === "pmux"
 				? `C:\\Users\\runner\\AppData\\Local\\Microsoft\\WinGet\\Links\\${candidate}.exe`

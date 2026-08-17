@@ -1058,7 +1058,7 @@ function getScreenshotFallbackDir(session: ToolSession): Promise<string> {
 }
 
 async function createScreenshotFallbackDir(): Promise<string> {
-	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-computer-screenshots-"));
+	const dir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-computer-screenshots-"));
 	await fs.chmod(dir, 0o700);
 	markScreenshotFallbackDirCreatedForGc();
 	return dir;
