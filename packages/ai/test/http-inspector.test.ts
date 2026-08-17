@@ -13,14 +13,14 @@ import {
 
 let previousAgentDir: string | undefined;
 let previousPiConfigDir: string | undefined;
-let previousGjcConfigDir: string | undefined;
+let previousWorxConfigDir: string | undefined;
 let tempAgentDir: string | undefined;
 let tempConfigRoot: string | undefined;
 
 async function useTempAgentDir(): Promise<string> {
 	previousAgentDir = getConfigRootDir();
 	previousPiConfigDir = process.env.PI_CONFIG_DIR;
-	previousGjcConfigDir = process.env.WORX_CONFIG_DIR;
+	previousWorxConfigDir = process.env.WORX_CONFIG_DIR;
 	tempConfigRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-http-inspector-"));
 	process.env.PI_CONFIG_DIR = path.relative(os.homedir(), tempConfigRoot);
 	delete process.env.WORX_CONFIG_DIR;
@@ -36,12 +36,12 @@ afterEach(async () => {
 		process.env.PI_CONFIG_DIR = previousPiConfigDir;
 	}
 	previousPiConfigDir = undefined;
-	if (previousGjcConfigDir === undefined) {
+	if (previousWorxConfigDir === undefined) {
 		delete process.env.WORX_CONFIG_DIR;
 	} else {
-		process.env.WORX_CONFIG_DIR = previousGjcConfigDir;
+		process.env.WORX_CONFIG_DIR = previousWorxConfigDir;
 	}
-	previousGjcConfigDir = undefined;
+	previousWorxConfigDir = undefined;
 	if (previousAgentDir) {
 		setAgentDir(previousAgentDir);
 		previousAgentDir = undefined;

@@ -39,7 +39,7 @@ async function resolveCompiledBinary(): Promise<string> {
 	return binary;
 }
 
-async function runGjc(
+async function runWorx(
 	binary: string,
 	cwd: string,
 	args: string[],
@@ -76,7 +76,7 @@ async function main(): Promise<void> {
 
 	// Seed ralplan run state so --write has an active run.
 	console.log("## 1) compiled gjc ralplan seed");
-	const seed = await runGjc(binary, dogfoodRoot, ["ralplan", "--deliberate", "--json", "dogfood #2902"], env);
+	const seed = await runWorx(binary, dogfoodRoot, ["ralplan", "--deliberate", "--json", "dogfood #2902"], env);
 	console.log(`exit=${seed.code}`);
 	console.log((seed.stdout || seed.stderr).trim());
 	if (seed.code !== 0) process.exit(1);
@@ -84,7 +84,7 @@ async function main(): Promise<void> {
 	// Persist same-pass Architect/Critic artifacts so disposition receipts resolve.
 	console.log();
 	console.log("## 2) seed architect + critic stage artifacts (same-pass stage_n=1)");
-	const architect = await runGjc(
+	const architect = await runWorx(
 		binary,
 		dogfoodRoot,
 		["ralplan", "--write", "--stage", "architect", "--stage_n", "1", "--artifact", "# architect", "--json"],
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
 		console.error(architect.stderr || architect.stdout);
 		process.exit(1);
 	}
-	const critic = await runGjc(
+	const critic = await runWorx(
 		binary,
 		dogfoodRoot,
 		["ralplan", "--write", "--stage", "critic", "--stage_n", "1", "--artifact", "# critic", "--json"],
@@ -155,7 +155,7 @@ async function main(): Promise<void> {
 	);
 	console.log();
 	console.log("## 3) disposition stage with open conflicts (expect fail-closed)");
-	const open = await runGjc(
+	const open = await runWorx(
 		binary,
 		dogfoodRoot,
 		["ralplan", "--write", "--stage", "disposition", "--stage_n", "1", "--artifact", openPath],
@@ -201,7 +201,7 @@ async function main(): Promise<void> {
 	);
 	console.log();
 	console.log("## 4) disposition with spoofed receipt (expect fail-closed)");
-	const spoof = await runGjc(
+	const spoof = await runWorx(
 		binary,
 		dogfoodRoot,
 		["ralplan", "--write", "--stage", "disposition", "--stage_n", "1", "--artifact", spoofPath],
@@ -236,7 +236,7 @@ async function main(): Promise<void> {
 	);
 	console.log();
 	console.log("## 5) disposition stage with complete dispositions (expect accept)");
-	const closed = await runGjc(
+	const closed = await runWorx(
 		binary,
 		dogfoodRoot,
 		["ralplan", "--write", "--stage", "disposition", "--stage_n", "1", "--artifact", closedPath, "--json"],

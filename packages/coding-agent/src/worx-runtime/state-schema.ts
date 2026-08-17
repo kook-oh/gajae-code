@@ -163,7 +163,7 @@ export type SkillActiveStateParsed = z.infer<typeof SkillActiveStateSchema>;
  * - `{ok:false}`  → present but unparseable or schema-invalid. Callers fail
  *                   OPEN (normalize/log), never crash — preserving v2 reads.
  */
-export type ReadGjcJsonResult<T> = { ok: true; value: T; raw: unknown } | { ok: false; error: string; raw: unknown };
+export type ReadWorxJsonResult<T> = { ok: true; value: T; raw: unknown } | { ok: false; error: string; raw: unknown };
 
 function isEnoent(error: unknown): boolean {
 	return Boolean(error) && (error as NodeJS.ErrnoException).code === "ENOENT";
@@ -174,7 +174,7 @@ function isEnoent(error: unknown): boolean {
  * Returns `null` when the file is absent. Fail-open: an invalid file yields
  * `{ ok: false }` with the raw value attached so the caller can normalize/log.
  */
-export async function readGjcJson<T>(filePath: string, schema: z.ZodType<T>): Promise<ReadGjcJsonResult<T> | null> {
+export async function readWorxJson<T>(filePath: string, schema: z.ZodType<T>): Promise<ReadWorxJsonResult<T> | null> {
 	let text: string;
 	try {
 		text = await fs.readFile(filePath, "utf-8");

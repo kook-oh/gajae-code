@@ -30,21 +30,21 @@ east,300
 
 let cwd: string;
 let sessionId: string;
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 beforeEach(async () => {
 	cwd = await fs.mkdtemp(path.join(os.tmpdir(), "rlm-e2e-"));
 	sessionId = generateRlmSessionId();
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = "rlm-e2e-test-session";
 });
 
 afterEach(async () => {
 	await disposeKernelSessionsByOwner(`rlm:${sessionId}`);
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 	await fs.rm(cwd, { recursive: true, force: true });
 });

@@ -263,7 +263,7 @@ class CapturingBotApi implements BotApi {
 			case "getChat":
 				return { ok: true, result: { id: (body as { chat_id?: unknown })?.chat_id, type: "private" } };
 			case "getMe":
-				return { ok: true, result: { id: 1, username: "gjc_bot" } };
+				return { ok: true, result: { id: 1, username: "worx_bot" } };
 			case "createForumTopic":
 				return { ok: true, result: { message_thread_id: this.threadId } };
 			case "editForumTopic":

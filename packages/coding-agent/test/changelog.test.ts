@@ -82,7 +82,7 @@ describe("getDisplayChangelogEntries", () => {
 		await fs.writeFile(path.join(tempDir, "CHANGELOG.md"), decoyContent);
 
 		const originalCwd = process.cwd();
-		const originalGjcPackageDir = process.env.WORX_PACKAGE_DIR;
+		const originalWorxPackageDir = process.env.WORX_PACKAGE_DIR;
 		const originalPiPackageDir = process.env.PI_PACKAGE_DIR;
 
 		try {
@@ -99,8 +99,8 @@ describe("getDisplayChangelogEntries", () => {
 			expect(top.content).not.toContain("bogus stale entry from cwd");
 		} finally {
 			process.chdir(originalCwd);
-			if (originalGjcPackageDir === undefined) delete process.env.WORX_PACKAGE_DIR;
-			else process.env.WORX_PACKAGE_DIR = originalGjcPackageDir;
+			if (originalWorxPackageDir === undefined) delete process.env.WORX_PACKAGE_DIR;
+			else process.env.WORX_PACKAGE_DIR = originalWorxPackageDir;
 			if (originalPiPackageDir === undefined) delete process.env.PI_PACKAGE_DIR;
 			else process.env.PI_PACKAGE_DIR = originalPiPackageDir;
 		}

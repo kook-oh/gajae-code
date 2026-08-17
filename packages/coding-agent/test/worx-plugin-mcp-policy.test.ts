@@ -3,18 +3,18 @@ import {
 	assertHeadersAllowed,
 	assertMcpInstallPolicy,
 	assertUrlAllowed,
-	GjcPluginLoadError,
-	type GjcPluginMcpManifestEntry,
 	isDeniedIpv4,
 	isDeniedIpv6,
+	WorxPluginLoadError,
+	type WorxPluginMcpManifestEntry,
 } from "../src/extensibility/worx-plugins";
 
 function expectPolicyError(fn: () => unknown): void {
 	try {
 		fn();
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe("security_policy");
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe("security_policy");
 		return;
 	}
 	throw new Error("Expected security_policy error");
@@ -85,7 +85,7 @@ describe("GJC MCP policy: headers", () => {
 
 describe("GJC MCP policy: stdio", () => {
 	const root = "/tmp/plugin-root";
-	function stdio(over: Partial<GjcPluginMcpManifestEntry>): GjcPluginMcpManifestEntry {
+	function stdio(over: Partial<WorxPluginMcpManifestEntry>): WorxPluginMcpManifestEntry {
 		return { name: "s", transport: "stdio", command: "bun", args: ["mcp/server.ts"], cwd: ".", ...over };
 	}
 	test("allows bun launcher with root-confined script", () => {

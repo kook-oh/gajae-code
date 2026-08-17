@@ -451,7 +451,7 @@ export interface EvalBackendsAllowance {
  * per-key settings. This matches the documented contract that invalid values
  * are ignored.
  */
-export function parseGjcPy(env: Record<string, string | undefined>): { py: boolean; js: boolean } | null {
+export function parseWorxPy(env: Record<string, string | undefined>): { py: boolean; js: boolean } | null {
 	const raw = env.WORX_PY;
 	if (raw === undefined) return null;
 	const token = raw.trim().toLowerCase();
@@ -498,7 +498,7 @@ function parseLegacyEvalEnvFlags(env: Record<string, string | undefined>): EvalB
  * Returns `null` when no env override is set so the caller can defer to settings.
  */
 export function resolveEvalBackendsFromEnv(env: Record<string, string | undefined>): EvalBackendsAllowance | null {
-	const gjc = parseGjcPy(env);
+	const gjc = parseWorxPy(env);
 	if (gjc) return { python: gjc.py, js: gjc.js };
 	return parseLegacyEvalEnvFlags(env);
 }

@@ -20,8 +20,8 @@ function buildPowerShellTmuxExitMarkerFinally(markerPath: string): string {
 		"} finally {",
 		"\ttry {",
 		`\t\tNew-Item -ItemType Directory -Force -Path ${powershellQuote(markerDir)} -ErrorAction Stop | Out-Null`,
-		"\t\t$__gjcTmuxExitMarker = @{ schema_version = 1; source = 'tmux_inner_shell'; ended_at = (Get-Date).ToUniversalTime().ToString('o'); exit_code = $__gjcTmuxExitCode } | ConvertTo-Json -Compress",
-		`\t\tSet-Content -LiteralPath ${powershellQuote(markerPath)} -Value $__gjcTmuxExitMarker -Encoding UTF8 -ErrorAction Stop`,
+		"\t\t$__worxTmuxExitMarker = @{ schema_version = 1; source = 'tmux_inner_shell'; ended_at = (Get-Date).ToUniversalTime().ToString('o'); exit_code = $__worxTmuxExitCode } | ConvertTo-Json -Compress",
+		`\t\tSet-Content -LiteralPath ${powershellQuote(markerPath)} -Value $__worxTmuxExitMarker -Encoding UTF8 -ErrorAction Stop`,
 		"\t} catch {",
 		"\t}",
 		"}",
@@ -45,12 +45,12 @@ export function buildWindowsPowerShellInnerCommand({
 	const script = tmuxExitMarkerPath
 		? [
 				...envLines,
-				"$__gjcTmuxExitCode = 1",
+				"$__worxTmuxExitCode = 1",
 				"try {",
 				`\t${invocation}`,
-				"\tif ($null -ne $LASTEXITCODE) { $__gjcTmuxExitCode = $LASTEXITCODE } else { $__gjcTmuxExitCode = 1 }",
+				"\tif ($null -ne $LASTEXITCODE) { $__worxTmuxExitCode = $LASTEXITCODE } else { $__worxTmuxExitCode = 1 }",
 				buildPowerShellTmuxExitMarkerFinally(tmuxExitMarkerPath),
-				"exit $__gjcTmuxExitCode",
+				"exit $__worxTmuxExitCode",
 			].join("\n")
 		: [...envLines, invocation, exitLine].join("\n");
 	const encodedCommand = Buffer.from(script, "utf16le").toString("base64");

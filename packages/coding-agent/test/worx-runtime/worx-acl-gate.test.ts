@@ -74,8 +74,8 @@ describe("G2 gjc ACL gate", () => {
 			// Per #951 the mutation guard never blocks `bash`; `.worx/**` is gated only
 			// through the dedicated write/edit/ast_edit tools, so bash targeting .worx is allowed.
 			for (const command of ["echo x > .worx/state/foo.json", "rm -rf .worx/specs"]) {
-				const gjcBash = await getWorkflowMutationDecision({ cwd, tool: tool("bash"), args: { command } });
-				expect(gjcBash.blocked).toBe(false);
+				const worxBash = await getWorkflowMutationDecision({ cwd, tool: tool("bash"), args: { command } });
+				expect(worxBash.blocked).toBe(false);
 			}
 		});
 	});

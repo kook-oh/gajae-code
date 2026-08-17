@@ -3,11 +3,11 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	clearGjcNativeSkillHookCachesForTesting,
-	dispatchGjcNativeSkillHook,
-	getGjcNativeSkillHookCacheStatsForTesting,
-	resolveGjcNativeSkillConfigForTesting,
-	runGjcNativeSkillHookInProcess,
+	clearWorxNativeSkillHookCachesForTesting,
+	dispatchWorxNativeSkillHook,
+	getWorxNativeSkillHookCacheStatsForTesting,
+	resolveWorxNativeSkillConfigForTesting,
+	runWorxNativeSkillHookInProcess,
 } from "../src/hooks/native-skill-hook";
 
 async function tempRoot(): Promise<string> {
@@ -42,7 +42,7 @@ describe("GJC native skill hook in-process dispatch and config cache", () => {
 	const roots: string[] = [];
 
 	afterEach(async () => {
-		clearGjcNativeSkillHookCachesForTesting();
+		clearWorxNativeSkillHookCachesForTesting();
 		await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true })));
 	});
 
@@ -63,10 +63,10 @@ describe("GJC native skill hook in-process dispatch and config cache", () => {
 			threadId: "thread-parity",
 		};
 
-		await expect(runGjcNativeSkillHookInProcess(userPromptPayload)).resolves.toBe(
+		await expect(runWorxNativeSkillHookInProcess(userPromptPayload)).resolves.toBe(
 			await runSubprocessHook(userPromptPayload),
 		);
-		await expect(runGjcNativeSkillHookInProcess(stopPayload)).resolves.toBe(await runSubprocessHook(stopPayload));
+		await expect(runWorxNativeSkillHookInProcess(stopPayload)).resolves.toBe(await runSubprocessHook(stopPayload));
 	});
 
 	it("invalidates effective config cache when config mtime changes", async () => {
@@ -81,19 +81,19 @@ describe("GJC native skill hook in-process dispatch and config cache", () => {
 			threadId: "thread-cache",
 		};
 
-		const firstWithConfig = await resolveGjcNativeSkillConfigForTesting(resolveInput);
+		const firstWithConfig = await resolveWorxNativeSkillConfigForTesting(resolveInput);
 		expect(firstWithConfig.disabledExtensions?.filter(value => value.startsWith("skill:")).length).toBe(1);
-		expect(getGjcNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(1);
+		expect(getWorxNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(1);
 
-		const cached = await resolveGjcNativeSkillConfigForTesting(resolveInput);
+		const cached = await resolveWorxNativeSkillConfigForTesting(resolveInput);
 		expect(cached.disabledExtensions?.filter(value => value.startsWith("skill:")).length).toBe(1);
-		expect(getGjcNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(1);
+		expect(getWorxNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(1);
 
 		await new Promise(resolve => setTimeout(resolve, 5));
 		await fs.writeFile(configPath, "disabledExtensions:\n  - skill:first\n  - skill:second\n");
-		const invalidated = await resolveGjcNativeSkillConfigForTesting(resolveInput);
+		const invalidated = await resolveWorxNativeSkillConfigForTesting(resolveInput);
 		expect(invalidated.disabledExtensions?.filter(value => value.startsWith("skill:")).length).toBe(2);
-		expect(getGjcNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(2);
+		expect(getWorxNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(2);
 	});
 
 	it("does not resolve effective config when no skill activation needs it", async () => {
@@ -101,7 +101,7 @@ describe("GJC native skill hook in-process dispatch and config cache", () => {
 		roots.push(root);
 		const configPath = path.join(root, "config.yml");
 		await fs.writeFile(configPath, "::not yaml::");
-		await dispatchGjcNativeSkillHook(
+		await dispatchWorxNativeSkillHook(
 			{
 				hookEventName: "UserPromptSubmit",
 				userPrompt: "ordinary non workflow prompt",
@@ -110,6 +110,6 @@ describe("GJC native skill hook in-process dispatch and config cache", () => {
 			},
 			{ configPaths: [configPath] },
 		);
-		expect(getGjcNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(0);
+		expect(getWorxNativeSkillHookCacheStatsForTesting().effectiveSkillConfigResolutions).toBe(0);
 	});
 });

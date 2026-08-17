@@ -2980,7 +2980,7 @@
 		}
 	},
 	{
-		"sourceId": "agent_session:refreshGjcSubskillTools",
+		"sourceId": "agent_session:refreshWorxSubskillTools",
 		"sourceFile": "packages/coding-agent/src/session/agent-session.ts",
 		"sourceKind": "agent_session",
 		"decision": "exclude",

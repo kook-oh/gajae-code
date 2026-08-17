@@ -3,10 +3,10 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	type GjcPluginRegistryEntry,
-	loadEffectiveGjcPluginRegistry,
+	loadEffectiveWorxPluginRegistry,
 	readRegistry,
 	sortRegistryEntries,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 import { updateRegistry, writeRegistry } from "../src/extensibility/worx-plugins/registry";
 
@@ -18,7 +18,7 @@ afterEach(async () => {
 	}
 });
 
-function entry(name: string, scope: "user" | "project", pluginRoot: string): GjcPluginRegistryEntry {
+function entry(name: string, scope: "user" | "project", pluginRoot: string): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",
@@ -89,7 +89,7 @@ describe("GJC plugin registry", () => {
 		]);
 	});
 
-	test("loadEffectiveGjcPluginRegistry merges project entries deterministically", async () => {
+	test("loadEffectiveWorxPluginRegistry merges project entries deterministically", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-registry-eff-"));
 		tempDirs.push(cwd);
 		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
@@ -101,7 +101,7 @@ describe("GJC plugin registry", () => {
 			},
 			cwd,
 		);
-		const effective = await loadEffectiveGjcPluginRegistry(cwd);
+		const effective = await loadEffectiveWorxPluginRegistry(cwd);
 		const projectNames = effective.filter(e => e.scope === "project").map(e => e.name);
 		expect(projectNames).toEqual(["p1", "p2"]);
 	});

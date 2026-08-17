@@ -7,10 +7,10 @@ import * as path from "node:path";
 import { VERSION } from "@bworx-io/worx-code";
 import type { Args } from "@bworx-io/worx-code/cli/args";
 import {
-	applyGjcTmuxProfile,
+	applyWorxTmuxProfile,
 	buildDefaultTmuxLaunchPlan,
-	buildGjcTmuxProfileCommands,
-	buildGjcTmuxWindowTitle,
+	buildWorxTmuxProfileCommands,
+	buildWorxTmuxWindowTitle,
 	launchDefaultTmuxIfNeeded as launchDefaultTmuxIfNeededRaw,
 	type TmuxLaunchContext,
 	type TmuxSpawnOptions,
@@ -32,8 +32,8 @@ import {
 import {
 	__setCreateOwnerIsolationForTests,
 	__setMutationServerProofForTests,
-	createGjcTmuxSession,
-	removeGjcTmuxSession,
+	createWorxTmuxSession,
+	removeWorxTmuxSession,
 } from "@bworx-io/worx-code/worx-runtime/tmux-sessions";
 import { postmortem } from "@bworx-io/worx-utils";
 
@@ -167,9 +167,9 @@ function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 						if (
 							commandArgs[0] === "if-shell" &&
 							result.exitCode === 0 &&
-							result.stdout?.trim() !== "__gjc_tmux_guarded_cleanup_refused__"
+							result.stdout?.trim() !== "__worx_tmux_guarded_cleanup_refused__"
 						)
-							return { ...result, stdout: "__gjc_tmux_guarded_cleanup_ok__" };
+							return { ...result, stdout: "__worx_tmux_guarded_cleanup_ok__" };
 						return result;
 					}
 				: undefined,
@@ -185,12 +185,12 @@ function spawnResult(exitCode: number, stdout: string, stderr = ""): SpawnSyncRe
 	} as SpawnSyncResult;
 }
 
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 let previousCoordinatorSessionId: string | undefined;
 let previousCoordinatorStateFile: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	previousCoordinatorSessionId = process.env.WORX_COORDINATOR_SESSION_ID;
 	previousCoordinatorStateFile = process.env.WORX_COORDINATOR_SESSION_STATE_FILE;
@@ -201,10 +201,10 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 	fs.rmSync(launchTestRoot, { recursive: true, force: true });
 	if (previousCoordinatorSessionId === undefined) delete process.env.WORX_COORDINATOR_SESSION_ID;
@@ -234,20 +234,20 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it("builds sanitized project and branch tmux window titles", () => {
-		expect(buildGjcTmuxWindowTitle("/repo", "feature/demo")).toBe("GJC-repo-feature/demo");
-		expect(buildGjcTmuxWindowTitle("/repo", "main")).toBe("GJC-repo-main");
-		expect(buildGjcTmuxWindowTitle("/repo", null)).toBe("GJC-repo");
-		expect(buildGjcTmuxWindowTitle("/repo", "")).toBe("GJC-repo");
+		expect(buildWorxTmuxWindowTitle("/repo", "feature/demo")).toBe("GJC-repo-feature/demo");
+		expect(buildWorxTmuxWindowTitle("/repo", "main")).toBe("GJC-repo-main");
+		expect(buildWorxTmuxWindowTitle("/repo", null)).toBe("GJC-repo");
+		expect(buildWorxTmuxWindowTitle("/repo", "")).toBe("GJC-repo");
 	});
 
 	it("replaces colon-bearing tmux window title segments", () => {
-		expect(buildGjcTmuxWindowTitle("/repo:backend", "main")).toBe("GJC-repo-backend-main");
-		expect(buildGjcTmuxWindowTitle("/repo", "release:main")).toBe("GJC-repo-release-main");
-		expect(buildGjcTmuxWindowTitle("/repo", "feature:::demo")).toBe("GJC-repo-feature-demo");
+		expect(buildWorxTmuxWindowTitle("/repo:backend", "main")).toBe("GJC-repo-backend-main");
+		expect(buildWorxTmuxWindowTitle("/repo", "release:main")).toBe("GJC-repo-release-main");
+		expect(buildWorxTmuxWindowTitle("/repo", "feature:::demo")).toBe("GJC-repo-feature-demo");
 	});
 
 	it("truncates long tmux window titles to 48 visible columns while preserving the project and branch tail", () => {
-		const title = buildGjcTmuxWindowTitle("/repo", `feature/${"a".repeat(80)}tail`);
+		const title = buildWorxTmuxWindowTitle("/repo", `feature/${"a".repeat(80)}tail`);
 
 		expect(Bun.stringWidth(title)).toBeLessThanOrEqual(48);
 		expect(title.startsWith("GJC-repo-…")).toBe(true);
@@ -255,7 +255,7 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it("truncates wide-character tmux window titles by visible width while preserving the branch tail", () => {
-		const title = buildGjcTmuxWindowTitle("/저장소", `feature/${"界".repeat(80)}끝`);
+		const title = buildWorxTmuxWindowTitle("/저장소", `feature/${"界".repeat(80)}끝`);
 
 		expect(Bun.stringWidth(title)).toBeLessThanOrEqual(48);
 		expect(title.startsWith("GJC-저장소-…")).toBe(true);
@@ -263,11 +263,11 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it("sanitizes dot-prefixed cwd basenames for tmux window titles", () => {
-		expect(buildGjcTmuxWindowTitle("/tmp/.claude", null)).toBe("GJC-dot-claude");
-		expect(buildGjcTmuxWindowTitle("/tmp/.claude", "feature/demo")).toBe("GJC-dot-claude-feature/demo");
-		expect(buildGjcTmuxWindowTitle("/tmp/.claude", "repo:main")).toBe("GJC-dot-claude-repo-main");
-		expect(buildGjcTmuxWindowTitle("/tmp/...", null)).toBe("GJC-gjc");
-		expect(buildGjcTmuxWindowTitle("/tmp/...", "feature/demo")).toBe("GJC-gjc-feature/demo");
+		expect(buildWorxTmuxWindowTitle("/tmp/.claude", null)).toBe("GJC-dot-claude");
+		expect(buildWorxTmuxWindowTitle("/tmp/.claude", "feature/demo")).toBe("GJC-dot-claude-feature/demo");
+		expect(buildWorxTmuxWindowTitle("/tmp/.claude", "repo:main")).toBe("GJC-dot-claude-repo-main");
+		expect(buildWorxTmuxWindowTitle("/tmp/...", null)).toBe("GJC-gjc");
+		expect(buildWorxTmuxWindowTitle("/tmp/...", "feature/demo")).toBe("GJC-gjc-feature/demo");
 	});
 
 	it("passes sanitized dot-prefixed cwd basenames to tmux rename-window", () => {
@@ -566,7 +566,7 @@ describe("default GJC tmux launch", () => {
 		expect(plan.innerCommand).toContain("WORX_COORDINATOR_SESSION_ID=");
 		expect(plan.innerCommand).toContain("WORX_COORDINATOR_SESSION_STATE_FILE=");
 		expect(plan.innerCommand).toContain("tmux-exit.json");
-		expect(plan.innerCommand).toContain("trap __gjc_tmux_write_exit_marker EXIT");
+		expect(plan.innerCommand).toContain("trap __worx_tmux_write_exit_marker EXIT");
 		expect(plan.innerCommand).not.toStartWith("exec ");
 	});
 
@@ -1462,7 +1462,7 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it("builds a session-scoped tmux profile without global tmux mutation", () => {
-		const commands = buildGjcTmuxProfileCommands("gjc-session:0", {});
+		const commands = buildWorxTmuxProfileCommands("gjc-session:0", {});
 		const args = commands.map(command => command.args);
 
 		expect(args).toContainEqual(["set-option", "-t", "gjc-session:0", "mouse", "on"]);
@@ -1477,10 +1477,10 @@ describe("default GJC tmux launch", () => {
 		]);
 		expect(args.flat()).not.toContain("-g");
 		expect(
-			buildGjcTmuxProfileCommands("gjc-session:0", { WORX_TMUX_PROFILE: "false" }).map(command => command.args),
+			buildWorxTmuxProfileCommands("gjc-session:0", { WORX_TMUX_PROFILE: "false" }).map(command => command.args),
 		).toEqual([["set-option", "-t", "gjc-session:0", "@gjc-profile", "1"]]);
 		expect(
-			buildGjcTmuxProfileCommands("gjc-session:0", { WORX_MOUSE: "off" }).flatMap(command => command.args),
+			buildWorxTmuxProfileCommands("gjc-session:0", { WORX_MOUSE: "off" }).flatMap(command => command.args),
 		).not.toContain("mouse");
 	});
 
@@ -1491,7 +1491,7 @@ describe("default GJC tmux launch", () => {
 		["true", true],
 		["1", true],
 	])("applies the psmux UX profile force matrix for %p", (force, includesUxCommands) => {
-		const commands = buildGjcTmuxProfileCommands(
+		const commands = buildWorxTmuxProfileCommands(
 			"gjc-session:0",
 			typeof force === "string" ? { WORX_PSMUX_PROFILE_FORCE: force } : {},
 			{},
@@ -1505,7 +1505,7 @@ describe("default GJC tmux launch", () => {
 	});
 
 	it("records session identity markers in the required tmux profile", () => {
-		const commands = buildGjcTmuxProfileCommands(
+		const commands = buildWorxTmuxProfileCommands(
 			"gjc-session:0",
 			{},
 			{
@@ -1579,7 +1579,7 @@ describe("default GJC tmux launch", () => {
 
 	it("applies the tmux profile only to the requested target", () => {
 		const calls: { command: string; args: string[] }[] = [];
-		const result = applyGjcTmuxProfile({
+		const result = applyWorxTmuxProfile({
 			tmuxCommand: "tmux",
 			target: "%7",
 			cwd: "/repo",
@@ -3334,7 +3334,7 @@ describe("tmux owner isolation launch gate", () => {
 			WORX_COORDINATOR_SESSION_ID: "managed",
 			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
 		};
-		expect(() => createGjcTmuxSession(env)).toThrow("gjc_tmux_owner_changed_after_create");
+		expect(() => createWorxTmuxSession(env)).toThrow("worx_tmux_owner_changed_after_create");
 		expect(calls.filter(call => ["set-option", "kill-session"].includes(call[1] ?? ""))).toEqual([]);
 		fs.rmSync(root, { recursive: true, force: true });
 	});
@@ -3370,7 +3370,7 @@ describe("tmux owner isolation launch gate", () => {
 			WORX_COORDINATOR_SESSION_ID: "managed",
 			WORX_COORDINATOR_SESSION_STATE_FILE: path.join(root, "runtime-state.json"),
 		};
-		expect(() => createGjcTmuxSession(env)).toThrow("gjc_tmux_precommit_failed_cleanup_failed");
+		expect(() => createWorxTmuxSession(env)).toThrow("worx_tmux_precommit_failed_cleanup_failed");
 		expect(calls.filter(call => call[1] === "kill-session")).toEqual([]);
 		fs.rmSync(root, { recursive: true, force: true });
 	});
@@ -3390,8 +3390,8 @@ describe("tmux owner isolation launch gate", () => {
 			if (command.includes("display-message")) return spawnResult(0, "$42\n");
 			return spawnResult(0, "1\n");
 		}) as unknown as typeof Bun.spawnSync);
-		expect(() => removeGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" })).toThrow(
-			"gjc_tmux_owner_changed:managed",
+		expect(() => removeWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" })).toThrow(
+			"worx_tmux_owner_changed:managed",
 		);
 		expect(calls.filter(call => call[1] === "kill-session")).toEqual([]);
 	});
@@ -3649,8 +3649,8 @@ describe("tmux owner isolation launch gate", () => {
 					NATIVE_SESSION_ID,
 					"-F",
 					expect.stringContaining(`#{==:#{session_id},${NATIVE_SESSION_ID}}`),
-					`kill-session -t ${NATIVE_SESSION_ID} \\; display-message -p __gjc_tmux_guarded_cleanup_ok__`,
-					"display-message -p __gjc_tmux_guarded_cleanup_refused__",
+					`kill-session -t ${NATIVE_SESSION_ID} \\; display-message -p __worx_tmux_guarded_cleanup_ok__`,
+					"display-message -p __worx_tmux_guarded_cleanup_refused__",
 				]),
 			);
 			expect(calls.some(call => call[0] === "attach-session")).toBe(false);

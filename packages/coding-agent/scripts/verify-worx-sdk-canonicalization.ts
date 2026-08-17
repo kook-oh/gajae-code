@@ -22,7 +22,7 @@ const legacyBridgeClientSurfacePattern = /\b(?:BridgeClient|handshake|commands|S
 
 const pythonUnattendedProtocolClientPattern =
 	/\b(?:negotiate_unattended|UnattendedAccepted|UnattendedBudget|parse_unattended_accepted|workflow_gate_response)\b/g;
-const pythonGjcRpcImportPattern = /^\s*(?:from\s+gjc_rpc(?:\.|\s)|import\s+gjc_rpc(?:\.|\s|,|$))/gm;
+const pythonWorxRpcImportPattern = /^\s*(?:from\s+worx_rpc(?:\.|\s)|import\s+worx_rpc(?:\.|\s|,|$))/gm;
 const retiredExternalModeInvocationPatterns = [
 	/--mode(?:\s+|=)["']?(?:rpc|bridge|unattended)[A-Za-z0-9_.-]*(?:\b|["'])/gi,
 	/["']--mode["']\s*,\s*["'](?:rpc|bridge|unattended)[A-Za-z0-9_.-]*["']/gi,
@@ -331,8 +331,8 @@ function isActiveLegacyPythonRpcTarget(file: string): boolean {
 function legacyPythonRpcViolations(file: string, contents: string): string[] {
 	const violations: string[] = [];
 	if (isPython(file)) {
-		for (const match of contents.matchAll(pythonGjcRpcImportPattern)) {
-			violations.push(`${file}:${lineNumber(contents, match.index ?? 0)}: imports removed gjc_rpc Python client`);
+		for (const match of contents.matchAll(pythonWorxRpcImportPattern)) {
+			violations.push(`${file}:${lineNumber(contents, match.index ?? 0)}: imports removed worx_rpc Python client`);
 		}
 		for (const match of contents.matchAll(pythonUnattendedProtocolClientPattern)) {
 			violations.push(
@@ -984,7 +984,7 @@ const teamRuntimeTmuxPath = "packages/coding-agent/src/worx-runtime/team-runtime
 const teamWorkersTmuxPath = "packages/coding-agent/src/worx-runtime/team-workers.ts";
 
 const coordinatorMcpRoot = "packages/coding-agent/src/coordinator-mcp/server.ts";
-function isPublishedGjcSessionShellHelper(file: string): boolean {
+function isPublishedWorxSessionShellHelper(file: string): boolean {
 	return file.startsWith("scripts/worx-session/") && file.endsWith(".sh");
 }
 
@@ -1087,7 +1087,7 @@ function shellArrayAssignmentRanges(contents: string): ShellRange[] {
 	return ranges;
 }
 
-function shellGjcBinaryReferenceViolations(contents: string): ShellRange[] {
+function shellWorxBinaryReferenceViolations(contents: string): ShellRange[] {
 	const normalizedContents = normalizeShellContinuations(contents);
 	const arrayRanges = shellArrayAssignmentRanges(normalizedContents);
 	const references = /(["']?)\$(?:WORX_BIN|WORX_SESSION_WORX_BIN|\{(?:WORX_BIN|WORX_SESSION_WORX_BIN)\})\1/g;
@@ -1268,11 +1268,11 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 		violation(match.index ?? 0, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
 	}
 
-	const allowedGjcEnvironmentReferences: ShellRange[] = canonicalCommands.map(match => ({
+	const allowedWorxEnvironmentReferences: ShellRange[] = canonicalCommands.map(match => ({
 		start: match.index ?? 0,
 		end: (match.index ?? 0) + match[0].length,
 	}));
-	const allowedCommandReferences = [...allowedGjcEnvironmentReferences];
+	const allowedCommandReferences = [...allowedWorxEnvironmentReferences];
 	const subprocessCalls = /\bsubprocess\.(Popen|run|call|check_call|check_output)\s*\(/g;
 	let interactiveLaunches = 0;
 	for (const match of contents.matchAll(subprocessCalls)) {
@@ -1302,7 +1302,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 				);
 				continue;
 			}
-			allowedGjcEnvironmentReferences.push({ start: argument.start, end: argument.start + argument.text.length });
+			allowedWorxEnvironmentReferences.push({ start: argument.start, end: argument.start + argument.text.length });
 			continue;
 		}
 		if (/\bcommand\b|os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]/.test(argument.text)) {
@@ -1358,7 +1358,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 	}
 	for (const match of contents.matchAll(/os\.environ\[\s*["']WORX_SESSION_WORX_BIN["']\s*\]/g)) {
 		const offset = match.index ?? 0;
-		if (!allowedGjcEnvironmentReferences.some(range => offset >= range.start && offset < range.end)) {
+		if (!allowedWorxEnvironmentReferences.some(range => offset >= range.start && offset < range.end)) {
 			violation(offset, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
 		}
 	}
@@ -1370,9 +1370,9 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 			end: (match.index ?? 0) + match[0].length,
 		})),
 	);
-	const shellGjcInvocations =
+	const shellWorxInvocations =
 		/(?:^|[|;&(]\s*|\b(?:command|exec)\s+|\btimeout\s+(?:"[^"\r\n]*"|'[^'\r\n]*'|[^\s]+)\s+)(["']?)\$(?:WORX_BIN|WORX_SESSION_WORX_BIN|\{(?:WORX_BIN|WORX_SESSION_WORX_BIN)\})\1([^\r\n;|&)]*)/gm;
-	for (const match of normalizedContents.matchAll(shellGjcInvocations)) {
+	for (const match of normalizedContents.matchAll(shellWorxInvocations)) {
 		const argumentsText = (match[2] ?? "").trim().replace(/["']$/, "");
 		const isLifecycleCall = /^(?:["']?--internal-tmux-owner-isolation["']?)$/.test(argumentsText);
 		const invocationStart = match.index ?? 0;
@@ -1383,7 +1383,7 @@ function tmuxCreateStartupViolations(file: string, contents: string): string[] {
 			violation(invocationStart, "human-only tmux owner invokes GJC with a non-lifecycle startup argument");
 		}
 	}
-	for (const reference of shellGjcBinaryReferenceViolations(contents)) {
+	for (const reference of shellWorxBinaryReferenceViolations(contents)) {
 		violation(reference.start, "human-only tmux owner must not construct or wrap a non-lifecycle GJC argv");
 	}
 	for (const match of contents.matchAll(/\bWORX_SESSION_FLAGS\b/g)) {
@@ -1501,10 +1501,10 @@ function exactTeamRuntimeSendKeysRanges(contents: string): ShellRange[] {
 		/function\s+executeTeamTmuxMutation\s*\([\s\S]*?\)\s*:\s*Bun\.SyncSubprocess<"pipe",\s*"pipe">\s*\{/.exec(
 			contents,
 		);
-	const continuation = /async\s+function\s+continueStalledGjcTeamWorkers\s*\([^)]*\)\s*:\s*Promise<void>\s*\{/.exec(
+	const continuation = /async\s+function\s+continueStalledWorxTeamWorkers\s*\([^)]*\)\s*:\s*Promise<void>\s*\{/.exec(
 		contents,
 	);
-	const monitor = /(?:export\s+)?async\s+function\s+monitorGjcTeam\s*\([\s\S]*?\)\s*:\s*Promise<[^>]+>\s*\{/.exec(
+	const monitor = /(?:export\s+)?async\s+function\s+monitorWorxTeam\s*\([\s\S]*?\)\s*:\s*Promise<[^>]+>\s*\{/.exec(
 		contents,
 	);
 	if (!executor || !continuation || !monitor) return [];
@@ -1523,7 +1523,7 @@ function exactTeamRuntimeSendKeysRanges(contents: string): ShellRange[] {
 		/operation\.type\s*===\s*["']key-send["']\s*\?\s*\[\s*["']send-keys["']\s*,\s*["']-t["']\s*,\s*operation\.paneId\s*,\s*operation\.key\s*\]/.exec(
 			executorBody,
 		);
-	const authorityChecks = executorBody.match(/assertGjcTmuxMutationAuthoritySync\(authority\)/g) ?? [];
+	const authorityChecks = executorBody.match(/assertWorxTmuxMutationAuthoritySync\(authority\)/g) ?? [];
 	if (
 		!literalSend ||
 		!keySend ||
@@ -1536,8 +1536,8 @@ function exactTeamRuntimeSendKeysRanges(contents: string): ShellRange[] {
 
 	const continuationBody = contents.slice(continuationRange.start, continuationRange.end);
 	const monitorBody = contents.slice(monitorRange.start, monitorRange.end);
-	const continuationCalls = [...monitorBody.matchAll(/await\s+continueStalledGjcTeamWorkers\s*\([^;]*\)\s*;/g)];
-	const reconcileCalls = [...monitorBody.matchAll(/await\s+reconcileGjcTeamStaleClaimsUnlocked\s*\([^;]*\)\s*;/g)];
+	const continuationCalls = [...monitorBody.matchAll(/await\s+continueStalledWorxTeamWorkers\s*\([^;]*\)\s*;/g)];
+	const reconcileCalls = [...monitorBody.matchAll(/await\s+reconcileWorxTeamStaleClaimsUnlocked\s*\([^;]*\)\s*;/g)];
 	if (
 		continuationCalls.length !== 1 ||
 		reconcileCalls.length !== 1 ||
@@ -1862,7 +1862,7 @@ async function scan(): Promise<string[]> {
 				);
 			}
 		}
-		if (isPublishedGjcSessionShellHelper(file)) {
+		if (isPublishedWorxSessionShellHelper(file)) {
 			const contents = await Bun.file(path.join(repoRoot, file)).text();
 			const occurrences = tmuxPrimitiveOccurrences(contents);
 			for (const match of contents.matchAll(
@@ -3187,7 +3187,7 @@ type TeamTmuxMutation =
 	| { type: "literal-send"; paneId: string; text: string; deferredProof: "continuation-outcome" }
 	| { type: "key-send"; paneId: string; key: string; deferredProof: "continuation-outcome" };
 function executeTeamTmuxMutation(
-	config: GjcTeamConfig,
+	config: WorxTeamConfig,
 	operation: TeamTmuxMutation,
 ): Bun.SyncSubprocess<"pipe", "pipe"> {
 	const authority = teamProviderAuthority(config);
@@ -3198,12 +3198,12 @@ function executeTeamTmuxMutation(
 			: operation.type === "key-send"
 				? ["send-keys", "-t", operation.paneId, operation.key]
 				: [];
-	assertGjcTmuxMutationAuthoritySync(authority);
+	assertWorxTmuxMutationAuthoritySync(authority);
 	const result = Bun.spawnSync(args);
-	assertGjcTmuxMutationAuthoritySync(authority);
+	assertWorxTmuxMutationAuthoritySync(authority);
 	return result;
 }
-async function continueStalledGjcTeamWorkers(): Promise<void> {
+async function continueStalledWorxTeamWorkers(): Promise<void> {
 	const reservationPath = "reservation";
 	const reservation = {};
 	await createJsonNoClobber(
@@ -3212,7 +3212,7 @@ async function continueStalledGjcTeamWorkers(): Promise<void> {
 		stateWriterOptions(reservationPath, "state", "continuation-reservation"),
 	);
 	const continuationPrompt = "Continue only your current claimed GJC team task. Re-read current GJC team state; do not replay prior output; report status.";
-	const revalidationReason = await validateGjcContinuationEligibility(dir, config, worker);
+	const revalidationReason = await validateWorxContinuationEligibility(dir, config, worker);
 	if (revalidationReason) {
 		return;
 	}
@@ -3228,8 +3228,8 @@ async function continueStalledGjcTeamWorkers(): Promise<void> {
 		worker.pane_id,
 		"Enter",
 	]);
-	const dispatch = gjcTeamRuntimeTestSeams?.continuationTmuxDispatch
-		? gjcTeamRuntimeTestSeams.continuationTmuxDispatch(config.tmux_command, args)
+	const dispatch = worxTeamRuntimeTestSeams?.continuationTmuxDispatch
+		? worxTeamRuntimeTestSeams.continuationTmuxDispatch(config.tmux_command, args)
 		: (() => {
 				executeTeamTmuxMutation(config, {
 					type: "literal-send",
@@ -3246,10 +3246,10 @@ async function continueStalledGjcTeamWorkers(): Promise<void> {
 			})();
 	void dispatch;
 }
-async function monitorGjcTeam(): Promise<void> {
-	await withGjcTeamTaskMutation(taskStore(dir), async capability => {
-		await continueStalledGjcTeamWorkers();
-		await reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);
+async function monitorWorxTeam(): Promise<void> {
+	await withWorxTeamTaskMutation(taskStore(dir), async capability => {
+		await continueStalledWorxTeamWorkers();
+		await reconcileWorxTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);
 	});
 }
 `;
@@ -3270,7 +3270,7 @@ async function monitorGjcTeam(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
-				"\tassertGjcTmuxMutationAuthoritySync(authority);\n\treturn result;",
+				"\tassertWorxTmuxMutationAuthoritySync(authority);\n\treturn result;",
 				"\treturn result;",
 			),
 		},
@@ -3280,7 +3280,7 @@ async function monitorGjcTeam(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
-				"async function continueStalledGjcTeamWorkers(): Promise<void>",
+				"async function continueStalledWorxTeamWorkers(): Promise<void>",
 				"async function relocatedContinuation(): Promise<void>",
 			),
 		},
@@ -3300,7 +3300,7 @@ async function monitorGjcTeam(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
-				"await continueStalledGjcTeamWorkers();",
+				"await continueStalledWorxTeamWorkers();",
 				"",
 			),
 		},
@@ -3310,8 +3310,8 @@ async function monitorGjcTeam(): Promise<void> {
 	await runSelfTestFixture(
 		{
 			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
-				"await continueStalledGjcTeamWorkers();\n\t\tawait reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);",
-				"await reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);\n\t\tawait continueStalledGjcTeamWorkers();",
+				"await continueStalledWorxTeamWorkers();\n\t\tawait reconcileWorxTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);",
+				"await reconcileWorxTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);\n\t\tawait continueStalledWorxTeamWorkers();",
 			),
 		},
 		1,
@@ -3539,14 +3539,14 @@ async function monitorGjcTeam(): Promise<void> {
 		"--mode option retains rpc, rpc-ui, or bridge",
 	);
 	await runSelfTestFixture(
-		{ "python/gjc-rpc/src/gjc_rpc/client.py": "class RpcClient: pass\n" },
+		{ "python/gjc-rpc/src/worx_rpc/client.py": "class RpcClient: pass\n" },
 		1,
 		"retired Python gjc-rpc package source survived",
 	);
 	await runSelfTestFixture(
-		{ "python/robogjc/src/controller.py": "from gjc_rpc import RpcClient\n" },
+		{ "python/robogjc/src/controller.py": "from worx_rpc import RpcClient\n" },
 		1,
-		"imports removed gjc_rpc Python client",
+		"imports removed worx_rpc Python client",
 	);
 	await runSelfTestFixture(
 		{ "scripts/legacy-controller.py": 'subprocess.run(["gjc", "--mode", "rpc"])\n' },

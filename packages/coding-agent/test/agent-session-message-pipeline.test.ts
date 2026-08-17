@@ -11,7 +11,7 @@ import {
 } from "@bworx-io/worx-code/session/agent-session";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { __sessionStateSidecarPerfCounters } from "@bworx-io/worx-code/worx-runtime/session-state-sidecar";
-import { GjcTeamWorkerHeartbeatReporter } from "@bworx-io/worx-code/worx-runtime/team-worker-heartbeat";
+import { WorxTeamWorkerHeartbeatReporter } from "@bworx-io/worx-code/worx-runtime/team-worker-heartbeat";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 function eventDelta(event: AgentSessionEvent): string {
@@ -1121,7 +1121,7 @@ describe("AgentSession message pipeline", () => {
 
 	it("publishes a runtime-owned team worker heartbeat only while a turn is in flight", async () => {
 		const beats: number[] = [];
-		const reporter = new GjcTeamWorkerHeartbeatReporter({
+		const reporter = new WorxTeamWorkerHeartbeatReporter({
 			intervalMs: 5,
 			write: async () => {
 				beats.push(Date.now());

@@ -4,7 +4,7 @@
  * hand-edited.
  */
 
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../skill-state/canonical-skills";
 import { initialPhaseForSkill } from "../skill-state/initial-phase";
 
 export interface WorkflowState {
@@ -42,7 +42,7 @@ export interface RetentionPolicy {
 }
 
 export interface SkillManifest {
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	states: WorkflowState[];
 	initialState: string;
 	terminalStates: string[];
@@ -125,7 +125,7 @@ function state(id: string, initialState: string, terminalStates: readonly string
 }
 
 function manifest(input: {
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	states: string[];
 	terminalStates: string[];
 	transitions: WorkflowTransition[];
@@ -165,7 +165,7 @@ function manifest(input: {
 	};
 }
 
-export const WORKFLOW_MANIFEST: Record<CanonicalGjcWorkflowSkill, SkillManifest> = {
+export const WORKFLOW_MANIFEST: Record<CanonicalWorxWorkflowSkill, SkillManifest> = {
 	"deep-interview": manifest({
 		skill: "deep-interview",
 		states: ["interviewing", "handoff", "complete"],
@@ -529,24 +529,24 @@ export const WORKFLOW_MANIFEST: Record<CanonicalGjcWorkflowSkill, SkillManifest>
 	}),
 };
 
-export function getSkillManifest(skill: CanonicalGjcWorkflowSkill): SkillManifest {
+export function getSkillManifest(skill: CanonicalWorxWorkflowSkill): SkillManifest {
 	return WORKFLOW_MANIFEST[skill];
 }
 
-export function isKnownWorkflowState(skill: CanonicalGjcWorkflowSkill, state: string): boolean {
+export function isKnownWorkflowState(skill: CanonicalWorxWorkflowSkill, state: string): boolean {
 	return WORKFLOW_MANIFEST[skill].states.some(entry => entry.id === state);
 }
 
-export function isValidTransition(skill: CanonicalGjcWorkflowSkill, from: string, to: string): boolean {
+export function isValidTransition(skill: CanonicalWorxWorkflowSkill, from: string, to: string): boolean {
 	if (from === to) return true;
 	return WORKFLOW_MANIFEST[skill].transitions.some(transition => transition.from === from && transition.to === to);
 }
 
-export function listVerbs(skill: CanonicalGjcWorkflowSkill): string[] {
+export function listVerbs(skill: CanonicalWorxWorkflowSkill): string[] {
 	return WORKFLOW_MANIFEST[skill].verbs.map(verb => verb.name);
 }
 
-export function typedArgsFor(skill: CanonicalGjcWorkflowSkill, verb: string): TypedArgSpec[] {
+export function typedArgsFor(skill: CanonicalWorxWorkflowSkill, verb: string): TypedArgSpec[] {
 	return WORKFLOW_MANIFEST[skill].typedArgs.filter(
 		arg => arg.appliesToVerbs === undefined || arg.appliesToVerbs.includes(verb),
 	);

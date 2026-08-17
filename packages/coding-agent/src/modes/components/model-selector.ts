@@ -21,7 +21,7 @@ import {
 	type ModelProfileDefinition,
 	resolveProfileBindings,
 } from "../../config/model-profiles";
-import type { GjcModelAssignmentTargetId, ModelRegistry } from "../../config/model-registry";
+import type { ModelRegistry, WorxModelAssignmentTargetId } from "../../config/model-registry";
 import {
 	isAuthenticated,
 	kNoAuth,
@@ -125,8 +125,8 @@ export type ModelSelectorSelection =
 	| {
 			kind: "assignment";
 			model: Model;
-			role: GjcModelAssignmentTargetId | null;
-			roles?: readonly GjcModelAssignmentTargetId[];
+			role: WorxModelAssignmentTargetId | null;
+			roles?: readonly WorxModelAssignmentTargetId[];
 			thinkingLevel?: ThinkingLevel;
 			selector?: string;
 	  }
@@ -150,8 +150,8 @@ export type ModelSelectorSelection =
 
 interface PendingThinkingChoice {
 	item: ModelItem | CanonicalModelItem;
-	role: GjcModelAssignmentTargetId | null;
-	roles?: readonly GjcModelAssignmentTargetId[];
+	role: WorxModelAssignmentTargetId | null;
+	roles?: readonly WorxModelAssignmentTargetId[];
 	levels: ThinkingLevel[];
 }
 
@@ -246,7 +246,7 @@ function presetRowIdentity(row: PresetLandingRow): string {
 	}
 }
 
-const PROFILE_ROLE_PREVIEW_ORDER: GjcModelAssignmentTargetId[] = [
+const PROFILE_ROLE_PREVIEW_ORDER: WorxModelAssignmentTargetId[] = [
 	"default",
 	"executor",
 	"planner",
@@ -1847,7 +1847,7 @@ export class ModelSelectorComponent extends Container {
 	 * only way to learn a role's model is to scan the whole (800+ entry) model list
 	 * for role badges.
 	 */
-	#formatRoleBinding(role: GjcModelAssignmentTargetId): string {
+	#formatRoleBinding(role: WorxModelAssignmentTargetId): string {
 		const target = WORX_MODEL_ASSIGNMENT_TARGETS[role];
 		const configured =
 			target.settingsPath === "modelRoles"
@@ -2264,8 +2264,8 @@ export class ModelSelectorComponent extends Container {
 	#getInitialThinkingChoiceIndex(
 		item: ModelItem | CanonicalModelItem,
 		levels: ThinkingLevel[],
-		role: GjcModelAssignmentTargetId | null = null,
-		roles?: readonly GjcModelAssignmentTargetId[],
+		role: WorxModelAssignmentTargetId | null = null,
+		roles?: readonly WorxModelAssignmentTargetId[],
 	): number {
 		const preferred = this.#getPreferredThinkingLevel(item, role, roles);
 		if (preferred && preferred !== ThinkingLevel.Inherit) {
@@ -2282,8 +2282,8 @@ export class ModelSelectorComponent extends Container {
 	 */
 	#getPreferredThinkingLevel(
 		item: ModelItem | CanonicalModelItem,
-		role: GjcModelAssignmentTargetId | null = null,
-		roles?: readonly GjcModelAssignmentTargetId[],
+		role: WorxModelAssignmentTargetId | null = null,
+		roles?: readonly WorxModelAssignmentTargetId[],
 	): ThinkingLevel | undefined {
 		const roleThinking = this.#getAssignedThinkingLevelForModel(item.model, role, roles);
 		if (roleThinking && roleThinking !== ThinkingLevel.Inherit) {
@@ -2297,8 +2297,8 @@ export class ModelSelectorComponent extends Container {
 
 	#getAssignedThinkingLevelForModel(
 		model: Model,
-		role: GjcModelAssignmentTargetId | null,
-		roles?: readonly GjcModelAssignmentTargetId[],
+		role: WorxModelAssignmentTargetId | null,
+		roles?: readonly WorxModelAssignmentTargetId[],
 	): ThinkingLevel | undefined {
 		if (roles && roles.length > 0) {
 			const assignedLevels = roles
@@ -2322,9 +2322,9 @@ export class ModelSelectorComponent extends Container {
 
 	#handleSelect(
 		item: ModelItem | CanonicalModelItem,
-		role: GjcModelAssignmentTargetId | null,
+		role: WorxModelAssignmentTargetId | null,
 		thinkingLevel?: ThinkingLevel,
-		roles?: readonly GjcModelAssignmentTargetId[],
+		roles?: readonly WorxModelAssignmentTargetId[],
 	): void {
 		const itemThinkingLevel = thinkingLevel ?? item.thinkingLevel;
 		const hasExplicitThinkingChoice = thinkingLevel !== undefined || item.explicitThinkingLevel === true;
@@ -2432,7 +2432,7 @@ export class ModelSelectorComponent extends Container {
 	}
 }
 
-function requiresExplicitThinkingChoice(model: Model, role: GjcModelAssignmentTargetId | null): boolean {
+function requiresExplicitThinkingChoice(model: Model, role: WorxModelAssignmentTargetId | null): boolean {
 	if (model.reasoning !== true) return false;
 	if (model.provider === "openai" || model.provider === "openai-codex") return true;
 	return role !== null && WORX_MODEL_ASSIGNMENT_TARGETS[role].settingsPath === "task.agentModelOverrides";

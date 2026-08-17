@@ -3,22 +3,22 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { runNativeStateCommand } from "../../src/worx-runtime/state-runtime";
-import { monitorGjcTeam, persistGjcTeamModeStateSummary, startGjcTeam } from "../../src/worx-runtime/team-runtime";
+import { monitorWorxTeam, persistWorxTeamModeStateSummary, startWorxTeam } from "../../src/worx-runtime/team-runtime";
 
 const TEST_SESSION_ID = "test-session";
 let cleanupRoot: string | undefined;
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 });
 
@@ -31,7 +31,7 @@ afterEach(async () => {
 describe("native gjc team mode-state convergence", () => {
 	it("keeps gjc state team read aligned with dry-run team start and status snapshots", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-convergence-"));
-		const started = await startGjcTeam({
+		const started = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Converge team state",
@@ -40,7 +40,7 @@ describe("native gjc team mode-state convergence", () => {
 			dryRun: true,
 			env: { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		});
-		await persistGjcTeamModeStateSummary(started, cleanupRoot);
+		await persistWorxTeamModeStateSummary(started, cleanupRoot);
 
 		const startRead = await runNativeStateCommand(
 			["read", "--mode", "team", "--session-id", TEST_SESSION_ID, "--json"],
@@ -52,11 +52,11 @@ describe("native gjc team mode-state convergence", () => {
 		expect(startState.state.team_name).toBe(started.team_name);
 		expect(startState.state.task_counts).toEqual(started.task_counts);
 
-		const status = await monitorGjcTeam(started.team_name, cleanupRoot, {
+		const status = await monitorWorxTeam(started.team_name, cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
-		await persistGjcTeamModeStateSummary(status, cleanupRoot);
+		await persistWorxTeamModeStateSummary(status, cleanupRoot);
 
 		const statusRead = await runNativeStateCommand(
 			["read", "--mode", "team", "--session-id", TEST_SESSION_ID, "--json"],

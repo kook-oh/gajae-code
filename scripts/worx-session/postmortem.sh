@@ -3,7 +3,7 @@
 # state and paths; they never read or persist pane, prompt, or runtime payloads.
 
 
-gjc_session_git_dirty_boolean() {
+worx_session_git_dirty_boolean() {
   local workdir="${1:-}"
   local status
   if [[ -z "$workdir" ]] || ! git -C "$workdir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -15,7 +15,7 @@ gjc_session_git_dirty_boolean() {
 }
 
 
-gjc_session_write_public_marker() {
+worx_session_write_public_marker() {
   local path="${1:?marker path required}"
   local kind="${2:?marker kind required}"
   local session="${3:?session required}"
@@ -35,7 +35,7 @@ PY
 }
 
 
-gjc_session_validate_raw_verdict() {
+worx_session_validate_raw_verdict() {
   local verdict_path="${1:?verdict path required}"
   local generation_path="${2:?generation path required}"
   local session="${3:?session required}"
@@ -85,7 +85,7 @@ except (KeyError, OSError, TypeError, ValueError):
 PY
 }
 
- gjc_session_publish_current_alias() {
+ worx_session_publish_current_alias() {
   local canonical_path="${1:?canonical path required}"
   local alias_path="${2:?alias path required}"
   local generation_path="${3:?generation path required}"
@@ -94,8 +94,8 @@ PY
   local kind="${6:-}"
   local transition_lock="${generation_path%.json}.transition.lock"
   if [[ "${WORX_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
-    exec {gjc_alias_lock_fd}>"$transition_lock"
-    flock -x "$gjc_alias_lock_fd"
+    exec {worx_alias_lock_fd}>"$transition_lock"
+    flock -x "$worx_alias_lock_fd"
   fi
   python3 - "$canonical_path" "$alias_path" "$generation_path" "$session" "$generation" "$kind" <<'PY'
 import json
@@ -132,13 +132,13 @@ finally:
 PY
   local rc=$?
   if [[ "${WORX_SESSION_TRANSITION_LOCK_HELD:-0}" != 1 ]]; then
-    flock -u "$gjc_alias_lock_fd"
-    eval "exec ${gjc_alias_lock_fd}>&-"
+    flock -u "$worx_alias_lock_fd"
+    eval "exec ${worx_alias_lock_fd}>&-"
   fi
   return "$rc"
 }
 
- gjc_session_write_vanished_json() {
+ worx_session_write_vanished_json() {
   local vanished_json="${1:?vanished json path required}"
   local session="${2:?session required}"
   local workdir="${3:?workdir required}"

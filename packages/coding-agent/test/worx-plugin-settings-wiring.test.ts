@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { GjcRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
+import { WorxRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
 
 /**
  * The Settings surface is only useful if the runtime evidence the session
@@ -20,56 +20,56 @@ async function read(relative: string): Promise<string> {
 describe("GJC bundle Settings runtime wiring", () => {
 	test("createAgentSession publishes the provider onto the session", async () => {
 		const source = await read("sdk/session.ts");
-		expect(source).toContain("session.gjcRuntimeSnapshot = gjcRuntimeStore;");
-		expect(source).toContain("session.gjcActivationGeneration = gjcActivationGeneration;");
+		expect(source).toContain("session.worxRuntimeSnapshot = worxRuntimeStore;");
+		expect(source).toContain("session.worxActivationGeneration = worxActivationGeneration;");
 	});
 
 	test("the session type carries the provider and generation", async () => {
 		const source = await read("session/agent-session.ts");
-		expect(source).toContain("gjcRuntimeSnapshot?: GjcRuntimeSnapshotProvider;");
-		expect(source).toContain("gjcActivationGeneration?: number;");
+		expect(source).toContain("worxRuntimeSnapshot?: WorxRuntimeSnapshotProvider;");
+		expect(source).toContain("worxActivationGeneration?: number;");
 	});
 
 	test("the production selector passes both fields into the settings context", async () => {
 		const source = await read("modes/controllers/selector-controller.ts");
-		expect(source).toContain("gjcRuntimeSnapshot: this.ctx.session.gjcRuntimeSnapshot");
-		expect(source).toContain("gjcActivationGeneration: this.ctx.session.gjcActivationGeneration");
+		expect(source).toContain("worxRuntimeSnapshot: this.ctx.session.worxRuntimeSnapshot");
+		expect(source).toContain("worxActivationGeneration: this.ctx.session.worxActivationGeneration");
 	});
 
 	test("the settings selector forwards them into the component dependencies", async () => {
 		const source = await read("modes/components/settings-selector.ts");
-		expect(source).toContain("runtimeSnapshotProvider: this.context.gjcRuntimeSnapshot");
-		expect(source).toContain("activationGeneration: this.context.gjcActivationGeneration");
+		expect(source).toContain("runtimeSnapshotProvider: this.context.worxRuntimeSnapshot");
+		expect(source).toContain("activationGeneration: this.context.worxActivationGeneration");
 	});
 
 	test("publication happens only after the last producer", async () => {
 		const source = await read("sdk/session.ts");
 		const appendix = source.indexOf("renderAlwaysOnSystemAppendices({ cwd })");
-		const publish = source.indexOf("gjcRuntimeStore.publish(");
+		const publish = source.indexOf("worxRuntimeStore.publish(");
 		expect(appendix).toBeGreaterThan(-1);
 		expect(publish).toBeGreaterThan(appendix);
 		// Exactly one publication site, guarded by the completeness flag and
 		// fenced by the pass epoch so an older overlapping rebuild cannot publish
 		// over a newer one.
-		expect(source.split("gjcRuntimeStore.publish(").length - 1).toBe(1);
+		expect(source.split("worxRuntimeStore.publish(").length - 1).toBe(1);
 		expect(source).toContain(
-			"if (gjcProducersComplete) gjcRuntimeStore.publish(gjcFindings.snapshot(), gjcPassEpoch)",
+			"if (worxProducersComplete) worxRuntimeStore.publish(worxFindings.snapshot(), worxPassEpoch)",
 		);
 		// The rebuild callback is reused, so the previous generation must be
 		// retired at callback ENTRY. Invalidating next to the publish would leave
 		// stale evidence readable across every await in between, or entirely if
 		// an earlier step throws.
-		const beginPass = source.indexOf("gjcRuntimeStore.beginPass()");
+		const beginPass = source.indexOf("worxRuntimeStore.beginPass()");
 		expect(beginPass).toBeGreaterThan(-1);
 		expect(beginPass).toBeLessThan(appendix);
-		expect(source.split("gjcRuntimeStore.beginPass()").length - 1).toBe(1);
+		expect(source.split("worxRuntimeStore.beginPass()").length - 1).toBe(1);
 	});
 
 	test("an overlapping or failed pass can never publish over a newer one", () => {
 		const snapshot = (generation: number) => ({ generation, findings: [] });
 
 		// A slow earlier pass must not publish after a newer pass has begun.
-		const store = new GjcRuntimeSnapshotStore();
+		const store = new WorxRuntimeSnapshotStore();
 		const passA = store.beginPass();
 		const passB = store.beginPass();
 		store.publish(snapshot(1), passA);
@@ -78,7 +78,7 @@ describe("GJC bundle Settings runtime wiring", () => {
 		expect(store.current()).toMatchObject({ status: "current", snapshot: { generation: 2 } });
 
 		// And it must not overwrite a newer pass that already published.
-		const raced = new GjcRuntimeSnapshotStore();
+		const raced = new WorxRuntimeSnapshotStore();
 		const older = raced.beginPass();
 		const newer = raced.beginPass();
 		raced.publish(snapshot(20), newer);
@@ -87,7 +87,7 @@ describe("GJC bundle Settings runtime wiring", () => {
 
 		// A pass that begins and then fails leaves consumers at unavailable rather
 		// than reading the generation it superseded.
-		const failed = new GjcRuntimeSnapshotStore();
+		const failed = new WorxRuntimeSnapshotStore();
 		failed.publish(snapshot(1), failed.beginPass());
 		expect(failed.current().status).toBe("current");
 		failed.beginPass();

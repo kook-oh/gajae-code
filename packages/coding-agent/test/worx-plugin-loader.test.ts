@@ -2,13 +2,13 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as gjcPluginBarrel from "../src/extensibility/worx-plugins";
+import * as worxPluginBarrel from "../src/extensibility/worx-plugins";
 import {
-	discoverGjcPluginRoots,
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
+	discoverWorxPluginRoots,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
 } from "../src/extensibility/worx-plugins";
-import { loadGjcPlugin, loadGjcPlugins } from "../src/extensibility/worx-plugins/loader";
+import { loadWorxPlugin, loadWorxPlugins } from "../src/extensibility/worx-plugins/loader";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const tempRoots: string[] = [];
@@ -22,12 +22,12 @@ async function copyFixtureToProject(fixtureName: string): Promise<string> {
 	return cwd;
 }
 
-async function expectLoadError(root: string, code: GjcPluginLoadErrorCode): Promise<void> {
+async function expectLoadError(root: string, code: WorxPluginLoadErrorCode): Promise<void> {
 	try {
-		await loadGjcPlugin(root);
+		await loadWorxPlugin(root);
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} load error`);
@@ -41,21 +41,21 @@ afterEach(async () => {
 
 describe("GJC plugin loader", () => {
 	test("does not expose the legacy executable loader through the public barrel", () => {
-		expect(Object.hasOwn(gjcPluginBarrel, "loadGjcPlugin")).toBe(false);
-		expect(Object.hasOwn(gjcPluginBarrel, "loadGjcPlugins")).toBe(false);
+		expect(Object.hasOwn(worxPluginBarrel, "loadWorxPlugin")).toBe(false);
+		expect(Object.hasOwn(worxPluginBarrel, "loadWorxPlugins")).toBe(false);
 	});
 	test("loads valid skill and agent plugin fixtures", async () => {
-		const skill = await loadGjcPlugin(path.join(fixturesRoot, "valid-skill-plugin"));
+		const skill = await loadWorxPlugin(path.join(fixturesRoot, "valid-skill-plugin"));
 		expect(skill.name).toBe("valid-skill-plugin");
 		expect(skill.bindings).toHaveLength(1);
 		expect(skill.bindings[0]).toMatchObject({ parent: "ralplan", phase: "planner", activationArg: "design" });
 		expect(skill.bindings[0].toolPaths).toHaveLength(2);
 		expect(skill.toolBindings).toHaveLength(2);
 
-		const agent = await loadGjcPlugin(path.join(fixturesRoot, "valid-agent-plugin"));
+		const agent = await loadWorxPlugin(path.join(fixturesRoot, "valid-agent-plugin"));
 		expect(agent.bindings[0]).toMatchObject({ parent: "executor", phase: "prompt", activationArg: "domain" });
 
-		const both = await loadGjcPlugins([
+		const both = await loadWorxPlugins([
 			path.join(fixturesRoot, "valid-skill-plugin"),
 			path.join(fixturesRoot, "valid-agent-plugin"),
 		]);
@@ -76,11 +76,11 @@ describe("GJC plugin loader", () => {
 		await fs.cp(path.join(fixturesRoot, "valid-skill-plugin"), path.join(directCwd, ".worx", "worx-plugins"), {
 			recursive: true,
 		});
-		const directRoots = await discoverGjcPluginRoots({ cwd: directCwd });
+		const directRoots = await discoverWorxPluginRoots({ cwd: directCwd });
 		expect(directRoots).toContain(path.join(directCwd, ".worx", "worx-plugins"));
 
 		const nestedCwd = await copyFixtureToProject("valid-agent-plugin");
-		const nestedRoots = await discoverGjcPluginRoots({ cwd: nestedCwd });
+		const nestedRoots = await discoverWorxPluginRoots({ cwd: nestedCwd });
 		expect(nestedRoots).toContain(path.join(nestedCwd, ".worx", "worx-plugins", "valid-agent-plugin"));
 	});
 });

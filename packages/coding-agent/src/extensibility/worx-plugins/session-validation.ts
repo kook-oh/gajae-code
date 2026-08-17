@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { bundleIdentity, identityKey } from "./lifecycle-reconciliation";
-import type { GjcBundleIdentity, GjcPluginLoadErrorCode, GjcPluginRegistryEntry } from "./types";
+import type { WorxBundleIdentity, WorxPluginLoadErrorCode, WorxPluginRegistryEntry } from "./types";
 
 /**
  * Session-start validation: the registry is the collision authority. Capability
@@ -24,16 +24,16 @@ export interface SessionCapabilityEvidence {
 
 export interface SessionQuarantine {
 	/** Scope-qualified canonical target this finding belongs to. */
-	identity: GjcBundleIdentity;
+	identity: WorxBundleIdentity;
 	plugin: string;
 	surfaceId: string;
-	code: GjcPluginLoadErrorCode;
+	code: WorxPluginLoadErrorCode;
 	message: string;
 }
 
 export interface SessionValidationResult {
 	/** Registry entries (enabled, non-quarantined) whose surfaces may activate. */
-	active: GjcPluginRegistryEntry[];
+	active: WorxPluginRegistryEntry[];
 	/** Per-surface quarantine records (fail-closed). */
 	quarantine: SessionQuarantine[];
 }
@@ -47,7 +47,7 @@ function sha256(buf: Buffer): string {
  * Drift (manual edits, partial writes) quarantines the whole plugin with
  * runtime_mismatch.
  */
-export async function verifyEntryHashes(entry: GjcPluginRegistryEntry): Promise<SessionQuarantine | null> {
+export async function verifyEntryHashes(entry: WorxPluginRegistryEntry): Promise<SessionQuarantine | null> {
 	for (const file of entry.copiedFiles) {
 		const abs = path.join(entry.pluginRoot, file.relativePath);
 		let buf: Buffer;
@@ -75,7 +75,7 @@ export async function verifyEntryHashes(entry: GjcPluginRegistryEntry): Promise<
 	return null;
 }
 
-function activeSurfaceIds(entry: GjcPluginRegistryEntry): {
+function activeSurfaceIds(entry: WorxPluginRegistryEntry): {
 	tools: { id: string; name: string }[];
 	mcps: { id: string; name: string }[];
 	hooks: { id: string }[];
@@ -103,7 +103,7 @@ function activeSurfaceIds(entry: GjcPluginRegistryEntry): {
  * (not an error).
  */
 export function validateSessionBundles(
-	entries: readonly GjcPluginRegistryEntry[],
+	entries: readonly WorxPluginRegistryEntry[],
 	evidence: SessionCapabilityEvidence = {},
 	preQuarantined: readonly SessionQuarantine[] = [],
 ): SessionValidationResult {
@@ -115,7 +115,7 @@ export function validateSessionBundles(
 	const seenHooks = new Set<string>(evidence.hookKeys ?? []);
 	const seenAppendices = new Set<string>(evidence.appendixIds ?? []);
 
-	const active: GjcPluginRegistryEntry[] = [];
+	const active: WorxPluginRegistryEntry[] = [];
 	for (const entry of entries) {
 		if (!entry.enabled) continue; // user-disabled, not an error
 		if (quarantinedPlugins.has(identityKey(bundleIdentity(entry.scope, entry.name)))) continue;

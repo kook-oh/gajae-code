@@ -428,7 +428,7 @@ describe("openai-responses cache affinity", () => {
 	});
 
 	it("isolates environment retention overrides", async () => {
-		const previousGjc = Bun.env.WORX_CACHE_RETENTION;
+		const previousWorx = Bun.env.WORX_CACHE_RETENTION;
 		const previousPi = Bun.env.PI_CACHE_RETENTION;
 		Bun.env.WORX_CACHE_RETENTION = "long";
 		delete Bun.env.PI_CACHE_RETENTION;
@@ -439,8 +439,8 @@ describe("openai-responses cache affinity", () => {
 			);
 			expect(captured.body?.prompt_cache_retention).toBe("24h");
 		} finally {
-			if (previousGjc === undefined) delete Bun.env.WORX_CACHE_RETENTION;
-			else Bun.env.WORX_CACHE_RETENTION = previousGjc;
+			if (previousWorx === undefined) delete Bun.env.WORX_CACHE_RETENTION;
+			else Bun.env.WORX_CACHE_RETENTION = previousWorx;
 			if (previousPi === undefined) delete Bun.env.PI_CACHE_RETENTION;
 			else Bun.env.PI_CACHE_RETENTION = previousPi;
 		}

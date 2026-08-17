@@ -1,10 +1,10 @@
-import { resolveGjcSessionForRead, SessionResolutionError } from "../../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead, SessionResolutionError } from "../../worx-runtime/session-resolution";
 
 async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string | undefined> {
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		return (await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") return undefined;
 		throw error;
@@ -131,7 +131,7 @@ export async function buildAgentSubskillInjection(input: {
 // Tier-1 sub-skill advertisement (metadata-only, bounded, target-parent scoped)
 // ---------------------------------------------------------------------------
 
-import type { GjcPluginRegistryEntry } from "./types";
+import type { WorxPluginRegistryEntry } from "./types";
 
 const ADVERT_MAX_ITEMS = 12;
 const ADVERT_MAX_DESC = 200;
@@ -197,7 +197,7 @@ function renderAdvertisement(items: AdvertItem[], kind: "skill" | "agent", paren
 	return wrapAdvert(kind, parent, lines);
 }
 
-function collectAdverts(entries: readonly GjcPluginRegistryEntry[], parent: string, phase?: string): AdvertItem[] {
+function collectAdverts(entries: readonly WorxPluginRegistryEntry[], parent: string, phase?: string): AdvertItem[] {
 	const items: AdvertItem[] = [];
 	for (const entry of entries) {
 		if (!entry.enabled) continue;
@@ -224,7 +224,7 @@ function collectAdverts(entries: readonly GjcPluginRegistryEntry[], parent: stri
  * prompt (never the global public-workflow-surface). No body content.
  */
 export function buildSubskillAdvertisement(
-	entries: readonly GjcPluginRegistryEntry[],
+	entries: readonly WorxPluginRegistryEntry[],
 	parent: string,
 	phase?: string,
 ): string {
@@ -232,6 +232,9 @@ export function buildSubskillAdvertisement(
 }
 
 /** Tier-1 advertisement for a role-agent parent. */
-export function buildAgentSubskillAdvertisement(entries: readonly GjcPluginRegistryEntry[], agentName: string): string {
+export function buildAgentSubskillAdvertisement(
+	entries: readonly WorxPluginRegistryEntry[],
+	agentName: string,
+): string {
 	return renderAdvertisement(collectAdverts(entries, agentName), "agent", agentName);
 }

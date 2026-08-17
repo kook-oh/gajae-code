@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/worx-plugins";
+import { buildPluginMcpConfigs, installWorxBundle } from "../src/extensibility/worx-plugins";
 import { MCPManager } from "../src/runtime-mcp";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
@@ -19,7 +19,7 @@ describe("plugin MCP live connection", () => {
 	test("installs and connects a bundled stdio MCP server, exposing its tools", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-mcp-connect-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 
 		const { configs } = await buildPluginMcpConfigs({ cwd });
@@ -40,7 +40,7 @@ describe("plugin MCP live connection", () => {
 	test("plugin stdio configs request no-env isolation and the child cannot read host secrets", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-mcp-noenv-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 
 		const { configs } = await buildPluginMcpConfigs({ cwd });

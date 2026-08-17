@@ -14,7 +14,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { teamStateRoot } from "../../src/worx-runtime/session-layout";
-import { claimGjcTeamTask, monitorGjcTeam, startGjcTeam } from "../../src/worx-runtime/team-runtime";
+import { claimWorxTeamTask, monitorWorxTeam, startWorxTeam } from "../../src/worx-runtime/team-runtime";
 
 const TEST_SESSION_ID = "test-session";
 /** Comfortably above the reporter cadence so freshness is unambiguous. */
@@ -23,16 +23,16 @@ const WORKER_FIXTURE = path.resolve(import.meta.dir, "../fixtures/team-worker-he
 
 let cleanupRoot: string | undefined;
 const workers: Bun.Subprocess[] = [];
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) delete process.env.WORX_SESSION_ID;
-	else process.env.WORX_SESSION_ID = previousGjcSessionId;
+	if (previousWorxSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = previousWorxSessionId;
 });
 
 afterEach(async () => {
@@ -54,7 +54,7 @@ const monitorEnv = (root: string) => ({
 async function startClaimedTeam(teamName: string): Promise<{ root: string; claimPath: string }> {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-worker-heartbeat-"));
 	cleanupRoot = root;
-	await startGjcTeam({
+	await startWorxTeam({
 		workerCount: 1,
 		agentType: "executor",
 		task: "A long tool call must not cost the worker its claim",
@@ -63,7 +63,7 @@ async function startClaimedTeam(teamName: string): Promise<{ root: string; claim
 		dryRun: true,
 		env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 	});
-	const claim = await claimGjcTeamTask(teamName, "worker-1", root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
+	const claim = await claimWorxTeamTask(teamName, "worker-1", root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
 	expect(claim.ok).toBe(true);
 	return { root, claimPath: path.join(teamStateRoot(root, TEST_SESSION_ID), teamName, "claims", "task-1.json") };
 }
@@ -117,7 +117,7 @@ describe("runtime-owned worker heartbeat across processes", () => {
 			// One long tool call: no model turn boundary for well over the window.
 			await Bun.sleep(STALE_MS * 1.5);
 			expect(await heartbeatAgeMs(root, teamName)).toBeLessThan(STALE_MS);
-			const snapshot = await monitorGjcTeam(teamName, root, monitorEnv(root));
+			const snapshot = await monitorWorxTeam(teamName, root, monitorEnv(root));
 
 			expect(snapshot.task_counts.in_progress).toBe(1);
 			expect(snapshot.task_counts.pending).toBe(0);
@@ -135,7 +135,7 @@ describe("runtime-owned worker heartbeat across processes", () => {
 
 			await Bun.sleep(STALE_MS * 1.5);
 			expect(await heartbeatAgeMs(root, teamName)).toBeGreaterThan(STALE_MS);
-			const snapshot = await monitorGjcTeam(teamName, root, monitorEnv(root));
+			const snapshot = await monitorWorxTeam(teamName, root, monitorEnv(root));
 
 			expect(snapshot.task_counts.pending).toBe(1);
 			expect(await Bun.file(claimPath).exists()).toBe(false);

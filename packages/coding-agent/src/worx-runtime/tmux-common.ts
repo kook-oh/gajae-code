@@ -1,16 +1,16 @@
 import type { ResolvedTmuxBinary } from "./psmux-detect";
-import { resolveGjcTmuxBinary } from "./psmux-detect";
+import { resolveWorxTmuxBinary } from "./psmux-detect";
 
 export {
-	assertGjcTmuxMutationAuthoritySync,
-	bindGjcTmuxProviderAuthority,
+	assertWorxTmuxMutationAuthoritySync,
+	bindWorxTmuxProviderAuthority,
 	buildTmuxProviderCommand,
-	hasGjcTmuxProviderAuthoritySync,
+	hasWorxTmuxProviderAuthoritySync,
 	type ProviderAuthority,
 	type ProviderContext,
-	persistGjcTmuxProviderAuthoritySync,
-	readGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxProviderContext,
+	persistWorxTmuxProviderAuthoritySync,
+	readWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxProviderContext,
 	type TmuxProviderKind,
 } from "./tmux-provider-context";
 
@@ -33,7 +33,7 @@ export const WORX_TMUX_OWNER_SERVER_KEY_OPTION = "@gjc-owner-server-key";
 export const WORX_TMUX_VERSION_OPTION = "@gjc-version";
 export const WORX_PSMUX_PROFILE_FORCE_ENV = "WORX_PSMUX_PROFILE_FORCE";
 
-export interface GjcTmuxProfileCommand {
+export interface WorxTmuxProfileCommand {
 	description: string;
 	args: string[];
 }
@@ -69,15 +69,15 @@ export function envDisabled(value: string | undefined): boolean {
  * On POSIX the resolver returns `tmux` (the historical default) and only
  * falls through to the platform-aware walker if the caller opts in.
  */
-export function resolveGjcTmuxCommand(
+export function resolveWorxTmuxCommand(
 	env: NodeJS.ProcessEnv = process.env,
 	platform: NodeJS.Platform = process.platform,
 ): string {
-	return resolveGjcTmuxBinary({ env, platform }).command;
+	return resolveWorxTmuxBinary({ env, platform }).command;
 }
 
-export type { PsmuxProbe, ResolvedTmuxBinary, ResolveGjcTmuxBinaryOptions } from "./psmux-detect";
-export { clearPsmuxDetectionCache, detectPsmux, probePsmux, resolveGjcTmuxBinary } from "./psmux-detect";
+export type { PsmuxProbe, ResolvedTmuxBinary, ResolveWorxTmuxBinaryOptions } from "./psmux-detect";
+export { clearPsmuxDetectionCache, detectPsmux, probePsmux, resolveWorxTmuxBinary } from "./psmux-detect";
 
 /**
  * Build the exact-session target for tmux *option* commands
@@ -89,11 +89,11 @@ export { clearPsmuxDetectionCache, detectPsmux, probePsmux, resolveGjcTmuxBinary
  * keeps the exact-session match while giving tmux the window-qualified target
  * those commands require. See gajae-code#580.
  */
-export function buildGjcTmuxExactOptionTarget(
+export function buildWorxTmuxExactOptionTarget(
 	sessionName: string,
 	opts: { env?: NodeJS.ProcessEnv; platform?: NodeJS.Platform; binary?: ResolvedTmuxBinary } = {},
 ): string {
-	const binary = opts.binary ?? resolveGjcTmuxBinary({ env: opts.env, platform: opts.platform });
+	const binary = opts.binary ?? resolveWorxTmuxBinary({ env: opts.env, platform: opts.platform });
 	// psmux 3.3.0 rejects the tmux `=NAME` exact-session prefix for option
 	// commands ("no server running on session '=NAME'"); bare `NAME` and
 	// window-qualified `NAME:` both work. tmux 3.6a needs the
@@ -110,18 +110,18 @@ export function buildGjcTmuxExactOptionTarget(
  * session commands even though the bare `NAME` resolves. Keep native tmux on
  * exact targets and intentionally use the bare session name for psmux.
  */
-export function buildGjcTmuxExactSessionTarget(
+export function buildWorxTmuxExactSessionTarget(
 	sessionName: string,
 	opts: { env?: NodeJS.ProcessEnv; platform?: NodeJS.Platform; binary?: ResolvedTmuxBinary } = {},
 ): string {
-	const binary = opts.binary ?? resolveGjcTmuxBinary({ env: opts.env, platform: opts.platform });
+	const binary = opts.binary ?? resolveWorxTmuxBinary({ env: opts.env, platform: opts.platform });
 	if (binary.isPsmux) return sessionName;
 	return `=${sessionName}`;
 }
 
-export const WORX_TMUX_UNTAGGED_REASON = "gjc_tmux_session_untagged";
+export const WORX_TMUX_UNTAGGED_REASON = "worx_tmux_session_untagged";
 
-export function buildGjcTmuxUntaggedSessionHint(tmuxCommand: string): string {
+export function buildWorxTmuxUntaggedSessionHint(tmuxCommand: string): string {
 	return (
 		`the active multiplexer "${tmuxCommand}" lists this session but did not return GJC's ${WORX_TMUX_PROFILE_OPTION} ownership tag; ` +
 		"GJC-managed sessions and `gjc team` require a tmux provider that round-trips tmux user options. " +
@@ -131,8 +131,8 @@ export function buildGjcTmuxUntaggedSessionHint(tmuxCommand: string): string {
 	);
 }
 
-export function buildGjcTmuxUntaggedSessionError(sessionName: string, tmuxCommand: string): string {
-	return `${WORX_TMUX_UNTAGGED_REASON}:${sessionName} — ${buildGjcTmuxUntaggedSessionHint(tmuxCommand)}`;
+export function buildWorxTmuxUntaggedSessionError(sessionName: string, tmuxCommand: string): string {
+	return `${WORX_TMUX_UNTAGGED_REASON}:${sessionName} — ${buildWorxTmuxUntaggedSessionHint(tmuxCommand)}`;
 }
 
 export function sanitizeTmuxToken(value: string): string {
@@ -145,7 +145,7 @@ export function sanitizeTmuxToken(value: string): string {
 	);
 }
 
-export function buildGjcTmuxSessionSlug(value: string): string {
+export function buildWorxTmuxSessionSlug(value: string): string {
 	return sanitizeTmuxToken(value);
 }
 
@@ -153,7 +153,7 @@ function randomTmuxSessionSuffix(): string {
 	return Math.random().toString(36).slice(2, 10);
 }
 
-export function buildGjcTmuxSessionName(
+export function buildWorxTmuxSessionName(
 	env: NodeJS.ProcessEnv = process.env,
 	context: { branch?: string | null; now?: number; id?: string } = {},
 ): string {
@@ -161,11 +161,11 @@ export function buildGjcTmuxSessionName(
 	if (explicit) return explicit;
 	const timestamp = (context.now ?? Date.now()).toString(36);
 	const id = context.id ?? randomTmuxSessionSuffix();
-	const branchSlug = context.branch ? `${buildGjcTmuxSessionSlug(context.branch)}_` : "";
+	const branchSlug = context.branch ? `${buildWorxTmuxSessionSlug(context.branch)}_` : "";
 	return `${WORX_TMUX_SESSION_PREFIX}${branchSlug}${timestamp}_${id}`;
 }
 
-export function buildGjcTmuxRequiredProfileCommands(
+export function buildWorxTmuxRequiredProfileCommands(
 	target: string,
 	metadata: {
 		branch?: string | null;
@@ -177,8 +177,8 @@ export function buildGjcTmuxRequiredProfileCommands(
 		ownerServerKey?: string | null;
 		version?: string | null;
 	} = {},
-): GjcTmuxProfileCommand[] {
-	const commands: GjcTmuxProfileCommand[] = [];
+): WorxTmuxProfileCommand[] {
+	const commands: WorxTmuxProfileCommand[] = [];
 
 	if (metadata.branch)
 		commands.push({
@@ -238,7 +238,7 @@ export function buildGjcTmuxRequiredProfileCommands(
  */
 const PSMUX_UNSUPPORTED_PROFILE_KEYS = new Set(["mouse", "set-clipboard", "mode-style"]);
 
-export function buildGjcTmuxProfileCommands(
+export function buildWorxTmuxProfileCommands(
 	target: string,
 	env: NodeJS.ProcessEnv = process.env,
 	metadata: {
@@ -252,8 +252,8 @@ export function buildGjcTmuxProfileCommands(
 		version?: string | null;
 	} = {},
 	opts: { platform?: NodeJS.Platform; tmuxCommand?: string } = {},
-): GjcTmuxProfileCommand[] {
-	const commands = buildGjcTmuxRequiredProfileCommands(target, metadata);
+): WorxTmuxProfileCommand[] {
+	const commands = buildWorxTmuxRequiredProfileCommands(target, metadata);
 	if (envDisabled(env[WORX_TMUX_PROFILE_ENV])) return commands;
 	commands.push(
 		{ description: "enable tmux clipboard integration", args: ["set-option", "-t", target, "set-clipboard", "on"] },

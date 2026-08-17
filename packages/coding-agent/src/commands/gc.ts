@@ -1,6 +1,6 @@
 import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { isSettingsInitialized, settings } from "../config/settings";
-import { type GcDiskPolicy, runGjcGcCommand } from "../worx-runtime/gc-runtime";
+import { type GcDiskPolicy, runWorxGcCommand } from "../worx-runtime/gc-runtime";
 
 /**
  * Resolve the `gc.*` retention knobs from settings. When settings are not
@@ -47,7 +47,7 @@ export default class Gc extends Command {
 	];
 
 	async run(): Promise<void> {
-		const result = await runGjcGcCommand(
+		const result = await runWorxGcCommand(
 			this.argv,
 			process.cwd(),
 			process.env,

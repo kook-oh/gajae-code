@@ -27,19 +27,19 @@ import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
 import type { RlmCellResult } from "@bworx-io/worx-code/rlm/types";
 
 let tmp: string;
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 beforeEach(async () => {
 	tmp = await fs.mkdtemp(path.join(os.tmpdir(), "rlm-auto-"));
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = "rlm-autonomous-test-session";
 });
 
 afterEach(async () => {
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 	await fs.rm(tmp, { recursive: true, force: true });
 });

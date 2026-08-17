@@ -12,7 +12,7 @@ import {
 	type GcStoreAdapter,
 	gcPidProbe,
 	gcProbeToLeasePidStatus,
-	runGjcGcCommand,
+	runWorxGcCommand,
 } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import { SessionIndex } from "../src/sdk/broker/session-index";
@@ -317,11 +317,11 @@ describe("collectGcReport", () => {
 	});
 });
 
-describe("runGjcGcCommand", () => {
+describe("runWorxGcCommand", () => {
 	const adapters = [fakeAdapter("harness_leases", [])];
 
 	test("unknown flag => status 2 with stderr", async () => {
-		const result = await runGjcGcCommand(["--nope"], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand(["--nope"], "/tmp", {}, adapters);
 		expect(result.status).toBe(2);
 		expect(result.stderr).toContain("unknown_flag");
 	});
@@ -330,14 +330,14 @@ describe("runGjcGcCommand", () => {
 			["--repair-session-index", "--prune"],
 			["--repair-session-index", "--dry-run"],
 		]) {
-			const result = await runGjcGcCommand(args, "/tmp", {}, adapters);
+			const result = await runWorxGcCommand(args, "/tmp", {}, adapters);
 			expect(result.status).toBe(2);
 			expect(result.stderr).toContain("repair_session_index_cannot_combine");
 		}
 	});
 
 	test("--json emits a report with an array for every known store", async () => {
-		const result = await runGjcGcCommand(["--json"], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand(["--json"], "/tmp", {}, adapters);
 		expect(result.status).toBe(0);
 		const parsed = JSON.parse(result.stdout);
 		expect(parsed.dry_run).toBe(true);
@@ -347,7 +347,7 @@ describe("runGjcGcCommand", () => {
 	});
 
 	test("default text mode reports dry run", async () => {
-		const result = await runGjcGcCommand([], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand([], "/tmp", {}, adapters);
 		expect(result.stdout).toContain("dry run");
 	});
 
@@ -357,7 +357,7 @@ describe("runGjcGcCommand", () => {
 			pruned = true;
 			return { removed: true };
 		});
-		const result = await runGjcGcCommand(["--prune", "--dry-run", "--json"], "/tmp", {}, [a]);
+		const result = await runWorxGcCommand(["--prune", "--dry-run", "--json"], "/tmp", {}, [a]);
 		expect(pruned).toBe(false);
 		expect(JSON.parse(result.stdout).dry_run).toBe(true);
 	});
@@ -368,7 +368,7 @@ describe("runGjcGcCommand", () => {
 			pruned++;
 			return { removed: true };
 		});
-		const result = await runGjcGcCommand(["--prune", "--json"], "/tmp", {}, [a]);
+		const result = await runWorxGcCommand(["--prune", "--json"], "/tmp", {}, [a]);
 		expect(pruned).toBe(1);
 		const parsed = JSON.parse(result.stdout);
 		expect(parsed.dry_run).toBe(false);
@@ -379,7 +379,7 @@ describe("runGjcGcCommand", () => {
 	test("includes healthy session-index diagnosis in ordinary JSON output", async () => {
 		const agentDir = await sessionIndexAgentDir();
 		await appendSessionIndexEvent(agentDir);
-		const result = await runGjcGcCommand(["--json"], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand(["--json"], "/tmp", {}, adapters);
 		const report = JSON.parse(result.stdout);
 		expect(report.session_index).toMatchObject({ status: "healthy", valid_prefix_seq: 1 });
 		expect(result.status).toBe(0);
@@ -392,7 +392,7 @@ describe("runGjcGcCommand", () => {
 		const log = path.join(agentDir, "sdk", "sessions", "index.jsonl");
 		await fs.appendFile(log, "broken\n");
 		const before = await fs.readFile(log, "utf8");
-		const result = await runGjcGcCommand(["--json"], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand(["--json"], "/tmp", {}, adapters);
 		const report = JSON.parse(result.stdout);
 		expect(report.session_index).toMatchObject({ status: "corrupt", valid_prefix_seq: 1 });
 		expect(await fs.readFile(log, "utf8")).toBe(before);
@@ -405,7 +405,7 @@ describe("runGjcGcCommand", () => {
 		const log = path.join(agentDir, "sdk", "sessions", "index.jsonl");
 		await fs.mkdir(path.dirname(log), { recursive: true });
 		await fs.writeFile(log, `${JSON.stringify({ version: 99 })}\n`);
-		const result = await runGjcGcCommand(["--json"], "/tmp", {}, adapters);
+		const result = await runWorxGcCommand(["--json"], "/tmp", {}, adapters);
 		const report = JSON.parse(result.stdout);
 		expect(report.session_index.status).toBe("unsupported");
 		expect(report.session_index.reason).toContain("Unsupported SDK state version");

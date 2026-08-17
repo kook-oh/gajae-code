@@ -28,16 +28,16 @@ export interface SdkMcpServerOptions {
 const MAX_SESSION_LIST_PAGES = 10_000;
 
 export const SDK_MCP_TOOL_NAMES = [
-	"gjc_session_control",
-	"gjc_session_query",
-	"gjc_session_global",
-	"gjc_session_list",
+	"worx_session_control",
+	"worx_session_query",
+	"worx_session_global",
+	"worx_session_list",
 ] as const;
 
 function schema(name: (typeof SDK_MCP_TOOL_NAMES)[number]): Record<string, unknown> {
 	const common = { type: "object", additionalProperties: false };
 	switch (name) {
-		case "gjc_session_control":
+		case "worx_session_control":
 			return {
 				name,
 				description: "Run a typed SDK control operation for one session.",
@@ -52,7 +52,7 @@ function schema(name: (typeof SDK_MCP_TOOL_NAMES)[number]): Record<string, unkno
 					},
 				},
 			};
-		case "gjc_session_query":
+		case "worx_session_query":
 			return {
 				name,
 				description: "Run a typed SDK query for one session.",
@@ -67,7 +67,7 @@ function schema(name: (typeof SDK_MCP_TOOL_NAMES)[number]): Record<string, unkno
 					},
 				},
 			};
-		case "gjc_session_global":
+		case "worx_session_global":
 			return {
 				name,
 				description: "Run a typed agent-global SDK broker operation.",
@@ -85,7 +85,7 @@ function schema(name: (typeof SDK_MCP_TOOL_NAMES)[number]): Record<string, unkno
 					},
 				},
 			};
-		case "gjc_session_list":
+		case "worx_session_list":
 			return {
 				name,
 				description: "List locally discoverable SDK session IDs.",
@@ -257,7 +257,7 @@ export function createSdkMcpServer(options: SdkMcpServerOptions = {}) {
 	}
 
 	async function callTool(name: string, args: Arguments = {}): Promise<unknown> {
-		if (name === "gjc_session_list") {
+		if (name === "worx_session_list") {
 			let broker: SdkClient | undefined;
 			try {
 				broker = await brokerClient();
@@ -272,7 +272,7 @@ export function createSdkMcpServer(options: SdkMcpServerOptions = {}) {
 				await broker?.close();
 			}
 		}
-		if (name === "gjc_session_control") {
+		if (name === "worx_session_control") {
 			const sessionId = asString(args, "sessionId");
 			const operation = asString(args, "operation");
 			if (!sessionId || !operation)
@@ -288,7 +288,7 @@ export function createSdkMcpServer(options: SdkMcpServerOptions = {}) {
 				client.control(operation, input, { confirm: args.confirm === true }),
 			);
 		}
-		if (name === "gjc_session_query") {
+		if (name === "worx_session_query") {
 			const sessionId = asString(args, "sessionId");
 			const query = asString(args, "query");
 			if (!sessionId || !query)
@@ -301,7 +301,7 @@ export function createSdkMcpServer(options: SdkMcpServerOptions = {}) {
 			if (dispositionError) return invalidControl(dispositionError);
 			return await withSession(sessionId, client => client.query(query, input, cursor ?? undefined));
 		}
-		if (name === "gjc_session_global") {
+		if (name === "worx_session_global") {
 			const operation = asString(args, "operation");
 			if (!operation) return { ok: false, error: { code: "invalid_input", message: "operation is required" } };
 			const input = isObject(args.input) ? args.input : {};

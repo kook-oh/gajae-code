@@ -17,7 +17,7 @@ Use when the user asks for `ultragoal`, `create-goals`, `complete-goals`, durabl
 - `.worx/_session-{sessionid}/ultragoal/goals.json`
 - `.worx/_session-{sessionid}/ultragoal/ledger.jsonl` (checkpoint and structured steering audit events)
 
-Existing aggregate plans with the legacy enumerated objective are migrated to the stable pointer objective on read, persisted to `goals.json`, retained in `gjcObjectiveAliases` for already-active hidden goal reconciliation, and audited with an `aggregate_objective_migrated` ledger entry.
+Existing aggregate plans with the legacy enumerated objective are migrated to the stable pointer objective on read, persisted to `goals.json`, retained in `worxObjectiveAliases` for already-active hidden goal reconciliation, and audited with an `aggregate_objective_migrated` ledger entry.
 
 ## Corrupt current-session state recovery
 

@@ -4,10 +4,10 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	type GjcPluginRegistryEntry,
-	installGjcBundle,
-	type NormalizedGjcPluginSurfaces,
-	summarizeGjcPluginObservability,
+	installWorxBundle,
+	type NormalizedWorxPluginSurfaces,
+	summarizeWorxPluginObservability,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 import { writeRegistry } from "../src/extensibility/worx-plugins/registry";
 
@@ -37,9 +37,9 @@ async function mkCwd(): Promise<string> {
 describe("plugin observability summary", () => {
 	test("lists every surface with stable extension ids and enabled status", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
-		const summary = await summarizeGjcPluginObservability(cwd);
+		const summary = await summarizeWorxPluginObservability(cwd);
 		expect(summary.plugins).toBe(1);
 		const ids = summary.surfaces.map(s => s.extensionId);
 		expect(ids).toContain("tool:domain_note");
@@ -58,11 +58,11 @@ describe("plugin observability summary", () => {
 
 	test("marks surfaces quarantined on hash drift", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const installed = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		await fs.appendFile(installed, "\n// tampered\n");
-		const summary = await summarizeGjcPluginObservability(cwd);
+		const summary = await summarizeWorxPluginObservability(cwd);
 		expect(summary.surfaces.some(s => s.status === "quarantined" && s.quarantineCode === "runtime_mismatch")).toBe(
 			true,
 		);
@@ -70,16 +70,16 @@ describe("plugin observability summary", () => {
 
 	test("empty summary when no plugins installed", async () => {
 		const cwd = await mkCwd();
-		const summary = await summarizeGjcPluginObservability(cwd);
+		const summary = await summarizeWorxPluginObservability(cwd);
 		expect(summary).toEqual({ plugins: 0, surfaces: [] });
 	});
 });
 
 describe("observability quarantine keying", () => {
-	function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+	function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 		return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 	}
-	function entry(name: string): GjcPluginRegistryEntry {
+	function entry(name: string): WorxPluginRegistryEntry {
 		return {
 			name,
 			version: "1.0.0",
@@ -104,7 +104,7 @@ describe("observability quarantine keying", () => {
 		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
 		// Two entries share extension id tool:dup; the second collides.
 		await writeRegistry({ version: 1, scope: "project", plugins: [entry("a"), entry("b")] }, cwd);
-		const summary = await summarizeGjcPluginObservability(cwd);
+		const summary = await summarizeWorxPluginObservability(cwd);
 		const a = summary.surfaces.find(s => s.plugin === "a" && s.extensionId === "tool:dup");
 		const b = summary.surfaces.find(s => s.plugin === "b" && s.extensionId === "tool:dup");
 		expect(a?.status).toBe("enabled");

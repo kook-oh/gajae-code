@@ -3650,7 +3650,7 @@ test("ACP, MCP, and daemon global requests bootstrap a broker with zero sessions
 		expect(await readSdkBrokerDiscovery(agentDirs[0])).not.toBeNull();
 
 		const mcp = createSdkMcpServer({ repo: path.join(root, "mcp"), agentDir: agentDirs[1] });
-		expect(await mcp.callTool("gjc_session_global", { operation: "session.list" })).toMatchObject({
+		expect(await mcp.callTool("worx_session_global", { operation: "session.list" })).toMatchObject({
 			ok: true,
 			result: { sessions: [] },
 		});

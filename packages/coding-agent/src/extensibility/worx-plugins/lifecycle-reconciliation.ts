@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import {
-	type GjcBundleIdentity,
-	type GjcPluginQuarantineEntry,
-	type GjcPluginRegistryEntry,
-	type GjcPluginScope,
-	type NormalizedGjcPluginBundle,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginBundle,
+	type NormalizedWorxPluginSurfaces,
 	WORX_BUNDLE_KIND,
+	type WorxBundleIdentity,
+	type WorxPluginQuarantineEntry,
+	type WorxPluginRegistryEntry,
+	type WorxPluginScope,
 } from "./types";
 
 /**
@@ -20,20 +20,20 @@ function sha256(text: string): string {
 	return createHash("sha256").update(text, "utf8").digest("hex");
 }
 
-export function bundleIdentity(scope: GjcPluginScope, name: string): GjcBundleIdentity {
+export function bundleIdentity(scope: WorxPluginScope, name: string): WorxBundleIdentity {
 	return { kind: WORX_BUNDLE_KIND, scope, name };
 }
 
-export function identityKey(identity: GjcBundleIdentity): string {
+export function identityKey(identity: WorxBundleIdentity): string {
 	return `${identity.kind}\u0000${identity.scope}\u0000${identity.name}`;
 }
 
-export function identityEquals(a: GjcBundleIdentity, b: GjcBundleIdentity): boolean {
+export function identityEquals(a: WorxBundleIdentity, b: WorxBundleIdentity): boolean {
 	return a.kind === b.kind && a.scope === b.scope && a.name === b.name;
 }
 
 /** All stable surface IDs of a surface set, sorted and de-duplicated. */
-export function surfaceIdsOf(surfaces: NormalizedGjcPluginSurfaces): string[] {
+export function surfaceIdsOf(surfaces: NormalizedWorxPluginSurfaces): string[] {
 	const ids = [
 		...surfaces.subskills.map(s => s.extensionId),
 		...surfaces.tools.map(t => t.extensionId),
@@ -49,7 +49,7 @@ export function surfaceIdsOf(surfaces: NormalizedGjcPluginSurfaces): string[] {
  * Fingerprint of the exact installed target: identity plus the persisted bytes
  * that any update must not silently replace.
  */
-export function targetFingerprint(entry: GjcPluginRegistryEntry): string {
+export function targetFingerprint(entry: WorxPluginRegistryEntry): string {
 	const files = [...entry.copiedFiles]
 		.map(f => `${f.relativePath}:${f.sha256}:${f.bytes}`)
 		.sort()
@@ -76,7 +76,7 @@ export function targetFingerprint(entry: GjcPluginRegistryEntry): string {
  * that changed in between must invalidate the reviewed baseline rather than let
  * an update be committed from a locator the reviewer never saw.
  */
-export function baselineFingerprint(entry: GjcPluginRegistryEntry): string {
+export function baselineFingerprint(entry: WorxPluginRegistryEntry): string {
 	const source = [
 		entry.source.kind,
 		entry.source.uri,
@@ -96,7 +96,7 @@ export function baselineFingerprint(entry: GjcPluginRegistryEntry): string {
 }
 
 /** Fingerprint of an update candidate before it is written anywhere. */
-export function candidateFingerprint(scope: GjcPluginScope, bundle: NormalizedGjcPluginBundle): string {
+export function candidateFingerprint(scope: WorxPluginScope, bundle: NormalizedWorxPluginBundle): string {
 	const files = [...bundle.files]
 		.map(f => `${f.relativePath}:${f.sha256}:${f.bytes}`)
 		.sort()
@@ -118,8 +118,8 @@ export function candidateFingerprint(scope: GjcPluginScope, bundle: NormalizedGj
  * effective collision universe.
  */
 export function decisionContextFingerprint(
-	target: GjcBundleIdentity,
-	effectiveEntries: readonly GjcPluginRegistryEntry[],
+	target: WorxBundleIdentity,
+	effectiveEntries: readonly WorxPluginRegistryEntry[],
 ): string {
 	// The target's own state is covered by the baseline fingerprint; this hash
 	// only tracks the surrounding universe (notably same-name opposite-scope
@@ -135,7 +135,7 @@ export function decisionContextFingerprint(
  * Fingerprint of the inputs that decide live activation. Changes here (and only
  * here) advance the activation generation.
  */
-export function activationFingerprint(entries: readonly GjcPluginRegistryEntry[]): string {
+export function activationFingerprint(entries: readonly WorxPluginRegistryEntry[]): string {
 	const parts = entries
 		.filter(e => e.enabled)
 		.map(e => {
@@ -149,7 +149,7 @@ export function activationFingerprint(entries: readonly GjcPluginRegistryEntry[]
 
 export interface ReconciledEnablement {
 	disabledSurfaceIds: string[];
-	quarantine: GjcPluginQuarantineEntry[];
+	quarantine: WorxPluginQuarantineEntry[];
 }
 
 /**
@@ -163,7 +163,7 @@ export interface ReconciledEnablement {
 export function reconcileEnablement(
 	previousDisabledSurfaceIds: readonly string[],
 	candidateSurfaceIds: readonly string[],
-	candidateQuarantine: readonly GjcPluginQuarantineEntry[] = [],
+	candidateQuarantine: readonly WorxPluginQuarantineEntry[] = [],
 ): ReconciledEnablement {
 	const surviving = new Set(candidateSurfaceIds);
 	const disabledSurfaceIds = [...new Set(previousDisabledSurfaceIds)].filter(id => surviving.has(id)).sort();

@@ -1,68 +1,71 @@
 import { Container, type SelectItem, SelectList, Spacer, Text } from "@bworx-io/worx-tui";
 import {
-	applyGjcBundleUpdate,
-	type GjcLifecycleContext,
-	getGjcBundle,
-	listGjcBundles,
-	previewGjcBundleUpdate,
-	setGjcBundleEnabled,
-	setGjcBundleSurfaceEnabled,
+	applyWorxBundleUpdate,
+	getWorxBundle,
+	listWorxBundles,
+	previewWorxBundleUpdate,
+	setWorxBundleEnabled,
+	setWorxBundleSurfaceEnabled,
+	type WorxLifecycleContext,
 } from "../../extensibility/worx-plugins/lifecycle";
 import { identityEquals, identityKey } from "../../extensibility/worx-plugins/lifecycle-reconciliation";
 import {
 	findingsForBundle,
-	type GjcRuntimeSnapshotProvider,
+	type WorxRuntimeSnapshotProvider,
 } from "../../extensibility/worx-plugins/runtime-quarantine";
 import type {
-	GjcBundleIdentity,
-	GjcBundleSummary,
-	GjcLifecycleResult,
-	GjcReviewedUpdateToken,
-	GjcToggleResult,
-	GjcUpdateApplyResult,
-	GjcUpdatePreview,
+	WorxBundleIdentity,
+	WorxBundleSummary,
+	WorxLifecycleResult,
+	WorxReviewedUpdateToken,
+	WorxToggleResult,
+	WorxUpdateApplyResult,
+	WorxUpdatePreview,
 } from "../../extensibility/worx-plugins/types";
 import { getSelectListTheme, theme } from "../../modes/theme/theme";
 import { DynamicBorder } from "./dynamic-border";
 
 /** Injectable lifecycle boundary; Settings never reads registries or executes bundle code. */
-export interface GjcBundleLifecyclePort {
-	listGjcBundles(ctx: GjcLifecycleContext): Promise<GjcBundleSummary[]>;
-	getGjcBundle(ctx: GjcLifecycleContext, identity: GjcBundleIdentity): Promise<GjcLifecycleResult<GjcBundleSummary>>;
-	previewGjcBundleUpdate(
-		ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
-	): Promise<GjcLifecycleResult<GjcUpdatePreview>>;
-	applyGjcBundleUpdate(
-		ctx: GjcLifecycleContext,
-		token: GjcReviewedUpdateToken,
-	): Promise<GjcLifecycleResult<GjcUpdateApplyResult>>;
-	setGjcBundleEnabled(
-		ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
+export interface WorxBundleLifecyclePort {
+	listWorxBundles(ctx: WorxLifecycleContext): Promise<WorxBundleSummary[]>;
+	getWorxBundle(
+		ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxBundleSummary>>;
+	previewWorxBundleUpdate(
+		ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxUpdatePreview>>;
+	applyWorxBundleUpdate(
+		ctx: WorxLifecycleContext,
+		token: WorxReviewedUpdateToken,
+	): Promise<WorxLifecycleResult<WorxUpdateApplyResult>>;
+	setWorxBundleEnabled(
+		ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
 		enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>>;
-	setGjcBundleSurfaceEnabled(
-		ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxToggleResult>>;
+	setWorxBundleSurfaceEnabled(
+		ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
 		surfaceId: string,
 		enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>>;
+	): Promise<WorxLifecycleResult<WorxToggleResult>>;
 }
 
-export interface GjcBundleSettingsDependencies {
-	lifecycle?: GjcBundleLifecyclePort;
-	runtimeSnapshotProvider?: GjcRuntimeSnapshotProvider;
+export interface WorxBundleSettingsDependencies {
+	lifecycle?: WorxBundleLifecyclePort;
+	runtimeSnapshotProvider?: WorxRuntimeSnapshotProvider;
 	activationGeneration?: number;
 }
 
-export interface GjcBundleSettingsCallbacks {
+export interface WorxBundleSettingsCallbacks {
 	onClose: () => void;
 	onBundlesChanged?: () => void;
 	onRenderRequested?: () => void;
 }
 
-export type GjcBundleSettingsState =
+export type WorxBundleSettingsState =
 	| "loading"
 	| "error"
 	| "empty"
@@ -77,39 +80,39 @@ export type GjcBundleSettingsState =
 	| "quarantined-blocked"
 	| "mutation-in-flight-locked";
 
-const PRODUCTION_LIFECYCLE: GjcBundleLifecyclePort = {
-	listGjcBundles,
-	getGjcBundle,
-	previewGjcBundleUpdate,
-	applyGjcBundleUpdate,
-	setGjcBundleEnabled,
-	setGjcBundleSurfaceEnabled,
+const PRODUCTION_LIFECYCLE: WorxBundleLifecyclePort = {
+	listWorxBundles,
+	getWorxBundle,
+	previewWorxBundleUpdate,
+	applyWorxBundleUpdate,
+	setWorxBundleEnabled,
+	setWorxBundleSurfaceEnabled,
 };
 
 /** Scope-qualified, lifecycle-backed Settings UI for installed GJC bundles. */
-export class GjcBundleSettingsComponent extends Container {
+export class WorxBundleSettingsComponent extends Container {
 	#input: SelectList | null = null;
-	#bundles: GjcBundleSummary[] = [];
-	#focused: GjcBundleIdentity | null = null;
-	#preview: GjcUpdatePreview | null = null;
-	#state: GjcBundleSettingsState = "loading";
+	#bundles: WorxBundleSummary[] = [];
+	#focused: WorxBundleIdentity | null = null;
+	#preview: WorxUpdatePreview | null = null;
+	#state: WorxBundleSettingsState = "loading";
 	#message: string | null = null;
 	#navigationLocked = false;
 	#disposed = false;
 
 	constructor(
 		cwd: string,
-		private readonly callbacks: GjcBundleSettingsCallbacks,
-		private readonly dependencies: GjcBundleSettingsDependencies = {},
+		private readonly callbacks: WorxBundleSettingsCallbacks,
+		private readonly dependencies: WorxBundleSettingsDependencies = {},
 	) {
 		super();
 		this.#context = { cwd };
 		void this.#load();
 	}
 
-	readonly #context: GjcLifecycleContext;
+	readonly #context: WorxLifecycleContext;
 
-	get stateId(): GjcBundleSettingsState {
+	get stateId(): WorxBundleSettingsState {
 		return this.#state;
 	}
 
@@ -117,7 +120,7 @@ export class GjcBundleSettingsComponent extends Container {
 		return this.#navigationLocked;
 	}
 
-	get #lifecycle(): GjcBundleLifecyclePort {
+	get #lifecycle(): WorxBundleLifecyclePort {
 		return this.dependencies.lifecycle ?? PRODUCTION_LIFECYCLE;
 	}
 
@@ -126,7 +129,7 @@ export class GjcBundleSettingsComponent extends Container {
 		this.#message = null;
 		this.#render();
 		try {
-			this.#bundles = await this.#lifecycle.listGjcBundles(this.#context);
+			this.#bundles = await this.#lifecycle.listWorxBundles(this.#context);
 			if (this.#disposed) return;
 			this.#state = this.#bundles.length === 0 ? "empty" : "list";
 		} catch {
@@ -355,7 +358,7 @@ export class GjcBundleSettingsComponent extends Container {
 		if (!bundle) return;
 		this.#message = null;
 		try {
-			const result = await this.#lifecycle.previewGjcBundleUpdate(this.#context, bundle.identity);
+			const result = await this.#lifecycle.previewWorxBundleUpdate(this.#context, bundle.identity);
 			if (this.#disposed || !this.#isFocused(bundle.identity)) return;
 			if (!result.ok) {
 				this.#state = result.error.code === "source_unsupported" ? "unsupported-source" : "detail";
@@ -376,7 +379,7 @@ export class GjcBundleSettingsComponent extends Container {
 		const preview = this.#preview;
 		if (!preview) return;
 		await this.#mutate(preview.identity, "update-running", async () => {
-			const result = await this.#lifecycle.applyGjcBundleUpdate(this.#context, preview.token);
+			const result = await this.#lifecycle.applyWorxBundleUpdate(this.#context, preview.token);
 			if (this.#disposed || !this.#isFocused(preview.identity)) return;
 			if (!result.ok) {
 				if (result.error.code.startsWith("stale_")) {
@@ -405,7 +408,7 @@ export class GjcBundleSettingsComponent extends Container {
 			return;
 		}
 		await this.#mutate(bundle.identity, "mutation-in-flight-locked", async () => {
-			const result = await this.#lifecycle.setGjcBundleEnabled(this.#context, bundle.identity, enabled);
+			const result = await this.#lifecycle.setWorxBundleEnabled(this.#context, bundle.identity, enabled);
 			if (this.#disposed || !this.#isFocused(bundle.identity)) return;
 			this.#applyToggleResult(result);
 		});
@@ -422,7 +425,7 @@ export class GjcBundleSettingsComponent extends Container {
 			return;
 		}
 		await this.#mutate(bundle.identity, "mutation-in-flight-locked", async () => {
-			const result = await this.#lifecycle.setGjcBundleSurfaceEnabled(
+			const result = await this.#lifecycle.setWorxBundleSurfaceEnabled(
 				this.#context,
 				bundle.identity,
 				surfaceId,
@@ -433,7 +436,7 @@ export class GjcBundleSettingsComponent extends Container {
 		});
 	}
 
-	#applyToggleResult(result: GjcLifecycleResult<GjcToggleResult>): void {
+	#applyToggleResult(result: WorxLifecycleResult<WorxToggleResult>): void {
 		if (!result.ok) {
 			this.#state = result.error.code === "quarantined" ? "quarantined-blocked" : "detail";
 			this.#message = result.error.message;
@@ -446,7 +449,7 @@ export class GjcBundleSettingsComponent extends Container {
 	}
 
 	async #mutate(
-		identity: GjcBundleIdentity,
+		identity: WorxBundleIdentity,
 		runningState: "update-running" | "mutation-in-flight-locked",
 		operation: () => Promise<void>,
 	): Promise<void> {
@@ -469,16 +472,16 @@ export class GjcBundleSettingsComponent extends Container {
 		}
 	}
 
-	#replaceSummary(summary: GjcBundleSummary): void {
+	#replaceSummary(summary: WorxBundleSummary): void {
 		const index = this.#bundles.findIndex(bundle => identityEquals(bundle.identity, summary.identity));
 		if (index >= 0) this.#bundles[index] = summary;
 	}
 
-	#bundleForFocus(): GjcBundleSummary | undefined {
+	#bundleForFocus(): WorxBundleSummary | undefined {
 		return this.#focused ? this.#bundles.find(bundle => identityEquals(bundle.identity, this.#focused!)) : undefined;
 	}
 
-	#isFocused(identity: GjcBundleIdentity): boolean {
+	#isFocused(identity: WorxBundleIdentity): boolean {
 		return this.#focused !== null && identityEquals(this.#focused, identity);
 	}
 

@@ -97,10 +97,10 @@ function perScenarioDelta(aReport: EvidenceReport, bReport: EvidenceReport) {
 	});
 }
 
-function armSummary(label: string, gjcVersion: string, report: EvidenceReport) {
+function armSummary(label: string, worxVersion: string, report: EvidenceReport) {
 	return {
 		label,
-		gjc_version: gjcVersion,
+		worx_version: worxVersion,
 		composer_scenarios_version: report.composer_scenarios_version,
 		trace_sha256: report.trace_sha256,
 		manifest_sha256: report.manifest_sha256,
@@ -139,7 +139,7 @@ async function main(): Promise<void> {
 		capture_mode: "trace-replay",
 		comparison_kind: "historical-frozen-trace",
 		composer_scenarios_version: aManifest?.composer_scenarios_version,
-		gjc_version: aVer,
+		worx_version: aVer,
 		trace_sha256: aManifest?.trace_sha256,
 		manifest_sha256: aManifest?.manifest_sha256,
 		captured_records: aManifest?.captured_records ?? aManifest?.record_count ?? aRecords.length,
@@ -148,7 +148,7 @@ async function main(): Promise<void> {
 		capture_mode: "trace-replay",
 		comparison_kind: "historical-frozen-trace",
 		composer_scenarios_version: bManifest?.composer_scenarios_version,
-		gjc_version: bVer,
+		worx_version: bVer,
 		trace_sha256: bManifest?.trace_sha256,
 		manifest_sha256: bManifest?.manifest_sha256,
 		captured_records: bManifest?.captured_records ?? bManifest?.record_count ?? bRecords.length,

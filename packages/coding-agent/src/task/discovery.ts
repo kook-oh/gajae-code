@@ -16,7 +16,7 @@ import { isProviderEnabled } from "../capability";
 import { findAllNearestProjectConfigDirs, getConfigDirs } from "../config";
 import type { Settings } from "../config/settings";
 import { listClaudePluginRoots } from "../discovery/helpers";
-import { rootContainsGjcManifest } from "../extensibility/worx-plugins/paths";
+import { rootContainsWorxManifest } from "../extensibility/worx-plugins/paths";
 import { loadBundledAgents, parseAgent } from "./agents";
 import type { AgentDefinition, AgentSource } from "./types";
 
@@ -100,12 +100,12 @@ export async function discoverAgents(
 	const { roots: pluginRoots } = isProviderEnabled("claude-plugins", activeSettings)
 		? await listClaudePluginRoots(home, resolvedCwd)
 		: { roots: [] };
-	const nonGjcPluginRoots = [];
+	const nonWorxPluginRoots = [];
 	for (const plugin of pluginRoots) {
-		if (await rootContainsGjcManifest(plugin.path)) continue;
-		nonGjcPluginRoots.push(plugin);
+		if (await rootContainsWorxManifest(plugin.path)) continue;
+		nonWorxPluginRoots.push(plugin);
 	}
-	const sortedPluginRoots = nonGjcPluginRoots.sort((a, b) => {
+	const sortedPluginRoots = nonWorxPluginRoots.sort((a, b) => {
 		if (a.scope === b.scope) return 0;
 		return a.scope === "project" ? -1 : 1;
 	});

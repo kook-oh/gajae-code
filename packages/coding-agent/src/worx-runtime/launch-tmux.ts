@@ -26,26 +26,26 @@ import {
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
 import {
-	assertGjcTmuxMutationAuthoritySync,
-	bindGjcTmuxProviderAuthority,
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxExactSessionTarget,
-	buildGjcTmuxProfileCommands,
-	buildGjcTmuxSessionName,
-	buildGjcTmuxSessionSlug,
-	type GjcTmuxProfileCommand,
+	assertWorxTmuxMutationAuthoritySync,
+	bindWorxTmuxProviderAuthority,
+	buildWorxTmuxExactOptionTarget,
+	buildWorxTmuxExactSessionTarget,
+	buildWorxTmuxProfileCommands,
+	buildWorxTmuxSessionName,
+	buildWorxTmuxSessionSlug,
 	type ProviderAuthority,
-	persistGjcTmuxProviderAuthoritySync,
-	readGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxBinary,
-	resolveGjcTmuxCommand,
-	resolveGjcTmuxProviderContext,
+	persistWorxTmuxProviderAuthoritySync,
+	readWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxBinary,
+	resolveWorxTmuxCommand,
+	resolveWorxTmuxProviderContext,
 	WORX_DEFAULT_TMUX_SESSION,
 	WORX_TMUX_ACTIVE_SESSION_ENV,
 	WORX_TMUX_COMMAND_ENV,
 	WORX_TMUX_MOUSE_ENV,
 	WORX_TMUX_PROFILE_ENV,
 	WORX_TMUX_SESSION_PREFIX,
+	type WorxTmuxProfileCommand,
 } from "./tmux-common";
 import {
 	captureOwnerGenerationBaselineSync,
@@ -61,13 +61,13 @@ import {
 	resolveManagedOwnerPredecessorSync,
 	type TmuxServerProof,
 } from "./tmux-owner-isolation";
-import { assertGjcTmuxStagedMutationAuthoritySync } from "./tmux-provider-context";
+import { assertWorxTmuxStagedMutationAuthoritySync } from "./tmux-provider-context";
 import {
-	findGjcTmuxSessionByName,
-	findGjcTmuxSessionByScope,
-	type GjcTmuxSessionStatus,
+	findWorxTmuxSessionByName,
+	findWorxTmuxSessionByScope,
 	type ProvenTmuxSessionIdentity,
-	proveGjcTmuxSessionMutationTarget,
+	proveWorxTmuxSessionMutationTarget,
+	type WorxTmuxSessionStatus,
 } from "./tmux-sessions";
 import {
 	buildWindowsPowerShellInnerCommand,
@@ -77,9 +77,9 @@ import {
 
 export type { WindowsPowerShellInnerCommandOptions };
 export {
-	buildGjcTmuxExactSessionTarget,
-	buildGjcTmuxProfileCommands,
 	buildWindowsPowerShellInnerCommand,
+	buildWorxTmuxExactSessionTarget,
+	buildWorxTmuxProfileCommands,
 	WORX_DEFAULT_TMUX_SESSION,
 	WORX_TMUX_COMMAND_ENV,
 	WORX_TMUX_LAUNCHED_ENV,
@@ -206,7 +206,7 @@ export interface TmuxLaunchPlan {
 function explicitTmuxSessionName(env: NodeJS.ProcessEnv): string | undefined {
 	return env.WORX_TMUX_SESSION?.trim() || undefined;
 }
-function hasCurrentGjcVersion(session: GjcTmuxSessionStatus | undefined): boolean {
+function hasCurrentWorxVersion(session: WorxTmuxSessionStatus | undefined): boolean {
 	return session?.version === VERSION;
 }
 
@@ -222,18 +222,18 @@ function findExistingSessionForLaunch(context: {
 	branch?: string | null;
 }): string | undefined {
 	const explicit = explicitTmuxSessionName(context.env);
-	if (explicit) return findGjcTmuxSessionByName(explicit, context.env)?.name;
-	const scoped = findGjcTmuxSessionByScope(context.project, context.branch, context.env);
-	return hasCurrentGjcVersion(scoped) ? scoped?.name : undefined;
+	if (explicit) return findWorxTmuxSessionByName(explicit, context.env)?.name;
+	const scoped = findWorxTmuxSessionByScope(context.project, context.branch, context.env);
+	return hasCurrentWorxVersion(scoped) ? scoped?.name : undefined;
 }
 
-export interface GjcTmuxProfileResult {
+export interface WorxTmuxProfileResult {
 	skipped: boolean;
-	commands: GjcTmuxProfileCommand[];
-	failures: Array<{ command: GjcTmuxProfileCommand; stderr?: string }>;
+	commands: WorxTmuxProfileCommand[];
+	failures: Array<{ command: WorxTmuxProfileCommand; stderr?: string }>;
 }
 
-export interface GjcTmuxProfileContext {
+export interface WorxTmuxProfileContext {
 	tmuxCommand: string;
 	target: string;
 	cwd?: string;
@@ -257,13 +257,13 @@ function tmuxExitMarkerPath(sessionStateFile: string): string {
 function buildPosixTmuxExitMarkerPrefix(markerPath: string): string {
 	const markerDir = path.dirname(markerPath);
 	return [
-		`__gjc_tmux_exit_marker=${shellQuote(markerPath)}`,
-		"__gjc_tmux_write_exit_marker() { __gjc_tmux_status=$?",
-		"__gjc_tmux_ended_at=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date)",
+		`__worx_tmux_exit_marker=${shellQuote(markerPath)}`,
+		"__worx_tmux_write_exit_marker() { __worx_tmux_status=$?",
+		"__worx_tmux_ended_at=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date)",
 		`mkdir -p ${shellQuote(markerDir)} 2>/dev/null || true`,
-		'printf \'{"schema_version":1,"source":"tmux_inner_shell","ended_at":"%s","exit_code":%s}\\n\' "$__gjc_tmux_ended_at" "$__gjc_tmux_status" > "$__gjc_tmux_exit_marker" 2>/dev/null || true',
+		'printf \'{"schema_version":1,"source":"tmux_inner_shell","ended_at":"%s","exit_code":%s}\\n\' "$__worx_tmux_ended_at" "$__worx_tmux_status" > "$__worx_tmux_exit_marker" 2>/dev/null || true',
 		"}",
-		"trap __gjc_tmux_write_exit_marker EXIT",
+		"trap __worx_tmux_write_exit_marker EXIT",
 	].join("; ");
 }
 
@@ -344,7 +344,7 @@ function isExplicitTmuxRequest(context: TmuxLaunchContext): boolean {
  * call site (launchDefaultTmuxIfNeeded) is sync; uses statSync + 2-byte
  * read.
  */
-function detectCorruptedGjcWrapper(): string | null {
+function detectCorruptedWorxWrapper(): string | null {
 	if (process.platform !== "win32") return null;
 	const pathEnv = process.env.PATH ?? "";
 	if (!pathEnv) return null;
@@ -397,17 +397,17 @@ function stripRootTmuxFlag(rawArgs: string[]): string[] {
 	return rawArgs.filter(arg => arg !== "--tmux");
 }
 
-export function applyGjcTmuxProfile(context: GjcTmuxProfileContext): GjcTmuxProfileResult {
+export function applyWorxTmuxProfile(context: WorxTmuxProfileContext): WorxTmuxProfileResult {
 	const env = context.env ?? process.env;
-	const branchSlug = context.branch ? buildGjcTmuxSessionSlug(context.branch) : (context.branchSlug ?? null);
+	const branchSlug = context.branch ? buildWorxTmuxSessionSlug(context.branch) : (context.branchSlug ?? null);
 	// The psmux UX filter (mouse / set-clipboard / mode-style /
-	// set-window-option) now lives in buildGjcTmuxProfileCommands so every
+	// set-window-option) now lives in buildWorxTmuxProfileCommands so every
 	// caller — gjc --tmux planning, gjc session create, gjc team bootstrap —
 	// applies the same drop set when the active multiplexer is psmux. We pass
 	// the resolved tmuxCommand through the new opts seam so the filter
 	// engages for this exact command, not whatever the resolver returns at
 	// profile-build time.
-	const commands = buildGjcTmuxProfileCommands(
+	const commands = buildWorxTmuxProfileCommands(
 		context.target,
 		env,
 		{
@@ -438,7 +438,7 @@ export function applyGjcTmuxProfile(context: GjcTmuxProfileContext): GjcTmuxProf
 		stderr: "pipe",
 		captureStderr: true,
 	};
-	const failures: GjcTmuxProfileResult["failures"] = [];
+	const failures: WorxTmuxProfileResult["failures"] = [];
 	for (const command of commands) {
 		const result = spawnSync(context.tmuxCommand, command.args, options);
 		if (result.exitCode !== 0) failures.push({ command, stderr: result.stderr });
@@ -446,14 +446,14 @@ export function applyGjcTmuxProfile(context: GjcTmuxProfileContext): GjcTmuxProf
 	return { skipped: false, commands, failures };
 }
 
-function resolveCurrentGjcCommand(context: CommandResolutionContext): string[] {
+function resolveCurrentWorxCommand(context: CommandResolutionContext): string[] {
 	const pathModule = pathModuleForPlatform(context.platform);
 	const isRealAbsolutePath = (value: string | undefined): value is string => {
 		const normalized = value?.trim();
 		if (!normalized || isBunVirtualPath(normalized)) return false;
 		return pathModule.isAbsolute(normalized) || path.isAbsolute(normalized);
 	};
-	const isGjcExecutable = (value: string | undefined): value is string =>
+	const isWorxExecutable = (value: string | undefined): value is string =>
 		isRealAbsolutePath(value) && /^gjc(?:[._-]|$)/i.test(pathModule.basename(value.trim()));
 
 	const runtime = context.argv[0]?.trim();
@@ -475,9 +475,9 @@ function resolveCurrentGjcCommand(context: CommandResolutionContext): string[] {
 	}
 
 	const executable =
-		(isGjcExecutable(entrypoint) ? entrypoint : undefined) ??
-		(isGjcExecutable(runtime) ? runtime : undefined) ??
-		(isGjcExecutable(context.execPath) ? context.execPath.trim() : undefined);
+		(isWorxExecutable(entrypoint) ? entrypoint : undefined) ??
+		(isWorxExecutable(runtime) ? runtime : undefined) ??
+		(isWorxExecutable(context.execPath) ? context.execPath.trim() : undefined);
 	if (executable) return [executable];
 	throw new Error(
 		"Unable to determine the current GJC executable for tmux launch; Bun virtual paths and PATH fallback are not accepted.",
@@ -493,12 +493,12 @@ function pathModuleForPlatform(platform: NodeJS.Platform | undefined): typeof pa
 function buildInnerCommand(context: CommandResolutionContext, rawArgs: string[]): string {
 	if (isWindowsPlatform(context.platform))
 		return buildWindowsPowerShellInnerCommand({
-			command: resolveCurrentGjcCommand(context),
+			command: resolveCurrentWorxCommand(context),
 			args: stripRootTmuxFlag(rawArgs),
 			environment: context.extraEnv,
 			tmuxExitMarkerPath: context.tmuxExitMarkerPath,
 		});
-	const command = resolveCurrentGjcCommand(context);
+	const command = resolveCurrentWorxCommand(context);
 	const childArgs = stripRootTmuxFlag(rawArgs);
 	const supervisorEnv: Record<string, string> = context.managedOwnerSupervisor
 		? { WORX_MANAGED_OWNER_COMMAND_JSON: JSON.stringify([...command, ...childArgs]) }
@@ -562,7 +562,7 @@ function sanitizeTmuxWindowProjectName(project: string): string {
 	return sanitizeTmuxWindowTitleSegment(trimmed);
 }
 
-function buildGjcTmuxPrefixedTitle(prefix: string, cwd: string, branch: string | null | undefined): string {
+function buildWorxTmuxPrefixedTitle(prefix: string, cwd: string, branch: string | null | undefined): string {
 	const project = sanitizeTmuxWindowProjectName(path.basename(path.resolve(cwd)) || "gjc");
 	const projectTitle = `${prefix}${project}`;
 	const trimmedBranch = sanitizeTmuxWindowTitleSegment(branch?.trim() ?? "");
@@ -579,30 +579,30 @@ function buildGjcTmuxPrefixedTitle(prefix: string, cwd: string, branch: string |
 	return `${projectTitle}${WORX_TMUX_WINDOW_BRANCH_SEPARATOR}${truncateVisibleTail(trimmedBranch, remainingBranchWidth)}`;
 }
 
-export function buildGjcTmuxWindowTitle(cwd: string, branch: string | null | undefined): string {
-	return buildGjcTmuxPrefixedTitle(WORX_TMUX_WINDOW_TITLE_PREFIX, cwd, branch);
+export function buildWorxTmuxWindowTitle(cwd: string, branch: string | null | undefined): string {
+	return buildWorxTmuxPrefixedTitle(WORX_TMUX_WINDOW_TITLE_PREFIX, cwd, branch);
 }
 
-function buildGjcTmuxRootTerminalTitle(cwd: string, branch: string | null | undefined): string {
-	return buildGjcTmuxPrefixedTitle(WORX_TMUX_TERMINAL_TITLE_PREFIX, cwd, branch);
+function buildWorxTmuxRootTerminalTitle(cwd: string, branch: string | null | undefined): string {
+	return buildWorxTmuxPrefixedTitle(WORX_TMUX_TERMINAL_TITLE_PREFIX, cwd, branch);
 }
 
-function sanitizeGjcTmuxRootTerminalTitle(title: string): string {
+function sanitizeWorxTmuxRootTerminalTitle(title: string): string {
 	return title.replace(TERMINAL_TITLE_CONTROL_CHARS, "").trim() || "GJC";
 }
 
-function buildGjcTmuxRootTerminalTitleFormat(sessionName: string): string {
+function buildWorxTmuxRootTerminalTitleFormat(sessionName: string): string {
 	if (!sessionName.startsWith(WORX_TMUX_SESSION_PREFIX)) return WORX_TMUX_DYNAMIC_SESSION_TITLE;
 	return `#{?#{==:#{${WORX_TMUX_ROOT_TERMINAL_TITLE_SESSION_OPTION}},#{session_name}},#{${WORX_TMUX_ROOT_TERMINAL_TITLE_OPTION}},${WORX_TMUX_DYNAMIC_SESSION_TITLE}}`;
 }
 
-function buildGjcTmuxRootTerminalTitleCommands(
+function buildWorxTmuxRootTerminalTitleCommands(
 	target: string,
 	sessionName: string,
 	title: string,
-): GjcTmuxProfileCommand[] {
-	const sanitized = sanitizeGjcTmuxRootTerminalTitle(title);
-	const format = buildGjcTmuxRootTerminalTitleFormat(sessionName);
+): WorxTmuxProfileCommand[] {
+	const sanitized = sanitizeWorxTmuxRootTerminalTitle(title);
+	const format = buildWorxTmuxRootTerminalTitleFormat(sessionName);
 	return [
 		{
 			description: "remember tmux client terminal title fallback",
@@ -620,7 +620,7 @@ function buildGjcTmuxRootTerminalTitleCommands(
 	];
 }
 
-function applyGjcTmuxRootTerminalTitleProfile(context: {
+function applyWorxTmuxRootTerminalTitleProfile(context: {
 	tmuxCommand: string;
 	target: string;
 	sessionName: string;
@@ -629,12 +629,12 @@ function applyGjcTmuxRootTerminalTitleProfile(context: {
 	options: TmuxSpawnOptions;
 }): void {
 	if (!context.title) return;
-	for (const command of buildGjcTmuxRootTerminalTitleCommands(context.target, context.sessionName, context.title)) {
+	for (const command of buildWorxTmuxRootTerminalTitleCommands(context.target, context.sessionName, context.title)) {
 		context.spawnSync(context.tmuxCommand, command.args, context.options);
 	}
 }
 
-function shouldSetGjcTmuxRootTerminalTitle(parsed: Args, env: NodeJS.ProcessEnv): boolean {
+function shouldSetWorxTmuxRootTerminalTitle(parsed: Args, env: NodeJS.ProcessEnv): boolean {
 	return !parsed.noTitle && !(env.WORX_NO_TITLE || env.PI_NO_TITLE);
 }
 
@@ -715,7 +715,7 @@ function renameExistingTmuxWindowIfNeeded(context: TmuxLaunchContext): void {
 	const tty = context.tty ?? { stdin: Boolean(process.stdin.isTTY), stdout: Boolean(process.stdout.isTTY) };
 	if (!isInteractiveRootLaunch(context.parsed, tty)) return;
 
-	const tmuxCommand = resolveGjcTmuxCommand(env);
+	const tmuxCommand = resolveWorxTmuxCommand(env);
 	const tmuxAvailable = context.tmuxAvailable ?? Bun.which(tmuxCommand) !== null;
 	if (!tmuxAvailable) return;
 
@@ -723,7 +723,7 @@ function renameExistingTmuxWindowIfNeeded(context: TmuxLaunchContext): void {
 	if (!paneId) return;
 	const cwd = context.cwd ?? process.cwd();
 	const branch = context.worktreeBranch ?? context.currentBranch ?? readCurrentBranch(cwd);
-	const title = buildGjcTmuxWindowTitle(context.project ?? cwd, branch);
+	const title = buildWorxTmuxWindowTitle(context.project ?? cwd, branch);
 	const spawnSync = context.spawnSync ?? defaultSpawnSync;
 	renameExistingTmuxWindow(tmuxCommand, paneId, title, spawnSync, {
 		cwd,
@@ -753,7 +753,7 @@ function readCurrentBranch(cwd: string): string | null {
 function createdSessionExactTarget(plan: TmuxLaunchPlan, env: NodeJS.ProcessEnv): string {
 	return (
 		plan.createdSessionId ??
-		buildGjcTmuxExactSessionTarget(plan.sessionName, {
+		buildWorxTmuxExactSessionTarget(plan.sessionName, {
 			env,
 			platform: plan.platform,
 			binary: { command: plan.tmuxCommand, isPsmux: plan.isPsmux, viaExplicitOverride: true },
@@ -766,7 +766,7 @@ function createdSessionOptionTarget(plan: TmuxLaunchPlan, env: NodeJS.ProcessEnv
 	// identity (with its required empty-window suffix) for every later option
 	// mutation; a reusable session name could resolve to a different session.
 	if (plan.createdSessionId) return `${plan.createdSessionId}:`;
-	return buildGjcTmuxExactOptionTarget(plan.sessionName, {
+	return buildWorxTmuxExactOptionTarget(plan.sessionName, {
 		env,
 		platform: plan.platform,
 		binary: { command: plan.tmuxCommand, isPsmux: plan.isPsmux, viaExplicitOverride: true },
@@ -782,12 +782,12 @@ function cleanupCreatedTmuxSession(
 	// psmux does not disclose an immutable session ID. Never turn its reusable
 	// name readback into a destructive cleanup target.
 	if (plan.isPsmux || !isCreatedTmuxSessionIdentityStable(plan, spawnSync, options, probe))
-		throw new Error("gjc_tmux_exact_cleanup_uncertain");
+		throw new Error("worx_tmux_exact_cleanup_uncertain");
 	const nativeSessionId = plan.createdSessionId!;
 	// Emit the `#{pid}` clause only when the server proof proved a PID. Non-Linux
 	// probes report a placeholder PID, and pinning `#{pid}` to it yields a
 	// predicate no live tmux server can satisfy, which turns every guarded
-	// cleanup on those platforms into `gjc_tmux_exact_cleanup_uncertain`.
+	// cleanup on those platforms into `worx_tmux_exact_cleanup_uncertain`.
 	const createdServer = plan.createdServerIdentity!;
 	const serverPidPredicate = createdServer.pidProven === false ? "1" : `#{==:#{pid},${createdServer.pid}}`;
 	const guarded = spawnSync(
@@ -798,13 +798,13 @@ function cleanupCreatedTmuxSession(
 			nativeSessionId,
 			"-F",
 			`#{&&:${serverPidPredicate},#{&&:#{==:#{session_id},${nativeSessionId}},#{==:#{session_name},${plan.sessionName}}}}`,
-			`kill-session -t ${nativeSessionId} \\; display-message -p __gjc_tmux_guarded_cleanup_ok__`,
-			"display-message -p __gjc_tmux_guarded_cleanup_refused__",
+			`kill-session -t ${nativeSessionId} \\; display-message -p __worx_tmux_guarded_cleanup_ok__`,
+			"display-message -p __worx_tmux_guarded_cleanup_refused__",
 		],
 		options,
 	);
-	if (guarded.exitCode !== 0 || guarded.stdout?.trim() !== "__gjc_tmux_guarded_cleanup_ok__")
-		throw new Error("gjc_tmux_exact_cleanup_uncertain");
+	if (guarded.exitCode !== 0 || guarded.stdout?.trim() !== "__worx_tmux_guarded_cleanup_ok__")
+		throw new Error("worx_tmux_exact_cleanup_uncertain");
 }
 function cleanupCreatedTmuxSessionBeforePublicationFailure(
 	plan: TmuxLaunchPlan,
@@ -912,7 +912,7 @@ function parseTmuxStatusLineCount(value: string): number {
 }
 
 function readTmuxStatusLineCount(tmuxCommand: string, cwd: string, env: NodeJS.ProcessEnv): number {
-	if (resolveGjcTmuxBinary({ env }).isPsmux) return 0;
+	if (resolveWorxTmuxBinary({ env }).isPsmux) return 0;
 	const result = Bun.spawnSync([tmuxCommand, "show-options", "-gqv", "status"], {
 		cwd,
 		env,
@@ -988,21 +988,21 @@ export function buildDefaultTmuxLaunchPlan(context: TmuxLaunchContext): TmuxLaun
 	const cwd = context.cwd ?? process.cwd();
 	const branch = context.worktreeBranch ?? context.currentBranch ?? readCurrentBranch(cwd);
 	const project = context.project ?? cwd;
-	const sessionName = buildGjcTmuxSessionName(env, { branch });
+	const sessionName = buildWorxTmuxSessionName(env, { branch });
 	// Pick the most appropriate tmux binary for this platform. On native Windows
 	// the resolver walks psmux / pmux / tmux and uses the first one present on
 	// PATH, so the default `gjc --tmux` flow lands on a real multiplexer even
 	// without an explicit WORX_TMUX_COMMAND override.
-	const resolvedBinary = resolveGjcTmuxBinary({ platform, env });
+	const resolvedBinary = resolveWorxTmuxBinary({ platform, env });
 	const tmuxCommand = resolvedBinary.command;
 	const sessionId = env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || sessionName;
 	// The session ROOT is keyed by the active GJC session (WORX_SESSION_ID), NOT the
 	// coordinator/tmux identity. Fall back to the coordinator id only for standalone
 	// tmux launches with no GJC session context.
-	const gjcSessionId = env.WORX_SESSION_ID?.trim() || sessionId;
+	const worxSessionId = env.WORX_SESSION_ID?.trim() || sessionId;
 	const sessionStateFile =
 		env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV]?.trim() ||
-		tmuxRuntimeSessionPath(cwd, gjcSessionId, buildGjcTmuxSessionSlug(sessionName));
+		tmuxRuntimeSessionPath(cwd, worxSessionId, buildWorxTmuxSessionSlug(sessionName));
 	const tmuxAvailable = context.tmuxAvailable ?? Bun.which(tmuxCommand) !== null;
 	if (!tmuxAvailable) {
 		(context.diagnosticWriter ?? safeStderrWrite)(formatTmuxUnavailableDiagnostic(platform));
@@ -1319,7 +1319,7 @@ function createIsolatedTmuxSession(
 	return executed ?? { exitCode: 1, stderr: "tmux owner isolation did not execute" };
 }
 
-function requiredProfileFailure(profile: GjcTmuxProfileResult): GjcTmuxProfileResult["failures"][number] | undefined {
+function requiredProfileFailure(profile: WorxTmuxProfileResult): WorxTmuxProfileResult["failures"][number] | undefined {
 	const requiredOptions = new Set([
 		"@gjc-profile",
 		"@gjc-session-id",
@@ -1331,7 +1331,7 @@ function requiredProfileFailure(profile: GjcTmuxProfileResult): GjcTmuxProfileRe
 	return profile.failures.find(item => requiredOptions.has(String(item.command.args[item.command.args.length - 2])));
 }
 
-function emitOptionalProfileDiagnostics(profile: GjcTmuxProfileResult, diagnostic: (message: string) => void): void {
+function emitOptionalProfileDiagnostics(profile: WorxTmuxProfileResult, diagnostic: (message: string) => void): void {
 	for (const failure of profile.failures) {
 		if (requiredProfileFailure({ ...profile, failures: [failure] })) continue;
 		diagnostic("optional tmux profile command failed");
@@ -1345,7 +1345,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 	// unchanged, while unsupported managed launches fail before any tmux mutation.
 	const plan = buildDefaultTmuxLaunchPlan(context);
 	if (!plan && env.TMUX && (context.platform ?? process.platform) === "win32") {
-		const ambientProvider = resolveGjcTmuxBinary({ platform: "win32", env });
+		const ambientProvider = resolveWorxTmuxBinary({ platform: "win32", env });
 		if (ambientProvider.isPsmux) return false;
 	}
 	// Direct launches inside an ambient tmux session retain their existing title
@@ -1358,7 +1358,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			stdout: Boolean(process.stdout.isTTY),
 		};
 		const platform = context.platform ?? process.platform;
-		const tmuxCommand = resolveGjcTmuxBinary({ platform, env }).command;
+		const tmuxCommand = resolveWorxTmuxBinary({ platform, env }).command;
 		const tmuxAvailable = context.tmuxAvailable ?? Bun.which(tmuxCommand) !== null;
 		if (
 			isExplicitTmuxRequest(context) &&
@@ -1379,23 +1379,23 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 				const stateDir = env[WORX_TMUX_OWNER_STATE_DIR_ENV]?.trim();
 				const sessionId = env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim();
 				const generation = env[WORX_TMUX_OWNER_GENERATION_ENV]?.trim();
-				if (!stateDir || !sessionId || !generation) throw new Error("gjc_tmux_provider_authority_unavailable");
-				plan.authority = readGjcTmuxProviderAuthoritySync({ stateDir, sessionId, generation });
+				if (!stateDir || !sessionId || !generation) throw new Error("worx_tmux_provider_authority_unavailable");
+				plan.authority = readWorxTmuxProviderAuthoritySync({ stateDir, sessionId, generation });
 			} else {
 				prepareManagedOwnerLifecycle(plan, context);
 				if (!plan.sessionId || !plan.ownerGeneration || !plan.sessionStateFile)
-					throw new Error("gjc_tmux_provider_authority_missing_lifecycle_identity");
+					throw new Error("worx_tmux_provider_authority_missing_lifecycle_identity");
 				const stateDir = path.dirname(plan.sessionStateFile);
 				const previousAuthority =
 					plan.ownerGenerationBaseline?.state === "current"
-						? readGjcTmuxProviderAuthoritySync({
+						? readWorxTmuxProviderAuthoritySync({
 								stateDir,
 								sessionId: plan.sessionId,
 								generation: plan.ownerGenerationBaseline.generation,
 							})
 						: undefined;
 				plan.authority = previousAuthority
-					? bindGjcTmuxProviderAuthority(previousAuthority, {
+					? bindWorxTmuxProviderAuthority(previousAuthority, {
 							stateDir,
 							sessionId: plan.sessionId,
 							generation: plan.ownerGeneration,
@@ -1403,8 +1403,8 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 					: (
 							context.providerAuthorityResolver ??
 							(input =>
-								bindGjcTmuxProviderAuthority(
-									resolveGjcTmuxProviderContext({
+								bindWorxTmuxProviderAuthority(
+									resolveWorxTmuxProviderContext({
 										platform: input.platform,
 										env: input.env,
 										binary: { command: input.command, isPsmux: true, viaExplicitOverride: true },
@@ -1422,8 +1422,8 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			}
 			plan.tmuxCommand = plan.authority.command;
 			if (!plan.attachSessionName) {
-				(context.providerAuthorityPersist ?? persistGjcTmuxProviderAuthoritySync)(plan.authority);
-				(context.providerAuthorityStagedAssert ?? assertGjcTmuxStagedMutationAuthoritySync)(plan.authority);
+				(context.providerAuthorityPersist ?? persistWorxTmuxProviderAuthoritySync)(plan.authority);
+				(context.providerAuthorityStagedAssert ?? assertWorxTmuxStagedMutationAuthoritySync)(plan.authority);
 			}
 		} catch (error) {
 			(context.diagnosticWriter ?? safeStderrWrite)(`tmux provider authority resolution failed: ${String(error)}`);
@@ -1435,8 +1435,8 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 		const authority = plan.authority;
 		if (!authority) return rawSpawnSync(command, args, options);
 		const assertAuthority = providerAuthorityPublished
-			? (context.providerAuthorityAssert ?? assertGjcTmuxMutationAuthoritySync)
-			: (context.providerAuthorityStagedAssert ?? assertGjcTmuxStagedMutationAuthoritySync);
+			? (context.providerAuthorityAssert ?? assertWorxTmuxMutationAuthoritySync)
+			: (context.providerAuthorityStagedAssert ?? assertWorxTmuxStagedMutationAuthoritySync);
 		assertAuthority(authority);
 		try {
 			return rawSpawnSync(command, [...authority.commandPrefix, ...args], options);
@@ -1482,11 +1482,11 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 		captureStderr: true,
 	};
 
-	const windowTitle = buildGjcTmuxWindowTitle(plan.project ?? plan.cwd, plan.branch);
-	const rootTerminalTitle = shouldSetGjcTmuxRootTerminalTitle(context.parsed, env)
-		? buildGjcTmuxRootTerminalTitle(plan.project ?? plan.cwd, plan.branch)
+	const windowTitle = buildWorxTmuxWindowTitle(plan.project ?? plan.cwd, plan.branch);
+	const rootTerminalTitle = shouldSetWorxTmuxRootTerminalTitle(context.parsed, env)
+		? buildWorxTmuxRootTerminalTitle(plan.project ?? plan.cwd, plan.branch)
 		: undefined;
-	const buildProfileInputs = (): GjcTmuxProfileContext => ({
+	const buildProfileInputs = (): WorxTmuxProfileContext => ({
 		tmuxCommand: plan.tmuxCommand,
 		cwd: plan.cwd,
 		env,
@@ -1504,7 +1504,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 	const hasExactRequiredPsmuxMetadata = (): boolean => {
 		if (!plan.isPsmux || !plan.authority) return true;
 		const required = [
-			...buildGjcTmuxProfileCommands(createdSessionOptionTarget(plan, env), env, {
+			...buildWorxTmuxProfileCommands(createdSessionOptionTarget(plan, env), env, {
 				sessionId: plan.sessionId,
 				sessionStateFile: plan.sessionStateFile,
 				ownerGeneration: plan.ownerGeneration,
@@ -1555,14 +1555,14 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 		let existingTarget: string;
 		let existingProof: ProvenTmuxSessionIdentity | undefined;
 		if (plan.platform !== "linux") {
-			existingTarget = buildGjcTmuxExactSessionTarget(plan.attachSessionName, {
+			existingTarget = buildWorxTmuxExactSessionTarget(plan.attachSessionName, {
 				env,
 				platform: plan.platform,
 				binary: { command: plan.tmuxCommand, isPsmux: plan.isPsmux, viaExplicitOverride: true },
 			});
 		} else {
 			try {
-				existingProof = proveGjcTmuxSessionMutationTarget(plan.attachSessionName, env);
+				existingProof = proveWorxTmuxSessionMutationTarget(plan.attachSessionName, env);
 				existingTarget = existingProof.nativeSessionId;
 			} catch {
 				(context.diagnosticWriter ?? safeStderrWrite)(
@@ -1572,12 +1572,12 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			}
 		}
 		if (!plan.isPsmux)
-			applyGjcTmuxRootTerminalTitleProfile({
+			applyWorxTmuxRootTerminalTitleProfile({
 				tmuxCommand: plan.tmuxCommand,
 				target:
 					plan.platform === "linux" && existingTarget.startsWith("$")
 						? `${existingTarget}:`
-						: buildGjcTmuxExactOptionTarget(plan.attachSessionName, {
+						: buildWorxTmuxExactOptionTarget(plan.attachSessionName, {
 								env,
 								platform: plan.platform,
 								binary: { command: plan.tmuxCommand, isPsmux: plan.isPsmux, viaExplicitOverride: true },
@@ -1589,7 +1589,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			});
 		if (plan.platform === "linux") {
 			try {
-				const proof = proveGjcTmuxSessionMutationTarget(plan.attachSessionName, env);
+				const proof = proveWorxTmuxSessionMutationTarget(plan.attachSessionName, env);
 				if (
 					!existingProof ||
 					proof.nativeSessionId !== existingProof.nativeSessionId ||
@@ -1671,7 +1671,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			return true;
 		}
 		renameTmuxWindow(plan.tmuxCommand, windowTitle, spawnSync, controlOptions, createdSessionExactTarget(plan, env));
-		const profile = applyGjcTmuxProfile(buildProfileInputs());
+		const profile = applyWorxTmuxProfile(buildProfileInputs());
 		// If the @gjc-profile ownership write failed, the cause can be
 		// either (a) a real psmux persistence-tag rejection (e.g.
 		// unsupported option on this server), or (b) the same new-session
@@ -1713,7 +1713,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 				);
 				return true;
 			}
-			const retryProfile = applyGjcTmuxProfile(buildProfileInputs());
+			const retryProfile = applyWorxTmuxProfile(buildProfileInputs());
 			const retryOwnershipFailure = requiredProfileFailure(retryProfile);
 			emitOptionalProfileDiagnostics(retryProfile, context.diagnosticWriter ?? safeStderrWrite);
 			if (retryOwnershipFailure) {
@@ -1734,7 +1734,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			// Recovery succeeded via retry — fall through to attach-session below.
 		}
 		ensureCreatedTmuxWindowTracksCallerTerminal(plan, spawnSync, controlOptions);
-		applyGjcTmuxRootTerminalTitleProfile({
+		applyWorxTmuxRootTerminalTitleProfile({
 			tmuxCommand: plan.tmuxCommand,
 			target: createdSessionOptionTarget(plan, env),
 			sessionName: plan.sessionName,
@@ -1743,7 +1743,7 @@ export function launchDefaultTmuxIfNeeded(context: TmuxLaunchContext): boolean {
 			options: controlOptions,
 		});
 	}
-	const probeWarning = detectCorruptedGjcWrapper();
+	const probeWarning = detectCorruptedWorxWrapper();
 	if (created.exitCode !== 0) {
 		// The new-session spawn failed. Surface the captured stderr so the
 		// user sees the actual psmux rejection (e.g. "cannot create session:

@@ -12,7 +12,7 @@ import {
 	normalizeDeepInterviewEnvelope,
 } from "./deep-interview-state";
 import { sessionStateDir } from "./session-layout";
-import { resolveGjcSessionForWrite, SessionResolutionError, writeSessionActivityMarker } from "./session-resolution";
+import { resolveWorxSessionForWrite, SessionResolutionError, writeSessionActivityMarker } from "./session-resolution";
 import { runNativeStateCommand } from "./state-runtime";
 import {
 	persistedStateRevision,
@@ -502,12 +502,12 @@ function deriveRuntimeAmbiguity(
  * fall back to latest-session auto-detect.
  */
 function resolveStageSession(args: readonly string[], cwd: string, payloadSessionId?: unknown): string {
-	const session = resolveGjcSessionForWrite(cwd, {
+	const session = resolveWorxSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		payloadSessionId,
 		envSessionId: process.env.WORX_SESSION_ID,
 	});
-	return session.gjcSessionId;
+	return session.worxSessionId;
 }
 
 async function handleStage(args: readonly string[], cwd: string): Promise<Record<string, unknown>> {

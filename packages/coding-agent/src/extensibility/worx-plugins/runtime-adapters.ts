@@ -8,18 +8,18 @@ import { bundleIdentity } from "./lifecycle-reconciliation";
 import { verifyImplementationHash } from "./metadata";
 import { isV2Tool } from "./migration";
 import { resolveWithinRoot } from "./paths";
-import { loadEffectiveGjcPluginRegistry, registryPathForScope } from "./registry";
+import { loadEffectiveWorxPluginRegistry, registryPathForScope } from "./registry";
 import { type SessionQuarantine, type SessionValidationResult, validateSessionBundles } from "./session-validation";
-import type { GjcPluginRegistryEntry, GjcPluginScope, JsonSchema202012, NormalizedToolSurfaceV2 } from "./types";
+import type { JsonSchema202012, NormalizedToolSurfaceV2, WorxPluginRegistryEntry, WorxPluginScope } from "./types";
 
 export interface AlwaysOnPluginTools {
 	tools: CustomTool[];
 	quarantine: SessionQuarantine[];
 }
 
-export interface GjcPluginToolDeclaration extends NormalizedToolSurfaceV2 {
+export interface WorxPluginToolDeclaration extends NormalizedToolSurfaceV2 {
 	plugin: string;
-	scope: GjcPluginScope;
+	scope: WorxPluginScope;
 }
 
 function isWithin(root: string, target: string): boolean {
@@ -38,22 +38,22 @@ async function resolveRuntimeFile(root: string, relativePath: string): Promise<s
  * Return v2 tool declarations without reading or importing implementation
  * modules. This is the schema-serving path used by discovery and diagnostics.
  */
-export async function getGjcPluginToolDeclarations(cwd: string): Promise<GjcPluginToolDeclaration[]> {
-	const entries = await loadEffectiveGjcPluginRegistry(cwd);
-	const declarations: GjcPluginToolDeclaration[] = [];
+export async function getWorxPluginToolDeclarations(cwd: string): Promise<WorxPluginToolDeclaration[]> {
+	const entries = await loadEffectiveWorxPluginRegistry(cwd);
+	const declarations: WorxPluginToolDeclaration[] = [];
 	for (const entry of entries) {
 		if (!entry.enabled || entry.migration?.status === "failed") continue;
 		for (const surface of entry.surfaces.tools) {
 			if (isV2Tool(surface))
-				declarations.push({ ...surface, plugin: entry.name, scope: entry.scope } as GjcPluginToolDeclaration);
+				declarations.push({ ...surface, plugin: entry.name, scope: entry.scope } as WorxPluginToolDeclaration);
 		}
 	}
 	return declarations;
 }
 
 /** Serve the canonical schemas keyed by their stable tool surface id. */
-export async function serveGjcPluginSchemas(cwd: string): Promise<Record<string, JsonSchema202012>> {
-	const declarations = await getGjcPluginToolDeclarations(cwd);
+export async function serveWorxPluginSchemas(cwd: string): Promise<Record<string, JsonSchema202012>> {
+	const declarations = await getWorxPluginToolDeclarations(cwd);
 	return Object.fromEntries(declarations.map(declaration => [declaration.extensionId, declaration.schema]));
 }
 
@@ -66,8 +66,8 @@ interface FileSnapshot {
 }
 
 interface ValidatedPluginRegistry {
-	effective: GjcPluginRegistryEntry[];
-	active: GjcPluginRegistryEntry[];
+	effective: WorxPluginRegistryEntry[];
+	active: WorxPluginRegistryEntry[];
 	quarantine: SessionQuarantine[];
 	validation: SessionValidationResult;
 	registryFiles: FileSnapshot[];
@@ -84,7 +84,7 @@ const hashCache = new Map<string, string>();
 // Bound the digest memo so long sessions with plugin churn cannot grow it
 // unboundedly; entries are re-derivable from disk at the cost of one read.
 const HASH_CACHE_MAX_ENTRIES = 512;
-const registryScopes: GjcPluginScope[] = ["user", "project"];
+const registryScopes: WorxPluginScope[] = ["user", "project"];
 
 async function snapshotExistingFile(filePath: string): Promise<FileSnapshot | null> {
 	try {
@@ -107,7 +107,7 @@ async function snapshotRegistryFiles(cwd: string): Promise<FileSnapshot[]> {
 	return snapshots.filter((s): s is FileSnapshot => s !== null);
 }
 
-async function snapshotPluginFiles(entries: readonly GjcPluginRegistryEntry[]): Promise<FileSnapshot[]> {
+async function snapshotPluginFiles(entries: readonly WorxPluginRegistryEntry[]): Promise<FileSnapshot[]> {
 	const snapshots: FileSnapshot[] = [];
 	for (const entry of entries) {
 		if (!entry.enabled) continue;
@@ -143,7 +143,7 @@ async function hashFile(snapshot: FileSnapshot): Promise<string> {
 	return digest;
 }
 
-async function verifyEntryHashesCached(entry: GjcPluginRegistryEntry): Promise<SessionQuarantine | null> {
+async function verifyEntryHashesCached(entry: WorxPluginRegistryEntry): Promise<SessionQuarantine | null> {
 	for (const file of entry.copiedFiles) {
 		let abs: string;
 		try {
@@ -190,7 +190,7 @@ async function loadValidatedPluginRegistry(cwd: string): Promise<ValidatedPlugin
 		if (cached.pluginKey === pluginKey) return cached;
 	}
 
-	const effective = await loadEffectiveGjcPluginRegistry(cwd);
+	const effective = await loadEffectiveWorxPluginRegistry(cwd);
 	const currentRegistryFiles = await snapshotRegistryFiles(cwd);
 	const preQuarantine: SessionQuarantine[] = [];
 	for (const entry of effective) {
@@ -230,7 +230,7 @@ async function loadValidatedPluginRegistry(cwd: string): Promise<ValidatedPlugin
 export async function loadAlwaysOnPluginTools(input: {
 	cwd: string;
 	reservedToolNames: string[];
-	declarations?: readonly GjcPluginToolDeclaration[];
+	declarations?: readonly WorxPluginToolDeclaration[];
 	/** Test seam runs before the final per-import integrity guard. */
 	beforeImport?: (resolvedPath: string) => Promise<void>;
 }): Promise<AlwaysOnPluginTools> {
@@ -254,7 +254,7 @@ export async function loadAlwaysOnPluginTools(input: {
 		{
 			name: string;
 			plugin: string;
-			scope: GjcPluginScope;
+			scope: WorxPluginScope;
 			pluginRoot: string;
 			relativePath: string;
 			implementationHash?: string;

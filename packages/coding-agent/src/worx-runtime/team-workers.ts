@@ -3,46 +3,46 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type {
-	GjcTeamConfig,
-	GjcTeamLivenessRecoveryReason,
-	GjcTeamLivenessRecoveryResult,
-	GjcTeamPhase,
-	GjcTeamRecoveredClaim,
-	GjcTeamShutdownMode,
-	GjcTeamSnapshot,
-	GjcTeamWorker,
-	GjcTeamWorkerLifecycle,
-	GjcTeamWorkerLifecycleState,
-	GjcWorkerStatusState,
 	WorkerHeartbeatFile,
 	WorkerStatusFile,
+	WorxTeamConfig,
+	WorxTeamLivenessRecoveryReason,
+	WorxTeamLivenessRecoveryResult,
+	WorxTeamPhase,
+	WorxTeamRecoveredClaim,
+	WorxTeamShutdownMode,
+	WorxTeamSnapshot,
+	WorxTeamWorker,
+	WorxTeamWorkerLifecycle,
+	WorxTeamWorkerLifecycleState,
+	WorxWorkerStatusState,
 } from "./team-runtime";
-import type { GjcTeamTask, GjcTeamTaskClaim, GjcTeamTaskMutationCapability } from "./team-store";
+import type { WorxTeamTask, WorxTeamTaskClaim, WorxTeamTaskMutationCapability } from "./team-store";
 import {
-	getGjcTeamTaskCompletionEvidenceFailure,
-	isCanonicalPersistedGjcTeamTask,
-	isCanonicalPersistedGjcTeamTaskClaim,
-	isGjcTeamTaskCompletionVerified,
-	normalizeGjcTeamTask,
+	getWorxTeamTaskCompletionEvidenceFailure,
+	isCanonicalPersistedWorxTeamTask,
+	isCanonicalPersistedWorxTeamTaskClaim,
+	isWorxTeamTaskCompletionVerified,
+	normalizeWorxTeamTask,
 } from "./team-store";
 
-export interface GjcTeamWorkerLifecycleContext {
-	config: GjcTeamConfig;
-	worker: GjcTeamWorker;
+export interface WorxTeamWorkerLifecycleContext {
+	config: WorxTeamConfig;
+	worker: WorxTeamWorker;
 	cwd: string;
 	env: NodeJS.ProcessEnv;
 }
 
-export interface GjcTeamWorkerRuntime {
+export interface WorxTeamWorkerRuntime {
 	findTeamDir(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<string>;
-	readConfig(dir: string): Promise<GjcTeamConfig>;
-	assertKnownWorker(config: GjcTeamConfig, worker: string): void;
-	assertKnownParticipant(config: GjcTeamConfig, worker: string): void;
-	findKnownWorker(config: GjcTeamConfig, worker: string): GjcTeamWorker;
+	readConfig(dir: string): Promise<WorxTeamConfig>;
+	assertKnownWorker(config: WorxTeamConfig, worker: string): void;
+	assertKnownParticipant(config: WorxTeamConfig, worker: string): void;
+	findKnownWorker(config: WorxTeamConfig, worker: string): WorxTeamWorker;
 	workerDir(dir: string, worker: string): string;
 	readJson<T>(filePath: string): Promise<T | null>;
 	writeJson(filePath: string, value: unknown): Promise<void>;
-	withTaskMutation<T>(dir: string, fn: (capability: GjcTeamTaskMutationCapability) => Promise<T>): Promise<T>;
+	withTaskMutation<T>(dir: string, fn: (capability: WorxTeamTaskMutationCapability) => Promise<T>): Promise<T>;
 	appendEvent(
 		dir: string,
 		event: { type: string; worker?: string; task_id?: string; message: string; data?: Record<string, unknown> },
@@ -52,41 +52,41 @@ export interface GjcTeamWorkerRuntime {
 	stableHash(value: string): string;
 }
 
-export interface GjcTeamWorkerOrchestrationRuntime extends GjcTeamWorkerRuntime {
-	readTasks(dir: string): Promise<GjcTeamTask[]>;
-	withTaskMutation<T>(dir: string, fn: (capability: GjcTeamTaskMutationCapability) => Promise<T>): Promise<T>;
+export interface WorxTeamWorkerOrchestrationRuntime extends WorxTeamWorkerRuntime {
+	readTasks(dir: string): Promise<WorxTeamTask[]>;
+	withTaskMutation<T>(dir: string, fn: (capability: WorxTeamTaskMutationCapability) => Promise<T>): Promise<T>;
 	appendTelemetry(
 		dir: string,
 		event: { type: string; message: string; data?: Record<string, unknown> },
 	): Promise<unknown>;
-	paneBelongsToTeamTarget(config: GjcTeamConfig, paneId: string): boolean;
+	paneBelongsToTeamTarget(config: WorxTeamConfig, paneId: string): boolean;
 	parseDurationEnv(env: NodeJS.ProcessEnv, name: string, fallback: number): number;
 	parseHeartbeatStaleMs(env: NodeJS.ProcessEnv): number;
-	killWorkerPanes(config: GjcTeamConfig): void;
-	removeCleanCreatedWorktrees(workers: GjcTeamWorker[]): Promise<void>;
+	killWorkerPanes(config: WorxTeamConfig): void;
+	removeCleanCreatedWorktrees(workers: WorxTeamWorker[]): Promise<void>;
 	readMonitorSnapshot(dir: string): Promise<unknown>;
-	hasPendingIntegration(dir: string, config: GjcTeamConfig, monitor: unknown): Promise<boolean>;
-	writePhase(dir: string, phase: GjcTeamPhase): Promise<void>;
-	readSnapshot(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<GjcTeamSnapshot>;
+	hasPendingIntegration(dir: string, config: WorxTeamConfig, monitor: unknown): Promise<boolean>;
+	writePhase(dir: string, phase: WorxTeamPhase): Promise<void>;
+	readSnapshot(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<WorxTeamSnapshot>;
 }
 
 export function workerLifecycleContext(
-	config: GjcTeamConfig,
-	worker: GjcTeamWorker,
+	config: WorxTeamConfig,
+	worker: WorxTeamWorker,
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-): GjcTeamWorkerLifecycleContext {
+): WorxTeamWorkerLifecycleContext {
 	return { config, worker, cwd, env };
 }
 
-const lifecyclePath = (runtime: GjcTeamWorkerRuntime, dir: string, worker: string) =>
+const lifecyclePath = (runtime: WorxTeamWorkerRuntime, dir: string, worker: string) =>
 	path.join(runtime.workerDir(dir, worker), "lifecycle.json");
-const statusPath = (runtime: GjcTeamWorkerRuntime, dir: string, worker: string) =>
+const statusPath = (runtime: WorxTeamWorkerRuntime, dir: string, worker: string) =>
 	path.join(runtime.workerDir(dir, worker), "status.json");
-const heartbeatPath = (runtime: GjcTeamWorkerRuntime, dir: string, worker: string) =>
+const heartbeatPath = (runtime: WorxTeamWorkerRuntime, dir: string, worker: string) =>
 	path.join(runtime.workerDir(dir, worker), "heartbeat.json");
 
-async function readRuntimeJson<T>(runtime: GjcTeamWorkerRuntime, filePath: string): Promise<T | null> {
+async function readRuntimeJson<T>(runtime: WorxTeamWorkerRuntime, filePath: string): Promise<T | null> {
 	try {
 		return await runtime.readJson<T>(filePath);
 	} catch {
@@ -96,12 +96,12 @@ async function readRuntimeJson<T>(runtime: GjcTeamWorkerRuntime, filePath: strin
 	}
 }
 
-export type GjcShutdownAuthority =
+export type WorxShutdownAuthority =
 	| { state: "proven_absent" }
 	| { state: "valid_present" }
 	| { state: "invalid_or_unreadable" };
 
-export function isGjcShutdownRequestRecord(value: unknown): boolean {
+export function isWorxShutdownRequestRecord(value: unknown): boolean {
 	if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
 	const record = value as Record<string, unknown>;
 	return (
@@ -122,10 +122,10 @@ function isEnoent(error: unknown): boolean {
 }
 
 /** Distinguishes a missing shutdown record from a present JSON `null` or invalid record. */
-export async function readGjcShutdownAuthority(
-	runtime: GjcTeamWorkerRuntime,
+export async function readWorxShutdownAuthority(
+	runtime: WorxTeamWorkerRuntime,
 	filePath: string,
-): Promise<GjcShutdownAuthority> {
+): Promise<WorxShutdownAuthority> {
 	try {
 		await fs.access(filePath);
 	} catch (error) {
@@ -134,20 +134,20 @@ export async function readGjcShutdownAuthority(
 	}
 	try {
 		const value = await runtime.readJson<unknown>(filePath);
-		return isGjcShutdownRequestRecord(value) ? { state: "valid_present" } : { state: "invalid_or_unreadable" };
+		return isWorxShutdownRequestRecord(value) ? { state: "valid_present" } : { state: "invalid_or_unreadable" };
 	} catch {
 		return { state: "invalid_or_unreadable" };
 	}
 }
 
-export function parseGjcWorkerStatusState(value: unknown): GjcWorkerStatusState {
+export function parseWorxWorkerStatusState(value: unknown): WorxWorkerStatusState {
 	return typeof value === "string" &&
 		["idle", "working", "blocked", "done", "failed", "draining", "unknown"].includes(value)
-		? (value as GjcWorkerStatusState)
+		? (value as WorxWorkerStatusState)
 		: "unknown";
 }
 
-export function lifecycleStateForWorkerStatus(status: GjcWorkerStatusState): GjcTeamWorkerLifecycleState {
+export function lifecycleStateForWorkerStatus(status: WorxWorkerStatusState): WorxTeamWorkerLifecycleState {
 	switch (status) {
 		case "working":
 			return "working";
@@ -165,7 +165,7 @@ export function lifecycleStateForWorkerStatus(status: GjcWorkerStatusState): Gjc
 }
 
 export async function readWorkerStatusFile(
-	runtime: GjcTeamWorkerRuntime,
+	runtime: WorxTeamWorkerRuntime,
 	dir: string,
 	worker: string,
 ): Promise<WorkerStatusFile> {
@@ -178,22 +178,22 @@ export async function readWorkerStatusFile(
 }
 
 export async function readWorkerLifecycleRecord(
-	runtime: GjcTeamWorkerRuntime,
+	runtime: WorxTeamWorkerRuntime,
 	dir: string,
-	worker: GjcTeamWorker,
-): Promise<GjcTeamWorkerLifecycle> {
+	worker: WorxTeamWorker,
+): Promise<WorxTeamWorkerLifecycle> {
 	const workerStatus = await readWorkerStatusFile(runtime, dir, worker.id);
 	const heartbeat = await readRuntimeJson<WorkerHeartbeatFile>(runtime, heartbeatPath(runtime, dir, worker.id));
-	const raw = await readRuntimeJson<Partial<GjcTeamWorkerLifecycle>>(runtime, lifecyclePath(runtime, dir, worker.id));
+	const raw = await readRuntimeJson<Partial<WorxTeamWorkerLifecycle>>(runtime, lifecyclePath(runtime, dir, worker.id));
 	const shutdownAck = await readRuntimeJson<Record<string, unknown>>(
 		runtime,
 		path.join(runtime.workerDir(dir, worker.id), "shutdown-ack.json"),
 	);
 
-	const lifecycle: GjcTeamWorkerLifecycle = {
+	const lifecycle: WorxTeamWorkerLifecycle = {
 		worker: worker.id,
 		lifecycle_state: parseLifecycleState(raw?.lifecycle_state),
-		worker_status_state: parseGjcWorkerStatusState(workerStatus.state),
+		worker_status_state: parseWorxWorkerStatusState(workerStatus.state),
 		pane_id: worker.pane_id ?? raw?.pane_id,
 		updated_at: raw?.updated_at ?? workerStatus.updated_at ?? runtime.now(),
 	};
@@ -212,30 +212,30 @@ export async function readWorkerLifecycleRecord(
 	return lifecycle;
 }
 
-const parseLifecycleState = (value: unknown): GjcTeamWorkerLifecycleState =>
+const parseLifecycleState = (value: unknown): WorxTeamWorkerLifecycleState =>
 	typeof value === "string" &&
 	["starting", "ready", "working", "draining", "stopped", "failed", "unknown"].includes(value)
-		? (value as GjcTeamWorkerLifecycleState)
+		? (value as WorxTeamWorkerLifecycleState)
 		: "unknown";
 
 export async function readWorkerLifecycleById(
-	runtime: GjcTeamWorkerRuntime,
+	runtime: WorxTeamWorkerRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-): Promise<Record<string, GjcTeamWorkerLifecycle>> {
+	config: WorxTeamConfig,
+): Promise<Record<string, WorxTeamWorkerLifecycle>> {
 	const records = await Promise.all(config.workers.map(worker => readWorkerLifecycleRecord(runtime, dir, worker)));
 	return Object.fromEntries(records.map(record => [record.worker, record]));
 }
 
 export async function writeWorkerLifecycleRecord(
-	runtime: GjcTeamWorkerRuntime,
+	runtime: WorxTeamWorkerRuntime,
 	dir: string,
-	worker: GjcTeamWorker,
-	lifecycleState: GjcTeamWorkerLifecycleState,
-	updates: Partial<GjcTeamWorkerLifecycle> = {},
-): Promise<GjcTeamWorkerLifecycle> {
+	worker: WorxTeamWorker,
+	lifecycleState: WorxTeamWorkerLifecycleState,
+	updates: Partial<WorxTeamWorkerLifecycle> = {},
+): Promise<WorxTeamWorkerLifecycle> {
 	const current = await readWorkerLifecycleRecord(runtime, dir, worker);
-	const next: GjcTeamWorkerLifecycle = {
+	const next: WorxTeamWorkerLifecycle = {
 		...current,
 		...updates,
 		worker: worker.id,
@@ -249,12 +249,12 @@ export async function writeWorkerLifecycleRecord(
 }
 
 export async function writeWorkerLifecycleForConfig(
-	runtime: GjcTeamWorkerRuntime,
+	runtime: WorxTeamWorkerRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-	lifecycleState: GjcTeamWorkerLifecycleState,
-	updatesFor: (worker: GjcTeamWorker) => Partial<GjcTeamWorkerLifecycle> = () => ({}),
-): Promise<Record<string, GjcTeamWorkerLifecycle>> {
+	config: WorxTeamConfig,
+	lifecycleState: WorxTeamWorkerLifecycleState,
+	updatesFor: (worker: WorxTeamWorker) => Partial<WorxTeamWorkerLifecycle> = () => ({}),
+): Promise<Record<string, WorxTeamWorkerLifecycle>> {
 	const records = await Promise.all(
 		config.workers.map(worker =>
 			writeWorkerLifecycleRecord(runtime, dir, worker, lifecycleState, updatesFor(worker)),
@@ -263,8 +263,8 @@ export async function writeWorkerLifecycleForConfig(
 	return Object.fromEntries(records.map(record => [record.worker, record]));
 }
 
-export async function readGjcWorkerStatus(
-	runtime: GjcTeamWorkerRuntime,
+export async function readWorxWorkerStatus(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	cwd = process.cwd(),
@@ -275,11 +275,11 @@ export async function readGjcWorkerStatus(
 	return readWorkerStatusFile(runtime, dir, worker);
 }
 
-export async function updateGjcWorkerStatus(
-	runtime: GjcTeamWorkerRuntime,
+export async function updateWorxWorkerStatus(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
-	status: GjcWorkerStatusState,
+	status: WorxWorkerStatusState,
 	cwd = process.cwd(),
 	env: NodeJS.ProcessEnv = process.env,
 	currentTaskId?: string,
@@ -311,8 +311,8 @@ export async function updateGjcWorkerStatus(
 	return value;
 }
 
-export async function readGjcWorkerHeartbeat(
-	runtime: GjcTeamWorkerRuntime,
+export async function readWorxWorkerHeartbeat(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	cwd = process.cwd(),
@@ -323,8 +323,8 @@ export async function readGjcWorkerHeartbeat(
 	return readRuntimeJson<WorkerHeartbeatFile>(runtime, heartbeatPath(runtime, dir, worker));
 }
 
-export async function updateGjcWorkerHeartbeat(
-	runtime: GjcTeamWorkerRuntime,
+export async function updateWorxWorkerHeartbeat(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	heartbeat: WorkerHeartbeatFile,
@@ -338,8 +338,8 @@ export async function updateGjcWorkerHeartbeat(
 	return value;
 }
 
-export async function writeGjcWorkerStartupAck(
-	runtime: GjcTeamWorkerRuntime,
+export async function writeWorxWorkerStartupAck(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	cwd: string,
@@ -370,7 +370,7 @@ export async function writeGjcWorkerStartupAck(
 	return ack;
 }
 export const WORX_TEAM_CONTINUATION_ACK_POLL_MS = 50;
-export function isValidGjcContinuationAck(
+export function isValidWorxContinuationAck(
 	value: unknown,
 	reservation: Record<string, unknown>,
 	incident: string,
@@ -397,7 +397,7 @@ export function isValidGjcContinuationAck(
 		ack.incident_hash === incident &&
 		ack.attempt === attempt &&
 		ack.attempt_nonce === reservation.attempt_nonce &&
-		ack.reservation_sha256 === gjcContinuationReservationDigest(reservation) &&
+		ack.reservation_sha256 === worxContinuationReservationDigest(reservation) &&
 		ack.worker === reservation.worker &&
 		ack.pane_id === reservation.pane_id &&
 		ack.worker_incarnation === reservation.worker_incarnation &&
@@ -407,8 +407,8 @@ export function isValidGjcContinuationAck(
 	);
 }
 
-export async function writeGjcWorkerContinuationAck(
-	runtime: GjcTeamWorkerRuntime,
+export async function writeWorxWorkerContinuationAck(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	cwd: string,
@@ -446,8 +446,8 @@ export async function writeGjcWorkerContinuationAck(
 			path.join(dir, "claims", `${String(reservation.task_id)}.json`),
 		);
 		if (
-			!isCanonicalPersistedGjcTeamTask(task, String(reservation.task_id)) ||
-			!isCanonicalPersistedGjcTeamTaskClaim(claim) ||
+			!isCanonicalPersistedWorxTeamTask(task, String(reservation.task_id)) ||
+			!isCanonicalPersistedWorxTeamTaskClaim(claim) ||
 			task.claim?.owner !== worker ||
 			task.claim?.token !== reservation.claim_token ||
 			claim.owner !== worker ||
@@ -457,7 +457,7 @@ export async function writeGjcWorkerContinuationAck(
 		const heartbeat = await readRuntimeJson<WorkerHeartbeatFile>(runtime, heartbeatPath(runtime, dir, worker));
 		if (
 			!heartbeat?.last_turn_at ||
-			!isValidGjcContinuationReservation(
+			!isValidWorxContinuationReservation(
 				reservation,
 				incident,
 				attempt,
@@ -484,7 +484,7 @@ export async function writeGjcWorkerContinuationAck(
 			incident_hash: incident,
 			attempt,
 			attempt_nonce: reservation.attempt_nonce,
-			reservation_sha256: gjcContinuationReservationDigest(reservation),
+			reservation_sha256: worxContinuationReservationDigest(reservation),
 			worker,
 			pane_id: reservation.pane_id,
 			worker_incarnation: reservation.worker_incarnation,
@@ -504,15 +504,15 @@ export async function writeGjcWorkerContinuationAck(
 	});
 }
 
-export async function writeGjcShutdownRequest(
-	runtime: GjcTeamWorkerRuntime,
+export async function writeWorxShutdownRequest(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	requestedBy: string,
 	cwd = process.cwd(),
 	env: NodeJS.ProcessEnv = process.env,
 	requestId: string,
-	mode: GjcTeamShutdownMode = "graceful",
+	mode: WorxTeamShutdownMode = "graceful",
 	requestedAt = runtime.now(),
 ): Promise<Record<string, unknown>> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
@@ -535,8 +535,8 @@ export async function writeGjcShutdownRequest(
 	return value;
 }
 
-export async function readGjcShutdownAck(
-	runtime: GjcTeamWorkerRuntime,
+export async function readWorxShutdownAck(
+	runtime: WorxTeamWorkerRuntime,
 	teamName: string,
 	worker: string,
 	cwd = process.cwd(),
@@ -547,11 +547,11 @@ export async function readGjcShutdownAck(
 	return runtime.readJson<Record<string, unknown>>(path.join(runtime.workerDir(dir, worker), "shutdown-ack.json"));
 }
 
-function addRecoveryReason(reasons: GjcTeamLivenessRecoveryReason[], reason: GjcTeamLivenessRecoveryReason): void {
+function addRecoveryReason(reasons: WorxTeamLivenessRecoveryReason[], reason: WorxTeamLivenessRecoveryReason): void {
 	if (!reasons.includes(reason)) reasons.push(reason);
 }
 
-function claimFromUnknown(value: unknown): GjcTeamTaskClaim | undefined {
+function claimFromUnknown(value: unknown): WorxTeamTaskClaim | undefined {
 	if (typeof value !== "object" || value == null) return undefined;
 	const record = value as Record<string, unknown>;
 	const owner = typeof record.owner === "string" ? record.owner : "";
@@ -561,11 +561,11 @@ function claimFromUnknown(value: unknown): GjcTeamTaskClaim | undefined {
 }
 
 async function hasCurrentContinuationClaimAuthority(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	dir: string,
 	worker: string,
-	task: GjcTeamTask,
-	claim: GjcTeamTaskClaim,
+	task: WorxTeamTask,
+	claim: WorxTeamTaskClaim,
 ): Promise<boolean> {
 	let canonicalClaim: unknown;
 	let canonicalTask: unknown;
@@ -575,14 +575,14 @@ async function hasCurrentContinuationClaimAuthority(
 	} catch {
 		return false;
 	}
-	if (!isCanonicalPersistedGjcTeamTaskClaim(canonicalClaim)) return false;
+	if (!isCanonicalPersistedWorxTeamTaskClaim(canonicalClaim)) return false;
 	if (
 		canonicalClaim.owner !== claim.owner ||
 		canonicalClaim.token !== claim.token ||
 		canonicalClaim.leased_until !== claim.leased_until
 	)
 		return false;
-	if (!isCanonicalPersistedGjcTeamTask(canonicalTask, task.id)) return false;
+	if (!isCanonicalPersistedWorxTeamTask(canonicalTask, task.id)) return false;
 	return (
 		canonicalTask.version === task.version &&
 		canonicalTask.status === "in_progress" &&
@@ -601,13 +601,13 @@ function claimIsExpired(value: string | undefined, nowMs: number): boolean {
 }
 
 async function livenessReasons(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-	worker: GjcTeamWorker,
+	config: WorxTeamConfig,
+	worker: WorxTeamWorker,
 	env: NodeJS.ProcessEnv,
-): Promise<GjcTeamLivenessRecoveryReason[]> {
-	const reasons: GjcTeamLivenessRecoveryReason[] = [];
+): Promise<WorxTeamLivenessRecoveryReason[]> {
+	const reasons: WorxTeamLivenessRecoveryReason[] = [];
 	const lifecycle = await readWorkerLifecycleRecord(runtime, dir, worker);
 	const heartbeat = await readRuntimeJson<WorkerHeartbeatFile>(runtime, heartbeatPath(runtime, dir, worker.id));
 
@@ -635,7 +635,7 @@ function isValidRecordedWorkerStatus(status: WorkerStatusFile): boolean {
 	);
 }
 
-function isContinuationLifecycleEligible(lifecycle: GjcTeamWorkerLifecycle, status: WorkerStatusFile): boolean {
+function isContinuationLifecycleEligible(lifecycle: WorxTeamWorkerLifecycle, status: WorkerStatusFile): boolean {
 	return (
 		isValidRecordedWorkerStatus(status) &&
 		(lifecycle.lifecycle_state === "ready" || lifecycle.lifecycle_state === "working") &&
@@ -648,7 +648,7 @@ function isContinuationLifecycleEligible(lifecycle: GjcTeamWorkerLifecycle, stat
 export const WORX_TEAM_CONTINUATION_PROMPT =
 	"Continue only your current claimed GJC team task. Re-read current GJC team state; do not replay prior output; report status.";
 
-export function buildGjcContinuationPrompt(reservation: Record<string, unknown>): string {
+export function buildWorxContinuationPrompt(reservation: Record<string, unknown>): string {
 	const teamName = typeof reservation.team_name === "string" ? reservation.team_name : "";
 	const worker = typeof reservation.worker === "string" ? reservation.worker : "";
 	const incident = typeof reservation.incident_hash === "string" ? reservation.incident_hash : "";
@@ -675,7 +675,7 @@ function canonicalJson(value: unknown): string {
 	return JSON.stringify(value) ?? "null";
 }
 
-export function gjcContinuationReservationDigest(reservation: Record<string, unknown>): string {
+export function worxContinuationReservationDigest(reservation: Record<string, unknown>): string {
 	return createHash("sha256").update(canonicalJson(reservation)).digest("hex");
 }
 
@@ -702,14 +702,14 @@ const reservationKeys = new Set([
 	"dispatch_protocol",
 ]);
 
-export function isValidGjcContinuationReservation(
+export function isValidWorxContinuationReservation(
 	value: unknown,
 	incident: string,
 	attempt: number,
-	config: GjcTeamConfig,
+	config: WorxTeamConfig,
 	worker: string,
-	task: GjcTeamTask,
-	claim: GjcTeamTaskClaim,
+	task: WorxTeamTask,
+	claim: WorxTeamTaskClaim,
 	heartbeatAt: string,
 	paneId: string,
 ): value is Record<string, unknown> {
@@ -743,7 +743,7 @@ export function isValidGjcContinuationReservation(
 		/^[0-9a-f-]{36}$/i.test(record.attempt_nonce) &&
 		record.prompt_version === 1 &&
 		record.dispatch_protocol === "tmux_command_sequence_v1" &&
-		record.prompt_sha256 === createHash("sha256").update(buildGjcContinuationPrompt(record)).digest("hex") &&
+		record.prompt_sha256 === createHash("sha256").update(buildWorxContinuationPrompt(record)).digest("hex") &&
 		Number.isFinite(reservedAt) &&
 		Number.isFinite(holdUntil) &&
 		Number.isFinite(leaseUntil) &&
@@ -752,7 +752,7 @@ export function isValidGjcContinuationReservation(
 	);
 }
 
-export function isValidGjcContinuationOutcome(
+export function isValidWorxContinuationOutcome(
 	value: unknown,
 	reservation: Record<string, unknown>,
 	incident: string,
@@ -764,7 +764,7 @@ export function isValidGjcContinuationOutcome(
 		outcome.schema_version !== 1 ||
 		outcome.incident_hash !== incident ||
 		outcome.attempt !== attempt ||
-		outcome.reservation_sha256 !== gjcContinuationReservationDigest(reservation) ||
+		outcome.reservation_sha256 !== worxContinuationReservationDigest(reservation) ||
 		typeof outcome.recorded_at !== "string" ||
 		!Number.isFinite(Date.parse(outcome.recorded_at)) ||
 		typeof outcome.reason !== "string" ||
@@ -857,12 +857,12 @@ export function isValidGjcContinuationOutcome(
 }
 
 async function hasActiveContinuationHold(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	dir: string,
 	worker: string,
-	config: GjcTeamConfig,
-	task: GjcTeamTask,
-	claim: GjcTeamTaskClaim,
+	config: WorxTeamConfig,
+	task: WorxTeamTask,
+	claim: WorxTeamTaskClaim,
 ): Promise<boolean> {
 	if (!(await hasCurrentContinuationClaimAuthority(runtime, dir, worker, task, claim))) return false;
 	const heartbeat = await readRuntimeJson<WorkerHeartbeatFile>(runtime, heartbeatPath(runtime, dir, worker));
@@ -872,7 +872,7 @@ async function hasActiveContinuationHold(
 	const lifecycle = teamWorker ? await readWorkerLifecycleRecord(runtime, dir, teamWorker) : undefined;
 	const status = await readWorkerStatusFile(runtime, dir, worker);
 	const phase = await readRuntimeJson<Record<string, unknown>>(runtime, path.join(dir, "phase.json"));
-	const shutdownAuthority = await readGjcShutdownAuthority(
+	const shutdownAuthority = await readWorxShutdownAuthority(
 		runtime,
 		path.join(runtime.workerDir(dir, worker), "shutdown-request.json"),
 	);
@@ -907,7 +907,7 @@ async function hasActiveContinuationHold(
 		);
 
 		if (
-			!isValidGjcContinuationReservation(
+			!isValidWorxContinuationReservation(
 				reservation,
 				incident,
 				attempt,
@@ -944,7 +944,7 @@ async function hasActiveContinuationHold(
 			}
 			return false;
 		}
-		if (!isValidGjcContinuationOutcome(outcome, reservation, incident, attempt)) return false;
+		if (!isValidWorxContinuationOutcome(outcome, reservation, incident, attempt)) return false;
 		if (outcome.result === "skipped") continue;
 		const holdUntil = outcome.result === "sent" ? Date.parse(String(outcome.hold_until)) : reservationHoldUntil;
 		if (!Number.isFinite(holdUntil) || holdUntil <= nowMs) continue;
@@ -954,27 +954,27 @@ async function hasActiveContinuationHold(
 	return false;
 }
 
-export async function reconcileGjcTeamStaleClaims(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+export async function reconcileWorxTeamStaleClaims(
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	teamName: string,
 	dir: string,
-	config: GjcTeamConfig,
+	config: WorxTeamConfig,
 	env: NodeJS.ProcessEnv,
-): Promise<GjcTeamLivenessRecoveryResult> {
+): Promise<WorxTeamLivenessRecoveryResult> {
 	return runtime.withTaskMutation(dir, capability =>
-		reconcileGjcTeamStaleClaimsUnlocked(runtime, teamName, dir, config, env, capability),
+		reconcileWorxTeamStaleClaimsUnlocked(runtime, teamName, dir, config, env, capability),
 	);
 }
 
-export async function reconcileGjcTeamStaleClaimsUnlocked(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+export async function reconcileWorxTeamStaleClaimsUnlocked(
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	teamName: string,
 	dir: string,
-	config: GjcTeamConfig,
+	config: WorxTeamConfig,
 	env: NodeJS.ProcessEnv,
-	capability: GjcTeamTaskMutationCapability,
-): Promise<GjcTeamLivenessRecoveryResult> {
-	const staleWorkers: Record<string, GjcTeamLivenessRecoveryReason[]> = {};
+	capability: WorxTeamTaskMutationCapability,
+): Promise<WorxTeamLivenessRecoveryResult> {
+	const staleWorkers: Record<string, WorxTeamLivenessRecoveryReason[]> = {};
 	for (const worker of config.workers) {
 		const reasons = await livenessReasons(runtime, dir, config, worker, env);
 		if (reasons.length === 0) continue;
@@ -988,7 +988,7 @@ export async function reconcileGjcTeamStaleClaimsUnlocked(
 			}
 		}
 	}
-	const recoveredClaims: GjcTeamRecoveredClaim[] = [];
+	const recoveredClaims: WorxTeamRecoveredClaim[] = [];
 	for (const task of await runtime.readTasks(dir)) {
 		if (task.status === "completed" || task.status === "failed") continue;
 		const claimPath = path.join(dir, "claims", `${task.id}.json`);
@@ -1007,7 +1007,7 @@ export async function reconcileGjcTeamStaleClaimsUnlocked(
 		recoveredClaims.push({ task_id: task.id, worker: claim.owner, reasons });
 		if (task.status === "in_progress")
 			await capability.writeRecovered(
-				normalizeGjcTeamTask({
+				normalizeWorxTeamTask({
 					...task,
 					status: "pending",
 					assignee: undefined,
@@ -1034,24 +1034,24 @@ export async function reconcileGjcTeamStaleClaimsUnlocked(
 	return { recovered_claims: recoveredClaims, stale_workers: staleWorkers };
 }
 
-export async function shutdownGjcTeamWorkers(
-	runtime: GjcTeamWorkerOrchestrationRuntime,
+export async function shutdownWorxTeamWorkers(
+	runtime: WorxTeamWorkerOrchestrationRuntime,
 	teamName: string,
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-): Promise<GjcTeamSnapshot> {
+): Promise<WorxTeamSnapshot> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
 	const config = await runtime.readConfig(dir);
 	const tasks = await runtime.readTasks(dir);
 	const evidenceFailures = tasks.flatMap(task => {
-		const reason = task.status === "completed" ? getGjcTeamTaskCompletionEvidenceFailure(task) : null;
+		const reason = task.status === "completed" ? getWorxTeamTaskCompletionEvidenceFailure(task) : null;
 		return reason ? [{ task_id: task.id, reason }] : [];
 	});
 	const requestId = `shutdown-${runtime.stableHash([config.team_name, runtime.now(), crypto.randomUUID()].join(":"))}`;
 	const requestedAt = runtime.now();
 	await Promise.all(
 		config.workers.map(worker =>
-			writeGjcShutdownRequest(
+			writeWorxShutdownRequest(
 				runtime,
 				teamName,
 				worker.id,
@@ -1064,13 +1064,13 @@ export async function shutdownGjcTeamWorkers(
 			),
 		),
 	);
-	const completionVerified = tasks.length === 0 || tasks.every(isGjcTeamTaskCompletionVerified);
+	const completionVerified = tasks.length === 0 || tasks.every(isWorxTeamTaskCompletionVerified);
 	const pendingIntegration = completionVerified
 		? await runtime.hasPendingIntegration(dir, config, await runtime.readMonitorSnapshot(dir))
 		: false;
 	runtime.killWorkerPanes(config);
 	await runtime.removeCleanCreatedWorktrees(config.workers);
-	const stopped: GjcTeamConfig = {
+	const stopped: WorxTeamConfig = {
 		...config,
 		workers: config.workers.map(worker => ({ ...worker, status: "stopped", last_heartbeat: runtime.now() })),
 		updated_at: runtime.now(),
@@ -1091,7 +1091,7 @@ export async function shutdownGjcTeamWorkers(
 			lifecycle[worker.id]?.shutdown_request_id === requestId &&
 			lifecycle[worker.id]?.shutdown_mode === "graceful",
 	);
-	const phase: GjcTeamPhase =
+	const phase: WorxTeamPhase =
 		completionVerified && graceful
 			? pendingIntegration
 				? "awaiting_integration"

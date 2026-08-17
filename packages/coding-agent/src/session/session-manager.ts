@@ -221,7 +221,7 @@ export const CURRENT_SESSION_VERSION = 5;
  * Version 4 patch records remain readable; older writers must not edit v5 sessions.
  */
 
-function isUnderProjectGjc(cwd: string, targetPath: string): boolean {
+function isUnderProjectWorx(cwd: string, targetPath: string): boolean {
 	const relative = path.relative(path.join(path.resolve(cwd), ".worx"), path.resolve(targetPath));
 	return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
@@ -3265,7 +3265,7 @@ function writeTerminalBreadcrumb(cwd: string, sessionFile: string): void {
 	const breadcrumbFile = path.join(breadcrumbDir, terminalId);
 	const content = `${cwd}\n${sessionFile}\n`;
 	// Best-effort — don't break session creation if breadcrumb fails
-	const write = isUnderProjectGjc(cwd, breadcrumbFile)
+	const write = isUnderProjectWorx(cwd, breadcrumbFile)
 		? writeTextAtomic(breadcrumbFile, content, {
 				cwd,
 				audit: { category: "artifact", verb: "write", owner: "worx-runtime" },
@@ -4590,7 +4590,7 @@ const TRUNCATION_NOTICE = "\n\n[Session persistence truncated large content]";
 /** Minimum base64 length to externalize to blob store (skip tiny inline images) */
 const BLOB_EXTERNALIZE_THRESHOLD = 1024;
 const TEXT_CONTENT_KEY = "content";
-const RESIDENT_BLOB_SENTINEL_KEY = "__gjcResidentBlob";
+const RESIDENT_BLOB_SENTINEL_KEY = "__worxResidentBlob";
 type ResidentBlobKind = "text" | "imageUrl" | "imageData";
 interface ResidentBlobSentinel {
 	[RESIDENT_BLOB_SENTINEL_KEY]: true;
@@ -5136,7 +5136,7 @@ function materializeProviderVisibleEntrySync(entry: SessionEntry, stores: Reside
 }
 
 const COLD_SPILL_NOTICE = "[Compacted history content evicted to durable cold storage]";
-const COLD_SPILL_ARGUMENTS_SENTINEL_KEY = "__gjcColdSpillArguments";
+const COLD_SPILL_ARGUMENTS_SENTINEL_KEY = "__worxColdSpillArguments";
 const COLD_SPILL_MIN_CHARS = 1024;
 
 type ColdSpillWrite = {
@@ -5892,8 +5892,8 @@ class NdjsonFileWriter {
 const PROJECT_SESSION_SCAN_MAX_DIRECTORIES = 4096;
 const PROJECT_SESSION_SCAN_MAX_FILES = 1000;
 
-function isProjectSessionTranscriptPath(projectGjcDir: string, filePath: string): boolean {
-	const relative = path.relative(projectGjcDir, filePath);
+function isProjectSessionTranscriptPath(projectWorxDir: string, filePath: string): boolean {
+	const relative = path.relative(projectWorxDir, filePath);
 	if (relative.startsWith("..") || path.isAbsolute(relative)) return false;
 	const segments = relative.split(path.sep);
 	if (segments.length === 1) return true;
@@ -5907,16 +5907,16 @@ function isProjectSessionTranscriptPath(projectGjcDir: string, filePath: string)
  * container (`agent-session` or `sessions`).
  */
 function listProjectSessionTranscriptFiles(cwd: string): string[] {
-	const projectGjcDir = path.join(path.resolve(cwd), ".worx");
+	const projectWorxDir = path.join(path.resolve(cwd), ".worx");
 	let rootStat: fs.Stats;
 	try {
-		rootStat = fs.lstatSync(projectGjcDir);
+		rootStat = fs.lstatSync(projectWorxDir);
 	} catch {
 		return [];
 	}
 	if (!rootStat.isDirectory() || rootStat.isSymbolicLink()) return [];
 
-	const directories = [projectGjcDir];
+	const directories = [projectWorxDir];
 	const files: string[] = [];
 	let scannedDirectories = 0;
 	while (directories.length > 0 && scannedDirectories < PROJECT_SESSION_SCAN_MAX_DIRECTORIES) {
@@ -5939,7 +5939,7 @@ function listProjectSessionTranscriptFiles(cwd: string): string[] {
 				entry.isFile() &&
 				!entry.name.startsWith(".") &&
 				entry.name.endsWith(".jsonl") &&
-				isProjectSessionTranscriptPath(projectGjcDir, entryPath)
+				isProjectSessionTranscriptPath(projectWorxDir, entryPath)
 			) {
 				files.push(entryPath);
 				if (files.length >= PROJECT_SESSION_SCAN_MAX_FILES) return files;
@@ -18578,10 +18578,10 @@ export class SessionManager {
 		const inspected = inspectTranscriptHeaderBounded(sessionPath, storage, BOUNDED_RESUME_TRANSCRIPT_MAX_BYTES);
 		if (!inspected.ok || !inspected.inspection.cwd) throw new Error("Session has no valid workspace header.");
 		const headerCwd = inspected.inspection.cwd;
-		const projectGjcDir = path.join(path.resolve(headerCwd), ".worx");
-		if (isProjectSessionTranscriptPath(projectGjcDir, sessionPath)) {
-			const relativePath = path.relative(projectGjcDir, path.resolve(sessionPath)).split(path.sep).join("/");
-			const authority = nativeSessionManager().openRecoveryFsRoot(projectGjcDir);
+		const projectWorxDir = path.join(path.resolve(headerCwd), ".worx");
+		if (isProjectSessionTranscriptPath(projectWorxDir, sessionPath)) {
+			const relativePath = path.relative(projectWorxDir, path.resolve(sessionPath)).split(path.sep).join("/");
+			const authority = nativeSessionManager().openRecoveryFsRoot(projectWorxDir);
 			try {
 				const observed = authority.stat(relativePath);
 				if (!observed.ok || !observed.identity?.sha256)

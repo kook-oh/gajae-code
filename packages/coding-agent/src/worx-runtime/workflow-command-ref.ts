@@ -1,4 +1,4 @@
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../skill-state/canonical-skills";
 
 export type CommandRefVisibility = "public" | "hidden" | "planned";
 export type CommandRefIncludeWhen = "implemented-only" | "planned";
@@ -23,7 +23,7 @@ export interface CommandRefBridge {
 }
 
 export interface CommandRefBlock {
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	blockId: string;
 	sourcePath: string;
 	renderOrder: number;
@@ -38,16 +38,16 @@ export interface CommandRefBlock {
 }
 
 export interface RenderedCommandRefBlock {
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	blockId: string;
 	markers: CommandRefBlock["markers"];
 	bytes: string;
 }
 
-const skillPath = (skill: CanonicalGjcWorkflowSkill): string =>
+const skillPath = (skill: CanonicalWorxWorkflowSkill): string =>
 	`packages/coding-agent/src/defaults/worx/skills/${skill}/SKILL.md`;
 
-const stateWrite = (skill: CanonicalGjcWorkflowSkill): CommandRefCommand => ({
+const stateWrite = (skill: CanonicalWorxWorkflowSkill): CommandRefCommand => ({
 	tokens: ["gjc", "state", skill, "write", "--input", `'{"current_phase":"handoff"}'`, "--json"],
 	rendered: `gjc state ${skill} write --input '{"current_phase":"handoff"}' --json`,
 	visibility: "public",
@@ -56,8 +56,8 @@ const stateWrite = (skill: CanonicalGjcWorkflowSkill): CommandRefCommand => ({
 });
 
 const stateHandoff = (
-	skill: CanonicalGjcWorkflowSkill,
-	targets: readonly CanonicalGjcWorkflowSkill[],
+	skill: CanonicalWorxWorkflowSkill,
+	targets: readonly CanonicalWorxWorkflowSkill[],
 ): CommandRefCommand => ({
 	tokens: ["gjc", "state", skill, "handoff", "--to", `<${targets.join("|")}>`, "--json"],
 	rendered: `gjc state ${skill} handoff --to <${targets.join("|")}> --json`,
@@ -191,7 +191,7 @@ export const WORKFLOW_COMMAND_REF_BLOCKS: readonly CommandRefBlock[] = [
 	},
 ] as const;
 
-export function listCommandRefBlocks(skill?: CanonicalGjcWorkflowSkill): CommandRefBlock[] {
+export function listCommandRefBlocks(skill?: CanonicalWorxWorkflowSkill): CommandRefBlock[] {
 	const blocks =
 		skill === undefined
 			? WORKFLOW_COMMAND_REF_BLOCKS
@@ -201,7 +201,7 @@ export function listCommandRefBlocks(skill?: CanonicalGjcWorkflowSkill): Command
 	);
 }
 
-export function renderCommandRefBlock(skill: CanonicalGjcWorkflowSkill, blockId = "state"): RenderedCommandRefBlock {
+export function renderCommandRefBlock(skill: CanonicalWorxWorkflowSkill, blockId = "state"): RenderedCommandRefBlock {
 	const block = WORKFLOW_COMMAND_REF_BLOCKS.find(item => item.skill === skill && item.blockId === blockId);
 	if (block === undefined) throw new Error(`Unknown command-reference block: ${skill}/${blockId}`);
 
@@ -233,6 +233,6 @@ export function renderCommandRefBlock(skill: CanonicalGjcWorkflowSkill, blockId 
 	return { skill, blockId: block.blockId, markers: block.markers, bytes: lines.join("\n") };
 }
 
-export function isCanonicalGjcWorkflowSkill(value: string): value is CanonicalGjcWorkflowSkill {
+export function isCanonicalWorxWorkflowSkill(value: string): value is CanonicalWorxWorkflowSkill {
 	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(value);
 }

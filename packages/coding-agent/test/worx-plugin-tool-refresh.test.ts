@@ -133,7 +133,7 @@ describe("AgentSession GJC plugin sub-skill tool refresh", () => {
 		const toolPath = await writeCustomTool("domain-note.ts", "domain_note");
 		await activateSubskill([toolPath], "planner");
 
-		await session.refreshGjcSubskillTools();
+		await session.refreshWorxSubskillTools();
 		expect(session.getAllToolNames()).toContain("domain_note");
 		expect(session.getActiveToolNames()).toContain("domain_note");
 
@@ -146,7 +146,7 @@ describe("AgentSession GJC plugin sub-skill tool refresh", () => {
 			active_subskills: [],
 		});
 
-		await session.refreshGjcSubskillTools();
+		await session.refreshWorxSubskillTools();
 		expect(session.getAllToolNames()).not.toContain("domain_note");
 		expect(session.getActiveToolNames()).not.toContain("domain_note");
 		expect(session.getActiveToolNames()).toEqual(["read", "bash"]);
@@ -156,7 +156,7 @@ describe("AgentSession GJC plugin sub-skill tool refresh", () => {
 		const toolPath = await writeCustomTool("read.ts", "read");
 		await activateSubskill([toolPath], "planner");
 
-		await session.refreshGjcSubskillTools();
+		await session.refreshWorxSubskillTools();
 
 		expect(session.getAllToolNames().filter(name => name === "read")).toHaveLength(1);
 		expect(session.getActiveToolNames()).toEqual(["read", "bash"]);

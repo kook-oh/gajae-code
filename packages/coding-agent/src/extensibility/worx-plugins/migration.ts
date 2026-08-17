@@ -1,25 +1,25 @@
 import * as path from "node:path";
-import { compileGjcPluginBundle } from "./compiler";
+import { compileWorxPluginBundle } from "./compiler";
 import { canonicalizeJsonSchema, schemaHash } from "./metadata";
 import {
-	type GjcPluginCopiedFile,
-	GjcPluginLoadError,
-	type GjcPluginMigrationFailure,
-	type GjcPluginMigrationState,
-	type GjcPluginRegistryEntry,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginSurfaces,
 	PluginMigrationRequiredError,
+	type WorxPluginCopiedFile,
+	WorxPluginLoadError,
+	type WorxPluginMigrationFailure,
+	type WorxPluginMigrationState,
+	type WorxPluginRegistryEntry,
 } from "./types";
 
-export interface GjcPluginMigrationStatus {
+export interface WorxPluginMigrationStatus {
 	plugin: string;
-	scope: GjcPluginRegistryEntry["scope"];
+	scope: WorxPluginRegistryEntry["scope"];
 	status: "migrated" | "failed";
 	surfaces: string[];
-	failure?: GjcPluginMigrationFailure;
+	failure?: WorxPluginMigrationFailure;
 }
 
-function surfaceIds(surfaces: NormalizedGjcPluginSurfaces): string[] {
+function surfaceIds(surfaces: NormalizedWorxPluginSurfaces): string[] {
 	return [
 		...surfaces.tools.map(surface => surface.extensionId),
 		...surfaces.hooks.map(surface => surface.extensionId),
@@ -30,31 +30,34 @@ function surfaceIds(surfaces: NormalizedGjcPluginSurfaces): string[] {
 	];
 }
 
-function errorInfo(error: unknown): GjcPluginLoadError {
-	if (error instanceof GjcPluginLoadError) return error;
-	return new GjcPluginLoadError("invalid_schema", String(error));
+function errorInfo(error: unknown): WorxPluginLoadError {
+	if (error instanceof WorxPluginLoadError) return error;
+	return new WorxPluginLoadError("invalid_schema", String(error));
 }
 
-async function verifyStoredFiles(entry: GjcPluginRegistryEntry, files: readonly GjcPluginCopiedFile[]): Promise<void> {
+async function verifyStoredFiles(
+	entry: WorxPluginRegistryEntry,
+	files: readonly WorxPluginCopiedFile[],
+): Promise<void> {
 	const stored = new Map(entry.copiedFiles.map(file => [file.relativePath, file.sha256.toLowerCase()]));
 	for (const file of files) {
 		const expected = stored.get(file.relativePath);
 		if (!expected) continue;
 		if (expected !== file.sha256.toLowerCase()) {
-			throw new GjcPluginLoadError("hash_mismatch", `Installed file hash mismatch for ${file.relativePath}`);
+			throw new WorxPluginLoadError("hash_mismatch", `Installed file hash mismatch for ${file.relativePath}`);
 		}
 	}
 }
 
-function migrationFailure(error: unknown, surface: string): GjcPluginMigrationFailure {
+function migrationFailure(error: unknown, surface: string): WorxPluginMigrationFailure {
 	const typed = errorInfo(error);
 	return { code: typed.code, surface, cause: typed.message };
 }
 
 function migrationState(
-	status: GjcPluginMigrationState["status"],
-	failure?: GjcPluginMigrationFailure,
-): GjcPluginMigrationState {
+	status: WorxPluginMigrationState["status"],
+	failure?: WorxPluginMigrationFailure,
+): WorxPluginMigrationState {
 	return {
 		status,
 		metadataVersion: 2,
@@ -81,7 +84,7 @@ export function isV2Tool(surface: unknown): surface is {
 	);
 }
 
-export function entryNeedsMigration(entry: GjcPluginRegistryEntry): boolean {
+export function entryNeedsMigration(entry: WorxPluginRegistryEntry): boolean {
 	if (entry.migration?.status === "failed") return true;
 	if (entry.surfaces.tools.some(surface => !isV2Tool(surface))) return true;
 	if (entry.surfaces.hooks.some(surface => typeof surface.implementationHash !== "string")) return true;
@@ -89,29 +92,29 @@ export function entryNeedsMigration(entry: GjcPluginRegistryEntry): boolean {
 	return entry.migration?.status !== "migrated";
 }
 
-async function verifyV2EntryMetadata(entry: GjcPluginRegistryEntry): Promise<void> {
-	const bundle = await compileGjcPluginBundle(entry.pluginRoot);
+async function verifyV2EntryMetadata(entry: WorxPluginRegistryEntry): Promise<void> {
+	const bundle = await compileWorxPluginBundle(entry.pluginRoot);
 	const compiledTools = new Map(bundle.surfaces.tools.map(surface => [surface.extensionId, surface]));
 	for (const surface of entry.surfaces.tools) {
 		if (!isV2Tool(surface))
-			throw new GjcPluginLoadError("migration_required", `Tool ${surface.extensionId} is missing v2 metadata`);
+			throw new WorxPluginLoadError("migration_required", `Tool ${surface.extensionId} is missing v2 metadata`);
 		const schema = canonicalizeJsonSchema(surface.schema);
 		if (schemaHash(schema) !== surface.schemaHash)
-			throw new GjcPluginLoadError("hash_mismatch", `Schema hash mismatch for ${surface.extensionId}`);
+			throw new WorxPluginLoadError("hash_mismatch", `Schema hash mismatch for ${surface.extensionId}`);
 		const compiled = compiledTools.get(surface.extensionId);
 		if (
 			!compiled ||
 			compiled.implementationHash !== surface.implementationHash ||
 			compiled.schemaHash !== surface.schemaHash
 		) {
-			throw new GjcPluginLoadError("hash_mismatch", `Compiled v2 metadata mismatch for ${surface.extensionId}`);
+			throw new WorxPluginLoadError("hash_mismatch", `Compiled v2 metadata mismatch for ${surface.extensionId}`);
 		}
 	}
 	const compiledHooks = new Map(bundle.surfaces.hooks.map(surface => [surface.extensionId, surface]));
 	for (const surface of entry.surfaces.hooks) {
 		const compiled = compiledHooks.get(surface.extensionId);
 		if (!compiled || compiled.implementationHash !== surface.implementationHash)
-			throw new GjcPluginLoadError("hash_mismatch", `Compiled v2 metadata mismatch for ${surface.extensionId}`);
+			throw new WorxPluginLoadError("hash_mismatch", `Compiled v2 metadata mismatch for ${surface.extensionId}`);
 	}
 }
 
@@ -119,9 +122,9 @@ async function verifyV2EntryMetadata(entry: GjcPluginRegistryEntry): Promise<voi
  * Convert one persisted v1 registry entry into v2 metadata. This function only
  * reads manifests and declared files through the non-executing compiler.
  */
-export async function migrateGjcPluginEntry(
-	entry: GjcPluginRegistryEntry,
-): Promise<{ entry: GjcPluginRegistryEntry; changed: boolean; status: GjcPluginMigrationStatus }> {
+export async function migrateWorxPluginEntry(
+	entry: WorxPluginRegistryEntry,
+): Promise<{ entry: WorxPluginRegistryEntry; changed: boolean; status: WorxPluginMigrationStatus }> {
 	if (!entryNeedsMigration(entry)) {
 		try {
 			await verifyV2EntryMetadata(entry);
@@ -137,7 +140,7 @@ export async function migrateGjcPluginEntry(
 			};
 		} catch (error) {
 			const failure = migrationFailure(error, surfaceIds(entry.surfaces)[0] ?? `plugin:${entry.name}`);
-			const failed: GjcPluginRegistryEntry = { ...entry, migration: migrationState("failed", failure) };
+			const failed: WorxPluginRegistryEntry = { ...entry, migration: migrationState("failed", failure) };
 			return {
 				entry: failed,
 				changed: true,
@@ -153,21 +156,21 @@ export async function migrateGjcPluginEntry(
 	}
 
 	try {
-		const bundle = await compileGjcPluginBundle(entry.pluginRoot);
+		const bundle = await compileWorxPluginBundle(entry.pluginRoot);
 		if (entry.manifestHash && entry.manifestHash.toLowerCase() !== bundle.manifestHash.toLowerCase()) {
-			throw new GjcPluginLoadError("hash_mismatch", "Installed manifest hash mismatch");
+			throw new WorxPluginLoadError("hash_mismatch", "Installed manifest hash mismatch");
 		}
 		await verifyStoredFiles(entry, bundle.files);
 		const oldIds = new Set(surfaceIds(entry.surfaces));
 		const newIds = new Set(surfaceIds(bundle.surfaces));
 		for (const id of oldIds) {
 			if (!newIds.has(id))
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"missing_surface",
 					`Declared surface ${id} is missing from the plugin manifest`,
 				);
 		}
-		const migrated: GjcPluginRegistryEntry = {
+		const migrated: WorxPluginRegistryEntry = {
 			...entry,
 			version: bundle.version,
 			manifestPath: bundle.manifestPath,
@@ -186,7 +189,7 @@ export async function migrateGjcPluginEntry(
 			error,
 			entry.migration?.failure?.surface ?? surfaceIds(entry.surfaces)[0] ?? `plugin:${entry.name}`,
 		);
-		const failed: GjcPluginRegistryEntry = { ...entry, migration: migrationState("failed", failure) };
+		const failed: WorxPluginRegistryEntry = { ...entry, migration: migrationState("failed", failure) };
 		return {
 			entry: failed,
 			changed: true,
@@ -202,10 +205,10 @@ export async function migrateGjcPluginEntry(
 }
 
 /** Migrate entries from a parsed registry in memory; never imports implementations. */
-export async function migrateGjcPluginEntries(
-	entries: readonly GjcPluginRegistryEntry[],
-): Promise<{ entries: GjcPluginRegistryEntry[]; changed: boolean; statuses: GjcPluginMigrationStatus[] }> {
-	const results = await Promise.all(entries.map(entry => migrateGjcPluginEntry(entry)));
+export async function migrateWorxPluginEntries(
+	entries: readonly WorxPluginRegistryEntry[],
+): Promise<{ entries: WorxPluginRegistryEntry[]; changed: boolean; statuses: WorxPluginMigrationStatus[] }> {
+	const results = await Promise.all(entries.map(entry => migrateWorxPluginEntry(entry)));
 	return {
 		entries: results.map(result => result.entry),
 		changed: results.some(result => result.changed),
@@ -214,7 +217,7 @@ export async function migrateGjcPluginEntries(
 }
 
 /** Read-only status helper used by `gjc plugin doctor`. */
-export async function migrationStatusForEntry(entry: GjcPluginRegistryEntry): Promise<GjcPluginMigrationStatus> {
+export async function migrationStatusForEntry(entry: WorxPluginRegistryEntry): Promise<WorxPluginMigrationStatus> {
 	if (entry.migration?.status === "failed") {
 		return {
 			plugin: entry.name,
@@ -227,10 +230,10 @@ export async function migrationStatusForEntry(entry: GjcPluginRegistryEntry): Pr
 	return { plugin: entry.name, scope: entry.scope, status: "migrated", surfaces: surfaceIds(entry.surfaces) };
 }
 
-export async function getGjcPluginMigrationStatuses(
+export async function getWorxPluginMigrationStatuses(
 	cwd: string,
 	options: { migrate?: boolean } = {},
-): Promise<GjcPluginMigrationStatus[]> {
+): Promise<WorxPluginMigrationStatus[]> {
 	const { readRegistry } = await import("./registry");
 	const [user, project] = await Promise.all([
 		readRegistry("user", cwd, { migrate: options.migrate !== false }),
@@ -239,17 +242,17 @@ export async function getGjcPluginMigrationStatuses(
 	return await Promise.all([...user.plugins, ...project.plugins].map(migrationStatusForEntry));
 }
 
-export async function runGjcPluginMigrationPreflight(cwd: string): Promise<GjcPluginMigrationStatus[]> {
-	return getGjcPluginMigrationStatuses(cwd, { migrate: true });
+export async function runWorxPluginMigrationPreflight(cwd: string): Promise<WorxPluginMigrationStatus[]> {
+	return getWorxPluginMigrationStatuses(cwd, { migrate: true });
 }
 
 /**
  * Optional doctor pre-flight. It uses exactly the same in-process compiler as
  * registry load and therefore has no separate eager activation path.
  */
-export async function migratePluginRootForDoctor(pluginRoot: string): Promise<GjcPluginMigrationStatus> {
+export async function migratePluginRootForDoctor(pluginRoot: string): Promise<WorxPluginMigrationStatus> {
 	try {
-		const bundle = await compileGjcPluginBundle(path.resolve(pluginRoot));
+		const bundle = await compileWorxPluginBundle(path.resolve(pluginRoot));
 		return { plugin: bundle.name, scope: "project", status: "migrated", surfaces: surfaceIds(bundle.surfaces) };
 	} catch (error) {
 		const failure = migrationFailure(error, `plugin-root:${pluginRoot}`);
@@ -257,14 +260,14 @@ export async function migratePluginRootForDoctor(pluginRoot: string): Promise<Gj
 	}
 }
 
-export function migrationDoctorCheckMessage(status: GjcPluginMigrationStatus): string {
+export function migrationDoctorCheckMessage(status: WorxPluginMigrationStatus): string {
 	if (status.status === "migrated")
 		return `${status.plugin} (${status.scope}) migrated to registry v2; surfaces: ${status.surfaces.join(", ") || "none"}`;
 	const failure = status.failure;
 	return `${status.plugin} (${status.scope}) migration failed for ${failure?.surface ?? "unknown surface"}: ${failure?.cause ?? "unknown cause"}`;
 }
 
-export function migrationRequiredError(entry: GjcPluginRegistryEntry): PluginMigrationRequiredError {
+export function migrationRequiredError(entry: WorxPluginRegistryEntry): PluginMigrationRequiredError {
 	const failure = entry.migration?.failure;
 	return new PluginMigrationRequiredError(
 		entry.name,

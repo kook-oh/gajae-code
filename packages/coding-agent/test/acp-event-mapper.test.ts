@@ -146,17 +146,17 @@ describe("ACP event mapper", () => {
 			"session-1",
 		)[0]!.update._meta;
 		expect(retry).toMatchObject({
-			gjcPhase: "retrying",
-			gjcRetryAttempt: 2,
-			gjcRetryMaxAttempts: 4,
-			gjcRetryDelayMs: 1_500,
+			worxPhase: "retrying",
+			worxRetryAttempt: 2,
+			worxRetryMaxAttempts: 4,
+			worxRetryDelayMs: 1_500,
 			running: true,
 		});
 		const thinking = mapAgentSessionEventToAcpSessionUpdates(
 			{ type: "thinking_level_changed", thinkingLevel: "high" } as AgentSessionEvent,
 			"session-1",
 		);
-		expect(thinking[0]!.update._meta).toEqual({ gjcThinkingLevel: "high" });
+		expect(thinking[0]!.update._meta).toEqual({ worxThinkingLevel: "high" });
 		const goal = mapAgentSessionEventToAcpSessionUpdates(
 			{
 				type: "goal_updated",
@@ -173,10 +173,10 @@ describe("ACP event mapper", () => {
 			"session-1",
 		);
 		expect(goal[0]!.update._meta).toMatchObject({
-			gjcGoalActive: true,
-			gjcGoalId: "goal-1",
-			gjcGoalStatus: "active",
-			gjcGoalObjective: "Finish ACP support",
+			worxGoalActive: true,
+			worxGoalId: "goal-1",
+			worxGoalStatus: "active",
+			worxGoalObjective: "Finish ACP support",
 		});
 		expectAcpNotifications([...thinking, ...goal]);
 	});
@@ -203,16 +203,16 @@ describe("ACP event mapper", () => {
 		expect(updates[0]!.update).toEqual({
 			sessionUpdate: "session_info_update",
 			_meta: {
-				gjcModelFallbackSwitched: true,
-				gjcModelFallbackEventId: "fallback-1",
-				gjcModelFallbackFrom: "anthropic/claude-sonnet",
-				gjcModelFallbackTo: "openai/gpt-5",
-				gjcModelFallbackReason: "rate_limit",
-				gjcModelFallbackRole: "default",
-				gjcModelFallbackScope: "session",
-				gjcModelFallbackActiveIndex: 1,
-				gjcModelFallbackChainLength: 2,
-				gjcModelFallbackAttemptsUsed: 3,
+				worxModelFallbackSwitched: true,
+				worxModelFallbackEventId: "fallback-1",
+				worxModelFallbackFrom: "anthropic/claude-sonnet",
+				worxModelFallbackTo: "openai/gpt-5",
+				worxModelFallbackReason: "rate_limit",
+				worxModelFallbackRole: "default",
+				worxModelFallbackScope: "session",
+				worxModelFallbackActiveIndex: 1,
+				worxModelFallbackChainLength: 2,
+				worxModelFallbackAttemptsUsed: 3,
 			},
 		});
 	});
@@ -242,12 +242,12 @@ describe("ACP event mapper", () => {
 				update: {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcPhase: "compacting",
-						gjcCompactionState: "start",
-						gjcCompactionTrigger: "threshold",
-						gjcCompactionAction: "context-full",
+						worxPhase: "compacting",
+						worxCompactionState: "start",
+						worxCompactionTrigger: "threshold",
+						worxCompactionAction: "context-full",
 						running: true,
-						gjcRunning: true,
+						worxRunning: true,
 					},
 				},
 			},
@@ -258,16 +258,16 @@ describe("ACP event mapper", () => {
 				update: {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcPhase: "responding",
-						gjcCompactionState: "end",
-						gjcCompactionAction: "context-full",
-						gjcCompactionAborted: false,
-						gjcCompactionWillRetry: true,
-						gjcCompactionSkipped: true,
-						gjcCompactionErrorMessage: "retrying after maintenance",
-						gjcCompactionContinuationSkipReason: "auto_continue_disabled_non_resumable_tail",
+						worxPhase: "responding",
+						worxCompactionState: "end",
+						worxCompactionAction: "context-full",
+						worxCompactionAborted: false,
+						worxCompactionWillRetry: true,
+						worxCompactionSkipped: true,
+						worxCompactionErrorMessage: "retrying after maintenance",
+						worxCompactionContinuationSkipReason: "auto_continue_disabled_non_resumable_tail",
 						running: true,
-						gjcRunning: true,
+						worxRunning: true,
 					},
 				},
 			},
@@ -289,12 +289,12 @@ describe("ACP event mapper", () => {
 		);
 
 		expect(notification?.update._meta).toMatchObject({
-			gjcPhase: "idle",
-			gjcCompactionState: "end",
-			gjcCompactionAction: "handoff",
-			gjcCompactionAborted: true,
+			worxPhase: "idle",
+			worxCompactionState: "end",
+			worxCompactionAction: "handoff",
+			worxCompactionAborted: true,
 			running: false,
-			gjcRunning: false,
+			worxRunning: false,
 		});
 		expectAcpNotifications(notification ? [notification] : []);
 	});

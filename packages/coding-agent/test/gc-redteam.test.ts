@@ -12,7 +12,7 @@ import {
 	type GcRecord,
 	type GcStoreAdapter,
 	gcPidProbe,
-	runGjcGcCommand,
+	runWorxGcCommand,
 } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
 import { teamWorkersGcAdapter } from "@bworx-io/worx-code/worx-runtime/team-gc";
 
@@ -245,7 +245,7 @@ describe("gc red-team invariants", () => {
 		const base = await makeTemp();
 		const registryDir = path.join(base, "reg");
 		const leaseFile = await seedHarnessLease(base, registryDir, "h-dry-run", await reapedPid());
-		const result = await runGjcGcCommand(
+		const result = await runWorxGcCommand(
 			["--json"],
 			base,
 			{
@@ -316,7 +316,7 @@ describe("gc red-team invariants", () => {
 	});
 
 	test("unknown gc flag exits with parse status 2", async () => {
-		const result = await runGjcGcCommand(["--bogus"], "/tmp", process.env, []);
+		const result = await runWorxGcCommand(["--bogus"], "/tmp", process.env, []);
 		expect(result.status).toBe(2);
 		expect(result.stderr).toContain("unknown_flag:--bogus");
 	});

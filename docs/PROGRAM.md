@@ -23,7 +23,7 @@
 - **G1 = Option A**: 네이티브 파이프라인 포함 완전 포크. 실증 완료(darwin-arm64 + linux-x64-modern 자체 빌드, sentinel 일치).
 - **G2**: 지원 플랫폼 = darwin-arm64 + linux-x64(modern) 2종만.
 - **포크가 제품이다**(계획 §10): 이 레포가 `worx` CLI를 직접 산출. wrapper는 기능 이관(P4) 후 아카이브.
-- **이름 제거**(계획 §9): `GJC_*` env 282개 → `WORX_*`, 행동 식별자 리터럴 7곳(§9.2b), MCP 툴명 `gjc_*`→`worx_*`는 P1 시점에.
+- **이름 제거**(계획 §9): `GJC_*` env 282개 → `WORX_*`, 행동 식별자 리터럴 7곳(§9.2b), MCP 툴명 `worx_*`→`worx_*`는 P1 시점에.
 - **보존 표면 3종**(계획 §9.1): S1 Coordinator MCP(AX 소비) · S2 ACP(IDE 소비) · S3 헤드리스 CLI `-p`/`--mode rpc`(ems-review 소비).
 - **AX**: Temporal 셀프호스트(미러 T0→설정인가 T1→Go임베드 T2, 소스분기 T3 금지) · 백엔드 Go · 자체 SSO 브로커(office-JWT 비종속) · 한 엔진 두 소비 모드(ACP 인터랙티브 / Coordinator MCP 워크플로 스텝).
 

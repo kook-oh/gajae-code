@@ -1,4 +1,4 @@
-import { resolveGjcTmuxCommand } from "../worx-runtime/tmux-common";
+import { resolveWorxTmuxCommand } from "../worx-runtime/tmux-common";
 
 // tmux copy-mode pads lines to the pane width, so allow trailing spaces before
 // the line end while keeping the match scoped to the standalone `user` label.
@@ -59,7 +59,7 @@ export function scrollTmuxToPreviousUserInput(
 
 	let tmuxCommand: string;
 	try {
-		tmuxCommand = resolveGjcTmuxCommand(env);
+		tmuxCommand = resolveWorxTmuxCommand(env);
 	} catch (error) {
 		return {
 			ok: false,

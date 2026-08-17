@@ -180,7 +180,7 @@ async function verifyRebrandSurface(): Promise<GateResult> {
 
 	const rootName = typeof rootPackage.name === "string" ? rootPackage.name : "<missing>";
 	const codingName = typeof codingPackage.name === "string" ? codingPackage.name : "<missing>";
-	const hasGjcBin = typeof bin.worx === "string";
+	const hasWorxBin = typeof bin.worx === "string";
 	const hasLegacyBin = ("om" + "p") in bin;
 
 	details.push(`root package name: ${rootName}`);
@@ -189,7 +189,7 @@ async function verifyRebrandSurface(): Promise<GateResult> {
 
 	return {
 		name: "rebrand CLI/package surface",
-		passed: rootName === "worx-code" && codingName.includes("worx") && hasGjcBin && !hasLegacyBin,
+		passed: rootName === "worx-code" && codingName.includes("worx") && hasWorxBin && !hasLegacyBin,
 		details,
 	};
 }

@@ -138,14 +138,14 @@ function expectAssistantMetadata(message: SessionMessageEntry["message"]): void 
 function coldSpillArgumentsSentinel(value: unknown): { refPath?: unknown; notice?: unknown } {
 	expect(value).toBeObject();
 	const sentinel = value as Record<string, unknown>;
-	expect(sentinel.__gjcColdSpillArguments).toBe(true);
+	expect(sentinel.__worxColdSpillArguments).toBe(true);
 	return sentinel;
 }
 
 function residentTextSentinel(value: unknown): { kind?: unknown; ref?: unknown } {
 	expect(value).toBeObject();
 	const sentinel = value as Record<string, unknown>;
-	expect(sentinel.__gjcResidentBlob).toBe(true);
+	expect(sentinel.__worxResidentBlob).toBe(true);
 	expect(sentinel.kind).toBe("text");
 	return sentinel;
 }
@@ -227,14 +227,14 @@ function expectToolArgumentPayload(entry: SessionMessageEntry, expected: string)
 	expect((args as { payload?: unknown }).payload).toBe(expected);
 }
 function expectNoResidentSentinel(value: unknown): void {
-	expect(JSON.stringify(value)).not.toContain("__gjcResidentBlob");
+	expect(JSON.stringify(value)).not.toContain("__worxResidentBlob");
 }
 
 function expectColdBlobSentinelFree(ref: ColdSpillRef, expected: unknown): void {
 	const blobPath = path.join(getBlobsDir(), ref.sha256);
 	const text = fs.readFileSync(blobPath, "utf8");
 	expect(text).toBe(JSON.stringify(expected));
-	expect(text).not.toContain("__gjcResidentBlob");
+	expect(text).not.toContain("__worxResidentBlob");
 }
 
 function buildMixedResidentAggregateToolArgumentSession(persisted: boolean): {
@@ -568,7 +568,7 @@ describe("SessionManager compacted cold-spill eviction", () => {
 		const remote = canonical.preserveData?.openaiRemoteCompaction;
 		expect(remote).toBeObject();
 		const replacementHistory = (remote as { replacementHistory?: unknown }).replacementHistory;
-		expect(JSON.stringify(replacementHistory)).toContain("__gjcResidentBlob");
+		expect(JSON.stringify(replacementHistory)).toContain("__worxResidentBlob");
 
 		const context = session.buildSessionContext();
 		const compactionMessage = context.messages.find(message => message.role === "compactionSummary");
@@ -577,7 +577,7 @@ describe("SessionManager compacted cold-spill eviction", () => {
 			throw new Error("Expected compaction summary message");
 		}
 		expect(compactionMessage.summary).toBe(summary);
-		expect(JSON.stringify(compactionMessage.providerPayload)).not.toContain("__gjcResidentBlob");
+		expect(JSON.stringify(compactionMessage.providerPayload)).not.toContain("__worxResidentBlob");
 		expect(compactionMessage.providerPayload?.type).toBe("openaiResponsesHistory");
 		const items = compactionMessage.providerPayload?.items;
 		expect(items).toBeArray();
@@ -603,7 +603,7 @@ describe("SessionManager compacted cold-spill eviction", () => {
 			throw new Error("Expected branch summary message");
 		}
 		expect(branchMessage.summary).toBe(summary);
-		expect(JSON.stringify(context.messages)).not.toContain("__gjcResidentBlob");
+		expect(JSON.stringify(context.messages)).not.toContain("__worxResidentBlob");
 	});
 
 	it("preserves assistant metadata and tool call identity in hot evicted entries", () => {
@@ -829,7 +829,7 @@ describe("SessionManager compacted cold-spill eviction", () => {
 		const context = session.buildSessionContext();
 		const serialized = JSON.stringify(context.messages);
 		expect(serialized).toContain(largeArgument);
-		expect(serialized).not.toContain("__gjcResidentBlob");
+		expect(serialized).not.toContain("__worxResidentBlob");
 	});
 
 	it("rehydrates self-contained cold spills and resident-preserved arguments after persisted close and reopen", async () => {
@@ -922,7 +922,7 @@ describe("SessionManager compacted cold-spill eviction", () => {
 			expect(serialized).toContain("persisted-self-contained-179");
 			expect(serialized).toContain(residentPayload);
 			expect(serialized).not.toContain("cold-spill blob unavailable");
-			expect(serialized).not.toContain("__gjcResidentBlob");
+			expect(serialized).not.toContain("__worxResidentBlob");
 		} finally {
 			await reopened?.close();
 			await fs.promises.rm(root, { recursive: true, force: true });

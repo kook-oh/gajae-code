@@ -869,12 +869,12 @@ export async function listClaudePluginRoots(
 	// In production `home` is `os.homedir()`, so `getPluginsDir(home)` resolves to the
 	// same XDG-aware path the marketplace writer uses (reads and writes always agree).
 	// Tests pass a temp dir, which short-circuits the resolver for deterministic isolation.
-	const gjcRegistryPath = path.join(getPluginsDir(home), "installed_plugins.json");
-	const gjcContent = await readFile(gjcRegistryPath);
-	if (gjcContent) {
-		const gjcRegistry = parseClaudePluginsRegistry(gjcContent);
-		if (gjcRegistry) {
-			for (const [pluginId, entries] of Object.entries(gjcRegistry.plugins)) {
+	const worxRegistryPath = path.join(getPluginsDir(home), "installed_plugins.json");
+	const worxContent = await readFile(worxRegistryPath);
+	if (worxContent) {
+		const worxRegistry = parseClaudePluginsRegistry(worxContent);
+		if (worxRegistry) {
+			for (const [pluginId, entries] of Object.entries(worxRegistry.plugins)) {
 				if (!Array.isArray(entries) || entries.length === 0) continue;
 
 				const atIndex = pluginId.lastIndexOf("@");
@@ -905,7 +905,7 @@ export async function listClaudePluginRoots(
 				}
 			}
 		} else {
-			warnings.push(`Failed to parse GJC plugin registry: ${gjcRegistryPath}`);
+			warnings.push(`Failed to parse GJC plugin registry: ${worxRegistryPath}`);
 		}
 	}
 

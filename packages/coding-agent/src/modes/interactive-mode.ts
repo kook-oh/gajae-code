@@ -1058,12 +1058,12 @@ export class InteractiveMode implements InteractiveModeContext {
 		for (const command of resolvedCommands) {
 			this.skillCommands.set(command.name, command.skill);
 		}
-		const defaultGjcNames = new Set<string>(DEFAULT_WORX_DEFINITION_NAMES);
+		const defaultWorxNames = new Set<string>(DEFAULT_WORX_DEFINITION_NAMES);
 		return resolvedCommands.map(command => ({
 			name: command.name,
 			description: command.description,
 			// Pin the bundled GJC workflow skills above generic commands in autocomplete.
-			...(defaultGjcNames.has(command.skill.name) ? { priority: 100 } : {}),
+			...(defaultWorxNames.has(command.skill.name) ? { priority: 100 } : {}),
 		}));
 	}
 

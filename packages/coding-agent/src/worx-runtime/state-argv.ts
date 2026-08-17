@@ -1,4 +1,4 @@
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../skill-state/canonical-skills";
 import { typedArgsFor } from "./workflow-manifest";
 
 export type StateAction =
@@ -156,8 +156,8 @@ function stateFlagArities(
 	for (const flag of STATE_BOOLEAN_FLAGS) arities.set(flag, "boolean");
 
 	const skills =
-		positionalSkill && CANONICAL_WORX_WORKFLOW_SKILLS.includes(positionalSkill as CanonicalGjcWorkflowSkill)
-			? [positionalSkill as CanonicalGjcWorkflowSkill]
+		positionalSkill && CANONICAL_WORX_WORKFLOW_SKILLS.includes(positionalSkill as CanonicalWorxWorkflowSkill)
+			? [positionalSkill as CanonicalWorxWorkflowSkill]
 			: CANONICAL_WORX_WORKFLOW_SKILLS;
 	for (const skill of skills) {
 		for (const arg of typedArgsFor(skill, action)) {

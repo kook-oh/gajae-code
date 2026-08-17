@@ -774,12 +774,12 @@ describe("lifecycle control runtime", () => {
 		try {
 			expect(await store.read()).toEqual({ version: 1, entries: {} });
 			fs.writeFileSync(ledgerPath, "{not json", { mode: 0o600 });
-			await expect(store.read()).rejects.toThrow("gjc_lifecycle_ledger_read_failed:invalid");
+			await expect(store.read()).rejects.toThrow("worx_lifecycle_ledger_read_failed:invalid");
 			expect(fs.readFileSync(ledgerPath, "utf8")).toBe("{not json");
 			const nonDirectory = path.join(root, "not-a-directory");
 			fs.writeFileSync(nonDirectory, "not a directory", { mode: 0o600 });
 			await expect(fileLedgerStore(path.join(nonDirectory, "ledger.json")).read()).rejects.toThrow(
-				"gjc_lifecycle_ledger_read_failed:ENOTDIR",
+				"worx_lifecycle_ledger_read_failed:ENOTDIR",
 			);
 
 			const originalRead = fs.readFileSync as (file: fs.PathOrFileDescriptor, options?: unknown) => string;
@@ -792,7 +792,7 @@ describe("lifecycle control runtime", () => {
 				return originalRead(file, options);
 			}) as typeof fs.readFileSync);
 			try {
-				await expect(store.read()).rejects.toThrow("gjc_lifecycle_ledger_read_failed:EACCES");
+				await expect(store.read()).rejects.toThrow("worx_lifecycle_ledger_read_failed:EACCES");
 			} finally {
 				readSpy.mockRestore();
 			}
@@ -1432,7 +1432,7 @@ describe("lifecycle control runtime", () => {
 				"#!/usr/bin/env bash",
 				'printf \'%s\\n\' "$*" >> "$TMUX_CALLS"',
 				'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_abc123\\n\'; exit 0; fi',
-				'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_ok__\\n"; exit 0; fi',
+				'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_ok__\\n"; exit 0; fi',
 
 				'if [ "$1" = "display-message" ]; then',
 				'  if [ -f "$TMUX_SERVER_STATE" ]; then',
@@ -1479,7 +1479,7 @@ describe("lifecycle control runtime", () => {
 									pid: process.pid,
 									startTime: "1",
 									cgroup: { classification: "safe", scope: "/gjc-lifecycle-test.scope" },
-									sessionNames: ["gjc_lc_abc123"],
+									sessionNames: ["worx_lc_abc123"],
 								},
 				},
 			},
@@ -1489,7 +1489,7 @@ describe("lifecycle control runtime", () => {
 		expect("mode" in result && result.mode).toBe("cold_restarted");
 		const calls = fs.readFileSync(callsFile, "utf8");
 		expect(probeCalls).toBe(8);
-		expect(calls).toContain("new-session -d -P -F #{session_id} -s gjc_lc_abc123 sh -c");
+		expect(calls).toContain("new-session -d -P -F #{session_id} -s worx_lc_abc123 sh -c");
 		expect(calls).toContain("WORX_TMUX_LAUNCHED='1' WORX_NOTIFICATIONS='1'");
 		expect(calls).toContain("WORX_COORDINATOR_SESSION_ID='abc123'");
 		expect(calls).toContain("WORX_TMUX_OWNER_GENERATION=");
@@ -1503,7 +1503,7 @@ describe("lifecycle control runtime", () => {
 		expect(calls).not.toContain("gjc-lifecycle-owner-isolation");
 		expect(calls).toContain("@gjc-project");
 		expect(fs.existsSync(serverState)).toBe(true);
-		expect(calls.indexOf("new-session -d -P -F #{session_id} -s gjc_lc_abc123 sh -c")).toBeGreaterThanOrEqual(0);
+		expect(calls.indexOf("new-session -d -P -F #{session_id} -s worx_lc_abc123 sh -c")).toBeGreaterThanOrEqual(0);
 
 		fs.rmSync(root, { recursive: true, force: true });
 	});
@@ -1522,7 +1522,7 @@ describe("lifecycle control runtime", () => {
 			].join("\n"),
 		);
 		fs.chmodSync(tmux, 0o755);
-		const liveSession = tmuxStatus("gjc_lc_live123", "live123");
+		const liveSession = tmuxStatus("worx_lc_live123", "live123");
 
 		await expect(
 			daemonResumeSession(
@@ -1536,12 +1536,12 @@ describe("lifecycle control runtime", () => {
 					},
 				},
 			)({ sessionIdOrPrefix: "live123" }),
-		).rejects.toThrow("gjc_lifecycle_owner_server_unverifiable");
+		).rejects.toThrow("worx_lifecycle_owner_server_unverifiable");
 		fs.rmSync(root, { recursive: true, force: true });
 	});
 
 	posixTmuxIt("daemonResumeSession rejects a live session when its target server is unsafe", async () => {
-		const liveSession = tmuxStatus("gjc_lc_live-unsafe", "live-unsafe");
+		const liveSession = tmuxStatus("worx_lc_live-unsafe", "live-unsafe");
 		await expect(
 			daemonResumeSession(process.env, {
 				listSessions: () => [liveSession],
@@ -1551,7 +1551,7 @@ describe("lifecycle control runtime", () => {
 					probeServer: async () => ({ state: "unsafe" }),
 				},
 			})({ sessionIdOrPrefix: "live-unsafe" }),
-		).rejects.toThrow("gjc_lifecycle_owner_server_unsafe");
+		).rejects.toThrow("worx_lifecycle_owner_server_unsafe");
 	});
 	it("awaits daemon force-close before determining processGone", async () => {
 		const closed = Promise.withResolvers<void>();
@@ -1560,9 +1560,9 @@ describe("lifecycle control runtime", () => {
 			forceClose: async () => await closed.promise,
 			findSession: () => {
 				findCalls++;
-				return tmuxStatus("gjc_lc_close-1", "close-1");
+				return tmuxStatus("worx_lc_close-1", "close-1");
 			},
-		})({ sessionId: "close-1", tmuxSession: "gjc_lc_close-1" });
+		})({ sessionId: "close-1", tmuxSession: "worx_lc_close-1" });
 		await Bun.sleep(0);
 		expect(findCalls).toBe(0);
 		closed.resolve();
@@ -1600,7 +1600,7 @@ describe("lifecycle control runtime", () => {
 					"#!/usr/bin/env bash",
 					'printf \'%s\\n\' "$*" >> "$TMUX_CALLS"',
 					'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_owner-123\\n\'; exit 0; fi',
-					'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_ok__\\n"; exit 0; fi',
+					'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_ok__\\n"; exit 0; fi',
 
 					'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; fi',
 					"exit 0",
@@ -1623,7 +1623,7 @@ describe("lifecycle control runtime", () => {
 										pid: process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe", scope: "/gjc-lifecycle-test.scope" },
-										sessionNames: ["gjc_lc_owner-123"],
+										sessionNames: ["worx_lc_owner-123"],
 									},
 					},
 				},
@@ -1683,8 +1683,8 @@ describe("lifecycle control runtime", () => {
 				"#!/usr/bin/env bash",
 				'printf "%s\\n" "$*" >> "$TMUX_CALLS"',
 				'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_stale-123\\n\'; exit 0; fi',
-				'if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then printf "__gjc_lifecycle_cleanup_ok__\\n"; exit 0; fi',
-				'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_ok__\\n"; exit 0; fi',
+				'if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then printf "__worx_lifecycle_cleanup_ok__\\n"; exit 0; fi',
+				'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_ok__\\n"; exit 0; fi',
 
 				'if [ "$1" = "new-session" ]; then',
 				'  printf \'{"schema_version":1,"generation":"replacement","session_id":"stale-123","published_at":"2026-07-11T00:00:00.000Z"}\\n\' > "$GENERATION_FILE"',
@@ -1717,7 +1717,7 @@ describe("lifecycle control runtime", () => {
 											pid: process.pid,
 											startTime: "1",
 											cgroup: { classification: "safe", scope: "/gjc-lifecycle-test.scope" },
-											sessionNames: [`gjc_lc_${sessionId}`],
+											sessionNames: [`worx_lc_${sessionId}`],
 										},
 						},
 					},
@@ -1725,12 +1725,12 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "stale-generation",
 					intendedSessionId: sessionId,
 				}),
-			).rejects.toThrow("gjc_lifecycle_owner_generation_changed");
+			).rejects.toThrow("worx_lifecycle_owner_generation_changed");
 			const calls = fs.readFileSync(callsFile, "utf8").trim().split("\n");
 			expect(calls.filter(call => call.startsWith("new-session "))).toHaveLength(1);
 			expect(
 				calls.filter(
-					call => call.startsWith("-L default if-shell ") && call.includes("__gjc_lifecycle_cleanup_ok__"),
+					call => call.startsWith("-L default if-shell ") && call.includes("__worx_lifecycle_cleanup_ok__"),
 				),
 			).toHaveLength(1);
 			expect(calls).not.toContain("-L default kill-session -t =$42");
@@ -1753,7 +1753,7 @@ describe("lifecycle control runtime", () => {
 
 				'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; fi',
 				'if [ "$1" = "set-option" ]; then exit 1; fi',
-				'if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then printf "__gjc_lifecycle_cleanup_ok__\\n"; exit 0; fi',
+				'if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then printf "__worx_lifecycle_cleanup_ok__\\n"; exit 0; fi',
 				"exit 0",
 				"",
 			].join("\n"),
@@ -1776,7 +1776,7 @@ describe("lifecycle control runtime", () => {
 										pid: process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe", scope: "/gjc-lifecycle-test.scope" },
-										sessionNames: ["gjc_lc_metadata-123"],
+										sessionNames: ["worx_lc_metadata-123"],
 									},
 					},
 				},
@@ -1784,7 +1784,7 @@ describe("lifecycle control runtime", () => {
 				lifecycleRequestId: "lc-metadata",
 				intendedSessionId: "metadata-123",
 			}),
-		).rejects.toThrow("gjc_lifecycle_metadata_write_failed");
+		).rejects.toThrow("worx_lifecycle_metadata_write_failed");
 		fs.rmSync(root, { recursive: true, force: true });
 	});
 	posixTmuxIt(
@@ -1815,7 +1815,7 @@ describe("lifecycle control runtime", () => {
 							lifecycleRequestId: `create-${state}`,
 							intendedSessionId: `create-${state}`,
 						}),
-					).rejects.toThrow(`gjc_lifecycle_owner_server_${state}`);
+					).rejects.toThrow(`worx_lifecycle_owner_server_${state}`);
 					const uncreatedPlainDir = path.join(root, `plain-${state}`);
 					await expect(
 						daemonSpawnCreate(
@@ -1825,14 +1825,14 @@ describe("lifecycle control runtime", () => {
 							lifecycleRequestId: `plain-${state}`,
 							intendedSessionId: `plain-${state}`,
 						}),
-					).rejects.toThrow(`gjc_lifecycle_owner_server_${state}`);
+					).rejects.toThrow(`worx_lifecycle_owner_server_${state}`);
 					expect(fs.existsSync(uncreatedPlainDir)).toBe(false);
 					await expect(
 						daemonResumeSession(
 							{ ...process.env, WORX_TMUX_COMMAND: tmux, TMUX_CALLS: callsFile },
 							{ platform: "linux", sessionsRoot: root, listSessions: () => [], ownerIsolationProbe: probe },
 						)({ sessionIdOrPrefix: "resume-123", path: project }),
-					).rejects.toThrow(`gjc_lifecycle_owner_server_${state}`);
+					).rejects.toThrow(`worx_lifecycle_owner_server_${state}`);
 				}
 				expect(fs.existsSync(callsFile) ? fs.readFileSync(callsFile, "utf8") : "").toBe("");
 			} finally {
@@ -1856,7 +1856,7 @@ describe("lifecycle control runtime", () => {
 					'printf "%s\\n" "$*" >> "$TMUX_CALLS"',
 					'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_metadata-refusal\\n\'; exit 0; fi',
 					'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; exit 0; fi',
-					'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_refused__\\n"; exit 0; fi',
+					'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_refused__\\n"; exit 0; fi',
 					"exit 0",
 					"",
 				].join("\n"),
@@ -1878,7 +1878,7 @@ describe("lifecycle control runtime", () => {
 										pid: probeCalls > 6 ? process.pid + 1 : process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe" as const },
-										sessionNames: ["gjc_lc_metadata-refusal"],
+										sessionNames: ["worx_lc_metadata-refusal"],
 									};
 								},
 							},
@@ -1887,7 +1887,7 @@ describe("lifecycle control runtime", () => {
 						lifecycleRequestId: "metadata-refusal",
 						intendedSessionId: "metadata-refusal",
 					}),
-				).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+				).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 				const calls = fs.readFileSync(callsFile, "utf8").trim().split("\n");
 				const guarded = calls.filter(call => call.startsWith("-L default if-shell "));
 				expect(guarded).toHaveLength(1);
@@ -1895,7 +1895,7 @@ describe("lifecycle control runtime", () => {
 				expect(calls.filter(call => call === "-L default kill-session -t =$42")).toEqual([]);
 				expect(guarded[0]).toContain(`#{pid},${process.pid}`);
 				expect(guarded[0]).toContain("#{session_id},$42");
-				expect(guarded[0]).toContain("#{session_name},gjc_lc_metadata-refusal");
+				expect(guarded[0]).toContain("#{session_name},worx_lc_metadata-refusal");
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
 			}
@@ -1919,7 +1919,7 @@ describe("lifecycle control runtime", () => {
 					'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_resume-replacement\\n\'; exit 0; fi',
 					'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; exit 0; fi',
 					"# Simulate the replacement server rejecting the guarded predicates before any tag command executes.",
-					'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_refused__\\n"; exit 0; fi',
+					'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_refused__\\n"; exit 0; fi',
 					"exit 0",
 					"",
 				].join("\n"),
@@ -1943,19 +1943,19 @@ describe("lifecycle control runtime", () => {
 										pid: probeCalls > 6 ? process.pid + 1 : process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe" as const },
-										sessionNames: ["gjc_lc_resume-replacement"],
+										sessionNames: ["worx_lc_resume-replacement"],
 									};
 								},
 							},
 						},
 					)({ sessionIdOrPrefix: "resume-replacement", path: project }),
-				).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+				).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 				const calls = fs.readFileSync(callsFile, "utf8").trim().split("\n");
 				const guarded = calls.filter(call => call.startsWith("-L default if-shell "));
 				expect(guarded).toHaveLength(1);
 				expect(guarded[0]).toContain(`#{pid},${process.pid}`);
 				expect(guarded[0]).toContain("#{session_id},$42");
-				expect(guarded[0]).toContain("#{session_name},gjc_lc_resume-replacement");
+				expect(guarded[0]).toContain("#{session_name},worx_lc_resume-replacement");
 				expect(calls.filter(call => call.startsWith("set-option "))).toEqual([]);
 				expect(calls.filter(call => call === "-L default kill-session -t =$42")).toEqual([]);
 			} finally {
@@ -1980,7 +1980,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "psmux-create",
 					intendedSessionId: "psmux-create",
 				}),
-			).rejects.toThrow("gjc_lifecycle_psmux_unsupported");
+			).rejects.toThrow("worx_lifecycle_psmux_unsupported");
 			let listSessionsCalled = false;
 			await expect(
 				daemonResumeSession(env, {
@@ -1993,7 +1993,7 @@ describe("lifecycle control runtime", () => {
 					sessionIdOrPrefix: "resume-123",
 					path: project,
 				}),
-			).rejects.toThrow("gjc_lifecycle_psmux_unsupported");
+			).rejects.toThrow("worx_lifecycle_psmux_unsupported");
 			expect(listSessionsCalled).toBe(false);
 			await expect(
 				daemonResumeSession(env, {
@@ -2005,7 +2005,7 @@ describe("lifecycle control runtime", () => {
 				})({
 					sessionIdOrPrefix: "resume-123",
 				}),
-			).rejects.toThrow("gjc_lifecycle_psmux_unsupported");
+			).rejects.toThrow("worx_lifecycle_psmux_unsupported");
 			expect(listSessionsCalled).toBe(false);
 			expect(fs.existsSync(plain)).toBe(false);
 			expect(fs.existsSync(path.join(project, ".worx"))).toBe(false);
@@ -2050,7 +2050,7 @@ describe("lifecycle control runtime", () => {
 										pid: process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe" as const },
-										sessionNames: ["gjc_lc_receipt-123"],
+										sessionNames: ["worx_lc_receipt-123"],
 									}),
 								},
 							},
@@ -2058,7 +2058,7 @@ describe("lifecycle control runtime", () => {
 							lifecycleRequestId: "receipt",
 							intendedSessionId: "receipt-123",
 						}),
-					).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+					).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 					const logged = fs.readFileSync(calls, "utf8");
 					expect(logged).toContain("new-session");
 					expect(logged).not.toContain("kill-session");
@@ -2085,7 +2085,7 @@ describe("lifecycle control runtime", () => {
 				'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_cleanup-123\\n\'; exit 0; fi',
 				'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; fi',
 				'if [ "$1" = "set-option" ]; then exit 1; fi',
-				'if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]] && [ "$KILL_FAIL" = "1" ]; then exit 1; fi',
+				'if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]] && [ "$KILL_FAIL" = "1" ]; then exit 1; fi',
 				"exit 0",
 				"",
 			].join("\n"),
@@ -2115,7 +2115,7 @@ describe("lifecycle control runtime", () => {
 										pid: process.pid,
 										startTime: "1",
 										cgroup: { classification: "safe" as const },
-										sessionNames: ["gjc_lc_cleanup-123"],
+										sessionNames: ["worx_lc_cleanup-123"],
 									};
 								},
 							},
@@ -2124,12 +2124,12 @@ describe("lifecycle control runtime", () => {
 						lifecycleRequestId: `cleanup-${cleanup}`,
 						intendedSessionId: "cleanup-123",
 					}),
-				).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+				).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 				const logged = fs.readFileSync(calls, "utf8");
 				const guarded = logged
 					.split("\n")
 					.filter(
-						call => call.startsWith("-L default if-shell ") && call.includes("__gjc_lifecycle_cleanup_ok__"),
+						call => call.startsWith("-L default if-shell ") && call.includes("__worx_lifecycle_cleanup_ok__"),
 					);
 				expect(guarded).toHaveLength(cleanup === "kill" ? 1 : 0);
 				expect(logged).not.toContain("-L default kill-session -t =$42");
@@ -2155,8 +2155,8 @@ describe("lifecycle control runtime", () => {
 					'if [ "$3" = "display-message" ]; then printf \'$42\\tgjc_lc_cleanup-replacement\\n\'; exit 0; fi',
 					'if [ "$1" = "new-session" ]; then printf \'$42\\n\'; exit 0; fi',
 					"# The external proof passed, but the replacement server rejects cleanup atomically.",
-					'if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then printf "__gjc_lifecycle_cleanup_refused__\\n"; exit 0; fi',
-					'if [ "$3" = "if-shell" ]; then printf "__gjc_lifecycle_metadata_refused__\\n"; exit 0; fi',
+					'if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then printf "__worx_lifecycle_cleanup_refused__\\n"; exit 0; fi',
+					'if [ "$3" = "if-shell" ]; then printf "__worx_lifecycle_metadata_refused__\\n"; exit 0; fi',
 					"exit 0",
 					"",
 				].join("\n"),
@@ -2175,7 +2175,7 @@ describe("lifecycle control runtime", () => {
 									pid: process.pid,
 									startTime: "1",
 									cgroup: { classification: "safe" as const },
-									sessionNames: ["gjc_lc_cleanup-replacement"],
+									sessionNames: ["worx_lc_cleanup-replacement"],
 								}),
 							},
 						},
@@ -2183,15 +2183,15 @@ describe("lifecycle control runtime", () => {
 						lifecycleRequestId: "cleanup-replacement",
 						intendedSessionId: "cleanup-replacement",
 					}),
-				).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+				).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 				const logged = fs.readFileSync(calls, "utf8").trim().split("\n");
 				const guarded = logged.filter(
-					call => call.startsWith("-L default if-shell ") && call.includes("__gjc_lifecycle_cleanup_ok__"),
+					call => call.startsWith("-L default if-shell ") && call.includes("__worx_lifecycle_cleanup_ok__"),
 				);
 				expect(guarded).toHaveLength(1);
 				expect(guarded[0]).toContain(`#{pid},${process.pid}`);
 				expect(guarded[0]).toContain("#{session_id},$42");
-				expect(guarded[0]).toContain("#{session_name},gjc_lc_cleanup-replacement");
+				expect(guarded[0]).toContain("#{session_name},worx_lc_cleanup-replacement");
 				expect(logged).not.toContain("-L default kill-session -t =$42");
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
@@ -2231,7 +2231,7 @@ describe("lifecycle control runtime", () => {
 									pid: probeCalls > 5 ? process.pid + 1 : process.pid,
 									startTime: "1",
 									cgroup: { classification: "safe" as const },
-									sessionNames: ["gjc_lc_metadata-race"],
+									sessionNames: ["worx_lc_metadata-race"],
 								};
 							},
 						},
@@ -2240,7 +2240,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "metadata-race",
 					intendedSessionId: "metadata-race",
 				}),
-			).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+			).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 			expect(
 				fs.existsSync(
 					path.join(
@@ -2268,8 +2268,8 @@ describe("lifecycle control runtime", () => {
 				received.push(args);
 			},
 			findSession: () => undefined,
-		})({ sessionId: "exact-id", tmuxSession: "gjc_lc_exact-id", sessionStateFile: "/private/exact.json" });
-		expect(received).toEqual([["gjc_lc_exact-id", env, "exact-id", "/private/exact.json"]]);
+		})({ sessionId: "exact-id", tmuxSession: "worx_lc_exact-id", sessionStateFile: "/private/exact.json" });
+		expect(received).toEqual([["worx_lc_exact-id", env, "exact-id", "/private/exact.json"]]);
 	});
 	posixTmuxIt("uses direct tagged tmux launch for injected non-Linux lifecycle creates", async () => {
 		const root = managedFixtureRoot("gjc-nonlinux-create-");
@@ -2296,7 +2296,7 @@ describe("lifecycle control runtime", () => {
 				'if [ "$1" = "new-session" ]; then : > "$TMUX_SESSION"; printf \'$42\\tgjc_lc_darwin-session\\n\'; exit 0; fi',
 				'if [ "$1" = "display-message" ]; then test -f "$TMUX_SESSION" || exit 1; printf \'4242\t$42\tgjc_lc_darwin-session\t4343\t0\t\n\'; exit 0; fi',
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_ok__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_ok__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2337,7 +2337,7 @@ describe("lifecycle control runtime", () => {
 			expect(result.sessionId).toBe("darwin-session");
 			const recorded = fs.readFileSync(calls, "utf8");
 			expect(recorded).toContain("new-session -d -P -F #{session_id}");
-			expect(recorded).toContain("gjc_lc_darwin-session sh -c");
+			expect(recorded).toContain("worx_lc_darwin-session sh -c");
 			expect(recorded).toContain("display-message -p -t $42 #{pid}");
 			expect(recorded).toContain("if-shell -t $42 -F");
 			expect(recorded).toContain("WORX_SESSION_ID='darwin-session'");
@@ -2392,7 +2392,7 @@ describe("lifecycle control runtime", () => {
 				'if [ "$1" = "new-session" ]; then : > "$TMUX_SESSION"; printf \'$42\\tgjc_lc_darwin-resume\\n\'; exit 0; fi',
 				'if [ "$1" = "display-message" ]; then test -f "$TMUX_SESSION" || exit 1; printf \'4242\t$42\tgjc_lc_darwin-resume\t4343\t0\t\n\'; exit 0; fi',
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_ok__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_ok__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2470,7 +2470,7 @@ describe("lifecycle control runtime", () => {
 					'if [ "$1" = "new-session" ]; then : > "$TMUX_SESSION"; printf \'$42\\tgjc_lc_launch-liveness\\n\'; exit 0; fi',
 					'if [ "$1" = "display-message" ]; then test -f "$TMUX_SESSION" || { echo "can\'t find session" >&2; exit 1; }; printf \'4242\t$42\tgjc_lc_launch-liveness\t4343\t0\t\n\'; exit 0; fi',
 					'if [ "$1" = "if-shell" ]; then',
-					'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else (sleep 0.01; rm -f "$TMUX_SESSION") >/dev/null 2>&1 & printf "__gjc_lifecycle_metadata_ok__\\n"; fi',
+					'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else (sleep 0.01; rm -f "$TMUX_SESSION") >/dev/null 2>&1 & printf "__worx_lifecycle_metadata_ok__\\n"; fi',
 					"  exit 0",
 					"fi",
 					"exit 0",
@@ -2495,9 +2495,9 @@ describe("lifecycle control runtime", () => {
 				} catch (error) {
 					expect(error).toBeInstanceOf(AggregateError);
 					if (!(error instanceof AggregateError)) throw error;
-					expect(error.message).toBe("gjc_lifecycle_cleanup_uncertain");
-					expect(error.errors[0]).toMatchObject({ message: "gjc_lifecycle_tmux_launch_liveness_failed" });
-					expect(error.errors[1]).toMatchObject({ message: "gjc_lifecycle_cleanup_uncertain" });
+					expect(error.message).toBe("worx_lifecycle_cleanup_uncertain");
+					expect(error.errors[0]).toMatchObject({ message: "worx_lifecycle_tmux_launch_liveness_failed" });
+					expect(error.errors[1]).toMatchObject({ message: "worx_lifecycle_cleanup_uncertain" });
 				}
 				expect(fs.existsSync(session)).toBe(false);
 				expect(fs.readFileSync(calls, "utf8")).toContain("if-shell -t $42 -F");
@@ -2521,7 +2521,7 @@ describe("lifecycle control runtime", () => {
 				"  exit 0",
 				"fi",
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_ok__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_ok__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2542,7 +2542,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "dead-pane-request",
 					intendedSessionId: "dead-pane",
 				}),
-			).rejects.toThrow("gjc_lifecycle_tmux_launch_liveness_failed");
+			).rejects.toThrow("worx_lifecycle_tmux_launch_liveness_failed");
 			expect(fs.existsSync(session)).toBe(false);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
@@ -2565,7 +2565,7 @@ describe("lifecycle control runtime", () => {
 				"  exit 0",
 				"fi",
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_ok__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_ok__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2592,7 +2592,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "pane-replacement-request",
 					intendedSessionId: "pane-replacement",
 				}),
-			).rejects.toThrow("gjc_lifecycle_tmux_launch_liveness_failed");
+			).rejects.toThrow("worx_lifecycle_tmux_launch_liveness_failed");
 			expect(fs.existsSync(session)).toBe(false);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
@@ -2612,7 +2612,7 @@ describe("lifecycle control runtime", () => {
 				'if [ "$1" = "new-session" ]; then : > "$TMUX_SESSION"; printf \'$42\\tgjc_lc_metadata-cleanup\\n\'; exit 0; fi',
 				'if [ "$1" = "display-message" ]; then test -f "$TMUX_SESSION" || { echo "can\'t find session" >&2; exit 1; }; printf \'4242\t$42\tgjc_lc_metadata-cleanup\t4343\t0\t\n\'; exit 0; fi',
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_refused__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_refused__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2633,7 +2633,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "metadata-cleanup-request",
 					intendedSessionId: "metadata-cleanup",
 				}),
-			).rejects.toThrow("gjc_lifecycle_metadata_write_failed");
+			).rejects.toThrow("worx_lifecycle_metadata_write_failed");
 
 			expect(fs.existsSync(session)).toBe(false);
 			expect(fs.readFileSync(calls, "utf8")).toContain("if-shell -t $42 -F");
@@ -2656,7 +2656,7 @@ describe("lifecycle control runtime", () => {
 				'  echo "connection refused" >&2; exit 1',
 				"fi",
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__gjc_lifecycle_cleanup_ok__\\n"; else printf "__gjc_lifecycle_metadata_refused__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then rm -f "$TMUX_SESSION"; printf "__worx_lifecycle_cleanup_ok__\\n"; else printf "__worx_lifecycle_metadata_refused__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2677,7 +2677,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "post-kill-probe-request",
 					intendedSessionId: "post-kill-probe",
 				}),
-			).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+			).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 			expect(fs.existsSync(session)).toBe(false);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
@@ -2696,7 +2696,7 @@ describe("lifecycle control runtime", () => {
 				'if [ "$1" = "new-session" ]; then : > "$TMUX_SESSION"; printf \'$42\\tgjc_lc_metadata-cleanup-failure\\n\'; exit 0; fi',
 				'if [ "$1" = "display-message" ]; then test -f "$TMUX_SESSION" || exit 1; printf \'4242\t$42\tgjc_lc_metadata-cleanup-failure\t4343\t0\t\n\'; exit 0; fi',
 				'if [ "$1" = "if-shell" ]; then',
-				'  if [[ "$*" == *"__gjc_lifecycle_cleanup_ok__"* ]]; then printf "__gjc_lifecycle_cleanup_refused__\\n"; else printf "__gjc_lifecycle_metadata_refused__\\n"; fi',
+				'  if [[ "$*" == *"__worx_lifecycle_cleanup_ok__"* ]]; then printf "__worx_lifecycle_cleanup_refused__\\n"; else printf "__worx_lifecycle_metadata_refused__\\n"; fi',
 				"  exit 0",
 				"fi",
 				"exit 0",
@@ -2721,10 +2721,10 @@ describe("lifecycle control runtime", () => {
 			} catch (error) {
 				expect(error).toBeInstanceOf(AggregateError);
 				if (!(error instanceof AggregateError)) throw error;
-				expect(error.message).toBe("gjc_lifecycle_cleanup_uncertain");
+				expect(error.message).toBe("worx_lifecycle_cleanup_uncertain");
 				expect(error.errors).toHaveLength(2);
-				expect(error.errors[0]).toMatchObject({ message: "gjc_lifecycle_metadata_write_failed" });
-				expect(error.errors[1]).toMatchObject({ message: "gjc_lifecycle_cleanup_uncertain" });
+				expect(error.errors[0]).toMatchObject({ message: "worx_lifecycle_metadata_write_failed" });
+				expect(error.errors[1]).toMatchObject({ message: "worx_lifecycle_cleanup_uncertain" });
 			}
 
 			expect(fs.existsSync(session)).toBe(true);
@@ -2757,7 +2757,7 @@ describe("lifecycle control runtime", () => {
 					lifecycleRequestId: "failed-request",
 					intendedSessionId: "failed-session",
 				}),
-			).rejects.toThrow("gjc_lifecycle_cleanup_uncertain");
+			).rejects.toThrow("worx_lifecycle_cleanup_uncertain");
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });
 		}

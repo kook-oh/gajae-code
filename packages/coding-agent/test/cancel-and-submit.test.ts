@@ -364,7 +364,7 @@ describe("AgentSession.cancelAndSubmit", () => {
 		await seedQueues(s, "mid-streaming");
 		const before = stores(s);
 		const preflight = Promise.withResolvers<void>();
-		vi.spyOn(s, "refreshGjcSubskillTools").mockImplementationOnce(() => preflight.promise);
+		vi.spyOn(s, "refreshWorxSubskillTools").mockImplementationOnce(() => preflight.promise);
 		s.setCancelAndSubmitAbortOutcomeProviderForTests(async () => ({ kind: "settled" }));
 
 		const first = s.cancelAndSubmit("send now");
@@ -428,7 +428,7 @@ describe("AgentSession.cancelAndSubmit", () => {
 	it("preserves a message queued during the atomic window through commit", async () => {
 		const { contexts, session: s } = buildSession();
 		const preflight = Promise.withResolvers<void>();
-		vi.spyOn(s, "refreshGjcSubskillTools").mockImplementationOnce(() => preflight.promise);
+		vi.spyOn(s, "refreshWorxSubskillTools").mockImplementationOnce(() => preflight.promise);
 		s.setCancelAndSubmitAbortOutcomeProviderForTests(async () => ({ kind: "settled" }));
 
 		const cancelling = s.cancelAndSubmit("send now");

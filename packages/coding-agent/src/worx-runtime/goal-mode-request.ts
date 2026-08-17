@@ -10,7 +10,11 @@ import {
 	type SessionEntry,
 } from "../session/session-manager";
 import { sessionStateDir, sessionUltragoalDir } from "./session-layout";
-import { resolveGjcSessionForRead, resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
+import {
+	resolveWorxSessionForRead,
+	resolveWorxSessionForWrite,
+	writeSessionActivityMarker,
+} from "./session-resolution";
 import { removeFileAudited, writeJsonAtomic } from "./state-writer";
 
 export const WORX_SESSION_FILE_ENV = "WORX_SESSION_FILE";
@@ -44,7 +48,7 @@ export type CurrentSessionGoalModeWriteResult =
 	| { status: "updated"; goal: Goal; sessionFile: string };
 
 interface UltragoalPlanShape {
-	gjcObjective?: unknown;
+	worxObjective?: unknown;
 	goals?: Array<{ id?: unknown }>;
 }
 
@@ -71,29 +75,29 @@ export function isUltragoalCreateGoalsInvocation(args: readonly string[]): boole
 	return command !== undefined && isCreateGoalsArg(command);
 }
 
-export async function readUltragoalGjcObjective(
+export async function readUltragoalWorxObjective(
 	cwd: string,
 	sessionId?: string | null,
 ): Promise<{ objective: string; goalsPath: string; provenance: Extract<GoalProvenance, { source: "ultragoal" }> }> {
 	const session = sessionId?.trim()
-		? { gjcSessionId: sessionId.trim() }
-		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
-	const goalsPath = ultragoalGoalsPath(cwd, session.gjcSessionId);
+		? { worxSessionId: sessionId.trim() }
+		: await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
+	const goalsPath = ultragoalGoalsPath(cwd, session.worxSessionId);
 	try {
 		const plan = (await Bun.file(goalsPath).json()) as UltragoalPlanShape;
-		const objective = typeof plan.gjcObjective === "string" ? plan.gjcObjective.trim() : "";
+		const objective = typeof plan.worxObjective === "string" ? plan.worxObjective.trim() : "";
 		const goalId = typeof plan.goals?.[0]?.id === "string" ? plan.goals[0].id : "aggregate";
 		return {
 			objective: objective || DEFAULT_ULTRAGOAL_OBJECTIVE,
 			goalsPath,
-			provenance: { source: "ultragoal", runId: session.gjcSessionId, goalId },
+			provenance: { source: "ultragoal", runId: session.worxSessionId, goalId },
 		};
 	} catch (error) {
 		if (isEnoent(error)) {
 			return {
 				objective: DEFAULT_ULTRAGOAL_OBJECTIVE,
 				goalsPath,
-				provenance: { source: "ultragoal", runId: session.gjcSessionId, goalId: "aggregate" },
+				provenance: { source: "ultragoal", runId: session.worxSessionId, goalId: "aggregate" },
 			};
 		}
 
@@ -112,7 +116,7 @@ export async function writePendingGoalModeRequest(input: {
 	if (!objective) throw new Error("goal objective is required");
 	const resolvedSessionId =
 		input.sessionId?.trim() ||
-		resolveGjcSessionForWrite(input.cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
+		resolveWorxSessionForWrite(input.cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId;
 	const sessionId = resolvedSessionId;
 	const request: PendingGoalModeRequest = {
 		version: REQUEST_VERSION,
@@ -235,9 +239,9 @@ export async function consumePendingGoalModeRequest(
 	currentSessionId?: string | null,
 ): Promise<PendingGoalModeRequest | null> {
 	const session = currentSessionId?.trim()
-		? { gjcSessionId: currentSessionId.trim() }
-		: await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
-	const filePath = requestPath(cwd, session.gjcSessionId);
+		? { worxSessionId: currentSessionId.trim() }
+		: await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
+	const filePath = requestPath(cwd, session.worxSessionId);
 	let raw: unknown;
 	try {
 		raw = await Bun.file(filePath).json();
@@ -260,19 +264,19 @@ export async function consumePendingGoalModeRequest(
 	// (do not delete it) so its rightful owner can still pick it up. Legacy/unscoped
 	// requests (no sessionId) remain consumable by any session in this cwd.
 	const ownerSessionId = typeof candidate.sessionId === "string" ? candidate.sessionId.trim() : "";
-	if (ownerSessionId && ownerSessionId !== session.gjcSessionId) {
+	if (ownerSessionId && ownerSessionId !== session.worxSessionId) {
 		return null;
 	}
 	await removeFileAudited(filePath, {
 		cwd,
-		audit: { category: "prune", verb: "remove", owner: "worx-runtime", sessionId: session.gjcSessionId },
+		audit: { category: "prune", verb: "remove", owner: "worx-runtime", sessionId: session.worxSessionId },
 	}).catch(error => {
 		if (!isEnoent(error)) throw error;
 	});
 	return { ...candidate, objective: candidate.objective.trim() } as PendingGoalModeRequest;
 }
 
-export function buildGjcRuntimeSessionEnv(input: {
+export function buildWorxRuntimeSessionEnv(input: {
 	sessionFile?: string | null;
 	sessionId?: string | null;
 	cwd?: string | null;

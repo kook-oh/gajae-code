@@ -35,7 +35,7 @@ import {
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");
 const ownerIsolationCliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts");
-const packagedGjcEntry = path.join(repoRoot, "packages", "coding-agent", "bin", "gjc.js");
+const packagedWorxEntry = path.join(repoRoot, "packages", "coding-agent", "bin", "gjc.js");
 const mainEntry = path.join(repoRoot, "packages", "coding-agent", "src", "main.ts");
 const ownerIsolationFlag = "--internal-tmux-owner-isolation";
 const invalidJsonLineResponse =
@@ -79,7 +79,7 @@ async function runOwnerIsolationEntry(
 
 const ownerIsolationEntries: Array<[string, string[]]> = [
 	["source CLI", [process.execPath, ownerIsolationCliEntry, ownerIsolationFlag]],
-	["packaged CLI", [process.execPath, packagedGjcEntry, ownerIsolationFlag]],
+	["packaged CLI", [process.execPath, packagedWorxEntry, ownerIsolationFlag]],
 	[
 		"direct main entry",
 		[

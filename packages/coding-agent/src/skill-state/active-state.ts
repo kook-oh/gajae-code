@@ -4,10 +4,10 @@ import * as logger from "@bworx-io/worx-utils/logger";
 import {
 	activeSnapshotPath,
 	activeStateDir,
-	assertNonEmptyGjcSessionId,
+	assertNonEmptyWorxSessionId,
 	modeStatePath,
 } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
 import {
 	type ActiveSessionScope,
 	readActiveEntries,
@@ -17,12 +17,12 @@ import {
 	writeActiveEntry,
 } from "../worx-runtime/state-writer";
 import { getSkillManifest } from "../worx-runtime/workflow-manifest";
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "./canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "./canonical-skills";
 import type { WorkflowStateReceipt } from "./workflow-state-contract";
 
 export const SKILL_ACTIVE_STATE_FILE = "skill-active-state.json";
 
-export { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill };
+export { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill };
 export type WorkflowHudSeverity = "info" | "warning" | "blocked" | "error" | "success";
 
 export interface WorkflowHudChip {
@@ -96,7 +96,7 @@ export interface SkillActiveState {
 	session_id?: string;
 	thread_id?: string;
 	turn_id?: string;
-	initialized_mode?: CanonicalGjcWorkflowSkill;
+	initialized_mode?: CanonicalWorxWorkflowSkill;
 	initialized_state_path?: string;
 	active_skills?: SkillActiveEntry[];
 	active_subskills?: ActiveSubskillEntry[];
@@ -202,7 +202,7 @@ function normalizeWorkflowStateReceipt(raw: unknown): WorkflowStateReceipt | und
 	const record = raw as Record<string, unknown>;
 	if (record.version !== 1) return undefined;
 	const skill = safeString(record.skill).trim();
-	if (!isCanonicalGjcWorkflowSkill(skill)) return undefined;
+	if (!isCanonicalWorxWorkflowSkill(skill)) return undefined;
 	const owner = safeString(record.owner).trim();
 	if (owner !== "worx-state-cli" && owner !== "worx-runtime" && owner !== "worx-hook") return undefined;
 	const command = sanitizeHudString(record.command, 120);
@@ -302,8 +302,8 @@ function unionActiveSubskillEntries(...entrySets: Array<ActiveSubskillEntry[] | 
 function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string> {
 	const normalizedSessionId = safeString(sessionId).trim();
 	if (normalizedSessionId) return Promise.resolve(normalizedSessionId);
-	return resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID }).then(
-		context => context.gjcSessionId,
+	return resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID }).then(
+		context => context.worxSessionId,
 	);
 }
 
@@ -339,7 +339,7 @@ function normalizeEntry(raw: unknown): SkillActiveEntry | null {
 	};
 }
 
-export function isCanonicalGjcWorkflowSkill(skill: string): skill is CanonicalGjcWorkflowSkill {
+export function isCanonicalWorxWorkflowSkill(skill: string): skill is CanonicalWorxWorkflowSkill {
 	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(skill);
 }
 
@@ -347,7 +347,7 @@ export function isCanonicalGjcWorkflowSkill(skill: string): skill is CanonicalGj
  * Nonterminal phases that intentionally await workflow-specific integration
  * rather than a generic synthetic compaction continuation.
  */
-const CONTINUATION_INERT_WORKFLOW_PHASES: Readonly<Partial<Record<CanonicalGjcWorkflowSkill, ReadonlySet<string>>>> = {
+const CONTINUATION_INERT_WORKFLOW_PHASES: Readonly<Partial<Record<CanonicalWorxWorkflowSkill, ReadonlySet<string>>>> = {
 	team: new Set(["awaiting_integration"]),
 };
 
@@ -362,7 +362,7 @@ const CONTINUATION_INERT_WORKFLOW_PHASES: Readonly<Partial<Record<CanonicalGjcWo
  */
 export function isWorkflowContinuationInert(skill: string, phase: string): boolean {
 	const normalizedPhase = phase.trim().toLowerCase();
-	if (!isCanonicalGjcWorkflowSkill(skill)) return true;
+	if (!isCanonicalWorxWorkflowSkill(skill)) return true;
 	const manifest = getSkillManifest(skill);
 	if (manifest.terminalStates.some(terminal => terminal.toLowerCase() === normalizedPhase)) return true;
 	if (CONTINUATION_INERT_WORKFLOW_PHASES[skill]?.has(normalizedPhase)) return true;
@@ -427,7 +427,7 @@ export function normalizeSkillActiveState(raw: unknown): SkillActiveState | null
 
 export function getSkillActiveStatePaths(cwd: string, sessionId?: string): SkillActiveStatePaths {
 	const normalizedSessionId = safeString(sessionId).trim();
-	assertNonEmptyGjcSessionId(normalizedSessionId, "getSkillActiveStatePaths");
+	assertNonEmptyWorxSessionId(normalizedSessionId, "getSkillActiveStatePaths");
 	const sessionPath = activeSnapshotPath(cwd, normalizedSessionId);
 	return { rootPath: sessionPath, sessionPath };
 }
@@ -504,7 +504,7 @@ function rawActiveEntries(state: SkillActiveState | null): SkillActiveEntry[] {
 async function readModeStatePhase(
 	cwd: string,
 	sessionId: string,
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 ): Promise<string | undefined> {
 	const filePath = modeStatePath(cwd, sessionId, skill);
 	try {
@@ -961,7 +961,7 @@ export async function applyHandoffToActiveState(options: ApplyHandoffOptions): P
 	const callerEntry = buildSyncEntry(options.caller, nowIso);
 	const calleeEntry = buildSyncEntry(options.callee, nowIso);
 	const sessionId = options.callee.sessionId ?? options.caller.sessionId;
-	assertNonEmptyGjcSessionId(sessionId, "applyHandoffToActiveState");
+	assertNonEmptyWorxSessionId(sessionId, "applyHandoffToActiveState");
 	const { sessionPath } = getSkillActiveStatePaths(options.cwd, sessionId);
 	const readState = (filePath: string) => readRawActiveStateForHandoff(filePath, options.strict === true);
 	await readState(sessionPath);

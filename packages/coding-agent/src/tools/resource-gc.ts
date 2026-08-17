@@ -27,7 +27,7 @@ import {
 } from "../runtime/memory-guard";
 import type { MemoryGuardPolicy, MemoryGuardWorkerSample } from "../runtime/memory-guard-contract";
 import { resolveEffectiveMemoryLimit } from "../runtime/memory-limit";
-import { executeGjcTeamApiOperation, listGjcTeams, readGjcWorkerHeartbeat } from "../worx-runtime/team-runtime";
+import { executeWorxTeamApiOperation, listWorxTeams, readWorxWorkerHeartbeat } from "../worx-runtime/team-runtime";
 import { listTabsForGc, releaseTabIfGcEligible, type TabGcSnapshot } from "./browser/tab-supervisor";
 import { cleanupStaleScreenshotFallbackDirs, hasCreatedScreenshotFallbackDir } from "./computer-gc";
 
@@ -553,11 +553,11 @@ async function readLinuxProcessStartTime(pid: number): Promise<string | null> {
 async function sampleTeamWorkers(cwd: string, sessionId: string): Promise<MemoryGuardWorkerSample[]> {
 	if (process.platform !== "linux") return [];
 	const samples: MemoryGuardWorkerSample[] = [];
-	for (const team of await listGjcTeams(cwd, { ...process.env, WORX_SESSION_ID: sessionId })) {
+	for (const team of await listWorxTeams(cwd, { ...process.env, WORX_SESSION_ID: sessionId })) {
 		if (team.phase === "complete" || team.phase === "cancelled") continue;
 		for (const worker of team.workers) {
 			try {
-				const heartbeat = await readGjcWorkerHeartbeat(team.team_name, worker.id, cwd, {
+				const heartbeat = await readWorxWorkerHeartbeat(team.team_name, worker.id, cwd, {
 					...process.env,
 					WORX_SESSION_ID: sessionId,
 				});
@@ -570,7 +570,7 @@ async function sampleTeamWorkers(cwd: string, sessionId: string): Promise<Memory
 					(await readLinuxProcessStartTime(heartbeat.pid)) !== heartbeat.process_start_time
 				)
 					continue;
-				const guard = (await executeGjcTeamApiOperation(
+				const guard = (await executeWorxTeamApiOperation(
 					"read-worker-memory-guard",
 					{ team_name: team.team_name, worker: worker.id, platform: process.platform },
 					cwd,
@@ -599,7 +599,7 @@ async function applySelectedTeamWorker(
 	if (separator <= 0 || separator === workerId.length - 1) return;
 	const teamName = workerId.slice(0, separator);
 	const worker = workerId.slice(separator + 1);
-	await executeGjcTeamApiOperation(
+	await executeWorxTeamApiOperation(
 		"apply-worker-memory-guard",
 		{
 			team_name: teamName,

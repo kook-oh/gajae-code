@@ -20,13 +20,13 @@ const cliEntry = path.join(repoRoot, "packages", "coding-agent", "src", "cli.ts"
 let root: string;
 let workspace: string;
 let cliEnv: HarnessCliEnv;
-let originalGjcSessionId: string | undefined;
+let originalWorxSessionId: string | undefined;
 
 beforeEach(async () => {
 	root = await mkdtemp(path.join(tmpdir(), "harness-cli-root-"));
 	workspace = realpathSync(await mkdtemp(path.join(tmpdir(), "harness-cli-ws-")));
 	cliEnv = createHarnessCliEnv(repoRoot);
-	originalGjcSessionId = process.env.WORX_SESSION_ID;
+	originalWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = "test-session";
 	cliEnv.env.WORX_SESSION_ID = "test-session";
 });
@@ -35,10 +35,10 @@ afterEach(async () => {
 	cliEnv.cleanup();
 	await rm(root, { recursive: true, force: true });
 	await rm(workspace, { recursive: true, force: true });
-	if (originalGjcSessionId === undefined) {
+	if (originalWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = originalGjcSessionId;
+		process.env.WORX_SESSION_ID = originalWorxSessionId;
 	}
 });
 

@@ -1,11 +1,11 @@
 import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import {
-	attachGjcTmuxSession,
-	createGjcTmuxSession,
-	forceCloseGjcTmuxSession,
-	listGjcTmuxSessions,
-	removeGjcTmuxSession,
-	statusGjcTmuxSession,
+	attachWorxTmuxSession,
+	createWorxTmuxSession,
+	forceCloseWorxTmuxSession,
+	listWorxTmuxSessions,
+	removeWorxTmuxSession,
+	statusWorxTmuxSession,
 } from "../worx-runtime/tmux-sessions";
 
 function writeJson(value: unknown): void {
@@ -85,7 +85,7 @@ export default class Session extends Command {
 		const json = flags.json ?? false;
 		try {
 			if (action === "list") {
-				const sessions = listGjcTmuxSessions();
+				const sessions = listWorxTmuxSessions();
 				if (json) {
 					writeJson({ ok: true, sessions: sessions.map(sessionJson) });
 					return;
@@ -106,7 +106,7 @@ export default class Session extends Command {
 			}
 
 			if (action === "create") {
-				const session = createGjcTmuxSession();
+				const session = createWorxTmuxSession();
 				if (json) {
 					writeJson({ ok: true, session: sessionJson(session) });
 					return;
@@ -118,7 +118,7 @@ export default class Session extends Command {
 			if (!sessionName) throw new Error("missing_session_name");
 
 			if (action === "status") {
-				const session = statusGjcTmuxSession(sessionName);
+				const session = statusWorxTmuxSession(sessionName);
 				if (json) {
 					writeJson({ ok: true, session: sessionJson(session) });
 					return;
@@ -135,7 +135,7 @@ export default class Session extends Command {
 			}
 
 			if (action === "remove" || action === "rm" || action === "delete") {
-				const removed = removeGjcTmuxSession(sessionName);
+				const removed = removeWorxTmuxSession(sessionName);
 				if (json) {
 					writeJson({ ok: true, session: sessionJson(removed) });
 					return;
@@ -145,7 +145,7 @@ export default class Session extends Command {
 			}
 
 			if (action === "force-close" || action === "force-remove") {
-				const closed = await forceCloseGjcTmuxSession(
+				const closed = await forceCloseWorxTmuxSession(
 					sessionName,
 					process.env,
 					flags["session-id"],
@@ -160,7 +160,7 @@ export default class Session extends Command {
 			}
 
 			if (action === "attach") {
-				attachGjcTmuxSession(sessionName);
+				attachWorxTmuxSession(sessionName);
 				return;
 			}
 			throw new Error(`unknown_session_action:${action}`);

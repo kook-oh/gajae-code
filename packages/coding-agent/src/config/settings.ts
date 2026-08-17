@@ -1252,7 +1252,7 @@ export class Settings implements NotificationSettingsReader {
 			try {
 				parseNotificationSettingsSnapshot(parsedRaw);
 			} catch (error) {
-				if (!(error instanceof Error) || error.message !== "gjc_notify_daemon_invalid_configuration") throw error;
+				if (!(error instanceof Error) || error.message !== "worx_notify_daemon_invalid_configuration") throw error;
 				this.#hasInvalidNotificationGlobal = true;
 			}
 		}
@@ -2035,7 +2035,7 @@ export class Settings implements NotificationSettingsReader {
 			this.#hasMalformedConfigRoot = false;
 			this.#hasInvalidNotificationGlobal = false;
 		} catch (error) {
-			if (error instanceof Error && error.message === "gjc_notify_daemon_invalid_configuration") {
+			if (error instanceof Error && error.message === "worx_notify_daemon_invalid_configuration") {
 				this.#hasMalformedConfigRoot = false;
 				this.#hasInvalidNotificationGlobal = true;
 				return;
@@ -2051,7 +2051,7 @@ export class Settings implements NotificationSettingsReader {
 			this.#hasMalformedConfigRoot = false;
 			this.#hasInvalidNotificationGlobal = false;
 		} catch (error) {
-			if (error instanceof Error && error.message === "gjc_notify_daemon_invalid_configuration") {
+			if (error instanceof Error && error.message === "worx_notify_daemon_invalid_configuration") {
 				this.#hasInvalidNotificationGlobal = true;
 				return;
 			}

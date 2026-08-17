@@ -1,24 +1,24 @@
 import { describe, expect, test } from "bun:test";
 import {
 	bundleIdentity,
-	GjcPluginLoadError,
-	type GjcPluginRegistryEntry,
-	type NormalizedGjcPluginBundle,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginBundle,
+	type NormalizedWorxPluginSurfaces,
 	reconcileEnablement,
 	validateInstallPlan,
 	validateSessionBundles,
+	WorxPluginLoadError,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 
-function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 }
 
 function entry(
 	scope: "user" | "project",
 	name: string,
-	s: Partial<NormalizedGjcPluginSurfaces> = {},
-): GjcPluginRegistryEntry {
+	s: Partial<NormalizedWorxPluginSurfaces> = {},
+): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",
@@ -36,7 +36,7 @@ function entry(
 	};
 }
 
-function bundle(name: string, s: Partial<NormalizedGjcPluginSurfaces>): NormalizedGjcPluginBundle {
+function bundle(name: string, s: Partial<NormalizedWorxPluginSurfaces>): NormalizedWorxPluginBundle {
 	return {
 		name,
 		version: "1.0.0",
@@ -82,7 +82,7 @@ describe("GJC plugin scope-qualified identities", () => {
 		// surface ID is a genuine collision and must fail closed at install time.
 		expect(() =>
 			validateInstallPlan(bundle("foo", { tools: [tool] }), [entry("user", "other", { tools: [tool] })]),
-		).toThrow(GjcPluginLoadError);
+		).toThrow(WorxPluginLoadError);
 	});
 
 	test("runtime fail-closes on a cross-scope collision install validation allows", () => {

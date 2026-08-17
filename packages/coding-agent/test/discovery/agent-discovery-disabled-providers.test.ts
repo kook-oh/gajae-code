@@ -42,10 +42,10 @@ describe("discoverAgents — claude-plugins disabled provider", () => {
 		fs.writeFileSync(path.join(agentsDir, "simplifier.md"), PLUGIN_AGENT_MD);
 
 		// Register the plugin in the GJC registry so listAnthropic modelPluginRoots picks it up.
-		const gjcPluginsDir = path.join(tempHome, ".worx", "plugins");
-		fs.mkdirSync(gjcPluginsDir, { recursive: true });
+		const worxPluginsDir = path.join(tempHome, ".worx", "plugins");
+		fs.mkdirSync(worxPluginsDir, { recursive: true });
 		fs.writeFileSync(
-			path.join(gjcPluginsDir, "installed_plugins.json"),
+			path.join(worxPluginsDir, "installed_plugins.json"),
 			JSON.stringify({
 				version: 2,
 				plugins: {

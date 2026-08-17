@@ -5,7 +5,7 @@ import {
 	BUILTIN_TOOLS,
 	createTools,
 	HIDDEN_TOOLS,
-	parseGjcPy,
+	parseWorxPy,
 	resolveEvalBackends,
 	resolveEvalBackendsFromEnv,
 	type ToolSession,
@@ -371,45 +371,45 @@ function clearPyEnvKeys(): void {
 	for (const key of PY_ENV_KEYS) delete Bun.env[key];
 }
 
-describe("parseGjcPy", () => {
+describe("parseWorxPy", () => {
 	it("returns null when WORX_PY is unset", () => {
-		expect(parseGjcPy({})).toBeNull();
+		expect(parseWorxPy({})).toBeNull();
 	});
 
 	it("returns null when WORX_PY is empty or whitespace", () => {
-		expect(parseGjcPy({ WORX_PY: "" })).toBeNull();
-		expect(parseGjcPy({ WORX_PY: "   " })).toBeNull();
+		expect(parseWorxPy({ WORX_PY: "" })).toBeNull();
+		expect(parseWorxPy({ WORX_PY: "   " })).toBeNull();
 	});
 
 	it("returns null for unrecognized tokens (invalid values are ignored)", () => {
-		expect(parseGjcPy({ WORX_PY: "python" })).toBeNull();
-		expect(parseGjcPy({ WORX_PY: "yes" })).toBeNull();
-		expect(parseGjcPy({ WORX_PY: "2" })).toBeNull();
+		expect(parseWorxPy({ WORX_PY: "python" })).toBeNull();
+		expect(parseWorxPy({ WORX_PY: "yes" })).toBeNull();
+		expect(parseWorxPy({ WORX_PY: "2" })).toBeNull();
 	});
 
 	it("parses 0/bash as JavaScript only", () => {
-		expect(parseGjcPy({ WORX_PY: "0" })).toEqual({ py: false, js: true });
-		expect(parseGjcPy({ WORX_PY: "bash" })).toEqual({ py: false, js: true });
+		expect(parseWorxPy({ WORX_PY: "0" })).toEqual({ py: false, js: true });
+		expect(parseWorxPy({ WORX_PY: "bash" })).toEqual({ py: false, js: true });
 	});
 
 	it("parses 1/py as Python only", () => {
-		expect(parseGjcPy({ WORX_PY: "1" })).toEqual({ py: true, js: false });
-		expect(parseGjcPy({ WORX_PY: "py" })).toEqual({ py: true, js: false });
+		expect(parseWorxPy({ WORX_PY: "1" })).toEqual({ py: true, js: false });
+		expect(parseWorxPy({ WORX_PY: "py" })).toEqual({ py: true, js: false });
 	});
 
 	it("parses js as JavaScript only", () => {
-		expect(parseGjcPy({ WORX_PY: "js" })).toEqual({ py: false, js: true });
+		expect(parseWorxPy({ WORX_PY: "js" })).toEqual({ py: false, js: true });
 	});
 
 	it("parses mix/both as both backends", () => {
-		expect(parseGjcPy({ WORX_PY: "mix" })).toEqual({ py: true, js: true });
-		expect(parseGjcPy({ WORX_PY: "both" })).toEqual({ py: true, js: true });
+		expect(parseWorxPy({ WORX_PY: "mix" })).toEqual({ py: true, js: true });
+		expect(parseWorxPy({ WORX_PY: "both" })).toEqual({ py: true, js: true });
 	});
 
 	it("is case-insensitive", () => {
-		expect(parseGjcPy({ WORX_PY: "PY" })).toEqual({ py: true, js: false });
-		expect(parseGjcPy({ WORX_PY: "Both" })).toEqual({ py: true, js: true });
-		expect(parseGjcPy({ WORX_PY: "  Js  " })).toEqual({ py: false, js: true });
+		expect(parseWorxPy({ WORX_PY: "PY" })).toEqual({ py: true, js: false });
+		expect(parseWorxPy({ WORX_PY: "Both" })).toEqual({ py: true, js: true });
+		expect(parseWorxPy({ WORX_PY: "  Js  " })).toEqual({ py: false, js: true });
 	});
 });
 

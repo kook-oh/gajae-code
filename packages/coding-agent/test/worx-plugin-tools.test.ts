@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	installGjcBundle,
+	installWorxBundle,
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
 } from "../src/extensibility/worx-plugins";
@@ -76,7 +76,7 @@ describe("GJC plugin sub-skill tools", () => {
 	test("rechecks the subskill tool digest immediately before import", async () => {
 		const cwd = await makeTempRoot();
 		const fixture = path.join(import.meta.dir, "fixtures", "worx-plugins", "valid-skill-plugin");
-		const installed = await installGjcBundle({ cwd }, "project", fixture);
+		const installed = await installWorxBundle({ cwd }, "project", fixture);
 		expect(installed.ok).toBe(true);
 		const activation = await resolveSubskillActivationForSkillInvocation({
 			cwd,

@@ -39,9 +39,9 @@ async function tempDir(): Promise<string> {
 }
 
 async function setProjectBudget(cwd: string, budget: number): Promise<void> {
-	const gjcDir = path.join(cwd, ".worx");
-	await fs.mkdir(gjcDir, { recursive: true });
-	await fs.writeFile(path.join(gjcDir, "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": budget }));
+	const worxDir = path.join(cwd, ".worx");
+	await fs.mkdir(worxDir, { recursive: true });
+	await fs.writeFile(path.join(worxDir, "settings.json"), JSON.stringify({ "gjc.ultragoal.nudgeBudget": budget }));
 }
 
 const SINGLE_BRIEF = "Implement the story";
@@ -275,7 +275,7 @@ describe("ultragoal nudge guard", () => {
 	it("AC3: per-story isolation and ledger-reset zeroing", async () => {
 		const cwd = await tempDir();
 		process.env.WORX_SESSION_ID = TEST_SESSION_ID;
-		await createUltragoalPlan({ cwd, brief: MULTI_BRIEF, gjcGoalMode: "per-story" });
+		await createUltragoalPlan({ cwd, brief: MULTI_BRIEF, worxGoalMode: "per-story" });
 		await recordUltragoalNudgeIfBudgetRemaining({
 			cwd,
 			sessionId: TEST_SESSION_ID,

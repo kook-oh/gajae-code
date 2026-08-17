@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { BundledDefaultContentError, readBundledContentSync } from "./worx-defaults";
-import type { BundledGjcSkillCatalogEntry } from "./worx-skills.generated";
+import type { BundledWorxSkillCatalogEntry } from "./worx-skills.generated";
 
 describe("bundled default content", () => {
 	test("unreadable source throws a typed contextual error", () => {
@@ -9,7 +9,7 @@ describe("bundled default content", () => {
 			name: "deep-interview",
 			relativePath: "skills/does-not-exist/SKILL.md",
 			loadContent: async () => "",
-		} as BundledGjcSkillCatalogEntry;
+		} as BundledWorxSkillCatalogEntry;
 
 		expect(() => readBundledContentSync(entry)).toThrow(BundledDefaultContentError);
 		try {

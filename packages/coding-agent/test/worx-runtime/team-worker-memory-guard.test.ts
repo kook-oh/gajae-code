@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { type GjcTeamTask, selectCurrentClaimedTaskForWorker } from "@bworx-io/worx-code/worx-runtime/team-store";
+import { selectCurrentClaimedTaskForWorker, type WorxTeamTask } from "@bworx-io/worx-code/worx-runtime/team-store";
 import {
 	advisoryReasonForTeamWorkerMemoryGuard,
 	appendTeamWorkerMemoryGuardLedgerEntry,
@@ -18,9 +18,9 @@ afterEach(async () => {
 });
 
 async function makeWorkerDir(): Promise<string> {
-	const gjcRoot = path.join(process.cwd(), ".worx");
-	await fs.mkdir(gjcRoot, { recursive: true });
-	const root = await fs.mkdtemp(path.join(gjcRoot, "tmp-team-worker-memory-guard-"));
+	const worxRoot = path.join(process.cwd(), ".worx");
+	await fs.mkdir(worxRoot, { recursive: true });
+	const root = await fs.mkdtemp(path.join(worxRoot, "tmp-team-worker-memory-guard-"));
 	tempRoots.push(root);
 	const workerDir = path.join(root, "workers", "worker-1");
 	await fs.mkdir(workerDir, { recursive: true });
@@ -112,12 +112,12 @@ describe("selectCurrentClaimedTaskForWorker", () => {
 		created_at: "2026-07-23T00:00:00.000Z",
 		updated_at: "2026-07-23T00:00:00.000Z",
 	} satisfies Pick<
-		GjcTeamTask,
+		WorxTeamTask,
 		"subject" | "description" | "title" | "objective" | "version" | "created_at" | "updated_at"
 	>;
 
 	it("returns the exact active claim for a worker", () => {
-		const tasks: GjcTeamTask[] = [
+		const tasks: WorxTeamTask[] = [
 			{
 				...baseTask,
 				id: "task-1",
@@ -141,7 +141,7 @@ describe("selectCurrentClaimedTaskForWorker", () => {
 	});
 
 	it("reports ambiguous active claims instead of guessing", () => {
-		const tasks: GjcTeamTask[] = [
+		const tasks: WorxTeamTask[] = [
 			{
 				...baseTask,
 				id: "task-1",

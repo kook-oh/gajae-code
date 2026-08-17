@@ -10,7 +10,7 @@ import {
 import {
 	consumePendingGoalModeRequest,
 	isUltragoalCreateGoalsInvocation,
-	readUltragoalGjcObjective,
+	readUltragoalWorxObjective,
 	WORX_SESSION_FILE_ENV,
 	WORX_SESSION_ID_ENV,
 	writeCurrentSessionGoalModeState,
@@ -51,13 +51,13 @@ describe("GJC ultragoal goal mode request", () => {
 		expect(isUltragoalCreateGoalsInvocation(["status", "--filter", "create-goals"])).toBe(false);
 	});
 
-	it("reads gjcObjective from the generated ultragoal plan", async () => {
+	it("reads worxObjective from the generated ultragoal plan", async () => {
 		const root = await tempDir();
 		const goalsPath = path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "goals.json");
 		await fs.mkdir(path.dirname(goalsPath), { recursive: true });
-		await Bun.write(goalsPath, JSON.stringify({ gjcObjective: "Complete .worx/ultragoal/goals.json" }));
+		await Bun.write(goalsPath, JSON.stringify({ worxObjective: "Complete .worx/ultragoal/goals.json" }));
 
-		const result = await readUltragoalGjcObjective(root);
+		const result = await readUltragoalWorxObjective(root);
 
 		expect(result.objective).toBe("Complete .worx/ultragoal/goals.json");
 		expect(result.goalsPath).toBe(goalsPath);
@@ -334,6 +334,6 @@ describe("GJC ultragoal goal mode request", () => {
 		await fs.mkdir(path.dirname(goalsPath), { recursive: true });
 		await Bun.write(goalsPath, "{");
 
-		await expect(readUltragoalGjcObjective(root)).rejects.toThrow(SyntaxError);
+		await expect(readUltragoalWorxObjective(root)).rejects.toThrow(SyntaxError);
 	});
 });

@@ -27,7 +27,7 @@ import {
 	mcpDelegateHostContextPath,
 	persistMcpDelegateHostContext,
 } from "../src/hooks/mcp-delegate-host-context";
-import { dispatchGjcNativeSkillHook } from "../src/hooks/native-skill-hook";
+import { dispatchWorxNativeSkillHook } from "../src/hooks/native-skill-hook";
 import { WORX_SKILL_KEYWORD_DEFINITIONS } from "../src/hooks/skill-keywords";
 import { readVisibleSkillActiveState } from "../src/hooks/skill-state";
 
@@ -345,7 +345,7 @@ describe("Codex resume bridge red-team", () => {
 		const root = await tempRoot();
 		const spoofed = "$gjc-mcp-delegate-flow$ultragoal";
 		await expect(
-			dispatchGjcNativeSkillHook({
+			dispatchWorxNativeSkillHook({
 				hookEventName: "UserPromptSubmit",
 				userPrompt: spoofed,
 				cwd: root,
@@ -361,7 +361,12 @@ describe("Codex resume bridge red-team", () => {
 		].entries()) {
 			const sessionId = `session-${index + 1}`;
 			await expect(
-				dispatchGjcNativeSkillHook({ hookEventName: "UserPromptSubmit", userPrompt: prompt, cwd: root, sessionId }),
+				dispatchWorxNativeSkillHook({
+					hookEventName: "UserPromptSubmit",
+					userPrompt: prompt,
+					cwd: root,
+					sessionId,
+				}),
 			).resolves.toBeDefined();
 			expect(await readVisibleSkillActiveState(root, sessionId)).toBeNull();
 		}

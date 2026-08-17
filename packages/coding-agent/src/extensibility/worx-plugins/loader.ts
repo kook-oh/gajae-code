@@ -4,11 +4,11 @@ import { parseFrontmatter } from "@bworx-io/worx-utils";
 import { resolveWithinRoot } from "./paths";
 import { parseManifest, parseSubskillFrontmatter } from "./schema";
 import {
-	GjcPluginLoadError,
-	type LoadedGjcPlugin,
 	type LoadedSubskillBinding,
+	type LoadedWorxPlugin,
 	type PhaseScopedToolBinding,
 	WORX_PLUGIN_MANIFEST_FILENAME,
+	WorxPluginLoadError,
 } from "./types";
 import { buildParentArgMap, buildParentPhaseSet, validateBinding } from "./validation";
 
@@ -17,11 +17,11 @@ async function readJsonFile(filePath: string): Promise<unknown> {
 		return JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
 	} catch (error) {
 		if (error instanceof SyntaxError) {
-			throw new GjcPluginLoadError("invalid_manifest", `Invalid GJC plugin manifest JSON at ${filePath}`, {
+			throw new WorxPluginLoadError("invalid_manifest", `Invalid GJC plugin manifest JSON at ${filePath}`, {
 				cause: error,
 			});
 		}
-		throw new GjcPluginLoadError("missing_file", `Missing GJC plugin manifest at ${filePath}`, {
+		throw new WorxPluginLoadError("missing_file", `Missing GJC plugin manifest at ${filePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
@@ -31,7 +31,7 @@ async function readRequiredText(filePath: string, kind: "sub-skill" | "tool"): P
 	try {
 		return await fs.readFile(filePath, "utf8");
 	} catch (error) {
-		throw new GjcPluginLoadError("missing_file", `Missing GJC plugin ${kind} file at ${filePath}`, {
+		throw new WorxPluginLoadError("missing_file", `Missing GJC plugin ${kind} file at ${filePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
@@ -55,7 +55,7 @@ function pushToolBinding(
 	toolBindings.push({ plugin, parent, phase, toolPath });
 }
 
-export async function loadGjcPlugin(root: string): Promise<LoadedGjcPlugin> {
+export async function loadWorxPlugin(root: string): Promise<LoadedWorxPlugin> {
 	const pluginRoot = path.resolve(root);
 	const manifestPath = path.join(pluginRoot, WORX_PLUGIN_MANIFEST_FILENAME);
 	const manifest = parseManifest(await readJsonFile(manifestPath), manifestPath);
@@ -77,7 +77,7 @@ export async function loadGjcPlugin(root: string): Promise<LoadedGjcPlugin> {
 		try {
 			parsed = parseFrontmatter(content, { source: filePath, level: "fatal" });
 		} catch (error) {
-			throw new GjcPluginLoadError("invalid_frontmatter", `Invalid GJC sub-skill frontmatter at ${filePath}`, {
+			throw new WorxPluginLoadError("invalid_frontmatter", `Invalid GJC sub-skill frontmatter at ${filePath}`, {
 				cause: error instanceof Error ? error : undefined,
 			});
 		}
@@ -121,10 +121,10 @@ export async function loadGjcPlugin(root: string): Promise<LoadedGjcPlugin> {
 	};
 }
 
-export async function loadGjcPlugins(roots: readonly string[]): Promise<LoadedGjcPlugin[]> {
-	const plugins: LoadedGjcPlugin[] = [];
+export async function loadWorxPlugins(roots: readonly string[]): Promise<LoadedWorxPlugin[]> {
+	const plugins: LoadedWorxPlugin[] = [];
 	for (const root of roots) {
-		plugins.push(await loadGjcPlugin(root));
+		plugins.push(await loadWorxPlugin(root));
 	}
 	const bindings = plugins.flatMap(plugin => plugin.bindings);
 	buildParentArgMap(bindings);

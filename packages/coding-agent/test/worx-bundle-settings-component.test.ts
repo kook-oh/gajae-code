@@ -1,26 +1,29 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import {
-	gjcBundleSettingsCapturePlan,
-	renderGjcBundleSettingsEntry,
+	renderWorxBundleSettingsEntry,
 	WORX_BUNDLE_SETTINGS_CAPTURE_FILES,
+	worxBundleSettingsCapturePlan,
 } from "../scripts/capture-worx-bundle-settings";
-import type { GjcLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
-import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
+import type { WorxLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
+import type { WorxRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import type {
-	GjcBundleIdentity,
-	GjcBundleSummary,
-	GjcLifecycleResult,
-	GjcToggleResult,
-	GjcUpdateApplyResult,
-	GjcUpdatePreview,
+	WorxBundleIdentity,
+	WorxBundleSummary,
+	WorxLifecycleResult,
+	WorxToggleResult,
+	WorxUpdateApplyResult,
+	WorxUpdatePreview,
 } from "../src/extensibility/worx-plugins/types";
 import { PluginSettingsComponent } from "../src/modes/components/plugin-settings";
-import { type GjcBundleLifecyclePort, GjcBundleSettingsComponent } from "../src/modes/components/worx-bundle-settings";
+import {
+	type WorxBundleLifecyclePort,
+	WorxBundleSettingsComponent,
+} from "../src/modes/components/worx-bundle-settings";
 import { setTheme } from "../src/modes/theme/theme";
 import {
-	type GjcBundleSettingsFixture,
 	WORX_BUNDLE_SETTINGS_ENTRIES,
 	WORX_BUNDLE_SETTINGS_STATES,
+	type WorxBundleSettingsFixture,
 } from "./fixtures/worx-bundles-settings-cases";
 
 type Deferred<T> = {
@@ -40,11 +43,11 @@ async function settle(): Promise<void> {
 	for (let index = 0; index < 8; index += 1) await Promise.resolve();
 }
 
-function sameIdentity(a: GjcBundleIdentity, b: GjcBundleIdentity): boolean {
+function sameIdentity(a: WorxBundleIdentity, b: WorxBundleIdentity): boolean {
 	return a.kind === b.kind && a.scope === b.scope && a.name === b.name;
 }
 
-function cloneSummary(summary: GjcBundleSummary): GjcBundleSummary {
+function cloneSummary(summary: WorxBundleSummary): WorxBundleSummary {
 	return {
 		...summary,
 		identity: { ...summary.identity },
@@ -53,38 +56,38 @@ function cloneSummary(summary: GjcBundleSummary): GjcBundleSummary {
 	};
 }
 
-class InMemoryLifecyclePort implements GjcBundleLifecyclePort {
-	readonly bundleToggleCalls: Array<{ identity: GjcBundleIdentity; enabled: boolean }> = [];
-	readonly surfaceToggleCalls: Array<{ identity: GjcBundleIdentity; surfaceId: string; enabled: boolean }> = [];
-	readonly previewCalls: GjcBundleIdentity[] = [];
-	bundleToggleGate: Deferred<GjcLifecycleResult<GjcToggleResult>> | null = null;
-	listGate: Deferred<GjcBundleSummary[]> | null = null;
-	previewGate: Deferred<GjcLifecycleResult<GjcUpdatePreview>> | null = null;
+class InMemoryLifecyclePort implements WorxBundleLifecyclePort {
+	readonly bundleToggleCalls: Array<{ identity: WorxBundleIdentity; enabled: boolean }> = [];
+	readonly surfaceToggleCalls: Array<{ identity: WorxBundleIdentity; surfaceId: string; enabled: boolean }> = [];
+	readonly previewCalls: WorxBundleIdentity[] = [];
+	bundleToggleGate: Deferred<WorxLifecycleResult<WorxToggleResult>> | null = null;
+	listGate: Deferred<WorxBundleSummary[]> | null = null;
+	previewGate: Deferred<WorxLifecycleResult<WorxUpdatePreview>> | null = null;
 
 	constructor(
-		private bundles: GjcBundleSummary[],
-		private updatePreview: GjcUpdatePreview | null = null,
+		private bundles: WorxBundleSummary[],
+		private updatePreview: WorxUpdatePreview | null = null,
 	) {}
 
-	async listGjcBundles(_ctx: GjcLifecycleContext): Promise<GjcBundleSummary[]> {
+	async listWorxBundles(_ctx: WorxLifecycleContext): Promise<WorxBundleSummary[]> {
 		if (this.listGate) return this.listGate.promise;
 		return this.bundles.map(cloneSummary);
 	}
 
-	async getGjcBundle(
-		_ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
-	): Promise<GjcLifecycleResult<GjcBundleSummary>> {
+	async getWorxBundle(
+		_ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxBundleSummary>> {
 		const summary = this.bundles.find(candidate => sameIdentity(candidate.identity, identity));
 		return summary
 			? { ok: true, value: cloneSummary(summary) }
 			: { ok: false, error: { code: "not_installed", message: "Not installed." } };
 	}
 
-	async previewGjcBundleUpdate(
-		_ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
-	): Promise<GjcLifecycleResult<GjcUpdatePreview>> {
+	async previewWorxBundleUpdate(
+		_ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxUpdatePreview>> {
 		this.previewCalls.push(identity);
 		if (this.previewGate) return this.previewGate.promise;
 		if (this.updatePreview && sameIdentity(this.updatePreview.identity, identity))
@@ -92,29 +95,29 @@ class InMemoryLifecyclePort implements GjcBundleLifecyclePort {
 		return { ok: false, error: { code: "source_unsupported", message: "Update is unavailable." } };
 	}
 
-	async applyGjcBundleUpdate(
-		_ctx: GjcLifecycleContext,
-		_token: GjcUpdatePreview["token"],
-	): Promise<GjcLifecycleResult<GjcUpdateApplyResult>> {
+	async applyWorxBundleUpdate(
+		_ctx: WorxLifecycleContext,
+		_token: WorxUpdatePreview["token"],
+	): Promise<WorxLifecycleResult<WorxUpdateApplyResult>> {
 		return { ok: false, error: { code: "stale_candidate", message: "Candidate changed." } };
 	}
 
-	async setGjcBundleEnabled(
-		_ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
+	async setWorxBundleEnabled(
+		_ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
 		enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>> {
+	): Promise<WorxLifecycleResult<WorxToggleResult>> {
 		this.bundleToggleCalls.push({ identity, enabled });
 		if (this.bundleToggleGate) return this.bundleToggleGate.promise;
 		return this.toggleBundle(identity, enabled);
 	}
 
-	async setGjcBundleSurfaceEnabled(
-		_ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
+	async setWorxBundleSurfaceEnabled(
+		_ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
 		surfaceId: string,
 		enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>> {
+	): Promise<WorxLifecycleResult<WorxToggleResult>> {
 		this.surfaceToggleCalls.push({ identity, surfaceId, enabled });
 		const bundle = this.bundles.find(candidate => sameIdentity(candidate.identity, identity));
 		if (!bundle) return { ok: false, error: { code: "not_installed", message: "Not installed." } };
@@ -124,7 +127,7 @@ class InMemoryLifecyclePort implements GjcBundleLifecyclePort {
 		return { ok: true, value: { summary: cloneSummary(bundle), mutated: true } };
 	}
 
-	toggleBundle(identity: GjcBundleIdentity, enabled: boolean): GjcLifecycleResult<GjcToggleResult> {
+	toggleBundle(identity: WorxBundleIdentity, enabled: boolean): WorxLifecycleResult<WorxToggleResult> {
 		const bundle = this.bundles.find(candidate => sameIdentity(candidate.identity, identity));
 		if (!bundle) return { ok: false, error: { code: "not_installed", message: "Not installed." } };
 		if (enabled && bundle.quarantined) return { ok: false, error: { code: "quarantined", message: "Quarantined." } };
@@ -134,15 +137,15 @@ class InMemoryLifecyclePort implements GjcBundleLifecyclePort {
 }
 
 function componentFor(
-	fixture: GjcBundleSettingsFixture,
+	fixture: WorxBundleSettingsFixture,
 	options: {
 		lifecycle?: InMemoryLifecyclePort;
-		runtime?: GjcRuntimeSnapshotProvider;
+		runtime?: WorxRuntimeSnapshotProvider;
 		onClose?: () => void;
 		onRenderRequested?: () => void;
 	} = {},
-): GjcBundleSettingsComponent {
-	return new GjcBundleSettingsComponent(
+): WorxBundleSettingsComponent {
+	return new WorxBundleSettingsComponent(
 		"/safe/project",
 		{ onClose: options.onClose ?? (() => {}), onRenderRequested: options.onRenderRequested },
 		{
@@ -154,16 +157,16 @@ function componentFor(
 	);
 }
 
-async function ready(component: GjcBundleSettingsComponent): Promise<void> {
+async function ready(component: WorxBundleSettingsComponent): Promise<void> {
 	await settle();
 	expect(component.stateId).not.toBe("loading");
 }
 
-function rendered(component: GjcBundleSettingsComponent, width = 120): string {
+function rendered(component: WorxBundleSettingsComponent, width = 120): string {
 	return Bun.stripANSI(component.render(width).join("\n"));
 }
 
-function select(component: GjcBundleSettingsComponent, down = 0): void {
+function select(component: WorxBundleSettingsComponent, down = 0): void {
 	for (let index = 0; index < down; index += 1) component.handleInput("\x1b[B");
 	component.handleInput("\n");
 }
@@ -172,7 +175,7 @@ describe("GJC bundle Settings component", () => {
 	test("requests repaint after async bundle and plugin list loads", async () => {
 		const fixture = WORX_BUNDLE_SETTINGS_STATES.find(state => state.id === "list")!.fixture;
 		const lifecycle = new InMemoryLifecyclePort(fixture.bundles.map(cloneSummary));
-		lifecycle.listGate = deferred<GjcBundleSummary[]>();
+		lifecycle.listGate = deferred<WorxBundleSummary[]>();
 		let bundleRenders = 0;
 		const bundle = componentFor(fixture, { lifecycle, onRenderRequested: () => bundleRenders++ });
 		const loadingRenders = bundleRenders;
@@ -239,7 +242,7 @@ describe("GJC bundle Settings component", () => {
 		const blockedFixture = WORX_BUNDLE_SETTINGS_STATES.find(state => state.id === "quarantined-blocked")!.fixture;
 		const disabledQuarantined = cloneSummary(blockedFixture.bundles[0]!);
 		disabledQuarantined.enabled = false;
-		const disabledFixture: GjcBundleSettingsFixture = { ...blockedFixture, bundles: [disabledQuarantined] };
+		const disabledFixture: WorxBundleSettingsFixture = { ...blockedFixture, bundles: [disabledQuarantined] };
 		const blockedPort = new InMemoryLifecyclePort([cloneSummary(disabledQuarantined)]);
 		const blocked = componentFor(disabledFixture, { lifecycle: blockedPort });
 		await ready(blocked);
@@ -251,7 +254,7 @@ describe("GJC bundle Settings component", () => {
 
 		const enabledQuarantined = cloneSummary(disabledQuarantined);
 		enabledQuarantined.enabled = true;
-		const enabledFixture: GjcBundleSettingsFixture = { ...disabledFixture, bundles: [enabledQuarantined] };
+		const enabledFixture: WorxBundleSettingsFixture = { ...disabledFixture, bundles: [enabledQuarantined] };
 		const enabledPort = new InMemoryLifecyclePort([cloneSummary(enabledQuarantined)]);
 		const enabled = componentFor(enabledFixture, { lifecycle: enabledPort });
 		await ready(enabled);
@@ -266,7 +269,7 @@ describe("GJC bundle Settings component", () => {
 	test("locks navigation and suppresses duplicate submissions during a mutation", async () => {
 		const fixture = WORX_BUNDLE_SETTINGS_STATES.find(state => state.id === "list")!.fixture;
 		const lifecycle = new InMemoryLifecyclePort(fixture.bundles.map(cloneSummary));
-		lifecycle.bundleToggleGate = deferred<GjcLifecycleResult<GjcToggleResult>>();
+		lifecycle.bundleToggleGate = deferred<WorxLifecycleResult<WorxToggleResult>>();
 		let closes = 0;
 		const component = componentFor(fixture, {
 			lifecycle,
@@ -291,7 +294,7 @@ describe("GJC bundle Settings component", () => {
 	test("discards a late update preview after focus moves to another identity", async () => {
 		const fixture = WORX_BUNDLE_SETTINGS_STATES.find(state => state.id === "dual-scope-same-name")!.fixture;
 		const lifecycle = new InMemoryLifecyclePort(fixture.bundles.map(cloneSummary));
-		lifecycle.previewGate = deferred<GjcLifecycleResult<GjcUpdatePreview>>();
+		lifecycle.previewGate = deferred<WorxLifecycleResult<WorxUpdatePreview>>();
 		const component = componentFor(fixture, { lifecycle });
 		await ready(component);
 		select(component);
@@ -307,7 +310,7 @@ describe("GJC bundle Settings component", () => {
 	});
 
 	test("plans exactly four deterministic artifacts for every expanded showcase entry", async () => {
-		const plan = gjcBundleSettingsCapturePlan(WORX_BUNDLE_SETTINGS_ENTRIES);
+		const plan = worxBundleSettingsCapturePlan(WORX_BUNDLE_SETTINGS_ENTRIES);
 		expect(plan).toHaveLength(77 * 4);
 		expect(WORX_BUNDLE_SETTINGS_ENTRIES).toHaveLength(77);
 		for (const entry of WORX_BUNDLE_SETTINGS_ENTRIES) {
@@ -318,8 +321,8 @@ describe("GJC bundle Settings component", () => {
 					.sort(),
 			).toEqual([...WORX_BUNDLE_SETTINGS_CAPTURE_FILES].sort());
 		}
-		const first = await renderGjcBundleSettingsEntry(WORX_BUNDLE_SETTINGS_ENTRIES[0]!);
-		const second = await renderGjcBundleSettingsEntry(WORX_BUNDLE_SETTINGS_ENTRIES[0]!);
+		const first = await renderWorxBundleSettingsEntry(WORX_BUNDLE_SETTINGS_ENTRIES[0]!);
+		const second = await renderWorxBundleSettingsEntry(WORX_BUNDLE_SETTINGS_ENTRIES[0]!);
 		expect(second).toEqual(first);
 	});
 });

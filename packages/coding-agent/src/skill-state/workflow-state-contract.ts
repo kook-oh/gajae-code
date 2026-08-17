@@ -1,8 +1,8 @@
 import * as path from "node:path";
-import { activeSnapshotPath, assertNonEmptyGjcSessionId, modeStatePath } from "../worx-runtime/session-layout";
+import { activeSnapshotPath, assertNonEmptyWorxSessionId, modeStatePath } from "../worx-runtime/session-layout";
 import {
 	CANONICAL_WORX_WORKFLOW_SKILLS,
-	type CanonicalGjcWorkflowSkill,
+	type CanonicalWorxWorkflowSkill,
 	SKILL_ACTIVE_STATE_FILE,
 } from "./active-state";
 import { WORKFLOW_STATE_RECEIPT_FRESH_MS, WORKFLOW_STATE_RECEIPT_VERSION } from "./workflow-state-version";
@@ -13,7 +13,7 @@ export {
 	WORKFLOW_STATE_VERSION,
 } from "./workflow-state-version";
 
-export type { CanonicalGjcWorkflowSkill };
+export type { CanonicalWorxWorkflowSkill };
 export type WorkflowStateMutationOwner = "worx-state-cli" | "worx-runtime" | "worx-hook";
 export type WorkflowStateReceiptStatus = "fresh" | "stale";
 
@@ -26,7 +26,7 @@ export interface WorkflowStateContentChecksum {
 
 export interface WorkflowStateReceipt {
 	version: 1;
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	owner: WorkflowStateMutationOwner;
 	command: string;
 	state_path: string;
@@ -56,20 +56,20 @@ export interface AuditEntry {
 	paths: string[];
 }
 
-export function workflowModeStateFileName(skill: CanonicalGjcWorkflowSkill): string {
+export function workflowModeStateFileName(skill: CanonicalWorxWorkflowSkill): string {
 	return `${skill}-state.json`;
 }
 
 export function buildWorkflowStateReceipt(input: {
 	cwd: string;
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	owner: WorkflowStateMutationOwner;
 	command: string;
 	sessionId: string;
 	nowIso?: string;
 	mutationId?: string;
 }): WorkflowStateReceipt {
-	assertNonEmptyGjcSessionId(input.sessionId, "buildWorkflowStateReceipt");
+	assertNonEmptyWorxSessionId(input.sessionId, "buildWorkflowStateReceipt");
 	const cwd = path.resolve(input.cwd);
 	const mutatedAt = input.nowIso ?? new Date().toISOString();
 	const freshUntil = new Date(Date.parse(mutatedAt) + WORKFLOW_STATE_RECEIPT_FRESH_MS).toISOString();
@@ -97,17 +97,17 @@ export function workflowReceiptStatus(
 	return nowMs <= freshUntilMs ? "fresh" : "stale";
 }
 
-export function canonicalWorkflowSkill(value: string): CanonicalGjcWorkflowSkill | null {
+export function canonicalWorkflowSkill(value: string): CanonicalWorxWorkflowSkill | null {
 	return (CANONICAL_WORX_WORKFLOW_SKILLS as readonly string[]).includes(value)
-		? (value as CanonicalGjcWorkflowSkill)
+		? (value as CanonicalWorxWorkflowSkill)
 		: null;
 }
 
-export function sanctionedWorkflowStateCommand(skill: CanonicalGjcWorkflowSkill): string {
+export function sanctionedWorkflowStateCommand(skill: CanonicalWorxWorkflowSkill): string {
 	return `worx state ${skill} write --input '<json>'`;
 }
 
-export function describeWorkflowStateContract(skill: CanonicalGjcWorkflowSkill): string[] {
+export function describeWorkflowStateContract(skill: CanonicalWorxWorkflowSkill): string[] {
 	return [
 		`Sanctioned mutation path: worx state ${skill} read|write --input '<json>'`,
 		`Canonical active HUD state: .worx/_session-{sessionid}/state/${SKILL_ACTIVE_STATE_FILE}`,

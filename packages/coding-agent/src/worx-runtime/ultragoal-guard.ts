@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import { DEFAULT_ULTRAGOAL_OBJECTIVE } from "./goal-mode-request";
-import { resolveGjcSessionForRead, SessionResolutionError } from "./session-resolution";
+import { resolveWorxSessionForRead, SessionResolutionError } from "./session-resolution";
 import {
 	findCleanPauseCriticVerdict,
 	findLedgerReceiptEvent,
@@ -71,8 +71,8 @@ function objectiveMatches(currentGoal: CurrentGoalLike, plan: UltragoalPlan, ses
 	}
 	const normalized = currentGoal.objective.trim();
 	if (!normalized) return false;
-	if (normalized === plan.gjcObjective || normalized === DEFAULT_ULTRAGOAL_OBJECTIVE) return true;
-	if (plan.gjcObjectiveAliases?.some(alias => alias === normalized)) return true;
+	if (normalized === plan.worxObjective || normalized === DEFAULT_ULTRAGOAL_OBJECTIVE) return true;
+	if (plan.worxObjectiveAliases?.some(alias => alias === normalized)) return true;
 	return plan.goals.some(goal => goal.objective === normalized);
 }
 
@@ -91,8 +91,8 @@ async function ultragoalReadPaths(
 	const explicitSessionId = options.sessionId?.trim() || process.env.WORX_SESSION_ID?.trim();
 	if (explicitSessionId) return { paths: getUltragoalPaths(cwd, explicitSessionId), sessionId: explicitSessionId };
 	try {
-		const session = await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
-		return { paths: getUltragoalPaths(cwd, session.gjcSessionId), sessionId: session.gjcSessionId };
+		const session = await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID });
+		return { paths: getUltragoalPaths(cwd, session.worxSessionId), sessionId: session.worxSessionId };
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") {
 			// No session could be resolved (no env, no auto-detectable active session).
@@ -203,9 +203,9 @@ function findReceiptGoal(
 	currentObjective: string,
 ): { goal: UltragoalGoal; receiptKind: UltragoalReceiptKind } | null {
 	if (
-		currentObjective === plan.gjcObjective ||
+		currentObjective === plan.worxObjective ||
 		currentObjective === DEFAULT_ULTRAGOAL_OBJECTIVE ||
-		plan.gjcObjectiveAliases?.some(alias => alias === currentObjective)
+		plan.worxObjectiveAliases?.some(alias => alias === currentObjective)
 	) {
 		const finalGoal = findFinalAggregateReceiptGoal(plan, ledger);
 		return finalGoal ? { goal: finalGoal, receiptKind: "final-aggregate" } : null;
@@ -483,7 +483,7 @@ export async function readUltragoalVerificationState(input: {
 
 	const receiptTarget =
 		provenance?.source === "ultragoal"
-			? provenance.goalId === "aggregate" || plan.gjcGoalMode === "aggregate"
+			? provenance.goalId === "aggregate" || plan.worxGoalMode === "aggregate"
 				? (() => {
 						const goal = findFinalAggregateReceiptGoal(plan, ledger);
 						return goal ? { goal, receiptKind: "final-aggregate" as const } : null;
@@ -583,7 +583,7 @@ export async function verifyUltragoalDurableCompletionState(input: {
 		};
 	}
 
-	if (plan.gjcGoalMode === "per-story") {
+	if (plan.worxGoalMode === "per-story") {
 		const incomplete = requiredGoals(plan).filter(goal => goal.status !== "complete");
 		if (incomplete.length > 0) {
 			return {
@@ -1028,7 +1028,7 @@ export async function assertUltragoalDropAllowed(input: {
 		throw new Error("Unable to classify Ultragoal drop: durable state exists but goals.json is missing or empty.");
 	}
 	// Out of scope: per-story mode drops keep today's behavior.
-	if (plan.gjcGoalMode !== "aggregate") return;
+	if (plan.worxGoalMode !== "aggregate") return;
 	// A real give-up requires an active aggregate goal to actually be abandoned. With no
 	// current goal-mode goal (or a non-active one), `drop` is a no-op/reset before a fresh
 	// `create`, never a give-up — so it is left un-nudged.

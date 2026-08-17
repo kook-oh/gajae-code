@@ -141,7 +141,7 @@ async function createFakeTmuxBin(rootDir: string, options: { skipOwnerLaunch?: b
 	    ;;
 	  if-shell)
 	    [ -f "$state" ] && kill "$(cat "$state")" 2>/dev/null || true
-	    printf '%s\n' '__gjc_harness_cleanup_ok__'
+	    printf '%s\n' '__worx_harness_cleanup_ok__'
 	    exit 0
 	    ;;
 	  kill-session)

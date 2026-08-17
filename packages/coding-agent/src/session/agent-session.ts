@@ -278,7 +278,7 @@ import {
 	resolveSubskillActivationForSkillInvocation,
 } from "../extensibility/worx-plugins";
 import { resolveCurrentPhaseForParent } from "../extensibility/worx-plugins/injection";
-import type { GjcRuntimeSnapshotProvider } from "../extensibility/worx-plugins/runtime-quarantine";
+import type { WorxRuntimeSnapshotProvider } from "../extensibility/worx-plugins/runtime-quarantine";
 import { readActiveSubskillsForParent, toActiveSubskillEntry } from "../extensibility/worx-plugins/state";
 import { loadActiveSubskillTools } from "../extensibility/worx-plugins/tools";
 import { GoalRuntime } from "../goals/runtime";
@@ -319,7 +319,7 @@ import { buildSyntheticModelId, syntheticNamespaceCollision } from "../sdk/model
 import type { SecretObfuscator } from "../secrets/obfuscator";
 import { formatNoCredentialOnboardingError, formatNoModelOnboardingError } from "../setup/model-onboarding-guidance";
 import {
-	isCanonicalGjcWorkflowSkill,
+	isCanonicalWorxWorkflowSkill,
 	isWorkflowContinuationInert,
 	readVisibleSkillActiveState,
 	syncSkillActiveState,
@@ -363,14 +363,14 @@ import { buildNamedToolChoice, buildNamedToolChoiceResult } from "../utils/tool-
 import { buildWorkflowIntentDiff, WORKFLOW_INTENT_DIFF_CUSTOM_TYPE } from "../workflow/workflow-intent-diff";
 import { buildWorkspaceTree, type WorkspaceTree } from "../workspace-tree";
 import { assertDeepInterviewIntentManifest } from "../worx-runtime/deep-interview-state";
-import { buildGjcRuntimeSessionEnv, consumePendingGoalModeRequest } from "../worx-runtime/goal-mode-request";
+import { buildWorxRuntimeSessionEnv, consumePendingGoalModeRequest } from "../worx-runtime/goal-mode-request";
 import {
 	isMemoryGuardClaimsLease,
 	isMemoryGuardClaimsLeaseForStateDir,
 	type MemoryGuardClaimsLease,
 } from "../worx-runtime/memory-guard-owner-claims";
 import {
-	assertNonEmptyGjcSessionId,
+	assertNonEmptyWorxSessionId,
 	modeStatePath as sessionModeStatePath,
 	sessionStateDir,
 } from "../worx-runtime/session-layout";
@@ -379,8 +379,8 @@ import {
 	persistCoordinatorRuntimeStateFromEvent,
 	registerCoordinatorRuntimeStateFinalizer,
 } from "../worx-runtime/session-state-sidecar";
-import { requestGjcWorkerIntegrationAttempt } from "../worx-runtime/team-runtime";
-import { GjcTeamWorkerHeartbeatReporter } from "../worx-runtime/team-worker-heartbeat";
+import { requestWorxWorkerIntegrationAttempt } from "../worx-runtime/team-runtime";
+import { WorxTeamWorkerHeartbeatReporter } from "../worx-runtime/team-worker-heartbeat";
 import type { AuthStorage } from "./auth-storage";
 import {
 	DefaultModelSelectionRecoveryError,
@@ -597,7 +597,7 @@ export interface AgentSessionConfig {
 	 * Override the runtime-owned `gjc team` worker heartbeat reporter. Defaults to a
 	 * reporter derived from the team worker environment, or none outside a worker pane.
 	 */
-	teamWorkerHeartbeatReporter?: GjcTeamWorkerHeartbeatReporter;
+	teamWorkerHeartbeatReporter?: WorxTeamWorkerHeartbeatReporter;
 
 	/** Loaded skills (already discovered by SDK) */
 	skills?: Skill[];
@@ -2114,7 +2114,7 @@ export class AgentSession {
 	#workerIntegrationScheduler: WorkerIntegrationRequestScheduler;
 	#workerIntegrationRequestedForTurn = false;
 	/** Runtime-owned team worker heartbeat; `undefined` outside a `gjc team` worker pane. */
-	#teamWorkerHeartbeat: GjcTeamWorkerHeartbeatReporter | undefined;
+	#teamWorkerHeartbeat: WorxTeamWorkerHeartbeatReporter | undefined;
 	#teamWorkerTurnsInFlight = 0;
 	#unregisterTeamWorkerAsyncJobChange: (() => void) | undefined;
 	// First-party internal before-agent-start contributors (not user hooks).
@@ -2184,8 +2184,8 @@ export class AgentSession {
 	#selectedDiscoveredToolNames = new Set<string>();
 	#baselineDiscoveredBuiltinToolNames = new Set<string>();
 	#discoverableToolAllowedNames: ReadonlySet<string> | undefined;
-	#gjcSubskillToolNames = new Set<string>();
-	#gjcSubskillToolSignature: string | undefined;
+	#worxSubskillToolNames = new Set<string>();
+	#worxSubskillToolSignature: string | undefined;
 	#defaultSelectedMCPServerNames = new Set<string>();
 	#defaultSelectedMCPToolNames = new Set<string>();
 	#mandatoryMCPToolNames = new Set<string>();
@@ -2773,7 +2773,7 @@ export class AgentSession {
 		this.#workerIntegrationScheduler = new WorkerIntegrationRequestScheduler(
 			config.workerIntegrationRequest ??
 				(async signal => {
-					await requestGjcWorkerIntegrationAttempt(this.sessionManager.getCwd(), process.env, { signal }).catch(
+					await requestWorxWorkerIntegrationAttempt(this.sessionManager.getCwd(), process.env, { signal }).catch(
 						error => {
 							logger.warn("GJC team worker integration request failed", { error: String(error) });
 						},
@@ -2787,7 +2787,7 @@ export class AgentSession {
 		this.#teamWorkerHeartbeat =
 			config.teamWorkerHeartbeatReporter ??
 			((config.taskDepth ?? 0) === 0
-				? GjcTeamWorkerHeartbeatReporter.forProcess(() => this.sessionManager.getCwd())
+				? WorxTeamWorkerHeartbeatReporter.forProcess(() => this.sessionManager.getCwd())
 				: undefined);
 		this.notificationSessionController = config.notificationSessionController;
 		this.taskDepth = config.taskDepth ?? 0;
@@ -3127,10 +3127,10 @@ export class AgentSession {
 	getActiveSkillPhase(): string | undefined {
 		const active = this.#activeSkillState;
 		if (!active) return undefined;
-		if (!isCanonicalGjcWorkflowSkill(active.skill)) return undefined;
+		if (!isCanonicalWorxWorkflowSkill(active.skill)) return undefined;
 		const sessionId = active.sessionId ?? this.sessionManager.getSessionId();
 		try {
-			assertNonEmptyGjcSessionId(sessionId, "AgentSession.getActiveSkillPhase");
+			assertNonEmptyWorxSessionId(sessionId, "AgentSession.getActiveSkillPhase");
 			// Keep the session-state-dir construction explicit here so the chain guard
 			// refuses to fall back to a legacy root `.worx/state` read.
 			const stateDir = sessionStateDir(this.sessionManager.getCwd(), sessionId);
@@ -3157,7 +3157,7 @@ export class AgentSession {
 					: undefined;
 		if (active?.skill !== "deep-interview") return undefined;
 		try {
-			assertNonEmptyGjcSessionId(currentSessionId, "AgentSession.getDeepInterviewAskStage");
+			assertNonEmptyWorxSessionId(currentSessionId, "AgentSession.getDeepInterviewAskStage");
 			const stateDir = sessionStateDir(this.sessionManager.getCwd(), currentSessionId);
 			const filePath = path.join(
 				stateDir,
@@ -4356,7 +4356,7 @@ export class AgentSession {
 				await this.#goalRuntime.onToolCompleted(event.toolName);
 			}
 			if (event.toolName === "bash" && !event.isError) {
-				await this.#activatePendingGjcGoalModeRequest();
+				await this.#activatePendingWorxGoalModeRequest();
 			}
 		}
 		if (event.type === "turn_end" && this.#pendingRewindReport) {
@@ -7439,7 +7439,7 @@ export class AgentSession {
 		});
 	}
 
-	async #hasActiveGjcSubskillTools(parent: string, sessionId: string | undefined): Promise<boolean> {
+	async #hasActiveWorxSubskillTools(parent: string, sessionId: string | undefined): Promise<boolean> {
 		if (!parent.trim()) return false;
 		const cwd = this.sessionManager.getCwd();
 		const phase = await resolveCurrentPhaseForParent({ cwd, sessionId, parent });
@@ -7461,7 +7461,7 @@ export class AgentSession {
 		};
 	}
 
-	#computeGjcSubskillToolSignature(tools: CustomTool[]): string {
+	#computeWorxSubskillToolSignature(tools: CustomTool[]): string {
 		return tools
 			.map(tool => `${tool.name}\u0000${tool.description}\u0000${JSON.stringify(tool.parameters)}`)
 			.sort()
@@ -7471,7 +7471,7 @@ export class AgentSession {
 	/**
 	 * Refresh plugin sub-skill tools after workflow/sub-skill activation or phase changes.
 	 */
-	async refreshGjcSubskillTools(): Promise<void> {
+	async refreshWorxSubskillTools(): Promise<void> {
 		const activeState = await readVisibleSkillActiveState(
 			this.sessionManager.getCwd(),
 			this.sessionManager.getSessionId(),
@@ -7482,16 +7482,16 @@ export class AgentSession {
 			activeState?.active_skills?.find(entry => entry.active !== false)?.skill;
 		const parent = activeSkill?.trim();
 		if (!parent) {
-			if (this.#gjcSubskillToolNames.size === 0) return;
-			const previousGjcSubskillToolNames = new Set(this.#gjcSubskillToolNames);
+			if (this.#worxSubskillToolNames.size === 0) return;
+			const previousWorxSubskillToolNames = new Set(this.#worxSubskillToolNames);
 			const previousActiveToolNames = this.getActiveToolNames();
-			for (const name of previousGjcSubskillToolNames) {
+			for (const name of previousWorxSubskillToolNames) {
 				this.#toolRegistry.delete(name);
 			}
-			this.#gjcSubskillToolNames.clear();
+			this.#worxSubskillToolNames.clear();
 			this.#invalidateDiscoveryCaches();
 			await this.#applyActiveToolsByName(
-				previousActiveToolNames.filter(name => !previousGjcSubskillToolNames.has(name)),
+				previousActiveToolNames.filter(name => !previousWorxSubskillToolNames.has(name)),
 			);
 			return;
 		}
@@ -7499,11 +7499,12 @@ export class AgentSession {
 		const cwd = this.sessionManager.getCwd();
 		const sessionId =
 			this.#activeSkillState?.sessionId ?? activeState?.session_id ?? this.sessionManager.getSessionId();
-		if (this.#gjcSubskillToolNames.size === 0 && !(await this.#hasActiveGjcSubskillTools(parent, sessionId))) return;
+		if (this.#worxSubskillToolNames.size === 0 && !(await this.#hasActiveWorxSubskillTools(parent, sessionId)))
+			return;
 
 		const phase = await resolveCurrentPhaseForParent({ cwd, sessionId, parent });
 		const reservedToolNames = Array.from(this.#toolRegistry.keys()).filter(
-			name => !this.#gjcSubskillToolNames.has(name),
+			name => !this.#worxSubskillToolNames.has(name),
 		);
 		const customTools = await loadActiveSubskillTools({ cwd, sessionId, parent, phase, reservedToolNames });
 		const nextToolNames = customTools.map(tool => tool.name);
@@ -7512,18 +7513,18 @@ export class AgentSession {
 			throw new Error("GJC sub-skill tool names must be unique");
 		}
 
-		const previousGjcSubskillToolNames = new Set(this.#gjcSubskillToolNames);
-		const nextSignature = this.#computeGjcSubskillToolSignature(customTools);
-		if (this.#gjcSubskillToolSignature === nextSignature) {
+		const previousWorxSubskillToolNames = new Set(this.#worxSubskillToolNames);
+		const nextSignature = this.#computeWorxSubskillToolSignature(customTools);
+		if (this.#worxSubskillToolSignature === nextSignature) {
 			return;
 		}
 
 		const previousActiveToolNames = this.getActiveToolNames();
-		for (const name of previousGjcSubskillToolNames) {
+		for (const name of previousWorxSubskillToolNames) {
 			this.#toolRegistry.delete(name);
 		}
-		this.#gjcSubskillToolNames.clear();
-		this.#gjcSubskillToolSignature = undefined;
+		this.#worxSubskillToolNames.clear();
+		this.#worxSubskillToolSignature = undefined;
 
 		const getCustomToolContext = () => this.#getCustomToolContext();
 		for (const customTool of customTools) {
@@ -7532,26 +7533,26 @@ export class AgentSession {
 				this.#extensionRunner ? new ExtensionToolWrapper(wrapped, this.#extensionRunner) : wrapped
 			) as AgentTool;
 			this.#toolRegistry.set(finalTool.name, finalTool);
-			this.#gjcSubskillToolNames.add(finalTool.name);
+			this.#worxSubskillToolNames.add(finalTool.name);
 		}
-		this.#gjcSubskillToolSignature = nextSignature;
+		this.#worxSubskillToolSignature = nextSignature;
 
 		this.#invalidateDiscoveryCaches();
-		const activeNonGjcSubskillToolNames = previousActiveToolNames.filter(
-			name => !previousGjcSubskillToolNames.has(name),
+		const activeNonWorxSubskillToolNames = previousActiveToolNames.filter(
+			name => !previousWorxSubskillToolNames.has(name),
 		);
-		const preservedGjcSubskillToolNames = previousActiveToolNames.filter(
-			name => previousGjcSubskillToolNames.has(name) && this.#gjcSubskillToolNames.has(name),
+		const preservedWorxSubskillToolNames = previousActiveToolNames.filter(
+			name => previousWorxSubskillToolNames.has(name) && this.#worxSubskillToolNames.has(name),
 		);
-		const autoActivatedGjcSubskillToolNames = customTools
-			.filter(tool => !tool.hidden && !previousGjcSubskillToolNames.has(tool.name))
+		const autoActivatedWorxSubskillToolNames = customTools
+			.filter(tool => !tool.hidden && !previousWorxSubskillToolNames.has(tool.name))
 			.map(tool => tool.name);
 		await this.#applyActiveToolsByName(
 			Array.from(
 				new Set([
-					...activeNonGjcSubskillToolNames,
-					...preservedGjcSubskillToolNames,
-					...autoActivatedGjcSubskillToolNames,
+					...activeNonWorxSubskillToolNames,
+					...preservedWorxSubskillToolNames,
+					...autoActivatedWorxSubskillToolNames,
 				]),
 			),
 		);
@@ -8070,7 +8071,7 @@ export class AgentSession {
 	}
 
 	#constructWorkflowGateEmitter(sessionId = this.sessionManager.getSessionId()): WorkflowGateEmitter {
-		assertNonEmptyGjcSessionId(sessionId, "AgentSession workflow-gate session");
+		assertNonEmptyWorxSessionId(sessionId, "AgentSession workflow-gate session");
 		const gateStore =
 			this.#workflowGatePublication === "endpoint" && this.sessionManager.isPersisted()
 				? new FileGateStore(
@@ -8191,7 +8192,7 @@ export class AgentSession {
 			// a predecessor session's workflow state to the current identity.
 			if (this.#isDisposed || this.sessionManager.getSessionId() !== sessionId) return;
 		}
-		if (activeSkill && isCanonicalGjcWorkflowSkill(activeSkill.trim())) {
+		if (activeSkill && isCanonicalWorxWorkflowSkill(activeSkill.trim())) {
 			if (!inMemoryActiveSkill) this.#restoredWorkflowSkillState = { skill: activeSkill.trim(), sessionId };
 			this.#attachAskTool();
 		} else if (this.#restoredWorkflowSkillState?.sessionId === sessionId) {
@@ -8281,7 +8282,7 @@ export class AgentSession {
 		);
 	}
 
-	async #activatePendingGjcGoalModeRequest(): Promise<boolean> {
+	async #activatePendingWorxGoalModeRequest(): Promise<boolean> {
 		if (!this.settings.get("goal.enabled")) return false;
 		const pendingGoal = await consumePendingGoalModeRequest(
 			this.sessionManager.getCwd(),
@@ -8707,7 +8708,7 @@ export class AgentSession {
 				: { role: "user" as const, content: userContent, attribution: promptAttribution, timestamp: Date.now() };
 			if (deepInterviewUserIntentEpoch !== undefined)
 				this.#deepInterviewGenuineUserMessageEpochs.set(message, deepInterviewUserIntentEpoch);
-			await this.refreshGjcSubskillTools();
+			await this.refreshWorxSubskillTools();
 
 			if (eagerTodoPrelude?.toolChoice) {
 				this.#toolChoiceQueue.pushOnce(eagerTodoPrelude.toolChoice, {
@@ -8747,7 +8748,7 @@ export class AgentSession {
 		// observational state-sync below (whose failures are swallowed by
 		// #syncSkillPromptActiveStateSafely): attach ask first so canonical
 		// workflow skills can always call it.
-		if (active && isCanonicalGjcWorkflowSkill(skill)) this.#attachAskTool();
+		if (active && isCanonicalWorxWorkflowSkill(skill)) this.#attachAskTool();
 		const sessionId = this.sessionManager.getSessionId();
 		// Canonical GJC workflow skills (deep-interview, ralplan, ultragoal, team)
 		// own their `.worx/state/skill-active-state.json` row through the
@@ -8787,7 +8788,7 @@ export class AgentSession {
 		this.#restoredWorkflowSkillState = undefined;
 		this.#activeSkillState = active ? { skill, sessionId } : undefined;
 		if (active) {
-			await this.refreshGjcSubskillTools();
+			await this.refreshWorxSubskillTools();
 		}
 	}
 
@@ -10500,7 +10501,7 @@ export class AgentSession {
 							: message.role === "user"
 								? this.#getUserMessageText(message)
 								: text;
-					await this.refreshGjcSubskillTools();
+					await this.refreshWorxSubskillTools();
 					if (message.role === "custom") await this.#syncSkillPromptActiveStateSafely(message, true);
 					if (selected) {
 						const displayTag = message.role === "custom" ? readPendingDisplayTag(message.details) : undefined;
@@ -12350,9 +12351,9 @@ export class AgentSession {
 	 * Undefined until that publication happens, so consumers report runtime
 	 * status as unavailable rather than falsely clear.
 	 */
-	gjcRuntimeSnapshot?: GjcRuntimeSnapshotProvider;
+	worxRuntimeSnapshot?: WorxRuntimeSnapshotProvider;
 	/** Activation generation a published snapshot must match to be merged. */
-	gjcActivationGeneration?: number;
+	worxActivationGeneration?: number;
 
 	// =========================================================================
 	// Message Queue Mode Management
@@ -16568,7 +16569,7 @@ export class AgentSession {
 			if (hookResult?.result) {
 				this.recordBashResult(command, hookResult.result, options);
 				if (hookResult.result.exitCode === 0 && !hookResult.result.cancelled) {
-					await this.#activatePendingGjcGoalModeRequest();
+					await this.#activatePendingWorxGoalModeRequest();
 				}
 				return hookResult.result;
 			}
@@ -16584,7 +16585,7 @@ export class AgentSession {
 				sessionKey: this.sessionId,
 				cwd,
 				timeout: clampTimeout("bash") * 1000,
-				env: buildGjcRuntimeSessionEnv({
+				env: buildWorxRuntimeSessionEnv({
 					sessionFile: null,
 					sessionId: this.sessionId,
 					cwd,
@@ -16594,7 +16595,7 @@ export class AgentSession {
 
 			this.recordBashResult(command, result, options);
 			if (result.exitCode === 0 && !result.cancelled) {
-				await this.#activatePendingGjcGoalModeRequest();
+				await this.#activatePendingWorxGoalModeRequest();
 			}
 			return result;
 		} finally {

@@ -14,12 +14,12 @@ import "../src/discovery/claude-plugins";
 import { clearClaudePluginRootsCache } from "../src/discovery/helpers";
 import { buildSkillPromptMessage } from "../src/extensibility/skills";
 import {
-	discoverGjcPluginRoots,
+	discoverWorxPluginRoots,
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
 } from "../src/extensibility/worx-plugins";
 import { parseManifest } from "../src/extensibility/worx-plugins/schema";
-import { GjcPluginLoadError } from "../src/extensibility/worx-plugins/types";
+import { WorxPluginLoadError } from "../src/extensibility/worx-plugins/types";
 import { syncSkillActiveState } from "../src/skill-state/active-state";
 import { discoverAgents } from "../src/task/discovery";
 import { serializeManifestProjection } from "../src/worx-runtime/workflow-manifest";
@@ -146,8 +146,8 @@ describe("GJC plugin roots never surface through legacy claude plugin providers"
 				"/plugin/agents/gajae-plugin.json",
 			);
 		} catch (error) {
-			expect(error).toBeInstanceOf(GjcPluginLoadError);
-			expect((error as GjcPluginLoadError).code).toBe("forbidden_surface");
+			expect(error).toBeInstanceOf(WorxPluginLoadError);
+			expect((error as WorxPluginLoadError).code).toBe("forbidden_surface");
 			return;
 		}
 		throw new Error("Expected forbidden_surface load error");
@@ -158,7 +158,7 @@ describe("GJC plugin roots never surface through legacy claude plugin providers"
 		const before = serializeManifestProjection();
 		expect(before).not.toContain("design");
 
-		const roots = await discoverGjcPluginRoots({ cwd: tempCwd });
+		const roots = await discoverWorxPluginRoots({ cwd: tempCwd });
 		expect(roots.some(root => root.endsWith(path.join(".worx", "worx-plugins", "valid-skill-plugin")))).toBe(true);
 		const activation = await resolveSubskillActivationForSkillInvocation({
 			cwd: tempCwd,

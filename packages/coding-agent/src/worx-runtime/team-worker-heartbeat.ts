@@ -14,27 +14,29 @@
  * name the process that is actually working rather than a placeholder.
  */
 import { logger } from "@bworx-io/worx-utils";
-import { parseHeartbeatStaleMs, refreshGjcWorkerHeartbeat, type WorkerHeartbeatFile } from "./team-runtime";
+import { parseHeartbeatStaleMs, refreshWorxWorkerHeartbeat, type WorkerHeartbeatFile } from "./team-runtime";
 
 /** Publish several times per stale window so one missed tick cannot cross it. */
 const HEARTBEAT_INTERVAL_DIVISOR = 3;
 const MIN_HEARTBEAT_INTERVAL_MS = 1;
 const MAX_HEARTBEAT_INTERVAL_MS = 30_000;
 
-export interface GjcTeamWorkerIdentity {
+export interface WorxTeamWorkerIdentity {
 	teamName: string;
 	workerId: string;
 }
 
 /** Resolves the team identity injected into a worker pane by `gjc team` startup. */
-export function resolveGjcTeamWorkerIdentity(env: NodeJS.ProcessEnv = process.env): GjcTeamWorkerIdentity | undefined {
+export function resolveWorxTeamWorkerIdentity(
+	env: NodeJS.ProcessEnv = process.env,
+): WorxTeamWorkerIdentity | undefined {
 	const teamName = env.WORX_TEAM_NAME?.trim();
 	const workerId = env.WORX_TEAM_WORKER_ID?.trim() || env.WORX_TEAM_INTERNAL_WORKER?.split("/").pop()?.trim();
 	return teamName && workerId ? { teamName, workerId } : undefined;
 }
 
 /** Refresh cadence derived from the leader's stale window; `0` disables publishing. */
-export function resolveGjcTeamWorkerHeartbeatIntervalMs(env: NodeJS.ProcessEnv = process.env): number {
+export function resolveWorxTeamWorkerHeartbeatIntervalMs(env: NodeJS.ProcessEnv = process.env): number {
 	const staleMs = parseHeartbeatStaleMs(env);
 	if (staleMs <= 0) return 0;
 	return Math.min(
@@ -50,16 +52,16 @@ export function resolveGjcTeamWorkerHeartbeatIntervalMs(env: NodeJS.ProcessEnv =
  * `turn_count` and process-incarnation metadata are merged under the same
  * mutation fence used by CLI heartbeat updates.
  */
-export async function writeGjcTeamWorkerRuntimeHeartbeat(
+export async function writeWorxTeamWorkerRuntimeHeartbeat(
 	cwd: string = process.cwd(),
 	env: NodeJS.ProcessEnv = process.env,
 ): Promise<WorkerHeartbeatFile | undefined> {
-	const identity = resolveGjcTeamWorkerIdentity(env);
+	const identity = resolveWorxTeamWorkerIdentity(env);
 	if (!identity) return undefined;
-	return refreshGjcWorkerHeartbeat(identity.teamName, identity.workerId, process.pid, cwd, env);
+	return refreshWorxWorkerHeartbeat(identity.teamName, identity.workerId, process.pid, cwd, env);
 }
 
-export interface GjcTeamWorkerHeartbeatReporterOptions {
+export interface WorxTeamWorkerHeartbeatReporterOptions {
 	write: () => Promise<void>;
 	intervalMs: number;
 }
@@ -71,14 +73,14 @@ export interface GjcTeamWorkerHeartbeatReporterOptions {
  * than queued, because only the most recent record matters. The timer is
  * unreferenced so it can never hold the process open.
  */
-export class GjcTeamWorkerHeartbeatReporter {
+export class WorxTeamWorkerHeartbeatReporter {
 	readonly #write: () => Promise<void>;
 	readonly #intervalMs: number;
 	#timer: NodeJS.Timeout | undefined;
 	#inFlight: Promise<void> | undefined;
 	#disposed = false;
 
-	constructor(options: GjcTeamWorkerHeartbeatReporterOptions) {
+	constructor(options: WorxTeamWorkerHeartbeatReporterOptions) {
 		this.#write = options.write;
 		this.#intervalMs = options.intervalMs;
 	}
@@ -87,14 +89,14 @@ export class GjcTeamWorkerHeartbeatReporter {
 	static forProcess(
 		cwd: () => string,
 		env: NodeJS.ProcessEnv = process.env,
-	): GjcTeamWorkerHeartbeatReporter | undefined {
-		if (!resolveGjcTeamWorkerIdentity(env)) return undefined;
-		const intervalMs = resolveGjcTeamWorkerHeartbeatIntervalMs(env);
+	): WorxTeamWorkerHeartbeatReporter | undefined {
+		if (!resolveWorxTeamWorkerIdentity(env)) return undefined;
+		const intervalMs = resolveWorxTeamWorkerHeartbeatIntervalMs(env);
 		if (intervalMs <= 0) return undefined;
-		return new GjcTeamWorkerHeartbeatReporter({
+		return new WorxTeamWorkerHeartbeatReporter({
 			intervalMs,
 			write: async () => {
-				await writeGjcTeamWorkerRuntimeHeartbeat(cwd(), env);
+				await writeWorxTeamWorkerRuntimeHeartbeat(cwd(), env);
 			},
 		});
 	}

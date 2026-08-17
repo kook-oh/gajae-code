@@ -24,7 +24,7 @@ import type {
 	DaemonRuntimeInfo,
 	DaemonStatus,
 } from "../../daemon/control-types";
-import { resolveGjcRuntimeSpawnInfo } from "../../daemon/runtime";
+import { resolveWorxRuntimeSpawnInfo } from "../../daemon/runtime";
 import { isProcessIncarnation, processIncarnation } from "../broker/process-incarnation";
 import { getNotificationConfig, isDiscordComplete, isProviderEffectivelyEnabled, isSlackComplete } from "./config";
 
@@ -353,7 +353,7 @@ function defaultPidIncarnation(pid: number): string | undefined {
 	return processIncarnation(pid);
 }
 function runtimeInfo(execPath?: string): DaemonRuntimeInfo {
-	const rt = resolveGjcRuntimeSpawnInfo(execPath ?? process.execPath);
+	const rt = resolveWorxRuntimeSpawnInfo(execPath ?? process.execPath);
 	return {
 		mode: rt.mode,
 		execPath: rt.execPath,
@@ -432,7 +432,7 @@ export function buildChatDaemonSpawnArgs(input: {
 	agentDir: string;
 	execPath?: string;
 }): { command: string; args: string[]; runtime: DaemonRuntimeInfo } {
-	const rt = resolveGjcRuntimeSpawnInfo(input.execPath ?? process.execPath);
+	const rt = resolveWorxRuntimeSpawnInfo(input.execPath ?? process.execPath);
 	return {
 		command: rt.execPath,
 		args: [

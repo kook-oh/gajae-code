@@ -4,10 +4,10 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	GjcPluginLoadError,
 	readActiveSubskillsForParent,
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
+	WorxPluginLoadError,
 } from "../src/extensibility/worx-plugins";
 import { applyHandoffToActiveState, syncSkillActiveState } from "../src/skill-state/active-state";
 
@@ -187,7 +187,7 @@ describe("GJC sub-skill activation dispatch", () => {
 		await expect(
 			resolveSubskillActivationForSkillInvocation({ cwd, skillName: "ralplan", args: "--design" }),
 		).rejects.toMatchObject({
-			constructor: GjcPluginLoadError,
+			constructor: WorxPluginLoadError,
 			code: "duplicate_arg",
 		});
 	});

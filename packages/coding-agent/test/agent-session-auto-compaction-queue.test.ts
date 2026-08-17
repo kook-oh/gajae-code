@@ -15,7 +15,7 @@ import { convertToLlm } from "@bworx-io/worx-code/session/messages";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getProjectAgentDir, TempDir, withTimeout } from "@bworx-io/worx-utils";
 
-const runtimeSignalStoreKey = "__gjcRuntimeSignals";
+const runtimeSignalStoreKey = "__worxRuntimeSignals";
 
 type RuntimeSignalGlobal = typeof globalThis & { [runtimeSignalStoreKey]?: string[] };
 

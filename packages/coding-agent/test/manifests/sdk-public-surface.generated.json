@@ -307,7 +307,7 @@
     "migrateSessionEntries",
     "onTerminalAppearanceChange",
     "onThemeChange",
-    "parseGjcPy",
+    "parseWorxPy",
     "parseHashline",
     "parseHashlineWithWarnings",
     "parseSessionEntries",

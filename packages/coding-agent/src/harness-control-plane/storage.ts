@@ -74,7 +74,7 @@ function sessionMatchesWorkspace(state: SessionState, expectedWorkspace: string)
 function harnessRootRegistryDir(env: NodeJS.ProcessEnv = process.env): string {
 	const override = env.WORX_HARNESS_ROOT_REGISTRY_DIR?.trim();
 	if (override) return path.resolve(override);
-	return path.join(os.tmpdir(), `gjch${process.getuid?.() ?? "u"}`, "harness-roots");
+	return path.join(os.tmpdir(), `worxh${process.getuid?.() ?? "u"}`, "harness-roots");
 }
 
 function harnessRootRegistryPath(sessionId: string, env: NodeJS.ProcessEnv = process.env): string {
@@ -183,7 +183,7 @@ interface SocketPathMetadata {
 function socketBase(env: NodeJS.ProcessEnv, allowOverride: boolean): { base: string; fromOverride: boolean } {
 	const override = env.WORX_HARNESS_SOCKET_DIR?.trim();
 	if (allowOverride && override) return { base: path.resolve(override), fromOverride: true };
-	return { base: path.join(os.tmpdir(), `gjch${process.getuid?.() ?? "u"}`), fromOverride: false };
+	return { base: path.join(os.tmpdir(), `worxh${process.getuid?.() ?? "u"}`), fromOverride: false };
 }
 
 function socketPathForBase(root: string, sessionId: string, base: string): string {
@@ -238,17 +238,17 @@ export function resolveHarnessRoot(opts?: {
 	root?: string;
 	cwd?: string;
 	env?: NodeJS.ProcessEnv;
-	gjcSessionId?: string;
+	worxSessionId?: string;
 }): string {
 	const env = opts?.env ?? process.env;
 	if (opts?.root) return path.resolve(opts.root);
 	const fromEnv = env.WORX_HARNESS_STATE_ROOT;
 	if (fromEnv?.trim()) return path.resolve(fromEnv.trim());
-	const gjcSessionId = opts?.gjcSessionId ?? env.WORX_SESSION_ID?.trim();
-	if (!gjcSessionId) {
+	const worxSessionId = opts?.worxSessionId ?? env.WORX_SESSION_ID?.trim();
+	if (!worxSessionId) {
 		throw new StorageError("GJC session id is required for default harness state root", "missing_gjc_session_id");
 	}
-	return harnessStateRoot(opts?.cwd ?? process.cwd(), gjcSessionId);
+	return harnessStateRoot(opts?.cwd ?? process.cwd(), worxSessionId);
 }
 
 export function assertSafeSessionId(id: string): void {
@@ -273,7 +273,7 @@ export interface SessionPaths {
 	artifactsDir: string;
 	controlSock: string;
 	controlFifo: string;
-	gjcSessionDir: string;
+	worxSessionDir: string;
 }
 
 export function sessionPaths(root: string, sessionId: string): SessionPaths {
@@ -289,7 +289,7 @@ export function sessionPaths(root: string, sessionId: string): SessionPaths {
 		artifactsDir: path.join(dir, "artifacts"),
 		controlSock: path.join(dir, "control.sock"),
 		controlFifo: path.join(dir, "control.fifo"),
-		gjcSessionDir: path.join(dir, "gjc-session"),
+		worxSessionDir: path.join(dir, "gjc-session"),
 	};
 }
 

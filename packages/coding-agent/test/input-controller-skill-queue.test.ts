@@ -23,7 +23,7 @@ import { Agent } from "@bworx-io/worx-agent-core";
 import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { getEmbeddedDefaultGjcSkills } from "@bworx-io/worx-code/defaults/worx-defaults";
+import { getEmbeddedDefaultWorxSkills } from "@bworx-io/worx-code/defaults/worx-defaults";
 import { resolveSkillSlashCommands, type Skill } from "@bworx-io/worx-code/extensibility/skills";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import { InputController } from "@bworx-io/worx-code/modes/controllers/input-controller";
@@ -226,7 +226,7 @@ describe("InputController #invokeSkillCommand (E1-E3)", () => {
 	});
 
 	it("E3b: embedded default skill command does not require .worx on disk", async () => {
-		const embedded = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "deep-interview");
+		const embedded = getEmbeddedDefaultWorxSkills().find(skill => skill.name === "deep-interview");
 		if (!embedded) throw new Error("expected embedded deep-interview skill");
 		const { ctx, editor, promptCustomMessage } = createStubInputControllerContext({
 			skillCommands: new Map<string, Skill>([["skill:deep-interview", embedded]]),
@@ -386,7 +386,7 @@ describe("skill slash command resolution", () => {
 	});
 
 	it("exposes only namespaced skill commands", () => {
-		const deepInterview = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "deep-interview");
+		const deepInterview = getEmbeddedDefaultWorxSkills().find(skill => skill.name === "deep-interview");
 		if (!deepInterview) throw new Error("expected embedded deep-interview skill");
 
 		const withFileCollision = resolveSkillSlashCommands([deepInterview], new Set(["deep-interview"]));

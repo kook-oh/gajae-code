@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/worx-plugins";
+import { buildPluginMcpConfigs, installWorxBundle } from "../src/extensibility/worx-plugins";
 import { isPluginMcpPublicNetworkBound } from "../src/runtime-mcp/plugin-network-boundary";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
@@ -27,7 +27,7 @@ describe("plugin MCP runtime config conversion", () => {
 	test("converts a bundled stdio MCP into a root-confined runtime config", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-mcp-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const { configs, quarantine } = await buildPluginMcpConfigs({ cwd });
 		expect(quarantine).toHaveLength(0);
@@ -62,7 +62,7 @@ describe("plugin MCP runtime config conversion", () => {
 			}),
 		);
 
-		const r = await installGjcBundle({ cwd }, "project", bundle);
+		const r = await installWorxBundle({ cwd }, "project", bundle);
 		expect(r.ok).toBe(true);
 		const { configs, quarantine } = await buildPluginMcpConfigs({ cwd });
 

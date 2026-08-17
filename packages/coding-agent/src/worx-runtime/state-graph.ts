@@ -1,7 +1,7 @@
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../skill-state/canonical-skills";
 import { getSkillManifest } from "./workflow-manifest";
 
-export type StateGraphSkill = CanonicalGjcWorkflowSkill | "all";
+export type StateGraphSkill = CanonicalWorxWorkflowSkill | "all";
 export type StateGraphFormat = "ascii" | "mermaid" | "dot";
 
 function assertGraphFormat(format: string): asserts format is StateGraphFormat {
@@ -10,7 +10,7 @@ function assertGraphFormat(format: string): asserts format is StateGraphFormat {
 	}
 }
 
-function skillsFor(skill: StateGraphSkill): CanonicalGjcWorkflowSkill[] {
+function skillsFor(skill: StateGraphSkill): CanonicalWorxWorkflowSkill[] {
 	return skill === "all" ? [...CANONICAL_WORX_WORKFLOW_SKILLS] : [skill];
 }
 
@@ -50,12 +50,12 @@ function renderMermaid(skill: StateGraphSkill): string {
 	return `${lines.join("\n")}\n`;
 }
 
-function dotId(skill: CanonicalGjcWorkflowSkill, state: string): string {
+function dotId(skill: CanonicalWorxWorkflowSkill, state: string): string {
 	return `"${skill}:${state}"`;
 }
 
 function renderDot(skill: StateGraphSkill): string {
-	const lines = ["digraph gjc_state {", "  rankdir=LR;"];
+	const lines = ["digraph worx_state {", "  rankdir=LR;"];
 	for (const item of skillsFor(skill)) {
 		const manifest = getSkillManifest(item);
 		lines.push(`  subgraph "cluster_${item}" {`);

@@ -29,7 +29,7 @@ import { renderStatusLine } from "../tui";
 import { CachedOutputBlock, getOutputBlockContentWidth } from "../tui/output-block";
 import { truncateToWidth } from "../tui/utils";
 import { getSixelLineMask } from "../utils/sixel";
-import { buildGjcRuntimeSessionEnv } from "../worx-runtime/goal-mode-request";
+import { buildWorxRuntimeSessionEnv } from "../worx-runtime/goal-mode-request";
 import {
 	WORX_RALPLAN_ARTIFACT_ENV,
 	WORX_RESTRICTED_ROLE_AGENT_BASH_ENV,
@@ -1022,7 +1022,7 @@ export class BashTool implements AgentTool<BashToolSchema, BashToolDetails> {
 				)
 			: undefined;
 		const resolvedEnv = {
-			...buildGjcRuntimeSessionEnv({
+			...buildWorxRuntimeSessionEnv({
 				sessionFile: null,
 				sessionId: this.session.getSessionId?.(),
 				cwd: this.session.cwd,

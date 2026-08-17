@@ -5,15 +5,15 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxProfileCommands,
+	buildWorxTmuxExactOptionTarget,
+	buildWorxTmuxProfileCommands,
 } from "@bworx-io/worx-code/worx-runtime/tmux-common";
 import { replaceOwnerGeneration } from "@bworx-io/worx-code/worx-runtime/tmux-owner-isolation";
 import {
-	forceCloseGjcTmuxSession,
-	listGjcTmuxSessions,
+	forceCloseWorxTmuxSession,
+	listWorxTmuxSessions,
 	readTmuxSessionTagsForGc,
-	statusGjcTmuxSession,
+	statusWorxTmuxSession,
 } from "@bworx-io/worx-code/worx-runtime/tmux-sessions";
 
 const tmux = Bun.which("tmux");
@@ -74,8 +74,8 @@ describe.skipIf(!isLinux || !tmux || !userScopeAvailable)("tmux exact owner clos
 		const socketName = `gjc-close-${crypto.randomUUID().slice(0, 8)}`;
 		const scopeName = `gjc-owner-test-${crypto.randomUUID().slice(0, 8)}.scope`;
 		const tmuxWrapper = path.join(stateDir, "isolated-tmux");
-		const sessionName = `gjc_close_${crypto.randomUUID().slice(0, 8)}`;
-		const siblingSessionName = `gjc_sibling_${crypto.randomUUID().slice(0, 8)}`;
+		const sessionName = `worx_close_${crypto.randomUUID().slice(0, 8)}`;
+		const siblingSessionName = `worx_sibling_${crypto.randomUUID().slice(0, 8)}`;
 		const sessionId = crypto.randomUUID();
 		const generation = crypto.randomUUID();
 		const runId = crypto.randomUUID();
@@ -173,9 +173,9 @@ try {
 			stateDir,
 			socketKey: sessionName,
 		});
-		const target = buildGjcTmuxExactOptionTarget(sessionName, { env });
+		const target = buildWorxTmuxExactOptionTarget(sessionName, { env });
 		await replaceOwnerGeneration(stateDir, sessionId, generation);
-		for (const command of buildGjcTmuxProfileCommands(
+		for (const command of buildWorxTmuxProfileCommands(
 			target,
 			env,
 			{ sessionId, sessionStateFile: stateFile, ownerGeneration: generation, ownerServerKey: sessionName },
@@ -195,7 +195,7 @@ try {
 			});
 		expect(hasSession(sessionName).exitCode).toBe(0);
 		expect(hasSession(siblingSessionName).exitCode).toBe(0);
-		expect(statusGjcTmuxSession(sessionName, env)).toMatchObject({
+		expect(statusWorxTmuxSession(sessionName, env)).toMatchObject({
 			profile: "1",
 			sessionId,
 			sessionStateFile: stateFile,
@@ -205,7 +205,7 @@ try {
 			sessionId,
 			sessionStateFile: stateFile,
 		});
-		expect(listGjcTmuxSessions(env).find(session => session.name === sessionName)).toMatchObject({
+		expect(listWorxTmuxSessions(env).find(session => session.name === sessionName)).toMatchObject({
 			profile: "1",
 			sessionId,
 			sessionStateFile: stateFile,
@@ -220,7 +220,7 @@ try {
 				.trim(),
 		);
 		expect(fsSync.readFileSync(`/proc/${panePid}/cmdline`, "utf8")).toContain(supervisorScript);
-		await forceCloseGjcTmuxSession(sessionName, env, sessionId, stateFile, {
+		await forceCloseWorxTmuxSession(sessionName, env, sessionId, stateFile, {
 			resolveOwner: async () => ({
 				sessionId,
 				stateDir,

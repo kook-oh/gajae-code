@@ -13,7 +13,7 @@ import { logger } from "@bworx-io/worx-utils";
 import { withFileLock } from "../../config/file-lock";
 import type { Settings } from "../../config/settings";
 import type { DaemonRuntimeInfo } from "../../daemon/control-types";
-import { resolveGjcRuntimeSpawnInfo } from "../../daemon/runtime";
+import { resolveWorxRuntimeSpawnInfo } from "../../daemon/runtime";
 import { resizeImageBuffer } from "../../utils/image-resize";
 import { isProcessIncarnation, processIncarnation } from "../broker/process-incarnation";
 import { getNotificationConfig, isProviderEffectivelyEnabled, isTelegramComplete, tokenFingerprint } from "./config";
@@ -3779,7 +3779,7 @@ export function buildTelegramDaemonSpawnArgs(input: {
 	args: string[];
 	runtime: DaemonRuntimeInfo;
 } {
-	const rt = resolveGjcRuntimeSpawnInfo(input.execPath ?? process.execPath);
+	const rt = resolveWorxRuntimeSpawnInfo(input.execPath ?? process.execPath);
 	const args = [
 		...rt.argsPrefix,
 		"notify",
@@ -3813,7 +3813,7 @@ export async function spawnTelegramDaemonOwner(
 ): Promise<TelegramSpawnOwnerResult> {
 	const agentDir = input.settings.getAgentDir();
 	const execPath = deps.execPath ?? process.execPath;
-	const runtimeInfo = resolveGjcRuntimeSpawnInfo(execPath);
+	const runtimeInfo = resolveWorxRuntimeSpawnInfo(execPath);
 	// On Windows, a source-linked Bun/Node detached child can begin after its
 	// short-lived CLI parent has exited. Keep the owner id opaque so the
 	// daemon-internal launcher does not mistake that parent PID for its owner;

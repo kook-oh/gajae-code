@@ -1,15 +1,15 @@
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../skill-state/active-state";
 
 export interface SkillKeywordDefinition {
 	keyword: string;
-	skill: GjcWorkflowSkill;
+	skill: WorxWorkflowSkill;
 	priority: number;
 	guidance: string;
 }
 
 export const WORX_WORKFLOW_SKILLS = CANONICAL_WORX_WORKFLOW_SKILLS;
 
-export type GjcWorkflowSkill = CanonicalGjcWorkflowSkill;
+export type WorxWorkflowSkill = CanonicalWorxWorkflowSkill;
 
 export const WORX_SKILL_KEYWORD_DEFINITIONS: readonly SkillKeywordDefinition[] = [
 	{
@@ -38,7 +38,7 @@ export const WORX_SKILL_KEYWORD_DEFINITIONS: readonly SkillKeywordDefinition[] =
 	},
 ] as const;
 
-export function isGjcWorkflowSkill(value: string): value is GjcWorkflowSkill {
+export function isWorxWorkflowSkill(value: string): value is WorxWorkflowSkill {
 	return (WORX_WORKFLOW_SKILLS as readonly string[]).includes(value);
 }
 

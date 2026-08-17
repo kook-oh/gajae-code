@@ -13,7 +13,7 @@ const pinnedRollbackFixturePaths = new Set([
 ]);
 const forbidden = [
 	{ label: "gjc-notifications", pattern: /\bgjc-notifications\b/i },
-	{ label: "gjc_notifications", pattern: /\bgjc_notifications\b/ },
+	{ label: "worx_notifications", pattern: /\bgjc_notifications\b/ },
 	// Assembled instead of a single literal so the workspace scope-unification
 	// gate stays at zero while this pre-rename detector keeps matching the
 	// pre-pivot publish scope.

@@ -13,7 +13,7 @@ import { type Skill, skillCapability } from "../capability/skill";
 import { type SlashCommand, slashCommandCapability } from "../capability/slash-command";
 import { type CustomTool, toolCapability } from "../capability/tool";
 import type { LoadContext, LoadResult } from "../capability/types";
-import { rootContainsGjcManifest } from "../extensibility/worx-plugins";
+import { rootContainsWorxManifest } from "../extensibility/worx-plugins";
 import {
 	type ClaudePluginRoot,
 	createSourceMeta,
@@ -92,7 +92,7 @@ async function resolvePluginDir(
 	};
 }
 
-async function listNonGjcPluginRoots(
+async function listNonWorxPluginRoots(
 	home: string,
 	cwd: string,
 ): Promise<{ roots: ClaudePluginRoot[]; warnings: string[] }> {
@@ -101,7 +101,7 @@ async function listNonGjcPluginRoots(
 	const filteredWarnings = [...warnings];
 
 	for (const root of roots) {
-		if (await rootContainsGjcManifest(root.path)) {
+		if (await rootContainsWorxManifest(root.path)) {
 			filteredWarnings.push(`[claude-plugins] Skipping gajae-code plugin root (binding-only): ${root.path}`);
 			continue;
 		}
@@ -119,7 +119,7 @@ async function loadSkills(ctx: LoadContext): Promise<LoadResult<Skill>> {
 	const items: Skill[] = [];
 	const warnings: string[] = [];
 
-	const { roots, warnings: rootWarnings } = await listNonGjcPluginRoots(ctx.home, ctx.cwd);
+	const { roots, warnings: rootWarnings } = await listNonWorxPluginRoots(ctx.home, ctx.cwd);
 	warnings.push(...rootWarnings);
 
 	const results = await Promise.all(
@@ -154,7 +154,7 @@ async function loadSlashCommands(ctx: LoadContext): Promise<LoadResult<SlashComm
 	const items: SlashCommand[] = [];
 	const warnings: string[] = [];
 
-	const { roots, warnings: rootWarnings } = await listNonGjcPluginRoots(ctx.home, ctx.cwd);
+	const { roots, warnings: rootWarnings } = await listNonWorxPluginRoots(ctx.home, ctx.cwd);
 	warnings.push(...rootWarnings);
 
 	const results = await Promise.all(
@@ -194,7 +194,7 @@ async function loadHooks(ctx: LoadContext): Promise<LoadResult<Hook>> {
 	const items: Hook[] = [];
 	const warnings: string[] = [];
 
-	const { roots, warnings: rootWarnings } = await listNonGjcPluginRoots(ctx.home, ctx.cwd);
+	const { roots, warnings: rootWarnings } = await listNonWorxPluginRoots(ctx.home, ctx.cwd);
 	warnings.push(...rootWarnings);
 
 	const hookTypes = ["pre", "post"] as const;
@@ -241,7 +241,7 @@ async function loadTools(ctx: LoadContext): Promise<LoadResult<CustomTool>> {
 	const items: CustomTool[] = [];
 	const warnings: string[] = [];
 
-	const { roots, warnings: rootWarnings } = await listNonGjcPluginRoots(ctx.home, ctx.cwd);
+	const { roots, warnings: rootWarnings } = await listNonWorxPluginRoots(ctx.home, ctx.cwd);
 	warnings.push(...rootWarnings);
 
 	const results = await Promise.all(
@@ -278,7 +278,7 @@ async function loadMCPServers(ctx: LoadContext): Promise<LoadResult<MCPServer>> 
 	const items: MCPServer[] = [];
 	const warnings: string[] = [];
 
-	const { roots, warnings: rootWarnings } = await listNonGjcPluginRoots(ctx.home, ctx.cwd);
+	const { roots, warnings: rootWarnings } = await listNonWorxPluginRoots(ctx.home, ctx.cwd);
 	warnings.push(...rootWarnings);
 
 	for (const root of roots) {

@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { ChatUsageSnapshot, CostEstimate } from "@bworx-io/worx-agent-core";
 import { sessionRoot } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
 import type { TaskTokenLog, TaskTokenMetrics } from "./types";
 
 const TOKEN_LOG_FILE = "token-log.jsonl";
@@ -85,7 +85,7 @@ export async function resolveTaskTokenLogDir(
 	const managerId = sessionManager?.getSessionId();
 	if (managerId) return path.join(sessionRoot(cwd, managerId), "token-logs");
 	try {
-		const session = await resolveGjcSessionForRead(cwd, { envSessionId });
+		const session = await resolveWorxSessionForRead(cwd, { envSessionId });
 		return path.join(session.sessionRoot, "token-logs");
 	} catch (error) {
 		if (error instanceof SessionResolutionError) return undefined;

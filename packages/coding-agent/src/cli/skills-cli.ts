@@ -3,8 +3,8 @@
  */
 import {
 	DEFAULT_WORX_DEFINITION_NAMES,
-	type EmbeddedDefaultGjcSkill,
-	getEmbeddedDefaultGjcSkills,
+	type EmbeddedDefaultWorxSkill,
+	getEmbeddedDefaultWorxSkills,
 } from "../defaults/worx-defaults";
 
 export type SkillsAction = "list" | "read";
@@ -28,12 +28,12 @@ interface SkillsReadEntry extends SkillsListEntry {
 	content: string;
 }
 
-function getEmbeddedSkill(name: string): EmbeddedDefaultGjcSkill | undefined {
-	return getEmbeddedDefaultGjcSkills().find(skill => skill.name === name);
+function getEmbeddedSkill(name: string): EmbeddedDefaultWorxSkill | undefined {
+	return getEmbeddedDefaultWorxSkills().find(skill => skill.name === name);
 }
 
 function listEmbeddedSkills(): SkillsListEntry[] {
-	return getEmbeddedDefaultGjcSkills().map(skill => ({
+	return getEmbeddedDefaultWorxSkills().map(skill => ({
 		name: skill.name,
 		description: skill.description,
 		path: skill.filePath,

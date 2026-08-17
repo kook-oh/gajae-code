@@ -280,7 +280,7 @@ Set `mouse.enabled: true` to let GJC capture the wheel for virtual session scrol
 
 On native Windows, [psmux](https://github.com/psmux/psmux) may be installed as `psmux.exe`, `pmux.exe`, or a `tmux.exe` alias. The alias can report only a generic `tmux 3.3.6` banner, so GJC compares the selected `tmux.exe` executable identity with resolved `psmux.exe` / `pmux.exe` companions. A matching identity is classified as psmux; distinct identities preserve native-tmux semantics.
 
-If the selected command, an explicit `WORX_PSMUX_COMMAND`, or a resolved companion cannot be identified consistently, GJC reports `gjc_tmux_provider_ambiguous` and refuses before applying native-tmux target or mutation semantics. Correct `PATH`, set `WORX_TMUX_COMMAND` to a verified executable, or make `WORX_PSMUX_COMMAND` resolve to the same wrapper identity.
+If the selected command, an explicit `WORX_PSMUX_COMMAND`, or a resolved companion cannot be identified consistently, GJC reports `worx_tmux_provider_ambiguous` and refuses before applying native-tmux target or mutation semantics. Correct `PATH`, set `WORX_TMUX_COMMAND` to a verified executable, or make `WORX_PSMUX_COMMAND` resolve to the same wrapper identity.
 
 GJC-managed Windows psmux flows persist a `ProviderAuthority` for each owner generation. It binds the resolved absolute executable's identity and GJC's isolated server namespace; a missing, changed, or ambiguous identity fails closed. GJC recovery reads and re-proves that persisted authority rather than using an ambient multiplexer.
 

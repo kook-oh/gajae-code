@@ -5,34 +5,34 @@ import * as path from "node:path";
 import { teamStateRoot } from "../../src/worx-runtime/session-layout";
 import {
 	buildWorkerCommand,
-	type GjcTeamConfig,
 	parseHeartbeatStaleMs,
-	startGjcTeam,
+	startWorxTeam,
 	type WorkerHeartbeatFile,
+	type WorxTeamConfig,
 } from "../../src/worx-runtime/team-runtime";
 import {
-	GjcTeamWorkerHeartbeatReporter,
-	resolveGjcTeamWorkerHeartbeatIntervalMs,
-	resolveGjcTeamWorkerIdentity,
-	writeGjcTeamWorkerRuntimeHeartbeat,
+	resolveWorxTeamWorkerHeartbeatIntervalMs,
+	resolveWorxTeamWorkerIdentity,
+	WorxTeamWorkerHeartbeatReporter,
+	writeWorxTeamWorkerRuntimeHeartbeat,
 } from "../../src/worx-runtime/team-worker-heartbeat";
 
 const TEST_SESSION_ID = "test-session";
 let cleanupRoot: string | undefined;
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 const teamStateDir = (root: string, teamName: string) => path.join(teamStateRoot(root, TEST_SESSION_ID), teamName);
 const heartbeatFile = (root: string, teamName: string, worker: string) =>
 	path.join(teamStateDir(root, teamName), "workers", worker, "heartbeat.json");
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) delete process.env.WORX_SESSION_ID;
-	else process.env.WORX_SESSION_ID = previousGjcSessionId;
+	if (previousWorxSessionId === undefined) delete process.env.WORX_SESSION_ID;
+	else process.env.WORX_SESSION_ID = previousWorxSessionId;
 });
 
 afterEach(async () => {
@@ -43,7 +43,7 @@ afterEach(async () => {
 async function startDryRunTeam(teamName: string): Promise<string> {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-heartbeat-"));
 	cleanupRoot = root;
-	await startGjcTeam({
+	await startWorxTeam({
 		workerCount: 1,
 		agentType: "executor",
 		task: `Runtime heartbeat ${teamName}`,
@@ -73,36 +73,36 @@ async function until(predicate: () => boolean, timeoutMs = 2_000): Promise<void>
 
 describe("team worker identity and heartbeat cadence", () => {
 	it("resolves worker identity only when both team and worker are known", () => {
-		expect(resolveGjcTeamWorkerIdentity({})).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha" })).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_WORKER_ID: "worker-2" })).toBeUndefined();
-		expect(resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_WORKER_ID: "worker-2" })).toEqual({
+		expect(resolveWorxTeamWorkerIdentity({})).toBeUndefined();
+		expect(resolveWorxTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha" })).toBeUndefined();
+		expect(resolveWorxTeamWorkerIdentity({ WORX_TEAM_WORKER_ID: "worker-2" })).toBeUndefined();
+		expect(resolveWorxTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_WORKER_ID: "worker-2" })).toEqual({
 			teamName: "alpha",
 			workerId: "worker-2",
 		});
 		expect(
-			resolveGjcTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_INTERNAL_WORKER: "alpha/worker-3" }),
+			resolveWorxTeamWorkerIdentity({ WORX_TEAM_NAME: "alpha", WORX_TEAM_INTERNAL_WORKER: "alpha/worker-3" }),
 		).toEqual({ teamName: "alpha", workerId: "worker-3" });
 	});
 
 	it("publishes several times per stale window and stays inside the clamp", () => {
 		// Default 120s stale window: the 40s third would exceed the 30s ceiling.
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({})).toBe(30_000);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "30000" })).toBe(10_000);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1500" })).toBe(500);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "500" })).toBe(166);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({})).toBe(30_000);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "30000" })).toBe(10_000);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1500" })).toBe(500);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "500" })).toBe(166);
 		// The leader and reporter both clamp pathological positive windows to 3ms,
 		// leaving a 1ms publish cadence strictly below the effective threshold.
 		expect(parseHeartbeatStaleMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(3);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(1);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "not-a-number" })).toBe(30_000);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "1" })).toBe(1);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "not-a-number" })).toBe(30_000);
 	});
 
 	it("disables publishing when the leader disabled the stale window", () => {
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "0" })).toBe(0);
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "-5" })).toBe(0);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "0" })).toBe(0);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs({ WORX_TEAM_HEARTBEAT_STALE_MS: "-5" })).toBe(0);
 		expect(
-			GjcTeamWorkerHeartbeatReporter.forProcess(() => ".", {
+			WorxTeamWorkerHeartbeatReporter.forProcess(() => ".", {
 				WORX_TEAM_NAME: "alpha",
 				WORX_TEAM_WORKER_ID: "worker-1",
 				WORX_TEAM_HEARTBEAT_STALE_MS: "0",
@@ -111,14 +111,14 @@ describe("team worker identity and heartbeat cadence", () => {
 	});
 
 	it("creates no reporter outside a team worker pane", () => {
-		expect(GjcTeamWorkerHeartbeatReporter.forProcess(() => ".", { PATH: "" })).toBeUndefined();
+		expect(WorxTeamWorkerHeartbeatReporter.forProcess(() => ".", { PATH: "" })).toBeUndefined();
 	});
 });
 
-describe("GjcTeamWorkerHeartbeatReporter", () => {
+describe("WorxTeamWorkerHeartbeatReporter", () => {
 	it("publishes on start, on each tick, and once more on stop", async () => {
 		let writes = 0;
-		const reporter = new GjcTeamWorkerHeartbeatReporter({
+		const reporter = new WorxTeamWorkerHeartbeatReporter({
 			intervalMs: 5,
 			write: async () => {
 				writes++;
@@ -141,7 +141,7 @@ describe("GjcTeamWorkerHeartbeatReporter", () => {
 	it("never overlaps writes: a tick during a slow write is dropped, not queued", async () => {
 		let started = 0;
 		const gate = Promise.withResolvers<void>();
-		const reporter = new GjcTeamWorkerHeartbeatReporter({
+		const reporter = new WorxTeamWorkerHeartbeatReporter({
 			intervalMs: 1,
 			write: async () => {
 				started++;
@@ -160,7 +160,7 @@ describe("GjcTeamWorkerHeartbeatReporter", () => {
 
 	it("stops publishing permanently after dispose", async () => {
 		let writes = 0;
-		const reporter = new GjcTeamWorkerHeartbeatReporter({
+		const reporter = new WorxTeamWorkerHeartbeatReporter({
 			intervalMs: 1,
 			write: async () => {
 				writes++;
@@ -181,7 +181,7 @@ describe("GjcTeamWorkerHeartbeatReporter", () => {
 
 	it("keeps publishing after a failed write", async () => {
 		let attempts = 0;
-		const reporter = new GjcTeamWorkerHeartbeatReporter({
+		const reporter = new WorxTeamWorkerHeartbeatReporter({
 			intervalMs: 1,
 			write: async () => {
 				attempts++;
@@ -215,7 +215,7 @@ describe("runtime-owned heartbeat records", () => {
 		});
 
 		const before = Date.now();
-		const written = await writeGjcTeamWorkerRuntimeHeartbeat(root, env);
+		const written = await writeWorxTeamWorkerRuntimeHeartbeat(root, env);
 		const persisted = await readHeartbeat(root, "runtime-heartbeat-team");
 
 		expect(written).toEqual(persisted);
@@ -230,7 +230,7 @@ describe("runtime-owned heartbeat records", () => {
 	it("is a no-op outside a team worker pane", async () => {
 		const root = await startDryRunTeam("non-worker-team");
 		expect(
-			await writeGjcTeamWorkerRuntimeHeartbeat(root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID }),
+			await writeWorxTeamWorkerRuntimeHeartbeat(root, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID }),
 		).toBeUndefined();
 	});
 });
@@ -240,7 +240,7 @@ describe("gjc team launch to reporter contract", () => {
 		const root = await startDryRunTeam("launch-contract-team");
 		const config = (await Bun.file(
 			path.join(teamStateDir(root, "launch-contract-team"), "config.json"),
-		).json()) as GjcTeamConfig;
+		).json()) as WorxTeamConfig;
 		const worker = config.workers[0];
 		if (!worker) throw new Error("expected a launched worker");
 
@@ -253,19 +253,19 @@ describe("gjc team launch to reporter contract", () => {
 
 		expect(paneEnv.WORX_TEAM_NAME).toBe("launch-contract-team");
 		expect(paneEnv.WORX_TEAM_WORKER_ID).toBe(worker.id);
-		expect(resolveGjcTeamWorkerIdentity(paneEnv)).toEqual({
+		expect(resolveWorxTeamWorkerIdentity(paneEnv)).toEqual({
 			teamName: "launch-contract-team",
 			workerId: worker.id,
 		});
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs(paneEnv)).toBe(30_000);
-		expect(GjcTeamWorkerHeartbeatReporter.forProcess(() => root, paneEnv)).toBeDefined();
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs(paneEnv)).toBe(30_000);
+		expect(WorxTeamWorkerHeartbeatReporter.forProcess(() => root, paneEnv)).toBeDefined();
 	});
 
 	it("propagates a tightened stale window into the worker pane so cadence matches leader policy", async () => {
 		const root = await startDryRunTeam("stale-window-propagation-team");
 		const config = (await Bun.file(
 			path.join(teamStateDir(root, "stale-window-propagation-team"), "config.json"),
-		).json()) as GjcTeamConfig;
+		).json()) as WorxTeamConfig;
 		const worker = config.workers[0];
 		if (!worker) throw new Error("expected a launched worker");
 
@@ -279,7 +279,7 @@ describe("gjc team launch to reporter contract", () => {
 		for (const [, key, value] of command.matchAll(/(WORX_[A-Z_]+)='([^']*)'/g)) paneEnv[key] = value;
 
 		expect(paneEnv.WORX_TEAM_HEARTBEAT_STALE_MS).toBe("15000");
-		expect(resolveGjcTeamWorkerHeartbeatIntervalMs(paneEnv)).toBe(5_000);
+		expect(resolveWorxTeamWorkerHeartbeatIntervalMs(paneEnv)).toBe(5_000);
 		// Unset stays unset: the default cadence is implicit on both sides.
 		expect(buildWorkerCommand(config, worker, "darwin", undefined, {})).not.toContain("WORX_TEAM_HEARTBEAT_STALE_MS");
 	});

@@ -1,17 +1,17 @@
 import {
-	type GjcPluginAgentAppendixManifestEntry,
-	type GjcPluginAppendixManifestEntry,
-	type GjcPluginHookManifestEntry,
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
-	type GjcPluginManifest,
-	type GjcPluginMcpManifestEntry,
-	type GjcPluginMcpTransport,
-	type GjcPluginToolManifestEntry,
-	type GjcSubskillParentAgent,
 	type SubskillFrontmatter,
 	WORX_PLUGIN_KIND,
 	WORX_SUBSKILL_PARENT_AGENTS,
+	type WorxPluginAgentAppendixManifestEntry,
+	type WorxPluginAppendixManifestEntry,
+	type WorxPluginHookManifestEntry,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
+	type WorxPluginManifest,
+	type WorxPluginMcpManifestEntry,
+	type WorxPluginMcpTransport,
+	type WorxPluginToolManifestEntry,
+	type WorxSubskillParentAgent,
 } from "./types";
 
 /**
@@ -38,7 +38,7 @@ const KNOWN_MANIFEST_KEYS = new Set([
 	"agent-appendix",
 ]);
 
-const MCP_TRANSPORTS: readonly GjcPluginMcpTransport[] = ["stdio", "http", "sse"];
+const MCP_TRANSPORTS: readonly WorxPluginMcpTransport[] = ["stdio", "http", "sse"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -46,7 +46,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function requireNonEmptyString(value: unknown, field: string, filePath: string): string {
 	if (typeof value !== "string" || value.trim().length === 0) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_frontmatter",
 			`Invalid sub-skill frontmatter in ${filePath}: ${field} must be a non-empty string`,
 		);
@@ -65,14 +65,14 @@ function manifestSafeName(
 	value: unknown,
 	field: string,
 	manifestPath: string,
-	code: GjcPluginLoadErrorCode = "invalid_manifest",
+	code: WorxPluginLoadErrorCode = "invalid_manifest",
 ): string {
 	const name =
 		code === "invalid_frontmatter"
 			? requireNonEmptyString(value, field, manifestPath)
 			: manifestString(value, field, manifestPath);
 	if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(name)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			code,
 			`GJC plugin ${field} must be 1-128 characters of letters, digits, dot, underscore, or hyphen (${manifestPath})`,
 		);
@@ -89,13 +89,13 @@ function manifestSafeProse(
 	value: unknown,
 	field: string,
 	manifestPath: string,
-	code: GjcPluginLoadErrorCode = "invalid_manifest",
+	code: WorxPluginLoadErrorCode = "invalid_manifest",
 ): string {
 	const text = requireNonEmptyString(value, field, manifestPath);
 	// C0, DEL, and the C1 block: a single-byte CSI (U+009B) is an escape
 	// introducer on its own, so rejecting only C0 leaves the same injection open.
 	if (/[\u0000-\u001f\u007f-\u009f]/.test(text)) {
-		throw new GjcPluginLoadError(code, `GJC plugin ${field} must not contain control characters (${manifestPath})`);
+		throw new WorxPluginLoadError(code, `GJC plugin ${field} must not contain control characters (${manifestPath})`);
 	}
 	return text;
 }
@@ -107,7 +107,7 @@ function manifestSafeProse(
 function manifestSafeVersion(value: unknown, manifestPath: string): string {
 	const version = manifestString(value, "version", manifestPath);
 	if (!/^[a-zA-Z0-9][a-zA-Z0-9._+-]{0,63}$/.test(version)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`GJC plugin version must be 1-64 characters of letters, digits, dot, plus, underscore, or hyphen (${manifestPath})`,
 		);
@@ -117,7 +117,7 @@ function manifestSafeVersion(value: unknown, manifestPath: string): string {
 
 function manifestString(value: unknown, field: string, manifestPath: string): string {
 	if (typeof value !== "string" || value.trim().length === 0) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: ${field} must be a non-empty string`,
 		);
@@ -128,7 +128,7 @@ function manifestString(value: unknown, field: string, manifestPath: string): st
 function optionalStringArray(value: unknown, field: string, manifestPath: string): string[] {
 	if (value === undefined) return [];
 	if (!Array.isArray(value) || !value.every(item => typeof item === "string")) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: ${field} must be a string array`,
 		);
@@ -139,7 +139,7 @@ function optionalStringArray(value: unknown, field: string, manifestPath: string
 function optionalArray(value: unknown, field: string, manifestPath: string): unknown[] {
 	if (value === undefined) return [];
 	if (!Array.isArray(value)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: ${field} must be an array`,
 		);
@@ -152,13 +152,13 @@ function deriveToolName(toolPath: string): string {
 	return base.replace(/\.[^.]+$/, "");
 }
 
-function parseTools(value: unknown, manifestPath: string): GjcPluginToolManifestEntry[] {
+function parseTools(value: unknown, manifestPath: string): WorxPluginToolManifestEntry[] {
 	const raw = optionalArray(value, "tools", manifestPath);
 	return raw.map((entry, index) => {
 		// Legacy string shorthand: subskill-scoped tool path only.
 		if (typeof entry === "string") {
 			if (entry.trim().length === 0) {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"invalid_manifest",
 					`Invalid GJC plugin manifest at ${manifestPath}: tools[${index}] must be a non-empty path`,
 				);
@@ -166,7 +166,7 @@ function parseTools(value: unknown, manifestPath: string): GjcPluginToolManifest
 			return { name: deriveToolName(entry), path: entry, surface: "subskill" };
 		}
 		if (!isRecord(entry)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_manifest",
 				`Invalid GJC plugin manifest at ${manifestPath}: tools[${index}] must be a string or object`,
 			);
@@ -188,11 +188,11 @@ function parseTools(value: unknown, manifestPath: string): GjcPluginToolManifest
 	});
 }
 
-function parseHooks(value: unknown, manifestPath: string): GjcPluginHookManifestEntry[] {
+function parseHooks(value: unknown, manifestPath: string): WorxPluginHookManifestEntry[] {
 	const raw = optionalArray(value, "hooks", manifestPath);
 	return raw.map((entry, index) => {
 		if (!isRecord(entry)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_manifest",
 				`Invalid GJC plugin manifest at ${manifestPath}: hooks[${index}] must be an object`,
 			);
@@ -209,7 +209,7 @@ function parseHooks(value: unknown, manifestPath: string): GjcPluginHookManifest
 		let phase: "before" | "after" | undefined;
 		if (entry.phase !== undefined) {
 			if (entry.phase !== "before" && entry.phase !== "after") {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"invalid_manifest",
 					`Invalid GJC plugin manifest at ${manifestPath}: hooks[${index}].phase must be "before" or "after"`,
 				);
@@ -222,19 +222,19 @@ function parseHooks(value: unknown, manifestPath: string): GjcPluginHookManifest
 	});
 }
 
-function parseMcps(value: unknown, manifestPath: string): GjcPluginMcpManifestEntry[] {
+function parseMcps(value: unknown, manifestPath: string): WorxPluginMcpManifestEntry[] {
 	const raw = optionalArray(value, "mcps", manifestPath);
 	return raw.map((entry, index) => {
 		if (!isRecord(entry)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_manifest",
 				`Invalid GJC plugin manifest at ${manifestPath}: mcps[${index}] must be an object`,
 			);
 		}
 		const name = manifestSafeName(entry.name, `mcps[${index}].name`, manifestPath);
 		const transport = entry.transport;
-		if (typeof transport !== "string" || !MCP_TRANSPORTS.includes(transport as GjcPluginMcpTransport)) {
-			throw new GjcPluginLoadError(
+		if (typeof transport !== "string" || !MCP_TRANSPORTS.includes(transport as WorxPluginMcpTransport)) {
+			throw new WorxPluginLoadError(
 				"invalid_manifest",
 				`Invalid GJC plugin manifest at ${manifestPath}: mcps[${index}].transport must be one of ${MCP_TRANSPORTS.join(", ")}`,
 			);
@@ -248,7 +248,7 @@ function parseMcps(value: unknown, manifestPath: string): GjcPluginMcpManifestEn
 		let args: string[] | undefined;
 		if (entry.args !== undefined) {
 			if (!Array.isArray(entry.args) || !entry.args.every(item => typeof item === "string")) {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"invalid_manifest",
 					`Invalid GJC plugin manifest at ${manifestPath}: mcps[${index}].args must be a string array`,
 				);
@@ -258,7 +258,7 @@ function parseMcps(value: unknown, manifestPath: string): GjcPluginMcpManifestEn
 		let headers: Record<string, string> | undefined;
 		if (entry.headers !== undefined) {
 			if (!isRecord(entry.headers) || !Object.values(entry.headers).every(v => typeof v === "string")) {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"invalid_manifest",
 					`Invalid GJC plugin manifest at ${manifestPath}: mcps[${index}].headers must be a string map`,
 				);
@@ -267,13 +267,13 @@ function parseMcps(value: unknown, manifestPath: string): GjcPluginMcpManifestEn
 		}
 		const sha256 =
 			entry.sha256 === undefined ? undefined : manifestString(entry.sha256, `mcps[${index}].sha256`, manifestPath);
-		return { name, transport: transport as GjcPluginMcpTransport, command, args, cwd, url, headers, sha256 };
+		return { name, transport: transport as WorxPluginMcpTransport, command, args, cwd, url, headers, sha256 };
 	});
 }
 
-function parseAppendixEntry(entry: unknown, field: string, manifestPath: string): GjcPluginAppendixManifestEntry {
+function parseAppendixEntry(entry: unknown, field: string, manifestPath: string): WorxPluginAppendixManifestEntry {
 	if (!isRecord(entry)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: ${field} must be an object`,
 		);
@@ -283,7 +283,7 @@ function parseAppendixEntry(entry: unknown, field: string, manifestPath: string)
 	// Content may be empty/whitespace here; the compiler enforces non-empty and
 	// maps emptiness to invalid_appendix (not invalid_manifest).
 	if (entry.content !== undefined && typeof entry.content !== "string") {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: ${field}.content must be a string`,
 		);
@@ -294,29 +294,29 @@ function parseAppendixEntry(entry: unknown, field: string, manifestPath: string)
 	return { name, path, content, sha256 };
 }
 
-function parseSystemAppendix(value: unknown, manifestPath: string): GjcPluginAppendixManifestEntry[] {
+function parseSystemAppendix(value: unknown, manifestPath: string): WorxPluginAppendixManifestEntry[] {
 	const raw = optionalArray(value, "system_appendix", manifestPath);
 	return raw.map((entry, index) => parseAppendixEntry(entry, `system_appendix[${index}]`, manifestPath));
 }
 
-function parseAgentAppendix(value: unknown, manifestPath: string): GjcPluginAgentAppendixManifestEntry[] {
+function parseAgentAppendix(value: unknown, manifestPath: string): WorxPluginAgentAppendixManifestEntry[] {
 	const raw = optionalArray(value, "agent-appendix", manifestPath);
 	return raw.map((entry, index) => {
 		const base = parseAppendixEntry(entry, `agent-appendix[${index}]`, manifestPath);
 		const agent = (entry as Record<string, unknown>).agent;
-		if (typeof agent !== "string" || !WORX_SUBSKILL_PARENT_AGENTS.includes(agent as GjcSubskillParentAgent)) {
-			throw new GjcPluginLoadError(
+		if (typeof agent !== "string" || !WORX_SUBSKILL_PARENT_AGENTS.includes(agent as WorxSubskillParentAgent)) {
+			throw new WorxPluginLoadError(
 				"invalid_parent",
 				`Invalid GJC plugin manifest at ${manifestPath}: agent-appendix[${index}].agent must be one of ${WORX_SUBSKILL_PARENT_AGENTS.join(", ")}`,
 			);
 		}
-		return { ...base, agent: agent as GjcSubskillParentAgent };
+		return { ...base, agent: agent as WorxSubskillParentAgent };
 	});
 }
 
-export function parseManifest(raw: unknown, manifestPath: string): GjcPluginManifest {
+export function parseManifest(raw: unknown, manifestPath: string): WorxPluginManifest {
 	if (!isRecord(raw)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin manifest at ${manifestPath}: expected object`,
 		);
@@ -324,13 +324,13 @@ export function parseManifest(raw: unknown, manifestPath: string): GjcPluginMani
 
 	for (const key of FORBIDDEN_MANIFEST_KEYS) {
 		if (Object.hasOwn(raw, key)) {
-			throw new GjcPluginLoadError("forbidden_surface", `Forbidden GJC plugin surface in ${manifestPath}: ${key}`);
+			throw new WorxPluginLoadError("forbidden_surface", `Forbidden GJC plugin surface in ${manifestPath}: ${key}`);
 		}
 	}
 
 	for (const key of UNSUPPORTED_ALIAS_KEYS) {
 		if (Object.hasOwn(raw, key)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"unsupported_surface",
 				`Unsupported GJC plugin surface in ${manifestPath}: ${key} (use the canonical "mcps" key)`,
 			);
@@ -339,7 +339,7 @@ export function parseManifest(raw: unknown, manifestPath: string): GjcPluginMani
 
 	for (const key of Object.keys(raw)) {
 		if (!KNOWN_MANIFEST_KEYS.has(key)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"unsupported_surface",
 				`Unsupported GJC plugin surface in ${manifestPath}: ${key}`,
 			);
@@ -347,7 +347,7 @@ export function parseManifest(raw: unknown, manifestPath: string): GjcPluginMani
 	}
 
 	if (raw.kind !== WORX_PLUGIN_KIND) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_kind",
 			`Invalid GJC plugin kind in ${manifestPath}: expected ${WORX_PLUGIN_KIND}`,
 		);

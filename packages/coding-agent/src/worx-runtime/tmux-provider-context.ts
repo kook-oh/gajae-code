@@ -10,9 +10,9 @@ import {
 import {
 	type PsmuxSpawnRunner,
 	type ResolvedTmuxBinary,
-	resolveGjcTmuxBinary,
-	resolveGjcTmuxExecutableIdentity,
-	resolveGjcTmuxExecutablePath,
+	resolveWorxTmuxBinary,
+	resolveWorxTmuxExecutableIdentity,
+	resolveWorxTmuxExecutablePath,
 } from "./psmux-detect";
 import { isCanonicalUtcTimestamp, lifecyclePaths } from "./tmux-owner-isolation";
 
@@ -31,7 +31,7 @@ function authorityPlatform(): NodeJS.Platform {
  * override. Every authority gate must read this rather than `process.platform`,
  * or a pinned test platform is silently ignored on non-Windows hosts.
  */
-export function gjcTmuxAuthorityPlatform(): NodeJS.Platform {
+export function worxTmuxAuthorityPlatform(): NodeJS.Platform {
 	return authorityPlatform();
 }
 export function __setTmuxProviderAuthorityPlatformForTests(platform: NodeJS.Platform | null): void {
@@ -39,7 +39,7 @@ export function __setTmuxProviderAuthorityPlatformForTests(platform: NodeJS.Plat
 }
 
 function requireWindowsAuthorityPlatform(): void {
-	if (authorityPlatform() !== "win32") throw new Error("gjc_tmux_provider_authority_windows_required");
+	if (authorityPlatform() !== "win32") throw new Error("worx_tmux_provider_authority_windows_required");
 }
 export type TmuxProviderKind = "native-tmux" | "windows-psmux";
 
@@ -76,14 +76,14 @@ type ProviderRecord = {
 function rejectUnsafeToken(value: string, name: string): string {
 	const trimmed = value.trim();
 	if (!trimmed || /[\0\r\n]|\s/.test(trimmed) || /[;&|`$<>]/.test(trimmed))
-		throw new Error(`gjc_tmux_provider_invalid_${name}`);
+		throw new Error(`worx_tmux_provider_invalid_${name}`);
 	return trimmed;
 }
 
 function requireSafePathComponent(value: string, name: string): string {
 	const trimmed = value.trim();
 	if (trimmed === "." || trimmed === ".." || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(trimmed))
-		throw new Error(`gjc_tmux_provider_invalid_${name}`);
+		throw new Error(`worx_tmux_provider_invalid_${name}`);
 	return trimmed;
 }
 
@@ -92,7 +92,7 @@ function randomNamespace(): string {
 }
 
 /** Resolve a structured provider. Native tmux remains byte-for-byte argv compatible. */
-export function resolveGjcTmuxProviderContext(
+export function resolveWorxTmuxProviderContext(
 	options: {
 		env?: NodeJS.ProcessEnv;
 		platform?: NodeJS.Platform;
@@ -105,11 +105,11 @@ export function resolveGjcTmuxProviderContext(
 	// read process.platform directly, so a pinned win32 test still took POSIX
 	// branches; production is unchanged because the accessor defaults to
 	// process.platform when unpinned.
-	const platform = options.platform ?? gjcTmuxAuthorityPlatform();
-	const binary = options.binary ?? resolveGjcTmuxBinary(options);
+	const platform = options.platform ?? worxTmuxAuthorityPlatform();
+	const binary = options.binary ?? resolveWorxTmuxBinary(options);
 	const selectedCommand = rejectUnsafeToken(binary.command, "command");
 	if (binary.isPsmux && platform !== "win32")
-		throw new Error("gjc_tmux_provider_ambiguous: selected psmux command requires Windows");
+		throw new Error("worx_tmux_provider_ambiguous: selected psmux command requires Windows");
 	if (!binary.isPsmux) {
 		return Object.freeze({
 			kind: "native-tmux",
@@ -121,12 +121,12 @@ export function resolveGjcTmuxProviderContext(
 			platform,
 		});
 	}
-	const resolved = resolveGjcTmuxExecutablePath(selectedCommand);
+	const resolved = resolveWorxTmuxExecutablePath(selectedCommand);
 	if (!resolved || !(path.win32.isAbsolute(resolved) || path.isAbsolute(resolved)))
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows psmux command is not an absolute executable");
-	const identity = resolveGjcTmuxExecutableIdentity(resolved);
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows psmux command is not an absolute executable");
+	const identity = resolveWorxTmuxExecutableIdentity(resolved);
 	if (!identity)
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows psmux executable identity is unavailable");
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows psmux executable identity is unavailable");
 	const namespace = randomNamespace();
 	return Object.freeze({
 		kind: "windows-psmux",
@@ -145,7 +145,7 @@ export function buildTmuxProviderCommand(
 	args: readonly string[] = [],
 ): string[] {
 	if (!/^[a-z][a-z-]*$/i.test(command) || args.some(arg => typeof arg !== "string" || arg.includes("\0")))
-		throw new Error("gjc_tmux_provider_invalid_command");
+		throw new Error("worx_tmux_provider_invalid_command");
 	return [...context.commandPrefix, command, ...args];
 }
 
@@ -163,7 +163,7 @@ function assertCurrentGeneration(root: string, sessionId: string, generation: st
 	try {
 		payload = JSON.parse(new TextDecoder().decode(snapshot.bytes));
 	} catch {
-		throw new Error("gjc_tmux_provider_authority_generation_unavailable");
+		throw new Error("worx_tmux_provider_authority_generation_unavailable");
 	}
 	const record = payload as Record<string, unknown>;
 	const publishedAt = record.published_at;
@@ -177,10 +177,10 @@ function assertCurrentGeneration(root: string, sessionId: string, generation: st
 		record.generation !== generation ||
 		!isCanonicalUtcTimestamp(publishedAt)
 	)
-		throw new Error("gjc_tmux_provider_authority_generation_mismatch");
+		throw new Error("worx_tmux_provider_authority_generation_mismatch");
 }
 /** Returns whether an owner generation has a persisted Windows psmux authority. */
-export function hasGjcTmuxProviderAuthoritySync(input: {
+export function hasWorxTmuxProviderAuthoritySync(input: {
 	stateDir: string;
 	sessionId: string;
 	generation: string;
@@ -207,7 +207,7 @@ export function hasGjcTmuxProviderAuthoritySync(input: {
 		if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
 		throw error;
 	}
-	readGjcTmuxProviderAuthoritySync({ stateDir, sessionId, generation });
+	readWorxTmuxProviderAuthoritySync({ stateDir, sessionId, generation });
 	return true;
 }
 
@@ -228,14 +228,14 @@ function prepareWindowsAuthorityRoot(root: string) {
 
 function parseRecord(data: Uint8Array): ProviderRecord {
 	if (data.byteLength === 0 || data.byteLength > MAX_AUTHORITY_BYTES)
-		throw new Error("gjc_tmux_provider_authority_invalid_record");
+		throw new Error("worx_tmux_provider_authority_invalid_record");
 	let payload: unknown;
 	try {
 		payload = JSON.parse(new TextDecoder().decode(data));
 	} catch {
-		throw new Error("gjc_tmux_provider_authority_invalid_record");
+		throw new Error("worx_tmux_provider_authority_invalid_record");
 	}
-	if (!payload || typeof payload !== "object") throw new Error("gjc_tmux_provider_authority_invalid_record");
+	if (!payload || typeof payload !== "object") throw new Error("worx_tmux_provider_authority_invalid_record");
 	const value = payload as Record<string, unknown>;
 	if (
 		value.schema_version !== AUTHORITY_SCHEMA_VERSION ||
@@ -250,16 +250,16 @@ function parseRecord(data: Uint8Array): ProviderRecord {
 		!(path.win32.isAbsolute(value.executable_path) || path.isAbsolute(value.executable_path)) ||
 		typeof value.executable_identity !== "string"
 	)
-		throw new Error("gjc_tmux_provider_authority_invalid_record");
+		throw new Error("worx_tmux_provider_authority_invalid_record");
 	return value as ProviderRecord;
 }
 
-export function bindGjcTmuxProviderAuthority(
+export function bindWorxTmuxProviderAuthority(
 	context: ProviderContext,
 	input: { stateDir: string; sessionId: string; generation: string },
 ): ProviderAuthority {
 	const stateDir = input.stateDir.trim();
-	if (!stateDir || /[\0\r\n]/.test(stateDir)) throw new Error("gjc_tmux_provider_invalid_state_dir");
+	if (!stateDir || /[\0\r\n]/.test(stateDir)) throw new Error("worx_tmux_provider_invalid_state_dir");
 	return Object.freeze({
 		...context,
 		stateDir: path.resolve(stateDir),
@@ -270,7 +270,7 @@ export function bindGjcTmuxProviderAuthority(
 
 function recordFor(authority: ProviderAuthority): ProviderRecord {
 	if (!authority.namespace || !authority.executableIdentity)
-		throw new Error("gjc_tmux_provider_authority_invalid_context");
+		throw new Error("worx_tmux_provider_authority_invalid_context");
 	return {
 		schema_version: 2,
 		kind: "windows-psmux",
@@ -317,7 +317,7 @@ function migrationBusyIfLiveHolder(locksDirectory: string, name: string): void {
 	}
 	throw new Error("migration_busy");
 }
-export function persistGjcTmuxProviderAuthoritySync(authority: ProviderAuthority): void {
+export function persistWorxTmuxProviderAuthoritySync(authority: ProviderAuthority): void {
 	if (authority.kind !== "windows-psmux") return;
 	requireWindowsAuthorityPlatform();
 	const root = rootFor(authority);
@@ -337,10 +337,10 @@ export function persistGjcTmuxProviderAuthoritySync(authority: ProviderAuthority
 	);
 	const verified = readWindowsAuthority(managedRoot.canonicalPath, authority.generation);
 	if (verified.record.session_id !== authority.sessionId || verified.record.owner_generation !== authority.generation)
-		throw new Error("gjc_tmux_provider_authority_publish_failed");
+		throw new Error("worx_tmux_provider_authority_publish_failed");
 }
 
-export function readGjcTmuxProviderAuthoritySync(input: {
+export function readWorxTmuxProviderAuthoritySync(input: {
 	stateDir: string;
 	sessionId: string;
 	generation: string;
@@ -354,10 +354,10 @@ export function readGjcTmuxProviderAuthoritySync(input: {
 	assertCurrentGeneration(managedRoot.canonicalPath, sessionId, generation);
 	const { record } = readWindowsAuthority(managedRoot.canonicalPath, generation);
 	if (record.session_id !== sessionId || record.owner_generation !== generation)
-		throw new Error("gjc_tmux_provider_authority_mismatch");
-	const identity = resolveGjcTmuxExecutableIdentity(record.executable_path);
+		throw new Error("worx_tmux_provider_authority_mismatch");
+	const identity = resolveWorxTmuxExecutableIdentity(record.executable_path);
 	if (!identity || identity !== record.executable_identity)
-		throw new Error("gjc_tmux_provider_authority_executable_changed");
+		throw new Error("worx_tmux_provider_authority_executable_changed");
 	return Object.freeze({
 		kind: "windows-psmux",
 		command: record.executable_path,
@@ -372,7 +372,7 @@ export function readGjcTmuxProviderAuthoritySync(input: {
 	});
 }
 /** Enumerates owner-secured, executable-validated psmux authorities in one durable state root. */
-export function listGjcTmuxProviderAuthoritiesSync(stateDirInput: string): ProviderAuthority[] {
+export function listWorxTmuxProviderAuthoritiesSync(stateDirInput: string): ProviderAuthority[] {
 	const stateDir = path.resolve(stateDirInput);
 	requireWindowsAuthorityPlatform();
 	prepareWindowsAuthorityRoot(stateDir);
@@ -380,7 +380,7 @@ export function listGjcTmuxProviderAuthoritiesSync(stateDirInput: string): Provi
 	try {
 		entries = fs.readdirSync(stateDir, { withFileTypes: true });
 	} catch {
-		throw new Error("gjc_tmux_provider_authority_unavailable");
+		throw new Error("worx_tmux_provider_authority_unavailable");
 	}
 	const authorities: ProviderAuthority[] = [];
 	for (const entry of entries) {
@@ -394,24 +394,24 @@ export function listGjcTmuxProviderAuthoritiesSync(stateDirInput: string): Provi
 				session_id?: unknown;
 			};
 			if (typeof generationPayload.generation !== "string" || generationPayload.session_id !== sessionId)
-				throw new Error("gjc_tmux_provider_authority_generation_mismatch");
+				throw new Error("worx_tmux_provider_authority_generation_mismatch");
 			const generation = requireSafePathComponent(generationPayload.generation, "generation");
 			authorities.push(
-				readGjcTmuxProviderAuthoritySync({
+				readWorxTmuxProviderAuthoritySync({
 					stateDir,
 					sessionId,
 					generation,
 				}),
 			);
 		} catch {
-			throw new Error("gjc_tmux_provider_authority_unavailable");
+			throw new Error("worx_tmux_provider_authority_unavailable");
 		}
 	}
 	return authorities;
 }
 
 /** Re-proves the staged immutable record and executable identity before generation publication. */
-export function assertGjcTmuxStagedMutationAuthoritySync(authority: ProviderAuthority): void {
+export function assertWorxTmuxStagedMutationAuthoritySync(authority: ProviderAuthority): void {
 	if (authority.kind !== "windows-psmux") return;
 	requireWindowsAuthorityPlatform();
 	const root = prepareWindowsAuthorityRoot(rootFor(authority));
@@ -424,13 +424,13 @@ export function assertGjcTmuxStagedMutationAuthoritySync(authority: ProviderAuth
 		record.executable_path !== authority.command ||
 		record.executable_identity !== authority.executableIdentity
 	)
-		throw new Error("gjc_tmux_provider_authority_mismatch");
-	const identity = resolveGjcTmuxExecutableIdentity(authority.command);
+		throw new Error("worx_tmux_provider_authority_mismatch");
+	const identity = resolveWorxTmuxExecutableIdentity(authority.command);
 	if (!identity || identity !== authority.executableIdentity)
-		throw new Error("gjc_tmux_provider_authority_executable_changed");
+		throw new Error("worx_tmux_provider_authority_executable_changed");
 }
 /** Re-proves the current pointer, exact executable identity, and native root before mutation. */
-export function assertGjcTmuxMutationAuthoritySync(authority: ProviderAuthority): void {
+export function assertWorxTmuxMutationAuthoritySync(authority: ProviderAuthority): void {
 	if (authority.kind !== "windows-psmux") return;
 	requireWindowsAuthorityPlatform();
 	const root = prepareWindowsAuthorityRoot(rootFor(authority));
@@ -444,8 +444,8 @@ export function assertGjcTmuxMutationAuthoritySync(authority: ProviderAuthority)
 		record.executable_path !== authority.command ||
 		record.executable_identity !== authority.executableIdentity
 	)
-		throw new Error("gjc_tmux_provider_authority_mismatch");
-	const identity = resolveGjcTmuxExecutableIdentity(authority.command);
+		throw new Error("worx_tmux_provider_authority_mismatch");
+	const identity = resolveWorxTmuxExecutableIdentity(authority.command);
 	if (!identity || identity !== authority.executableIdentity)
-		throw new Error("gjc_tmux_provider_authority_executable_changed");
+		throw new Error("worx_tmux_provider_authority_executable_changed");
 }

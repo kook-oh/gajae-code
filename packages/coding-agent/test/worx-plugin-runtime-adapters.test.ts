@@ -3,7 +3,11 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { installGjcBundle, loadAlwaysOnPluginTools, renderSkillAdvertisement } from "../src/extensibility/worx-plugins";
+import {
+	installWorxBundle,
+	loadAlwaysOnPluginTools,
+	renderSkillAdvertisement,
+} from "../src/extensibility/worx-plugins";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
@@ -31,7 +35,7 @@ async function mkCwd(): Promise<string> {
 describe("always-on plugin tool runtime activation", () => {
 	test("loads a declared always-on tool from an installed bundle", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const res = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: [] });
 		expect(res.tools.map(t => t.name)).toContain("domain_note");
@@ -47,7 +51,7 @@ describe("always-on plugin tool runtime activation", () => {
 
 	test("refuses to overwrite a reserved tool name", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const res = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: ["domain_note"] });
 		expect(res.tools.map(t => t.name)).not.toContain("domain_note");
@@ -56,7 +60,7 @@ describe("always-on plugin tool runtime activation", () => {
 
 	test("quarantines on installed-file hash drift", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const installed = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		await fs.appendFile(installed, "\n// tampered after install\n");
@@ -84,7 +88,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 			{ name: "late_tool", path: "tools/late.ts", description: "late" },
 		];
 		await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-		const installed = await installGjcBundle({ cwd }, "project", source);
+		const installed = await installWorxBundle({ cwd }, "project", source);
 		expect(installed.ok).toBe(true);
 		const lateSentinel = path.join(cwd, "late-imported");
 		process.env.WORX_LATE_IMPORT_SENTINEL = lateSentinel;
@@ -136,7 +140,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 				tools: [{ name: "declared_x", path: "tools/t.ts" }],
 			}),
 		);
-		const r = await installGjcBundle({ cwd }, "project", src);
+		const r = await installWorxBundle({ cwd }, "project", src);
 		expect(r.ok).toBe(true);
 		const res = await loadAlwaysOnPluginTools({ cwd, reservedToolNames: [] });
 		expect(res.tools.map(t => t.name)).not.toContain("actual_y");
@@ -146,7 +150,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 
 	test("reuses validated registry hashes across repeated surface calls until files change", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const installedRoot = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle");
 		const readFileSpy = spyOn(fs, "readFile");
@@ -169,7 +173,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 
 	test("file metadata changes force re-hash and drift quarantine", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const installed = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		const installedRoot = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle");
@@ -193,7 +197,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 
 	test("same-size tamper with restored mtime still fails closed instead of reusing a forged hash", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const installed = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "tools", "domain-note.ts");
 		const beforeStat = await fs.stat(installed);
@@ -214,7 +218,7 @@ export default pi => ({ name: "late_tool", label: "Late", description: "late", p
 
 	test("registry enablement changes invalidate the validated-registry cache", async () => {
 		const cwd = await mkCwd();
-		const r = await installGjcBundle({ cwd }, "project", sixSurface);
+		const r = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(r.ok).toBe(true);
 		const before = await renderSkillAdvertisement({ cwd, skillName: "ralplan", phase: "planner" });
 		expect(before).toContain('activation_arg="design"');

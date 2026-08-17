@@ -1,13 +1,13 @@
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { getAgentDir, isEnoent } from "@bworx-io/worx-utils";
-import { BUNDLED_WORX_SKILL_CATALOG, type BundledGjcSkillCatalogEntry } from "./worx-skills.generated";
+import { BUNDLED_WORX_SKILL_CATALOG, type BundledWorxSkillCatalogEntry } from "./worx-skills.generated";
 
 export const DEFAULT_WORX_DEFINITION_NAMES = ["deep-interview", "ralplan", "team", "ultragoal"] as const;
-export type DefaultGjcDefinitionName = (typeof DEFAULT_WORX_DEFINITION_NAMES)[number];
-export type DefaultGjcDefinitionKind = "skill" | "skill-fragment";
-export type EmbeddedDefaultGjcSkill = {
-	name: DefaultGjcDefinitionName;
+export type DefaultWorxDefinitionName = (typeof DEFAULT_WORX_DEFINITION_NAMES)[number];
+export type DefaultWorxDefinitionKind = "skill" | "skill-fragment";
+export type EmbeddedDefaultWorxSkill = {
+	name: DefaultWorxDefinitionName;
 	description: string;
 	filePath: string;
 	baseDir: string;
@@ -17,27 +17,27 @@ export type EmbeddedDefaultGjcSkill = {
 	content: string;
 	loadContent: () => Promise<string>;
 };
-export type DefaultGjcInstallStatus = "different" | "matching" | "missing" | "skipped" | "written";
+export type DefaultWorxInstallStatus = "different" | "matching" | "missing" | "skipped" | "written";
 
-export interface DefaultGjcSkillDefinition {
+export interface DefaultWorxSkillDefinition {
 	kind: "skill";
-	name: DefaultGjcDefinitionName;
+	name: DefaultWorxDefinitionName;
 	relativePath: string;
 	content: string;
 	loadContent: () => Promise<string>;
 }
 
-export interface DefaultGjcSkillFragmentDefinition {
+export interface DefaultWorxSkillFragmentDefinition {
 	kind: "skill-fragment";
-	parentSkillName: DefaultGjcDefinitionName;
+	parentSkillName: DefaultWorxDefinitionName;
 	relativePath: string;
 	content: string;
 	loadContent: () => Promise<string>;
 }
 
-export type DefaultGjcDefinition = DefaultGjcSkillDefinition | DefaultGjcSkillFragmentDefinition;
+export type DefaultWorxDefinition = DefaultWorxSkillDefinition | DefaultWorxSkillFragmentDefinition;
 
-export interface InstallDefaultGjcDefinitionsOptions {
+export interface InstallDefaultWorxDefinitionsOptions {
 	check?: boolean;
 	force?: boolean;
 	/**
@@ -50,21 +50,21 @@ export interface InstallDefaultGjcDefinitionsOptions {
 	targetRoot?: string;
 }
 
-export type DefaultGjcDefinitionInstallFile =
+export type DefaultWorxDefinitionInstallFile =
 	| {
 			kind: "skill";
-			name: DefaultGjcDefinitionName;
+			name: DefaultWorxDefinitionName;
 			path: string;
-			status: DefaultGjcInstallStatus;
+			status: DefaultWorxInstallStatus;
 	  }
 	| {
 			kind: "skill-fragment";
-			parentSkillName: DefaultGjcDefinitionName;
+			parentSkillName: DefaultWorxDefinitionName;
 			path: string;
-			status: DefaultGjcInstallStatus;
+			status: DefaultWorxInstallStatus;
 	  };
 
-export interface DefaultGjcDefinitionInstallResult {
+export interface DefaultWorxDefinitionInstallResult {
 	targetRoot: string;
 	total: number;
 	written: number;
@@ -72,9 +72,9 @@ export interface DefaultGjcDefinitionInstallResult {
 	matching: number;
 	missing: number;
 	different: number;
-	files: DefaultGjcDefinitionInstallFile[];
+	files: DefaultWorxDefinitionInstallFile[];
 }
-function sourcePathForBundledEntry(entry: BundledGjcSkillCatalogEntry): string {
+function sourcePathForBundledEntry(entry: BundledWorxSkillCatalogEntry): string {
 	const relative = entry.kind === "skill" ? entry.relativePath : entry.relativePath.replace(/^skill-fragments\//, "");
 	return entry.kind === "skill"
 		? path.join(import.meta.dir, "worx", relative)
@@ -93,7 +93,7 @@ export class BundledDefaultContentError extends Error {
 	}
 }
 
-export function readBundledContentSync(entry: BundledGjcSkillCatalogEntry): string {
+export function readBundledContentSync(entry: BundledWorxSkillCatalogEntry): string {
 	const sourcePath = sourcePathForBundledEntry(entry);
 	try {
 		return readFileSync(sourcePath, "utf8");
@@ -109,7 +109,7 @@ export function readBundledContentSync(entry: BundledGjcSkillCatalogEntry): stri
 
 function withLazyBundledContent<T extends object>(
 	value: T,
-	entry: BundledGjcSkillCatalogEntry,
+	entry: BundledWorxSkillCatalogEntry,
 ): T & { content: string } {
 	Object.defineProperty(value, "content", {
 		enumerable: true,
@@ -119,13 +119,13 @@ function withLazyBundledContent<T extends object>(
 	return value as T & { content: string };
 }
 
-function asDefaultDefinition(entry: BundledGjcSkillCatalogEntry): DefaultGjcDefinition {
+function asDefaultDefinition(entry: BundledWorxSkillCatalogEntry): DefaultWorxDefinition {
 	if (entry.kind === "skill") {
 		if (!entry.name) throw new Error(`Bundled skill catalog entry is missing name: ${entry.relativePath}`);
 		return withLazyBundledContent(
 			{
 				kind: "skill",
-				name: entry.name as DefaultGjcDefinitionName,
+				name: entry.name as DefaultWorxDefinitionName,
 				relativePath: entry.relativePath,
 				loadContent: entry.loadContent,
 			},
@@ -137,7 +137,7 @@ function asDefaultDefinition(entry: BundledGjcSkillCatalogEntry): DefaultGjcDefi
 	return withLazyBundledContent(
 		{
 			kind: "skill-fragment",
-			parentSkillName: entry.parentSkillName as DefaultGjcDefinitionName,
+			parentSkillName: entry.parentSkillName as DefaultWorxDefinitionName,
 			relativePath: entry.relativePath,
 			loadContent: entry.loadContent,
 		},
@@ -145,28 +145,28 @@ function asDefaultDefinition(entry: BundledGjcSkillCatalogEntry): DefaultGjcDefi
 	);
 }
 
-const DEFAULT_WORX_DEFINITIONS: readonly DefaultGjcDefinition[] = BUNDLED_WORX_SKILL_CATALOG.map(asDefaultDefinition);
+const DEFAULT_WORX_DEFINITIONS: readonly DefaultWorxDefinition[] = BUNDLED_WORX_SKILL_CATALOG.map(asDefaultDefinition);
 
-export function getDefaultGjcDefinitions(): readonly DefaultGjcDefinition[] {
+export function getDefaultWorxDefinitions(): readonly DefaultWorxDefinition[] {
 	return DEFAULT_WORX_DEFINITIONS;
 }
 
-export function getDefaultGjcAgentDefinitions(): readonly DefaultGjcDefinition[] {
+export function getDefaultWorxAgentDefinitions(): readonly DefaultWorxDefinition[] {
 	return [];
 }
 
-export function getEmbeddedDefaultGjcSkillFragments(
-	parentSkillName: DefaultGjcDefinitionName,
-): DefaultGjcSkillFragmentDefinition[] {
+export function getEmbeddedDefaultWorxSkillFragments(
+	parentSkillName: DefaultWorxDefinitionName,
+): DefaultWorxSkillFragmentDefinition[] {
 	return DEFAULT_WORX_DEFINITIONS.filter(
-		(definition): definition is DefaultGjcSkillFragmentDefinition =>
+		(definition): definition is DefaultWorxSkillFragmentDefinition =>
 			definition.kind === "skill-fragment" && definition.parentSkillName === parentSkillName,
 	);
 }
 
-export function getEmbeddedDefaultGjcSkills(): EmbeddedDefaultGjcSkill[] {
+export function getEmbeddedDefaultWorxSkills(): EmbeddedDefaultWorxSkill[] {
 	return DEFAULT_WORX_DEFINITIONS.filter(
-		(definition): definition is DefaultGjcSkillDefinition => definition.kind === "skill",
+		(definition): definition is DefaultWorxSkillDefinition => definition.kind === "skill",
 	).map(definition => {
 		const catalogEntry = BUNDLED_WORX_SKILL_CATALOG.find(
 			entry => entry.kind === "skill" && entry.name === definition.name,
@@ -189,17 +189,17 @@ export function getEmbeddedDefaultGjcSkills(): EmbeddedDefaultGjcSkill[] {
 	});
 }
 
-export async function installDefaultGjcDefinitions(
-	options: InstallDefaultGjcDefinitionsOptions = {},
-): Promise<DefaultGjcDefinitionInstallResult> {
+export async function installDefaultWorxDefinitions(
+	options: InstallDefaultWorxDefinitionsOptions = {},
+): Promise<DefaultWorxDefinitionInstallResult> {
 	const targetRoot = options.targetRoot ?? getAgentDir();
-	const files: DefaultGjcDefinitionInstallFile[] = [];
+	const files: DefaultWorxDefinitionInstallFile[] = [];
 
 	for (const definition of DEFAULT_WORX_DEFINITIONS) {
 		const content = await definition.loadContent();
 		const destination = path.join(targetRoot, definition.relativePath);
 		const existing = await readExistingText(destination);
-		let status: DefaultGjcInstallStatus;
+		let status: DefaultWorxInstallStatus;
 
 		if (options.check) {
 			status = existing === undefined ? "missing" : existing === content ? "matching" : "different";
@@ -250,8 +250,8 @@ async function readExistingText(filePath: string): Promise<string | undefined> {
 
 function summarizeInstallResult(
 	targetRoot: string,
-	files: DefaultGjcDefinitionInstallFile[],
-): DefaultGjcDefinitionInstallResult {
+	files: DefaultWorxDefinitionInstallFile[],
+): DefaultWorxDefinitionInstallResult {
 	return {
 		targetRoot,
 		total: files.length,
@@ -264,6 +264,6 @@ function summarizeInstallResult(
 	};
 }
 
-function countStatus(files: readonly DefaultGjcDefinitionInstallFile[], status: DefaultGjcInstallStatus): number {
+function countStatus(files: readonly DefaultWorxDefinitionInstallFile[], status: DefaultWorxInstallStatus): number {
 	return files.filter(file => file.status === status).length;
 }

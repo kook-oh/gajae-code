@@ -3,17 +3,17 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { shortenPath } from "../tools/render-utils";
 
-export type GjcLaunchWorktreeMode =
+export type WorxLaunchWorktreeMode =
 	| { enabled: false }
 	| { enabled: true; detached: true; name: null }
 	| { enabled: true; detached: false; name: string };
 
 export interface ParsedLaunchWorktreeMode {
-	mode: GjcLaunchWorktreeMode;
+	mode: WorxLaunchWorktreeMode;
 	remainingArgs: string[];
 }
 
-export interface GjcLaunchWorktreePlan {
+export interface WorxLaunchWorktreePlan {
 	enabled: true;
 	repoRoot: string;
 	worktreePath: string;
@@ -22,7 +22,7 @@ export interface GjcLaunchWorktreePlan {
 	branchName: string | null;
 }
 
-export interface GjcLaunchWorktreeResult extends GjcLaunchWorktreePlan {
+export interface WorxLaunchWorktreeResult extends WorxLaunchWorktreePlan {
 	created: boolean;
 	reused: boolean;
 	createdBranch: boolean;
@@ -123,7 +123,7 @@ function describeWorktreeEntry(entry: GitWorktreeEntry): string {
 	return entry.detached ? `detached HEAD ${entry.head}` : (entry.branchRef ?? `HEAD ${entry.head}`);
 }
 
-function formatWorktreeTargetMismatch(plan: GjcLaunchWorktreePlan, existing: GitWorktreeEntry): string {
+function formatWorktreeTargetMismatch(plan: WorxLaunchWorktreePlan, existing: GitWorktreeEntry): string {
 	const expected = plan.detached ? `detached HEAD ${plan.baseRef}` : `branch refs/heads/${plan.branchName ?? ""}`;
 	return [
 		`worktree_target_mismatch:${plan.worktreePath}`,
@@ -280,7 +280,7 @@ function resolveOptionalWorktreeName(args: string[], index: number): { name: str
 }
 
 export function parseLaunchWorktreeMode(args: string[]): ParsedLaunchWorktreeMode {
-	let mode: GjcLaunchWorktreeMode = { enabled: false };
+	let mode: WorxLaunchWorktreeMode = { enabled: false };
 	const remainingArgs: string[] = [];
 
 	for (let index = 0; index < args.length; index += 1) {
@@ -315,8 +315,8 @@ export function parseLaunchWorktreeMode(args: string[]): ParsedLaunchWorktreeMod
 
 export function planLaunchWorktree(
 	cwd: string,
-	mode: GjcLaunchWorktreeMode,
-): GjcLaunchWorktreePlan | { enabled: false } {
+	mode: WorxLaunchWorktreeMode,
+): WorxLaunchWorktreePlan | { enabled: false } {
 	if (!mode.enabled) return { enabled: false };
 	const repoRoot = resolveCanonicalRepoRoot(cwd);
 	const baseRef = runGit(repoRoot, ["rev-parse", "HEAD"]);
@@ -329,8 +329,8 @@ export function planLaunchWorktree(
 }
 
 export function ensureLaunchWorktree(
-	plan: GjcLaunchWorktreePlan | { enabled: false },
-): GjcLaunchWorktreeResult | { enabled: false } {
+	plan: WorxLaunchWorktreePlan | { enabled: false },
+): WorxLaunchWorktreeResult | { enabled: false } {
 	if (!plan.enabled) return { enabled: false };
 	let allWorktrees = listWorktrees(plan.repoRoot);
 	const staleAtPath = findWorktreeByPath(allWorktrees, plan.worktreePath);
@@ -409,7 +409,7 @@ export function ensureReusableNodeModules(sourceRoot: string, worktreePath: stri
 export interface PreparedLaunchWorktree {
 	cwd: string;
 	args: string[];
-	worktree: GjcLaunchWorktreeResult | { enabled: false };
+	worktree: WorxLaunchWorktreeResult | { enabled: false };
 }
 
 export function prepareLaunchWorktree(cwd: string, args: string[]): PreparedLaunchWorktree {

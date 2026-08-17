@@ -178,11 +178,11 @@ function resolveBinaryPath(candidate: string): string | null {
 	return activeBinaryResolver(candidate);
 }
 /** Resolve through the same identity-aware seams used by Windows alias detection. */
-export function resolveGjcTmuxExecutablePath(command: string): string | null {
+export function resolveWorxTmuxExecutablePath(command: string): string | null {
 	return resolveBinaryPath(command);
 }
 
-export function resolveGjcTmuxExecutableIdentity(executablePath: string): string | null {
+export function resolveWorxTmuxExecutableIdentity(executablePath: string): string | null {
 	return activeExecutableIdentityResolver(executablePath);
 }
 
@@ -198,7 +198,7 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 	try {
 		if (detectPsmuxForCommand(command, runner)) return true;
 	} catch {
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux command resolution failed");
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows tmux command resolution failed");
 	}
 	if (normalizedCommandBaseName(command) !== "tmux" && !env[WORX_PSMUX_COMMAND_ENV]?.trim()) return false;
 
@@ -206,14 +206,14 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 	try {
 		selectedPath = resolveBinaryPath(command);
 	} catch {
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux command resolution failed");
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows tmux command resolution failed");
 	}
 	if (!selectedPath) {
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux command could not be resolved");
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows tmux command could not be resolved");
 	}
 	const selectedIdentity = activeExecutableIdentityResolver(selectedPath);
 	if (!selectedIdentity) {
-		throw new Error("gjc_tmux_provider_ambiguous: selected Windows tmux executable identity is unavailable");
+		throw new Error("worx_tmux_provider_ambiguous: selected Windows tmux executable identity is unavailable");
 	}
 
 	const explicitCompanion = env[WORX_PSMUX_COMMAND_ENV]?.trim();
@@ -227,25 +227,26 @@ function classifyWindowsTmuxAlias(command: string, env: NodeJS.ProcessEnv, runne
 		try {
 			companionPath = resolveBinaryPath(companion);
 		} catch {
-			throw new Error(`gjc_tmux_provider_ambiguous: Windows ${companion} command resolution failed`);
+			throw new Error(`worx_tmux_provider_ambiguous: Windows ${companion} command resolution failed`);
 		}
 		if (!companionPath) {
 			if (companion === explicitCompanion)
-				throw new Error("gjc_tmux_provider_ambiguous: WORX_PSMUX_COMMAND could not be resolved");
+				throw new Error("worx_tmux_provider_ambiguous: WORX_PSMUX_COMMAND could not be resolved");
 			continue;
 		}
 		const companionIdentity = activeExecutableIdentityResolver(companionPath);
 		if (!companionIdentity) {
-			throw new Error(`gjc_tmux_provider_ambiguous: Windows ${companion} executable identity is unavailable`);
+			throw new Error(`worx_tmux_provider_ambiguous: Windows ${companion} executable identity is unavailable`);
 		}
 		if (companionIdentity === selectedIdentity) matched = true;
 		else {
 			distinct = true;
 			if (companion === explicitCompanion)
-				throw new Error("gjc_tmux_provider_ambiguous: WORX_PSMUX_COMMAND selects a different executable");
+				throw new Error("worx_tmux_provider_ambiguous: WORX_PSMUX_COMMAND selects a different executable");
 		}
 	}
-	if (matched && distinct) throw new Error("gjc_tmux_provider_ambiguous: Windows psmux companion identities conflict");
+	if (matched && distinct)
+		throw new Error("worx_tmux_provider_ambiguous: Windows psmux companion identities conflict");
 	return matched;
 }
 
@@ -293,7 +294,7 @@ export function detectPsmux(
 	return isPsmux;
 }
 
-export interface ResolveGjcTmuxBinaryOptions {
+export interface ResolveWorxTmuxBinaryOptions {
 	platform?: NodeJS.Platform;
 	env?: NodeJS.ProcessEnv;
 	runner?: PsmuxSpawnRunner;
@@ -311,7 +312,7 @@ export interface ResolvedTmuxBinary {
  * override is set, psmux (installed as psmux, pmux, or tmux) is picked
  * automatically so the default gjc --tmux flow lands on a real multiplexer.
  */
-export function resolveGjcTmuxBinary(options: ResolveGjcTmuxBinaryOptions = {}): ResolvedTmuxBinary {
+export function resolveWorxTmuxBinary(options: ResolveWorxTmuxBinaryOptions = {}): ResolvedTmuxBinary {
 	const env = options.env ?? process.env;
 	const platform = options.platform ?? process.platform;
 	const runner = options.runner ?? readSpawnRunner();
@@ -328,14 +329,14 @@ export function resolveGjcTmuxBinary(options: ResolveGjcTmuxBinaryOptions = {}):
 			const executablePath = resolveBinaryPath(command);
 			if (!executablePath) continue;
 			if (!activeExecutableIdentityResolver(executablePath))
-				throw new Error(`gjc_tmux_provider_ambiguous: Windows ${command} executable identity is unavailable`);
+				throw new Error(`worx_tmux_provider_ambiguous: Windows ${command} executable identity is unavailable`);
 			return { command, isPsmux: true, viaExplicitOverride: false };
 		}
 		const tmuxPath = resolveBinaryPath("tmux");
 		if (tmuxPath) {
 			const isPsmux = outputMentionsPsmux(probeVersionOutput(tmuxPath, runner));
 			if (isPsmux && !activeExecutableIdentityResolver(tmuxPath))
-				throw new Error("gjc_tmux_provider_ambiguous: Windows tmux executable identity is unavailable");
+				throw new Error("worx_tmux_provider_ambiguous: Windows tmux executable identity is unavailable");
 			return { command: "tmux", isPsmux, viaExplicitOverride: false };
 		}
 		return { command: "tmux", isPsmux: false, viaExplicitOverride: false };

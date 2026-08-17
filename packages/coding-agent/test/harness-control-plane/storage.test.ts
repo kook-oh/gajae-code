@@ -31,23 +31,23 @@ import { harnessStateRoot } from "../../src/worx-runtime/session-layout";
 let root: string;
 let registryRoot: string;
 let registryEnv: NodeJS.ProcessEnv;
-let originalGjcSessionId: string | undefined;
+let originalWorxSessionId: string | undefined;
 
 beforeEach(async () => {
 	root = await mkdtemp(path.join(tmpdir(), "harness-store-"));
 	registryRoot = await mkdtemp(path.join(tmpdir(), "harness-root-registry-"));
 	registryEnv = { ...process.env, WORX_HARNESS_ROOT_REGISTRY_DIR: registryRoot };
-	originalGjcSessionId = process.env.WORX_SESSION_ID;
+	originalWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = "test-session";
 });
 
 afterEach(async () => {
 	await rm(root, { recursive: true, force: true });
 	await rm(registryRoot, { recursive: true, force: true });
-	if (originalGjcSessionId === undefined) {
+	if (originalWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = originalGjcSessionId;
+		process.env.WORX_SESSION_ID = originalWorxSessionId;
 	}
 });
 
@@ -172,7 +172,7 @@ describe("harness storage", () => {
 				WORX_HARNESS_SOCKET_DIR: longDir,
 			} as NodeJS.ProcessEnv);
 			expect(socketPath.startsWith(longDir)).toBe(false);
-			expect(socketPath.includes("gjch")).toBe(true);
+			expect(socketPath.includes("worxh")).toBe(true);
 			expect(Buffer.byteLength(socketPath)).toBeLessThanOrEqual(MAX_UNIX_SOCKET_PATH_BYTES);
 		} finally {
 			if (oldTmpdir === undefined) delete process.env.TMPDIR;

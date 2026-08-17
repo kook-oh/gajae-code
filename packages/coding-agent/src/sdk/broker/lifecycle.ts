@@ -34,8 +34,8 @@ import {
 import {
 	ensureLaunchWorktree,
 	ensureReusableNodeModules,
-	type GjcLaunchWorktreePlan,
 	planLaunchWorktree,
+	type WorxLaunchWorktreePlan,
 } from "../../worx-runtime/launch-worktree";
 import {
 	WORX_COORDINATOR_SESSION_BRANCH_ENV,
@@ -434,7 +434,7 @@ type SessionLaunch = {
 	coordinatorSessionBranch?: string;
 	worktree?: SessionLifecycleWorktreeTarget;
 	readiness?: SessionLifecycleReadiness;
-	worktreePlan?: GjcLaunchWorktreePlan;
+	worktreePlan?: WorxLaunchWorktreePlan;
 };
 
 type CleanupEvidence = BrokerCleanupEvidence;
@@ -2468,7 +2468,7 @@ async function waitForReady(
 	return { kind: "timeout" };
 }
 
-function worktreeIntent(plan: GjcLaunchWorktreePlan | undefined): LifecycleWorktreeIntent | undefined {
+function worktreeIntent(plan: WorxLaunchWorktreePlan | undefined): LifecycleWorktreeIntent | undefined {
 	if (!plan) return undefined;
 	return {
 		repoRoot: path.resolve(plan.repoRoot),
@@ -2479,7 +2479,7 @@ function worktreeIntent(plan: GjcLaunchWorktreePlan | undefined): LifecycleWorkt
 	};
 }
 
-function preparePlannedWorktree(plan: GjcLaunchWorktreePlan): SessionLifecycleWorktreeReceipt {
+function preparePlannedWorktree(plan: WorxLaunchWorktreePlan): SessionLifecycleWorktreeReceipt {
 	const prepared = ensureLaunchWorktree(plan);
 	if (!prepared.enabled || path.resolve(prepared.worktreePath) !== path.resolve(plan.worktreePath))
 		throw new Error("Lifecycle worktree preparation did not preserve the durable worktree identity.");
@@ -2521,7 +2521,7 @@ async function launchInput(
 	if (worktree === null || (worktree !== undefined && requestedCwd === undefined))
 		return fail("invalid_input", "Lifecycle worktree target is invalid.");
 	let cwd = sourceCwd;
-	let worktreePlan: GjcLaunchWorktreePlan | undefined;
+	let worktreePlan: WorxLaunchWorktreePlan | undefined;
 	if (worktree) {
 		try {
 			const planned = planLaunchWorktree(
@@ -4595,7 +4595,7 @@ export function sessionHostWorkInFlight(): boolean {
  * This sweep can never disturb healthy work: a registration is only dropped
  * when `process.kill(pid, 0)` proves the exact published pid is gone, and a
  * working host answers that probe for its entire life no matter how long a turn
- * runs. One minute keeps `gjc_sessions`/`session.get_endpoint` from advertising
+ * runs. One minute keeps `worx_sessions`/`session.get_endpoint` from advertising
  * a corpse for longer than a single poll while costing one index refresh per
  * minute on an otherwise idle broker.
  */

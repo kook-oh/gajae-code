@@ -90,7 +90,7 @@ export default class Setup extends Command {
 				mutation: flags.mutation,
 				artifactByteCap: flags["artifact-byte-cap"],
 				serverKey: flags["server-key"],
-				gjcCommand: flags["gjc-command"],
+				worxCommand: flags["gjc-command"],
 				target: flags.target,
 				profileDir: flags["profile-dir"],
 				yes: flags.yes,

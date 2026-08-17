@@ -4,16 +4,16 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	buildAgentSubskillAdvertisement,
 	buildSubskillAdvertisement,
 	bundleIdentity,
-	type GjcPluginRegistryEntry,
-	installGjcBundle,
-	loadEffectiveGjcPluginRegistry,
-	type NormalizedGjcPluginSurfaces,
-	previewGjcBundleUpdate,
+	installWorxBundle,
+	loadEffectiveWorxPluginRegistry,
+	type NormalizedWorxPluginSurfaces,
+	previewWorxBundleUpdate,
 	renderPluginAppendices,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 import { buildSystemPrompt } from "../src/system-prompt";
 
@@ -25,11 +25,11 @@ afterEach(async () => {
 	for (const d of tempDirs.splice(0)) await fs.rm(d, { recursive: true, force: true });
 });
 
-function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 }
 
-function entry(name: string, over: Partial<GjcPluginRegistryEntry> = {}): GjcPluginRegistryEntry {
+function entry(name: string, over: Partial<WorxPluginRegistryEntry> = {}): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",
@@ -52,8 +52,8 @@ describe("plugin prompt appendices", () => {
 	test("renders lower-authority system + agent appendix blocks from an installed bundle", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-appx-"));
 		tempDirs.push(cwd);
-		await installGjcBundle({ cwd }, "project", sixSurface);
-		const effective = await loadEffectiveGjcPluginRegistry(cwd);
+		await installWorxBundle({ cwd }, "project", sixSurface);
+		const effective = await loadEffectiveWorxPluginRegistry(cwd);
 		const rendered = await renderPluginAppendices(effective);
 		expect(rendered.system).toContain("<worx-plugin-system-appendix");
 		expect(rendered.system).toContain('authority="appendix-lower-than-system"');
@@ -64,8 +64,8 @@ describe("plugin prompt appendices", () => {
 	test("rejects a system appendix replacement between validation and final render read", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-appx-race-system-"));
 		tempDirs.push(cwd);
-		await installGjcBundle({ cwd }, "project", sixSurface);
-		const effective = await loadEffectiveGjcPluginRegistry(cwd);
+		await installWorxBundle({ cwd }, "project", sixSurface);
+		const effective = await loadEffectiveWorxPluginRegistry(cwd);
 		await expect(
 			renderPluginAppendices(effective, {
 				beforeRead: async (_entry, surface) => {
@@ -82,8 +82,8 @@ describe("plugin prompt appendices", () => {
 	test("rejects an agent appendix replacement between validation and final render read", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-appx-race-agent-"));
 		tempDirs.push(cwd);
-		await installGjcBundle({ cwd }, "project", sixSurface);
-		const effective = await loadEffectiveGjcPluginRegistry(cwd);
+		await installWorxBundle({ cwd }, "project", sixSurface);
+		const effective = await loadEffectiveWorxPluginRegistry(cwd);
 		await expect(
 			renderPluginAppendices(effective, {
 				beforeRead: async (_entry, surface) => {
@@ -112,14 +112,14 @@ describe("plugin prompt appendices", () => {
 		await fs.cp(sixSurface, source, { recursive: true });
 		const ctx = { cwd };
 		const identity = bundleIdentity("project", "valid-six-surface-bundle");
-		await installGjcBundle(ctx, "project", source);
-		const before = (await renderPluginAppendices(await loadEffectiveGjcPluginRegistry(cwd))).digest;
+		await installWorxBundle(ctx, "project", source);
+		const before = (await renderPluginAppendices(await loadEffectiveWorxPluginRegistry(cwd))).digest;
 		await fs.appendFile(path.join(source, "prompts", "system-appendix.md"), "\nNew clause.\n");
-		const preview = await previewGjcBundleUpdate(ctx, identity);
+		const preview = await previewWorxBundleUpdate(ctx, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
-		await applyGjcBundleUpdate(ctx, preview.value.token);
-		const after = (await renderPluginAppendices(await loadEffectiveGjcPluginRegistry(cwd))).digest;
+		await applyWorxBundleUpdate(ctx, preview.value.token);
+		const after = (await renderPluginAppendices(await loadEffectiveWorxPluginRegistry(cwd))).digest;
 		expect(after).not.toBe(before);
 	});
 });
@@ -235,7 +235,7 @@ describe("M5 blocker fixes", () => {
 	});
 
 	test("parseManifest rejects unknown agent-appendix agent with invalid_parent", async () => {
-		const { GjcPluginLoadError, parseManifest } = await import("../src/extensibility/worx-plugins");
+		const { WorxPluginLoadError, parseManifest } = await import("../src/extensibility/worx-plugins");
 		try {
 			parseManifest(
 				{
@@ -248,8 +248,8 @@ describe("M5 blocker fixes", () => {
 			);
 			throw new Error("expected invalid_parent");
 		} catch (error) {
-			expect(error).toBeInstanceOf(GjcPluginLoadError);
-			expect((error as InstanceType<typeof GjcPluginLoadError>).code).toBe("invalid_parent");
+			expect(error).toBeInstanceOf(WorxPluginLoadError);
+			expect((error as InstanceType<typeof WorxPluginLoadError>).code).toBe("invalid_parent");
 		}
 	});
 });

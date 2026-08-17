@@ -23,7 +23,7 @@ import type {
 	DaemonStatus,
 } from "../../daemon/control-types";
 import { OWNERSHIP_MISMATCH_MESSAGE, ownershipMismatchRecovery } from "../../daemon/operator-contract";
-import { resolveGjcRuntimeSpawnInfo } from "../../daemon/runtime";
+import { resolveWorxRuntimeSpawnInfo } from "../../daemon/runtime";
 import { isProcessIncarnation } from "../broker/process-incarnation";
 
 import { getNotificationConfig, isTelegramComplete, tokenFingerprint } from "./config";
@@ -209,7 +209,7 @@ export class TelegramDaemonController implements BuiltInDaemonController {
 	}
 
 	private runtimeInfo(): DaemonRuntimeInfo {
-		const rt = resolveGjcRuntimeSpawnInfo(this.deps.execPath ?? process.execPath);
+		const rt = resolveWorxRuntimeSpawnInfo(this.deps.execPath ?? process.execPath);
 		return {
 			mode: rt.mode,
 			execPath: rt.execPath,

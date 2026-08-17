@@ -136,7 +136,7 @@ Worktree and metadata behavior:
 | Batching | None |
 | Output | `# Pushed Pull Request Branch` summary with local branch, remote, remote branch, remote URL, PR URL, and force-with-lease flag. `sourceUrl = prUrl` when known. |
 
-Push target resolution reads the `branch.<name>.worxPrHeadRef`, `pushRemote`/`remote`, `gjcPrUrl`, `gjcPrMaintainerCanModify`, and `gjcPrIsCrossRepository` git-config keys written by `pr_checkout`. If the current checked-out branch matches the target branch, the source ref is `HEAD`; otherwise it pushes `refs/heads/<branch>`. The refspec is `HEAD:refs/heads/<headRef>` or `refs/heads/<branch>:refs/heads/<headRef>`.
+Push target resolution reads the `branch.<name>.worxPrHeadRef`, `pushRemote`/`remote`, `worxPrUrl`, `worxPrMaintainerCanModify`, and `worxPrIsCrossRepository` git-config keys written by `pr_checkout`. If the current checked-out branch matches the target branch, the source ref is `HEAD`; otherwise it pushes `refs/heads/<branch>`. The refspec is `HEAD:refs/heads/<headRef>` or `refs/heads/<branch>:refs/heads/<headRef>`.
 
 ### `search_issues`
 
@@ -265,7 +265,7 @@ Watch flow:
   - invalid `run` format
   - `fill` combined with `title` or `body`
   - missing git repo / branch / HEAD context for checkout, push, or watch
-  - `pr_push` on a branch without `gjcPrHeadRef` metadata
+  - `pr_push` on a branch without `worxPrHeadRef` metadata
   - conflicting existing worktree path or branch without `force`
 - `run_watch` treats failed-job log fetches specially: missing log content does not fail the watch; it marks that log `available: false` and prints `Log tail unavailable.` / `Full log unavailable.`.
 - `pr_create` swallows only the post-create best-effort `gh pr view` refresh; the create step itself still fails normally.

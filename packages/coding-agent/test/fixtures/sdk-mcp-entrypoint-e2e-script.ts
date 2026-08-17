@@ -116,10 +116,10 @@ try {
 	proc.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize" })}\n`);
 	proc.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list" })}\n`);
 	proc.stdin.write(
-		`${JSON.stringify({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "gjc_session_query", arguments: { sessionId: "s1", query: "session.metadata" } } })}\n`,
+		`${JSON.stringify({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "worx_session_query", arguments: { sessionId: "s1", query: "session.metadata" } } })}\n`,
 	);
 	proc.stdin.write(
-		`${JSON.stringify({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "gjc_session_global", arguments: { operation: "session.get_endpoint" } } })}\n`,
+		`${JSON.stringify({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "worx_session_global", arguments: { operation: "session.get_endpoint" } } })}\n`,
 	);
 	await proc.stdin.end();
 
@@ -154,7 +154,7 @@ try {
 		.map(l => JSON.parse(l));
 	const byId = Object.fromEntries(lines.map(l => [l.id, l]));
 	if (byId[1]?.result?.serverInfo?.name !== "gjc-sdk-mcp") throw new Error(`initialize failed: ${out}`);
-	if (!byId[2]?.result?.tools?.some((t: { name: string }) => t.name === "gjc_session_query"))
+	if (!byId[2]?.result?.tools?.some((t: { name: string }) => t.name === "worx_session_query"))
 		throw new Error("tools/list failed");
 	const queryText = JSON.parse(byId[3].result.content[0].text);
 	if (queryText.page?.items?.[0]?.sessionId !== "s1")

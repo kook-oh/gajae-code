@@ -712,13 +712,13 @@ describe("workflow mutation guard", () => {
 		});
 		expect(temp.blocked).toBe(false);
 
-		const gjcBash = await getWorkflowMutationDecision({
+		const worxBash = await getWorkflowMutationDecision({
 			cwd,
 			sessionId: "session-a",
 			tool: tool("bash"),
 			args: { command: "gjc ralplan --write --stage planner --stage_n 1 --artifact /tmp/plan.md" },
 		});
-		expect(gjcBash.blocked).toBe(false);
+		expect(worxBash.blocked).toBe(false);
 	});
 
 	it("blocks product mutation only during the ultragoal goal-planning phase", async () => {

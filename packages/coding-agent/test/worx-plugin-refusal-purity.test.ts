@@ -5,15 +5,15 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	bundleIdentity,
-	installGjcBundle,
-	previewGjcBundleUpdate,
+	installWorxBundle,
+	previewWorxBundleUpdate,
 } from "../src/extensibility/worx-plugins";
-import { compileGjcPluginBundle } from "../src/extensibility/worx-plugins/compiler";
-import { isGjcPluginSourceShape } from "../src/extensibility/worx-plugins/installer";
+import { compileWorxPluginBundle } from "../src/extensibility/worx-plugins/compiler";
+import { isWorxPluginSourceShape } from "../src/extensibility/worx-plugins/installer";
 import { isLocalDirectorySourceForTest, storedSourceLocatorForTest } from "../src/extensibility/worx-plugins/lifecycle";
-import { GjcPluginLoadError } from "../src/extensibility/worx-plugins/types";
+import { WorxPluginLoadError } from "../src/extensibility/worx-plugins/types";
 
 /**
  * A refused install must be observable as a pure read. The transaction used to
@@ -79,11 +79,11 @@ describe("GJC bundle refusal purity", () => {
 		const cwd = await mkProjectCwd();
 		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 
-		const first = await installGjcBundle({ cwd }, "project", sixSurface);
+		const first = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(first.ok).toBe(true);
 		const before = await treeOf(scopeRoot);
 
-		const refused = await installGjcBundle({ cwd }, "project", sixSurface);
+		const refused = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(refused).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
 
 		expect(await treeOf(scopeRoot)).toEqual(before);
@@ -93,11 +93,11 @@ describe("GJC bundle refusal purity", () => {
 		const cwd = await mkProjectCwd();
 		// Install into project, then refuse a second project install. The user
 		// scope was never a target, so its root must not have been created.
-		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
 		const userRoot = path.join(agentDir, "worx-plugins");
 		const beforeUser = await treeOf(userRoot);
 
-		const refused = await installGjcBundle({ cwd }, "project", sixSurface);
+		const refused = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(refused.ok).toBe(false);
 
 		expect(await treeOf(userRoot)).toEqual(beforeUser);
@@ -106,14 +106,14 @@ describe("GJC bundle refusal purity", () => {
 	test("a refused install leaves the untargeted opposite scope byte-identical", async () => {
 		const cwd = await mkProjectCwd();
 		const userRoot = path.join(agentDir, "worx-plugins");
-		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
 		// A committing install legitimately locks both scopes, because the
 		// collision decision spans them; that lock creates the opposite-scope
 		// root. What a REFUSAL must not do is change it, since the refusal is
 		// decided before any lock is acquired.
 		const beforeUser = await treeOf(userRoot);
 
-		const refused = await installGjcBundle({ cwd }, "project", sixSurface);
+		const refused = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(refused).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
 
 		expect(await treeOf(userRoot)).toBe(beforeUser);
@@ -121,7 +121,7 @@ describe("GJC bundle refusal purity", () => {
 
 	test("a refused install does not depend on the source being resolvable", async () => {
 		const cwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
 		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 		const before = await treeOf(scopeRoot);
 
@@ -134,7 +134,7 @@ describe("GJC bundle refusal purity", () => {
 			JSON.stringify({ name: "valid-six-surface-bundle", version: "9.9.9" }),
 		);
 
-		const refused = await installGjcBundle({ cwd }, "project", broken);
+		const refused = await installWorxBundle({ cwd }, "project", broken);
 		expect(refused).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
 		expect(await treeOf(scopeRoot)).toBe(before);
 	});
@@ -150,7 +150,7 @@ describe("GJC bundle refusal purity", () => {
 		const copy = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-refusal-gone-"));
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
-		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", copy)).ok).toBe(true);
 		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 		const before = await treeOf(scopeRoot);
 
@@ -159,7 +159,7 @@ describe("GJC bundle refusal purity", () => {
 		// Assert the SPECIFIC contract, not merely that something threw: the
 		// failure must be the typed source error, and it must name the missing
 		// source rather than silently succeeding or refusing on a guess.
-		await expect(installGjcBundle({ cwd }, "project", copy)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", copy)).rejects.toMatchObject({
 			code: "missing_file",
 		});
 		// The installed target must be untouched.
@@ -168,13 +168,13 @@ describe("GJC bundle refusal purity", () => {
 
 	test("an unreachable remote locator matching no installed entry is not silently refused", async () => {
 		const cwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
 		// A remote locator that names no installed bundle must NOT be swallowed by
 		// the preflight; it has to reach resolution and fail there instead.
-		// It must reach resolution and fail there, as a GjcPluginLoadError, rather
+		// It must reach resolution and fail there, as a WorxPluginLoadError, rather
 		// than being absorbed by the preflight as an already-installed refusal.
-		const attempt = installGjcBundle({ cwd }, "project", "https://example.invalid/nobody/nothing.git");
-		await expect(attempt).rejects.toBeInstanceOf(GjcPluginLoadError);
+		const attempt = installWorxBundle({ cwd }, "project", "https://example.invalid/nobody/nothing.git");
+		await expect(attempt).rejects.toBeInstanceOf(WorxPluginLoadError);
 	});
 
 	test("a locator shared with another scope never blocks an install", async () => {
@@ -182,12 +182,12 @@ describe("GJC bundle refusal purity", () => {
 		const copy = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-refusal-reuse-"));
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
-		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", copy)).ok).toBe(true);
 
 		// Same locator, but the target scope has no such entry: the locator match
 		// is scoped, so a user-scope install must NOT be refused by the project
 		// entry that happens to share the source.
-		const userInstall = await installGjcBundle({ cwd }, "user", copy);
+		const userInstall = await installWorxBundle({ cwd }, "user", copy);
 		expect(userInstall.ok).toBe(true);
 	});
 
@@ -236,18 +236,18 @@ describe("GJC bundle refusal purity", () => {
 
 	test("a vanished stored source yields typed source_unavailable, never a throw", async () => {
 		// Upstream review B2: with the stored source deleted, upgrade threw an
-		// uncaught GjcPluginLoadError whose message embedded the absolute source
+		// uncaught WorxPluginLoadError whose message embedded the absolute source
 		// path. It must be a typed refusal with no locator in the message.
 		const cwd = await mkProjectCwd();
 		const copy = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-b2-src-"));
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
-		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", copy)).ok).toBe(true);
 		const identity = bundleIdentity("project", "valid-six-surface-bundle");
 
 		await fs.rm(copy, { recursive: true, force: true });
 
-		const preview = await previewGjcBundleUpdate({ cwd }, identity);
+		const preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview).toMatchObject({ ok: false, error: { code: "source_unavailable" } });
 		if (preview.ok) throw new Error("expected refusal");
 		expect(preview.error.message).not.toContain(copy);
@@ -256,7 +256,7 @@ describe("GJC bundle refusal purity", () => {
 
 		// Apply must fail the same way rather than throwing, using a token whose
 		// shape is valid but whose source no longer resolves.
-		const applied = await applyGjcBundleUpdate(
+		const applied = await applyWorxBundleUpdate(
 			{ cwd },
 			{
 				identity,
@@ -276,13 +276,13 @@ describe("GJC bundle refusal purity", () => {
 		const copy = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-malformed-source-"));
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
-		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd }, "project", copy)).ok).toBe(true);
 		const identity = bundleIdentity("project", "valid-six-surface-bundle");
 		await fs.rm(path.join(copy, "gajae-plugin.json"));
 
-		const preview = await previewGjcBundleUpdate({ cwd }, identity);
+		const preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview).toMatchObject({ ok: false, error: { code: "invalid_target" } });
-		const applied = await applyGjcBundleUpdate(
+		const applied = await applyWorxBundleUpdate(
 			{ cwd },
 			{
 				identity,
@@ -312,9 +312,9 @@ describe("GJC bundle refusal purity", () => {
 			"@scope/foo.tar.gz",
 			"my.pkg.tar",
 		]) {
-			expect(isGjcPluginSourceShape(npmSpec)).toBe(false);
+			expect(isWorxPluginSourceShape(npmSpec)).toBe(false);
 		}
-		for (const gjcSpec of [
+		for (const worxSpec of [
 			"./local-bundle",
 			"/abs/bundle",
 			"../rel",
@@ -329,7 +329,7 @@ describe("GJC bundle refusal purity", () => {
 			"C:\\x\\y",
 			"\\\\srv\\share",
 		]) {
-			expect(isGjcPluginSourceShape(gjcSpec)).toBe(true);
+			expect(isWorxPluginSourceShape(worxSpec)).toBe(true);
 		}
 	});
 
@@ -366,7 +366,7 @@ describe("GJC bundle refusal purity", () => {
 				path.join(dir, "gajae-plugin.json"),
 				JSON.stringify({ kind: "gajae-code-plugin", name: hostile, version: "1.0.0" }),
 			);
-			await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+			await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 		}
 
 		// The bundle name is not the only manifest-controlled string that reaches
@@ -384,12 +384,12 @@ describe("GJC bundle refusal purity", () => {
 				tools: [{ name: hostileText, path: "tools/t.ts", description: "d" }],
 			}),
 		);
-		await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+		await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 		await fs.writeFile(
 			path.join(dir, "gajae-plugin.json"),
 			JSON.stringify({ kind: "gajae-code-plugin", name: "ok-bundle", version: hostileText }),
 		);
-		await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+		await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 
 		// A hook's event and target form part of its surface ID, and a tool
 		// description is displayed, so both must reject control sequences even
@@ -404,7 +404,7 @@ describe("GJC bundle refusal purity", () => {
 				path.join(dir, "gajae-plugin.json"),
 				JSON.stringify({ kind: "gajae-code-plugin", name: "ok-bundle", version: "1.0.0", hooks: [hook] }),
 			);
-			await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+			await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 		}
 		await fs.writeFile(
 			path.join(dir, "gajae-plugin.json"),
@@ -415,7 +415,7 @@ describe("GJC bundle refusal purity", () => {
 				tools: [{ name: "t", path: "tools/t.ts", description: "bad\u001b[31mANSI" }],
 			}),
 		);
-		await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+		await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 
 		// A legitimate name still compiles, so the constraint is not vacuous.
 		await fs.writeFile(
@@ -435,7 +435,7 @@ describe("GJC bundle refusal purity", () => {
 				hooks: [{ name: "audit-read", event: "tool_call", target: "read", phase: "before", path: "hooks/h.ts" }],
 			}),
 		);
-		await expect(compileGjcPluginBundle(dir)).resolves.toMatchObject({
+		await expect(compileWorxPluginBundle(dir)).resolves.toMatchObject({
 			name: "ordinary-bundle_1.0",
 			version: "1.0.0-beta.1",
 		});
@@ -449,8 +449,8 @@ describe("GJC bundle refusal purity", () => {
 		const originalPath = process.env.PATH;
 		process.env.PATH = "/nonexistent";
 		try {
-			const attempt = installGjcBundle({ cwd }, "project", "https://example.invalid/owner/repo.git");
-			await expect(attempt).rejects.toBeInstanceOf(GjcPluginLoadError);
+			const attempt = installWorxBundle({ cwd }, "project", "https://example.invalid/owner/repo.git");
+			await expect(attempt).rejects.toBeInstanceOf(WorxPluginLoadError);
 			await expect(attempt).rejects.toMatchObject({ code: "missing_file" });
 			await attempt.catch((error: unknown) => {
 				const message = error instanceof Error ? error.message : String(error);
@@ -486,11 +486,11 @@ describe("GJC bundle refusal purity", () => {
 			);
 
 		await writeSkill("bad\u009b31m desc");
-		await expect(compileGjcPluginBundle(dir)).rejects.toBeInstanceOf(GjcPluginLoadError);
+		await expect(compileWorxPluginBundle(dir)).rejects.toBeInstanceOf(WorxPluginLoadError);
 
 		// Ordinary non-ASCII prose must still compile: the rule targets control
 		// blocks, not everything outside ASCII.
 		await writeSkill("Ordinary prose with Unicode - café, 日本語");
-		await expect(compileGjcPluginBundle(dir)).resolves.toMatchObject({ name: "ok-bundle" });
+		await expect(compileWorxPluginBundle(dir)).resolves.toMatchObject({ name: "ok-bundle" });
 	});
 });

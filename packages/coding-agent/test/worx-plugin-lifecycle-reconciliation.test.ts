@@ -5,17 +5,17 @@ import {
 	candidateFingerprint,
 	decisionContextFingerprint,
 	diffSurfaceIds,
-	type GjcPluginRegistryEntry,
 	identityEquals,
 	identityKey,
-	type NormalizedGjcPluginBundle,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginBundle,
+	type NormalizedWorxPluginSurfaces,
 	reconcileEnablement,
 	surfaceIdsOf,
 	targetFingerprint,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 
-const surfaces: NormalizedGjcPluginSurfaces = {
+const surfaces: NormalizedWorxPluginSurfaces = {
 	subskills: [
 		{
 			extensionId: "subskill",
@@ -49,7 +49,7 @@ function bundle(
 	version = "1.0.0",
 	manifestHash = "manifest",
 	files = [{ relativePath: "file", sha256: "file-hash", bytes: 1 }],
-): NormalizedGjcPluginBundle {
+): NormalizedWorxPluginBundle {
 	return {
 		name: "bundle",
 		version,
@@ -61,7 +61,7 @@ function bundle(
 	};
 }
 
-function entry(scope: "project" | "user" = "project", name = "bundle"): GjcPluginRegistryEntry {
+function entry(scope: "project" | "user" = "project", name = "bundle"): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",

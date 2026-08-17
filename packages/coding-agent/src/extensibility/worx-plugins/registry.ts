@@ -1,25 +1,30 @@
 import { createHash, randomBytes } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { compileGjcPluginBundle } from "./compiler";
-import { migrateGjcPluginEntries } from "./migration";
-import { gjcPluginProjectRoot, gjcPluginUserRoot } from "./paths";
-import { GjcPluginLoadError, type GjcPluginRegistry, type GjcPluginRegistryEntry, type GjcPluginScope } from "./types";
+import { compileWorxPluginBundle } from "./compiler";
+import { migrateWorxPluginEntries } from "./migration";
+import { worxPluginProjectRoot, worxPluginUserRoot } from "./paths";
+import {
+	WorxPluginLoadError,
+	type WorxPluginRegistry,
+	type WorxPluginRegistryEntry,
+	type WorxPluginScope,
+} from "./types";
 
 const REGISTRY_FILENAME = "registry.json";
 const LOCK_FILENAME = "registry.lock";
 const LOCK_TIMEOUT_MS = 5000;
 const LOCK_RETRY_MS = 50;
 
-export function registryRootForScope(scope: GjcPluginScope, cwd: string): string {
-	return scope === "user" ? gjcPluginUserRoot() : gjcPluginProjectRoot(cwd);
+export function registryRootForScope(scope: WorxPluginScope, cwd: string): string {
+	return scope === "user" ? worxPluginUserRoot() : worxPluginProjectRoot(cwd);
 }
 
-export function registryPathForScope(scope: GjcPluginScope, cwd: string): string {
+export function registryPathForScope(scope: WorxPluginScope, cwd: string): string {
 	return path.join(registryRootForScope(scope, cwd), REGISTRY_FILENAME);
 }
 
-function emptyRegistry(scope: GjcPluginScope): GjcPluginRegistry {
+function emptyRegistry(scope: WorxPluginScope): WorxPluginRegistry {
 	return { version: 1, scope, plugins: [] };
 }
 
@@ -32,8 +37,8 @@ function isEnoent(error: unknown): boolean {
  * resolved plugin root. Collisions are errors elsewhere; order only controls
  * stable hook/appendix sequencing.
  */
-export function sortRegistryEntries(entries: GjcPluginRegistryEntry[]): GjcPluginRegistryEntry[] {
-	const scopeRank = (scope: GjcPluginScope): number => (scope === "user" ? 0 : 1);
+export function sortRegistryEntries(entries: WorxPluginRegistryEntry[]): WorxPluginRegistryEntry[] {
+	const scopeRank = (scope: WorxPluginScope): number => (scope === "user" ? 0 : 1);
 	return [...entries].sort((a, b) => {
 		if (a.scope !== b.scope) return scopeRank(a.scope) - scopeRank(b.scope);
 		if (a.name !== b.name) return a.name.localeCompare(b.name);
@@ -41,7 +46,7 @@ export function sortRegistryEntries(entries: GjcPluginRegistryEntry[]): GjcPlugi
 	});
 }
 
-async function readRegistryRaw(scope: GjcPluginScope, cwd: string): Promise<GjcPluginRegistry> {
+async function readRegistryRaw(scope: WorxPluginScope, cwd: string): Promise<WorxPluginRegistry> {
 	const registryPath = registryPathForScope(scope, cwd);
 	let text: string;
 	try {
@@ -54,16 +59,16 @@ async function readRegistryRaw(scope: GjcPluginScope, cwd: string): Promise<GjcP
 	try {
 		parsed = JSON.parse(text);
 	} catch (error) {
-		throw new GjcPluginLoadError("invalid_manifest", `Corrupt GJC plugin registry at ${registryPath}`, {
+		throw new WorxPluginLoadError("invalid_manifest", `Corrupt GJC plugin registry at ${registryPath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
-	if (typeof parsed !== "object" || parsed === null || (parsed as GjcPluginRegistry).version !== 1) {
-		throw new GjcPluginLoadError("invalid_manifest", `Unsupported GJC plugin registry shape at ${registryPath}`);
+	if (typeof parsed !== "object" || parsed === null || (parsed as WorxPluginRegistry).version !== 1) {
+		throw new WorxPluginLoadError("invalid_manifest", `Unsupported GJC plugin registry shape at ${registryPath}`);
 	}
-	const registry = parsed as GjcPluginRegistry;
+	const registry = parsed as WorxPluginRegistry;
 	if (registry.scope !== scope)
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`GJC plugin registry scope mismatch at ${registryPath}: expected ${scope}`,
 		);
@@ -71,7 +76,7 @@ async function readRegistryRaw(scope: GjcPluginScope, cwd: string): Promise<GjcP
 		!Array.isArray(registry.plugins) ||
 		registry.plugins.some(plugin => {
 			if (!plugin || typeof plugin !== "object") return true;
-			const entry = plugin as GjcPluginRegistryEntry;
+			const entry = plugin as WorxPluginRegistryEntry;
 			return (
 				entry.scope !== scope ||
 				!entry.surfaces ||
@@ -80,7 +85,7 @@ async function readRegistryRaw(scope: GjcPluginScope, cwd: string): Promise<GjcP
 			);
 		})
 	) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`Invalid GJC plugin registry entries or scope at ${registryPath}`,
 		);
@@ -90,10 +95,10 @@ async function readRegistryRaw(scope: GjcPluginScope, cwd: string): Promise<GjcP
 }
 
 async function discoverLegacyEntries(
-	scope: GjcPluginScope,
+	scope: WorxPluginScope,
 	cwd: string,
-	existing: readonly GjcPluginRegistryEntry[],
-): Promise<GjcPluginRegistryEntry[]> {
+	existing: readonly WorxPluginRegistryEntry[],
+): Promise<WorxPluginRegistryEntry[]> {
 	const root = registryRootForScope(scope, cwd);
 	let dirents: import("node:fs").Dirent[];
 	try {
@@ -103,13 +108,13 @@ async function discoverLegacyEntries(
 		throw error;
 	}
 	const known = new Set(existing.map(entry => path.resolve(entry.pluginRoot)));
-	const discovered: GjcPluginRegistryEntry[] = [];
+	const discovered: WorxPluginRegistryEntry[] = [];
 	for (const dirent of dirents) {
 		if (!dirent.isDirectory() || dirent.name.startsWith(".")) continue;
 		const pluginRoot = path.join(root, dirent.name);
 		if (known.has(path.resolve(pluginRoot))) continue;
 		try {
-			const bundle = await compileGjcPluginBundle(pluginRoot);
+			const bundle = await compileWorxPluginBundle(pluginRoot);
 			const now = new Date().toISOString();
 			discovered.push({
 				name: bundle.name,
@@ -148,7 +153,7 @@ async function discoverLegacyEntries(
 				// Keep the directory name and sanitized failure below.
 			}
 			const now = new Date().toISOString();
-			const code = error instanceof GjcPluginLoadError ? error.code : "missing_file";
+			const code = error instanceof WorxPluginLoadError ? error.code : "missing_file";
 			discovered.push({
 				name,
 				version,
@@ -180,23 +185,23 @@ async function discoverLegacyEntries(
 }
 
 export async function readRegistry(
-	scope: GjcPluginScope,
+	scope: WorxPluginScope,
 	cwd: string,
 	options: { migrate?: boolean } = {},
-): Promise<GjcPluginRegistry> {
+): Promise<WorxPluginRegistry> {
 	const registry = await readRegistryRaw(scope, cwd);
 	if (options.migrate === false) return registry;
 	const discovered = await discoverLegacyEntries(scope, cwd, registry.plugins);
-	const migrated = await migrateGjcPluginEntries([...registry.plugins, ...discovered]);
+	const migrated = await migrateWorxPluginEntries([...registry.plugins, ...discovered]);
 	if (!migrated.changed && discovered.length === 0) return registry;
 	// Re-check under the lock before persisting. Migration and legacy-root
 	// discovery are one transaction, never a normal runtime loader path.
 	return await withRegistryLock(scope, cwd, async () => {
 		const latest = await readRegistryRaw(scope, cwd);
 		const latestDiscovered = await discoverLegacyEntries(scope, cwd, latest.plugins);
-		const latestMigrated = await migrateGjcPluginEntries([...latest.plugins, ...latestDiscovered]);
+		const latestMigrated = await migrateWorxPluginEntries([...latest.plugins, ...latestDiscovered]);
 		if (latestMigrated.changed || latestDiscovered.length > 0) {
-			const next: GjcPluginRegistry = { ...latest, plugins: sortRegistryEntries(latestMigrated.entries) };
+			const next: WorxPluginRegistry = { ...latest, plugins: sortRegistryEntries(latestMigrated.entries) };
 			await writeRegistryUnlocked(next, cwd, scope);
 			return next;
 		}
@@ -235,7 +240,7 @@ async function acquireLock(lockPath: string): Promise<() => Promise<void>> {
 			// diagnostics/manual cleanup. A lease/heartbeat protocol can be added
 			// later if automatic stale recovery becomes necessary.
 			if (Date.now() > deadline) {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"install_conflict",
 					`Timed out acquiring GJC plugin registry lock at ${lockPath}; remove it manually if no install is running`,
 				);
@@ -245,7 +250,7 @@ async function acquireLock(lockPath: string): Promise<() => Promise<void>> {
 	}
 }
 
-export async function withRegistryLock<T>(scope: GjcPluginScope, cwd: string, fn: () => Promise<T>): Promise<T> {
+export async function withRegistryLock<T>(scope: WorxPluginScope, cwd: string, fn: () => Promise<T>): Promise<T> {
 	const lockPath = path.join(registryRootForScope(scope, cwd), LOCK_FILENAME);
 	const release = await acquireLock(lockPath);
 	try {
@@ -260,20 +265,24 @@ export async function withRegistryLock<T>(scope: GjcPluginScope, cwd: string, fn
  * the per-scope registry lock via withRegistryLock.
  */
 export async function writeRegistryUnlocked(
-	registry: GjcPluginRegistry,
+	registry: WorxPluginRegistry,
 	cwd: string,
-	ownerScope: GjcPluginScope = registry.scope,
+	ownerScope: WorxPluginScope = registry.scope,
 ): Promise<void> {
 	if (registry.scope !== ownerScope)
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_manifest",
 			`GJC plugin registry scope mismatch: caller owns ${ownerScope}, registry declares ${registry.scope}`,
 		);
 	if (registry.plugins.some(entry => entry.scope !== ownerScope))
-		throw new GjcPluginLoadError("invalid_manifest", `GJC plugin entry scope mismatch: caller owns ${ownerScope}`);
+		throw new WorxPluginLoadError("invalid_manifest", `GJC plugin entry scope mismatch: caller owns ${ownerScope}`);
 	const registryPath = registryPathForScope(ownerScope, cwd);
 	await fs.mkdir(path.dirname(registryPath), { recursive: true });
-	const sorted: GjcPluginRegistry = { ...registry, scope: ownerScope, plugins: sortRegistryEntries(registry.plugins) };
+	const sorted: WorxPluginRegistry = {
+		...registry,
+		scope: ownerScope,
+		plugins: sortRegistryEntries(registry.plugins),
+	};
 	const text = `${JSON.stringify(sorted, null, 2)}\n`;
 	const tmpPath = `${registryPath}.tmp-${process.pid}-${randomBytes(4).toString("hex")}`;
 	const handle = await fs.open(tmpPath, "w");
@@ -291,9 +300,9 @@ export async function writeRegistryUnlocked(
  * by an interprocess lockfile so concurrent installs cannot clobber each other.
  */
 export async function writeRegistry(
-	registry: GjcPluginRegistry,
+	registry: WorxPluginRegistry,
 	cwd: string,
-	ownerScope: GjcPluginScope = registry.scope,
+	ownerScope: WorxPluginScope = registry.scope,
 ): Promise<void> {
 	await withRegistryLock(ownerScope, cwd, () => writeRegistryUnlocked(registry, cwd, ownerScope));
 }
@@ -304,14 +313,14 @@ export async function writeRegistry(
  * sorted copy and returns the next entry list.
  */
 export async function updateRegistry(
-	scope: GjcPluginScope,
+	scope: WorxPluginScope,
 	cwd: string,
-	mutator: (entries: GjcPluginRegistryEntry[]) => GjcPluginRegistryEntry[],
-): Promise<GjcPluginRegistry> {
+	mutator: (entries: WorxPluginRegistryEntry[]) => WorxPluginRegistryEntry[],
+): Promise<WorxPluginRegistry> {
 	return await withRegistryLock(scope, cwd, async () => {
 		const current = await readRegistry(scope, cwd, { migrate: false });
 		const nextEntries = mutator([...current.plugins]);
-		const next: GjcPluginRegistry = { version: 1, scope, plugins: sortRegistryEntries(nextEntries) };
+		const next: WorxPluginRegistry = { version: 1, scope, plugins: sortRegistryEntries(nextEntries) };
 		await writeRegistryUnlocked(next, cwd);
 		return next;
 	});
@@ -320,12 +329,12 @@ export async function updateRegistry(
 /**
  * Effective registry for a cwd: user + project entries in deterministic order.
  */
-export async function loadEffectiveGjcPluginRegistry(cwd: string): Promise<GjcPluginRegistryEntry[]> {
+export async function loadEffectiveWorxPluginRegistry(cwd: string): Promise<WorxPluginRegistryEntry[]> {
 	const [user, project] = await Promise.all([readRegistry("user", cwd), readRegistry("project", cwd)]);
 	return sortRegistryEntries([...user.plugins, ...project.plugins]);
 }
 
-export function registryEntryFingerprint(entry: GjcPluginRegistryEntry): string {
+export function registryEntryFingerprint(entry: WorxPluginRegistryEntry): string {
 	const canonical = JSON.stringify({
 		name: entry.name,
 		manifestHash: entry.manifestHash,

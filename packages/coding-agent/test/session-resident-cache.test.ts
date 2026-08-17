@@ -86,7 +86,7 @@ function expectResidentPlaceholder(value: unknown): void {
 	expect(serialized).toContain("Session resident text blob missing");
 	expect(serialized).toContain("original content unavailable");
 	expect(serialized).not.toContain("blob:sha256:");
-	expect(serialized).not.toContain("__gjcResidentBlob");
+	expect(serialized).not.toContain("__worxResidentBlob");
 }
 
 async function expectFileContainsResidentPlaceholder(filePath: string): Promise<void> {
@@ -96,13 +96,13 @@ async function expectFileContainsResidentPlaceholder(filePath: string): Promise<
 	expect(decoded).toContain("Session resident text blob missing");
 	expect(decoded).toContain("original content unavailable");
 	expect(decoded).not.toContain("blob:sha256:");
-	expect(decoded).not.toContain("__gjcResidentBlob");
+	expect(decoded).not.toContain("__worxResidentBlob");
 }
 
 async function fileDoesNotContainBlobRef(filePath: string): Promise<void> {
 	const bytes = await Bun.file(filePath).text();
 	expect(bytes).not.toContain("blob:sha256:");
-	expect(bytes).not.toContain("__gjcResidentBlob");
+	expect(bytes).not.toContain("__worxResidentBlob");
 }
 
 describe("resident text cache missing-blob and reference hygiene", () => {
@@ -292,7 +292,7 @@ describe("resident text cache missing-blob and reference hygiene", () => {
 		expect(serialized).toContain("Session resident imageData blob missing");
 		expect(serialized).toContain("original content unavailable");
 		expect(serialized).not.toContain(ref);
-		expect(serialized).not.toContain("__gjcResidentBlob");
+		expect(serialized).not.toContain("__worxResidentBlob");
 		await reopened.close();
 	});
 });

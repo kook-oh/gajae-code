@@ -4,65 +4,65 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { gunzipSync } from "node:zlib";
-import { compileGjcPluginBundle } from "./compiler";
-import { gjcPluginProjectRoot, gjcPluginUserRoot } from "./paths";
+import { compileWorxPluginBundle } from "./compiler";
+import { worxPluginProjectRoot, worxPluginUserRoot } from "./paths";
 import { readRegistry, sortRegistryEntries, withRegistryLock, writeRegistryUnlocked } from "./registry";
 import {
-	type GjcLifecycleError,
-	GjcPluginLoadError,
-	type GjcPluginRegistry,
-	type GjcPluginRegistryEntry,
-	type GjcPluginRegistrySource,
-	type GjcPluginScope,
-	type NormalizedGjcPluginBundle,
+	type NormalizedWorxPluginBundle,
 	WORX_PLUGIN_MANIFEST_FILENAME,
+	type WorxLifecycleError,
+	WorxPluginLoadError,
+	type WorxPluginRegistry,
+	type WorxPluginRegistryEntry,
+	type WorxPluginRegistrySource,
+	type WorxPluginScope,
 } from "./types";
 import { validateInstallPlan } from "./validation";
 
-export interface GjcBundleTransactionOptions {
-	scope: GjcPluginScope;
+export interface WorxBundleTransactionOptions {
+	scope: WorxPluginScope;
 	cwd: string;
 	/**
 	 * Policy hook evaluated while both scope locks are held. It decides whether
 	 * to commit the candidate, report an already-satisfied no-op, or abort with
 	 * a typed lifecycle error. Only the lifecycle service supplies this.
 	 */
-	decide: (input: GjcBundleTransactionContext) => Promise<GjcBundleTransactionDecision>;
+	decide: (input: WorxBundleTransactionContext) => Promise<WorxBundleTransactionDecision>;
 }
 
-export interface GjcBundleTransactionContext {
-	targetRegistry: GjcPluginRegistry;
+export interface WorxBundleTransactionContext {
+	targetRegistry: WorxPluginRegistry;
 	/** Both scopes, deterministically sorted, for cross-scope decisions. */
-	effective: GjcPluginRegistryEntry[];
-	existing: GjcPluginRegistryEntry | undefined;
-	bundle: NormalizedGjcPluginBundle;
+	effective: WorxPluginRegistryEntry[];
+	existing: WorxPluginRegistryEntry | undefined;
+	bundle: NormalizedWorxPluginBundle;
 	/** Entry the candidate would produce if committed as-is. */
-	candidate: GjcPluginRegistryEntry;
+	candidate: WorxPluginRegistryEntry;
 }
 
-export type GjcBundleTransactionDecision =
-	| { kind: "commit"; entry: GjcPluginRegistryEntry }
-	| { kind: "noop"; entry: GjcPluginRegistryEntry }
-	| { kind: "abort"; error: GjcLifecycleError };
+export type WorxBundleTransactionDecision =
+	| { kind: "commit"; entry: WorxPluginRegistryEntry }
+	| { kind: "noop"; entry: WorxPluginRegistryEntry }
+	| { kind: "abort"; error: WorxLifecycleError };
 
-export type GjcBundleTransactionResult =
-	| { status: "committed"; entry: GjcPluginRegistryEntry; remnants: string[] }
-	| { status: "noop"; entry: GjcPluginRegistryEntry; remnants: string[] }
-	| { status: "aborted"; error: GjcLifecycleError; remnants: string[] };
+export type WorxBundleTransactionResult =
+	| { status: "committed"; entry: WorxPluginRegistryEntry; remnants: string[] }
+	| { status: "noop"; entry: WorxPluginRegistryEntry; remnants: string[] }
+	| { status: "aborted"; error: WorxLifecycleError; remnants: string[] };
 
 // Resource limits for the in-house tar extractor (third-party security boundary).
 const TAR_MAX_FILES = 8192;
 const TAR_MAX_FILE_BYTES = 16 * 1024 * 1024;
 const TAR_MAX_TOTAL_BYTES = 128 * 1024 * 1024;
 
-function scopeRoot(scope: GjcPluginScope, cwd: string): string {
-	return scope === "user" ? gjcPluginUserRoot() : gjcPluginProjectRoot(cwd);
+function scopeRoot(scope: WorxPluginScope, cwd: string): string {
+	return scope === "user" ? worxPluginUserRoot() : worxPluginProjectRoot(cwd);
 }
 
 function safeDirSegment(name: string): string {
 	const seg = name.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/^-+|-+$/g, "");
 	if (!seg || seg === "." || seg === "..") {
-		throw new GjcPluginLoadError("invalid_manifest", `GJC plugin name is not a safe directory segment: ${name}`);
+		throw new WorxPluginLoadError("invalid_manifest", `GJC plugin name is not a safe directory segment: ${name}`);
 	}
 	return seg;
 }
@@ -87,17 +87,17 @@ async function fileExists(p: string): Promise<boolean> {
 // ---------------------------------------------------------------------------
 // Source resolution
 // ---------------------------------------------------------------------------
-export class GjcPluginSourceUnavailableError extends Error {
+export class WorxPluginSourceUnavailableError extends Error {
 	readonly code = "source_unavailable" as const;
 	constructor() {
 		super("GJC plugin source is unavailable");
-		this.name = "GjcPluginSourceUnavailableError";
+		this.name = "WorxPluginSourceUnavailableError";
 	}
 }
 
 interface ResolvedSource {
 	dir: string;
-	source: GjcPluginRegistrySource;
+	source: WorxPluginRegistrySource;
 	cleanup: () => Promise<void>;
 }
 
@@ -112,7 +112,7 @@ function looksLikeGit(source: string): boolean {
 async function resolveLocalPath(source: string): Promise<ResolvedSource> {
 	const abs = path.resolve(source);
 	if (!(await isDirectory(abs))) {
-		throw new GjcPluginSourceUnavailableError();
+		throw new WorxPluginSourceUnavailableError();
 	}
 	return {
 		dir: abs,
@@ -143,13 +143,13 @@ async function extractTarball(tarPath: string, destRoot: string): Promise<void> 
 	try {
 		raw = await fs.readFile(tarPath);
 	} catch {
-		throw new GjcPluginSourceUnavailableError();
+		throw new WorxPluginSourceUnavailableError();
 	}
 	let buf: Buffer;
 	try {
 		buf = /\.(tgz|tar\.gz)$/i.test(tarPath) ? gunzipSync(raw) : raw;
 	} catch {
-		throw new GjcPluginLoadError("invalid_manifest", "GJC plugin tarball could not be decompressed");
+		throw new WorxPluginLoadError("invalid_manifest", "GJC plugin tarball could not be decompressed");
 	}
 	const resolvedRoot = path.resolve(destRoot);
 	const decoder = new TextDecoder();
@@ -161,21 +161,21 @@ async function extractTarball(tarPath: string, destRoot: string): Promise<void> 
 		offset += 512;
 		if (header.every(b => b === 0)) break; // end-of-archive marker
 		if (!tarHeaderChecksumOk(header)) {
-			throw new GjcPluginLoadError("security_policy", "Corrupt tar header checksum");
+			throw new WorxPluginLoadError("security_policy", "Corrupt tar header checksum");
 		}
 		const name = decoder.decode(header.subarray(0, 100)).replace(/\0.*$/, "");
 		const sizeField = decoder.decode(header.subarray(124, 136)).replace(/\0.*$/, "").trim();
 		if (!/^[0-7]*$/.test(sizeField)) {
-			throw new GjcPluginLoadError("security_policy", `Unsupported tar size encoding for ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Unsupported tar size encoding for ${name}`);
 		}
 		const size = sizeField ? Number.parseInt(sizeField, 8) : 0;
 		if (!Number.isSafeInteger(size) || size < 0 || size > TAR_MAX_FILE_BYTES) {
-			throw new GjcPluginLoadError("security_policy", `Tar entry size out of bounds for ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Tar entry size out of bounds for ${name}`);
 		}
 		const typeFlag = String.fromCharCode(header[156] ?? 0);
 		const dataStart = offset;
 		if (dataStart + size > buf.byteLength) {
-			throw new GjcPluginLoadError("security_policy", `Truncated tar entry for ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Truncated tar entry for ${name}`);
 		}
 		offset += Math.ceil(size / 512) * 512;
 		// Skip metadata-only entries.
@@ -188,15 +188,15 @@ async function extractTarball(tarPath: string, destRoot: string): Promise<void> 
 		const isDir = typeFlag === "5" || normalized.endsWith("/");
 		const isFile = typeFlag === "0" || typeFlag === "\0" || typeFlag === "";
 		if (!isDir && !isFile) {
-			throw new GjcPluginLoadError("security_policy", `Unsafe tar entry type "${typeFlag}" for ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Unsafe tar entry type "${typeFlag}" for ${name}`);
 		}
 		if (path.isAbsolute(normalized)) {
-			throw new GjcPluginLoadError("security_policy", `Absolute path in tar entry: ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Absolute path in tar entry: ${name}`);
 		}
 		const dest = path.resolve(resolvedRoot, normalized);
 		const rel = path.relative(resolvedRoot, dest);
 		if (rel.startsWith("..") || path.isAbsolute(rel)) {
-			throw new GjcPluginLoadError("security_policy", `Tar entry escapes destination: ${name}`);
+			throw new WorxPluginLoadError("security_policy", `Tar entry escapes destination: ${name}`);
 		}
 		if (isDir) {
 			await fs.mkdir(dest, { recursive: true });
@@ -205,7 +205,7 @@ async function extractTarball(tarPath: string, destRoot: string): Promise<void> 
 		fileCount += 1;
 		totalBytes += size;
 		if (fileCount > TAR_MAX_FILES || totalBytes > TAR_MAX_TOTAL_BYTES) {
-			throw new GjcPluginLoadError("security_policy", "Tar archive exceeds extraction limits");
+			throw new WorxPluginLoadError("security_policy", "Tar archive exceeds extraction limits");
 		}
 		await fs.mkdir(path.dirname(dest), { recursive: true });
 		await fs.writeFile(dest, buf.subarray(dataStart, dataStart + size));
@@ -232,7 +232,7 @@ async function resolveTarball(source: string): Promise<ResolvedSource> {
 	try {
 		await extractTarball(source, temp);
 		const dir = await findManifestRoot(temp);
-		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in tarball`);
+		if (!dir) throw new WorxPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in tarball`);
 		return {
 			dir,
 			source: { kind: "tarball", uri: path.resolve(source), resolvedAt: new Date().toISOString() },
@@ -261,13 +261,13 @@ function runGit(args: string[], cwd?: string): Promise<string> {
 	// error. Convert it so the lifecycle can report a typed, sanitized source
 	// failure instead of letting an errno escape to the CLI.
 	child.on("error", () => {
-		reject(new GjcPluginSourceUnavailableError());
+		reject(new WorxPluginSourceUnavailableError());
 	});
 	child.on("close", code => {
 		if (code === 0) resolve(stdout.trim());
 		// A failed clone/ref resolution is a source-access failure. A successful
 		// clone that lacks a manifest is classified later as invalid_target.
-		else reject(new GjcPluginSourceUnavailableError());
+		else reject(new WorxPluginSourceUnavailableError());
 	});
 	return promise;
 }
@@ -289,7 +289,8 @@ async function resolveGit(source: string): Promise<ResolvedSource> {
 			sha = undefined;
 		}
 		const dir = await findManifestRoot(temp);
-		if (!dir) throw new GjcPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in git source`);
+		if (!dir)
+			throw new WorxPluginLoadError("missing_file", `No ${WORX_PLUGIN_MANIFEST_FILENAME} found in git source`);
 		return {
 			dir,
 			source: { kind: "git", uri: repo, ref, sha, resolvedAt: new Date().toISOString() },
@@ -309,8 +310,8 @@ async function resolveSource(source: string): Promise<ResolvedSource> {
 		if (looksLikeGit(source)) return await resolveGit(source);
 		return await resolveLocalPath(source);
 	} catch (error) {
-		if (error instanceof GjcPluginSourceUnavailableError || error instanceof GjcPluginLoadError) throw error;
-		throw new GjcPluginSourceUnavailableError();
+		if (error instanceof WorxPluginSourceUnavailableError || error instanceof WorxPluginLoadError) throw error;
+		throw new WorxPluginSourceUnavailableError();
 	}
 }
 
@@ -319,12 +320,12 @@ async function resolveSource(source: string): Promise<ResolvedSource> {
 // ---------------------------------------------------------------------------
 
 function bundleToRegistryEntry(
-	bundle: NormalizedGjcPluginBundle,
+	bundle: NormalizedWorxPluginBundle,
 	pluginRoot: string,
-	scope: GjcPluginScope,
-	source: GjcPluginRegistrySource,
+	scope: WorxPluginScope,
+	source: WorxPluginRegistrySource,
 	now: string,
-): GjcPluginRegistryEntry {
+): WorxPluginRegistryEntry {
 	return {
 		name: bundle.name,
 		version: bundle.version,
@@ -351,16 +352,16 @@ function sha256(buf: Buffer): string {
  * staging dir, re-verifying each hash. Undeclared files and symlinks are never
  * copied, so the installed tree equals the validated set.
  */
-async function copyValidatedFiles(bundle: NormalizedGjcPluginBundle, stagingDir: string): Promise<void> {
+async function copyValidatedFiles(bundle: NormalizedWorxPluginBundle, stagingDir: string): Promise<void> {
 	for (const file of bundle.files) {
 		const src = path.join(bundle.root, file.relativePath);
 		const lst = await fs.lstat(src);
 		if (lst.isSymbolicLink()) {
-			throw new GjcPluginLoadError("security_policy", `Refusing to copy symlink: ${file.relativePath}`);
+			throw new WorxPluginLoadError("security_policy", `Refusing to copy symlink: ${file.relativePath}`);
 		}
 		const buf = await fs.readFile(src);
 		if (sha256(buf) !== file.sha256) {
-			throw new GjcPluginLoadError("hash_mismatch", `Source changed during install: ${file.relativePath}`);
+			throw new WorxPluginLoadError("hash_mismatch", `Source changed during install: ${file.relativePath}`);
 		}
 		const dest = path.join(stagingDir, file.relativePath);
 		await fs.mkdir(path.dirname(dest), { recursive: true });
@@ -386,14 +387,14 @@ async function cleanupOrphans(root: string, dirName: string): Promise<void> {
  * user->project locks in a fixed order so the decision sees a consistent
  * cross-scope view. Only the target scope is ever committed.
  */
-export async function runGjcBundleTransaction(
+export async function runWorxBundleTransaction(
 	source: string,
-	options: GjcBundleTransactionOptions,
-): Promise<GjcBundleTransactionResult> {
+	options: WorxBundleTransactionOptions,
+): Promise<WorxBundleTransactionResult> {
 	const resolved = await resolveSource(source);
 	try {
 		// Compile + validate outside every lock (never imports plugin code).
-		const bundle = await compileGjcPluginBundle(resolved.dir);
+		const bundle = await compileWorxPluginBundle(resolved.dir);
 		const dirName = safeDirSegment(bundle.name);
 		const root = scopeRoot(options.scope, options.cwd);
 		const finalDir = path.join(root, dirName);
@@ -428,13 +429,13 @@ export async function runGjcBundleTransaction(
 			if (early.kind === "abort") return { status: "aborted", error: early.error, remnants: [] };
 		}
 
-		const critical = async (): Promise<GjcBundleTransactionResult> => {
+		const critical = async (): Promise<WorxBundleTransactionResult> => {
 			// Read-only until the policy decision resolves. A refusal must not create
 			// the scope root or sweep orphans, so an existing-target refusal leaves
 			// the filesystem byte-for-byte untouched.
 
 			const targetRegistry = await readRegistry(options.scope, options.cwd, { migrate: false });
-			const otherScope: GjcPluginScope = options.scope === "user" ? "project" : "user";
+			const otherScope: WorxPluginScope = options.scope === "user" ? "project" : "user";
 			const otherRegistry = await readRegistry(otherScope, options.cwd, { migrate: false });
 			const effective = sortRegistryEntries([...targetRegistry.plugins, ...otherRegistry.plugins]);
 			const existing = targetRegistry.plugins.find(p => p.name === bundle.name);
@@ -513,13 +514,13 @@ export async function runGjcBundleTransaction(
 }
 
 /** Compile a source into a validated candidate bundle without touching disk state. */
-export async function resolveGjcBundleCandidate<T>(
+export async function resolveWorxBundleCandidate<T>(
 	source: string,
-	fn: (input: { bundle: NormalizedGjcPluginBundle; source: GjcPluginRegistrySource }) => Promise<T>,
+	fn: (input: { bundle: NormalizedWorxPluginBundle; source: WorxPluginRegistrySource }) => Promise<T>,
 ): Promise<T> {
 	const resolved = await resolveSource(source);
 	try {
-		const bundle = await compileGjcPluginBundle(resolved.dir);
+		const bundle = await compileWorxPluginBundle(resolved.dir);
 		return await fn({ bundle, source: resolved.source });
 	} finally {
 		await resolved.cleanup();
@@ -528,12 +529,12 @@ export async function resolveGjcBundleCandidate<T>(
 
 /** Build the registry entry a candidate bundle would produce at a target path. */
 export function candidateRegistryEntry(
-	bundle: NormalizedGjcPluginBundle,
-	scope: GjcPluginScope,
+	bundle: NormalizedWorxPluginBundle,
+	scope: WorxPluginScope,
 	cwd: string,
-	source: GjcPluginRegistrySource,
+	source: WorxPluginRegistrySource,
 	now: string,
-): GjcPluginRegistryEntry {
+): WorxPluginRegistryEntry {
 	const finalDir = path.join(scopeRoot(scope, cwd), safeDirSegment(bundle.name));
 	return bundleToRegistryEntry(bundle, finalDir, scope, source, now);
 }
@@ -548,7 +549,7 @@ export function candidateRegistryEntry(
  * npm and marketplace specs are never path/git/tarball shaped, so this cleanly
  * separates the two install worlds.
  */
-export function isGjcPluginSourceShape(source: string): boolean {
+export function isWorxPluginSourceShape(source: string): boolean {
 	if (looksLikeGit(source)) return true;
 	// Explicit path forms, POSIX and Windows.
 	const isPathShaped =
@@ -568,7 +569,7 @@ export function isGjcPluginSourceShape(source: string): boolean {
 }
 
 /** True only when the source actually resolves to a GJC plugin bundle (root gajae-plugin.json). */
-export async function isGjcPluginBundleSource(source: string): Promise<boolean> {
+export async function isWorxPluginBundleSource(source: string): Promise<boolean> {
 	if (!isTarball(source) && !looksLikeGit(source)) {
 		const abs = path.resolve(source);
 		return await fileExists(path.join(abs, WORX_PLUGIN_MANIFEST_FILENAME));

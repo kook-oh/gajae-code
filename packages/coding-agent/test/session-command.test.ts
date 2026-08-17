@@ -161,7 +161,7 @@ describe("gjc session command", () => {
 		const output = await runSessionCommand(["status", "missing", "--json"]);
 		const payload = JSON.parse(output);
 
-		expect(payload).toEqual({ ok: false, reason: "gjc_tmux_session_not_found" });
+		expect(payload).toEqual({ ok: false, reason: "worx_tmux_session_not_found" });
 	});
 
 	it("creates and reports a detached managed session as exact JSON DTO", async () => {
@@ -187,7 +187,7 @@ describe("gjc session command", () => {
 				for (const arg of cmd)
 					for (const [, option, value] of arg.matchAll(/"(@gjc-[^"]+)" "([^"]*)"/g))
 						writtenOptions.set(option!, value!);
-				return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+				return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			}
 			if (cmd.includes("show-options") && cmd.includes("-qv"))
 				return spawnResult(0, `${writtenOptions.get(cmd.at(-1) ?? "") ?? ""}\n`);
@@ -284,7 +284,7 @@ describe("gjc session command", () => {
 		const payload = JSON.parse(output);
 
 		expect(payload.ok).toBe(false);
-		expect(payload.reason).toBe("gjc_tmux_session_untagged");
+		expect(payload.reason).toBe("worx_tmux_session_untagged");
 		expect(typeof payload.detail).toBe("string");
 		expect(payload.detail).toContain("did not return GJC's @gjc-profile ownership tag");
 		expect(payload.detail).not.toContain(" — ");
@@ -301,7 +301,7 @@ describe("gjc session command", () => {
 		const received = { args: null as unknown[] | null };
 		mock.module("../src/worx-runtime/tmux-sessions", () => ({
 			...REAL_TMUX_SESSIONS,
-			forceCloseGjcTmuxSession: (...args: unknown[]) => {
+			forceCloseWorxTmuxSession: (...args: unknown[]) => {
 				received.args = args;
 				return closed.promise;
 			},
@@ -343,7 +343,7 @@ describe("gjc session command", () => {
 	it("preserves an asynchronous force-close error instead of reporting success", async () => {
 		mock.module("../src/worx-runtime/tmux-sessions", () => ({
 			...REAL_TMUX_SESSIONS,
-			forceCloseGjcTmuxSession: async () => {
+			forceCloseWorxTmuxSession: async () => {
 				throw new Error("owner_term_verdict_timeout");
 			},
 		}));
@@ -356,13 +356,13 @@ describe("gjc session command", () => {
 		for (const reason of ["owner_pid_identity_mismatch", "owner_generation_mismatch"]) {
 			mock.module("../src/worx-runtime/tmux-sessions", () => ({
 				...REAL_TMUX_SESSIONS,
-				forceCloseGjcTmuxSession: async () => {
+				forceCloseWorxTmuxSession: async () => {
 					throw new Error(reason);
 				},
 			}));
 			const output = await runSessionCommand([
 				"force-close",
-				"gjc_lc_private",
+				"worx_lc_private",
 				"--session-id",
 				"private-id",
 				"--state-file",

@@ -1,4 +1,4 @@
-import type { CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import type { CanonicalWorxWorkflowSkill } from "../skill-state/active-state";
 
 export interface StateValidationResult {
 	valid: boolean;
@@ -15,7 +15,10 @@ function typeName(value: unknown): string {
 	return typeof value;
 }
 
-export function validateWorkflowStateEnvelope(skill: CanonicalGjcWorkflowSkill, state: unknown): StateValidationResult {
+export function validateWorkflowStateEnvelope(
+	skill: CanonicalWorxWorkflowSkill,
+	state: unknown,
+): StateValidationResult {
 	if (!isPlainObject(state)) {
 		return { valid: false, error: `state for ${skill} must be a JSON object, got ${typeName(state)}` };
 	}

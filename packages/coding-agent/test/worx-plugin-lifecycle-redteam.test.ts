@@ -4,24 +4,24 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	bundleIdentity,
 	findingsForBundle,
-	type GjcBundleIdentity,
-	type GjcPluginRegistryEntry,
-	type GjcReviewedUpdateToken,
-	getGjcBundle,
-	installGjcBundle,
-	listGjcBundles,
-	previewGjcBundleUpdate,
+	getWorxBundle,
+	installWorxBundle,
+	listWorxBundles,
+	previewWorxBundleUpdate,
 	readRegistry,
 	redactSourceLocator,
 	registryPathForScope,
-	setGjcBundleEnabled,
-	setGjcBundleSurfaceEnabled,
+	setWorxBundleEnabled,
+	setWorxBundleSurfaceEnabled,
 	toBundleSummary,
+	type WorxBundleIdentity,
+	type WorxPluginRegistryEntry,
+	type WorxReviewedUpdateToken,
 } from "../src/extensibility/worx-plugins";
-import { runGjcBundleTransaction } from "../src/extensibility/worx-plugins/installer";
+import { runWorxBundleTransaction } from "../src/extensibility/worx-plugins/installer";
 import { writeRegistry } from "../src/extensibility/worx-plugins/registry";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
@@ -85,15 +85,15 @@ async function writeToolsOnlyManifest(source: string, version: string, tools: st
 	);
 }
 
-async function install(cwd: string, scope: "project" | "user", source = sixSurface): Promise<GjcBundleIdentity> {
-	const result = await installGjcBundle({ cwd }, scope, source);
+async function install(cwd: string, scope: "project" | "user", source = sixSurface): Promise<WorxBundleIdentity> {
+	const result = await installWorxBundle({ cwd }, scope, source);
 	expect(result.ok).toBe(true);
 	if (!result.ok) throw new Error(result.error.code);
 	return result.value.summary.identity;
 }
 
-async function summary(cwd: string, identity: GjcBundleIdentity) {
-	const result = await getGjcBundle({ cwd }, identity);
+async function summary(cwd: string, identity: WorxBundleIdentity) {
+	const result = await getWorxBundle({ cwd }, identity);
 	expect(result.ok).toBe(true);
 	if (!result.ok) throw new Error(result.error.code);
 	return result.value;
@@ -101,8 +101,8 @@ async function summary(cwd: string, identity: GjcBundleIdentity) {
 
 async function injectQuarantine(
 	cwd: string,
-	identity: GjcBundleIdentity,
-	entries: GjcPluginRegistryEntry["quarantine"],
+	identity: WorxBundleIdentity,
+	entries: WorxPluginRegistryEntry["quarantine"],
 ): Promise<void> {
 	const registry = await readRegistry(identity.scope, cwd);
 	await writeRegistry(
@@ -116,7 +116,10 @@ async function injectQuarantine(
 	);
 }
 
-function changedToken(token: GjcReviewedUpdateToken, changes: Partial<GjcReviewedUpdateToken>): GjcReviewedUpdateToken {
+function changedToken(
+	token: WorxReviewedUpdateToken,
+	changes: Partial<WorxReviewedUpdateToken>,
+): WorxReviewedUpdateToken {
 	return { ...token, ...changes };
 }
 
@@ -130,10 +133,10 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 
 		await fs.writeFile(path.join(source, "tools", "additional.ts"), "export const additional = true;\n");
 		await rewriteManifest(source, "2.0.0", '[{ "name": "additional", "path": "tools/additional.ts" }]');
-		const preview = await previewGjcBundleUpdate({ cwd }, project);
+		const preview = await previewWorxBundleUpdate({ cwd }, project);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
-		expect(await applyGjcBundleUpdate({ cwd }, preview.value.token)).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd }, preview.value.token)).toMatchObject({
 			ok: true,
 			value: { status: "updated" },
 		});
@@ -142,7 +145,7 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const projectSurface = (await summary(cwd, project)).surfaces[0]?.extensionId;
 		expect(projectSurface).toBeDefined();
 		if (!projectSurface) throw new Error("missing project surface");
-		expect(await setGjcBundleSurfaceEnabled({ cwd }, project, projectSurface, false)).toMatchObject({ ok: true });
+		expect(await setWorxBundleSurfaceEnabled({ cwd }, project, projectSurface, false)).toMatchObject({ ok: true });
 		expect(JSON.stringify(await summary(cwd, user))).toBe(userBefore);
 
 		await injectQuarantine(cwd, project, [
@@ -157,37 +160,37 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const project = await install(cwd, "project", source);
 		const user = await install(cwd, "user", source);
 		await fs.appendFile(path.join(source, "prompts", "system-appendix.md"), "candidate change\n");
-		const preview = await previewGjcBundleUpdate({ cwd }, project);
+		const preview = await previewWorxBundleUpdate({ cwd }, project);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
 
 		const projectBefore = JSON.stringify(await summary(cwd, project));
 		const userBefore = JSON.stringify(await summary(cwd, user));
-		const wrongScope = await applyGjcBundleUpdate({ cwd }, changedToken(preview.value.token, { identity: user }));
+		const wrongScope = await applyWorxBundleUpdate({ cwd }, changedToken(preview.value.token, { identity: user }));
 		expect(wrongScope).toMatchObject({ ok: false, error: { code: "stale_candidate" } });
 		expect(JSON.stringify(await summary(cwd, project))).toBe(projectBefore);
 		expect(JSON.stringify(await summary(cwd, user))).toBe(userBefore);
 
-		const wrongName = await applyGjcBundleUpdate(
+		const wrongName = await applyWorxBundleUpdate(
 			{ cwd },
 			changedToken(preview.value.token, { identity: bundleIdentity("project", "different-name") }),
 		);
 		expect(wrongName).toMatchObject({ ok: false, error: { code: "not_installed" } });
 		expect(JSON.stringify(await summary(cwd, project))).toBe(projectBefore);
 
-		const forged = await applyGjcBundleUpdate(
+		const forged = await applyWorxBundleUpdate(
 			{ cwd },
 			changedToken(preview.value.token, { candidateFingerprint: "0".repeat(64) }),
 		);
 		expect(forged).toMatchObject({ ok: false, error: { code: "stale_candidate" } });
 		expect(JSON.stringify(await summary(cwd, project))).toBe(projectBefore);
 
-		expect(await applyGjcBundleUpdate({ cwd }, preview.value.token)).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd }, preview.value.token)).toMatchObject({
 			ok: true,
 			value: { status: "updated" },
 		});
 		const afterFirstApply = JSON.stringify(await summary(cwd, project));
-		const replay = await applyGjcBundleUpdate({ cwd }, preview.value.token);
+		const replay = await applyWorxBundleUpdate({ cwd }, preview.value.token);
 		expect(replay).toMatchObject({ ok: false, error: { code: "stale_baseline" } });
 		expect(JSON.stringify(await summary(cwd, project))).toBe(afterFirstApply);
 	});
@@ -198,14 +201,14 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const identity = await install(cwd, "project", source);
 		await fs.appendFile(path.join(source, "prompts", "system-appendix.md"), "replacing transaction\n");
 		const before = await summary(cwd, identity);
-		const publicInstall = await installGjcBundle({ cwd }, "project", source);
+		const publicInstall = await installWorxBundle({ cwd }, "project", source);
 		expect(publicInstall).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
 		expect((await summary(cwd, identity)).targetFingerprint).toBe(before.targetFingerprint);
 
 		// The primitive still exists internally and, given a permissive decision,
 		// will commit a replacement. That is precisely why it must not be publicly
 		// reachable: the policy lives in the caller, not in the primitive.
-		const bypass = await runGjcBundleTransaction(source, {
+		const bypass = await runWorxBundleTransaction(source, {
 			scope: "project",
 			cwd,
 			decide: async ({ candidate }) => ({ kind: "commit", entry: candidate }),
@@ -216,7 +219,7 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		// worx-plugin-public-boundary.test.ts. Assert the barrel here too, so this
 		// test fails if the primitive is ever re-exported.
 		const barrel: Record<string, unknown> = await import("../src/extensibility/worx-plugins");
-		for (const forbidden of ["runGjcBundleTransaction", "resolveGjcBundleCandidate", "candidateRegistryEntry"]) {
+		for (const forbidden of ["runWorxBundleTransaction", "resolveWorxBundleCandidate", "candidateRegistryEntry"]) {
 			expect(Object.keys(barrel)).not.toContain(forbidden);
 		}
 	});
@@ -229,13 +232,13 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const removedId = original.surfaces.find(surface => surface.name === "domain_note")?.extensionId;
 		expect(removedId).toBeDefined();
 		if (!removedId) throw new Error("missing original tool");
-		expect(await setGjcBundleSurfaceEnabled({ cwd }, identity, removedId, false)).toMatchObject({ ok: true });
+		expect(await setWorxBundleSurfaceEnabled({ cwd }, identity, removedId, false)).toMatchObject({ ok: true });
 		await fs.writeFile(path.join(source, "tools", "additional.ts"), "export const additional = true;\n");
 		await writeToolsOnlyManifest(source, "2.0.0", '[{ "name": "additional", "path": "tools/additional.ts" }]');
-		let preview = await previewGjcBundleUpdate({ cwd }, identity);
+		let preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
-		expect(await applyGjcBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
+		expect(await applyWorxBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
 		expect((await summary(cwd, identity)).surfaces.some(surface => surface.extensionId === removedId)).toBe(false);
 
 		await writeToolsOnlyManifest(
@@ -243,10 +246,10 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 			"3.0.0",
 			'[{ "name": "domain_note", "path": "tools/domain-note.ts" }, { "name": "additional", "path": "tools/additional.ts" }]',
 		);
-		preview = await previewGjcBundleUpdate({ cwd }, identity);
+		preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
-		expect(await applyGjcBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
+		expect(await applyWorxBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
 		expect((await summary(cwd, identity)).surfaces.find(surface => surface.extensionId === removedId)?.enabled).toBe(
 			true,
 		);
@@ -260,10 +263,10 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 			"4.0.0",
 			'[{ "name": "domain_note", "path": "tools/domain-note.ts" }, { "name": "additional", "path": "tools/additional.ts" }]',
 		);
-		preview = await previewGjcBundleUpdate({ cwd }, identity);
+		preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
-		expect(await applyGjcBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
+		expect(await applyWorxBundleUpdate({ cwd }, preview.value.token)).toMatchObject({ ok: true });
 		const registry = await readRegistry("project", cwd);
 		// Quarantine is recomputed against the candidate rather than carried
 		// forward, so a surface the update fixes must come back clean instead of
@@ -283,16 +286,19 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		await injectQuarantine(cwd, identity, [
 			{ surfaceId, code: "runtime_mismatch", message: "bad", detectedAt: "now" },
 		]);
-		expect(await setGjcBundleEnabled({ cwd }, identity, true)).toMatchObject({
+		expect(await setWorxBundleEnabled({ cwd }, identity, true)).toMatchObject({
 			ok: false,
 			error: { code: "quarantined" },
 		});
-		expect(await setGjcBundleSurfaceEnabled({ cwd }, identity, surfaceId, true)).toMatchObject({
+		expect(await setWorxBundleSurfaceEnabled({ cwd }, identity, surfaceId, true)).toMatchObject({
 			ok: false,
 			error: { code: "quarantined" },
 		});
-		expect(await setGjcBundleEnabled({ cwd }, identity, false)).toMatchObject({ ok: true, value: { mutated: true } });
-		expect(await setGjcBundleSurfaceEnabled({ cwd }, identity, surfaceId, false)).toMatchObject({
+		expect(await setWorxBundleEnabled({ cwd }, identity, false)).toMatchObject({
+			ok: true,
+			value: { mutated: true },
+		});
+		expect(await setWorxBundleSurfaceEnabled({ cwd }, identity, surfaceId, false)).toMatchObject({
 			ok: true,
 			value: { mutated: true },
 		});
@@ -368,19 +374,19 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const source = await mkSource();
 		const identity = await install(cwd, "project", source);
 		await fs.appendFile(path.join(source, "prompts", "system-appendix.md"), "concurrent update\n");
-		const preview = await previewGjcBundleUpdate({ cwd }, identity);
+		const preview = await previewWorxBundleUpdate({ cwd }, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
 		const applied = await Promise.all([
-			applyGjcBundleUpdate({ cwd }, preview.value.token),
-			applyGjcBundleUpdate({ cwd }, preview.value.token),
+			applyWorxBundleUpdate({ cwd }, preview.value.token),
+			applyWorxBundleUpdate({ cwd }, preview.value.token),
 		]);
 		expect(applied.filter(result => result.ok && result.value.status === "updated")).toHaveLength(1);
 		expect(applied.filter(result => !result.ok && result.error.code === "stale_baseline")).toHaveLength(1);
 
 		const toggles = await Promise.all([
-			setGjcBundleEnabled({ cwd }, identity, false),
-			setGjcBundleEnabled({ cwd }, identity, true),
+			setWorxBundleEnabled({ cwd }, identity, false),
+			setWorxBundleEnabled({ cwd }, identity, true),
 		]);
 		expect(toggles.every(result => result.ok)).toBe(true);
 		const finalSummary = await summary(cwd, identity);
@@ -388,7 +394,7 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		const registryText = await fs.readFile(registryPathForScope("project", cwd), "utf8");
 		expect(JSON.parse(registryText).plugins).toHaveLength(1);
 		expect(
-			(await listGjcBundles({ cwd })).find(bundle => bundle.identity.scope === "project")?.targetFingerprint,
+			(await listWorxBundles({ cwd })).find(bundle => bundle.identity.scope === "project")?.targetFingerprint,
 		).toBe(finalSummary.targetFingerprint);
 	});
 });

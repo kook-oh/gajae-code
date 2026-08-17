@@ -25,7 +25,7 @@ describe("GJC state graph rendering", () => {
 	it("renders one skill as dot", () => {
 		const output = renderStateGraph("deep-interview", "dot");
 
-		expect(output).toContain("digraph gjc_state {");
+		expect(output).toContain("digraph worx_state {");
 		expect(output).toContain('subgraph "cluster_deep-interview"');
 		expect(output).toContain('"deep-interview:interviewing" [label="interviewing", shape=circle];');
 		expect(output).toContain('"deep-interview:interviewing" -> "deep-interview:handoff" [label="write-spec"];');

@@ -11,7 +11,7 @@ import { $which, APP_NAME, isEnoent, VERSION } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
 import { distTagForChannel, isUpdateChannel, UPDATE_CHANNELS, type UpdateChannel } from "../config/update-channel";
-import { installDefaultGjcDefinitions } from "../defaults/worx-defaults";
+import { installDefaultWorxDefinitions } from "../defaults/worx-defaults";
 import { theme } from "../modes/theme/theme";
 import {
 	DEFAULT_NPM_REGISTRY,
@@ -214,7 +214,7 @@ export function resolveNpmManagedTargetForTest(
 }
 async function resolveUpdateTarget(): Promise<UpdateTarget> {
 	const bunBinDir = await getBunGlobalBinDir();
-	const ompPath = resolveGjcPath();
+	const ompPath = resolveWorxPath();
 
 	if (ompPath) {
 		const npmTarget = resolveNpmManagedTarget(ompPath);
@@ -334,7 +334,7 @@ function getBinaryName(platform: NodeJS.Platform = process.platform, arch: strin
 /**
  * Resolve the path that `gjc` maps to in the user's PATH.
  */
-function resolveGjcPath(): string | undefined {
+function resolveWorxPath(): string | undefined {
 	return $which(APP_NAME) ?? undefined;
 }
 
@@ -355,7 +355,7 @@ export function parseReportedVersionForTest(output: string): string | undefined 
  * Run the resolved gjc binary and check if it reports the expected version.
  */
 async function verifyInstalledVersion(expectedVersion: string): Promise<InstalledVersionVerification> {
-	const ompPath = resolveGjcPath();
+	const ompPath = resolveWorxPath();
 	if (!ompPath) return { ok: false };
 	try {
 		const result = await $`${ompPath} --version`.quiet().nothrow();
@@ -901,7 +901,7 @@ export async function runUpdateCommand(
  */
 async function refreshInstalledDefaultSkills(): Promise<void> {
 	try {
-		const result = await installDefaultGjcDefinitions({ refreshOnly: true });
+		const result = await installDefaultWorxDefinitions({ refreshOnly: true });
 		if (result.written > 0) {
 			console.log(
 				chalk.dim(`Refreshed ${result.written} local default workflow skill file(s) at ${result.targetRoot}`),

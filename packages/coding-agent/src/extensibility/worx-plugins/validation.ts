@@ -1,23 +1,23 @@
-import type { CanonicalGjcWorkflowSkill } from "../../skill-state/active-state";
+import type { CanonicalWorxWorkflowSkill } from "../../skill-state/active-state";
 import { isKnownWorkflowState } from "../../worx-runtime/workflow-manifest";
 import { assertMcpInstallPolicy } from "./mcp-policy";
 import {
-	GjcPluginLoadError,
-	type GjcPluginRegistryEntry,
-	type GjcSubskillParentAgent,
 	type LoadedSubskillBinding,
-	type NormalizedGjcPluginBundle,
+	type NormalizedWorxPluginBundle,
 	type SubskillFrontmatter,
 	WORX_AGENT_SUBSKILL_PHASES,
 	WORX_SUBSKILL_PARENT_AGENTS,
 	WORX_SUBSKILL_PARENT_SKILLS,
+	WorxPluginLoadError,
+	type WorxPluginRegistryEntry,
+	type WorxSubskillParentAgent,
 } from "./types";
 
-function isParentSkill(value: string): value is CanonicalGjcWorkflowSkill {
+function isParentSkill(value: string): value is CanonicalWorxWorkflowSkill {
 	return (WORX_SUBSKILL_PARENT_SKILLS as readonly string[]).includes(value);
 }
 
-function isParentAgent(value: string): value is GjcSubskillParentAgent {
+function isParentAgent(value: string): value is WorxSubskillParentAgent {
 	return (WORX_SUBSKILL_PARENT_AGENTS as readonly string[]).includes(value);
 }
 
@@ -25,19 +25,19 @@ export function validateBinding(fm: SubskillFrontmatter): void {
 	const parent = fm.binds_to;
 	if (isParentSkill(parent)) {
 		if (!isKnownWorkflowState(parent, fm.phase)) {
-			throw new GjcPluginLoadError("invalid_phase", `Invalid GJC sub-skill phase for ${parent}: ${fm.phase}`);
+			throw new WorxPluginLoadError("invalid_phase", `Invalid GJC sub-skill phase for ${parent}: ${fm.phase}`);
 		}
 		return;
 	}
 
 	if (isParentAgent(parent)) {
 		if (!WORX_AGENT_SUBSKILL_PHASES[parent].includes(fm.phase)) {
-			throw new GjcPluginLoadError("invalid_phase", `Invalid GJC sub-skill phase for ${parent}: ${fm.phase}`);
+			throw new WorxPluginLoadError("invalid_phase", `Invalid GJC sub-skill phase for ${parent}: ${fm.phase}`);
 		}
 		return;
 	}
 
-	throw new GjcPluginLoadError("invalid_parent", `Invalid GJC sub-skill parent: ${parent}`);
+	throw new WorxPluginLoadError("invalid_parent", `Invalid GJC sub-skill parent: ${parent}`);
 }
 
 export function buildParentArgMap(
@@ -52,7 +52,7 @@ export function buildParentArgMap(
 		}
 		const existing = byArg.get(binding.activationArg);
 		if (existing) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"duplicate_arg",
 				`Duplicate GJC sub-skill activation_arg for ${binding.parent}: ${binding.activationArg} (${existing.filePath}, ${binding.filePath})`,
 			);
@@ -68,7 +68,7 @@ export function buildParentPhaseSet(bindings: readonly LoadedSubskillBinding[]):
 		const key = `${binding.parent}\u0000${binding.phase}`;
 		const existing = seen.get(key);
 		if (existing) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"duplicate_parent_phase",
 				`Duplicate GJC sub-skill parent/phase binding for ${binding.parent}/${binding.phase} (${existing.filePath}, ${binding.filePath})`,
 			);
@@ -85,8 +85,8 @@ export function buildParentPhaseSet(bindings: readonly LoadedSubskillBinding[]):
  * authority, never capability first-wins.
  */
 export function validateInstallPlan(
-	bundle: NormalizedGjcPluginBundle,
-	effectiveEntries: readonly GjcPluginRegistryEntry[],
+	bundle: NormalizedWorxPluginBundle,
+	effectiveEntries: readonly WorxPluginRegistryEntry[],
 ): void {
 	// Collision universe: the caller passes the effective registry across BOTH
 	// scopes, because surface IDs derive from the SURFACE name
@@ -121,26 +121,26 @@ export function validateInstallPlan(
 	// other (intra-bundle duplicates are also hard errors).
 	for (const t of bundle.surfaces.tools) {
 		if (toolNames.has(t.name)) {
-			throw new GjcPluginLoadError("duplicate_tool", `GJC plugin tool name collides: ${t.name}`);
+			throw new WorxPluginLoadError("duplicate_tool", `GJC plugin tool name collides: ${t.name}`);
 		}
 		toolNames.add(t.name);
 	}
 	for (const h of bundle.surfaces.hooks) {
 		if (hookKeys.has(h.extensionId)) {
-			throw new GjcPluginLoadError("duplicate_hook", `GJC plugin hook collides: ${h.extensionId}`);
+			throw new WorxPluginLoadError("duplicate_hook", `GJC plugin hook collides: ${h.extensionId}`);
 		}
 		hookKeys.add(h.extensionId);
 	}
 	for (const m of bundle.surfaces.mcps) {
 		if (mcpNames.has(m.name)) {
-			throw new GjcPluginLoadError("duplicate_mcp", `GJC plugin MCP name collides: ${m.name}`);
+			throw new WorxPluginLoadError("duplicate_mcp", `GJC plugin MCP name collides: ${m.name}`);
 		}
 		mcpNames.add(m.name);
 		assertMcpInstallPolicy(m.config, { pluginRoot: bundle.root });
 	}
 	for (const a of [...bundle.surfaces.systemAppendices, ...bundle.surfaces.agentAppendices]) {
 		if (appendixIds.has(a.extensionId)) {
-			throw new GjcPluginLoadError("duplicate_appendix", `GJC plugin appendix collides: ${a.extensionId}`);
+			throw new WorxPluginLoadError("duplicate_appendix", `GJC plugin appendix collides: ${a.extensionId}`);
 		}
 		appendixIds.add(a.extensionId);
 	}
@@ -148,13 +148,13 @@ export function validateInstallPlan(
 		const argKey = `${s.parent}\u0000${s.activationArg}`;
 		const phaseKey = `${s.parent}\u0000${s.phase}`;
 		if (subskillArgs.has(argKey)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"duplicate_arg",
 				`GJC plugin subskill activation_arg collides for ${s.parent}: ${s.activationArg}`,
 			);
 		}
 		if (parentPhases.has(phaseKey)) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"duplicate_parent_phase",
 				`GJC plugin subskill parent/phase collides: ${s.parent}/${s.phase}`,
 			);

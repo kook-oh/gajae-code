@@ -273,7 +273,7 @@ describe("gjc-session create public owner lifecycle", () => {
 		expect(supervisor).toContain('isoformat(timespec="milliseconds")');
 		expect(supervisor).toContain('canonical_path = os.path.join(lifecycle_dir, f"verdict-{generation}.json")');
 		expect(supervisor).toContain("and verdict == canonical");
-		expect(supervisor).toContain("gjc_session_publish_current_alias");
+		expect(supervisor).toContain("worx_session_publish_current_alias");
 		expect(supervisor).not.toContain('verdict["owner_generation"] = generation');
 		const planRequests = (await Bun.file(proofLog).text()).trim().split("\n").map(line => JSON.parse(line) as Record<string, unknown>);
 		expect(planRequests.filter(request => request.op === "plan")).toHaveLength(2);
@@ -368,7 +368,7 @@ test("ships only human-visible tmux lifecycle helpers", async () => {
 	expect(create).toContain("Usage: $0 <session-name> <worktree-path>");
 	expect(create).toContain('"op": "plan"');
 	expect(create).toContain('"op":"observe_terminal"');
-	expect(postmortem).toContain("gjc_session_write_public_marker");
+	expect(postmortem).toContain("worx_session_write_public_marker");
 	expect(harnessOwner).toContain("MACHINE_CONTROL=Coordinator MCP, ACP, or Gajae-Code SDK");
 });
 
@@ -557,9 +557,9 @@ exit 1
 		await executable(
 			postmortem,
 			`#!/usr/bin/env bash
-gjc_session_publish_current_alias() { cp "$1" "$2"; }
-gjc_session_validate_raw_verdict() { return 0; }
-gjc_session_write_vanished_json() { : >"$1"; }
+worx_session_publish_current_alias() { cp "$1" "$2"; }
+worx_session_validate_raw_verdict() { return 0; }
+worx_session_write_vanished_json() { : >"$1"; }
 `,
 		);
 		const state = path.join(root, "state");
@@ -645,7 +645,7 @@ test("serializes current aliases and refuses a stale generation overwrite", asyn
 		[
 			"bash",
 			"-c",
-			'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6"',
+			'source "$1"; worx_session_publish_current_alias "$2" "$3" "$4" "$5" "$6"',
 			"gjc-alias-test",
 			postmortemScript,
 			canonicalPath,
@@ -667,20 +667,20 @@ test("keeps creation-cleanup and monitor failure canonicals immutable and reject
 	await Bun.write(generationPath, JSON.stringify({ schema_version: 1, session_id: "session", generation: "current" }));
 	const canonicalPath = path.join(lifecycle, "creation-cleanup-failure-old.json"); const canonical = { schema_version: 1, kind: "creation_cleanup_failed", session_id: "session", owner_generation: "old", exit_code: 1, rollback_failures: [], failure_publication_failed: false };
 	await Bun.write(canonicalPath, JSON.stringify(canonical)); await Bun.write(aliasPath, JSON.stringify({ ...canonical, owner_generation: "current" }));
-	const stale = Bun.spawnSync(["bash", "-c", 'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" creation_cleanup_failed', "gjc-cleanup-alias-test", postmortemScript, canonicalPath, aliasPath, generationPath, "session", "old"], { stdout: "pipe", stderr: "pipe" });
+	const stale = Bun.spawnSync(["bash", "-c", 'source "$1"; worx_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" creation_cleanup_failed', "gjc-cleanup-alias-test", postmortemScript, canonicalPath, aliasPath, generationPath, "session", "old"], { stdout: "pipe", stderr: "pipe" });
 	expect(stale.exitCode).not.toBe(0);
 	expect(await Bun.file(aliasPath).json()).toEqual({ ...canonical, owner_generation: "current" });
 	const monitorCanonicalPath = path.join(lifecycle, "monitor-failure-old.json"); const monitorAliasPath = path.join(root, "monitor-failure.json");
 	const monitorCanonical = { schema_version: 1, kind: "monitor_failure", session_id: "session", owner_generation: "old", reason: "observer_timeout_or_failure" };
 	await Bun.write(monitorCanonicalPath, JSON.stringify(monitorCanonical)); await Bun.write(monitorAliasPath, JSON.stringify({ ...monitorCanonical, owner_generation: "current" }));
-	const staleMonitor = Bun.spawnSync(["bash", "-c", 'source "$1"; gjc_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" monitor_failure', "gjc-monitor-alias-test", postmortemScript, monitorCanonicalPath, monitorAliasPath, generationPath, "session", "old"], { stdout: "pipe", stderr: "pipe" });
+	const staleMonitor = Bun.spawnSync(["bash", "-c", 'source "$1"; worx_session_publish_current_alias "$2" "$3" "$4" "$5" "$6" monitor_failure', "gjc-monitor-alias-test", postmortemScript, monitorCanonicalPath, monitorAliasPath, generationPath, "session", "old"], { stdout: "pipe", stderr: "pipe" });
 	expect(staleMonitor.exitCode).not.toBe(0);
 	expect(await Bun.file(monitorAliasPath).json()).toEqual({ ...monitorCanonical, owner_generation: "current" });
 	const create = await Bun.file(createScript).text();
 	expect(create).toContain('creation-cleanup-failure-$OWNER_GENERATION.json');
 	expect(create).toContain('monitor-failure-$WORX_SESSION_OWNER_GENERATION.json');
 	expect(create).toContain('os.link(temporary, canonical)');
-	expect(create).toContain('gjc_session_publish_current_alias "$monitor_failure_canonical"');
+	expect(create).toContain('worx_session_publish_current_alias "$monitor_failure_canonical"');
 });
 
 test("keeps canonical generation receipts immutable while aliases publish the current generation", async () => {
@@ -689,7 +689,7 @@ test("keeps canonical generation receipts immutable while aliases publish the cu
 	expect(create).toContain('incident-$OWNER_GENERATION.json');
 	expect(create).toContain('recovery-$OWNER_GENERATION.json');
 	expect(create).toContain("WORX_SESSION_GENERATION_JSON");
-	expect(postmortem).toContain("gjc_session_publish_current_alias");
+	expect(postmortem).toContain("worx_session_publish_current_alias");
 	expect(postmortem).toContain("os.link(temporary, path)");
 });
 
@@ -751,7 +751,7 @@ test("validates expected raw verdicts only against the matching consumed intent"
 			[
 				"bash",
 				"-c",
-				'source "$1"; gjc_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6" "$7"',
+				'source "$1"; worx_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6" "$7"',
 				"validate-consumed-intent",
 				postmortemScript,
 				verdictPath,
@@ -776,7 +776,7 @@ test("accepts only canonical UTC calendar timestamps for raw expected and unexpe
 	const expected = { schema_version: 1, generation, session_id: session, server_key: serverKey, observed_at: "2026-07-11T00:00:00.100Z", signal: "SIGTERM", exit_code: null, result: "owner_term_then_session_cleanup", observer: "raw_monitor", classification: "expected_operator_shutdown", reason: "terminal_observation", intent_id: "intent-id", dedupe_key: `owner-loss:${session}:${generation}` };
 	const unexpected = { schema_version: 1, generation, session_id: session, server_key: serverKey, observed_at: "2026-07-11T00:00:00.100Z", signal: "UNKNOWN", exit_code: null, result: "owner_lost", observer: "raw_monitor", classification: "unexpected_owner_loss", reason: "terminal_observation", dedupe_key: `owner-loss:${session}:${generation}` };
 	await Bun.write(generationPath, JSON.stringify({ schema_version: 1, session_id: session, generation })); await Bun.write(`${intentPath}.consumed`, JSON.stringify(intent));
-	const validate = () => Bun.spawnSync(["bash", "-c", 'source "$1"; gjc_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6" "$7"', "validate-raw-timestamp", postmortemScript, verdictPath, generationPath, session, generation, serverKey, intentPath], { stdout: "pipe", stderr: "pipe" });
+	const validate = () => Bun.spawnSync(["bash", "-c", 'source "$1"; worx_session_validate_raw_verdict "$2" "$3" "$4" "$5" "$6" "$7"', "validate-raw-timestamp", postmortemScript, verdictPath, generationPath, session, generation, serverKey, intentPath], { stdout: "pipe", stderr: "pipe" });
 	const cases: Array<[string, boolean]> = [["2026-07-11T00:00:00Z", true], ["2026-07-11T00:00:00.100Z", true], ["2026-07-11", false], ["2026-07-11T00:00:00", false], ["2026-07-11T00:00:00+00:00", false], ["2026-02-30T00:00:00Z", false], ["not-a-timestamp", false]];
 	for (const verdict of [expected, unexpected]) for (const [observedAt, accepted] of cases) {
 		await Bun.write(verdictPath, JSON.stringify({ ...verdict, observed_at: observedAt }));
@@ -938,7 +938,7 @@ exec tmux "$@"
 		await Bun.write(path.join(lifecycle, `${alias.replace(".json", "")}-${oldGeneration}.json`), JSON.stringify(record));
 	}
 	const publisherStarted = path.join(root, "publisher-started"); const publisherDone = path.join(root, "publisher-done");
-	const publisher = Bun.spawn(["bash", "-c", 'source "$1"; lifecycle="$2"; state="$3"; generation_path="$4"; session="$5"; generation="$6"; started="$7"; done_marker="$8"; touch "$started"; status=0; for pair in "metadata metadata.json" "creation-state creation-state.json" "started started.json"; do set -- $pair; gjc_session_publish_current_alias "$lifecycle/$1-$generation.json" "$state/$2" "$generation_path" "$session" "$generation" || status=1; done; touch "$done_marker"; exit "$status"', "publisher", postmortemScript, lifecycle, state, path.join(lifecycle, "generation.json"), name, oldGeneration, publisherStarted, publisherDone], { stdout: "pipe", stderr: "pipe" });
+	const publisher = Bun.spawn(["bash", "-c", 'source "$1"; lifecycle="$2"; state="$3"; generation_path="$4"; session="$5"; generation="$6"; started="$7"; done_marker="$8"; touch "$started"; status=0; for pair in "metadata metadata.json" "creation-state creation-state.json" "started started.json"; do set -- $pair; worx_session_publish_current_alias "$lifecycle/$1-$generation.json" "$state/$2" "$generation_path" "$session" "$generation" || status=1; done; touch "$done_marker"; exit "$status"', "publisher", postmortemScript, lifecycle, state, path.join(lifecycle, "generation.json"), name, oldGeneration, publisherStarted, publisherDone], { stdout: "pipe", stderr: "pipe" });
 	await waitFor(publisherStarted);
 	expect(await Bun.file(publisherDone).exists()).toBe(false);
 	const releaseWriter = Bun.spawn(["bash", "-c", 'printf "release\\n" > "$1"', "release-writer", release], { stdout: "pipe", stderr: "pipe" });

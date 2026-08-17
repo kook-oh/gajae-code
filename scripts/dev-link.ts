@@ -79,19 +79,19 @@ function isOnPath(dir: string): boolean {
 	return pathDirs().some(entry => (realpath(entry) ?? entry) === want);
 }
 
-export interface GjcHit {
+export interface WorxHit {
 	dir: string;
 	file: string;
 	real: string | null;
 }
 
 /** All `worx` entries on PATH, in shell resolution order (first wins). */
-export function findGjcOnPath(
+export function findWorxOnPath(
 	envPath = process.env.PATH ?? "",
 	platform = process.platform,
 	pathext = process.env.PATHEXT,
-): GjcHit[] {
-	const hits: GjcHit[] = [];
+): WorxHit[] {
+	const hits: WorxHit[] = [];
 	const seen = new Set<string>();
 	for (const dir of pathDirs(envPath, platform)) {
 		for (const extension of commandExtensions(platform, pathext)) {
@@ -291,7 +291,7 @@ export function isApprovedWorkspaceSource(
 	);
 }
 
-export function isRemovableWorkspaceShadow(hit: GjcHit, root = repoRoot): boolean {
+export function isRemovableWorkspaceShadow(hit: WorxHit, root = repoRoot): boolean {
 	const repoBinShadow = path.join(root, "node_modules", ".bin", "worx");
 	if (hit.file === repoBinShadow) return true;
 	if (!hit.real) return false;
@@ -300,11 +300,11 @@ export function isRemovableWorkspaceShadow(hit: GjcHit, root = repoRoot): boolea
 	return hit.real === repoBinShadowReal || hit.real === workspaceWrapperReal;
 }
 
-function isApprovedSource(winner: GjcHit): boolean {
+function isApprovedSource(winner: WorxHit): boolean {
 	return isApprovedWorkspaceSource(winner.file, winner.real);
 }
 
-function assertResolvedGjcMatchesTarget(winner: GjcHit | undefined, expectedReal: string): void {
+function assertResolvedWorxMatchesTarget(winner: WorxHit | undefined, expectedReal: string): void {
 	if (!winner || winner.real === expectedReal) return;
 	console.error("");
 	console.error("✗ Linked, but `worx` still resolves to a different command earlier on PATH.");
@@ -356,7 +356,7 @@ function assertSourceExists(): void {
 function check(): never {
 	assertSourceExists();
 	assertWorkspaceLinksLocal();
-	const hits = findGjcOnPath();
+	const hits = findWorxOnPath();
 	if (hits.length === 0) {
 		console.error("✗ `worx` is not on PATH.");
 		console.error("  Fix: bun run dev:link");
@@ -409,7 +409,7 @@ function link(binary: boolean): never {
 		console.warn(`! ${targetDir} is not on your PATH — add it so \`worx\` resolves:`);
 		console.warn(`    export PATH="${targetDir}:$PATH"`);
 	}
-	for (const hit of findGjcOnPath()) {
+	for (const hit of findWorxOnPath()) {
 		if (hit.file === target) break;
 		if (hit.real === linkSourceReal) continue;
 		if (isRemovableWorkspaceShadow(hit)) {
@@ -422,8 +422,8 @@ function link(binary: boolean): never {
 		console.warn(`    -> ${describe(hit.real)}`);
 		console.warn(`    Remove it: rm "${hit.file}"`);
 	}
-	const winner = findGjcOnPath()[0];
-	assertResolvedGjcMatchesTarget(winner, linkSourceReal);
+	const winner = findWorxOnPath()[0];
+	assertResolvedWorxMatchesTarget(winner, linkSourceReal);
 	const smoke = smokeTest(winner?.file ?? target);
 	if (!smoke.ok) {
 		console.error("");

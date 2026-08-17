@@ -5,14 +5,14 @@ import { createServer } from "node:net";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	bundleIdentity,
-	GjcPluginLoadError,
-	getGjcBundle,
-	installGjcBundle,
-	isGjcPluginBundleSource,
-	previewGjcBundleUpdate,
+	getWorxBundle,
+	installWorxBundle,
+	isWorxPluginBundleSource,
+	previewWorxBundleUpdate,
 	readRegistry,
+	WorxPluginLoadError,
 } from "../src/extensibility/worx-plugins";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
@@ -132,7 +132,7 @@ async function mkGitDaemonRepo(manifest: object): Promise<{ url: string; repoDir
 describe("GJC plugin installer", () => {
 	test("installs a local-path bundle into the project scope", async () => {
 		const cwd = await mkProjectCwd();
-		const result = await installGjcBundle({ cwd }, "project", sixSurface);
+		const result = await installWorxBundle({ cwd }, "project", sixSurface);
 		expect(result.ok).toBe(true);
 		if (!result.ok) throw new Error(result.error.code);
 		expect(result.value.status).toBe("installed");
@@ -150,24 +150,24 @@ describe("GJC plugin installer", () => {
 		const cwd = await mkProjectCwd();
 		const ctx = { cwd };
 		const identity = bundleIdentity("project", "valid-six-surface-bundle");
-		const first = await installGjcBundle(ctx, "project", sixSurface);
+		const first = await installWorxBundle(ctx, "project", sixSurface);
 		expect(first.ok).toBe(true);
 
-		const before = await getGjcBundle(ctx, identity);
+		const before = await getWorxBundle(ctx, identity);
 		expect(before.ok).toBe(true);
 		if (!before.ok) throw new Error(before.error.code);
-		const second = await installGjcBundle(ctx, "project", sixSurface);
+		const second = await installWorxBundle(ctx, "project", sixSurface);
 		expect(second).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
-		const after = await getGjcBundle(ctx, identity);
+		const after = await getWorxBundle(ctx, identity);
 		expect(after.ok).toBe(true);
 		if (!after.ok) throw new Error(after.error.code);
 		expect(after.value.targetFingerprint).toBe(before.value.targetFingerprint);
 
-		const preview = await previewGjcBundleUpdate(ctx, identity);
+		const preview = await previewWorxBundleUpdate(ctx, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
 		expect(preview.value.changed).toBe(false);
-		const applied = await applyGjcBundleUpdate(ctx, preview.value.token);
+		const applied = await applyWorxBundleUpdate(ctx, preview.value.token);
 		expect(applied).toMatchObject({ ok: true, value: { status: "unchanged" } });
 	});
 
@@ -178,20 +178,20 @@ describe("GJC plugin installer", () => {
 		tempDirs.push(source);
 		await fs.cp(sixSurface, source, { recursive: true });
 		const identity = bundleIdentity("project", "valid-six-surface-bundle");
-		const first = await installGjcBundle(ctx, "project", source);
+		const first = await installWorxBundle(ctx, "project", source);
 		expect(first.ok).toBe(true);
 
 		await fs.appendFile(path.join(source, "prompts", "system-appendix.md"), "\nExtra policy line.\n");
-		const reinstall = await installGjcBundle(ctx, "project", source);
+		const reinstall = await installWorxBundle(ctx, "project", source);
 		expect(reinstall).toMatchObject({ ok: false, error: { code: "already_installed_use_upgrade" } });
 
-		const preview = await previewGjcBundleUpdate(ctx, identity);
+		const preview = await previewWorxBundleUpdate(ctx, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
 		expect(preview.value.changed).toBe(true);
-		const applied = await applyGjcBundleUpdate(ctx, preview.value.token);
+		const applied = await applyWorxBundleUpdate(ctx, preview.value.token);
 		expect(applied).toMatchObject({ ok: true, value: { status: "updated" } });
-		const summary = await getGjcBundle(ctx, identity);
+		const summary = await getWorxBundle(ctx, identity);
 		expect(summary.ok).toBe(true);
 		if (!summary.ok) throw new Error(summary.error.code);
 		expect(summary.value.version).toBe(preview.value.candidateVersion);
@@ -206,7 +206,7 @@ describe("GJC plugin installer", () => {
 			path.join(bad, "gajae-plugin.json"),
 			JSON.stringify({ kind: "gajae-code-plugin", name: "bad-bundle", version: "1.0.0", agents: [] }),
 		);
-		await expect(installGjcBundle({ cwd }, "project", bad)).rejects.toBeInstanceOf(GjcPluginLoadError);
+		await expect(installWorxBundle({ cwd }, "project", bad)).rejects.toBeInstanceOf(WorxPluginLoadError);
 
 		expect(await exists(path.join(cwd, ".worx", "worx-plugins", "bad-bundle"))).toBe(false);
 		const registry = await readRegistry("project", cwd);
@@ -221,7 +221,7 @@ describe("GJC plugin installer", () => {
 		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
 		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
-			await installGjcBundle({ cwd }, "project", sixSurface);
+			await installWorxBundle({ cwd }, "project", sixSurface);
 		} finally {
 			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
 			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;
@@ -239,9 +239,9 @@ describe("GJC plugin installer", () => {
 			env: { ...process.env, COPYFILE_DISABLE: "1" },
 		});
 		expect(res.status).toBe(0);
-		const result = await installGjcBundle({ cwd }, "project", tarball);
+		const result = await installWorxBundle({ cwd }, "project", tarball);
 		expect(result).toMatchObject({ ok: true, value: { status: "installed" } });
-		expect(await isGjcPluginBundleSource(tarball)).toBe(true);
+		expect(await isWorxPluginBundleSource(tarball)).toBe(true);
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins[0]?.source.kind).toBe("tarball");
 	});
@@ -259,7 +259,7 @@ describe("GJC plugin installer", () => {
 		});
 		const cwd = await mkProjectCwd();
 		try {
-			const result = await installGjcBundle({ cwd }, "project", served.url);
+			const result = await installWorxBundle({ cwd }, "project", served.url);
 			expect(result.ok).toBe(true);
 			if (!result.ok) throw new Error(result.error.code);
 			expect(result.value.status).toBe("installed");
@@ -294,14 +294,14 @@ describe("GJC plugin installer", () => {
 				.status,
 		).toBe(0);
 		const unavailableTarCwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd: unavailableTarCwd }, "project", validTar)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd: unavailableTarCwd }, "project", validTar)).ok).toBe(true);
 		await fs.rm(validTar);
 		const tarIdentity = bundleIdentity("project", "valid-six-surface-bundle");
-		expect(await previewGjcBundleUpdate({ cwd: unavailableTarCwd }, tarIdentity)).toMatchObject({
+		expect(await previewWorxBundleUpdate({ cwd: unavailableTarCwd }, tarIdentity)).toMatchObject({
 			ok: false,
 			error: { code: "source_unavailable" },
 		});
-		expect(await applyGjcBundleUpdate({ cwd: unavailableTarCwd }, applyToken(tarIdentity))).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd: unavailableTarCwd }, applyToken(tarIdentity))).toMatchObject({
 			ok: false,
 			error: { code: "source_unavailable" },
 		});
@@ -324,13 +324,13 @@ describe("GJC plugin installer", () => {
 			}).status,
 		).toBe(0);
 		const malformedTarCwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd: malformedTarCwd }, "project", validTar2)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd: malformedTarCwd }, "project", validTar2)).ok).toBe(true);
 		await fs.copyFile(malformedTar, validTar2);
-		expect(await previewGjcBundleUpdate({ cwd: malformedTarCwd }, tarIdentity)).toMatchObject({
+		expect(await previewWorxBundleUpdate({ cwd: malformedTarCwd }, tarIdentity)).toMatchObject({
 			ok: false,
 			error: { code: "invalid_target" },
 		});
-		expect(await applyGjcBundleUpdate({ cwd: malformedTarCwd }, applyToken(tarIdentity))).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd: malformedTarCwd }, applyToken(tarIdentity))).toMatchObject({
 			ok: false,
 			error: { code: "invalid_target" },
 		});
@@ -343,14 +343,14 @@ describe("GJC plugin installer", () => {
 			subskills: [],
 		});
 		const unavailableGitCwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd: unavailableGitCwd }, "project", unavailableGit.url)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd: unavailableGitCwd }, "project", unavailableGit.url)).ok).toBe(true);
 		await unavailableGit.stop();
 		const gitIdentity = bundleIdentity("project", "git-classify");
-		expect(await previewGjcBundleUpdate({ cwd: unavailableGitCwd }, gitIdentity)).toMatchObject({
+		expect(await previewWorxBundleUpdate({ cwd: unavailableGitCwd }, gitIdentity)).toMatchObject({
 			ok: false,
 			error: { code: "source_unavailable" },
 		});
-		expect(await applyGjcBundleUpdate({ cwd: unavailableGitCwd }, applyToken(gitIdentity))).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd: unavailableGitCwd }, applyToken(gitIdentity))).toMatchObject({
 			ok: false,
 			error: { code: "source_unavailable" },
 		});
@@ -363,7 +363,7 @@ describe("GJC plugin installer", () => {
 			subskills: [],
 		});
 		const malformedGitCwd = await mkProjectCwd();
-		expect((await installGjcBundle({ cwd: malformedGitCwd }, "project", malformedGit.url)).ok).toBe(true);
+		expect((await installWorxBundle({ cwd: malformedGitCwd }, "project", malformedGit.url)).ok).toBe(true);
 		await fs.rm(path.join(malformedGit.repoDir, "gajae-plugin.json"));
 		spawnSync("git", ["add", "-A"], { cwd: malformedGit.repoDir });
 		spawnSync(
@@ -372,11 +372,11 @@ describe("GJC plugin installer", () => {
 			{ cwd: malformedGit.repoDir },
 		);
 		const malformedGitIdentity = bundleIdentity("project", "git-malformed");
-		expect(await previewGjcBundleUpdate({ cwd: malformedGitCwd }, malformedGitIdentity)).toMatchObject({
+		expect(await previewWorxBundleUpdate({ cwd: malformedGitCwd }, malformedGitIdentity)).toMatchObject({
 			ok: false,
 			error: { code: "invalid_target" },
 		});
-		expect(await applyGjcBundleUpdate({ cwd: malformedGitCwd }, applyToken(malformedGitIdentity))).toMatchObject({
+		expect(await applyWorxBundleUpdate({ cwd: malformedGitCwd }, applyToken(malformedGitIdentity))).toMatchObject({
 			ok: false,
 			error: { code: "invalid_target" },
 		});
@@ -386,9 +386,9 @@ describe("GJC plugin installer", () => {
 		const cwd = await mkProjectCwd();
 		const rejectingServer = await startRejectingGitServer();
 		try {
-			await expect(installGjcBundle({ cwd }, "project", rejectingServer.url)).rejects.toMatchObject({
+			await expect(installWorxBundle({ cwd }, "project", rejectingServer.url)).rejects.toMatchObject({
 				code: "missing_file",
-				name: "GjcPluginLoadError",
+				name: "WorxPluginLoadError",
 			});
 		} finally {
 			await rejectingServer.stop();

@@ -3,9 +3,9 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	compileGjcPluginBundle,
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
+	compileWorxPluginBundle,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
 } from "../src/extensibility/worx-plugins";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
@@ -18,12 +18,12 @@ afterEach(async () => {
 	}
 });
 
-async function expectCompileError(root: string, code: GjcPluginLoadErrorCode): Promise<void> {
+async function expectCompileError(root: string, code: WorxPluginLoadErrorCode): Promise<void> {
 	try {
-		await compileGjcPluginBundle(root);
+		await compileWorxPluginBundle(root);
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} compile error`);
@@ -31,7 +31,7 @@ async function expectCompileError(root: string, code: GjcPluginLoadErrorCode): P
 
 describe("GJC plugin compiler", () => {
 	test("compiles a valid six-surface bundle with extension ids and digests", async () => {
-		const bundle = await compileGjcPluginBundle(sixSurface);
+		const bundle = await compileWorxPluginBundle(sixSurface);
 		expect(bundle.name).toBe("valid-six-surface-bundle");
 		expect(bundle.manifestHash).toMatch(/^[0-9a-f]{64}$/);
 
@@ -57,7 +57,7 @@ describe("GJC plugin compiler", () => {
 		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
 		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
-			await compileGjcPluginBundle(sixSurface);
+			await compileWorxPluginBundle(sixSurface);
 		} finally {
 			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
 			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;

@@ -175,7 +175,7 @@ async function passingLiveQualityGate(root: string): Promise<string> {
 }
 
 async function createTwoGoalPlan(root: string, mode: "aggregate" | "per-story" = "aggregate"): Promise<void> {
-	await createUltragoalPlan({ cwd: root, brief: "Ship the feature", gjcGoalMode: mode });
+	await createUltragoalPlan({ cwd: root, brief: "Ship the feature", worxGoalMode: mode });
 	await addUltragoalSubgoal({
 		cwd: root,
 		title: "Second story",
@@ -201,8 +201,8 @@ function reviewedBatchReplacementFixture(options: { multiple?: boolean; staleRep
 	const plan: UltragoalPlan = {
 		version: 1,
 		brief: "Reviewed validation batch replacement",
-		gjcGoalMode: "aggregate",
-		gjcObjective: "Complete reviewed batch",
+		worxGoalMode: "aggregate",
+		worxObjective: "Complete reviewed batch",
 		createdAt: "2026-01-01T00:00:00.000Z",
 		updatedAt: "2026-01-01T00:00:00.000Z",
 		goals: ids.map(
@@ -242,8 +242,8 @@ function reviewedBatchReplacementFixture(options: { multiple?: boolean; staleRep
 			goalId,
 			receiptKind,
 			goalStatusBeforeCheckpoint: "active",
-			gjcGoalMode: plan.gjcGoalMode,
-			gjcObjective: plan.gjcObjective,
+			worxGoalMode: plan.worxGoalMode,
+			worxObjective: plan.worxObjective,
 			qualityGateHash: hashStructuredValue(qualityGateJson),
 			planGeneration: generation.planGeneration,
 			basis: generation.basis,

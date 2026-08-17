@@ -328,7 +328,7 @@ Useful runtime env vars:
 
 - `WORX_TMUX_COMMAND` / `WORX_TEAM_TMUX_COMMAND`
   - tmux executable override (default `tmux` on POSIX; `psmux` / `pmux` / `tmux` resolution on native Windows). `WORX_TMUX_COMMAND` applies to every GJC tmux flow; `WORX_TEAM_TMUX_COMMAND` is honored as a team-path alias. Values are executable paths/names, not shell command lines.
-  - Native Windows psmux boundary: a generic-banner `tmux.exe` alias is classified by matching its executable identity with resolved `psmux.exe` / `pmux.exe` companions. Unresolved or conflicting identity evidence fails closed with `gjc_tmux_provider_ambiguous`; `WORX_PSMUX_COMMAND` must resolve to the same executable identity as the selected alias.
+  - Native Windows psmux boundary: a generic-banner `tmux.exe` alias is classified by matching its executable identity with resolved `psmux.exe` / `pmux.exe` companions. Unresolved or conflicting identity evidence fails closed with `worx_tmux_provider_ambiguous`; `WORX_PSMUX_COMMAND` must resolve to the same executable identity as the selected alias.
   - Managed psmux session creation, attachment, lifecycle mutation, and team startup remain unsupported because psmux cannot provide the immutable native session identity required by the owner-isolation contract. Use WSL or verified native tmux for live team workers.
   - Windows psmux namespace boundary: psmux uses the tmux-compatible global `-L <namespace>` flag for server isolation, but GJC does not accept flags in `WORX_TMUX_COMMAND` or expose structured runtime `-L` support.
 - `WORX_TEAM_WORKER_COMMAND`

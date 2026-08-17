@@ -13,7 +13,7 @@ import {
 import { initialPhaseForSkill } from "../skill-state/initial-phase";
 import { readWorkflowGuardContext } from "../skill-state/workflow-mutation-guard";
 import { activeSnapshotPath, modeStatePath as sessionModeStatePath } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForRead } from "../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead } from "../worx-runtime/session-resolution";
 import { ModeStateSchema, SkillActiveStateSchema } from "../worx-runtime/state-schema";
 import {
 	readExistingStateForMutation,
@@ -29,9 +29,9 @@ export { initialPhaseForSkill };
 import { WORKFLOW_STATE_VERSION } from "../skill-state/workflow-state-contract";
 import {
 	compareSkillKeywordMatches,
-	type GjcWorkflowSkill,
-	isGjcWorkflowSkill,
+	isWorxWorkflowSkill,
 	WORX_SKILL_KEYWORD_DEFINITIONS,
+	type WorxWorkflowSkill,
 } from "./skill-keywords";
 
 export const WORX_STATE_DIR = ".worx";
@@ -93,7 +93,7 @@ export function buildSanitizedEffectiveSkillConfigContext(input: EffectiveSkillC
 
 export interface SkillKeywordMatch {
 	keyword: string;
-	skill: GjcWorkflowSkill;
+	skill: WorxWorkflowSkill;
 	priority: number;
 }
 
@@ -173,7 +173,7 @@ function parseExplicitSkillInvocations(text: string): {
 		sawExplicitLikeInvocation = true;
 		const token = match[1] ?? "";
 		const normalized = token.startsWith("worx:") ? token.slice(5) : token;
-		if (isGjcWorkflowSkill(normalized) && !seenSkills.has(normalized)) {
+		if (isWorxWorkflowSkill(normalized) && !seenSkills.has(normalized)) {
 			seenSkills.add(normalized);
 			matches.push({
 				keyword: match[0],
@@ -210,17 +210,17 @@ export function detectPrimarySkillKeyword(text: string): SkillKeywordMatch | nul
 	return detectSkillKeywords(text)[0] ?? null;
 }
 
-export function resolveGjcStateDir(cwd: string, stateDir?: string): string {
+export function resolveWorxStateDir(cwd: string, stateDir?: string): string {
 	return stateDir ? path.resolve(cwd, stateDir) : path.join(cwd, WORX_STATE_DIR);
 }
 
 async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string> {
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
-	return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+	return (await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 }
 
-function modeStatePath(cwd: string, skill: GjcWorkflowSkill, sessionId: string): string {
+function modeStatePath(cwd: string, skill: WorxWorkflowSkill, sessionId: string): string {
 	return sessionModeStatePath(cwd, sessionId, skill);
 }
 
@@ -236,7 +236,7 @@ export interface StateRecoveryDiagnostic {
 	kind: "skill-active-state" | "mode-state";
 	statePath: string;
 	reason: "missing" | "corrupt" | "unreadable";
-	skill?: GjcWorkflowSkill;
+	skill?: WorxWorkflowSkill;
 }
 
 function buildStateRecoveryMessage(diagnostic: StateRecoveryDiagnostic): string {
@@ -259,7 +259,7 @@ export function buildStateRecoveryDiagnosticsContext(diagnostics: readonly State
 async function inspectJsonStateRecovery(
 	filePath: string,
 	kind: StateRecoveryDiagnostic["kind"],
-	skill?: GjcWorkflowSkill,
+	skill?: WorxWorkflowSkill,
 ): Promise<StateRecoveryDiagnostic | null> {
 	try {
 		await Bun.file(filePath).text();
@@ -341,8 +341,8 @@ function listActiveSkills(state: SkillActiveState | null): SkillActiveEntry[] {
 	return (state.active_skills ?? []).filter(entry => entry.active !== false);
 }
 
-function isWorkflowActiveEntry(entry: SkillActiveEntry): entry is SkillActiveEntry & { skill: GjcWorkflowSkill } {
-	return isGjcWorkflowSkill(entry.skill);
+function isWorkflowActiveEntry(entry: SkillActiveEntry): entry is SkillActiveEntry & { skill: WorxWorkflowSkill } {
+	return isWorxWorkflowSkill(entry.skill);
 }
 
 export async function readVisibleSkillActiveState(
@@ -363,7 +363,7 @@ interface SeedSkillActivationStateInput {
 }
 
 async function seedSkillActivationState(
-	skill: GjcWorkflowSkill,
+	skill: WorxWorkflowSkill,
 	keyword: string,
 	source: string,
 	input: SeedSkillActivationStateInput,
@@ -500,7 +500,7 @@ export async function ensureWorkflowSkillActivationState(
 	input: EnsureWorkflowSkillActivationInput,
 ): Promise<SkillActiveState | null> {
 	const skill = input.skill.trim();
-	if (!isGjcWorkflowSkill(skill)) return null;
+	if (!isWorxWorkflowSkill(skill)) return null;
 	const resolvedSessionId = await resolveBoundarySessionId(input.cwd, input.sessionId);
 	const existing = await readVisibleSkillActiveState(input.cwd, resolvedSessionId, input.stateDir);
 	const alreadyActive = listActiveSkills(existing).some(
@@ -540,7 +540,7 @@ function isTerminalModeState(state: ModeState | null): boolean {
  * hook keeps blocking these even in the "handoff" phase until they are demoted
  * (active:false) or cleared.
  */
-function isHandoffRequiredSkill(skill: GjcWorkflowSkill): boolean {
+function isHandoffRequiredSkill(skill: WorxWorkflowSkill): boolean {
 	return skill === "deep-interview" || skill === "ralplan";
 }
 
@@ -554,7 +554,7 @@ function isHandoffRequiredSkill(skill: GjcWorkflowSkill): boolean {
  * mode-state preserves the historical fail-open behavior so a broken state file
  * cannot lock a session.
  */
-function modeStateReleasesStop(state: ModeState | null, handoffRequired: boolean, skill: GjcWorkflowSkill): boolean {
+function modeStateReleasesStop(state: ModeState | null, handoffRequired: boolean, skill: WorxWorkflowSkill): boolean {
 	if (!state) return !handoffRequired;
 	if (state.active !== true) return true;
 	const phase = String(state.current_phase ?? "")
@@ -582,7 +582,7 @@ function ultragoalDurableCompletionReleasesStop(state: string): boolean {
  * independent durable source release as before.
  */
 async function detectStaleModeStateRelease(
-	skill: GjcWorkflowSkill,
+	skill: WorxWorkflowSkill,
 	cwd: string,
 	sessionId?: string | null,
 ): Promise<string | null> {
@@ -629,7 +629,7 @@ async function deepInterviewSpecCrystallized(state: ModeState, cwd: string): Pro
  * release. Scoped to deep-interview only — other workflows are untouched.
  */
 async function detectUncrystallizedDeepInterviewStop(
-	skill: GjcWorkflowSkill,
+	skill: WorxWorkflowSkill,
 	state: ModeState | null,
 	cwd: string,
 ): Promise<string | null> {
@@ -647,7 +647,7 @@ async function detectUncrystallizedDeepInterviewStop(
 
 async function readVisibleModeState(
 	cwd: string,
-	skill: GjcWorkflowSkill,
+	skill: WorxWorkflowSkill,
 	sessionId?: string,
 	_stateDir?: string,
 ): Promise<{ state: ModeState; statePath: string } | null> {
@@ -689,7 +689,7 @@ async function readLatestAssistantTextFromSessionFile(sessionFile: string | unde
 }
 
 async function shouldRescueDeepInterviewPlaintextAskLeak(
-	skill: GjcWorkflowSkill,
+	skill: WorxWorkflowSkill,
 	state: ModeState | null,
 	cwd: string,
 	sessionFile: string | undefined,
@@ -735,15 +735,15 @@ export async function buildActiveUltragoalPromptContext(input: UserPromptSubmitS
 	return `Ultragoal is active (phase: ${phase}; state: ${visibleModeState.statePath}). If the user prompt is a steering request, use \`worx ultragoal steer\` to add or steer subgoals. Normal prose should not mutate Ultragoal state.`;
 }
 
-function buildHandoffStopReleaseGuidance(skill: GjcWorkflowSkill): string {
+function buildHandoffStopReleaseGuidance(skill: WorxWorkflowSkill): string {
 	return `Use the ask tool to present the next handoff step, then persist one concrete release action: hand off to the next workflow, run \`worx state clear ${skill}\`, demote the skill with active:false, crystallize the spec when finishing deep-interview, or deliberately cancel the workflow.`;
 }
 
-function buildHandoffModeStateRecoveryMessage(skill: GjcWorkflowSkill, phase: string, statePath: string): string {
+function buildHandoffModeStateRecoveryMessage(skill: WorxWorkflowSkill, phase: string, statePath: string): string {
 	return `GJC handoff skill "${skill}" mode-state is missing or corrupt (phase: ${phase}; state: ${statePath}). ${buildHandoffStopReleaseGuidance(skill)}`;
 }
 
-function buildHandoffForceAskMessage(skill: GjcWorkflowSkill, phase: string, statePath: string): string {
+function buildHandoffForceAskMessage(skill: WorxWorkflowSkill, phase: string, statePath: string): string {
 	if (skill === "deep-interview" && phase.trim().toLowerCase() === "interviewing") {
 		return `GJC deep-interview is still interviewing and must not stop (${statePath}). Continue the active round immediately: score and persist an answered round, then report progress. Use the ask tool for the next question. Only stop after crystallizing, recording a handoff, or explicitly cancelling the workflow. ${buildHandoffStopReleaseGuidance(skill)}`;
 	}
@@ -833,7 +833,7 @@ export async function buildSkillStopOutput(input: StopHookInput): Promise<Record
 			return {
 				decision: "block",
 				reason: ultragoalMessage,
-				stopReason: `gjc_ultragoal_verification_${diagnostic.state}`,
+				stopReason: `worx_ultragoal_verification_${diagnostic.state}`,
 				systemMessage: ultragoalMessage,
 			};
 		}

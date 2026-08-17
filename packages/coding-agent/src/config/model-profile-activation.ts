@@ -13,11 +13,11 @@ import {
 export { resolveModelProfileName } from "./model-profile-contract";
 
 import {
-	type GjcModelAssignmentTargetId,
 	isAuthenticated,
 	kNoAuth,
 	type ModelRegistry,
 	WORX_MODEL_ASSIGNMENT_TARGETS,
+	type WorxModelAssignmentTargetId,
 } from "./model-registry";
 import {
 	formatModelSelectorValue,
@@ -183,7 +183,7 @@ export interface MaterializeModelProfileAssignmentOptions {
 		| "clearProfileInstalledOverrides"
 	>;
 	settings: Pick<Settings, "clearOverride" | "get" | "getGlobal" | "getOverride" | "override" | "set" | "unset">;
-	role: GjcModelAssignmentTargetId;
+	role: WorxModelAssignmentTargetId;
 	selector: string;
 }
 
@@ -205,22 +205,22 @@ export interface MaterializeModelProfileAssignmentsOptions {
 		| "clearProfileInstalledOverrides"
 	>;
 	settings: Pick<Settings, "clearOverride" | "get" | "getGlobal" | "getOverride" | "override" | "set" | "unset">;
-	assignments: ReadonlyMap<GjcModelAssignmentTargetId, string> | Partial<Record<GjcModelAssignmentTargetId, string>>;
+	assignments: ReadonlyMap<WorxModelAssignmentTargetId, string> | Partial<Record<WorxModelAssignmentTargetId, string>>;
 }
 
 function isReadonlyAssignmentMap(
-	assignments: ReadonlyMap<GjcModelAssignmentTargetId, string> | Partial<Record<GjcModelAssignmentTargetId, string>>,
-): assignments is ReadonlyMap<GjcModelAssignmentTargetId, string> {
+	assignments: ReadonlyMap<WorxModelAssignmentTargetId, string> | Partial<Record<WorxModelAssignmentTargetId, string>>,
+): assignments is ReadonlyMap<WorxModelAssignmentTargetId, string> {
 	return typeof (assignments as { entries?: unknown }).entries === "function";
 }
 
 function getMaterializedAssignments(
-	assignments: ReadonlyMap<GjcModelAssignmentTargetId, string> | Partial<Record<GjcModelAssignmentTargetId, string>>,
-): Array<[GjcModelAssignmentTargetId, string]> {
+	assignments: ReadonlyMap<WorxModelAssignmentTargetId, string> | Partial<Record<WorxModelAssignmentTargetId, string>>,
+): Array<[WorxModelAssignmentTargetId, string]> {
 	if (isReadonlyAssignmentMap(assignments)) return [...assignments.entries()];
-	const assignmentRecord: Partial<Record<GjcModelAssignmentTargetId, string>> = assignments;
-	const result: Array<[GjcModelAssignmentTargetId, string]> = [];
-	for (const role of Object.keys(assignmentRecord) as GjcModelAssignmentTargetId[]) {
+	const assignmentRecord: Partial<Record<WorxModelAssignmentTargetId, string>> = assignments;
+	const result: Array<[WorxModelAssignmentTargetId, string]> = [];
+	for (const role of Object.keys(assignmentRecord) as WorxModelAssignmentTargetId[]) {
 		const selector = assignmentRecord[role];
 		if (selector !== undefined) result.push([role, selector]);
 	}
@@ -1024,7 +1024,7 @@ export async function prepareModelProfileActivation(
 
 		const modelRoles: Record<string, ModelSelectorValue> = {};
 		for (const [role, selectorValue] of Object.entries(bindings.modelRoles) as [
-			GjcModelAssignmentTargetId,
+			WorxModelAssignmentTargetId,
 			ModelSelectorValue,
 		][]) {
 			modelRoles[role] = await resolveAndClampSelectorValue(
@@ -1045,7 +1045,7 @@ export async function prepareModelProfileActivation(
 
 		const agentModelOverrides: Record<string, ModelSelectorValue> = {};
 		for (const [role, selectorValue] of Object.entries(bindings.agentModelOverrides) as [
-			GjcModelAssignmentTargetId,
+			WorxModelAssignmentTargetId,
 			ModelSelectorValue,
 		][]) {
 			agentModelOverrides[role] = await resolveAndClampSelectorValue(

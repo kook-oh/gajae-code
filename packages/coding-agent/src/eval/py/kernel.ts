@@ -759,10 +759,10 @@ function buildInitScript(cwd: string, env?: Record<string, string | undefined>):
 	const envPayload = Object.fromEntries(envEntries);
 	return [
 		"import os, sys",
-		`__gjc_cwd = ${JSON.stringify(cwd)}`,
-		"os.chdir(__gjc_cwd)",
-		`__gjc_env = ${JSON.stringify(envPayload)}`,
-		"for __gjc_key, __gjc_val in __gjc_env.items():\n    os.environ[__gjc_key] = __gjc_val",
-		"if __gjc_cwd not in sys.path:\n    sys.path.insert(0, __gjc_cwd)",
+		`__worx_cwd = ${JSON.stringify(cwd)}`,
+		"os.chdir(__worx_cwd)",
+		`__worx_env = ${JSON.stringify(envPayload)}`,
+		"for __worx_key, __worx_val in __worx_env.items():\n    os.environ[__worx_key] = __worx_val",
+		"if __worx_cwd not in sys.path:\n    sys.path.insert(0, __worx_cwd)",
 	].join("\n");
 }

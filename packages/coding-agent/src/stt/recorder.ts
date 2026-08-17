@@ -178,14 +178,14 @@ function Mci([string]$cmd) {
     return $r
 }
 
-$r = Mci "open new type waveaudio alias gjc_rec"
+$r = Mci "open new type waveaudio alias worx_rec"
 if ($r -ne 0) { exit 1 }
 
-Mci "set gjc_rec channels 1 samplespersec 16000 bitspersample 16"
+Mci "set worx_rec channels 1 samplespersec 16000 bitspersample 16"
 
-$r = Mci "record gjc_rec"
+$r = Mci "record worx_rec"
 if ($r -ne 0) {
-    Mci "close gjc_rec"
+    Mci "close worx_rec"
     exit 1
 }
 
@@ -196,13 +196,13 @@ Write-Output "RECORDING"
 try { [Console]::In.ReadLine() | Out-Null } catch {}
 
 # Stop and save
-Mci "stop gjc_rec"
-$saveCmd = 'save gjc_rec "' + $outPath + '"'
+Mci "stop worx_rec"
+$saveCmd = 'save worx_rec "' + $outPath + '"'
 $r = Mci $saveCmd
 if ($r -ne 0) {
     [Console]::Error.WriteLine("Save failed for: $saveCmd")
 }
-Mci "close gjc_rec"
+Mci "close worx_rec"
 
 if (Test-Path $outPath) {
     Write-Output "SAVED"

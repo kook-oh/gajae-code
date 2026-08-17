@@ -9,7 +9,7 @@ export * from "./injection";
  * modules. Re-exporting them would let a caller commit a replacement and
  * bypass the create-only rule.
  */
-export { isGjcPluginBundleSource, isGjcPluginSourceShape } from "./installer";
+export { isWorxPluginBundleSource, isWorxPluginSourceShape } from "./installer";
 export * from "./lifecycle";
 export * from "./lifecycle-reconciliation";
 export * from "./mcp-policy";
@@ -19,7 +19,7 @@ export * from "./observability";
 export * from "./paths";
 export * from "./prompt-appendix";
 export {
-	loadEffectiveGjcPluginRegistry,
+	loadEffectiveWorxPluginRegistry,
 	readRegistry,
 	registryEntryFingerprint,
 	registryPathForScope,

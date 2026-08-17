@@ -122,7 +122,7 @@ export interface NotificationSettingsReader {
 }
 
 function notificationConfigurationError(): Error {
-	return new Error("gjc_notify_daemon_invalid_configuration");
+	return new Error("worx_notify_daemon_invalid_configuration");
 }
 
 type NotificationObject = Record<string, unknown>;
@@ -672,7 +672,7 @@ export interface GenericNotificationSessionEligibilityInput {
 	cfg: NotificationConfig;
 	env: NodeJS.ProcessEnv;
 	sessionDisabled: boolean;
-	spawnedByGjc?: boolean;
+	spawnedByWorx?: boolean;
 }
 
 export function resolveGenericNotificationSessionEligibility(
@@ -682,7 +682,7 @@ export function resolveGenericNotificationSessionEligibility(
 	if (input.sessionDisabled) return { enabled: false, source: "session_local_off" };
 	if (input.env.WORX_NOTIFICATIONS === "1") return { enabled: true, source: "explicit_env" };
 	if (input.env.WORX_NOTIFICATIONS_TOKEN) return { enabled: true, source: "token_env" };
-	if (input.spawnedByGjc && input.cfg.sessionScope === "primary") {
+	if (input.spawnedByWorx && input.cfg.sessionScope === "primary") {
 		return { enabled: false, source: "session_scope" };
 	}
 	if (hasAnyEffectivelyEnabledProvider(input.cfg)) return { enabled: true, source: "configured_provider" };
@@ -717,7 +717,7 @@ export interface NotificationHostEligibilityInput {
 	parentTaskPrefix?: string;
 	currentAgentType?: string;
 	sessionScope?: NotificationConfig["sessionScope"];
-	spawnedByGjc?: boolean;
+	spawnedByWorx?: boolean;
 }
 
 /** Generic host eligibility for the dormant automatic notification surface. */
@@ -727,7 +727,7 @@ export function isGenericNotificationHostEligible(input: NotificationHostEligibi
 	if ((input.taskDepth ?? 0) > 0 || input.parentTaskPrefix || input.currentAgentType) return false;
 	if (input.env.WORX_NOTIFICATIONS === "0") return false;
 	if (input.env.WORX_NOTIFICATIONS === "1" || input.env.WORX_NOTIFICATIONS_TOKEN) return true;
-	if (input.spawnedByGjc && input.sessionScope === "primary") return false;
+	if (input.spawnedByWorx && input.sessionScope === "primary") return false;
 	return true;
 }
 
@@ -737,7 +737,7 @@ export interface GenericNotificationRegistrationInput {
 	taskDepth?: number;
 	parentTaskPrefix?: string;
 	currentAgentType?: string;
-	spawnedByGjc?: boolean;
+	spawnedByWorx?: boolean;
 }
 
 /** Generic registration admission; direct provider actions do not call this helper. */
@@ -749,7 +749,7 @@ export function shouldRegisterGenericNotificationsExtension(input: GenericNotifi
 			parentTaskPrefix: input.parentTaskPrefix,
 			currentAgentType: input.currentAgentType,
 			sessionScope: input.cfg?.sessionScope,
-			spawnedByGjc: input.spawnedByGjc,
+			spawnedByWorx: input.spawnedByWorx,
 		})
 	) {
 		return false;

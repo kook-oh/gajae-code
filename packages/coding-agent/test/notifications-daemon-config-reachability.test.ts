@@ -124,7 +124,7 @@ describe("notifications daemon config reachability (btw)", () => {
 	});
 	test("rejects malformed global roots and quarantines malformed Telegram containers", () => {
 		for (const rawConfig of [true, { notifications: true }]) {
-			expect(() => cfgFromRaw(rawConfig)).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => cfgFromRaw(rawConfig)).toThrow("worx_notify_daemon_invalid_configuration");
 		}
 		for (const [rawConfig, pathName] of [
 			[{ notifications: { telegram: [] } }, "notifications.telegram"],
@@ -137,7 +137,7 @@ describe("notifications daemon config reachability (btw)", () => {
 	});
 	test("explicit malformed idle timeout throws instead of silently defaulting", () => {
 		expect(() => cfgFromRaw({ notifications: { daemon: { idleTimeoutMs: 0 } } })).toThrow(
-			"gjc_notify_daemon_invalid_configuration",
+			"worx_notify_daemon_invalid_configuration",
 		);
 	});
 

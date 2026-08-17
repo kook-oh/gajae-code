@@ -1069,7 +1069,7 @@ test("production ACP preserves lifecycle, turn, replay, and connection ownership
 				update: expect.objectContaining({
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcTranscriptImageReplay: { available: false, reason: "historical_transcript_images_unavailable" },
+						worxTranscriptImageReplay: { available: false, reason: "historical_transcript_images_unavailable" },
 					},
 				}),
 			}),

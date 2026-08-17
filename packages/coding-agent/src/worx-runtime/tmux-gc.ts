@@ -15,13 +15,13 @@ import {
 	WORX_TMUX_OWNER_GENERATION_ENV,
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
-import { hasGjcTmuxProviderAuthoritySync, WORX_TMUX_PROFILE_VALUE, WORX_TMUX_SESSION_PREFIX } from "./tmux-common";
+import { hasWorxTmuxProviderAuthoritySync, WORX_TMUX_PROFILE_VALUE, WORX_TMUX_SESSION_PREFIX } from "./tmux-common";
 import {
-	type GjcTmuxSessionStatus,
-	type GjcTmuxSessionsForGc,
 	listTmuxSessionsForGc,
 	readTmuxSessionTagsForGc,
-	removeGjcTmuxSession,
+	removeWorxTmuxSession,
+	type WorxTmuxSessionStatus,
+	type WorxTmuxSessionsForGc,
 } from "./tmux-sessions";
 
 const STORE = "tmux_sessions" as const;
@@ -42,7 +42,7 @@ type CollectedTmuxIdentity = {
 
 const collectedIdentities = new WeakMap<GcRecord, CollectedTmuxIdentity>();
 
-function collectedIdentity(session: GjcTmuxSessionStatus): CollectedTmuxIdentity | undefined {
+function collectedIdentity(session: WorxTmuxSessionStatus): CollectedTmuxIdentity | undefined {
 	if (
 		!session.nativeSessionId ||
 		!session.ownerGeneration ||
@@ -53,7 +53,7 @@ function collectedIdentity(session: GjcTmuxSessionStatus): CollectedTmuxIdentity
 	)
 		return undefined;
 	const stateDir = path.dirname(session.sessionStateFile);
-	const providerKind = hasGjcTmuxProviderAuthoritySync({
+	const providerKind = hasWorxTmuxProviderAuthoritySync({
 		stateDir,
 		sessionId: session.sessionId,
 		generation: session.ownerGeneration,
@@ -137,11 +137,11 @@ async function hasLiveWorktreeForBranch(project: string, branch: string): Promis
 	}
 }
 
-function isSessionLive(session: Pick<GjcTmuxSessionStatus, "attached" | "panePids">): boolean {
+function isSessionLive(session: Pick<WorxTmuxSessionStatus, "attached" | "panePids">): boolean {
 	return session.attached || session.panePids.length > 0;
 }
 
-function liveRecord(session: GjcTmuxSessionStatus, reason: string): GcRecord {
+function liveRecord(session: WorxTmuxSessionStatus, reason: string): GcRecord {
 	return {
 		store: STORE,
 		id: session.name,
@@ -157,7 +157,7 @@ function liveRecord(session: GjcTmuxSessionStatus, reason: string): GcRecord {
 	};
 }
 
-function staleRecord(session: GjcTmuxSessionStatus, reason: string): GcRecord {
+function staleRecord(session: WorxTmuxSessionStatus, reason: string): GcRecord {
 	return {
 		store: STORE,
 		id: session.name,
@@ -186,24 +186,24 @@ async function hasTerminalRuntimeMarker(input: {
 	return marker.terminal;
 }
 
-function isOldEnoughForOrphanGc(session: GjcTmuxSessionStatus): boolean {
+function isOldEnoughForOrphanGc(session: WorxTmuxSessionStatus): boolean {
 	const createdAt = Date.parse(session.createdAt);
 	return Number.isFinite(createdAt) && Date.now() - createdAt >= ORPHAN_MAX_AGE_MS;
 }
 
-function isGjcOwnedOrphan(session: GjcTmuxSessionStatus): boolean {
+function isWorxOwnedOrphan(session: WorxTmuxSessionStatus): boolean {
 	return session.name.startsWith(WORX_TMUX_SESSION_PREFIX) || session.name === "gajae_code";
 }
 
-async function classifyTaggedSession(session: GjcTmuxSessionStatus): Promise<GcRecord> {
+async function classifyTaggedSession(session: WorxTmuxSessionStatus): Promise<GcRecord> {
 	const { name, project, branch } = session;
 	if (isSessionLive(session)) return liveRecord(session, "tmux_session_attached_or_has_live_panes");
 	if (await hasTerminalRuntimeMarker(session))
 		return staleRecord(session, "terminal_runtime_marker_detached_idle_session");
 	if (!project || !branch) {
 		const reason =
-			isGjcOwnedOrphan(session) && isOldEnoughForOrphanGc(session)
-				? "metadata_less_gjc_owned_idle_orphan_missing_terminal_marker"
+			isWorxOwnedOrphan(session) && isOldEnoughForOrphanGc(session)
+				? "metadata_less_worx_owned_idle_orphan_missing_terminal_marker"
 				: "missing_project_or_branch_tag";
 		return unclassifiedRecord(name, reason, project, branch);
 	}
@@ -226,7 +226,7 @@ async function classifyTaggedSession(session: GjcTmuxSessionStatus): Promise<GcR
 	};
 }
 
-function classifyUntaggedSession(session: GjcTmuxSessionStatus): GcRecord {
+function classifyUntaggedSession(session: WorxTmuxSessionStatus): GcRecord {
 	return unclassifiedRecord(session.name, "untagged_tmux_session");
 }
 
@@ -256,7 +256,7 @@ export const tmuxSessionsGcAdapter: GcStoreAdapter = {
 	async collect(ctx: GcContext): Promise<GcCollectResult> {
 		const records: GcRecord[] = [];
 		const errors: GcCollectResult["errors"] = [];
-		let sessions: GjcTmuxSessionsForGc;
+		let sessions: WorxTmuxSessionsForGc;
 		try {
 			sessions = listTmuxSessionsForGc(ctx.env);
 		} catch (error) {
@@ -305,7 +305,7 @@ export const tmuxSessionsGcAdapter: GcStoreAdapter = {
 			if (!identity || !(await revalidateRemovable(record, identity, ctx.env))) {
 				return { removed: false, skipped: TOCTOU_SKIP };
 			}
-			removeGjcTmuxSession(record.id, authorityEnv(identity, ctx.env), identity);
+			removeWorxTmuxSession(record.id, authorityEnv(identity, ctx.env), identity);
 			return { removed: true };
 		} catch (error) {
 			return { removed: false, error: error instanceof Error ? error.message : String(error) };

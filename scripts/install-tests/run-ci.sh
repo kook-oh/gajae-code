@@ -15,19 +15,19 @@ section() {
 }
 
 smoke_cli() {
-	local gjc_bin="$1"
+	local worx_bin="$1"
 	local runtime_dir
 	runtime_dir="$(mktemp -d "$WORK_DIR/compiled-runtime.XXXXXX")"
-	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$gjc_bin" --version
-	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$gjc_bin" --help >/dev/null
-	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$gjc_bin" stats --help >/dev/null
+	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$worx_bin" --version
+	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$worx_bin" --help >/dev/null
+	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$worx_bin" stats --help >/dev/null
 	# Spawns the stats sync worker via `new Worker(...)` and waits for a pong.
 	# Regression probe for #1011 (browser tab worker) and #1027 (stats sync
 	# worker) — both broke silently in compiled binaries because the `with
 	# { type: "file" }` import pattern only copies the worker as a raw asset
 	# without bundling its imports. `stats --summary` doesn't catch this on a
 	# fresh install (no session files = no Worker spawn).
-	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$gjc_bin" --smoke-test
+	XDG_DATA_HOME="$runtime_dir/xdg" HOME="$runtime_dir/home" "$worx_bin" --smoke-test
 }
 
 find_tarball() {

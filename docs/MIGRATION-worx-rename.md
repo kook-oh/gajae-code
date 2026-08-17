@@ -36,8 +36,8 @@ grep -n "GJC_" ~/.zshrc ~/.bashrc ~/.profile 2>/dev/null
 
 ## 4. 외부 소비자
 
-- **Coordinator MCP 를 쓰는 컨트롤러**: 툴 이름이 `gjc_coordinator_*` / `gjc_delegate_*` → `worx_coordinator_*` /
-  `worx_delegate_*` 로 바뀌었다. MCP 설정의 서버 키도 `gjc_coordinator` → `worx_coordinator`,
+- **Coordinator MCP 를 쓰는 컨트롤러**: 툴 이름이 `worx_coordinator_*` / `worx_delegate_*` → `worx_coordinator_*` /
+  `worx_delegate_*` 로 바뀌었다. MCP 설정의 서버 키도 `worx_coordinator` → `worx_coordinator`,
   커맨드는 `gjc` → `worx`. `worx setup hermes --install` 로 재생성하는 것이 가장 안전하다.
 - **헤드리스 CLI 를 subprocess 로 부르는 시스템**(예: ems-review): 바이너리 경로만 포크 CLI(`worx`)로 갱신하면 된다.
   플래그(`-p` / `--session-dir` / `--append-system-prompt` / `--tools` / `--continue` / `--mode rpc`)는 그대로 보존된다.

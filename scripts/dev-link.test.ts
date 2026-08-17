@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import {
 	commandExtensions,
-	findGjcOnPath,
+	findWorxOnPath,
 	isApprovedWorkspaceSource,
 	isRemovableWorkspaceShadow,
 	isLocalWindowsBunShim,
@@ -96,7 +96,7 @@ describe("dev:link command discovery", () => {
 		await makeExecutable(path.join(second, "worx.exe"), "");
 		expect(pathDirs(`${first};${second}`, "win32")).toEqual([first, second]);
 		expect(commandExtensions("win32", ".CMD;.exe;.CMD;.EXE")).toEqual([".CMD", ".exe"]);
-		expect(findGjcOnPath(`${first};${second}`, "win32", ".CMD;.exe;.CMD;.EXE").map(hit => hit.file)).toEqual([
+		expect(findWorxOnPath(`${first};${second}`, "win32", ".CMD;.exe;.CMD;.EXE").map(hit => hit.file)).toEqual([
 			path.join(first, "worx.CMD"),
 			path.join(first, "worx.exe"),
 			path.join(second, "worx.exe"),

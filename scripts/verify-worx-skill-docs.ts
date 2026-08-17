@@ -11,7 +11,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 import { listVerbs } from "../packages/coding-agent/src/worx-runtime/workflow-manifest";
-import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "../packages/coding-agent/src/skill-state/canonical-skills";
+import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalWorxWorkflowSkill } from "../packages/coding-agent/src/skill-state/canonical-skills";
 import { SDK_SESSION_CLI_VERBS, SDK_SESSION_RAW_KINDS } from "./generate-worx-plugins";
 
 const repoRoot = path.join(import.meta.dir, "..");
@@ -19,7 +19,7 @@ const skillsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defau
 const skills = new Set<string>(CANONICAL_WORX_WORKFLOW_SKILLS);
 
 type AdvisorySkill = "gjc-sdk-session" | "gjc-sdk-guides";
-type DocumentedSkill = CanonicalGjcWorkflowSkill | AdvisorySkill;
+type DocumentedSkill = CanonicalWorxWorkflowSkill | AdvisorySkill;
 
 interface CommandRef {
 	file: string;
@@ -36,7 +36,7 @@ interface MutationRef {
 	text: string;
 }
 
-function isSkill(value: string): value is CanonicalGjcWorkflowSkill {
+function isSkill(value: string): value is CanonicalWorxWorkflowSkill {
 	return skills.has(value);
 }
 
@@ -155,7 +155,7 @@ function collectCommandRefs(file: string, content: string): CommandRef[] {
 	return refs;
 }
 
-function collectDirectGjcMutations(file: string, content: string): MutationRef[] {
+function collectDirectWorxMutations(file: string, content: string): MutationRef[] {
 	const refs: MutationRef[] = [];
 	const relative = path.relative(repoRoot, file);
 	const lines = content.split("\n");
@@ -180,7 +180,7 @@ function main(): void {
 		const file = path.join(skillsRoot, skill, "SKILL.md");
 		const content = fs.readFileSync(file, "utf8");
 		commandRefs.push(...collectCommandRefs(file, content));
-		mutationRefs.push(...collectDirectGjcMutations(file, content));
+		mutationRefs.push(...collectDirectWorxMutations(file, content));
 	}
 
 	// Generated advisory plugin skills (inventory + content gates).
@@ -188,7 +188,7 @@ function main(): void {
 		const file = path.join(repoRoot, "plugins", "gajae-code", "skills", dir, "SKILL.md");
 		const content = fs.readFileSync(file, "utf8");
 		commandRefs.push(...collectSdkSessionVerbRefs(file, content));
-		mutationRefs.push(...collectDirectGjcMutations(file, content));
+		mutationRefs.push(...collectDirectWorxMutations(file, content));
 		advisoryContentGates.push(...collectSdkSkillContentGates(file, content));
 	}
 	const missingAdvisory = ADVISORY_SKILL_DIRS.filter(

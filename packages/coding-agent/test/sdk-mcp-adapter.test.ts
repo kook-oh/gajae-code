@@ -142,10 +142,10 @@ test("MCP SDK schemas exclude endpoint credentials and reject G02 before any Web
 	const { repo, sessionId, sent } = fixture();
 	const mcp = createSdkMcpServer({ repo });
 	expect(JSON.stringify(mcp.tools)).not.toContain("get_endpoint");
-	await expect(mcp.callTool("gjc_session_control", { sessionId, operation: "session.get_endpoint" })).resolves.toEqual(
-		{ ok: false, error: expect.objectContaining({ code: "unknown_operation" }) },
-	);
-	await expect(mcp.callTool("gjc_session_global", { operation: "session.get_endpoint" })).resolves.toEqual({
+	await expect(
+		mcp.callTool("worx_session_control", { sessionId, operation: "session.get_endpoint" }),
+	).resolves.toEqual({ ok: false, error: expect.objectContaining({ code: "unknown_operation" }) });
+	await expect(mcp.callTool("worx_session_global", { operation: "session.get_endpoint" })).resolves.toEqual({
 		ok: false,
 		error: expect.objectContaining({ code: "endpoint_credential_forbidden" }),
 	});
@@ -192,7 +192,7 @@ test("MCP lifecycle responses never expose broker endpoint credentials", async (
 				close: async () => {},
 			}) as never,
 	});
-	const result = await mcp.callTool("gjc_session_global", {
+	const result = await mcp.callTool("worx_session_global", {
 		operation: "session.create",
 		input: { cwd: repo },
 		idempotencyKey: "create-1",
@@ -224,7 +224,7 @@ test("MCP forwards the lifecycle startup budget to the broker client deadline", 
 					},
 					close: async () => {},
 				}) as never,
-		}).callTool("gjc_session_global", {
+		}).callTool("worx_session_global", {
 			operation: "session.create",
 			input: { cwd: repo, readinessTimeoutMs: 4_000 },
 			idempotencyKey: "forward-startup-budget",
@@ -239,10 +239,10 @@ test("MCP forwards the lifecycle startup budget to the broker client deadline", 
 test("MCP global schema exposes and requires caller lifecycle idempotency keys", async () => {
 	const { repo } = fixture();
 	const mcp = createSdkMcpServer({ repo });
-	const global = mcp.tools.find(tool => tool.name === "gjc_session_global")!;
+	const global = mcp.tools.find(tool => tool.name === "worx_session_global")!;
 	expect(global.inputSchema).toMatchObject({ properties: { idempotencyKey: { type: "string" } } });
 	await expect(
-		mcp.callTool("gjc_session_global", { operation: "session.create", input: { cwd: repo } }),
+		mcp.callTool("worx_session_global", { operation: "session.create", input: { cwd: repo } }),
 	).resolves.toMatchObject({
 		ok: false,
 		error: { code: "invalid_input" },
@@ -260,9 +260,9 @@ test("MCP rejects unknown operation names before discovery or connection", async
 		},
 	});
 	for (const [tool, args] of [
-		["gjc_session_control", { sessionId, operation: "not.real" }],
-		["gjc_session_query", { sessionId, query: "not.real" }],
-		["gjc_session_global", { operation: "not.real" }],
+		["worx_session_control", { sessionId, operation: "not.real" }],
+		["worx_session_query", { sessionId, query: "not.real" }],
+		["worx_session_global", { operation: "not.real" }],
 	] as const)
 		expect(await mcp.callTool(tool, args)).toMatchObject({ ok: false, error: { code: "unknown_operation" } });
 	expect(connects).toBe(0);
@@ -295,7 +295,7 @@ test("MCP surfaces typed broker resolution failures", async () => {
 			throw new Error("must not reach the session endpoint");
 		},
 	});
-	const result = await mcp.callTool("gjc_session_query", { sessionId, query: "session.metadata" });
+	const result = await mcp.callTool("worx_session_query", { sessionId, query: "session.metadata" });
 	expect(result).toMatchObject({ ok: false, error: { code: "endpoint_stale" } });
 });
 
@@ -306,7 +306,7 @@ test("MCP treats an unreachable broker as a typed error (broker-down)", async ()
 	const brokerPath = path.join(broker.agentDir, "sdk", "broker.json");
 	const record = JSON.parse(fs.readFileSync(brokerPath, "utf8")) as Record<string, unknown>;
 	fs.writeFileSync(brokerPath, JSON.stringify({ ...record, url: "ws://127.0.0.1:1", port: 1 }));
-	const result = await createSdkMcpServer({ repo, agentDir: broker.agentDir }).callTool("gjc_session_control", {
+	const result = await createSdkMcpServer({ repo, agentDir: broker.agentDir }).callTool("worx_session_control", {
 		sessionId,
 		operation: "turn.prompt",
 		input: { text: "hello" },
@@ -326,7 +326,7 @@ test("MCP rejects every registry-prohibited operation without sending a frame or
 			(operation.adapterDispositions.mcp === "prohibited" || operation.adapterDispositions.mcp === "machine_only"),
 	);
 	for (const operation of blocked) {
-		const tool = operation.kind === "global" ? "gjc_session_global" : "gjc_session_control";
+		const tool = operation.kind === "global" ? "worx_session_global" : "worx_session_control";
 		const args =
 			operation.kind === "global"
 				? { operation: operation.sdkId, input: { token: "mcp-secret" } }
@@ -340,7 +340,7 @@ test("MCP rejects every registry-prohibited operation without sending a frame or
 
 test("MCP rejects secret-bearing config patches before endpoint discovery", async () => {
 	const { repo, sessionId, sent } = fixture();
-	const result = await createSdkMcpServer({ repo }).callTool("gjc_session_control", {
+	const result = await createSdkMcpServer({ repo }).callTool("worx_session_control", {
 		sessionId,
 		operation: "config.patch",
 		input: { patch: { apiKey: "mcp-secret" } },
@@ -359,13 +359,13 @@ test("MCP SDK control/query tools use discovered live session endpoints and unkn
 		connect: async (target, token) => (target === broker.url ? broker.client() : SdkClient.connect(target, token)),
 	});
 	await expect(
-		mcp.callTool("gjc_session_control", { sessionId, operation: "turn.prompt", input: { text: "hello" } }),
+		mcp.callTool("worx_session_control", { sessionId, operation: "turn.prompt", input: { text: "hello" } }),
 	).resolves.toMatchObject({ ok: true, echoed: { operation: "turn.prompt" } });
 	await expect(
-		mcp.callTool("gjc_session_query", { sessionId, query: "session.metadata", cursor: "next" }),
+		mcp.callTool("worx_session_query", { sessionId, query: "session.metadata", cursor: "next" }),
 	).resolves.toMatchObject({ ok: true, echoed: { query: "session.metadata", cursor: "next" } });
 	await expect(
-		mcp.callTool("gjc_session_query", { sessionId: "missing", query: "session.metadata" }),
+		mcp.callTool("worx_session_query", { sessionId: "missing", query: "session.metadata" }),
 	).resolves.toEqual({ ok: false, error: expect.objectContaining({ code: "not_found" }) });
 });
 test("MCP session list and resolution see entries beyond the first 100-session page", async () => {
@@ -383,7 +383,7 @@ test("MCP session list and resolution see entries beyond the first 100-session p
 		agentDir: broker.agentDir,
 		connect: async (target, token) => (target === broker.url ? broker.client() : SdkClient.connect(target, token)),
 	});
-	const listed = (await mcp.callTool("gjc_session_list", {})) as {
+	const listed = (await mcp.callTool("worx_session_list", {})) as {
 		ok: boolean;
 		sessions: Array<{ sessionId: string }>;
 	};
@@ -392,7 +392,7 @@ test("MCP session list and resolution see entries beyond the first 100-session p
 	expect(listed.sessions).toContainEqual({ sessionId: "sess-150" });
 	// withSession resolves the beyond-page row and reaches its live endpoint.
 	await expect(
-		mcp.callTool("gjc_session_control", {
+		mcp.callTool("worx_session_control", {
 			sessionId: "sess-150",
 			operation: "turn.prompt",
 			input: { text: "hello" },

@@ -70,12 +70,12 @@ function makeEntry(installPath: string, version = "1.0.0"): InstalledPluginEntry
 
 let tmpHome: string;
 /** ~/.worx/plugins/installed_plugins.json inside tmpHome */
-let gjcRegistryPath: string;
+let worxRegistryPath: string;
 
 beforeEach(() => {
 	tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-discovery-test-"));
-	gjcRegistryPath = path.join(tmpHome, WORX_CONFIG_DIR, "plugins", "installed_plugins.json");
-	fs.mkdirSync(path.dirname(gjcRegistryPath), { recursive: true });
+	worxRegistryPath = path.join(tmpHome, WORX_CONFIG_DIR, "plugins", "installed_plugins.json");
+	fs.mkdirSync(path.dirname(worxRegistryPath), { recursive: true });
 });
 
 afterEach(() => {
@@ -89,7 +89,7 @@ describe("GJC registry path contract", () => {
 		// This is the path that listAnthropic modelPluginRoots reads.
 		// Any change to this path must be reflected in helpers.ts.
 		const expected = path.join(tmpHome, ".worx", "plugins", "installed_plugins.json");
-		expect(gjcRegistryPath).toBe(expected);
+		expect(worxRegistryPath).toBe(expected);
 	});
 
 	it("GJC config dir name is .worx", () => {
@@ -104,9 +104,9 @@ describe("GJC registry path contract", () => {
 
 describe("GJC registry format compatibility with Claude parser", () => {
 	it("empty registry written by writeInstalledPluginsRegistry passes validator", async () => {
-		await writeInstalledPluginsRegistry(gjcRegistryPath, { version: 2, plugins: {} });
+		await writeInstalledPluginsRegistry(worxRegistryPath, { version: 2, plugins: {} });
 
-		const content = fs.readFileSync(gjcRegistryPath, "utf8");
+		const content = fs.readFileSync(worxRegistryPath, "utf8");
 		const parsed = validateClaudeRegistryFormat(content);
 		expect(parsed).not.toBeNull();
 		expect((parsed as Record<string, unknown>).version).toBe(2);
@@ -116,11 +116,11 @@ describe("GJC registry format compatibility with Claude parser", () => {
 		const pluginId = buildPluginId("quality-review", "example-marketplace");
 		const entry = makeEntry(path.join(tmpHome, "plugins", "cache", "example-marketplace--quality-review--1.0.0"));
 
-		let reg = await readInstalledPluginsRegistry(gjcRegistryPath);
+		let reg = await readInstalledPluginsRegistry(worxRegistryPath);
 		reg = addInstalledPlugin(reg, pluginId, entry);
-		await writeInstalledPluginsRegistry(gjcRegistryPath, reg);
+		await writeInstalledPluginsRegistry(worxRegistryPath, reg);
 
-		const content = fs.readFileSync(gjcRegistryPath, "utf8");
+		const content = fs.readFileSync(worxRegistryPath, "utf8");
 		const parsed = validateClaudeRegistryFormat(content);
 		expect(parsed).not.toBeNull();
 
@@ -153,11 +153,11 @@ describe("GJC registry round-trip", () => {
 		const id = buildPluginId("hello-plugin", "test-marketplace");
 		const entry = makeEntry("/tmp/fake-plugin-path");
 
-		let reg = await readInstalledPluginsRegistry(gjcRegistryPath);
+		let reg = await readInstalledPluginsRegistry(worxRegistryPath);
 		reg = addInstalledPlugin(reg, id, entry);
-		await writeInstalledPluginsRegistry(gjcRegistryPath, reg);
+		await writeInstalledPluginsRegistry(worxRegistryPath, reg);
 
-		const readBack = await readInstalledPluginsRegistry(gjcRegistryPath);
+		const readBack = await readInstalledPluginsRegistry(worxRegistryPath);
 		expect(readBack.plugins[id]).toBeDefined();
 		expect(readBack.plugins[id]?.[0]?.installPath).toBe(entry.installPath);
 		expect(readBack.plugins[id]?.[0]?.version).toBe("1.0.0");
@@ -170,12 +170,12 @@ describe("GJC registry round-trip", () => {
 		const entry1 = makeEntry("/tmp/fake-a", "1.0.0");
 		const entry2 = makeEntry("/tmp/fake-b", "2.0.0");
 
-		let reg = await readInstalledPluginsRegistry(gjcRegistryPath);
+		let reg = await readInstalledPluginsRegistry(worxRegistryPath);
 		reg = addInstalledPlugin(reg, id1, entry1);
 		reg = addInstalledPlugin(reg, id2, entry2);
-		await writeInstalledPluginsRegistry(gjcRegistryPath, reg);
+		await writeInstalledPluginsRegistry(worxRegistryPath, reg);
 
-		const readBack = await readInstalledPluginsRegistry(gjcRegistryPath);
+		const readBack = await readInstalledPluginsRegistry(worxRegistryPath);
 		expect(Object.keys(readBack.plugins)).toHaveLength(2);
 		expect(readBack.plugins[id1]?.[0]?.version).toBe("1.0.0");
 		expect(readBack.plugins[id2]?.[0]?.version).toBe("2.0.0");
@@ -191,11 +191,11 @@ describe("GJC registry round-trip", () => {
 			lastUpdated: "2025-01-15T10:30:00.000Z",
 		};
 
-		let reg = await readInstalledPluginsRegistry(gjcRegistryPath);
+		let reg = await readInstalledPluginsRegistry(worxRegistryPath);
 		reg = addInstalledPlugin(reg, id, entry);
-		await writeInstalledPluginsRegistry(gjcRegistryPath, reg);
+		await writeInstalledPluginsRegistry(worxRegistryPath, reg);
 
-		const readBack = await readInstalledPluginsRegistry(gjcRegistryPath);
+		const readBack = await readInstalledPluginsRegistry(worxRegistryPath);
 		expect(readBack.plugins[id]?.[0]?.scope).toBe("project");
 	});
 
@@ -219,11 +219,11 @@ describe("GJC precedence contract (registry structure)", () => {
 		// The replacement logic: roots.filter(r => r.id !== pluginId) keyed by id.
 		// GJC entries must have installPath so they can be added to roots[].
 		const id = buildPluginId("shared-plugin", "common-mkt");
-		const gjcEntry = makeEntry("/gjc/cached/path");
+		const worxEntry = makeEntry("/gjc/cached/path");
 
 		// GJC registry entry has installPath (required by listAnthropic modelPluginRoots)
-		expect(gjcEntry.installPath).toBeTruthy();
-		expect(typeof gjcEntry.installPath).toBe("string");
+		expect(worxEntry.installPath).toBeTruthy();
+		expect(typeof worxEntry.installPath).toBe("string");
 		// ID parses correctly with lastIndexOf("@")
 		const atIndex = id.lastIndexOf("@");
 		expect(atIndex).toBeGreaterThan(0);

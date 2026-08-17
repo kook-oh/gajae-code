@@ -6,7 +6,7 @@ import { WORKFLOW_STATE_VERSION } from "@bworx-io/worx-code/skill-state/workflow
 import {
 	ModeStateSchema,
 	RequiredOnWriteEnvelopeSchema,
-	readGjcJson,
+	readWorxJson,
 	SkillActiveStateSchema,
 	WorkflowStateEnvelopeSchema,
 } from "@bworx-io/worx-code/worx-runtime/state-schema";
@@ -111,29 +111,29 @@ describe("state-schema (A1)", () => {
 	});
 });
 
-describe("readGjcJson (A2)", () => {
+describe("readWorxJson (A2)", () => {
 	it("returns null for a missing file", async () => {
-		const result = await readGjcJson(path.join(os.tmpdir(), "gjc-nope-xyz.json"), WorkflowStateEnvelopeSchema);
+		const result = await readWorxJson(path.join(os.tmpdir(), "gjc-nope-xyz.json"), WorkflowStateEnvelopeSchema);
 		expect(result).toBeNull();
 	});
 
 	it("returns ok for valid content and preserves raw", async () => {
 		const file = await tempFile("ok.json", JSON.stringify({ skill: "ralplan", version: 1, extra: "keep" }));
-		const result = await readGjcJson(file, WorkflowStateEnvelopeSchema);
+		const result = await readWorxJson(file, WorkflowStateEnvelopeSchema);
 		expect(result?.ok).toBe(true);
 		if (result?.ok) expect((result.value as Record<string, unknown>).extra).toBe("keep");
 	});
 
 	it("fails open (ok:false) on invalid JSON without throwing", async () => {
 		const file = await tempFile("bad.json", "{not json");
-		const result = await readGjcJson(file, WorkflowStateEnvelopeSchema);
+		const result = await readWorxJson(file, WorkflowStateEnvelopeSchema);
 		expect(result?.ok).toBe(false);
 		if (result && !result.ok) expect(result.error).toContain("invalid JSON");
 	});
 
 	it("fails open (ok:false) on schema-invalid content, attaching raw", async () => {
 		const file = await tempFile("schema-bad.json", JSON.stringify({ version: "not-a-number" }));
-		const result = await readGjcJson(file, WorkflowStateEnvelopeSchema);
+		const result = await readWorxJson(file, WorkflowStateEnvelopeSchema);
 		expect(result?.ok).toBe(false);
 		if (result && !result.ok) expect(result.raw).toEqual({ version: "not-a-number" });
 	});

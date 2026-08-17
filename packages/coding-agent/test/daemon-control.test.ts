@@ -15,7 +15,7 @@ import {
 	ownershipMismatchRecovery,
 	resolveDaemonAction,
 } from "../src/daemon/operator-contract";
-import { resolveGjcRuntimeSpawnInfo } from "../src/daemon/runtime";
+import { resolveWorxRuntimeSpawnInfo } from "../src/daemon/runtime";
 import {
 	isProcessIncarnation,
 	parseDarwinProcessIncarnation,
@@ -178,14 +178,14 @@ async function captureStdout(fn: () => Promise<void>): Promise<string> {
 
 describe("daemon runtime detection", () => {
 	test("source runtime picks up edits; compiled warns", () => {
-		const source = resolveGjcRuntimeSpawnInfo("/usr/local/bin/node");
+		const source = resolveWorxRuntimeSpawnInfo("/usr/local/bin/node");
 		expect(source.mode).toBe("source");
 		expect(source.reloadPicksUpSourceEdits).toBe(true);
 		expect(source.warning).toBeUndefined();
 		expect(source.argsPrefix).toHaveLength(1);
 		expect(source.argsPrefix[0]).toEndWith(path.join("packages", "coding-agent", "bin", "gjc.js"));
 
-		const compiled = resolveGjcRuntimeSpawnInfo("/opt/gjc/gjc");
+		const compiled = resolveWorxRuntimeSpawnInfo("/opt/gjc/gjc");
 		expect(compiled.mode).toBe("compiled");
 		expect(compiled.reloadPicksUpSourceEdits).toBe(false);
 		expect(compiled.warning).toContain("Rebuild");

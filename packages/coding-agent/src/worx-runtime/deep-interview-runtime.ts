@@ -21,7 +21,7 @@ import {
 } from "./deep-interview-state";
 import { runNativeRalplanCommand } from "./ralplan-runtime";
 import { modeStatePath, sessionSpecsDir } from "./session-layout";
-import { resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
+import { resolveWorxSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
 import { runNativeStateCommand } from "./state-runtime";
 import { appendJsonl, readExistingStateForMutation, writeArtifact, writeWorkflowEnvelopeAtomic } from "./state-writer";
 import { assertSafePathComponent, CommandError, flagValue, hasFlag } from "./workflow-cli-common";
@@ -452,11 +452,11 @@ async function resolveSpecWriteArgs(args: readonly string[], cwd: string): Promi
 		throw new DeepInterviewCommandError(2, "--spec is required for deep-interview --write");
 	}
 
-	const session = resolveGjcSessionForWrite(cwd, {
+	const session = resolveWorxSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		envSessionId: process.env.WORX_SESSION_ID,
 	});
-	const sessionId = session.gjcSessionId;
+	const sessionId = session.worxSessionId;
 	assertSafePathComponent(sessionId, "session-id");
 
 	const rawHandoff = flagValue(args, "--handoff")?.trim() || undefined;
@@ -503,11 +503,11 @@ async function resolveSpecWriteArgs(args: readonly string[], cwd: string): Promi
 }
 
 async function resolveDeepInterviewArgs(args: readonly string[], cwd: string): Promise<ResolvedDeepInterviewArgs> {
-	const session = resolveGjcSessionForWrite(cwd, {
+	const session = resolveWorxSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		envSessionId: process.env.WORX_SESSION_ID,
 	});
-	const sessionId = session.gjcSessionId;
+	const sessionId = session.worxSessionId;
 	assertSafePathComponent(sessionId, "session-id");
 
 	const explicitResolutions = (["quick", "standard", "deep"] as const).filter(name => hasFlag(args, `--${name}`));

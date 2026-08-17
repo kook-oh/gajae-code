@@ -1,7 +1,7 @@
-import { GjcTeamWorkerHeartbeatReporter } from "../../src/worx-runtime/team-worker-heartbeat";
+import { WorxTeamWorkerHeartbeatReporter } from "../../src/worx-runtime/team-worker-heartbeat";
 
 if (process.env.TEST_HEARTBEAT_MODE === "publish") {
-	const reporter = GjcTeamWorkerHeartbeatReporter.forProcess(() => process.env.WORK_CWD ?? process.cwd());
+	const reporter = WorxTeamWorkerHeartbeatReporter.forProcess(() => process.env.WORK_CWD ?? process.cwd());
 	if (!reporter) throw new Error("no reporter resolved from worker env");
 	reporter.start();
 }

@@ -1,45 +1,45 @@
 import type {
-	GjcBundleSummary,
-	GjcBundleSurfaceSummary,
-	GjcRuntimeSnapshotState,
-	GjcUpdatePreview,
+	WorxBundleSummary,
+	WorxBundleSurfaceSummary,
+	WorxRuntimeSnapshotState,
+	WorxUpdatePreview,
 } from "../../src/extensibility/worx-plugins/types";
 
-export interface GjcBundleSettingsFixture {
-	bundles: GjcBundleSummary[];
-	updatePreview: GjcUpdatePreview | null;
-	runtime: GjcRuntimeSnapshotState;
+export interface WorxBundleSettingsFixture {
+	bundles: WorxBundleSummary[];
+	updatePreview: WorxUpdatePreview | null;
+	runtime: WorxRuntimeSnapshotState;
 }
 
-interface GjcBundleSettingsState {
+interface WorxBundleSettingsState {
 	id: string;
 	description: string;
-	fixture: GjcBundleSettingsFixture;
+	fixture: WorxBundleSettingsFixture;
 }
 
-interface GjcBundleSettingsViewport {
+interface WorxBundleSettingsViewport {
 	id: string;
 	cols: number;
 	rows: number;
 }
 
-interface GjcBundleSettingsVariant {
+interface WorxBundleSettingsVariant {
 	id: string;
 	stateId: string;
 	viewportId: string;
 	renderMode: "ascii-no-color" | "unicode-color";
 }
 
-interface GjcBundleSettingsEntry {
+interface WorxBundleSettingsEntry {
 	entryId: string;
 	stateId: string;
 	viewportId: string;
 	renderMode: "ascii-no-color" | "unicode-color";
 }
 
-const EMPTY_RUNTIME: GjcRuntimeSnapshotState = { status: "unavailable" };
+const EMPTY_RUNTIME: WorxRuntimeSnapshotState = { status: "unavailable" };
 
-function surface(extensionId: string, name: string, enabled = true, quarantined = false): GjcBundleSurfaceSummary {
+function surface(extensionId: string, name: string, enabled = true, quarantined = false): WorxBundleSurfaceSummary {
 	return {
 		extensionId,
 		kind: "tool",
@@ -57,10 +57,10 @@ function bundle(
 		description?: string;
 		enabled?: boolean;
 		quarantined?: boolean;
-		surfaces?: GjcBundleSurfaceSummary[];
+		surfaces?: WorxBundleSurfaceSummary[];
 		updatable?: boolean;
 	} = {},
-): GjcBundleSummary {
+): WorxBundleSummary {
 	return {
 		identity: { kind: "gjc-bundle", scope, name },
 		version: "1.2.0",
@@ -83,7 +83,7 @@ function bundle(
 }
 
 const STANDARD_BUNDLE = bundle();
-const UPDATE_PREVIEW: GjcUpdatePreview = {
+const UPDATE_PREVIEW: WorxUpdatePreview = {
 	identity: STANDARD_BUNDLE.identity,
 	current: STANDARD_BUNDLE,
 	candidateVersion: "1.3.0",
@@ -100,7 +100,7 @@ const UPDATE_PREVIEW: GjcUpdatePreview = {
 		reviewedAt: "2026-07-27T00:00:00.000Z",
 	},
 };
-const CURRENT_RUNTIME: GjcRuntimeSnapshotState = {
+const CURRENT_RUNTIME: WorxRuntimeSnapshotState = {
 	status: "current",
 	snapshot: {
 		generation: 7,
@@ -116,10 +116,10 @@ const CURRENT_RUNTIME: GjcRuntimeSnapshotState = {
 };
 
 function fixture(
-	bundles: GjcBundleSummary[] = [STANDARD_BUNDLE],
-	updatePreview: GjcUpdatePreview | null = null,
-	runtime: GjcRuntimeSnapshotState = EMPTY_RUNTIME,
-): GjcBundleSettingsFixture {
+	bundles: WorxBundleSummary[] = [STANDARD_BUNDLE],
+	updatePreview: WorxUpdatePreview | null = null,
+	runtime: WorxRuntimeSnapshotState = EMPTY_RUNTIME,
+): WorxBundleSettingsFixture {
 	return { bundles, updatePreview, runtime };
 }
 
@@ -220,13 +220,13 @@ export const WORX_BUNDLE_SETTINGS_STATES = Object.freeze([
 		description: "An invalidated runtime snapshot remains advisory.",
 		fixture: fixture([STANDARD_BUNDLE], null, { status: "current", snapshot: { generation: 8, findings: [] } }),
 	},
-] satisfies GjcBundleSettingsState[]);
+] satisfies WorxBundleSettingsState[]);
 
 export const WORX_BUNDLE_SETTINGS_VIEWPORTS = Object.freeze([
 	{ id: "80x24", cols: 80, rows: 24 },
 	{ id: "120x36", cols: 120, rows: 36 },
 	{ id: "160x48", cols: 160, rows: 48 },
-] satisfies GjcBundleSettingsViewport[]);
+] satisfies WorxBundleSettingsViewport[]);
 
 export const WORX_BUNDLE_SETTINGS_VARIANTS = Object.freeze([
 	{ id: "error-ascii", stateId: "error", viewportId: "80x24", renderMode: "ascii-no-color" },
@@ -237,7 +237,7 @@ export const WORX_BUNDLE_SETTINGS_VARIANTS = Object.freeze([
 	{ id: "update-confirm-ascii", stateId: "update-confirm", viewportId: "80x24", renderMode: "ascii-no-color" },
 	{ id: "cjk-narrow", stateId: "cjk", viewportId: "48x36", renderMode: "unicode-color" },
 	{ id: "surfaces-narrow", stateId: "many-surfaces-scroll", viewportId: "48x36", renderMode: "unicode-color" },
-] satisfies GjcBundleSettingsVariant[]);
+] satisfies WorxBundleSettingsVariant[]);
 
 export const WORX_BUNDLE_SETTINGS_ENTRIES = Object.freeze([
 	...WORX_BUNDLE_SETTINGS_STATES.flatMap(state =>
@@ -254,4 +254,4 @@ export const WORX_BUNDLE_SETTINGS_ENTRIES = Object.freeze([
 		viewportId: variant.viewportId,
 		renderMode: variant.renderMode,
 	})),
-] satisfies GjcBundleSettingsEntry[]);
+] satisfies WorxBundleSettingsEntry[]);

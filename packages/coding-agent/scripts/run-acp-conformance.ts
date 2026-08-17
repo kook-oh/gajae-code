@@ -150,7 +150,7 @@ export async function runAcpConformance(options: RunAcpConformanceOptions): Prom
 			await (options.writeReport ?? writeReport)(options.reportPath, {
 				command,
 				cwd: options.cwd ?? process.cwd(),
-				gjc: gjcIdentity(),
+				gjc: worxIdentity(),
 				acpx: { version: metadata.version, gitHead: metadata.gitHead as string },
 				profile,
 				agentCommand,
@@ -164,7 +164,7 @@ export async function runAcpConformance(options: RunAcpConformanceOptions): Prom
 	const report: ConformanceReport = {
 		command,
 		cwd: options.cwd ?? process.cwd(),
-		gjc: gjcIdentity(),
+		gjc: worxIdentity(),
 		acpx: { version: metadata.version, gitHead: metadata.gitHead! },
 		profile,
 		agentCommand,
@@ -175,7 +175,7 @@ export async function runAcpConformance(options: RunAcpConformanceOptions): Prom
 	return report;
 }
 
-function gjcIdentity(): { commit: string; dirty: boolean } {
+function worxIdentity(): { commit: string; dirty: boolean } {
 	try {
 		const commit = Bun.spawnSync(["git", "rev-parse", "HEAD"]).stdout.toString().trim();
 		const dirty = Bun.spawnSync(["git", "status", "--porcelain"]).stdout.toString().trim().length > 0;

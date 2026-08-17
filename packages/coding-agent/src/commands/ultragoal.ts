@@ -1,7 +1,7 @@
 import { Command } from "@bworx-io/worx-utils/cli";
 import {
 	isUltragoalCreateGoalsInvocation,
-	readUltragoalGjcObjective,
+	readUltragoalWorxObjective,
 	WORX_SESSION_FILE_ENV,
 	WORX_SESSION_ID_ENV,
 	writeCurrentSessionGoalModeState,
@@ -26,7 +26,7 @@ export default class Ultragoal extends Command {
 		if (isReviewStart && !result.createdReviewPlan && (result.reviewBlockerGoalIds?.length ?? 0) === 0) return;
 
 		const cwd = process.cwd();
-		const { objective, goalsPath, provenance } = await readUltragoalGjcObjective(cwd);
+		const { objective, goalsPath, provenance } = await readUltragoalWorxObjective(cwd);
 
 		await writeCurrentSessionGoalModeState({
 			sessionFile: process.env[WORX_SESSION_FILE_ENV],

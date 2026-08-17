@@ -16,21 +16,21 @@ import {
 	MarketplaceManager,
 } from "../extensibility/plugins/marketplace/index.js";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	bundleIdentity,
-	type GjcBundleIdentity,
-	type GjcBundleSummary,
-	GjcPluginLoadError,
-	getGjcBundle,
-	getGjcPluginMigrationStatuses,
-	installGjcBundle,
-	isGjcPluginBundleSource,
-	isGjcPluginSourceShape,
-	listGjcBundles,
+	getWorxBundle,
+	getWorxPluginMigrationStatuses,
+	installWorxBundle,
+	isWorxPluginBundleSource,
+	isWorxPluginSourceShape,
+	listWorxBundles,
 	migrationDoctorCheckMessage,
-	previewGjcBundleUpdate,
-	runGjcPluginMigrationPreflight,
-	uninstallGjcBundle,
+	previewWorxBundleUpdate,
+	runWorxPluginMigrationPreflight,
+	uninstallWorxBundle,
+	type WorxBundleIdentity,
+	type WorxBundleSummary,
+	WorxPluginLoadError,
 } from "../extensibility/worx-plugins";
 import { theme } from "../modes/theme/theme";
 
@@ -338,7 +338,7 @@ async function handleDiscover(args: string[], _flags: PluginCommandArgs["flags"]
  * preview. Requires exactly one of `--user` / `--project` because (scope, name)
  * is the canonical target.
  */
-async function handleGjcUpgrade(name: string, flags: PluginCommandArgs["flags"]): Promise<void> {
+async function handleWorxUpgrade(name: string, flags: PluginCommandArgs["flags"]): Promise<void> {
 	if (flags.user === flags.project) {
 		console.error(chalk.red(`GJC bundle upgrade requires exactly one of --user or --project for "${name}".`));
 		process.exit(1);
@@ -359,23 +359,23 @@ async function handleGjcUpgrade(name: string, flags: PluginCommandArgs["flags"])
 	// Source re-resolution can throw with a cause carrying the raw locator, so
 	// the whole flow reports a stable code instead of the underlying error.
 	try {
-		await runGjcUpgrade(ctx, identity, name, scope, flags, emitError);
+		await runWorxUpgrade(ctx, identity, name, scope, flags, emitError);
 	} catch (err) {
-		const reason = err instanceof GjcPluginLoadError ? err.code : "upgrade_failed";
+		const reason = err instanceof WorxPluginLoadError ? err.code : "upgrade_failed";
 		console.error(chalk.red(`${theme.status.error} Failed to upgrade GJC bundle ${name} (${reason})`));
 		process.exit(1);
 	}
 }
 
-async function runGjcUpgrade(
+async function runWorxUpgrade(
 	ctx: { cwd: string },
-	identity: GjcBundleIdentity,
+	identity: WorxBundleIdentity,
 	name: string,
 	scope: "user" | "project",
 	flags: PluginCommandArgs["flags"],
 	emitError: (error: { code: string; message: string; recovery?: string }) => never,
 ): Promise<void> {
-	const preview = await previewGjcBundleUpdate(ctx, identity);
+	const preview = await previewWorxBundleUpdate(ctx, identity);
 	if (!preview.ok) emitError(preview.error);
 	else if (flags.dryRun || !preview.value.changed) {
 		const { changed, candidateVersion, addedSurfaceIds, removedSurfaceIds } = preview.value;
@@ -404,7 +404,7 @@ async function runGjcUpgrade(
 			if (removedSurfaceIds.length > 0) console.log(chalk.dim(`  - ${removedSurfaceIds.join(", ")}`));
 		}
 	} else {
-		const applied = await applyGjcBundleUpdate(ctx, preview.value.token);
+		const applied = await applyWorxBundleUpdate(ctx, preview.value.token);
 		if (!applied.ok) emitError(applied.error);
 		else if (flags.json) {
 			console.log(
@@ -437,9 +437,9 @@ async function handleUpgrade(args: string[], flags: PluginCommandArgs["flags"]):
 	// through the marketplace manager.
 	if (pluginId && (flags.user || flags.project)) {
 		const scope: "user" | "project" = flags.user ? "user" : "project";
-		const existing = await getGjcBundle({ cwd: getProjectDir() }, bundleIdentity(scope, pluginId));
+		const existing = await getWorxBundle({ cwd: getProjectDir() }, bundleIdentity(scope, pluginId));
 		if (existing.ok) {
-			await handleGjcUpgrade(pluginId, flags);
+			await handleWorxUpgrade(pluginId, flags);
 			return;
 		}
 	}
@@ -484,30 +484,30 @@ async function handleUpgrade(args: string[], flags: PluginCommandArgs["flags"]):
  * home path, so neither is ever printed.
  */
 function describeInstallFailure(error: unknown): string {
-	return error instanceof GjcPluginLoadError ? error.code : "install_failed";
+	return error instanceof WorxPluginLoadError ? error.code : "install_failed";
 }
 
-function isGjcRegistryShapeFailure(error: unknown): boolean {
+function isWorxRegistryShapeFailure(error: unknown): boolean {
 	return (
-		(error instanceof GjcPluginLoadError && error.code === "invalid_manifest") ||
+		(error instanceof WorxPluginLoadError && error.code === "invalid_manifest") ||
 		(error instanceof TypeError &&
 			/(?:not iterable|localeCompare|reading ['"](?:scope|name|pluginRoot|plugins|map))/.test(error.message))
 	);
 }
 
-async function findGjcBundlesForUninstall(
+async function findWorxBundlesForUninstall(
 	cwd: string,
 	name: string,
 	scope: "user" | "project" | undefined,
-): Promise<GjcBundleSummary[]> {
+): Promise<WorxBundleSummary[]> {
 	const scopes = scope ? [scope] : (["user", "project"] as const);
-	const matches: GjcBundleSummary[] = [];
+	const matches: WorxBundleSummary[] = [];
 	for (const candidateScope of scopes) {
 		try {
-			const result = await getGjcBundle({ cwd }, bundleIdentity(candidateScope, name));
+			const result = await getWorxBundle({ cwd }, bundleIdentity(candidateScope, name));
 			if (result.ok) matches.push(result.value);
 		} catch (error) {
-			if (!isGjcRegistryShapeFailure(error)) throw error;
+			if (!isWorxRegistryShapeFailure(error)) throw error;
 		}
 	}
 	return matches;
@@ -541,11 +541,11 @@ async function handleInstall(
 		// a git locator, or a tarball. npm and marketplace specs are never any of
 		// those, so shape alone separates the two worlds without resolving.
 		//
-		// Shape is checked BEFORE `isGjcPluginBundleSource`, which resolves the
+		// Shape is checked BEFORE `isWorxPluginBundleSource`, which resolves the
 		// source: a deleted or unreachable GJC source fails that probe and would
 		// otherwise fall through to npm, losing the create-only refusal the
 		// lifecycle owes for an already-installed target.
-		if (isGjcPluginSourceShape(spec) || (await isGjcPluginBundleSource(spec))) {
+		if (isWorxPluginSourceShape(spec) || (await isWorxPluginBundleSource(spec))) {
 			if (flags.user === flags.project) {
 				console.error(
 					// The spec can carry credentials or an absolute home path, so name
@@ -556,7 +556,7 @@ async function handleInstall(
 			}
 			const scope: "user" | "project" = flags.user ? "user" : "project";
 			try {
-				const res = await installGjcBundle({ cwd: getProjectDir() }, scope, spec);
+				const res = await installWorxBundle({ cwd: getProjectDir() }, scope, spec);
 				if (!res.ok) {
 					const doc = {
 						error: { code: res.error.code, message: res.error.message, recovery: res.error.recovery },
@@ -581,7 +581,7 @@ async function handleInstall(
 			} catch (err) {
 				// Never echo the raw spec or the underlying cause: either can carry
 				// credentials, a query string, or an absolute home path.
-				const reason = err instanceof GjcPluginLoadError ? err.code : "install_failed";
+				const reason = err instanceof WorxPluginLoadError ? err.code : "install_failed";
 				console.error(chalk.red(`${theme.status.error} Failed to install GJC bundle (${reason})`));
 				process.exit(1);
 			}
@@ -672,14 +672,14 @@ async function handleUninstall(
 	const installedPlugins = new Set((await mktMgr.listInstalledPlugins()).map(p => p.id));
 
 	for (const name of packages) {
-		const matches = await findGjcBundlesForUninstall(cwd, name, scope);
+		const matches = await findWorxBundlesForUninstall(cwd, name, scope);
 		if (matches.length > 0) {
 			if (matches.length > 1) {
 				console.error(chalk.red(`GJC bundle "${name}" is installed in both scopes; specify --user or --project.`));
 				process.exit(1);
 			}
 			const identity = matches[0].identity;
-			const result = await uninstallGjcBundle({ cwd }, identity);
+			const result = await uninstallWorxBundle({ cwd }, identity);
 			if (!result.ok) {
 				console.error(chalk.red(`${theme.status.error} ${result.error.message}`));
 				if (result.error.recovery) console.error(chalk.dim(`  Try: ${result.error.recovery}`));
@@ -723,14 +723,14 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 	const mktMgr = await makeMarketplaceManager();
 	const mktPlugins = await mktMgr.listInstalledPlugins();
 	const cwd = getProjectDir();
-	const gjcBundles: GjcBundleSummary[] = await listGjcBundles({ cwd });
+	const worxBundles: WorxBundleSummary[] = await listWorxBundles({ cwd });
 
 	if (flags.json) {
-		console.log(JSON.stringify({ npm: npmPlugins, marketplace: mktPlugins, gjc: gjcBundles }, null, 2));
+		console.log(JSON.stringify({ npm: npmPlugins, marketplace: mktPlugins, gjc: worxBundles }, null, 2));
 		return;
 	}
 
-	if (npmPlugins.length === 0 && mktPlugins.length === 0 && gjcBundles.length === 0) {
+	if (npmPlugins.length === 0 && mktPlugins.length === 0 && worxBundles.length === 0) {
 		console.log(chalk.dim("No plugins installed"));
 		console.log(chalk.dim(`\nInstall plugins with: ${APP_NAME} plugin install <package>`));
 		return;
@@ -773,10 +773,10 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 		}
 	}
 
-	if (gjcBundles.length > 0) {
+	if (worxBundles.length > 0) {
 		if (npmPlugins.length > 0 || mktPlugins.length > 0) console.log();
 		console.log(chalk.bold("GJC Plugin Bundles:\n"));
-		for (const plugin of gjcBundles) {
+		for (const plugin of worxBundles) {
 			const status = plugin.enabled ? chalk.green(theme.status.enabled) : chalk.dim(theme.status.disabled);
 			const scopeLabel = chalk.dim(` (${plugin.identity.scope})`);
 			const disabledCount = plugin.surfaces.filter(s => !s.enabled).length;
@@ -821,8 +821,8 @@ async function handleDoctor(
 	const checks = await manager.doctor({ fix: flags.fix });
 	try {
 		const statuses = flags.migratePlugins
-			? await runGjcPluginMigrationPreflight(getProjectDir())
-			: await getGjcPluginMigrationStatuses(getProjectDir(), { migrate: false });
+			? await runWorxPluginMigrationPreflight(getProjectDir())
+			: await getWorxPluginMigrationStatuses(getProjectDir(), { migrate: false });
 		for (const status of statuses) {
 			checks.push({
 				name: `gjc-plugin:${status.scope}:${status.plugin}:migration`,

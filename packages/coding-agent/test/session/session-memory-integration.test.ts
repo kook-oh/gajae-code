@@ -2536,7 +2536,7 @@ it("matches eager replay-metadata sanitation on bounded first open and exact reo
 	expect(JSON.stringify(coldExportEntries)).not.toContain("stale-signature");
 	expect(JSON.stringify(coldExportEntries)).not.toContain("openaiResponsesHistory");
 	expect(JSON.stringify(coldExportEntries)).not.toContain(missingImageRef);
-	expect(JSON.stringify(coldExportEntries)).not.toContain("__gjcResidentBlob");
+	expect(JSON.stringify(coldExportEntries)).not.toContain("__worxResidentBlob");
 	expect(JSON.stringify(coldExportEntries)).toContain("[Session resident imageData blob missing:");
 	expect(enabled.buildSessionContext()).toEqual(expected);
 	expect(JSON.stringify(enabled.buildSessionContext())).not.toContain("stale-signature");

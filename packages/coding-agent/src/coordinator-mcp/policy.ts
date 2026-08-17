@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { coordinatorMcpStateRoot, gjcRoot } from "../worx-runtime/session-layout";
+import { coordinatorMcpStateRoot, worxRoot } from "../worx-runtime/session-layout";
 import {
 	DEFAULT_SESSION_IDLE_TTL_MS,
 	DEFAULT_SESSION_SWEEP_INTERVAL_MS,
@@ -124,16 +124,16 @@ function cleanScope(value: string | undefined): string | null {
 	return trimmed.replace(/[^a-zA-Z0-9_.-]+/g, "-").slice(0, 100) || null;
 }
 
-function defaultCoordinatorMcpStateRoot(cwd: string, gjcSessionId?: string): string {
-	return gjcSessionId
-		? coordinatorMcpStateRoot(cwd, gjcSessionId)
-		: path.join(gjcRoot(cwd), "state", "coordinator-mcp");
+function defaultCoordinatorMcpStateRoot(cwd: string, worxSessionId?: string): string {
+	return worxSessionId
+		? coordinatorMcpStateRoot(cwd, worxSessionId)
+		: path.join(worxRoot(cwd), "state", "coordinator-mcp");
 }
 
 export function buildCoordinatorMcpConfig(env: NodeJS.ProcessEnv = process.env): CoordinatorMcpConfig {
 	const stateRootOverride = env.WORX_COORDINATOR_MCP_STATE_ROOT?.trim();
-	const gjcSessionId = env.WORX_SESSION_ID?.trim();
-	const stateRoot = stateRootOverride || defaultCoordinatorMcpStateRoot(process.cwd(), gjcSessionId);
+	const worxSessionId = env.WORX_SESSION_ID?.trim();
+	const stateRoot = stateRootOverride || defaultCoordinatorMcpStateRoot(process.cwd(), worxSessionId);
 	return {
 		allowedRoots: parseRootList(env.WORX_COORDINATOR_MCP_WORKDIR_ROOTS).map(root => path.resolve(root)),
 		mutationClasses: parseMutationClasses(

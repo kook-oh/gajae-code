@@ -265,7 +265,7 @@ describe("resident cache prune retention, lifecycle cleanup, and JSONL parity", 
 		expect(JSON.stringify(sm.getEntries())).toContain(sentinel);
 		expect(JSON.stringify(sm.buildSessionContext())).toContain(sentinel);
 		expect(await readPersistedJsonl(movedFile)).toContain(sentinel.slice(0, 100));
-		expect(await readPersistedJsonl(movedFile)).not.toContain("__gjcResidentBlob");
+		expect(await readPersistedJsonl(movedFile)).not.toContain("__worxResidentBlob");
 		expect(await readPersistedJsonl(movedFile)).not.toContain("blob:sha256:");
 		const movedCacheDir = residentTextCacheDir(sm);
 		expect(movedCacheDir).not.toBe(cacheDir);
@@ -291,7 +291,7 @@ describe("resident cache prune retention, lifecycle cleanup, and JSONL parity", 
 		await sm.rewriteEntries();
 		const rewritten = await readPersistedJsonl(sessionFile);
 		expect(rewritten).toContain(sentinel.slice(0, 100));
-		expect(rewritten).not.toContain("__gjcResidentBlob");
+		expect(rewritten).not.toContain("__worxResidentBlob");
 		expect(rewritten).not.toContain("blob:sha256:");
 		await sm.close();
 	});
@@ -345,7 +345,7 @@ describe("resident cache prune retention, lifecycle cleanup, and JSONL parity", 
 		await sm.close();
 		const jsonl = await readPersistedJsonl(sessionFile);
 		expect(jsonl).toContain("[Session persistence truncated large content]");
-		expect(jsonl).not.toContain("__gjcResidentBlob");
+		expect(jsonl).not.toContain("__worxResidentBlob");
 		expect(jsonl).not.toContain("blob:sha256:");
 		expect(jsonl).toContain(sentinel.slice(0, 10_000));
 		expect(jsonl).not.toContain(sentinel.slice(0, 510_000));

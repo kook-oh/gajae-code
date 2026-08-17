@@ -10,9 +10,9 @@ import {
 } from "@bworx-io/worx-code/worx-runtime/tmux-owner-isolation";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
-	bindGjcTmuxProviderAuthority,
-	persistGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxProviderContext,
+	bindWorxTmuxProviderAuthority,
+	persistWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxProviderContext,
 } from "@bworx-io/worx-code/worx-runtime/tmux-provider-context";
 import { isEnoent } from "@bworx-io/worx-utils";
 import { getWorktreesDir } from "@bworx-io/worx-utils/dirs";
@@ -24,46 +24,46 @@ import {
 } from "../../src/worx-runtime/psmux-detect";
 import { sessionReportsDir, teamStateRoot } from "../../src/worx-runtime/session-layout";
 import {
-	__setGjcTeamRuntimeTestSeamsForTests,
+	__setWorxTeamRuntimeTestSeamsForTests,
 	buildWorkerCommand,
-	claimGjcTeamTask,
-	classifyGjcTeamCheckpointFiles,
+	claimWorxTeamTask,
 	classifyWorkerCheckpointStatus,
-	executeGjcTeamApiOperation,
-	type GjcTeamConfig,
-	type GjcTeamWorker,
-	listGjcTeams,
-	monitorGjcTeam,
-	monitorGjcTeamSnapshot,
+	classifyWorxTeamCheckpointFiles,
+	executeWorxTeamApiOperation,
+	listWorxTeams,
+	monitorWorxTeam,
+	monitorWorxTeamSnapshot,
 	parseTeamLaunchArgs,
-	probeGjcTeamAvailability,
+	probeWorxTeamAvailability,
 	pruneTeamWorkerGcRecord,
-	readGjcTeamSnapshot,
-	readGjcTeamTask,
-	recoverGjcTeamStaleClaims,
-	releaseGjcTeamTaskClaim,
-	requestGjcWorkerIntegrationAttempt,
-	resolveGjcTeamWorkerCli,
-	resolveGjcTeamWorkerCliPlan,
-	resolveGjcWorkerCommand,
+	readWorxTeamSnapshot,
+	readWorxTeamTask,
+	recoverWorxTeamStaleClaims,
+	releaseWorxTeamTaskClaim,
+	requestWorxWorkerIntegrationAttempt,
 	resolveWorkerWorktreePath,
-	sendGjcTeamMessage,
-	shutdownGjcTeam,
-	startGjcTeam,
-	transitionGjcTeamTask,
-	translateGjcWorkerLaunchArgsForCli,
-	UnknownGjcTeamApiOperationError,
+	resolveWorxTeamWorkerCli,
+	resolveWorxTeamWorkerCliPlan,
+	resolveWorxWorkerCommand,
+	sendWorxTeamMessage,
+	shutdownWorxTeam,
+	startWorxTeam,
+	transitionWorxTeamTask,
+	translateWorxWorkerLaunchArgsForCli,
+	UnknownWorxTeamApiOperationError,
+	type WorxTeamConfig,
+	type WorxTeamWorker,
 } from "../../src/worx-runtime/team-runtime";
 import {
-	type GjcTeamTaskMutationCapability,
-	GjcTeamTaskStore,
-	withGjcTeamTaskMutation,
+	type WorxTeamTaskMutationCapability,
+	WorxTeamTaskStore,
+	withWorxTeamTaskMutation,
 } from "../../src/worx-runtime/team-store";
 import { workerMemoryGuardLedgerPath } from "../../src/worx-runtime/team-worker-memory-guard";
 import {
-	gjcContinuationReservationDigest,
-	isValidGjcContinuationAck,
-	isValidGjcContinuationOutcome,
+	isValidWorxContinuationAck,
+	isValidWorxContinuationOutcome,
+	worxContinuationReservationDigest,
 } from "../../src/worx-runtime/team-workers";
 
 const TEAM_CLI = path.resolve(import.meta.dir, "../../src/cli.ts");
@@ -88,7 +88,7 @@ async function runTeamApiCli(
 const TEST_SESSION_ID = "test-session";
 let cleanupRoot: string | undefined;
 const cleanupRoots = new Set<string>();
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 let fakeTmuxRunnerPath: string | undefined;
 let fakeTmuxRunnerRoot: string | undefined;
 
@@ -97,7 +97,7 @@ const teamReportPath = (root: string, fileName: string) =>
 	path.join(sessionReportsDir(root, TEST_SESSION_ID), "team-commit-hygiene", fileName);
 
 beforeAll(async () => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 	fakeTmuxRunnerRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-fake-tmux-runner-"));
 	const sourcePath = path.join(fakeTmuxRunnerRoot, "fake-tmux.ts");
@@ -181,7 +181,7 @@ if (command === "-V" || command === "--version") {
 	const name = args.at(-1);
 	const values = await optionValues();
 	const value = name ? values[optionKey(targetAfter("-t"), name)] : undefined;
-	if (name === "@gjc-profile" && config.gjcProfile !== false) console.log("1");
+	if (name === "@gjc-profile" && config.worxProfile !== false) console.log("1");
 	else if (value !== undefined) console.log(value);
 	else if (name === "@gjc-profile") {
 		try {
@@ -232,10 +232,10 @@ if (command === "-V" || command === "--version") {
 });
 
 afterAll(async () => {
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 	if (fakeTmuxRunnerRoot) await fs.rm(fakeTmuxRunnerRoot, { recursive: true, force: true });
 });
@@ -271,7 +271,7 @@ async function createFakeTmuxBin(
 		failDisplay?: boolean;
 		failSplit?: boolean;
 		failLeaderPaneSplit?: boolean;
-		gjcProfile?: boolean;
+		worxProfile?: boolean;
 		untaggableProfile?: boolean;
 		commandName?: string;
 		versionOutput?: string;
@@ -373,8 +373,8 @@ async function waitForFileText(
 	}
 }
 
-async function readTeamConfig(stateDir: string): Promise<GjcTeamConfig> {
-	return Bun.file(path.join(stateDir, "config.json")).json() as Promise<GjcTeamConfig>;
+async function readTeamConfig(stateDir: string): Promise<WorxTeamConfig> {
+	return Bun.file(path.join(stateDir, "config.json")).json() as Promise<WorxTeamConfig>;
 }
 
 async function commitFile(cwd: string, relativePath: string, content: string, message: string): Promise<string> {
@@ -451,7 +451,7 @@ function artifactCompletionEvidence(summary = "Completed by artifact review") {
 }
 
 afterEach(async () => {
-	__setGjcTeamRuntimeTestSeamsForTests(undefined);
+	__setWorxTeamRuntimeTestSeamsForTests(undefined);
 	clearPsmuxDetectionCache();
 	__setBinaryResolverForTests(null);
 	__setExecutableIdentityResolverForTests(null);
@@ -486,7 +486,7 @@ afterEach(async () => {
 describe("native gjc team runtime", () => {
 	it("creates GJC-scoped team state, task mailboxes, and telemetry without delegating to legacy runtimes", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Implement the approved plan",
@@ -562,7 +562,7 @@ describe("native gjc team runtime", () => {
 
 	it("separates managed worker lifecycle from worker-reported status", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Report lifecycle separately",
@@ -572,7 +572,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const initialStatus = (await executeGjcTeamApiOperation(
+		const initialStatus = (await executeWorxTeamApiOperation(
 			"read-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1" },
 			cleanupRoot,
@@ -580,7 +580,7 @@ describe("native gjc team runtime", () => {
 		)) as { state: string };
 		expect(initialStatus.state).toBe("idle");
 
-		const startupAck = (await executeGjcTeamApiOperation(
+		const startupAck = (await executeWorxTeamApiOperation(
 			"worker-startup-ack",
 			{
 				team_name: "worker-lifecycle-team",
@@ -595,7 +595,7 @@ describe("native gjc team runtime", () => {
 		expect(startupAck.pid).toBe(1234);
 		expect(startupAck.replacement_token).toBe("startup-generation-1");
 
-		let snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
+		let snapshot = await readWorxTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -603,7 +603,7 @@ describe("native gjc team runtime", () => {
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("idle");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.pid).toBe(1234);
 
-		const workingStatus = (await executeGjcTeamApiOperation(
+		const workingStatus = (await executeWorxTeamApiOperation(
 			"update-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1", status: "working", current_task_id: "task-1" },
 			cleanupRoot,
@@ -612,27 +612,27 @@ describe("native gjc team runtime", () => {
 		expect(workingStatus.state).toBe("working");
 		expect(workingStatus.current_task_id).toBe("task-1");
 
-		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
+		snapshot = await readWorxTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("working");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("working");
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"update-worker-status",
 			{ team_name: "worker-lifecycle-team", worker_id: "worker-1", status: "blocked", reason: "waiting" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
-		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
+		snapshot = await readWorxTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("ready");
 		expect(snapshot.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("blocked");
-		const forceRequest = (await executeGjcTeamApiOperation(
+		const forceRequest = (await executeWorxTeamApiOperation(
 			"write-shutdown-request",
 			{
 				team_name: "worker-lifecycle-team",
@@ -647,7 +647,7 @@ describe("native gjc team runtime", () => {
 		expect(forceRequest.mode).toBe("force");
 		expect(forceRequest.request_id).toBe("manual-force-stop");
 
-		snapshot = await readGjcTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
+		snapshot = await readWorxTeamSnapshot("worker-lifecycle-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -658,7 +658,7 @@ describe("native gjc team runtime", () => {
 
 	it("persists the active worker command so tmux workers use the same gjc entrypoint", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Use local entrypoint",
@@ -680,7 +680,7 @@ describe("native gjc team runtime", () => {
 		expect(config.gjc_session_id).toBe(TEST_SESSION_ID);
 		expect(manifest.worker_command).toBe("bun ./packages/coding-agent/src/cli.ts");
 		expect(telemetry).toContain("bun ./packages/coding-agent/src/cli.ts");
-		expect(resolveGjcWorkerCommand(cleanupRoot, { WORX_TEAM_WORKER_COMMAND: "gjc-dev" })).toBe("gjc-dev");
+		expect(resolveWorxWorkerCommand(cleanupRoot, { WORX_TEAM_WORKER_COMMAND: "gjc-dev" })).toBe("gjc-dev");
 	});
 
 	it("builds PowerShell worker commands with an invocation operator", () => {
@@ -707,7 +707,7 @@ describe("native gjc team runtime", () => {
 			workers: [],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = {
 			id: "worker-1",
 			name: "worker-1",
@@ -717,7 +717,7 @@ describe("native gjc team runtime", () => {
 			status: "starting",
 			last_heartbeat: "2026-01-01T00:00:00.000Z",
 			assigned_tasks: [],
-		} satisfies GjcTeamWorker;
+		} satisfies WorxTeamWorker;
 
 		const command = buildWorkerCommand(config, worker, "win32");
 
@@ -750,7 +750,7 @@ describe("native gjc team runtime", () => {
 			workers: [],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = {
 			id: "worker-1",
 			name: "worker-1",
@@ -760,7 +760,7 @@ describe("native gjc team runtime", () => {
 			status: "starting",
 			last_heartbeat: "2026-01-01T00:00:00.000Z",
 			assigned_tasks: [],
-		} satisfies GjcTeamWorker;
+		} satisfies WorxTeamWorker;
 
 		// POSIX: the marker carries the leader session id.
 		const posix = buildWorkerCommand(base, worker, "linux");
@@ -768,7 +768,7 @@ describe("native gjc team runtime", () => {
 
 		// Falls back to the (always non-blank) team name when the leader has no id,
 		// so presence-based suppression still marks the worker.
-		const noLeaderId = { ...base, leader: { ...base.leader, session_id: "  " } } satisfies GjcTeamConfig;
+		const noLeaderId = { ...base, leader: { ...base.leader, session_id: "  " } } satisfies WorxTeamConfig;
 		expect(buildWorkerCommand(noLeaderId, worker, "linux")).toContain("WORX_SPAWNED_BY_SESSION='prov-team'");
 
 		// Windows env assignment form is emitted too.
@@ -800,7 +800,7 @@ describe("native gjc team runtime", () => {
 			workers: [],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = {
 			id: "worker-1",
 			name: "worker-1",
@@ -810,7 +810,7 @@ describe("native gjc team runtime", () => {
 			status: "starting",
 			last_heartbeat: "2026-01-01T00:00:00.000Z",
 			assigned_tasks: [],
-		} satisfies GjcTeamWorker;
+		} satisfies WorxTeamWorker;
 
 		const posix = buildWorkerCommand(config, worker, "linux");
 		expect(posix).toContain("WORX_SESSION_ID='owner-'\\''$(echo hostile)'");
@@ -845,7 +845,7 @@ describe("native gjc team runtime", () => {
 			workers: [],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = {
 			id: "worker-1",
 			name: "worker-1",
@@ -855,7 +855,7 @@ describe("native gjc team runtime", () => {
 			status: "starting",
 			last_heartbeat: "2026-01-01T00:00:00.000Z",
 			assigned_tasks: [],
-		} satisfies GjcTeamWorker;
+		} satisfies WorxTeamWorker;
 
 		const command = buildWorkerCommand(config, worker, "linux");
 		expect(command).toContain("unset WORX_SESSION_ID;");
@@ -889,7 +889,7 @@ describe("native gjc team runtime", () => {
 			workers: [],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = {
 			id: "worker-1",
 			name: "worker-1",
@@ -899,7 +899,7 @@ describe("native gjc team runtime", () => {
 			status: "starting",
 			last_heartbeat: "2026-01-01T00:00:00.000Z",
 			assigned_tasks: [],
-		} satisfies GjcTeamWorker;
+		} satisfies WorxTeamWorker;
 
 		const result = Bun.spawnSync(["sh", "-c", buildWorkerCommand(config, worker, "linux")], {
 			env: { ...process.env, WORX_SESSION_ID: "foreign-ambient-session" },
@@ -913,7 +913,7 @@ describe("native gjc team runtime", () => {
 	it("rejects unsafe owning session identities even with an explicit team state root", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Reject unsafe identity",
@@ -931,7 +931,7 @@ describe("native gjc team runtime", () => {
 
 	it("does not persist a foreign session fallback when the owning GJC identity is absent", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Preserve missing identity",
@@ -951,7 +951,7 @@ describe("native gjc team runtime", () => {
 	});
 
 	it("resolves Windows JavaScript entrypoints through an executable runtime", async () => {
-		const command = resolveGjcWorkerCommand(
+		const command = resolveWorxWorkerCommand(
 			"C:\\repo",
 			{},
 			"win32",
@@ -966,14 +966,14 @@ describe("native gjc team runtime", () => {
 	});
 
 	it("keeps worker CLI selection limited to GJC teammate sessions", async () => {
-		expect(resolveGjcTeamWorkerCli({})).toBe("worx");
-		expect(resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "auto" })).toBe("worx");
-		expect(resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "worx" })).toBe("worx");
-		expect(resolveGjcTeamWorkerCliPlan(3, { WORX_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["worx", "worx", "worx"]);
-		expect(resolveGjcTeamWorkerCliPlan(2, { WORX_TEAM_WORKER_CLI_MAP: "worx,auto" })).toEqual(["worx", "worx"]);
-		expect(translateGjcWorkerLaunchArgsForCli("worx", ["--model", "frontier"])).toEqual(["--model", "frontier"]);
+		expect(resolveWorxTeamWorkerCli({})).toBe("worx");
+		expect(resolveWorxTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "auto" })).toBe("worx");
+		expect(resolveWorxTeamWorkerCli({ WORX_TEAM_WORKER_CLI: "worx" })).toBe("worx");
+		expect(resolveWorxTeamWorkerCliPlan(3, { WORX_TEAM_WORKER_CLI_MAP: "auto" })).toEqual(["worx", "worx", "worx"]);
+		expect(resolveWorxTeamWorkerCliPlan(2, { WORX_TEAM_WORKER_CLI_MAP: "worx,auto" })).toEqual(["worx", "worx"]);
+		expect(translateWorxWorkerLaunchArgsForCli("worx", ["--model", "frontier"])).toEqual(["--model", "frontier"]);
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Launch GJC teammate sessions",
@@ -990,18 +990,18 @@ describe("native gjc team runtime", () => {
 		expect(telemetry).toContain('"worker_cli_plan":["worx","worx"]');
 
 		for (const provider of ["codex", "claude", "gemini"]) {
-			expect(() => resolveGjcTeamWorkerCli({ WORX_TEAM_WORKER_CLI: provider })).toThrow(
+			expect(() => resolveWorxTeamWorkerCli({ WORX_TEAM_WORKER_CLI: provider })).toThrow(
 				/WORX team launches WORX teammate sessions only/,
 			);
-			expect(() => resolveGjcTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI_MAP: provider })).toThrow(
+			expect(() => resolveWorxTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI_MAP: provider })).toThrow(
 				/WORX team launches WORX teammate sessions only/,
 			);
 			expect(() =>
-				resolveGjcTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI: provider, WORX_TEAM_WORKER_CLI_MAP: "worx" }),
+				resolveWorxTeamWorkerCliPlan(1, { WORX_TEAM_WORKER_CLI: provider, WORX_TEAM_WORKER_CLI_MAP: "worx" }),
 			).toThrow(/WORX team launches WORX teammate sessions only/);
 			if (!cleanupRoot) cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 			await expect(
-				startGjcTeam({
+				startWorxTeam({
 					workerCount: 1,
 					agentType: "executor",
 					task: "Do not launch external teammate providers",
@@ -1048,7 +1048,7 @@ describe("native gjc team runtime", () => {
 	it("starts native team runtime workers in sibling panes", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Use worker worktrees",
@@ -1113,7 +1113,7 @@ describe("native gjc team runtime", () => {
 	it("resolves the team tmux leader from WORX_TMUX_COMMAND, not only WORX_TEAM_TMUX_COMMAND", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Resolve tmux command from the general override",
@@ -1138,7 +1138,7 @@ describe("native gjc team runtime", () => {
 	it("targets the GJC-managed leader session from WORX_TMUX_ACTIVE_SESSION over a stale TMUX_PANE", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Resolve leader from active session, not stale pane",
@@ -1171,7 +1171,7 @@ describe("native gjc team runtime", () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Start multi worker",
@@ -1208,7 +1208,7 @@ describe("native gjc team runtime", () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { failLeaderPaneSplit: true });
 
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Start workers after leader pane replacement",
@@ -1234,7 +1234,7 @@ describe("native gjc team runtime", () => {
 		const fakePsmux = await createFakeTmuxBin(cleanupRoot, { commandName: "psmux.exe" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Start psmux worker",
@@ -1248,11 +1248,11 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: fakePsmux,
 				},
 			}),
-			// `startGjcTeam`'s tokenless psmux path fails closed at the launch guard with
-			// `authority_unavailable`. `gjc_team_tmux_provider_ambiguous` is thrown only by
+			// `startWorxTeam`'s tokenless psmux path fails closed at the launch guard with
+			// `authority_unavailable`. `worx_team_tmux_provider_ambiguous` is thrown only by
 			// `teamProviderAuthority`, which the monitor path reaches and the launch path
 			// does not, so this call can never produce it.
-		).rejects.toThrow("gjc_team_tmux_provider_authority_unavailable");
+		).rejects.toThrow("worx_team_tmux_provider_authority_unavailable");
 
 		// The launch fails closed before invoking tmux at all, so the log may not
 		// exist. An absent log is the strongest form of the two assertions below,
@@ -1268,7 +1268,7 @@ describe("native gjc team runtime", () => {
 		const fakePsmux = await createFakeTmuxBin(cleanupRoot, { commandName: "psmux.exe" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Start aliased Windows tmux worker",
@@ -1283,7 +1283,7 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
-		).rejects.toThrow("gjc_tmux_provider_ambiguous");
+		).rejects.toThrow("worx_tmux_provider_ambiguous");
 
 		const tmuxLog = await Bun.file(path.join(cleanupRoot, "tmux.log")).text();
 		expect(tmuxLog).not.toContain("split-window");
@@ -1293,7 +1293,7 @@ describe("native gjc team runtime", () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { commandName: "tmux" });
 
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Start native Windows tmux worker",
@@ -1316,7 +1316,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { windowLayout: "main-vertical" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Reject ambiguous layout",
@@ -1337,7 +1337,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { paneLayout: "even-horizontal" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Reject horizontal layout",
@@ -1356,7 +1356,7 @@ describe("native gjc team runtime", () => {
 	it("accepts a multi-pane right stack with a tmux row separator", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { paneLayout: "separated-stack" });
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Accept separated layout stack",
@@ -1377,7 +1377,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { paneLayout: "misaligned-stack" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Reject misaligned layout stack",
@@ -1398,7 +1398,7 @@ describe("native gjc team runtime", () => {
 		const fakePsmux = await createFakeTmuxBin(cleanupRoot, { commandName: "psmux", versionOutput: "tmux 3.3.5" });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Start Windows psmux worker",
@@ -1412,13 +1412,13 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: fakePsmux,
 				},
 			}),
-		).rejects.toThrow("gjc_team_tmux_provider_authority_unavailable");
+		).rejects.toThrow("worx_team_tmux_provider_authority_unavailable");
 
 		expect(await Bun.file(path.join(cleanupRoot, "tmux.log")).exists()).toBe(false);
 	});
 	it("distributes explicit markdown lane sections into worker-owned initial tasks", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: [
@@ -1436,11 +1436,11 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const task1 = await readGjcTeamTask("lane-distribution-team", "task-1", cleanupRoot, {
+		const task1 = await readWorxTeamTask("lane-distribution-team", "task-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
-		const task2 = await readGjcTeamTask("lane-distribution-team", "task-2", cleanupRoot, {
+		const task2 = await readWorxTeamTask("lane-distribution-team", "task-2", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -1462,7 +1462,7 @@ describe("native gjc team runtime", () => {
 	it("rejects ambiguous inline lane splits before duplicating broad multi-worker work", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 4,
 				agentType: "executor",
 				task: "Implement turn orchestration. Split lanes: A schema, B delivery, C read_turn, D docs/tests.",
@@ -1480,7 +1480,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 2,
 				agentType: "executor",
 				task: "Implement approved plan. Split lanes: A runtime, B tests.",
@@ -1507,7 +1507,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { failDisplay: true });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Fail loudly",
@@ -1520,7 +1520,7 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
-		).rejects.toThrow(/gjc_team_requires_tmux_leader: start a tmux session first/);
+		).rejects.toThrow(/worx_team_requires_tmux_leader: start a tmux session first/);
 
 		expect(await Bun.file(path.join(teamStateDir(cleanupRoot, "fail-team"), "phase.json")).exists()).toBe(false);
 		expect(
@@ -1532,7 +1532,7 @@ describe("native gjc team runtime", () => {
 		cleanupRoot = await createGitRepo();
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "No tmux here",
@@ -1545,7 +1545,7 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: "gjc-nonexistent-tmux-binary-xyz",
 				},
 			}),
-		).rejects.toThrow(/gjc_team_requires_tmux_leader:.*tmux_not_installed/);
+		).rejects.toThrow(/worx_team_requires_tmux_leader:.*tmux_not_installed/);
 
 		expect(await Bun.file(path.join(teamStateDir(cleanupRoot, "no-tmux-team"), "phase.json")).exists()).toBe(false);
 	});
@@ -1555,7 +1555,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { failDisplay: true });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Outside tmux",
@@ -1568,7 +1568,7 @@ describe("native gjc team runtime", () => {
 					WORX_TEAM_TMUX_COMMAND: fakeTmux,
 				},
 			}),
-		).rejects.toThrow(/gjc_team_requires_tmux_leader:.*not_inside_tmux/);
+		).rejects.toThrow(/worx_team_requires_tmux_leader:.*not_inside_tmux/);
 
 		expect(await Bun.file(path.join(teamStateDir(cleanupRoot, "outside-tmux-team"), "phase.json")).exists()).toBe(
 			false,
@@ -1579,7 +1579,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
 
 		expect(
-			probeGjcTeamAvailability({
+			probeWorxTeamAvailability({
 				WORX_TMUX_COMMAND: fakeTmux,
 				TMUX: "/tmp/tmux-501/default,1,0",
 			}),
@@ -1593,10 +1593,10 @@ describe("native gjc team runtime", () => {
 	});
 	it("probes an unmanaged leader without inspecting or changing its ownership tag", async () => {
 		cleanupRoot = await createGitRepo();
-		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { gjcProfile: false });
+		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { worxProfile: false });
 
 		expect(
-			probeGjcTeamAvailability({
+			probeWorxTeamAvailability({
 				WORX_TMUX_COMMAND: fakeTmux,
 				TMUX: "/tmp/tmux-501/default,1,0",
 			}),
@@ -1611,10 +1611,10 @@ describe("native gjc team runtime", () => {
 
 	it("rejects a tmux provider that cannot persist GJC's ownership tag (e.g. psmux)", async () => {
 		cleanupRoot = await createGitRepo();
-		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { gjcProfile: false, untaggableProfile: true });
+		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { worxProfile: false, untaggableProfile: true });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Do not hijack tmux",
@@ -1649,9 +1649,9 @@ describe("native gjc team runtime", () => {
 
 	it("self-heals a missing @gjc-profile tag when the leader pane was launched by gjc --tmux", async () => {
 		cleanupRoot = await createGitRepo();
-		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { gjcProfile: false });
+		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { worxProfile: false });
 
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Recover managed leader",
@@ -1679,9 +1679,9 @@ describe("native gjc team runtime", () => {
 
 	it("adopts a user-created tmux leader by tagging it even without WORX_TMUX_LAUNCHED", async () => {
 		cleanupRoot = await createGitRepo();
-		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { gjcProfile: false });
+		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { worxProfile: false });
 
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Adopt the user's own tmux",
@@ -1711,7 +1711,7 @@ describe("native gjc team runtime", () => {
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot, { failSplit: true });
 
 		await expect(
-			startGjcTeam({
+			startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: "Fail split",
@@ -1738,7 +1738,7 @@ describe("native gjc team runtime", () => {
 	it("creates named worker branches for legacy --worktree=<name> mode", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Named worktree",
@@ -1765,7 +1765,7 @@ describe("native gjc team runtime", () => {
 	it("removes clean created worker worktrees on normal shutdown", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Clean shutdown",
@@ -1781,7 +1781,7 @@ describe("native gjc team runtime", () => {
 		const worktreePath = snapshot.workers[0]?.worktree_path ?? "";
 		expect(await Bun.file(path.join(worktreePath, ".git")).exists()).toBe(true);
 
-		const stopped = await shutdownGjcTeam("cleanup-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("cleanup-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -1797,7 +1797,7 @@ describe("native gjc team runtime", () => {
 	it("does not kill stale or leader pane ids during shutdown", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Stale pane shutdown",
@@ -1817,7 +1817,7 @@ describe("native gjc team runtime", () => {
 			`${JSON.stringify({ ...config, workers: [{ ...config.workers[0], pane_id: "%9" }] }, null, 2)}\n`,
 		);
 
-		await shutdownGjcTeam("stale-pane-team", cleanupRoot, {
+		await shutdownWorxTeam("stale-pane-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -1831,7 +1831,7 @@ describe("native gjc team runtime", () => {
 	it("preserves dirty worker worktrees on normal shutdown", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Preserve dirty shutdown",
@@ -1847,7 +1847,7 @@ describe("native gjc team runtime", () => {
 		const worktreePath = snapshot.workers[0]?.worktree_path ?? "";
 		await Bun.write(path.join(worktreePath, "worker-change.txt"), "keep me\n");
 
-		const stopped = await shutdownGjcTeam("dirty-cleanup-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("dirty-cleanup-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -1859,7 +1859,7 @@ describe("native gjc team runtime", () => {
 	it("supports task claim, transition, list, status, and shutdown lifecycle operations", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const tmuxCommand = await createFakeTmuxBin(cleanupRoot);
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Ship lifecycle",
@@ -1874,25 +1874,25 @@ describe("native gjc team runtime", () => {
 		});
 
 		await expect(
-			transitionGjcTeamTask("life-team", "task-1", "completed", cleanupRoot, {
+			transitionWorxTeamTask("life-team", "task-1", "completed", cleanupRoot, {
 				PATH: "",
 				WORX_SESSION_ID: TEST_SESSION_ID,
 			}),
 		).rejects.toThrow("claim_token_required:task-1");
 
-		const claim = await claimGjcTeamTask("life-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("life-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
 		await expect(
-			transitionGjcTeamTask("life-team", "task-1", "completed", cleanupRoot, {
+			transitionWorxTeamTask("life-team", "task-1", "completed", cleanupRoot, {
 				PATH: "",
 				WORX_SESSION_ID: TEST_SESSION_ID,
 			}),
 		).rejects.toThrow("claim_token_required:task-1");
 		await expect(
-			transitionGjcTeamTask(
+			transitionWorxTeamTask(
 				"life-team",
 				"task-1",
 				"pending",
@@ -1902,7 +1902,7 @@ describe("native gjc team runtime", () => {
 			),
 		).rejects.toThrow("invalid_task_transition:task-1:pending_requires_release");
 		expect(claim.task?.status).toBe("in_progress");
-		const task = await transitionGjcTeamTask(
+		const task = await transitionWorxTeamTask(
 			"life-team",
 			"task-1",
 			"completed",
@@ -1919,7 +1919,7 @@ describe("native gjc team runtime", () => {
 			false,
 		);
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"release-task-claim",
 				{ team_name: "life-team", task_id: "task-1", worker: "worker-1", claim_token: claim.claim_token },
 				cleanupRoot,
@@ -1927,14 +1927,14 @@ describe("native gjc team runtime", () => {
 			),
 		).rejects.toThrow(/task_terminal|claim_token_mismatch/);
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"transition-task-status",
 				{ team_name: "life-team", task_id: "task-1", to: "pending" },
 				cleanupRoot,
 				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 			),
 		).rejects.toThrow("invalid_task_transition:task-1:pending_requires_release");
-		const reclaim = await claimGjcTeamTask(
+		const reclaim = await claimWorxTeamTask(
 			"life-team",
 			"worker-1",
 			cleanupRoot,
@@ -1944,14 +1944,14 @@ describe("native gjc team runtime", () => {
 		expect(reclaim.ok).toBe(false);
 		expect(reclaim.reason).toBe("task_not_pending:task-1");
 
-		const status = await readGjcTeamSnapshot("life-team", cleanupRoot, {
+		const status = await readWorxTeamSnapshot("life-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(status.task_counts.completed).toBe(1);
-		expect(await listGjcTeams(cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID })).toHaveLength(1);
+		expect(await listWorxTeams(cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID })).toHaveLength(1);
 
-		const stopped = await shutdownGjcTeam("life-team", cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
+		const stopped = await shutdownWorxTeam("life-team", cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
 		expect(stopped.phase).toBe("complete");
 		expect(stopped.workers[0]?.status).toBe("stopped");
 		expect(stopped.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("stopped");
@@ -1966,7 +1966,7 @@ describe("native gjc team runtime", () => {
 
 	it("chains claim, transition, and release using receipt-only task fields", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Receipt lifecycle",
@@ -1976,7 +1976,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const claimReceipt = (await executeGjcTeamApiOperation(
+		const claimReceipt = (await executeWorxTeamApiOperation(
 			"claim-task",
 			{ team_name: "receipt-team", worker_id: "worker-1" },
 			cleanupRoot,
@@ -2000,7 +2000,7 @@ describe("native gjc team runtime", () => {
 		expect(claimReceipt.claim_token).toBeTruthy();
 		expect(claimReceipt.task).toBeUndefined();
 
-		const releaseReceipt = (await executeGjcTeamApiOperation(
+		const releaseReceipt = (await executeWorxTeamApiOperation(
 			"release-task-claim",
 			{
 				team_name: claimReceipt.team_name,
@@ -2014,7 +2014,7 @@ describe("native gjc team runtime", () => {
 		expect(releaseReceipt).toMatchObject({ ok: true, worker_id: "worker-1", task_id: "task-1", status: "pending" });
 		expect(releaseReceipt.task).toBeUndefined();
 
-		const secondClaimReceipt = (await executeGjcTeamApiOperation(
+		const secondClaimReceipt = (await executeWorxTeamApiOperation(
 			"claim-task",
 			{ team_name: "receipt-team", worker_id: releaseReceipt.worker_id, task_id: releaseReceipt.task_id },
 			cleanupRoot,
@@ -2029,7 +2029,7 @@ describe("native gjc team runtime", () => {
 		expect(secondClaimReceipt.claim_token).toBeTruthy();
 		expect(secondClaimReceipt.task).toBeUndefined();
 
-		const transitionReceipt = (await executeGjcTeamApiOperation(
+		const transitionReceipt = (await executeWorxTeamApiOperation(
 			"transition-task-status",
 			{
 				team_name: "receipt-team",
@@ -2060,7 +2060,7 @@ describe("native gjc team runtime", () => {
 
 	it("writes versioned structured traces linked to legacy events", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Trace runtime events",
@@ -2089,12 +2089,12 @@ describe("native gjc team runtime", () => {
 		expect(firstTrace.source_event_id).toBe(firstEvent.event_id);
 		expect(firstTrace.event_type).toBe(firstEvent.type);
 
-		const claim = await claimGjcTeamTask("trace-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("trace-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
-		await transitionGjcTeamTask(
+		await transitionWorxTeamTask(
 			"trace-team",
 			"task-1",
 			"completed",
@@ -2104,7 +2104,7 @@ describe("native gjc team runtime", () => {
 			commandCompletionEvidence("trace-backed completion"),
 		);
 
-		const traceRead = (await executeGjcTeamApiOperation("read-traces", { team_name: "trace-team" }, cleanupRoot, {
+		const traceRead = (await executeWorxTeamApiOperation("read-traces", { team_name: "trace-team" }, cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as {
@@ -2118,7 +2118,7 @@ describe("native gjc team runtime", () => {
 
 	it("sanitizes mailbox bodies from structured traces", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Trace sanitizer runtime events",
@@ -2128,7 +2128,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const secretBody = "SECRET_TOKEN=abc123";
-		const message = await sendGjcTeamMessage(
+		const message = await sendWorxTeamMessage(
 			"trace-sanitized-team",
 			"worker-1",
 			"leader-fixed",
@@ -2140,7 +2140,7 @@ describe("native gjc team runtime", () => {
 		expect(traceJsonl).not.toContain(secretBody);
 		expect(traceJsonl).not.toContain("SECRET_TOKEN");
 
-		const traceRead = (await executeGjcTeamApiOperation(
+		const traceRead = (await executeWorxTeamApiOperation(
 			"read-traces",
 			{ team_name: "trace-sanitized-team" },
 			cleanupRoot,
@@ -2161,7 +2161,7 @@ describe("native gjc team runtime", () => {
 
 	it("stores structured completion evidence in task listings and honors claim tokens without implicit worker defaults", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Complete with evidence",
@@ -2172,7 +2172,7 @@ describe("native gjc team runtime", () => {
 		});
 		const stateDir = teamStateDir(cleanupRoot, "evidence-team");
 
-		const workerTwoClaim = await claimGjcTeamTask(
+		const workerTwoClaim = await claimWorxTeamTask(
 			"evidence-team",
 			"worker-2",
 			cleanupRoot,
@@ -2180,7 +2180,7 @@ describe("native gjc team runtime", () => {
 			"task-2",
 		);
 		expect(workerTwoClaim.ok).toBe(true);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"transition-task-status",
 			{
 				team_name: "evidence-team",
@@ -2193,7 +2193,7 @@ describe("native gjc team runtime", () => {
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
-		const completedTask = await readGjcTeamTask("evidence-team", "task-2", cleanupRoot, {
+		const completedTask = await readWorxTeamTask("evidence-team", "task-2", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2204,14 +2204,14 @@ describe("native gjc team runtime", () => {
 			path.join(stateDir, "tasks", "task-2.evidence.json"),
 			`${JSON.stringify({ task_id: "task-2", evidence: "legacy colocated evidence" }, null, 2)}\n`,
 		);
-		const listed = (await executeGjcTeamApiOperation("list-tasks", { team_name: "evidence-team" }, cleanupRoot, {
+		const listed = (await executeWorxTeamApiOperation("list-tasks", { team_name: "evidence-team" }, cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as { tasks: Array<{ id: string; status: string }> };
 		expect(listed.tasks.map(task => task.id)).toEqual(["task-1", "task-2"]);
 		expect(listed.tasks.find(task => task.id === "task-2")?.status).toBe("completed");
 
-		const workerOneClaim = await claimGjcTeamTask(
+		const workerOneClaim = await claimWorxTeamTask(
 			"evidence-team",
 			"worker-1",
 			cleanupRoot,
@@ -2220,7 +2220,7 @@ describe("native gjc team runtime", () => {
 		);
 		expect(workerOneClaim.ok).toBe(true);
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"transition-task-status",
 				{
 					team_name: "evidence-team",
@@ -2237,7 +2237,7 @@ describe("native gjc team runtime", () => {
 
 	it("rejects completed transitions without valid evidence and leaves task state unchanged", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Reject invalid completion evidence",
@@ -2247,12 +2247,12 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "invalid-evidence-team");
-		const claim = await claimGjcTeamTask("invalid-evidence-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("invalid-evidence-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
-		const taskBefore = await readGjcTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
+		const taskBefore = await readWorxTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2260,7 +2260,7 @@ describe("native gjc team runtime", () => {
 		const claimPath = path.join(stateDir, "claims", "task-1.json");
 
 		await expect(
-			transitionGjcTeamTask(
+			transitionWorxTeamTask(
 				"invalid-evidence-team",
 				"task-1",
 				"completed",
@@ -2292,7 +2292,7 @@ describe("native gjc team runtime", () => {
 			},
 		]) {
 			await expect(
-				transitionGjcTeamTask(
+				transitionWorxTeamTask(
 					"invalid-evidence-team",
 					"task-1",
 					"completed",
@@ -2304,7 +2304,7 @@ describe("native gjc team runtime", () => {
 			).rejects.toThrow(invalid.error);
 		}
 
-		const taskAfter = await readGjcTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
+		const taskAfter = await readWorxTeamTask("invalid-evidence-team", "task-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2319,7 +2319,7 @@ describe("native gjc team runtime", () => {
 	it("allows non-command completion evidence and requires evidence-backed shutdown completion", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const tmuxCommand = await createFakeTmuxBin(cleanupRoot);
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Complete with review evidence",
@@ -2333,7 +2333,7 @@ describe("native gjc team runtime", () => {
 			},
 		});
 
-		const firstClaim = await claimGjcTeamTask(
+		const firstClaim = await claimWorxTeamTask(
 			"review-evidence-team",
 			"worker-1",
 			cleanupRoot,
@@ -2341,7 +2341,7 @@ describe("native gjc team runtime", () => {
 			"task-1",
 		);
 		expect(firstClaim.ok).toBe(true);
-		const first = await transitionGjcTeamTask(
+		const first = await transitionWorxTeamTask(
 			"review-evidence-team",
 			"task-1",
 			"completed",
@@ -2352,7 +2352,7 @@ describe("native gjc team runtime", () => {
 		);
 		expect(first.completion_evidence?.items[0]?.kind).toBe("inspection");
 
-		const secondClaim = await claimGjcTeamTask(
+		const secondClaim = await claimWorxTeamTask(
 			"review-evidence-team",
 			"worker-2",
 			cleanupRoot,
@@ -2360,7 +2360,7 @@ describe("native gjc team runtime", () => {
 			"task-2",
 		);
 		expect(secondClaim.ok).toBe(true);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"transition-task-status",
 			{
 				team_name: "review-evidence-team",
@@ -2373,7 +2373,7 @@ describe("native gjc team runtime", () => {
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
-		const stopped = await shutdownGjcTeam("review-evidence-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("review-evidence-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2383,7 +2383,7 @@ describe("native gjc team runtime", () => {
 	it("treats legacy evidence-free completed tasks as failed on shutdown", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
 		const tmuxCommand = await createFakeTmuxBin(cleanupRoot);
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Legacy completed task",
@@ -2397,7 +2397,7 @@ describe("native gjc team runtime", () => {
 			},
 		});
 		const stateDir = teamStateDir(cleanupRoot, "legacy-completed-team");
-		const task = await readGjcTeamTask("legacy-completed-team", "task-1", cleanupRoot, {
+		const task = await readWorxTeamTask("legacy-completed-team", "task-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2406,7 +2406,7 @@ describe("native gjc team runtime", () => {
 			`${JSON.stringify({ ...task, status: "completed", completed_at: new Date().toISOString() }, null, 2)}\n`,
 		);
 
-		const stopped = await shutdownGjcTeam("legacy-completed-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("legacy-completed-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2416,7 +2416,7 @@ describe("native gjc team runtime", () => {
 
 	it("recovers expired task claims before new claim attempts", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Recover expired claim",
@@ -2426,12 +2426,12 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "expired-claim-team");
-		const claim = await claimGjcTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
 		expect(claim.ok).toBe(true);
-		const claimedTask = await readGjcTeamTask("expired-claim-team", "task-1", cleanupRoot, {
+		const claimedTask = await readWorxTeamTask("expired-claim-team", "task-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2443,7 +2443,7 @@ describe("native gjc team runtime", () => {
 		);
 		await Bun.write(path.join(stateDir, "claims", "task-1.json"), `${JSON.stringify(expiredClaim, null, 2)}\n`);
 
-		const recoveredClaim = await claimGjcTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
+		const recoveredClaim = await claimWorxTeamTask("expired-claim-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2456,7 +2456,7 @@ describe("native gjc team runtime", () => {
 
 	it("recovers stale heartbeat claims during monitor and blocks stale workers from reclaiming", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Recover stale heartbeat",
@@ -2466,7 +2466,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "stale-heartbeat-team");
-		const claim = await claimGjcTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2480,7 +2480,7 @@ describe("native gjc team runtime", () => {
 			)}\n`,
 		);
 
-		const snapshot = await monitorGjcTeam("stale-heartbeat-team", cleanupRoot, {
+		const snapshot = await monitorWorxTeam("stale-heartbeat-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
@@ -2489,7 +2489,7 @@ describe("native gjc team runtime", () => {
 		expect(await Bun.file(path.join(stateDir, "claims", "task-1.json")).exists()).toBe(false);
 		expect(await readEvents(stateDir)).toContain("stale_heartbeat");
 
-		const retry = await claimGjcTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
+		const retry = await claimWorxTeamTask("stale-heartbeat-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
@@ -2500,7 +2500,7 @@ describe("native gjc team runtime", () => {
 
 	it("keeps read-only status separate from mutating monitor recovery", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Separate status and monitor",
@@ -2510,7 +2510,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 		const stateDir = teamStateDir(cleanupRoot, "status-semantics-team");
-		const claim = await claimGjcTeamTask("status-semantics-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("status-semantics-team", "worker-1", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2524,7 +2524,7 @@ describe("native gjc team runtime", () => {
 			)}\n`,
 		);
 
-		const statusSnapshot = await readGjcTeamSnapshot("status-semantics-team", cleanupRoot, {
+		const statusSnapshot = await readWorxTeamSnapshot("status-semantics-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
@@ -2533,7 +2533,7 @@ describe("native gjc team runtime", () => {
 		expect(await Bun.file(path.join(stateDir, "claims", "task-1.json")).exists()).toBe(true);
 		expect(await readEvents(stateDir)).not.toContain("stale_heartbeat");
 
-		const monitorSnapshot = await monitorGjcTeamSnapshot("status-semantics-team", cleanupRoot, {
+		const monitorSnapshot = await monitorWorxTeamSnapshot("status-semantics-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_HEARTBEAT_STALE_MS: "1",
@@ -2546,7 +2546,7 @@ describe("native gjc team runtime", () => {
 	it("recovers missing-pane claims and marks the worker lifecycle failed", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Recover missing pane",
@@ -2560,7 +2560,7 @@ describe("native gjc team runtime", () => {
 			},
 		});
 		const stateDir = snapshot.state_dir;
-		const claim = await claimGjcTeamTask("missing-pane-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("missing-pane-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -2572,7 +2572,7 @@ describe("native gjc team runtime", () => {
 			`${JSON.stringify({ ...config, workers: [{ ...config.workers[0], pane_id: "%9" }] }, null, 2)}\n`,
 		);
 
-		const recovered = await monitorGjcTeam("missing-pane-team", cleanupRoot, {
+		const recovered = await monitorWorxTeam("missing-pane-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -2586,7 +2586,7 @@ describe("native gjc team runtime", () => {
 
 	it("enforces typed lane claim eligibility before leases are granted", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Route work by lane",
@@ -2596,7 +2596,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const wrongOwner = await claimGjcTeamTask(
+		const wrongOwner = await claimWorxTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
@@ -2606,7 +2606,7 @@ describe("native gjc team runtime", () => {
 		expect(wrongOwner.ok).toBe(false);
 		expect(wrongOwner.reason).toBe("task_owner_mismatch:task-2:worker-2");
 
-		const dependentTask = (await executeGjcTeamApiOperation(
+		const dependentTask = (await executeWorxTeamApiOperation(
 			"create-task",
 			{
 				team_name: "lane-team",
@@ -2623,7 +2623,7 @@ describe("native gjc team runtime", () => {
 		expect(dependentTask).toMatchObject({ task_id: "task-3", status: "pending", owner: "worker-1" });
 		expect(dependentTask.task).toBeUndefined();
 
-		const blockedByDependency = await claimGjcTeamTask(
+		const blockedByDependency = await claimWorxTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
@@ -2633,7 +2633,7 @@ describe("native gjc team runtime", () => {
 		expect(blockedByDependency.ok).toBe(false);
 		expect(blockedByDependency.reason).toBe("task_dependency_incomplete:task-3:task-1");
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"create-task",
 			{
 				team_name: "lane-team",
@@ -2646,7 +2646,7 @@ describe("native gjc team runtime", () => {
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const wrongRole = await claimGjcTeamTask(
+		const wrongRole = await claimWorxTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
@@ -2656,7 +2656,7 @@ describe("native gjc team runtime", () => {
 		expect(wrongRole.ok).toBe(false);
 		expect(wrongRole.reason).toBe("task_role_mismatch:task-4:architect");
 
-		const implementationClaim = await claimGjcTeamTask(
+		const implementationClaim = await claimWorxTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
@@ -2664,7 +2664,7 @@ describe("native gjc team runtime", () => {
 			"task-1",
 		);
 		expect(implementationClaim.ok).toBe(true);
-		await transitionGjcTeamTask(
+		await transitionWorxTeamTask(
 			"lane-team",
 			"task-1",
 			"completed",
@@ -2674,7 +2674,7 @@ describe("native gjc team runtime", () => {
 			commandCompletionEvidence("dependency completed"),
 		);
 
-		const verificationClaim = await claimGjcTeamTask(
+		const verificationClaim = await claimWorxTeamTask(
 			"lane-team",
 			"worker-1",
 			cleanupRoot,
@@ -2687,7 +2687,7 @@ describe("native gjc team runtime", () => {
 	});
 	it("allows only one worker to claim a task under concurrent claim attempts", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Claim once",
@@ -2698,14 +2698,14 @@ describe("native gjc team runtime", () => {
 		});
 
 		const claims = await Promise.all([
-			claimGjcTeamTask(
+			claimWorxTeamTask(
 				"claim-race-team",
 				"worker-1",
 				cleanupRoot,
 				{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 				"task-1",
 			),
-			claimGjcTeamTask(
+			claimWorxTeamTask(
 				"claim-race-team",
 				"worker-2",
 				cleanupRoot,
@@ -2719,7 +2719,7 @@ describe("native gjc team runtime", () => {
 		expect(claims.find(claim => !claim.ok)?.reason).toMatch(
 			/task_already_claimed:task-1|task_not_pending:task-1|task_owner_mismatch:task-1:worker-1/,
 		);
-		const status = await readGjcTeamSnapshot("claim-race-team", cleanupRoot, {
+		const status = await readWorxTeamSnapshot("claim-race-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -2727,8 +2727,8 @@ describe("native gjc team runtime", () => {
 	});
 
 	it("rejects unknown API operations before state lookup with actionable guidance", async () => {
-		const heartbeatError = await executeGjcTeamApiOperation("heartbeat", {}).catch((error: unknown) => error);
-		expect(heartbeatError).toBeInstanceOf(UnknownGjcTeamApiOperationError);
+		const heartbeatError = await executeWorxTeamApiOperation("heartbeat", {}).catch((error: unknown) => error);
+		expect(heartbeatError).toBeInstanceOf(UnknownWorxTeamApiOperationError);
 		expect(heartbeatError).toMatchObject({
 			code: "unknown_team_api_operation",
 			operation: "heartbeat",
@@ -2738,13 +2738,13 @@ describe("native gjc team runtime", () => {
 			"unknown_team_api_operation:heartbeat; did you mean read-worker-heartbeat or update-worker-heartbeat?",
 		);
 
-		await expect(executeGjcTeamApiOperation("get-task", {})).rejects.toThrow(
+		await expect(executeWorxTeamApiOperation("get-task", {})).rejects.toThrow(
 			"unknown_team_api_operation:get-task; did you mean read-task?",
 		);
-		await expect(executeGjcTeamApiOperation("wat", {})).rejects.toThrow(
+		await expect(executeWorxTeamApiOperation("wat", {})).rejects.toThrow(
 			"unknown_team_api_operation:wat; run worx team api --help for supported operations",
 		);
-		await expect(executeGjcTeamApiOperation("read-task", {})).rejects.toThrow("missing_team_name");
+		await expect(executeWorxTeamApiOperation("read-task", {})).rejects.toThrow("missing_team_name");
 
 		const jsonResult = await runTeamApiCli(["heartbeat", "--input", "{}", "--json"]);
 		expect(jsonResult.exitCode).toBe(1);
@@ -2766,7 +2766,7 @@ describe("native gjc team runtime", () => {
 	});
 	it("supports GJC team parity behavioral API operations", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "API parity",
@@ -2776,46 +2776,46 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const created = (await executeGjcTeamApiOperation(
+		const created = (await executeWorxTeamApiOperation(
 			"create-task",
 			{ team_name: "api-team", subject: "Extra", description: "Extra work" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task_id: string; task?: unknown };
 		expect(created.task).toBeUndefined();
-		const read = (await executeGjcTeamApiOperation(
+		const read = (await executeWorxTeamApiOperation(
 			"read-task",
 			{ team_name: "api-team", task_id: created.task_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task: { subject: string } };
 		expect(read.task.subject).toBe("Extra");
-		const updated = (await executeGjcTeamApiOperation(
+		const updated = (await executeWorxTeamApiOperation(
 			"update-task",
 			{ team_name: "api-team", task_id: created.task_id, subject: "Updated" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { task_id: string; task?: unknown };
 		expect(updated.task).toBeUndefined();
-		const claim = (await executeGjcTeamApiOperation(
+		const claim = (await executeWorxTeamApiOperation(
 			"claim-task",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { claim_token: string };
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"release-task-claim",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1", claim_token: claim.claim_token },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const claimed = (await executeGjcTeamApiOperation(
+		const claimed = (await executeWorxTeamApiOperation(
 			"claim-task",
 			{ team_name: "api-team", task_id: created.task_id, worker: "worker-1" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { claim_token: string };
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"transition-task-status",
 			{
 				team_name: "api-team",
@@ -2828,26 +2828,26 @@ describe("native gjc team runtime", () => {
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
 
-		const message = (await executeGjcTeamApiOperation(
+		const message = (await executeWorxTeamApiOperation(
 			"send-message",
 			{ team_name: "api-team", from_worker: "worker-1", to_worker: "worker-2", body: "hello" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { message_id: string; body?: string };
 		expect(message.body).toBeUndefined();
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"mailbox-mark-delivered",
 			{ team_name: "api-team", worker: "worker-2", message_id: message.message_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"mailbox-mark-notified",
 			{ team_name: "api-team", worker: "worker-2", message_id: message.message_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const mailbox = (await executeGjcTeamApiOperation(
+		const mailbox = (await executeWorxTeamApiOperation(
 			"mailbox-list",
 			{ team_name: "api-team", worker: "worker-2" },
 			cleanupRoot,
@@ -2856,25 +2856,25 @@ describe("native gjc team runtime", () => {
 		expect(mailbox.messages[0]?.delivered_at).toBeTruthy();
 		expect(mailbox.messages[0]?.notified_at).toBeTruthy();
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"write-worker-inbox",
 			{ team_name: "api-team", worker: "worker-1", content: "# Inbox" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"write-worker-identity",
 			{ team_name: "api-team", worker: "worker-1", index: 1, role: "executor" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"update-worker-heartbeat",
 			{ team_name: "api-team", worker: "worker-1", pid: 123, turn_count: 2, alive: true },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const heartbeat = (await executeGjcTeamApiOperation(
+		const heartbeat = (await executeWorxTeamApiOperation(
 			"read-worker-heartbeat",
 			{ team_name: "api-team", worker: "worker-1" },
 			cleanupRoot,
@@ -2882,44 +2882,44 @@ describe("native gjc team runtime", () => {
 		)) as { pid: number };
 		expect(heartbeat.pid).toBe(123);
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"append-event",
 			{ team_name: "api-team", type: "custom", worker: "worker-1" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const awaited = (await executeGjcTeamApiOperation("await-event", { team_name: "api-team" }, cleanupRoot, {
+		const awaited = (await executeWorxTeamApiOperation("await-event", { team_name: "api-team" }, cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		})) as { status: string };
 		expect(awaited.status).toBe("event");
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"write-monitor-snapshot",
 			{ team_name: "api-team", snapshot: { ok: true } },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const monitor = (await executeGjcTeamApiOperation(
+		const monitor = (await executeWorxTeamApiOperation(
 			"read-monitor-snapshot",
 			{ team_name: "api-team" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { ok: boolean };
 		expect(monitor.ok).toBe(true);
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"write-task-approval",
 			{ team_name: "api-team", task_id: created.task_id, status: "approved", reviewer: "leader" },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		const approval = (await executeGjcTeamApiOperation(
+		const approval = (await executeWorxTeamApiOperation(
 			"read-task-approval",
 			{ team_name: "api-team", task_id: created.task_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { status: string };
 		expect(approval.status).toBe("approved");
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"write-shutdown-request",
 			{ team_name: "api-team", worker: "worker-1", requested_by: "leader-fixed" },
 			cleanupRoot,
@@ -2929,7 +2929,7 @@ describe("native gjc team runtime", () => {
 
 	it("stores mailbox messages per recipient and maintains native notification transitions", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Notification contract",
@@ -2939,7 +2939,7 @@ describe("native gjc team runtime", () => {
 			env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 		});
 
-		const first = (await executeGjcTeamApiOperation(
+		const first = (await executeWorxTeamApiOperation(
 			"send-message",
 			{
 				team_name: "notification-team",
@@ -2951,7 +2951,7 @@ describe("native gjc team runtime", () => {
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		)) as { message_id: string; body?: string };
-		const second = (await executeGjcTeamApiOperation(
+		const second = (await executeWorxTeamApiOperation(
 			"send-message",
 			{
 				team_name: "notification-team",
@@ -2977,7 +2977,7 @@ describe("native gjc team runtime", () => {
 			).exists(),
 		).toBe(true);
 
-		let notifications = (await executeGjcTeamApiOperation(
+		let notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
@@ -2990,13 +2990,13 @@ describe("native gjc team runtime", () => {
 		expect(notifications.summary.total).toBe(1);
 		expect(notifications.delivery_states[0]).toBe("sent");
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"mailbox-mark-notified",
 			{ team_name: "notification-team", worker: "worker-2", message_id: first.message_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		notifications = (await executeGjcTeamApiOperation(
+		notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
@@ -3004,13 +3004,13 @@ describe("native gjc team runtime", () => {
 		)) as { notification_ids: string[]; delivery_states: string[]; summary: { total: number } };
 		expect(notifications.delivery_states[0]).toBe("delivered");
 
-		await executeGjcTeamApiOperation(
+		await executeWorxTeamApiOperation(
 			"mailbox-mark-delivered",
 			{ team_name: "notification-team", worker: "worker-2", message_id: first.message_id },
 			cleanupRoot,
 			{ PATH: "", WORX_SESSION_ID: TEST_SESSION_ID },
 		);
-		notifications = (await executeGjcTeamApiOperation(
+		notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "notification-team" },
 			cleanupRoot,
@@ -3032,7 +3032,7 @@ describe("native gjc team runtime", () => {
 				return { transport: "sdk" as const, state: "sent" as const, reason: "test-sdk" };
 			},
 		};
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Notification transport seam",
@@ -3043,7 +3043,7 @@ describe("native gjc team runtime", () => {
 			mailboxDeliveryTransport: transport,
 		});
 
-		const message = await sendGjcTeamMessage(
+		const message = await sendWorxTeamMessage(
 			"transport-team",
 			"worker-1",
 			"worker-2",
@@ -3053,7 +3053,7 @@ describe("native gjc team runtime", () => {
 			"transport-key",
 			transport,
 		);
-		const duplicate = await sendGjcTeamMessage(
+		const duplicate = await sendWorxTeamMessage(
 			"transport-team",
 			"worker-1",
 			"worker-2",
@@ -3063,7 +3063,7 @@ describe("native gjc team runtime", () => {
 			"transport-key",
 			transport,
 		);
-		const notifications = (await executeGjcTeamApiOperation(
+		const notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "transport-team" },
 			cleanupRoot,
@@ -3079,7 +3079,7 @@ describe("native gjc team runtime", () => {
 
 	it("falls back to pane delivery when the configured mailbox transport is unavailable", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Notification transport fallback",
@@ -3094,7 +3094,7 @@ describe("native gjc team runtime", () => {
 			},
 		};
 
-		await sendGjcTeamMessage(
+		await sendWorxTeamMessage(
 			"transport-fallback-team",
 			"worker-1",
 			"worker-2",
@@ -3104,7 +3104,7 @@ describe("native gjc team runtime", () => {
 			undefined,
 			transport,
 		);
-		const notifications = (await executeGjcTeamApiOperation(
+		const notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "transport-fallback-team" },
 			cleanupRoot,
@@ -3117,7 +3117,7 @@ describe("native gjc team runtime", () => {
 	it("does not redeliver idempotent duplicates for queued or deferred transport records", async () => {
 		for (const state of ["queued", "deferred"] as const) {
 			cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-			await startGjcTeam({
+			await startWorxTeam({
 				workerCount: 2,
 				agentType: "executor",
 				task: `Notification transport ${state} duplicate guard`,
@@ -3134,7 +3134,7 @@ describe("native gjc team runtime", () => {
 				},
 			};
 
-			const message = await sendGjcTeamMessage(
+			const message = await sendWorxTeamMessage(
 				`transport-${state}-team`,
 				"worker-1",
 				"worker-2",
@@ -3144,7 +3144,7 @@ describe("native gjc team runtime", () => {
 				`transport-${state}-key`,
 				transport,
 			);
-			const duplicate = await sendGjcTeamMessage(
+			const duplicate = await sendWorxTeamMessage(
 				`transport-${state}-team`,
 				"worker-1",
 				"worker-2",
@@ -3154,7 +3154,7 @@ describe("native gjc team runtime", () => {
 				`transport-${state}-key`,
 				transport,
 			);
-			const notifications = (await executeGjcTeamApiOperation(
+			const notifications = (await executeWorxTeamApiOperation(
 				"notification-list",
 				{ team_name: `transport-${state}-team` },
 				cleanupRoot,
@@ -3171,7 +3171,7 @@ describe("native gjc team runtime", () => {
 
 	it("falls back to pane delivery when the configured mailbox transport returns failed", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Notification transport explicit failure fallback",
@@ -3188,7 +3188,7 @@ describe("native gjc team runtime", () => {
 			},
 		};
 
-		await sendGjcTeamMessage(
+		await sendWorxTeamMessage(
 			"transport-failed-fallback-team",
 			"worker-1",
 			"worker-2",
@@ -3198,7 +3198,7 @@ describe("native gjc team runtime", () => {
 			undefined,
 			transport,
 		);
-		const notifications = (await executeGjcTeamApiOperation(
+		const notifications = (await executeWorxTeamApiOperation(
 			"notification-list",
 			{ team_name: "transport-failed-fallback-team" },
 			cleanupRoot,
@@ -3211,7 +3211,7 @@ describe("native gjc team runtime", () => {
 
 	it("rejects path-like worker ids and reports lifecycle nudges without automatic worker action", async () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-runtime-"));
-		await startGjcTeam({
+		await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Guard invalid workers",
@@ -3222,7 +3222,7 @@ describe("native gjc team runtime", () => {
 		});
 
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"send-message",
 				{ team_name: "guard-team", from_worker: "worker-1", to_worker: "../bad", body: "bad" },
 				cleanupRoot,
@@ -3230,7 +3230,7 @@ describe("native gjc team runtime", () => {
 			),
 		).rejects.toThrow(/invalid_worker_id/);
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"update-worker-heartbeat",
 				{ team_name: "guard-team", worker: "../escaped", pid: 9, alive: true },
 				cleanupRoot,
@@ -3241,7 +3241,7 @@ describe("native gjc team runtime", () => {
 			await Bun.file(path.join(teamStateDir(cleanupRoot, "guard-team"), "escaped", "heartbeat.json")).exists(),
 		).toBe(false);
 
-		const monitored = await monitorGjcTeam("guard-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("guard-team", cleanupRoot, {
 			PATH: "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_STARTUP_GRACE_MS: "0",
@@ -3260,7 +3260,7 @@ describe("native gjc team runtime", () => {
 	it("monitor integrates dirty detached worker worktrees and records GJC-scoped hygiene artifacts", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Integrate dirty worker",
@@ -3278,7 +3278,7 @@ describe("native gjc team runtime", () => {
 		if (!worker?.worktree_path) throw new Error("missing worker worktree");
 		await Bun.write(path.join(worker.worktree_path, "worker-output.txt"), "from worker\n");
 
-		const monitored = await monitorGjcTeam("integrate-dirty-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("integrate-dirty-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3316,7 +3316,7 @@ describe("native gjc team runtime", () => {
 		const protectedGatePath = `.worx/_session-${TEST_SESSION_ID}/extragoal/gate-1.md`;
 		const protectedActivityPath = `.worx/_session-${TEST_SESSION_ID}/.session-activity.json`;
 		expect(
-			classifyGjcTeamCheckpointFiles([
+			classifyWorxTeamCheckpointFiles([
 				"src/feature.ts",
 				protectedTeamPath,
 				protectedReportPath,
@@ -3330,7 +3330,7 @@ describe("native gjc team runtime", () => {
 
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Classify protected worker files",
@@ -3349,7 +3349,7 @@ describe("native gjc team runtime", () => {
 		await Bun.write(path.join(worker.worktree_path, "semantic.txt"), "semantic\n");
 		await Bun.write(path.join(worker.worktree_path, ".worx", "state", "team", "runtime.json"), "{}\n");
 
-		await monitorGjcTeam("protected-checkpoint-team", cleanupRoot, {
+		await monitorWorxTeam("protected-checkpoint-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3366,7 +3366,7 @@ describe("native gjc team runtime", () => {
 	it("worker turn-end integration requests notify the leader once per fingerprint", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Request integration",
@@ -3392,8 +3392,8 @@ describe("native gjc team runtime", () => {
 			WORX_TEAM_WORKTREE_PATH: worker.worktree_path,
 		};
 
-		const first = await requestGjcWorkerIntegrationAttempt(worker.worktree_path, env);
-		const second = await requestGjcWorkerIntegrationAttempt(worker.worktree_path, env);
+		const first = await requestWorxWorkerIntegrationAttempt(worker.worktree_path, env);
+		const second = await requestWorxWorkerIntegrationAttempt(worker.worktree_path, env);
 
 		expect(first.requested).toBe(true);
 		expect(first.reason).toBe("requested");
@@ -3408,7 +3408,7 @@ describe("native gjc team runtime", () => {
 	it("reports awaiting integration when all worker tasks completed after an integration request", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Complete then integrate",
@@ -3433,14 +3433,14 @@ describe("native gjc team runtime", () => {
 			WORX_TEAM_STATE_ROOT: config.state_root,
 			WORX_TEAM_WORKTREE_PATH: worker.worktree_path,
 		};
-		const requested = await requestGjcWorkerIntegrationAttempt(worker.worktree_path, requestEnv);
+		const requested = await requestWorxWorkerIntegrationAttempt(worker.worktree_path, requestEnv);
 		expect(requested.requested).toBe(true);
 
-		const claim = await claimGjcTeamTask("awaiting-request-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("awaiting-request-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
-		await transitionGjcTeamTask(
+		await transitionWorxTeamTask(
 			"awaiting-request-team",
 			"task-1",
 			"completed",
@@ -3453,7 +3453,7 @@ describe("native gjc team runtime", () => {
 			commandCompletionEvidence("integration request task completed"),
 		);
 
-		const status = await readGjcTeamSnapshot("awaiting-request-team", cleanupRoot, {
+		const status = await readWorxTeamSnapshot("awaiting-request-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -3461,7 +3461,7 @@ describe("native gjc team runtime", () => {
 		expect(status.phase).toBe("awaiting_integration");
 		expect(status.phase).not.toBe("running");
 
-		const stopped = await shutdownGjcTeam("awaiting-request-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("awaiting-request-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -3473,7 +3473,7 @@ describe("native gjc team runtime", () => {
 	it("monitor cherry-picks diverged worker commits and stays idempotent on repeated status checks", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Integrate diverged worker",
@@ -3492,13 +3492,13 @@ describe("native gjc team runtime", () => {
 		await commitFile(cleanupRoot, "leader.txt", "leader\n", "leader advances");
 		const workerHead = await commitFile(workerPath, "worker.txt", "worker\n", "worker diverges");
 
-		const first = await monitorGjcTeam("diverged-team", cleanupRoot, {
+		const first = await monitorWorxTeam("diverged-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		});
 		const leaderAfterFirst = runGit(cleanupRoot, ["rev-parse", "HEAD"]);
-		const second = await monitorGjcTeam("diverged-team", cleanupRoot, {
+		const second = await monitorWorxTeam("diverged-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3517,7 +3517,7 @@ describe("native gjc team runtime", () => {
 	it("monitor reports merge conflicts without falsely advancing last integrated head", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Conflict worker",
@@ -3537,7 +3537,7 @@ describe("native gjc team runtime", () => {
 		await commitFile(workerPath, "README.md", "# worker\n", "worker readme");
 		await Bun.write(path.join(cleanupRoot, "README.md"), "# leader dirty\n");
 
-		const monitored = await monitorGjcTeam("merge-conflict-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("merge-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3559,7 +3559,7 @@ describe("native gjc team runtime", () => {
 	it("keeps completed conflicting teams in awaiting integration instead of plain running", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Conflict after completion",
@@ -3578,11 +3578,11 @@ describe("native gjc team runtime", () => {
 		if (!workerPath) throw new Error("missing worker worktree");
 		await commitFile(workerPath, "README.md", "# worker\n", "worker readme");
 		await Bun.write(path.join(cleanupRoot, "README.md"), "# leader dirty\n");
-		const claim = await claimGjcTeamTask("awaiting-conflict-team", "worker-1", cleanupRoot, {
+		const claim = await claimWorxTeamTask("awaiting-conflict-team", "worker-1", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
-		await transitionGjcTeamTask(
+		await transitionWorxTeamTask(
 			"awaiting-conflict-team",
 			"task-1",
 			"completed",
@@ -3595,7 +3595,7 @@ describe("native gjc team runtime", () => {
 			commandCompletionEvidence("conflicting task completed before integration"),
 		);
 
-		const monitored = await monitorGjcTeam("awaiting-conflict-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("awaiting-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3606,7 +3606,7 @@ describe("native gjc team runtime", () => {
 		expect(monitored.phase).toBe("awaiting_integration");
 		expect(monitored.phase).not.toBe("running");
 
-		const stopped = await shutdownGjcTeam("awaiting-conflict-team", cleanupRoot, {
+		const stopped = await shutdownWorxTeam("awaiting-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -3618,7 +3618,7 @@ describe("native gjc team runtime", () => {
 	it("monitor reports cherry-pick conflicts and aborts cleanly", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Cherry pick conflict worker",
@@ -3639,7 +3639,7 @@ describe("native gjc team runtime", () => {
 		runGit(cleanupRoot, ["add", "README.md"]);
 		runGit(cleanupRoot, ["commit", "-m", "leader deletes readme"]);
 
-		const monitored = await monitorGjcTeam("pick-conflict-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("pick-conflict-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3661,7 +3661,7 @@ describe("native gjc team runtime", () => {
 	it("cross-rebases idle, done, and failed workers while skipping working workers", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 4,
 			agentType: "executor",
 			task: "Cross rebase workers",
@@ -3680,7 +3680,7 @@ describe("native gjc team runtime", () => {
 		await writeWorkerStatus(snapshot.state_dir, "worker-4", "working");
 		await Bun.write(path.join(snapshot.workers[0]?.worktree_path ?? "", "worker-output.txt"), "integrate\n");
 
-		const monitored = await monitorGjcTeam("cross-rebase-team", cleanupRoot, {
+		const monitored = await monitorWorxTeam("cross-rebase-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
@@ -3701,7 +3701,7 @@ describe("native gjc team runtime", () => {
 	it("pure team reads, status, and list operations stay read-only while monitor and resume can mutate", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Pure reads stay pure",
@@ -3719,11 +3719,11 @@ describe("native gjc team runtime", () => {
 		if (!workerPath) throw new Error("missing worker worktree");
 		await Bun.write(path.join(workerPath, "unintegrated.txt"), "pending\n");
 
-		const listed = await listGjcTeams(cleanupRoot, {
+		const listed = await listWorxTeams(cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
-		const read = await readGjcTeamSnapshot("pure-read-team", cleanupRoot, {
+		const read = await readWorxTeamSnapshot("pure-read-team", cleanupRoot, {
 			PATH: process.env.PATH ?? "",
 			WORX_SESSION_ID: TEST_SESSION_ID,
 		});
@@ -3734,10 +3734,10 @@ describe("native gjc team runtime", () => {
 		expect(await Bun.file(path.join(snapshot.state_dir, "monitor-snapshot.json")).exists()).toBe(false);
 		const commandSource = await Bun.file(path.join(import.meta.dir, "../../src/commands/team.ts")).text();
 		expect(commandSource).toContain('action === "status"');
-		expect(commandSource).toContain("readGjcTeamSnapshot(teamName)");
+		expect(commandSource).toContain("readWorxTeamSnapshot(teamName)");
 		expect(commandSource).toContain('action === "monitor" || action === "resume"');
-		expect(commandSource).toContain("monitorGjcTeamSnapshot(teamName)");
-		expect(commandSource).toContain("listGjcTeams()");
+		expect(commandSource).toContain("monitorWorxTeamSnapshot(teamName)");
+		expect(commandSource).toContain("listWorxTeams()");
 		expect(commandSource).toContain("formatTaskCounts(snapshot.task_counts)");
 		expect(commandSource).toContain("renderTeamStatusMarkdown(snapshot)");
 
@@ -3785,7 +3785,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const worker = cfg.workers[0];
 		const out = buildWorkerCommand(cfg, worker, "win32");
 		// On Windows the body is wrapped in `& { ... }` to keep pwsh in
@@ -3842,7 +3842,7 @@ describe("buildWorkerCommand prompt normalization", () => {
 			],
 			created_at: "2026-01-01T00:00:00.000Z",
 			updated_at: "2026-01-01T00:00:00.000Z",
-		} satisfies GjcTeamConfig;
+		} satisfies WorxTeamConfig;
 		const out = buildWorkerCommand(cfg, cfg.workers[0], "win32");
 		const m = out.match(/& \{ [^}]*?'([^']*(?:''[^']*)*)'\s*\}\s*$/);
 		expect(m).not.toBeNull();
@@ -3852,13 +3852,13 @@ describe("buildWorkerCommand prompt normalization", () => {
 	});
 });
 
-describe("resolveGjcWorkerCommand invocation authority", () => {
+describe("resolveWorxWorkerCommand invocation authority", () => {
 	it("reuses a real standalone executable from the invocation on POSIX and Windows", () => {
 		expect(
-			resolveGjcWorkerCommand("/repo", {}, "linux", ["/opt/gjc/gjc", "/$bunfs/root/gjc-linux-x64"], "/$bunfs/exec"),
+			resolveWorxWorkerCommand("/repo", {}, "linux", ["/opt/gjc/gjc", "/$bunfs/root/gjc-linux-x64"], "/$bunfs/exec"),
 		).toBe("'/opt/gjc/gjc'");
 		expect(
-			resolveGjcWorkerCommand(
+			resolveWorxWorkerCommand(
 				"C:\\repo",
 				{},
 				"win32",
@@ -3870,7 +3870,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 
 	it("preserves the exact source runtime and script argv", () => {
 		expect(
-			resolveGjcWorkerCommand(
+			resolveWorxWorkerCommand(
 				"C:\\repo",
 				{},
 				"win32",
@@ -3879,7 +3879,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 			),
 		).toBe("'C:\\Program Files\\Bun\\bun.exe' 'C:\\repo\\packages\\coding-agent\\src\\cli.ts'");
 		expect(
-			resolveGjcWorkerCommand(
+			resolveWorxWorkerCommand(
 				"/repo",
 				{},
 				"linux",
@@ -3891,7 +3891,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 
 	it("rejects a different GJC discovered only through PATH", () => {
 		expect(() =>
-			resolveGjcWorkerCommand(
+			resolveWorxWorkerCommand(
 				"/repo",
 				{ PATH: "/different-gjc/bin" },
 				"linux",
@@ -3903,7 +3903,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 
 	it("fails closed with actionable guidance when only Bun virtual paths exist", () => {
 		expect(() =>
-			resolveGjcWorkerCommand(
+			resolveWorxWorkerCommand(
 				"C:\\repo",
 				{},
 				"win32",
@@ -3914,7 +3914,7 @@ describe("resolveGjcWorkerCommand invocation authority", () => {
 	});
 
 	it("never emits Bun virtual paths into a PowerShell worker command", () => {
-		const command = resolveGjcWorkerCommand(
+		const command = resolveWorxWorkerCommand(
 			"C:\\repo",
 			{},
 			"win32",
@@ -3931,7 +3931,7 @@ describe("team worker memory guard wiring", () => {
 	it("launches per-worker ledgers and publishes the worker ledger path to tmux commands", async () => {
 		cleanupRoot = await createGitRepo();
 		const fakeTmux = await createFakeTmuxBin(cleanupRoot);
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Memory guard launch wiring",
@@ -3965,7 +3965,7 @@ describe("team worker memory guard wiring", () => {
 		cleanupRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-team-memory-guard-"));
 		for (const platform of ["win32", "darwin"] as const) {
 			const teamName = `advisory-${platform}-memory-guard`;
-			await startGjcTeam({
+			await startWorxTeam({
 				workerCount: 1,
 				agentType: "executor",
 				task: `Advisory only ${platform}`,
@@ -3975,11 +3975,11 @@ describe("team worker memory guard wiring", () => {
 				platform,
 				env: { WORX_SESSION_ID: TEST_SESSION_ID, PATH: "" },
 			});
-			const before = await readGjcTeamSnapshot(teamName, cleanupRoot, {
+			const before = await readWorxTeamSnapshot(teamName, cleanupRoot, {
 				PATH: "",
 				WORX_SESSION_ID: TEST_SESSION_ID,
 			});
-			const result = (await executeGjcTeamApiOperation(
+			const result = (await executeWorxTeamApiOperation(
 				"apply-worker-memory-guard",
 				{
 					team_name: teamName,
@@ -3995,7 +3995,10 @@ describe("team worker memory guard wiring", () => {
 			expect(result.lifecycle_mutated).toBe(false);
 			expect(result.ledger.state).toBe("advisory");
 			expect(result.ledger.last_reason).toContain(`unsupported_platform:${platform}`);
-			const after = await readGjcTeamSnapshot(teamName, cleanupRoot, { PATH: "", WORX_SESSION_ID: TEST_SESSION_ID });
+			const after = await readWorxTeamSnapshot(teamName, cleanupRoot, {
+				PATH: "",
+				WORX_SESSION_ID: TEST_SESSION_ID,
+			});
 			expect(after.workers[0]?.pane_id).toBe(before.workers[0]?.pane_id);
 			expect(after.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe(
 				before.worker_lifecycle_by_id["worker-1"]?.lifecycle_state,
@@ -4015,7 +4018,7 @@ describe("team worker memory guard wiring", () => {
 			// Fail fast if successor ack never arrives; production default is 120s.
 			WORX_TEAM_MEMORY_GUARD_STARTUP_TIMEOUT_MS: "5000",
 		};
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 2,
 			agentType: "executor",
 			task: "Selector replacement",
@@ -4030,7 +4033,7 @@ describe("team worker memory guard wiring", () => {
 		await Bun.write(path.join(workerWorktree!, protectedPath), "{}\n");
 		await Bun.write(path.join(workerWorktree!, "report draft.md"), "eligible\n");
 		runGit(workerWorktree!, ["add", "-f", "--", protectedPath]);
-		const claim = await claimGjcTeamTask("memory-guard-selector-team", "worker-2", cleanupRoot, env, "task-2");
+		const claim = await claimWorxTeamTask("memory-guard-selector-team", "worker-2", cleanupRoot, env, "task-2");
 		expect(claim.ok).toBe(true);
 		const oldPaneId = snapshot.workers.find(worker => worker.id === "worker-2")?.pane_id;
 		expect(oldPaneId).toBeTruthy();
@@ -4045,7 +4048,7 @@ describe("team worker memory guard wiring", () => {
 			text => text.trim() === expectedSplitMarker,
 			markerAbort.signal,
 		).then(() =>
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"worker-startup-ack",
 				{
 					team_name: "memory-guard-selector-team",
@@ -4057,7 +4060,7 @@ describe("team worker memory guard wiring", () => {
 				env,
 			),
 		);
-		const replacement = executeGjcTeamApiOperation(
+		const replacement = executeWorxTeamApiOperation(
 			"apply-worker-memory-guard",
 			{
 				team_name: "memory-guard-selector-team",
@@ -4114,7 +4117,7 @@ describe("team worker memory guard wiring", () => {
 		expect(configWorker?.pane_id).toBeTruthy();
 		expect(configWorker?.pane_id).not.toBe(oldPaneId);
 		expect(manifestWorker?.pane_id).toBe(configWorker?.pane_id);
-		const task = await readGjcTeamTask("memory-guard-selector-team", "task-2", cleanupRoot, env);
+		const task = await readWorxTeamTask("memory-guard-selector-team", "task-2", cleanupRoot, env);
 		expect(task.status).toBe("in_progress");
 		const committedPaths = runGit(workerWorktree!, ["show", "--name-only", "--format="])
 			.split(/\r?\n/)
@@ -4134,7 +4137,7 @@ describe("team worker memory guard wiring", () => {
 			WORX_TEAM_WORKER_COMMAND: "true",
 			WORX_TEAM_TMUX_COMMAND: fakeTmux,
 		};
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Retry cap replacement",
@@ -4143,12 +4146,12 @@ describe("team worker memory guard wiring", () => {
 			platform: "linux",
 			env,
 		});
-		const claim = await claimGjcTeamTask("memory-guard-retry-team", "worker-1", cleanupRoot, env, "task-1");
+		const claim = await claimWorxTeamTask("memory-guard-retry-team", "worker-1", cleanupRoot, env, "task-1");
 		expect(claim.ok).toBe(true);
 		const workerPath = snapshot.workers[0]?.worktree_path;
 		expect(workerPath).toBeTruthy();
 		await fs.rm(workerPath!, { recursive: true, force: true });
-		const first = (await executeGjcTeamApiOperation(
+		const first = (await executeWorxTeamApiOperation(
 			"apply-worker-memory-guard",
 			{
 				team_name: "memory-guard-retry-team",
@@ -4167,7 +4170,7 @@ describe("team worker memory guard wiring", () => {
 		expect(first.result).toBe("retrying");
 		expect(first.lifecycle_mutated).toBe(false);
 		expect(first.ledger).toMatchObject({ state: "retrying", retry_count: 1 });
-		const second = (await executeGjcTeamApiOperation(
+		const second = (await executeWorxTeamApiOperation(
 			"apply-worker-memory-guard",
 			{
 				team_name: "memory-guard-retry-team",
@@ -4182,10 +4185,10 @@ describe("team worker memory guard wiring", () => {
 		expect(second.result).toBe("blocked");
 		expect(second.lifecycle_mutated).toBe(true);
 		expect(second.ledger).toMatchObject({ state: "blocked", retry_count: 2 });
-		const after = await readGjcTeamSnapshot("memory-guard-retry-team", cleanupRoot, env);
+		const after = await readWorxTeamSnapshot("memory-guard-retry-team", cleanupRoot, env);
 		expect(after.worker_lifecycle_by_id["worker-1"]?.lifecycle_state).toBe("failed");
 		expect(after.worker_lifecycle_by_id["worker-1"]?.worker_status_state).toBe("blocked");
-		const task = await readGjcTeamTask("memory-guard-retry-team", "task-1", cleanupRoot, env);
+		const task = await readWorxTeamTask("memory-guard-retry-team", "task-1", cleanupRoot, env);
 		expect(task.status).toBe("blocked");
 		expect(task.claim?.owner).toBe("worker-1");
 	});
@@ -4215,7 +4218,7 @@ describe("stalled worker continuation protocol", () => {
 			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
 			WORX_TEAM_HEARTBEAT_STALE_MS: "60000",
 		};
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Continue stalled claim",
@@ -4223,10 +4226,10 @@ describe("stalled worker continuation protocol", () => {
 			cwd: cleanupRoot,
 			env,
 		});
-		const claim = await claimGjcTeamTask(teamName, "worker-1", cleanupRoot, env, "task-1");
+		const claim = await claimWorxTeamTask(teamName, "worker-1", cleanupRoot, env, "task-1");
 		if (!claim.ok) throw new Error(claim.reason);
 		const stateDir = snapshot.state_dir;
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: () => nowMs,
 			continuationTmuxDispatch: async (command, args) => {
 				dispatches.push({ command, args: [...args] });
@@ -4237,7 +4240,7 @@ describe("stalled worker continuation protocol", () => {
 				const match = prompt?.match(/--input '([^']+)' --json\.$/);
 				if (!match) throw new Error("expected delivered continuation ACK command");
 				const delivered = JSON.parse(match[1]) as Record<string, unknown>;
-				await executeGjcTeamApiOperation("worker-continuation-ack", delivered, cleanupRoot!, env);
+				await executeWorxTeamApiOperation("worker-continuation-ack", delivered, cleanupRoot!, env);
 			},
 		});
 		await Bun.write(
@@ -4258,11 +4261,11 @@ describe("stalled worker continuation protocol", () => {
 			advance: (ms: number) => {
 				nowMs += ms;
 			},
-			monitor: () => monitorGjcTeam(teamName, cleanupRoot!, env),
+			monitor: () => monitorWorxTeam(teamName, cleanupRoot!, env),
 		};
 	}
 	async function setContinuationLease(fixture: ContinuationFixture, leasedUntil: string): Promise<void> {
-		const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+		const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
 		if (!task.claim) throw new Error("expected claimed task");
 		const claim = { ...task.claim, leased_until: leasedUntil };
 		await Bun.write(path.join(fixture.stateDir, "tasks", "task-1.json"), `${JSON.stringify({ ...task, claim })}\n`);
@@ -4272,7 +4275,7 @@ describe("stalled worker continuation protocol", () => {
 		cleanupRoot = await createGitRepo();
 		const nowMs = Date.now();
 		const dispatches: string[][] = [];
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: () => nowMs,
 			continuationTmuxDispatch: (_command, args) => {
 				dispatches.push([...args]);
@@ -4288,7 +4291,7 @@ describe("stalled worker continuation protocol", () => {
 			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "1",
 			WORX_TEAM_HEARTBEAT_STALE_MS: "1000",
 		};
-		const snapshot = await startGjcTeam({
+		const snapshot = await startWorxTeam({
 			workerCount: 1,
 			agentType: "executor",
 			task: "Pending before first claim",
@@ -4307,10 +4310,10 @@ describe("stalled worker continuation protocol", () => {
 		);
 		await expect(fs.access(path.join(snapshot.state_dir, "claims"))).rejects.toMatchObject({ code: "ENOENT" });
 
-		await monitorGjcTeam("continuation-before-first-claim-team", cleanupRoot, env);
+		await monitorWorxTeam("continuation-before-first-claim-team", cleanupRoot, env);
 
 		expect(dispatches).toHaveLength(0);
-		const task = await readGjcTeamTask("continuation-before-first-claim-team", "task-1", cleanupRoot, env);
+		const task = await readWorxTeamTask("continuation-before-first-claim-team", "task-1", cleanupRoot, env);
 		expect(task.status).toBe("pending");
 		expect(task.claim).toBeUndefined();
 		expect(await readEvents(snapshot.state_dir)).toContain('"reason":"invalid_claim_count"');
@@ -4378,9 +4381,9 @@ describe("stalled worker continuation protocol", () => {
 				`continuation-disabled-threshold-${threshold.replace("-", "negative")}-team`,
 			);
 			const env = { ...fixture.env, WORX_TEAM_HEARTBEAT_STALE_MS: threshold };
-			await monitorGjcTeam(fixture.teamName, cleanupRoot!, env);
+			await monitorWorxTeam(fixture.teamName, cleanupRoot!, env);
 			expect(fixture.dispatches, threshold).toHaveLength(0);
-			const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, env);
+			const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, env);
 			expect(task.claim, threshold).toBeDefined();
 			expect(await readEvents(fixture.stateDir), threshold).not.toContain("stale_heartbeat");
 		}
@@ -4398,7 +4401,7 @@ describe("stalled worker continuation protocol", () => {
 			"second_claim_added",
 		] as const) {
 			const fixture = await prepareContinuation(`continuation-pre-dispatch-${scenario}-team`);
-			__setGjcTeamRuntimeTestSeamsForTests({
+			__setWorxTeamRuntimeTestSeamsForTests({
 				nowMs: fixture.now,
 				continuationBeforeDispatch: async () => {
 					const taskPath = path.join(fixture.stateDir, "tasks", "task-1.json");
@@ -4471,16 +4474,16 @@ describe("stalled worker continuation protocol", () => {
 					})}\n`,
 				);
 			}
-			await recoverGjcTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env);
+			await recoverWorxTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env);
 			expect(await Bun.file(claimPath).exists(), scenario).toBe(false);
 		}
 	}, 20_000);
 
 	it("revokes escaped task mutation capabilities after their fenced callback", async () => {
 		const fixture = await prepareContinuation("continuation-capability-team");
-		const store = new GjcTeamTaskStore(fixture.stateDir, async () => undefined);
-		let escaped: GjcTeamTaskMutationCapability | undefined;
-		await withGjcTeamTaskMutation(store, async capability => {
+		const store = new WorxTeamTaskStore(fixture.stateDir, async () => undefined);
+		let escaped: WorxTeamTaskMutationCapability | undefined;
+		await withWorxTeamTaskMutation(store, async capability => {
 			escaped = capability;
 		});
 		expect(() => escaped?.create("forged", "forged", {})).toThrow("team_mutation_capability_revoked");
@@ -4500,15 +4503,15 @@ describe("stalled worker continuation protocol", () => {
 			mutationEntered = resolve;
 		});
 		let appendCount = 0;
-		let escaped: GjcTeamTaskMutationCapability | undefined;
-		const store = new GjcTeamTaskStore(fixture.stateDir, async () => {
+		let escaped: WorxTeamTaskMutationCapability | undefined;
+		const store = new WorxTeamTaskStore(fixture.stateDir, async () => {
 			appendCount += 1;
 			if (appendCount === 1) {
 				mutationEntered();
 				await mutationBlocked;
 			}
 		});
-		const fenced = withGjcTeamTaskMutation(store, async capability => {
+		const fenced = withWorxTeamTaskMutation(store, async capability => {
 			escaped = capability;
 			void capability.create("unawaited", "must drain", {});
 		});
@@ -4529,7 +4532,7 @@ describe("stalled worker continuation protocol", () => {
 
 	it("writes an immutable skipped outcome when a delayed but unexpired lease cannot cover the dispatch-time hold", async () => {
 		const fixture = await prepareContinuation("continuation-post-reservation-lease-team");
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationBeforeDispatch: async () => {
 				fixture.advance(30 * 60_000 - 15_000);
@@ -4554,7 +4557,7 @@ describe("stalled worker continuation protocol", () => {
 		const covered = await prepareContinuation("continuation-worst-case-coverage-team");
 		const coveredLease = new Date(covered.now() + dispatchTimeoutMs + holdMs).toISOString();
 		await setContinuationLease(covered, coveredLease);
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: covered.now,
 			continuationTmuxDispatch: (command, args) => {
 				covered.dispatches.push({ command, args: [...args] });
@@ -4578,12 +4581,12 @@ describe("stalled worker continuation protocol", () => {
 		).json();
 		const coveredOutcome = await Bun.file(path.join(coveredRoot, coveredIncident, "attempt-01.outcome.json")).json();
 		expect(coveredOutcome).toMatchObject({ result: "unknown", reason: "tmux_exit_zero_unacknowledged" });
-		expect(isValidGjcContinuationOutcome(coveredOutcome, coveredReservation, coveredIncident, 1)).toBe(true);
+		expect(isValidWorxContinuationOutcome(coveredOutcome, coveredReservation, coveredIncident, 1)).toBe(true);
 
 		const insufficient = await prepareContinuation("continuation-insufficient-worst-case-coverage-team");
 		await setContinuationLease(insufficient, new Date(insufficient.now() + holdMs).toISOString());
 		let dispatchInputs = 0;
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: insufficient.now,
 			continuationTmuxDispatch: () => {
 				dispatchInputs += 1;
@@ -4637,7 +4640,7 @@ describe("stalled worker continuation protocol", () => {
 			await Bun.write(path.join(fixture.stateDir, "workers", "worker-1", "shutdown-request.json"), shutdownRecord);
 			await fixture.monitor();
 			expect(fixture.dispatches).toHaveLength(0);
-			const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+			const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
 			expect(task.status).toBe("pending");
 			expect(task.claim).toBeUndefined();
 		}
@@ -4657,7 +4660,7 @@ describe("stalled worker continuation protocol", () => {
 		const reservation = await Bun.file(path.join(continuationRoot, incident, "attempt-01.reservation.json")).json();
 		const ack = await Bun.file(path.join(continuationRoot, incident, "attempt-01.ack.json")).json();
 		const outcome = await Bun.file(path.join(continuationRoot, incident, "attempt-01.outcome.json")).json();
-		expect(isValidGjcContinuationAck(ack, reservation, incident, 1)).toBe(true);
+		expect(isValidWorxContinuationAck(ack, reservation, incident, 1)).toBe(true);
 		const prompt = fixture.dispatches.at(-1)?.args.find(arg => arg.includes("worker-continuation-ack"));
 		const match = prompt?.match(/--input '([^']+)' --json\.$/);
 		if (!match) throw new Error("expected generated continuation ACK command");
@@ -4672,7 +4675,7 @@ describe("stalled worker continuation protocol", () => {
 	it("allows a spawned receiver CLI ACK while continuation waits outside the mutation fence", async () => {
 		const fixture = await prepareContinuation("continuation-spawned-cli-ack-team");
 		let acked = false;
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationTmuxDispatch: async (command, args) => {
 				fixture.dispatches.push({ command, args: [...args] });
@@ -4701,7 +4704,7 @@ describe("stalled worker continuation protocol", () => {
 	}, 30_000);
 	it("aborts ACK polling when claim authority changes after dispatch", async () => {
 		const fixture = await prepareContinuation("continuation-post-dispatch-authority-team");
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationTmuxDispatch: () => ({ exitCode: 0 }),
 			continuationAckPoll: async () => {
@@ -4720,7 +4723,7 @@ describe("stalled worker continuation protocol", () => {
 	it("rejects stale and malformed generated continuation ACK invocations", async () => {
 		const fixture = await prepareContinuation("continuation-stale-receiver-ack-team");
 		let delivered: Record<string, unknown> | undefined;
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationTmuxDispatch: (_command, args) => {
 				const prompt = args.find(arg => arg.includes("worker-continuation-ack"));
@@ -4735,14 +4738,14 @@ describe("stalled worker continuation protocol", () => {
 				await Bun.write(claimPath, `${JSON.stringify({ ...claim, token: "replaced-token" })}\n`);
 				if (!delivered) throw new Error("expected delivered continuation ACK input");
 				await expect(
-					executeGjcTeamApiOperation("worker-continuation-ack", delivered, cleanupRoot!, fixture.env),
+					executeWorxTeamApiOperation("worker-continuation-ack", delivered, cleanupRoot!, fixture.env),
 				).rejects.toThrow("continuation_ack_claim_authority_changed");
 			},
 		});
 		await fixture.monitor();
 		if (!delivered) throw new Error("expected delivered continuation ACK input");
 		await expect(
-			executeGjcTeamApiOperation(
+			executeWorxTeamApiOperation(
 				"worker-continuation-ack",
 				{ ...delivered, claim_token: "must-not-be-accepted" },
 				cleanupRoot!,
@@ -4769,17 +4772,19 @@ describe("stalled worker continuation protocol", () => {
 			incident_hash: "incident",
 			attempt: 1,
 			attempt_nonce: reservation.attempt_nonce,
-			reservation_sha256: gjcContinuationReservationDigest(reservation),
+			reservation_sha256: worxContinuationReservationDigest(reservation),
 			worker: reservation.worker,
 			pane_id: reservation.pane_id,
 			worker_incarnation: reservation.worker_incarnation,
 			claim_token: reservation.claim_token,
 			acknowledged_at: new Date().toISOString(),
 		};
-		expect(isValidGjcContinuationAck({ ...ack, attempt_nonce: "stale-nonce" }, reservation, "incident", 1)).toBe(
+		expect(isValidWorxContinuationAck({ ...ack, attempt_nonce: "stale-nonce" }, reservation, "incident", 1)).toBe(
 			false,
 		);
-		expect(isValidGjcContinuationAck({ ...ack, claim_token: "wrong-claim" }, reservation, "incident", 1)).toBe(false);
+		expect(isValidWorxContinuationAck({ ...ack, claim_token: "wrong-claim" }, reservation, "incident", 1)).toBe(
+			false,
+		);
 	});
 
 	it("dispatches continuation through psmux with deferred outcome proof", async () => {
@@ -4795,13 +4800,13 @@ describe("stalled worker continuation protocol", () => {
 		prepareManagedDirectoryRoot(fixture.stateDir);
 		__setTmuxProviderAuthorityPlatformForTests("win32");
 		try {
-			const context = resolveGjcTmuxProviderContext({
+			const context = resolveWorxTmuxProviderContext({
 				env: { WORX_TMUX_COMMAND: fakePsmux, WORX_PSMUX_COMMAND: fakePsmux },
 				platform: "win32",
 			});
 			const baseline = captureOwnerGenerationBaselineSync(fixture.stateDir, config.team_name);
-			persistGjcTmuxProviderAuthoritySync(
-				bindGjcTmuxProviderAuthority(context, {
+			persistWorxTmuxProviderAuthoritySync(
+				bindWorxTmuxProviderAuthority(context, {
 					stateDir: fixture.stateDir,
 					sessionId: config.team_name,
 					generation,
@@ -4837,7 +4842,7 @@ describe("stalled worker continuation protocol", () => {
 			path.join(fixture.stateDir, "workers", "worker-1", "heartbeat.json"),
 			`${JSON.stringify({ pid: 1, last_turn_at: new Date(fixture.now()).toISOString(), turn_count: 1, alive: true })}\n`,
 		);
-		await monitorGjcTeam(fixture.teamName, cleanupRoot!, {
+		await monitorWorxTeam(fixture.teamName, cleanupRoot!, {
 			...fixture.env,
 			WORX_TEAM_AUTO_CONTINUE_STALLED_WORKERS: "0",
 		});
@@ -4893,7 +4898,7 @@ describe("stalled worker continuation protocol", () => {
 		const enteredDispatch = new Promise<void>(resolve => {
 			entered = resolve;
 		});
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationBeforeDispatch: async () => {
 				entered();
@@ -4926,7 +4931,7 @@ describe("stalled worker continuation protocol", () => {
 			],
 		] as const) {
 			const fixture = await prepareContinuation(teamName);
-			__setGjcTeamRuntimeTestSeamsForTests({ nowMs: fixture.now, continuationTmuxDispatch: dispatch });
+			__setWorxTeamRuntimeTestSeamsForTests({ nowMs: fixture.now, continuationTmuxDispatch: dispatch });
 			await fixture.monitor();
 			fixture.advance(120_001);
 			await fixture.monitor();
@@ -4948,7 +4953,7 @@ describe("stalled worker continuation protocol", () => {
 			["continuation-empty-fields-throw-team", { name: "", code: "", message: "" }],
 		] as const) {
 			const fixture = await prepareContinuation(teamName);
-			__setGjcTeamRuntimeTestSeamsForTests({
+			__setWorxTeamRuntimeTestSeamsForTests({
 				nowMs: fixture.now,
 				continuationTmuxDispatch: () => {
 					throw thrown;
@@ -4966,14 +4971,14 @@ describe("stalled worker continuation protocol", () => {
 			expect(outcome.tmux_error.name.length).toBeGreaterThan(0);
 			expect(outcome.tmux_error.message.length).toBeGreaterThan(0);
 			if (outcome.tmux_error.code !== undefined) expect(outcome.tmux_error.code.length).toBeGreaterThan(0);
-			expect(isValidGjcContinuationOutcome(outcome, reservation, incident, 1)).toBe(true);
+			expect(isValidWorxContinuationOutcome(outcome, reservation, incident, 1)).toBe(true);
 			fixture.advance(120_001);
 			await fixture.monitor();
 			expect(await Bun.file(path.join(continuationRoot, incident, "attempt-02.reservation.json")).exists()).toBe(
 				false,
 			);
-			expect((await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env)).claim).toBeUndefined();
-			expect((await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env)).status).toBe("pending");
+			expect((await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env)).claim).toBeUndefined();
+			expect((await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env)).status).toBe("pending");
 		}
 	}, 20_000);
 	it("rejects non-canonical attempt-two outcomes before they can authorize another continuation", () => {
@@ -4982,11 +4987,11 @@ describe("stalled worker continuation protocol", () => {
 			schema_version: 1,
 			incident_hash: "incident",
 			attempt: 2,
-			reservation_sha256: gjcContinuationReservationDigest(reservation),
+			reservation_sha256: worxContinuationReservationDigest(reservation),
 			recorded_at: new Date().toISOString(),
 		};
 		expect(
-			isValidGjcContinuationOutcome(
+			isValidWorxContinuationOutcome(
 				{ ...common, result: "skipped", reason: "forged_reason" },
 				reservation,
 				"incident",
@@ -4994,7 +4999,7 @@ describe("stalled worker continuation protocol", () => {
 			),
 		).toBe(false);
 		expect(
-			isValidGjcContinuationOutcome(
+			isValidWorxContinuationOutcome(
 				{ ...common, result: "sent", reason: "tmux_sent", tmux_exit_code: 0, forged: true },
 				reservation,
 				"incident",
@@ -5002,7 +5007,7 @@ describe("stalled worker continuation protocol", () => {
 			),
 		).toBe(false);
 		expect(
-			isValidGjcContinuationOutcome(
+			isValidWorxContinuationOutcome(
 				{ ...common, result: "unknown", reason: "tmux_nonzero_exit", tmux_exit_code: 0 },
 				reservation,
 				"incident",
@@ -5016,14 +5021,14 @@ describe("stalled worker continuation protocol", () => {
 			schema_version: 1,
 			incident_hash: "incident",
 			attempt: 1,
-			reservation_sha256: gjcContinuationReservationDigest(reservation),
+			reservation_sha256: worxContinuationReservationDigest(reservation),
 			recorded_at: new Date().toISOString(),
 			result: "unknown",
 			reason: "tmux_dispatch_threw",
 		};
 		for (const extra of ["forged", "stack", "cause", "detail"]) {
 			expect(
-				isValidGjcContinuationOutcome(
+				isValidWorxContinuationOutcome(
 					{ ...common, tmux_error: { name: "Error", message: "failed", [extra]: "forged" } },
 					reservation,
 					"incident",
@@ -5032,7 +5037,7 @@ describe("stalled worker continuation protocol", () => {
 			).toBe(false);
 		}
 		expect(
-			isValidGjcContinuationOutcome(
+			isValidWorxContinuationOutcome(
 				{ ...common, tmux_error: { name: "Error", message: "failed", code: "" } },
 				reservation,
 				"incident",
@@ -5057,8 +5062,8 @@ describe("stalled worker continuation protocol", () => {
 		] as const) {
 			const fixture = await prepareContinuation(`continuation-${scenario}-team`);
 			if (scenario === "zero_claims") {
-				const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
-				await releaseGjcTeamTaskClaim(
+				const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+				await releaseWorxTeamTaskClaim(
 					fixture.teamName,
 					"task-1",
 					task.claim?.token ?? "",
@@ -5067,7 +5072,7 @@ describe("stalled worker continuation protocol", () => {
 					fixture.env,
 				);
 			} else if (scenario === "multiple_claims") {
-				const extra = (await executeGjcTeamApiOperation(
+				const extra = (await executeWorxTeamApiOperation(
 					"create-task",
 					{ team_name: fixture.teamName, subject: "second current claim", description: "second" },
 					cleanupRoot!,
@@ -5077,7 +5082,7 @@ describe("stalled worker continuation protocol", () => {
 					path.join(fixture.stateDir, "workers", "worker-1", "heartbeat.json"),
 					`${JSON.stringify({ pid: 1, last_turn_at: new Date(fixture.now()).toISOString(), turn_count: 1, alive: true })}\n`,
 				);
-				const second = await claimGjcTeamTask(
+				const second = await claimWorxTeamTask(
 					fixture.teamName,
 					"worker-1",
 					cleanupRoot!,
@@ -5137,7 +5142,7 @@ describe("stalled worker continuation protocol", () => {
 
 		const corrupt = await prepareContinuation("continuation-corrupt-reservation-team");
 		const config = await readTeamConfig(corrupt.stateDir);
-		const task = await readGjcTeamTask(corrupt.teamName, "task-1", cleanupRoot!, corrupt.env);
+		const task = await readWorxTeamTask(corrupt.teamName, "task-1", cleanupRoot!, corrupt.env);
 		const worker = config.workers[0];
 		if (!worker || !task.claim) throw new Error("expected claimed worker task");
 		const heartbeatAt = new Date(corrupt.now() - 60_001).toISOString();
@@ -5168,7 +5173,7 @@ describe("stalled worker continuation protocol", () => {
 
 		const digestMismatch = await prepareContinuation("continuation-digest-mismatch-team");
 		let digestDispatches = 0;
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: digestMismatch.now,
 			continuationBeforeDispatch: async () => {
 				const root = path.join(digestMismatch.stateDir, "workers", "worker-1", "continuations");
@@ -5189,14 +5194,14 @@ describe("stalled worker continuation protocol", () => {
 		expect(digestDispatches).toBe(1);
 
 		const restart = await prepareContinuation("continuation-missing-outcome-team");
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: restart.now,
 			continuationBeforeDispatch: async () => {
 				throw new Error("simulated crash");
 			},
 		});
 		await expect(restart.monitor()).rejects.toThrow("simulated crash");
-		__setGjcTeamRuntimeTestSeamsForTests({ nowMs: restart.now, continuationTmuxDispatch: () => ({ exitCode: 0 }) });
+		__setWorxTeamRuntimeTestSeamsForTests({ nowMs: restart.now, continuationTmuxDispatch: () => ({ exitCode: 0 }) });
 		await restart.monitor();
 		const restartRoot = path.join(restart.stateDir, "workers", "worker-1", "continuations");
 		const [restartIncident] = await fs.readdir(restartRoot);
@@ -5211,7 +5216,7 @@ describe("stalled worker continuation protocol", () => {
 			["malformed", "{truncated"],
 		] as const) {
 			const fixture = await prepareContinuation(`continuation-${name}-outcome-recovery-team`);
-			__setGjcTeamRuntimeTestSeamsForTests({
+			__setWorxTeamRuntimeTestSeamsForTests({
 				nowMs: fixture.now,
 				continuationBeforeDispatch: async () => {
 					throw new Error("simulated crash");
@@ -5222,8 +5227,8 @@ describe("stalled worker continuation protocol", () => {
 			const [incident] = await fs.readdir(root);
 			if (!incident) throw new Error("expected reservation");
 			await Bun.write(path.join(root, incident, "attempt-01.outcome.json"), outcome);
-			await recoverGjcTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env);
-			const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+			await recoverWorxTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env);
+			const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
 			expect(task.status).toBe("pending");
 			expect(task.claim).toBeUndefined();
 		}
@@ -5231,28 +5236,28 @@ describe("stalled worker continuation protocol", () => {
 
 	it("uses the injected clock to expire missing attempt-one and sent attempt-two recovery holds", async () => {
 		const missing = await prepareContinuation("continuation-missing-hold-clock-team");
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: missing.now,
 			continuationBeforeDispatch: async () => {
 				throw new Error("simulated crash");
 			},
 		});
 		await expect(missing.monitor()).rejects.toThrow("simulated crash");
-		await recoverGjcTeamStaleClaims(missing.teamName, cleanupRoot!, missing.env);
-		expect((await readGjcTeamTask(missing.teamName, "task-1", cleanupRoot!, missing.env)).claim).toBeDefined();
+		await recoverWorxTeamStaleClaims(missing.teamName, cleanupRoot!, missing.env);
+		expect((await readWorxTeamTask(missing.teamName, "task-1", cleanupRoot!, missing.env)).claim).toBeDefined();
 		missing.advance(30_000);
-		await recoverGjcTeamStaleClaims(missing.teamName, cleanupRoot!, missing.env);
-		expect((await readGjcTeamTask(missing.teamName, "task-1", cleanupRoot!, missing.env)).claim).toBeUndefined();
+		await recoverWorxTeamStaleClaims(missing.teamName, cleanupRoot!, missing.env);
+		expect((await readWorxTeamTask(missing.teamName, "task-1", cleanupRoot!, missing.env)).claim).toBeUndefined();
 
 		const sent = await prepareContinuation("continuation-sent-hold-clock-team");
 		await sent.monitor();
 		sent.advance(30_000);
 		await sent.monitor();
-		await recoverGjcTeamStaleClaims(sent.teamName, cleanupRoot!, sent.env);
-		expect((await readGjcTeamTask(sent.teamName, "task-1", cleanupRoot!, sent.env)).claim).toBeDefined();
+		await recoverWorxTeamStaleClaims(sent.teamName, cleanupRoot!, sent.env);
+		expect((await readWorxTeamTask(sent.teamName, "task-1", cleanupRoot!, sent.env)).claim).toBeDefined();
 		sent.advance(120_000);
-		await recoverGjcTeamStaleClaims(sent.teamName, cleanupRoot!, sent.env);
-		expect((await readGjcTeamTask(sent.teamName, "task-1", cleanupRoot!, sent.env)).claim).toBeUndefined();
+		await recoverWorxTeamStaleClaims(sent.teamName, cleanupRoot!, sent.env);
+		expect((await readWorxTeamTask(sent.teamName, "task-1", cleanupRoot!, sent.env)).claim).toBeUndefined();
 	});
 
 	it("holds every public authority-changing operation behind the monitor dispatch fence", async () => {
@@ -5278,7 +5283,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"update task",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"update-task",
 						{ team_name: f.teamName, task_id: "task-1", subject: "updated" },
 						cleanupRoot!,
@@ -5288,7 +5293,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"competing claim",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"claim-task",
 						{ team_name: f.teamName, worker: "worker-1", task_id: "task-1" },
 						cleanupRoot!,
@@ -5298,12 +5303,12 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"release claim",
 				async (f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"release-task-claim",
 						{
 							team_name: f.teamName,
 							task_id: "task-1",
-							claim_token: (await readGjcTeamTask(f.teamName, "task-1", cleanupRoot!, f.env)).claim?.token,
+							claim_token: (await readWorxTeamTask(f.teamName, "task-1", cleanupRoot!, f.env)).claim?.token,
 							worker: "worker-1",
 						},
 						cleanupRoot!,
@@ -5313,13 +5318,13 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"terminal transition",
 				async (f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"transition-task-status",
 						{
 							team_name: f.teamName,
 							task_id: "task-1",
 							status: "failed",
-							claim_token: (await readGjcTeamTask(f.teamName, "task-1", cleanupRoot!, f.env)).claim?.token,
+							claim_token: (await readWorxTeamTask(f.teamName, "task-1", cleanupRoot!, f.env)).claim?.token,
 							worker: "worker-1",
 						},
 						cleanupRoot!,
@@ -5329,7 +5334,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"heartbeat update",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"update-worker-heartbeat",
 						{
 							team_name: f.teamName,
@@ -5343,7 +5348,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"status update",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"update-worker-status",
 						{ team_name: f.teamName, worker: "worker-1", status: "idle" },
 						cleanupRoot!,
@@ -5353,7 +5358,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"lifecycle startup update",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"worker-startup-ack",
 						{ team_name: f.teamName, worker: "worker-1", pane_id: "%dry-run-worker-1", pid: 1 },
 						cleanupRoot!,
@@ -5363,7 +5368,7 @@ describe("stalled worker continuation protocol", () => {
 			[
 				"shutdown request",
 				(f: ContinuationFixture) =>
-					executeGjcTeamApiOperation(
+					executeWorxTeamApiOperation(
 						"write-shutdown-request",
 						{
 							team_name: f.teamName,
@@ -5376,8 +5381,8 @@ describe("stalled worker continuation protocol", () => {
 						f.env,
 					),
 			],
-			["phase shutdown", (f: ContinuationFixture) => shutdownGjcTeam(f.teamName, cleanupRoot!, f.env)],
-			["direct recovery", (f: ContinuationFixture) => recoverGjcTeamStaleClaims(f.teamName, cleanupRoot!, f.env)],
+			["phase shutdown", (f: ContinuationFixture) => shutdownWorxTeam(f.teamName, cleanupRoot!, f.env)],
+			["direct recovery", (f: ContinuationFixture) => recoverWorxTeamStaleClaims(f.teamName, cleanupRoot!, f.env)],
 			[
 				"worker GC prune",
 				async (f: ContinuationFixture) => {
@@ -5409,7 +5414,7 @@ describe("stalled worker continuation protocol", () => {
 				entered = resolve;
 			});
 			const argv: string[][] = [];
-			__setGjcTeamRuntimeTestSeamsForTests({
+			__setWorxTeamRuntimeTestSeamsForTests({
 				nowMs: fixture.now,
 				continuationBeforeDispatch: async () => {
 					entered();
@@ -5445,7 +5450,7 @@ describe("stalled worker continuation protocol", () => {
 			expect(sent![4], name).toContain("worker-continuation-ack");
 			expect(sent![4], name).toContain('"attempt":1');
 			for (const hostile of hostileInputs) expect(argv.flat().join("\u0000"), name).not.toContain(hostile);
-			const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+			const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
 			if (name === "update task") expect(task.subject).toBe("updated");
 			if (name === "competing claim") expect((operationResult as { ok: boolean }).ok).toBe(false);
 			if (name === "release claim" || name === "worker GC prune") expect(task.claim).toBeUndefined();
@@ -5486,11 +5491,11 @@ describe("stalled worker continuation protocol", () => {
 		).toBe(true);
 		expect(await Bun.file(workerPath).exists()).toBe(false);
 
-		await monitorGjcTeam(fixture.teamName, cleanupRoot!, fixture.env);
+		await monitorWorxTeam(fixture.teamName, cleanupRoot!, fixture.env);
 
 		expect(await Bun.file(workerPath).exists()).toBe(false);
 		expect(await readEvents(fixture.stateDir)).not.toContain("worker_lifecycle_nudge");
-		const task = await readGjcTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
+		const task = await readWorxTeamTask(fixture.teamName, "task-1", cleanupRoot!, fixture.env);
 		expect(task.status).toBe("pending");
 		expect(task.claim).toBeUndefined();
 	});
@@ -5504,7 +5509,7 @@ describe("stalled worker continuation protocol", () => {
 		const enteredDispatch = new Promise<void>(resolve => {
 			entered = resolve;
 		});
-		__setGjcTeamRuntimeTestSeamsForTests({
+		__setWorxTeamRuntimeTestSeamsForTests({
 			nowMs: fixture.now,
 			continuationBeforeDispatch: async () => {
 				entered();
@@ -5515,7 +5520,7 @@ describe("stalled worker continuation protocol", () => {
 		const monitor = fixture.monitor();
 		await enteredDispatch;
 		let gcFinished = false;
-		const gc = recoverGjcTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env).then(() => {
+		const gc = recoverWorxTeamStaleClaims(fixture.teamName, cleanupRoot!, fixture.env).then(() => {
 			gcFinished = true;
 		});
 		await Promise.resolve();

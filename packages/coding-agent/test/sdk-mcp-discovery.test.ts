@@ -12,7 +12,7 @@ import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, logger, Snowflake, setAgentDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
-import { installGjcBundle } from "../src/extensibility/worx-plugins";
+import { installWorxBundle } from "../src/extensibility/worx-plugins";
 import { createMCPToolName, type MCPLoadResult, MCPManager } from "../src/runtime-mcp";
 import { BUILTIN_TOOLS } from "../src/tools";
 
@@ -734,7 +734,7 @@ describe("createAgentSession MCP discovery prompt gating", () => {
 		const cleanupError = new Error("plugin cleanup failed");
 		const disconnectAll = vi.spyOn(MCPManager.prototype, "disconnectAll").mockRejectedValue(cleanupError);
 		vi.spyOn(MCPManager.prototype, "connectServers").mockResolvedValue(createMcpLoadResult([], new Map(), []));
-		const installed = await installGjcBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
+		const installed = await installWorxBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
 		expect(installed.ok).toBe(true);
 		await expect(createAgentSession(createIsolatedSessionOptions())).rejects.toMatchObject({
 			code: "MCP_MANAGER_CLEANUP_FAILED",
@@ -748,7 +748,7 @@ describe("createAgentSession MCP discovery prompt gating", () => {
 		vi.spyOn(MCPManager.prototype, "connectServers").mockRejectedValue(startupError);
 		vi.spyOn(MCPManager.prototype, "disconnectAll").mockRejectedValue(cleanupError);
 		const warning = vi.spyOn(logger, "warn").mockImplementation(() => {});
-		const installed = await installGjcBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
+		const installed = await installWorxBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
 		expect(installed.ok).toBe(true);
 		const { session } = await createAgentSession(createIsolatedSessionOptions());
 		try {
@@ -845,7 +845,7 @@ describe("createAgentSession MCP discovery prompt gating", () => {
 		vi.spyOn(MCPManager.prototype, "connectServers").mockRejectedValue(startupError);
 		vi.spyOn(MCPManager.prototype, "disconnectAll").mockRejectedValue(cleanupError);
 		const warning = vi.spyOn(logger, "warn").mockImplementation(() => {});
-		const installed = await installGjcBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
+		const installed = await installWorxBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
 		expect(installed.ok).toBe(true);
 		const { session } = await createAgentSession(createIsolatedSessionOptions());
 		try {
@@ -990,7 +990,7 @@ describe("createAgentSession MCP discovery prompt gating", () => {
 				expectedToolName: "domain_note",
 				mcpTools: [createMcpCustomTool("domain_note", "exact", "domain_note")],
 				prepare: async () => {
-					const r = await installGjcBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
+					const r = await installWorxBundle({ cwd: tempDir }, "project", validSixSurfacePluginBundle);
 					expect(r.ok).toBe(true);
 				},
 			},

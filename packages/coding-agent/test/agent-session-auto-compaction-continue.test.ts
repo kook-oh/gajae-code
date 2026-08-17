@@ -16,7 +16,7 @@ import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import * as native from "@bworx-io/worx-code-natives";
 import { getProjectAgentDir, logger, TempDir, withTimeout } from "@bworx-io/worx-utils";
 
-const runtimeSignalStoreKey = "__gjcAutoContinueSignals";
+const runtimeSignalStoreKey = "__worxAutoContinueSignals";
 type RuntimeSignalGlobal = typeof globalThis & { [runtimeSignalStoreKey]?: string[] };
 
 function getRuntimeSignals(): string[] {

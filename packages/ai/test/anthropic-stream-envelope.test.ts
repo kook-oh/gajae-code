@@ -1377,7 +1377,7 @@ describe("anthropic stream envelope handling", () => {
 	});
 
 	it("defaults to 1h cache TTL when the request omits cacheRetention, with safe fallback", async () => {
-		const prevGjc = Bun.env.WORX_CACHE_RETENTION;
+		const prevWorx = Bun.env.WORX_CACHE_RETENTION;
 		const prevPi = Bun.env.PI_CACHE_RETENTION;
 		delete Bun.env.WORX_CACHE_RETENTION;
 		delete Bun.env.PI_CACHE_RETENTION;
@@ -1408,8 +1408,8 @@ describe("anthropic stream envelope handling", () => {
 				await stream.result();
 			}
 		} finally {
-			if (prevGjc === undefined) delete Bun.env.WORX_CACHE_RETENTION;
-			else Bun.env.WORX_CACHE_RETENTION = prevGjc;
+			if (prevWorx === undefined) delete Bun.env.WORX_CACHE_RETENTION;
+			else Bun.env.WORX_CACHE_RETENTION = prevWorx;
 			if (prevPi === undefined) delete Bun.env.PI_CACHE_RETENTION;
 			else Bun.env.PI_CACHE_RETENTION = prevPi;
 		}

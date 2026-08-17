@@ -1,7 +1,7 @@
 import { lookup } from "node:dns/promises";
 import * as path from "node:path";
 import { pathIsWithin } from "@bworx-io/worx-utils";
-import { GjcPluginLoadError, type GjcPluginMcpManifestEntry } from "./types";
+import { WorxPluginLoadError, type WorxPluginMcpManifestEntry } from "./types";
 
 /**
  * Shared MCP security policy applied at BOTH install validation and runtime
@@ -14,7 +14,7 @@ const ALLOWED_HTTP_SCHEMES = new Set(["https:"]);
 const ALLOWED_STDIO_LAUNCHERS = new Set(["node", "bun"]);
 
 function fail(message: string): never {
-	throw new GjcPluginLoadError("security_policy", message);
+	throw new WorxPluginLoadError("security_policy", message);
 }
 
 function ipv4ToOctets(host: string): number[] | null {
@@ -173,7 +173,7 @@ const DANGEROUS_LAUNCHER_FLAGS = [
 ];
 
 /** stdio launcher/path confinement policy. */
-export function assertStdioAllowed(entry: GjcPluginMcpManifestEntry, ctx: StdioPolicyContext): void {
+export function assertStdioAllowed(entry: WorxPluginMcpManifestEntry, ctx: StdioPolicyContext): void {
 	const command = entry.command ?? "";
 	if (!command) fail(`MCP "${entry.name}": stdio requires a command`);
 	const root = path.resolve(ctx.pluginRoot);
@@ -228,7 +228,7 @@ export function assertStdioAllowed(entry: GjcPluginMcpManifestEntry, ctx: StdioP
  * and stdio confinement. Runtime connect additionally calls
  * assertDnsResolvesPublic and re-validates redirect/token URLs.
  */
-export function assertMcpInstallPolicy(entry: GjcPluginMcpManifestEntry, ctx: StdioPolicyContext): void {
+export function assertMcpInstallPolicy(entry: WorxPluginMcpManifestEntry, ctx: StdioPolicyContext): void {
 	if (entry.transport === "stdio") {
 		assertStdioAllowed(entry, ctx);
 		return;

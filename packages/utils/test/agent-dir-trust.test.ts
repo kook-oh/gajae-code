@@ -131,12 +131,12 @@ describe("agent directory trust boundary", () => {
 	});
 
 	it("prefers the WORX_ spelling when both are set", async () => {
-		const gjcDir = agentDirWith("from-gjc-spelling");
+		const worxDir = agentDirWith("from-gjc-spelling");
 		const piDir = agentDirWith("from-pi-spelling");
 		const resolved = await resolveIn(projectDir("SOMETHING_ELSE=1\n"), {
-			WORX_CODING_AGENT_DIR: gjcDir,
+			WORX_CODING_AGENT_DIR: worxDir,
 			PI_CODING_AGENT_DIR: piDir,
 		});
-		expect(resolved.agentDir).toBe(gjcDir);
+		expect(resolved.agentDir).toBe(worxDir);
 	});
 });

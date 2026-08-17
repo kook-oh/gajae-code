@@ -8,10 +8,10 @@ import {
 } from "@bworx-io/worx-code/config/model-registry";
 import {
 	DEFAULT_WORX_DEFINITION_NAMES,
-	getDefaultGjcDefinitions,
-	getEmbeddedDefaultGjcSkillFragments,
-	getEmbeddedDefaultGjcSkills,
-	installDefaultGjcDefinitions,
+	getDefaultWorxDefinitions,
+	getEmbeddedDefaultWorxSkillFragments,
+	getEmbeddedDefaultWorxSkills,
+	installDefaultWorxDefinitions,
 } from "@bworx-io/worx-code/defaults/worx-defaults";
 import {
 	buildSkillPromptMessage,
@@ -71,7 +71,7 @@ afterEach(async () => {
 
 describe("default GJC definitions", () => {
 	it("bundles exactly the four default workflow skills plus deep-interview and ultragoal fragments as installable assets", () => {
-		const definitions = getDefaultGjcDefinitions();
+		const definitions = getDefaultWorxDefinitions();
 		const workflowDefinitions = definitions.filter(definition => definition.kind === "skill");
 		const fragmentDefinitions = definitions.filter(definition => definition.kind === "skill-fragment");
 		const skills = workflowDefinitions.map(definition => definition.name).sort();
@@ -105,10 +105,10 @@ describe("default GJC definitions", () => {
 	});
 
 	it("exposes deep-interview fragments only through the parent-scoped fragment accessor", () => {
-		const fragments = getEmbeddedDefaultGjcSkillFragments("deep-interview");
+		const fragments = getEmbeddedDefaultWorxSkillFragments("deep-interview");
 
 		expect(
-			getEmbeddedDefaultGjcSkills()
+			getEmbeddedDefaultWorxSkills()
 				.map(skill => skill.name)
 				.sort(),
 		).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
@@ -123,10 +123,10 @@ describe("default GJC definitions", () => {
 	});
 
 	it("exposes the ultragoal fragments only through the parent-scoped fragment accessor", () => {
-		const fragments = getEmbeddedDefaultGjcSkillFragments("ultragoal");
+		const fragments = getEmbeddedDefaultWorxSkillFragments("ultragoal");
 
 		expect(
-			getEmbeddedDefaultGjcSkills()
+			getEmbeddedDefaultWorxSkills()
 				.map(skill => skill.name)
 				.sort(),
 		).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
@@ -145,7 +145,7 @@ describe("default GJC definitions", () => {
 	});
 
 	it("authors the ai-slop-cleaner fragment with the mandated report labels and full taxonomy", () => {
-		const fragment = getEmbeddedDefaultGjcSkillFragments("ultragoal").find(candidate =>
+		const fragment = getEmbeddedDefaultWorxSkillFragments("ultragoal").find(candidate =>
 			candidate.relativePath.endsWith("ai-slop-cleaner.md"),
 		)!;
 		const content = fragment.content;
@@ -181,7 +181,7 @@ describe("default GJC definitions", () => {
 	});
 
 	it("wires the ai-slop-cleaner into the ultragoal completion gate before verification and red-team", () => {
-		const ultragoal = getDefaultGjcDefinitions().find(
+		const ultragoal = getDefaultWorxDefinitions().find(
 			definition => definition.kind === "skill" && definition.name === "ultragoal",
 		);
 		if (!ultragoal) throw new Error("missing bundled ultragoal skill");
@@ -348,8 +348,8 @@ describe("default GJC definitions", () => {
 	it("makes installed project workflow skills discoverable without installing project agent stubs", async () => {
 		await withTempHome(async home => {
 			const repoRoot = await makeTempRoot();
-			const projectGjcRoot = path.join(repoRoot, ".worx");
-			await installDefaultGjcDefinitions({ targetRoot: projectGjcRoot });
+			const projectWorxRoot = path.join(repoRoot, ".worx");
+			await installDefaultWorxDefinitions({ targetRoot: projectWorxRoot });
 
 			const skills = await loadSkills({
 				cwd: repoRoot,
@@ -453,7 +453,7 @@ Project executor override body.
 		expect(ultragoal).toContain("cumulative-since-base");
 		expect(ultragoal).toContain("skill-fragments/ultragoal/validation-batch-contracts.md");
 
-		const contracts = getEmbeddedDefaultGjcSkillFragments("ultragoal").find(fragment =>
+		const contracts = getEmbeddedDefaultWorxSkillFragments("ultragoal").find(fragment =>
 			fragment.relativePath.endsWith("validation-batch-contracts.md"),
 		)!;
 		expect(contracts.content).toContain("deferredToBatch");
@@ -584,7 +584,7 @@ Project executor override body.
 	});
 
 	it("keeps bundled deep-interview skill on GJC-native workflow vocabulary", () => {
-		const deepInterview = getDefaultGjcDefinitions().find(
+		const deepInterview = getDefaultWorxDefinitions().find(
 			definition => definition.kind === "skill" && definition.name === "deep-interview",
 		);
 		expect(deepInterview).toBeDefined();
@@ -633,7 +633,7 @@ Project executor override body.
 	});
 
 	it("renders deep-interview arguments once through the loader-owned User field", async () => {
-		const skill = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "deep-interview");
+		const skill = getEmbeddedDefaultWorxSkills().find(skill => skill.name === "deep-interview");
 		if (!skill) throw new Error("missing bundled deep-interview skill");
 		const request = "한국어로 인터뷰해 주세요";
 		const rendered = await buildSkillPromptMessage(skill, request);
@@ -647,7 +647,7 @@ Project executor override body.
 	});
 
 	it("keeps bundled ralplan stage artifacts on CLI write path", () => {
-		const ralplan = getDefaultGjcDefinitions().find(
+		const ralplan = getDefaultWorxDefinitions().find(
 			definition => definition.kind === "skill" && definition.name === "ralplan",
 		);
 		expect(ralplan).toBeDefined();
@@ -671,10 +671,10 @@ Project executor override body.
 
 	it("installs bundled workflow skill definitions without overwriting local edits unless forced", async () => {
 		const targetRoot = await makeTempRoot();
-		const initial = await installDefaultGjcDefinitions({ targetRoot });
+		const initial = await installDefaultWorxDefinitions({ targetRoot });
 		const deepInterviewSkillPath = path.join(targetRoot, "skills", "deep-interview", "SKILL.md");
 		const installedDeepInterview = await Bun.file(deepInterviewSkillPath).text();
-		const bundledDeepInterview = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "deep-interview");
+		const bundledDeepInterview = getEmbeddedDefaultWorxSkills().find(skill => skill.name === "deep-interview");
 		if (!bundledDeepInterview) throw new Error("missing bundled deep-interview skill");
 
 		expect(initial.written).toBe(9);
@@ -688,16 +688,16 @@ Project executor override body.
 		).text();
 		expect(installedResearchFragment).toContain("ranked candidate answers");
 		await Bun.write(deepInterviewSkillPath, "local edit");
-		const skipped = await installDefaultGjcDefinitions({ targetRoot });
+		const skipped = await installDefaultWorxDefinitions({ targetRoot });
 		expect(skipped.written).toBe(0);
 		expect(skipped.skipped).toBe(9);
 		expect(await Bun.file(deepInterviewSkillPath).text()).toBe("local edit");
 
-		const check = await installDefaultGjcDefinitions({ targetRoot, check: true });
+		const check = await installDefaultWorxDefinitions({ targetRoot, check: true });
 		expect(check.different).toBe(1);
 		expect(check.matching).toBe(8);
 
-		const forced = await installDefaultGjcDefinitions({ targetRoot, force: true });
+		const forced = await installDefaultWorxDefinitions({ targetRoot, force: true });
 		expect(forced.written).toBe(9);
 		expect(await Bun.file(deepInterviewSkillPath).text()).toBe(installedDeepInterview);
 		expect(
@@ -710,25 +710,25 @@ Project executor override body.
 		const deepInterviewSkillPath = path.join(targetRoot, "skills", "deep-interview", "SKILL.md");
 
 		// No files on disk yet: refreshOnly must not create any (opt-in preserved).
-		const untouched = await installDefaultGjcDefinitions({ targetRoot, refreshOnly: true });
+		const untouched = await installDefaultWorxDefinitions({ targetRoot, refreshOnly: true });
 		expect(untouched.written).toBe(0);
 		expect(untouched.missing).toBe(9);
 		expect(await Bun.file(deepInterviewSkillPath).exists()).toBe(false);
 
 		// User opted in, then a local file went stale relative to the embedded default.
-		const installed = await installDefaultGjcDefinitions({ targetRoot });
+		const installed = await installDefaultWorxDefinitions({ targetRoot });
 		const canonicalDeepInterview = await Bun.file(deepInterviewSkillPath).text();
 		expect(installed.written).toBe(9);
 		await Bun.write(deepInterviewSkillPath, "stale content");
 
-		const refreshed = await installDefaultGjcDefinitions({ targetRoot, refreshOnly: true });
+		const refreshed = await installDefaultWorxDefinitions({ targetRoot, refreshOnly: true });
 		expect(refreshed.written).toBe(1);
 		expect(refreshed.matching).toBe(8);
 		expect(refreshed.missing).toBe(0);
 		expect(await Bun.file(deepInterviewSkillPath).text()).toBe(canonicalDeepInterview);
 
 		// Second refresh is a no-op once everything matches.
-		const stable = await installDefaultGjcDefinitions({ targetRoot, refreshOnly: true });
+		const stable = await installDefaultWorxDefinitions({ targetRoot, refreshOnly: true });
 		expect(stable.written).toBe(0);
 		expect(stable.matching).toBe(9);
 	});
@@ -736,7 +736,7 @@ Project executor override body.
 	it("does not make installed fragments reachable as skill-relative internal URL assets", async () => {
 		await withTempHome(async () => {
 			const repoRoot = await makeTempRoot();
-			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
+			await installDefaultWorxDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
 
 			const skills = await loadSkills({
 				cwd: repoRoot,
@@ -759,7 +759,7 @@ Project executor override body.
 	it("does not make the ultragoal ai-slop-cleaner fragment reachable as a skill-relative internal URL asset", async () => {
 		await withTempHome(async () => {
 			const repoRoot = await makeTempRoot();
-			await installDefaultGjcDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
+			await installDefaultWorxDefinitions({ targetRoot: path.join(repoRoot, ".worx") });
 
 			const skills = await loadSkills({
 				cwd: repoRoot,

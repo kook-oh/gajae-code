@@ -3,14 +3,14 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { ActiveSubskillEntry } from "../../skill-state/active-state";
 import { resolveWithinRoot } from "./paths";
-import { loadEffectiveGjcPluginRegistry } from "./registry";
+import { loadEffectiveWorxPluginRegistry } from "./registry";
 import type {
-	GjcPluginRegistryEntry,
 	LoadedSubskillActivation,
 	LoadedSubskillToolReference,
 	NormalizedSubskillSurface,
+	WorxPluginRegistryEntry,
 } from "./types";
-import { GjcPluginLoadError } from "./types";
+import { WorxPluginLoadError } from "./types";
 
 export type SubskillReference = Partial<LoadedSubskillActivation> & {
 	plugin: string;
@@ -26,7 +26,7 @@ export type SubskillReference = Partial<LoadedSubskillActivation> & {
 };
 
 export interface ValidatedActiveSubskill {
-	entry: GjcPluginRegistryEntry;
+	entry: WorxPluginRegistryEntry;
 	surface: NormalizedSubskillSurface;
 	activation: LoadedSubskillActivation;
 	/** Exact bytes read and hash-checked at the validation boundary. */
@@ -59,24 +59,24 @@ async function readVerifiedFile(
 	try {
 		[rootReal, fileReal] = await Promise.all([fs.realpath(root), fs.realpath(lexical)]);
 	} catch (error) {
-		throw new GjcPluginLoadError("runtime_mismatch", `Missing or unreadable ${label} at ${relativePath}`, {
+		throw new WorxPluginLoadError("runtime_mismatch", `Missing or unreadable ${label} at ${relativePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	if (!isWithin(rootReal, fileReal)) {
-		throw new GjcPluginLoadError("runtime_mismatch", `${label} escapes the installed plugin root: ${relativePath}`);
+		throw new WorxPluginLoadError("runtime_mismatch", `${label} escapes the installed plugin root: ${relativePath}`);
 	}
 	let bytes: Buffer;
 	try {
 		bytes = await fs.readFile(fileReal);
 	} catch (error) {
-		throw new GjcPluginLoadError("runtime_mismatch", `Missing or unreadable ${label} at ${relativePath}`, {
+		throw new WorxPluginLoadError("runtime_mismatch", `Missing or unreadable ${label} at ${relativePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	const actual = digest(bytes);
 	if (actual.toLowerCase() !== expected.toLowerCase()) {
-		throw new GjcPluginLoadError("runtime_mismatch", `${label} hash drift at ${relativePath}`);
+		throw new WorxPluginLoadError("runtime_mismatch", `${label} hash drift at ${relativePath}`);
 	}
 	return { path: fileReal, bytes };
 }
@@ -94,7 +94,7 @@ async function tryVerifyFile(
 	try {
 		return await verifyFile(root, relativePath, expected, label);
 	} catch (error) {
-		if (error instanceof GjcPluginLoadError) return null;
+		if (error instanceof WorxPluginLoadError) return null;
 		throw error;
 	}
 }
@@ -108,15 +108,15 @@ async function tryReadVerifiedFile(
 	try {
 		return await readVerifiedFile(root, relativePath, expected, label);
 	} catch (error) {
-		if (error instanceof GjcPluginLoadError) return null;
+		if (error instanceof WorxPluginLoadError) return null;
 		throw error;
 	}
 }
 
 function entryForReference(
-	entries: readonly GjcPluginRegistryEntry[],
+	entries: readonly WorxPluginRegistryEntry[],
 	reference: SubskillReference,
-): GjcPluginRegistryEntry | undefined {
+): WorxPluginRegistryEntry | undefined {
 	const candidates = entries.filter(
 		entry => entry.name === reference.plugin && (!reference.scope || entry.scope === reference.scope),
 	);
@@ -124,7 +124,7 @@ function entryForReference(
 }
 
 function surfaceForReference(
-	entry: GjcPluginRegistryEntry,
+	entry: WorxPluginRegistryEntry,
 	reference: SubskillReference,
 ): NormalizedSubskillSurface | undefined {
 	const candidates = entry.surfaces.subskills.filter(surface => {
@@ -158,7 +158,7 @@ export async function resolveValidatedActiveSubskill(input: {
 }): Promise<ValidatedActiveSubskill | null> {
 	const reference = input.reference as SubskillReference;
 	if (!reference.scope || !reference.extensionId || !reference.expectedDigest) return null;
-	const entries = await loadEffectiveGjcPluginRegistry(input.cwd);
+	const entries = await loadEffectiveWorxPluginRegistry(input.cwd);
 	const entry = entryForReference(entries, reference);
 	if (!entry?.enabled || entry.migration?.status === "failed") return null;
 	const surface = surfaceForReference(entry, reference);

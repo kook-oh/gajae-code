@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import { Settings } from "../src/config/settings";
 import { bundleIdentity } from "../src/extensibility/worx-plugins/lifecycle-reconciliation";
-import { GjcRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
+import { WorxRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import { SettingsSelectorComponent } from "../src/modes/components/settings-selector";
 import { getThemeByName, setThemeInstance } from "../src/modes/theme/theme";
 
@@ -11,7 +11,7 @@ import { getThemeByName, setThemeInstance } from "../src/modes/theme/theme";
  * kept the same identifiers would still pass it.
  *
  * This drives the REAL `SettingsSelectorComponent` with a real
- * `GjcRuntimeSnapshotStore`, switches to the GJC Bundles tab exactly as the
+ * `WorxRuntimeSnapshotStore`, switches to the GJC Bundles tab exactly as the
  * production controller does, and asserts the component actually received the
  * provider and generation rather than silently defaulting to unavailable.
  */
@@ -41,7 +41,7 @@ function baseContext(cwd: string): {
 
 describe("GJC Bundles settings integration through the production selector", () => {
 	test("the published provider and generation reach the tab component", () => {
-		const store = new GjcRuntimeSnapshotStore();
+		const store = new WorxRuntimeSnapshotStore();
 		const epoch = store.beginPass();
 		store.publish(
 			{
@@ -59,7 +59,7 @@ describe("GJC Bundles settings integration through the production selector", () 
 		);
 
 		const selector = new SettingsSelectorComponent(
-			{ ...baseContext("/tmp/does-not-need-to-exist"), gjcRuntimeSnapshot: store, gjcActivationGeneration: 7 },
+			{ ...baseContext("/tmp/does-not-need-to-exist"), worxRuntimeSnapshot: store, worxActivationGeneration: 7 },
 			{ onCancel: () => {}, onChange: () => {} },
 		);
 

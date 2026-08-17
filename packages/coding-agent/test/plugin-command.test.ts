@@ -93,10 +93,10 @@ describe("Plugin command scope parsing", () => {
 		// `marketplace` arrays are pre-existing surfaces owned elsewhere, so a
 		// whole-document scan would conflate their behavior with this one.
 		const listed = JSON.parse(jsonList.stdout) as { gjc?: unknown[] };
-		const gjcJson = JSON.stringify(listed.gjc ?? []);
-		expect(gjcJson).not.toContain("manifestPath");
-		expect(gjcJson).not.toContain(os.homedir());
-		expect(gjcJson).not.toMatch(/"uri"\s*:/);
+		const worxJson = JSON.stringify(listed.gjc ?? []);
+		expect(worxJson).not.toContain("manifestPath");
+		expect(worxJson).not.toContain(os.homedir());
+		expect(worxJson).not.toMatch(/"uri"\s*:/);
 	});
 	it("uninstalls a user-scoped GJC bundle instead of invoking npm", async () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));

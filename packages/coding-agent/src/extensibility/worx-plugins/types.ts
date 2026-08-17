@@ -1,25 +1,25 @@
-import type { CanonicalGjcWorkflowSkill } from "../../skill-state/active-state";
+import type { CanonicalWorxWorkflowSkill } from "../../skill-state/active-state";
 import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../../skill-state/active-state";
 
 export const WORX_PLUGIN_MANIFEST_FILENAME = "gajae-plugin.json";
 export const WORX_PLUGIN_KIND = "gajae-code-plugin";
 
 export const WORX_SUBSKILL_PARENT_SKILLS = CANONICAL_WORX_WORKFLOW_SKILLS;
-export type GjcSubskillParentSkill = CanonicalGjcWorkflowSkill;
+export type WorxSubskillParentSkill = CanonicalWorxWorkflowSkill;
 
 export const WORX_SUBSKILL_PARENT_AGENTS = ["executor", "architect", "planner", "critic"] as const;
-export type GjcSubskillParentAgent = (typeof WORX_SUBSKILL_PARENT_AGENTS)[number];
+export type WorxSubskillParentAgent = (typeof WORX_SUBSKILL_PARENT_AGENTS)[number];
 
-export type GjcSubskillParent = GjcSubskillParentSkill | GjcSubskillParentAgent;
+export type WorxSubskillParent = WorxSubskillParentSkill | WorxSubskillParentAgent;
 
-export const WORX_AGENT_SUBSKILL_PHASES: Record<GjcSubskillParentAgent, string[]> = {
+export const WORX_AGENT_SUBSKILL_PHASES: Record<WorxSubskillParentAgent, string[]> = {
 	executor: ["prompt"],
 	architect: ["prompt"],
 	planner: ["prompt"],
 	critic: ["prompt"],
 };
 
-export interface GjcPluginToolManifestEntry {
+export interface WorxPluginToolManifestEntry {
 	name: string;
 	path: string;
 	description?: string;
@@ -41,7 +41,7 @@ export interface GjcPluginToolManifestEntry {
 	surface: "subskill" | "always-on";
 }
 
-export interface GjcPluginHookManifestEntry {
+export interface WorxPluginHookManifestEntry {
 	name: string;
 	event: string;
 	target?: string;
@@ -50,11 +50,11 @@ export interface GjcPluginHookManifestEntry {
 	sha256?: string;
 }
 
-export type GjcPluginMcpTransport = "stdio" | "http" | "sse";
+export type WorxPluginMcpTransport = "stdio" | "http" | "sse";
 
-export interface GjcPluginMcpManifestEntry {
+export interface WorxPluginMcpManifestEntry {
 	name: string;
-	transport: GjcPluginMcpTransport;
+	transport: WorxPluginMcpTransport;
 	command?: string;
 	args?: string[];
 	cwd?: string;
@@ -63,27 +63,27 @@ export interface GjcPluginMcpManifestEntry {
 	sha256?: string;
 }
 
-export interface GjcPluginAppendixManifestEntry {
+export interface WorxPluginAppendixManifestEntry {
 	name: string;
 	path?: string;
 	content?: string;
 	sha256?: string;
 }
 
-export interface GjcPluginAgentAppendixManifestEntry extends GjcPluginAppendixManifestEntry {
-	agent: GjcSubskillParentAgent;
+export interface WorxPluginAgentAppendixManifestEntry extends WorxPluginAppendixManifestEntry {
+	agent: WorxSubskillParentAgent;
 }
 
-export interface GjcPluginManifest {
+export interface WorxPluginManifest {
 	name: string;
 	version: string;
 	kind: "gajae-code-plugin";
 	subskills: string[];
-	tools: GjcPluginToolManifestEntry[];
-	hooks: GjcPluginHookManifestEntry[];
-	mcps: GjcPluginMcpManifestEntry[];
-	systemAppendix: GjcPluginAppendixManifestEntry[];
-	agentAppendix: GjcPluginAgentAppendixManifestEntry[];
+	tools: WorxPluginToolManifestEntry[];
+	hooks: WorxPluginHookManifestEntry[];
+	mcps: WorxPluginMcpManifestEntry[];
+	systemAppendix: WorxPluginAppendixManifestEntry[];
+	agentAppendix: WorxPluginAgentAppendixManifestEntry[];
 }
 
 export interface SubskillFrontmatter {
@@ -127,7 +127,7 @@ export interface LoadedSubskillActivation {
 	bindsTo: string;
 	phase: string;
 	/** Registry identity for v2-only activation. */
-	scope?: GjcPluginScope;
+	scope?: WorxPluginScope;
 	extensionId?: string;
 	expectedDigest?: string;
 	filePath: string;
@@ -142,7 +142,7 @@ export interface PhaseScopedToolBinding {
 	toolPath: string;
 }
 
-export interface LoadedGjcPlugin {
+export interface LoadedWorxPlugin {
 	name: string;
 	version: string;
 	root: string;
@@ -151,7 +151,7 @@ export interface LoadedGjcPlugin {
 	toolBindings: PhaseScopedToolBinding[];
 }
 
-export type GjcPluginLoadErrorCode =
+export type WorxPluginLoadErrorCode =
 	// Parse-time
 	| "forbidden_surface"
 	| "invalid_manifest"
@@ -183,18 +183,18 @@ export type GjcPluginLoadErrorCode =
 	| "quarantined_surface"
 	| "migration_required";
 
-export class GjcPluginLoadError extends Error {
-	readonly code: GjcPluginLoadErrorCode;
+export class WorxPluginLoadError extends Error {
+	readonly code: WorxPluginLoadErrorCode;
 
-	constructor(code: GjcPluginLoadErrorCode, message: string, options?: ErrorOptions) {
+	constructor(code: WorxPluginLoadErrorCode, message: string, options?: ErrorOptions) {
 		super(message, options);
-		this.name = "GjcPluginLoadError";
+		this.name = "WorxPluginLoadError";
 		this.code = code;
 	}
 }
 
 /** Typed refusal raised when an implementation changed after v2 metadata was recorded. */
-export class PluginImplementationHashMismatchError extends GjcPluginLoadError {
+export class PluginImplementationHashMismatchError extends WorxPluginLoadError {
 	readonly expected: string;
 	readonly actual: string;
 	readonly path: string;
@@ -209,18 +209,18 @@ export class PluginImplementationHashMismatchError extends GjcPluginLoadError {
 }
 
 /** Typed refusal for a registry entry that could not be migrated to v2 metadata. */
-export class PluginMigrationRequiredError extends GjcPluginLoadError {
+export class PluginMigrationRequiredError extends WorxPluginLoadError {
 	constructor(plugin: string, surface: string, cause: string) {
 		super("migration_required", `GJC plugin "${plugin}" surface "${surface}" requires migration: ${cause}`);
 		this.name = "PluginMigrationRequiredError";
 	}
 }
 
-export type GjcPluginScope = "user" | "project";
+export type WorxPluginScope = "user" | "project";
 
-export type GjcPluginSourceKind = "path" | "git" | "tarball";
+export type WorxPluginSourceKind = "path" | "git" | "tarball";
 
-export interface GjcPluginCopiedFile {
+export interface WorxPluginCopiedFile {
 	relativePath: string;
 	sha256: string;
 	bytes: number;
@@ -268,17 +268,17 @@ export interface NormalizedToolSurfaceV2 extends NormalizedToolSurface {
 	metadataVersion: 2;
 }
 
-export interface GjcPluginMigrationFailure {
-	code: GjcPluginLoadErrorCode;
+export interface WorxPluginMigrationFailure {
+	code: WorxPluginLoadErrorCode;
 	surface: string;
 	cause: string;
 }
 
-export interface GjcPluginMigrationState {
+export interface WorxPluginMigrationState {
 	status: "migrated" | "failed";
 	metadataVersion: 2;
 	migratedAt?: string;
-	failure?: GjcPluginMigrationFailure;
+	failure?: WorxPluginMigrationFailure;
 }
 
 export interface NormalizedHookSurface {
@@ -295,9 +295,9 @@ export interface NormalizedHookSurface {
 export interface NormalizedMcpSurface {
 	extensionId: string;
 	name: string;
-	transport: GjcPluginMcpTransport;
+	transport: WorxPluginMcpTransport;
 	configHash: string;
-	config: GjcPluginMcpManifestEntry;
+	config: WorxPluginMcpManifestEntry;
 }
 
 export interface NormalizedAppendixSurface {
@@ -311,10 +311,10 @@ export interface NormalizedAppendixSurface {
 }
 
 export interface NormalizedAgentAppendixSurface extends NormalizedAppendixSurface {
-	agent: GjcSubskillParentAgent;
+	agent: WorxSubskillParentAgent;
 }
 
-export interface NormalizedGjcPluginSurfaces {
+export interface NormalizedWorxPluginSurfaces {
 	subskills: NormalizedSubskillSurface[];
 	tools: NormalizedToolSurface[];
 	hooks: NormalizedHookSurface[];
@@ -327,74 +327,74 @@ export interface NormalizedGjcPluginSurfaces {
  * Result of the pure compile step. Computed from manifest, frontmatter, and
  * declared files read as bytes only — never by importing plugin code.
  */
-export interface NormalizedGjcPluginBundle {
+export interface NormalizedWorxPluginBundle {
 	name: string;
 	version: string;
 	root: string;
 	manifestPath: string;
 	manifestHash: string;
-	surfaces: NormalizedGjcPluginSurfaces;
-	files: GjcPluginCopiedFile[];
+	surfaces: NormalizedWorxPluginSurfaces;
+	files: WorxPluginCopiedFile[];
 }
 
-export interface GjcPluginQuarantineEntry {
+export interface WorxPluginQuarantineEntry {
 	surfaceId: string;
-	code: GjcPluginLoadErrorCode;
+	code: WorxPluginLoadErrorCode;
 	message: string;
 	detectedAt: string;
 }
 
-export interface GjcPluginRegistrySource {
-	kind: GjcPluginSourceKind;
+export interface WorxPluginRegistrySource {
+	kind: WorxPluginSourceKind;
 	uri: string;
 	ref?: string;
 	sha?: string;
 	resolvedAt: string;
 }
 
-export interface GjcPluginRegistryEntry {
+export interface WorxPluginRegistryEntry {
 	name: string;
 	version: string;
-	scope: GjcPluginScope;
+	scope: WorxPluginScope;
 	enabled: boolean;
 	pluginRoot: string;
 	manifestPath: string;
 	manifestHash: string;
-	source: GjcPluginRegistrySource;
+	source: WorxPluginRegistrySource;
 	installedAt: string;
 	updatedAt: string;
-	copiedFiles: GjcPluginCopiedFile[];
-	surfaces: NormalizedGjcPluginSurfaces;
+	copiedFiles: WorxPluginCopiedFile[];
+	surfaces: NormalizedWorxPluginSurfaces;
 	disabledSurfaceIds: string[];
-	quarantine?: GjcPluginQuarantineEntry[];
+	quarantine?: WorxPluginQuarantineEntry[];
 	/** v2 metadata status; absent is accepted for in-memory legacy test fixtures. */
-	migration?: GjcPluginMigrationState;
+	migration?: WorxPluginMigrationState;
 }
 
-export interface GjcPluginRegistry {
+export interface WorxPluginRegistry {
 	version: 1;
-	scope: GjcPluginScope;
-	plugins: GjcPluginRegistryEntry[];
+	scope: WorxPluginScope;
+	plugins: WorxPluginRegistryEntry[];
 }
 
 /**
  * Stable identifiers for plugin-contributed surfaces used by observability,
  * disabledSurfaceIds, and quarantine bookkeeping.
  */
-export type GjcPluginSurfaceExtensionId = string;
+export type WorxPluginSurfaceExtensionId = string;
 
 /** Canonical GJC bundle identity: kind is fixed, target is (scope, name). */
 export const WORX_BUNDLE_KIND = "gjc-bundle";
 
-export interface GjcBundleIdentity {
+export interface WorxBundleIdentity {
 	kind: typeof WORX_BUNDLE_KIND;
-	scope: GjcPluginScope;
+	scope: WorxPluginScope;
 	name: string;
 }
 
 /** Source descriptor exposed to CLI/Settings: never carries raw locator secrets. */
-export interface GjcBundleSafeSource {
-	kind: GjcPluginSourceKind;
+export interface WorxBundleSafeSource {
+	kind: WorxPluginSourceKind;
 	/** Redacted display locator (host + path only; no userinfo/query/fragment). */
 	display: string;
 	/** Conservative safe git ref, omitted when the stored value is unsafe. */
@@ -408,7 +408,7 @@ export interface GjcBundleSafeSource {
 	unsupportedReason?: string;
 }
 
-export interface GjcBundleSurfaceSummary {
+export interface WorxBundleSurfaceSummary {
 	extensionId: string;
 	kind: "tool" | "hook" | "mcp" | "system-appendix" | "agent-appendix" | "subskill";
 	name: string;
@@ -416,22 +416,22 @@ export interface GjcBundleSurfaceSummary {
 	enabled: boolean;
 	/** Deterministic quarantine derived from persisted registry state only. */
 	quarantined: boolean;
-	quarantineCode?: GjcPluginLoadErrorCode;
+	quarantineCode?: WorxPluginLoadErrorCode;
 }
 
 /** Installed-bundle DTO shared by CLI and Settings. Contains no raw locators. */
-export interface GjcBundleSummary {
-	identity: GjcBundleIdentity;
+export interface WorxBundleSummary {
+	identity: WorxBundleIdentity;
 	version: string;
 	description?: string;
 	enabled: boolean;
-	source: GjcBundleSafeSource;
+	source: WorxBundleSafeSource;
 	installedAt: string;
 	updatedAt: string;
 	manifestHash: string;
 	/** Deterministic fingerprint of the exact installed target. */
 	targetFingerprint: string;
-	surfaces: GjcBundleSurfaceSummary[];
+	surfaces: WorxBundleSurfaceSummary[];
 	/** True when any deterministic quarantine blocks enablement. */
 	quarantined: boolean;
 }
@@ -441,15 +441,15 @@ export interface GjcBundleSummary {
  * exact installed baseline, and the deterministic decision context. Apply is a
  * compare-and-swap against all three fingerprints.
  */
-export interface GjcReviewedUpdateToken {
-	identity: GjcBundleIdentity;
+export interface WorxReviewedUpdateToken {
+	identity: WorxBundleIdentity;
 	candidateFingerprint: string;
 	baselineFingerprint: string;
 	decisionContextFingerprint: string;
 	reviewedAt: string;
 }
 
-export type GjcLifecycleErrorCode =
+export type WorxLifecycleErrorCode =
 	| "already_installed_use_upgrade"
 	| "not_installed"
 	| "identity_mismatch"
@@ -462,19 +462,19 @@ export type GjcLifecycleErrorCode =
 	| "surface_unknown"
 	| "invalid_target";
 
-export interface GjcLifecycleError {
-	code: GjcLifecycleErrorCode;
+export interface WorxLifecycleError {
+	code: WorxLifecycleErrorCode;
 	/** Sanitized operator-facing message; never contains raw locators or causes. */
 	message: string;
 	/** Safe scoped recovery hint (e.g. the exact command to run instead). */
 	recovery?: string;
 }
 
-export type GjcLifecycleResult<T> = { ok: true; value: T } | { ok: false; error: GjcLifecycleError };
+export type WorxLifecycleResult<T> = { ok: true; value: T } | { ok: false; error: WorxLifecycleError };
 
-export interface GjcUpdatePreview {
-	identity: GjcBundleIdentity;
-	current: GjcBundleSummary;
+export interface WorxUpdatePreview {
+	identity: WorxBundleIdentity;
+	current: WorxBundleSummary;
 	candidateVersion: string;
 	candidateManifestHash: string;
 	/** Surface IDs added, removed, or retained by this candidate. */
@@ -482,25 +482,25 @@ export interface GjcUpdatePreview {
 	removedSurfaceIds: string[];
 	retainedSurfaceIds: string[];
 	changed: boolean;
-	token: GjcReviewedUpdateToken;
+	token: WorxReviewedUpdateToken;
 }
 
-export type GjcUpdateApplyStatus = "updated" | "unchanged";
+export type WorxUpdateApplyStatus = "updated" | "unchanged";
 
-export interface GjcUpdateApplyResult {
-	status: GjcUpdateApplyStatus;
-	summary: GjcBundleSummary;
+export interface WorxUpdateApplyResult {
+	status: WorxUpdateApplyStatus;
+	summary: WorxBundleSummary;
 	/** Number of filesystem remnants that could not be removed after a successful swap. */
 	remnantCount: number;
 }
 
-export interface GjcInstallResult {
+export interface WorxInstallResult {
 	status: "installed";
-	summary: GjcBundleSummary;
+	summary: WorxBundleSummary;
 }
 
-export interface GjcToggleResult {
-	summary: GjcBundleSummary;
+export interface WorxToggleResult {
+	summary: WorxBundleSummary;
 	/** False when the requested state already matched (no persisted mutation). */
 	mutated: boolean;
 }
@@ -509,17 +509,17 @@ export interface GjcToggleResult {
  * Scope-qualified runtime evidence emitted by producers. Producers never
  * publish; the session coordinator accumulates one complete generation.
  */
-export interface GjcRuntimeFinding {
-	identity: GjcBundleIdentity;
+export interface WorxRuntimeFinding {
+	identity: WorxBundleIdentity;
 	surfaceId: string;
-	code: GjcPluginLoadErrorCode;
+	code: WorxPluginLoadErrorCode;
 	message: string;
 }
 
-export interface GjcRuntimeSnapshot {
+export interface WorxRuntimeSnapshot {
 	/** Monotonic activation generation this snapshot describes. */
 	generation: number;
-	findings: GjcRuntimeFinding[];
+	findings: WorxRuntimeFinding[];
 }
 
-export type GjcRuntimeSnapshotState = { status: "unavailable" } | { status: "current"; snapshot: GjcRuntimeSnapshot };
+export type WorxRuntimeSnapshotState = { status: "unavailable" } | { status: "current"; snapshot: WorxRuntimeSnapshot };

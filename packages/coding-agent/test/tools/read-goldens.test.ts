@@ -644,7 +644,7 @@ describe("read truncation golden harness", () => {
 		const session = createSession(fixture.root, settings, fixture.artifactDir);
 		session.enableLsp = false;
 		const previousPiVariant = Bun.env.PI_EDIT_VARIANT;
-		const previousGjcVariant = Bun.env.WORX_EDIT_VARIANT;
+		const previousWorxVariant = Bun.env.WORX_EDIT_VARIANT;
 		Bun.env.PI_EDIT_VARIANT = "hashline";
 		Bun.env.WORX_EDIT_VARIANT = "hashline";
 
@@ -682,8 +682,8 @@ describe("read truncation golden harness", () => {
 		} finally {
 			if (previousPiVariant === undefined) delete Bun.env.PI_EDIT_VARIANT;
 			else Bun.env.PI_EDIT_VARIANT = previousPiVariant;
-			if (previousGjcVariant === undefined) delete Bun.env.WORX_EDIT_VARIANT;
-			else Bun.env.WORX_EDIT_VARIANT = previousGjcVariant;
+			if (previousWorxVariant === undefined) delete Bun.env.WORX_EDIT_VARIANT;
+			else Bun.env.WORX_EDIT_VARIANT = previousWorxVariant;
 		}
 	});
 

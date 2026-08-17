@@ -7,7 +7,7 @@ import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { installGjcBundle } from "../src/extensibility/worx-plugins";
+import { installWorxBundle } from "../src/extensibility/worx-plugins";
 import { buildPluginMcpConfigs } from "../src/extensibility/worx-plugins/runtime-adapters";
 import { MCPManager } from "../src/runtime-mcp";
 
@@ -32,7 +32,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	test("connects an installed bundle MCP server and surfaces its tools as always-on", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 
 		const sessionManager = SessionManager.inMemory(cwd);
@@ -94,7 +94,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	test("keeps always-on plugin MCP tools active across newSession and switchSession resume", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-resume-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 
 		// File-backed manager so switchSession can resume a real session file. Generic
@@ -153,7 +153,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	test("filters an explicitly requested mandatory plugin tool from persisted selection authority", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-explicit-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 		const sessionManager = SessionManager.inMemory(cwd);
 		const sessionSettings = Settings.isolated();
@@ -218,7 +218,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	test("subagent inherits the parent's always-on MCP tools and never tears down the parent manager", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-sub-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 
 		// Top-level session owns the manager and installs it as the global instance.
@@ -285,7 +285,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	])("does not inherit caller-owned MCP tools with %s source metadata as mandatory", async provider => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-forged-"));
 		tempDirs.push(cwd);
-		const r = await installGjcBundle({ cwd }, "project", mcpBundle);
+		const r = await installWorxBundle({ cwd }, "project", mcpBundle);
 		expect(r.ok).toBe(true);
 		const { configs } = await buildPluginMcpConfigs({ cwd });
 		const callerManager = new MCPManager(cwd);

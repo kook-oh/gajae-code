@@ -10,9 +10,9 @@ import {
 	clearPsmuxDetectionCache,
 } from "@bworx-io/worx-code/worx-runtime/psmux-detect";
 import {
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxExactSessionTarget,
-	buildGjcTmuxUntaggedSessionHint,
+	buildWorxTmuxExactOptionTarget,
+	buildWorxTmuxExactSessionTarget,
+	buildWorxTmuxUntaggedSessionHint,
 } from "@bworx-io/worx-code/worx-runtime/tmux-common";
 import {
 	captureOwnerGenerationBaselineSync,
@@ -22,19 +22,19 @@ import {
 } from "@bworx-io/worx-code/worx-runtime/tmux-owner-isolation";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
-	bindGjcTmuxProviderAuthority,
-	persistGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxProviderContext,
+	bindWorxTmuxProviderAuthority,
+	persistWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxProviderContext,
 } from "@bworx-io/worx-code/worx-runtime/tmux-provider-context";
 import {
 	__setCreateOwnerIsolationForTests,
 	__setMutationServerProofForTests,
-	attachGjcTmuxSession,
-	createGjcTmuxSession,
-	forceCloseGjcTmuxSession,
-	listGjcTmuxSessions,
-	removeGjcTmuxSession,
-	statusGjcTmuxSession,
+	attachWorxTmuxSession,
+	createWorxTmuxSession,
+	forceCloseWorxTmuxSession,
+	listWorxTmuxSessions,
+	removeWorxTmuxSession,
+	statusWorxTmuxSession,
 } from "@bworx-io/worx-code/worx-runtime/tmux-sessions";
 import { prepareManagedDirectoryRoot } from "../../src/session/internal/managed-session-storage";
 
@@ -104,15 +104,15 @@ function installPsmuxAuthorityFixture(
 ): void {
 	prepareManagedDirectoryRoot(stateDir);
 	__setTmuxProviderAuthorityPlatformForTests("win32");
-	const context = resolveGjcTmuxProviderContext({
+	const context = resolveWorxTmuxProviderContext({
 		env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 		platform: "win32",
 	});
 	const sessionId = identity.sessionId ?? "psmux-session";
 	const generation = identity.generation ?? "psmux-generation";
 	const baseline = captureOwnerGenerationBaselineSync(stateDir, sessionId);
-	persistGjcTmuxProviderAuthoritySync(
-		bindGjcTmuxProviderAuthority(context, {
+	persistWorxTmuxProviderAuthoritySync(
+		bindWorxTmuxProviderAuthority(context, {
 			stateDir,
 			sessionId,
 			generation,
@@ -153,7 +153,7 @@ describe("GJC tmux session management", () => {
 		);
 
 		clearPsmuxDetectionCache();
-		const sessions = listGjcTmuxSessions({ WORX_TMUX_COMMAND: "tmux-test" });
+		const sessions = listWorxTmuxSessions({ WORX_TMUX_COMMAND: "tmux-test" });
 
 		expect(sessions.map(session => session.name)).toEqual(["gajae_code_abc"]);
 		expect(sessions[0].attached).toBe(false);
@@ -179,7 +179,7 @@ describe("GJC tmux session management", () => {
 		spyOn(Bun, "spawnSync").mockReturnValue(spawnResult(1, "", "no server running on /tmp/tmux"));
 		clearPsmuxDetectionCache();
 
-		expect(listGjcTmuxSessions()).toEqual([]);
+		expect(listWorxTmuxSessions()).toEqual([]);
 	});
 
 	it("reports provider-aware diagnostics before spawning when Windows has no multiplexer", async () => {
@@ -190,8 +190,8 @@ describe("GJC tmux session management", () => {
 		spyOn(Bun, "which").mockReturnValue(null);
 		const spawnSyncSpy = spyOn(Bun, "spawnSync");
 
-		expect(() => listGjcTmuxSessions({ WORX_TMUX_OWNER_STATE_DIR: stateDir })).toThrow(
-			"gjc_tmux_provider_unavailable — GJC searched for psmux, pmux, and tmux on PATH.",
+		expect(() => listWorxTmuxSessions({ WORX_TMUX_OWNER_STATE_DIR: stateDir })).toThrow(
+			"worx_tmux_provider_unavailable — GJC searched for psmux, pmux, and tmux on PATH.",
 		);
 		expect(spawnSyncSpy).not.toHaveBeenCalled();
 	});
@@ -199,7 +199,7 @@ describe("GJC tmux session management", () => {
 	it("guards status and remove to GJC-managed sessions", () => {
 		// Pin the resolved command to tmux so the assertions are agnostic to
 		// whether the host has psmux / pmux / tmux on PATH. The shared
-		// resolveGjcTmuxCommand now picks the first available multiplexer on
+		// resolveWorxTmuxCommand now picks the first available multiplexer on
 		// Windows; we explicitly opt into literal tmux for this guard test.
 		const env = { WORX_TMUX_COMMAND: "tmux" };
 		const calls: string[][] = [];
@@ -211,15 +211,15 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "gajae_code_work	1	0	1770000000	1	root	1			\n");
 			}
 			if (cmd.includes("show-options")) return spawnResult(0, "1\n");
-			if (cmd.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (cmd.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (cmd.includes("display-message")) return spawnResult(0, "$0\n");
 			return spawnResult(0, "");
 		});
 
-		expect(statusGjcTmuxSession("gajae_code_work", env).name).toBe("gajae_code_work");
-		expect(() => statusGjcTmuxSession("unrelated", env)).toThrow("gjc_tmux_session_not_found:unrelated");
+		expect(statusWorxTmuxSession("gajae_code_work", env).name).toBe("gajae_code_work");
+		expect(() => statusWorxTmuxSession("unrelated", env)).toThrow("worx_tmux_session_not_found:unrelated");
 		injectSafeMutationProof();
-		expect(removeGjcTmuxSession("gajae_code_work", env).name).toBe("gajae_code_work");
+		expect(removeWorxTmuxSession("gajae_code_work", env).name).toBe("gajae_code_work");
 		expect(calls.at(-1)?.[1]).toBe("if-shell");
 	}, 15_000);
 
@@ -243,7 +243,7 @@ describe("GJC tmux session management", () => {
 		});
 
 		expect(() =>
-			removeGjcTmuxSession("gajae_code_work", env, {
+			removeWorxTmuxSession("gajae_code_work", env, {
 				nativeSessionId: "$1",
 				ownerGeneration: "generation-one",
 				sessionId: "session-1",
@@ -251,14 +251,14 @@ describe("GJC tmux session management", () => {
 				project: "/repo",
 				createdAt: "2026-02-02T02:40:00.000Z",
 			}),
-		).toThrow("gjc_tmux_owner_changed:gajae_code_work");
+		).toThrow("worx_tmux_owner_changed:gajae_code_work");
 		expect(calls.some(command => command.includes("if-shell") || command.includes("kill-session"))).toBe(false);
 	});
 
 	it("refuses unsafe or unverifiable server proof before any remove, attach, or force-close mutation", async () => {
 		for (const proofError of [
-			"gjc_tmux_owner_isolation_server_unsafe",
-			"gjc_tmux_owner_isolation_server_unverifiable",
+			"worx_tmux_owner_isolation_server_unsafe",
+			"worx_tmux_owner_isolation_server_unverifiable",
 		]) {
 			const calls: string[][] = [];
 			const signalTerm = vi.fn();
@@ -294,10 +294,10 @@ describe("GJC tmux session management", () => {
 				throw new Error(proofError);
 			});
 
-			expect(() => removeGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
-			expect(() => attachGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
+			expect(() => removeWorxTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
+			expect(() => attachWorxTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" })).toThrow(proofError);
 			await expect(
-				forceCloseGjcTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+				forceCloseWorxTmuxSession("gajae_code_work", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 					resolveOwner: async () => ({
 						sessionId: "session",
 						stateDir: "/state",
@@ -333,12 +333,12 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 
-		expect(() => removeGjcTmuxSession("gajae_code_work")).toThrow("gjc_tmux_session_not_managed:gajae_code_work");
+		expect(() => removeWorxTmuxSession("gajae_code_work")).toThrow("worx_tmux_session_not_managed:gajae_code_work");
 		expect(calls.some(call => call.includes("kill-session"))).toBe(false);
 	});
 
 	it("explains ProviderAuthority recovery for an untagged multiplexer session", () => {
-		const hint = buildGjcTmuxUntaggedSessionHint("psmux");
+		const hint = buildWorxTmuxUntaggedSessionHint("psmux");
 		expect(hint).toContain(
 			"persists a ProviderAuthority that binds the exact executable identity and an isolated `-L <namespace>` server namespace",
 		);
@@ -368,7 +368,7 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 
-		const session = statusGjcTmuxSession("win_session", {
+		const session = statusWorxTmuxSession("win_session", {
 			WORX_TMUX_COMMAND: "tmux",
 		});
 
@@ -381,13 +381,13 @@ describe("GJC tmux session management", () => {
 	it("still reports plain not-found when the multiplexer does not list the session", () => {
 		spyOn(Bun, "spawnSync").mockReturnValue(spawnResult(0, ""));
 
-		expect(() => statusGjcTmuxSession("ghost")).toThrow("gjc_tmux_session_not_found:ghost");
+		expect(() => statusWorxTmuxSession("ghost")).toThrow("worx_tmux_session_not_found:ghost");
 	});
 
 	it("builds a window-qualified exact target for tmux option commands", () => {
 		// tmux 3.6a only resolves the exact session for option commands when the
 		// target is window-qualified (`=NAME:`); a bare `=NAME` does not (#580).
-		expect(buildGjcTmuxExactOptionTarget("gajae_code_work")).toBe("=gajae_code_work:");
+		expect(buildWorxTmuxExactOptionTarget("gajae_code_work")).toBe("=gajae_code_work:");
 	});
 
 	it("queries the profile option with a window-qualified exact target", () => {
@@ -402,13 +402,13 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "gajae_code_work	1	0	1770000000	1	root	1			\n");
 			}
 			if (cmd.includes("show-options")) return spawnResult(0, "1\n");
-			if (cmd.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (cmd.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (cmd.includes("display-message")) return spawnResult(0, "$0\n");
 			return spawnResult(0, "");
 		});
 
 		injectSafeMutationProof();
-		removeGjcTmuxSession("gajae_code_work", env);
+		removeWorxTmuxSession("gajae_code_work", env);
 
 		const showOptions = calls.find(call => call.includes("show-options") && call.includes("@gjc-profile"));
 		expect(showOptions).toEqual(["tmux", "show-options", "-qv", "-t", "=gajae_code_work:", "@gjc-profile"]);
@@ -423,17 +423,17 @@ describe("GJC tmux session management", () => {
 		__setExecutableIdentityResolverForTests(executablePath => `identity:${executablePath}`);
 		try {
 			expect(
-				buildGjcTmuxExactSessionTarget("work", {
+				buildWorxTmuxExactSessionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "tmux" },
 				}),
 			).toBe("=work");
 			expect(
-				buildGjcTmuxExactSessionTarget("work", {
+				buildWorxTmuxExactSessionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				}),
 			).toBe("work");
 			expect(
-				buildGjcTmuxExactSessionTarget("work", {
+				buildWorxTmuxExactSessionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "pmux", WORX_PSMUX_COMMAND: "pmux" },
 				}),
 			).toBe("work");
@@ -458,17 +458,17 @@ describe("GJC tmux session management", () => {
 		__setExecutableIdentityResolverForTests(executablePath => `identity:${executablePath}`);
 		try {
 			expect(
-				buildGjcTmuxExactOptionTarget("work", {
+				buildWorxTmuxExactOptionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "tmux" },
 				}),
 			).toBe("=work:");
 			expect(
-				buildGjcTmuxExactOptionTarget("work", {
+				buildWorxTmuxExactOptionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 				}),
 			).toBe("work");
 			expect(
-				buildGjcTmuxExactOptionTarget("work", {
+				buildWorxTmuxExactOptionTarget("work", {
 					env: { WORX_TMUX_COMMAND: "pmux", WORX_PSMUX_COMMAND: "pmux" },
 				}),
 			).toBe("work");
@@ -509,7 +509,7 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "");
 			});
 
-			const sessions = listGjcTmuxSessions({
+			const sessions = listWorxTmuxSessions({
 				WORX_TMUX_COMMAND: "psmux",
 				WORX_PSMUX_COMMAND: "psmux",
 				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
@@ -557,12 +557,12 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "");
 			});
 			expect(() =>
-				listGjcTmuxSessions({
+				listWorxTmuxSessions({
 					WORX_TMUX_COMMAND: "psmux",
 					WORX_PSMUX_COMMAND: "psmux",
 					WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 				}),
-			).toThrow("gjc_tmux_provider_authority_ambiguous:psmux_session");
+			).toThrow("worx_tmux_provider_authority_ambiguous:psmux_session");
 		} finally {
 			__setBinaryResolverForTests(null);
 			__setExecutableIdentityResolverForTests(null);
@@ -580,8 +580,8 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 
-		expect(() => createGjcTmuxSession({ WORX_TMUX_COMMAND: "tmux" })).toThrow(
-			"gjc_tmux_owner_isolation_native_session_identity_unavailable",
+		expect(() => createWorxTmuxSession({ WORX_TMUX_COMMAND: "tmux" })).toThrow(
+			"worx_tmux_owner_isolation_native_session_identity_unavailable",
 		);
 		expect(calls.some(cmd => cmd.includes("new-session"))).toBe(true);
 		expect(calls.some(cmd => cmd.includes("set-option") || cmd.includes("set-window-option"))).toBe(false);
@@ -604,7 +604,7 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "");
 			});
 			expect(() =>
-				createGjcTmuxSession(
+				createWorxTmuxSession(
 					{
 						WORX_TMUX_COMMAND: "psmux",
 						WORX_PSMUX_COMMAND: "psmux",
@@ -613,7 +613,7 @@ describe("GJC tmux session management", () => {
 					} as NodeJS.ProcessEnv,
 					{ platform: "win32" },
 				),
-			).toThrow("gjc_tmux_provider_ambiguous: selected Windows psmux executable identity is unavailable");
+			).toThrow("worx_tmux_provider_ambiguous: selected Windows psmux executable identity is unavailable");
 			expect(calls.filter(cmd => cmd[1] === "new-session")).toHaveLength(0);
 			expect(calls.some(cmd => cmd[1] === "set-option" || cmd[1] === "set-window-option")).toBe(false);
 			expect(calls.some(cmd => cmd[1] === "kill-session")).toBe(false);
@@ -657,7 +657,7 @@ describe("GJC tmux session management", () => {
 		});
 		const stateFile = "C:\\Users\\O'Brien\\runtime-state.json";
 		expect(() =>
-			createGjcTmuxSession(
+			createWorxTmuxSession(
 				{
 					WORX_PSMUX_DETECTION: "off",
 					WORX_TMUX_COMMAND: "tmux",
@@ -667,7 +667,7 @@ describe("GJC tmux session management", () => {
 				},
 				{ platform: "win32" },
 			),
-		).toThrow("gjc_tmux_owner_isolation_scope_bootstrap_failed:test-stop");
+		).toThrow("worx_tmux_owner_isolation_scope_bootstrap_failed:test-stop");
 		expect(plannedArgv?.slice(0, -1)).toEqual(["tmux", "new-session", "-d", "-s", "psmux-session"]);
 
 		const innerCommand = plannedArgv?.at(-1);
@@ -703,11 +703,11 @@ describe("GJC tmux session management", () => {
 				return spawnResult(0, "");
 			});
 			expect(() =>
-				attachGjcTmuxSession("managed", {
+				attachWorxTmuxSession("managed", {
 					WORX_TMUX_COMMAND: "psmux",
 					WORX_PSMUX_COMMAND: "psmux",
 				}),
-			).toThrow("gjc_tmux_provider_authority_unavailable");
+			).toThrow("worx_tmux_provider_authority_unavailable");
 			expect(calls.some(cmd => cmd.includes("attach-session"))).toBe(false);
 		} finally {
 			__setBinaryResolverForTests(null);
@@ -758,12 +758,12 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		expect(() =>
-			createGjcTmuxSession({
+			createWorxTmuxSession({
 				WORX_TMUX_COMMAND: "tmux",
 				WORX_TMUX_SESSION: "managed",
 				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-unbound-${crypto.randomUUID()}.json`),
 			}),
-		).toThrow("gjc_tmux_owner_changed_after_create");
+		).toThrow("worx_tmux_owner_changed_after_create");
 		expect(calls.some(cmd => cmd.includes("set-option") || cmd.includes("set-window-option"))).toBe(false);
 		expect(calls.some(cmd => cmd.includes("kill-session"))).toBe(false);
 		expect(calls).toContainEqual([
@@ -805,7 +805,7 @@ describe("GJC tmux session management", () => {
 			if (command.includes("if-shell")) {
 				const match = command.join(" ").match(/@gjc-owner-generation" "([^"]+)"/);
 				if (match) generation = match[1] ?? "";
-				return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+				return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			}
 			if (command.includes("display-message"))
 				return spawnResult(0, command.includes("#{session_id}\t#{session_name}") ? "$1\tmanaged\n" : "$1\n");
@@ -827,13 +827,13 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		expect(() =>
-			createGjcTmuxSession({
+			createWorxTmuxSession({
 				WORX_TMUX_COMMAND: "tmux",
 				WORX_TMUX_SESSION: "managed",
 				WORX_COORDINATOR_SESSION_ID: "managed",
 				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			}),
-		).toThrow("gjc_tmux_created_metadata_mismatch");
+		).toThrow("worx_tmux_created_metadata_mismatch");
 		expect(calls.flat().includes("kill-session")).toBe(false);
 		expect(fsSync.existsSync(lifecyclePaths(stateDir, "managed", generation).generationFile)).toBe(false);
 	});
@@ -883,8 +883,8 @@ describe("GJC tmux session management", () => {
 				return spawnResult(
 					0,
 					guardedMutationCount === 1
-						? "__gjc_tmux_guarded_mutation_ok__\n"
-						: "__gjc_tmux_guarded_mutation_refused__\n",
+						? "__worx_tmux_guarded_mutation_ok__\n"
+						: "__worx_tmux_guarded_mutation_refused__\n",
 				);
 			}
 			if (command.includes("display-message")) {
@@ -895,7 +895,7 @@ describe("GJC tmux session management", () => {
 		});
 		let failure: unknown;
 		try {
-			createGjcTmuxSession({
+			createWorxTmuxSession({
 				WORX_TMUX_COMMAND: "tmux",
 				WORX_TMUX_SESSION: "managed",
 				WORX_COORDINATOR_SESSION_ID: "managed",
@@ -905,10 +905,10 @@ describe("GJC tmux session management", () => {
 			failure = error;
 		}
 		expect(failure).toBeInstanceOf(AggregateError);
-		expect((failure as AggregateError).message).toBe("gjc_tmux_precommit_failed_cleanup_failed");
+		expect((failure as AggregateError).message).toBe("worx_tmux_precommit_failed_cleanup_failed");
 		expect((failure as AggregateError).errors.map(String)).toEqual([
-			expect.stringContaining("gjc_tmux_created_metadata_mismatch"),
-			expect.stringContaining("gjc_tmux_cleanup_target_changed"),
+			expect.stringContaining("worx_tmux_created_metadata_mismatch"),
+			expect.stringContaining("worx_tmux_cleanup_target_changed"),
 		]);
 		expect(calls).toContainEqual([
 			"tmux",
@@ -918,7 +918,7 @@ describe("GJC tmux session management", () => {
 			"-F",
 			expect.stringContaining("#{pid},1"),
 			expect.stringContaining('kill-session -t "\\$1"'),
-			"display-message -p __gjc_tmux_guarded_mutation_refused__",
+			"display-message -p __worx_tmux_guarded_mutation_refused__",
 		]);
 		expect(calls.filter(command => command[1] === "kill-session")).toEqual([]);
 	});
@@ -948,7 +948,7 @@ describe("GJC tmux session management", () => {
 		(spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy).mockImplementation((rawCommand: unknown) => {
 			const command = normalizeSpawnSyncCommand(rawCommand);
 			calls.push(command);
-			if (command.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (command.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (command.includes("display-message"))
 				return spawnResult(0, command.includes("#{session_id}\t#{session_name}") ? "$1\tmanaged\n" : "$1\n");
 			if (command.includes("show-options"))
@@ -956,13 +956,13 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		expect(() =>
-			createGjcTmuxSession({
+			createWorxTmuxSession({
 				WORX_TMUX_COMMAND: "tmux",
 				WORX_TMUX_SESSION: "managed",
 				WORX_COORDINATOR_SESSION_ID: "managed",
 				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(stateDir, "runtime-state.json"),
 			}),
-		).toThrow("gjc_tmux_created_metadata_mismatch");
+		).toThrow("worx_tmux_created_metadata_mismatch");
 		expect(calls.flat().includes("kill-session")).toBe(false);
 	});
 	it("refuses profile tagging when a replacement server appears at the receipt-to-tag boundary", () => {
@@ -988,7 +988,7 @@ describe("GJC tmux session management", () => {
 		(spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy).mockImplementation((rawCommand: unknown) => {
 			const command = normalizeSpawnSyncCommand(rawCommand);
 			calls.push(command);
-			if (command.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_refused__\n");
+			if (command.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_refused__\n");
 			if (command.includes("display-message")) {
 				if (command.includes("#{session_id}\t#{session_name}")) return spawnResult(0, "$1\tmanaged\n");
 				return spawnResult(0, command.includes("#{session_name}") ? "managed\n" : "$1\n");
@@ -996,12 +996,12 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		expect(() =>
-			createGjcTmuxSession({
+			createWorxTmuxSession({
 				WORX_TMUX_COMMAND: "tmux",
 				WORX_TMUX_SESSION: "managed",
 				WORX_COORDINATOR_SESSION_STATE_FILE: path.join(os.tmpdir(), `gjc-replacement-${crypto.randomUUID()}.json`),
 			}),
-		).toThrow("gjc_tmux_precommit_failed_cleanup_failed");
+		).toThrow("worx_tmux_precommit_failed_cleanup_failed");
 		expect(calls.filter(command => command[1] === "set-option" || command[1] === "kill-session")).toEqual([]);
 		// Select the guarded-mutation if-shell by content, not by a fixed index: the
 		// psmux detection probe issues `-V`/`--version` spawns first on POSIX, so any
@@ -1012,7 +1012,7 @@ describe("GJC tmux session management", () => {
 		expect(guardedTag?.[5]).toContain("#{session_id},$1");
 		expect(guardedTag?.[5]).toContain("#{session_name},managed");
 		expect(guardedTag?.[6]).toContain('"@gjc-profile" "1"');
-		expect(guardedTag?.[7]).toBe("display-message -p __gjc_tmux_guarded_mutation_refused__");
+		expect(guardedTag?.[7]).toBe("display-message -p __worx_tmux_guarded_mutation_refused__");
 	});
 
 	it("omits the server PID guard clause when the platform cannot prove a tmux server PID", () => {
@@ -1056,7 +1056,7 @@ describe("GJC tmux session management", () => {
 		(spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy).mockImplementation((rawCommand: unknown) => {
 			const command = normalizeSpawnSyncCommand(rawCommand);
 			calls.push(command);
-			if (command.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_refused__\n");
+			if (command.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_refused__\n");
 			if (command.includes("display-message")) {
 				if (command.includes("#{session_id}\t#{session_name}")) return spawnResult(0, "$1\tmanaged\n");
 				return spawnResult(0, command.includes("#{session_name}") ? "managed\n" : "$1\n");
@@ -1064,7 +1064,7 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		expect(() =>
-			createGjcTmuxSession(
+			createWorxTmuxSession(
 				{
 					WORX_TMUX_COMMAND: "tmux",
 					WORX_TMUX_SESSION: "managed",
@@ -1072,7 +1072,7 @@ describe("GJC tmux session management", () => {
 				},
 				{ platform: "darwin" },
 			),
-		).toThrow("gjc_tmux_precommit_failed_cleanup_failed");
+		).toThrow("worx_tmux_precommit_failed_cleanup_failed");
 		const guarded = calls.find(command => command[1] === "if-shell");
 		expect(guarded?.slice(0, 5)).toEqual(["tmux", "if-shell", "-t", "$1", "-F"]);
 		expect(guarded?.[5]).not.toContain("#{pid}");
@@ -1086,7 +1086,7 @@ describe("GJC tmux session management", () => {
 		const cleanupSession = vi.fn();
 		try {
 			await expect(
-				forceCloseGjcTmuxSession(
+				forceCloseWorxTmuxSession(
 					"managed",
 					{ WORX_TMUX_COMMAND: "psmux", WORX_PSMUX_COMMAND: "psmux" },
 					undefined,
@@ -1096,7 +1096,7 @@ describe("GJC tmux session management", () => {
 						cleanupSession,
 					},
 				),
-			).rejects.toThrow("gjc_tmux_provider_authority_unavailable");
+			).rejects.toThrow("worx_tmux_provider_authority_unavailable");
 			expect(signalTerm).not.toHaveBeenCalled();
 			expect(cleanupSession).not.toHaveBeenCalled();
 		} finally {
@@ -1143,7 +1143,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession(
+			forceCloseWorxTmuxSession(
 				"managed",
 				{
 					WORX_TMUX_COMMAND: "psmux",
@@ -1192,7 +1192,7 @@ describe("GJC tmux session management", () => {
 					cleanupSession,
 				},
 			),
-		).rejects.toThrow("gjc_tmux_owner_changed:managed");
+		).rejects.toThrow("worx_tmux_owner_changed:managed");
 		expect(cleanupSession).not.toHaveBeenCalled();
 	});
 	it("recovers a matching durable SIGTERM verdict when the owner-exit observer fails", async () => {
@@ -1214,7 +1214,7 @@ describe("GJC tmux session management", () => {
 		const calls: string[][] = [];
 		spyOn(Bun, "spawnSync").mockImplementation(((cmd: string[]) => {
 			calls.push(cmd);
-			if (cmd.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (cmd.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (cmd.includes("display-message")) return spawnResult(0, "$0\n");
 			if (cmd.includes("list-sessions"))
 				return spawnResult(
@@ -1243,7 +1243,7 @@ describe("GJC tmux session management", () => {
 		let signaled = false;
 		const failedOwnerExitVerdict = Promise.reject(new Error("injected owner-exit observer failure"));
 		void failedOwnerExitVerdict.catch(() => {});
-		await forceCloseGjcTmuxSession(
+		await forceCloseWorxTmuxSession(
 			"managed",
 			{ WORX_TMUX_COMMAND: "tmux" },
 			sessionId,
@@ -1304,7 +1304,7 @@ describe("GJC tmux session management", () => {
 					"-F",
 					expect.any(String),
 					expect.stringContaining("kill-session -t '$0'"),
-					"display-message -p __gjc_tmux_guarded_mutation_refused__",
+					"display-message -p __worx_tmux_guarded_mutation_refused__",
 				],
 			]),
 		);
@@ -1326,7 +1326,7 @@ describe("GJC tmux session management", () => {
 			}),
 		);
 		spyOn(Bun, "spawnSync").mockImplementation(((command: string[]) => {
-			if (command.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (command.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (command.includes("display-message")) return spawnResult(0, "$0\n");
 			if (command.includes("list-sessions"))
 				return spawnResult(
@@ -1358,7 +1358,7 @@ describe("GJC tmux session management", () => {
 		let cleaned = false;
 		const hangingOwnerExitVerdict = Promise.withResolvers<never>();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1411,7 +1411,7 @@ describe("GJC tmux session management", () => {
 		const ownerPid = owner.pid;
 		(spyOn(Bun, "spawnSync") as unknown as SpawnSyncSpy).mockImplementation((rawSpawn: unknown) => {
 			const cmd = spawnArgv(rawSpawn);
-			if (cmd.includes("if-shell")) return spawnResult(0, "__gjc_tmux_guarded_mutation_ok__\n");
+			if (cmd.includes("if-shell")) return spawnResult(0, "__worx_tmux_guarded_mutation_ok__\n");
 			if (cmd.includes("list-sessions"))
 				return spawnResult(
 					0,
@@ -1438,7 +1438,7 @@ describe("GJC tmux session management", () => {
 		});
 		injectSafeMutationProof();
 		try {
-			await forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker);
+			await forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker);
 			await owner.exited;
 			expect(owner.signalCode).toBe("SIGTERM");
 		} finally {
@@ -1490,7 +1490,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1590,7 +1590,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,
@@ -1627,7 +1627,7 @@ describe("GJC tmux session management", () => {
 				},
 				cleanupSession,
 			}),
-		).rejects.toThrow("gjc_tmux_owner_changed:managed");
+		).rejects.toThrow("worx_tmux_owner_changed:managed");
 		expect(cleanupSession).not.toHaveBeenCalled();
 		expect(Bun.spawnSync).toHaveBeenCalledWith(
 			["tmux", "display-message", "-p", "-t", originalNativeSessionId, "#{session_id}"],
@@ -1666,7 +1666,7 @@ describe("GJC tmux session management", () => {
 			return spawnResult(0, "");
 		});
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 				resolveOwner: async () => ({
 					sessionId: "session",
 					stateDir: "/state",
@@ -1679,7 +1679,7 @@ describe("GJC tmux session management", () => {
 				signalTerm,
 				cleanupSession,
 			}),
-		).rejects.toThrow("gjc_tmux_owner_unverifiable:managed");
+		).rejects.toThrow("worx_tmux_owner_unverifiable:managed");
 		expect(signalTerm).not.toHaveBeenCalled();
 		expect(cleanupSession).not.toHaveBeenCalled();
 	});
@@ -1714,7 +1714,7 @@ describe("GJC tmux session management", () => {
 		}) as unknown as typeof Bun.spawnSync);
 		injectSafeMutationProof();
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, undefined, undefined, {
 				resolveOwner: async () => ({
 					sessionId: "session",
 					stateDir: "/missing",
@@ -1776,7 +1776,7 @@ describe("GJC tmux session management", () => {
 		injectSafeMutationProof();
 		let startTimeRead = 0;
 		await expect(
-			forceCloseGjcTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
+			forceCloseWorxTmuxSession("managed", { WORX_TMUX_COMMAND: "tmux" }, sessionId, marker, {
 				resolveOwner: async () => ({
 					sessionId,
 					stateDir,

@@ -1,4 +1,4 @@
-import type { CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import type { CanonicalWorxWorkflowSkill } from "../skill-state/active-state";
 import type { SkillManifest } from "./workflow-manifest";
 
 function scalar(value: unknown): string | undefined {
@@ -106,7 +106,7 @@ export const STATE_FIELD_ALLOWLIST = [
 export type StateProjectionField = (typeof STATE_FIELD_ALLOWLIST)[number];
 
 export interface StateStatusSummary {
-	skill: CanonicalGjcWorkflowSkill;
+	skill: CanonicalWorxWorkflowSkill;
 	phase: string;
 	active: boolean;
 	fresh: boolean;
@@ -131,7 +131,7 @@ function compactStateFields(state: Record<string, unknown>): Array<[string, stri
 }
 
 export function compactProjectStateJson(
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 	stateJson: Record<string, unknown>,
 	manifest: SkillManifest,
 ): Record<string, unknown> {
@@ -151,7 +151,7 @@ export function compactProjectStateJson(
 }
 
 export function projectStateFields(
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 	stateJson: Record<string, unknown>,
 	manifest: SkillManifest,
 	fields: readonly StateProjectionField[],
@@ -192,7 +192,7 @@ export function projectStateFields(
 }
 
 export function buildStateStatusSummary(
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 	stateJson: Record<string, unknown>,
 	manifest: SkillManifest,
 	storagePath: string,
@@ -218,7 +218,7 @@ export function renderStateStatusLine(summary: StateStatusSummary): string {
 	return `${summary.skill}: phase=${summary.phase} ${freshness} next=${summary.next.length ? summary.next.join(",") : "none"}\n`;
 }
 
-export function renderContractMarkdown(skill: CanonicalGjcWorkflowSkill, contract: unknown): string {
+export function renderContractMarkdown(skill: CanonicalWorxWorkflowSkill, contract: unknown): string {
 	const record = isRecord(contract) ? contract : {};
 	const lines = [`# ${skill} state contract`, ""];
 	for (const [key, value] of Object.entries(record)) {
@@ -252,7 +252,7 @@ export function renderUltragoalStatusMarkdown(summary: {
 	exists: boolean;
 	status: string;
 	paths: { goalsPath: string; ledgerPath?: string };
-	gjcObjective?: string;
+	worxObjective?: string;
 	currentGoal?: { id: string; status: string; title?: string; objective?: string };
 	counts: Record<string, number>;
 	goals: unknown[];
@@ -273,7 +273,7 @@ export function renderUltragoalStatusMarkdown(summary: {
 		`- status: ${summary.status}`,
 		`- goals: ${summary.goals.length} (${counts})`,
 	];
-	if (summary.gjcObjective) lines.push(`- objective: ${summary.gjcObjective}`);
+	if (summary.worxObjective) lines.push(`- objective: ${summary.worxObjective}`);
 	if (summary.currentGoal) lines.push(`- current: ${summary.currentGoal.id} (${summary.currentGoal.status})`);
 	if (summary.nudgeBudget !== undefined && summary.nudgeGoalId) {
 		const used = summary.nudgeCount ?? 0;
@@ -327,7 +327,7 @@ export function renderTeamStatusMarkdown(snapshot: {
 }
 
 export function renderStateMarkdown(
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 	stateJson: Record<string, unknown>,
 	manifest: SkillManifest,
 ): string {

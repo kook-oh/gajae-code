@@ -1807,7 +1807,7 @@ describe("trusted perf-corpus RLM analysis driver", () => {
 			"try: raw=os.read(fd, 1024*1024)",
 			"finally: os.close(fd)",
 			"assert hashlib.sha256(raw).hexdigest()==expected",
-			"namespace={'__name__':'gjc_unit_only','__file__':'<verified-unit-driver>'}",
+			"namespace={'__name__':'worx_unit_only','__file__':'<verified-unit-driver>'}",
 			"exec(compile(raw, namespace['__file__'], 'exec', dont_inherit=True), namespace)",
 			`print(json.dumps(namespace['_unit_only_bca_reference']([${boundary}]*24), sort_keys=True))`,
 		].join("\n");

@@ -8,28 +8,28 @@ import {
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "./session-state-sidecar";
 import type {
-	GjcTeamConfig,
-	GjcTeamSnapshot,
-	GjcTeamStartOptions,
-	GjcTeamTask,
-	GjcTeamWorker,
-	GjcTeamWorkerCli,
-	GjcTeamWorkerLifecycle,
-	GjcTeamWorktreeMode,
+	WorxTeamConfig,
+	WorxTeamSnapshot,
+	WorxTeamStartOptions,
+	WorxTeamTask,
+	WorxTeamWorker,
+	WorxTeamWorkerCli,
+	WorxTeamWorkerLifecycle,
+	WorxTeamWorktreeMode,
 } from "./team-runtime";
-import { createInitialGjcTeamWorkerMemoryGuardLedger, workerMemoryGuardLedgerPath } from "./team-worker-memory-guard";
+import { createInitialWorxTeamWorkerMemoryGuardLedger, workerMemoryGuardLedgerPath } from "./team-worker-memory-guard";
 import {
-	bindGjcTmuxProviderAuthority,
+	bindWorxTmuxProviderAuthority,
 	type ProviderAuthority,
-	readGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxProviderContext,
+	readWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxProviderContext,
 } from "./tmux-provider-context";
 
 /** Launch-specific option wiring kept separate from runtime dispatch. */
 export function withTeamLaunchTransport(
-	options: GjcTeamStartOptions,
-	mailboxDeliveryTransport: GjcTeamStartOptions["mailboxDeliveryTransport"],
-): GjcTeamStartOptions {
+	options: WorxTeamStartOptions,
+	mailboxDeliveryTransport: WorxTeamStartOptions["mailboxDeliveryTransport"],
+): WorxTeamStartOptions {
 	return { ...options, mailboxDeliveryTransport };
 }
 
@@ -43,8 +43,8 @@ function powershellQuote(value: string): string {
 
 /** @internal Exported for unit tests. */
 export function buildWorkerCommand(
-	config: GjcTeamConfig,
-	worker: GjcTeamWorker,
+	config: WorxTeamConfig,
+	worker: WorxTeamWorker,
 	platform: NodeJS.Platform = process.platform,
 	promptOverride?: string,
 	env: NodeJS.ProcessEnv = process.env,
@@ -105,45 +105,45 @@ export function buildWorkerCommand(
 	return `${clearInheritedSession}${joined} ${config.worker_command} ${quote(prompt)}`;
 }
 
-interface GjcTmuxBinary {
+interface WorxTmuxBinary {
 	command: string;
 	isPsmux: boolean;
 	viaExplicitOverride: boolean;
 }
 
-interface GjcTmuxLeaderContext {
+interface WorxTmuxLeaderContext {
 	sessionName: string;
 	windowIndex: string;
 	leaderPaneId: string;
 	target: string;
 }
 
-export interface GjcTeamLaunchRuntime {
+export interface WorxTeamLaunchRuntime {
 	maxWorkers: number;
-	resolveWorkerCliPlan(workerCount: number, env: NodeJS.ProcessEnv): GjcTeamWorkerCli[];
+	resolveWorkerCliPlan(workerCount: number, env: NodeJS.ProcessEnv): WorxTeamWorkerCli[];
 	resolveStateRoot(cwd: string, env: NodeJS.ProcessEnv): string;
 	sanitizeName(value: string): string;
 	makeTeamName(task: string, env: NodeJS.ProcessEnv): string;
 	teamDir(stateRoot: string, teamName: string): string;
-	resolveDefaultWorktreeMode(mode?: GjcTeamWorktreeMode): GjcTeamWorktreeMode;
-	resolveTmuxBinary(input: { env: NodeJS.ProcessEnv; platform: NodeJS.Platform }): GjcTmuxBinary;
+	resolveDefaultWorktreeMode(mode?: WorxTeamWorktreeMode): WorxTeamWorktreeMode;
+	resolveTmuxBinary(input: { env: NodeJS.ProcessEnv; platform: NodeJS.Platform }): WorxTmuxBinary;
 	readTmuxLeaderContext(
 		tmuxCommand: string,
 		env: NodeJS.ProcessEnv,
 		authority: ProviderAuthority,
-	): GjcTmuxLeaderContext;
-	buildWorkers(workerCount: number, agentType: string, stateRoot: string): GjcTeamWorker[];
-	buildInitialTasks(task: string, workers: GjcTeamWorker[]): GjcTeamTask[];
+	): WorxTmuxLeaderContext;
+	buildWorkers(workerCount: number, agentType: string, stateRoot: string): WorxTeamWorker[];
+	buildInitialTasks(task: string, workers: WorxTeamWorker[]): WorxTeamTask[];
 	ensureWorkerWorktree(
 		cwd: string,
 		dir: string,
 		teamName: string,
-		worker: GjcTeamWorker,
-		mode: GjcTeamWorktreeMode,
+		worker: WorxTeamWorker,
+		mode: WorxTeamWorktreeMode,
 		platform: NodeJS.Platform,
 		isPsmux: boolean,
-	): Promise<GjcTeamWorker>;
-	rollbackCreatedWorktrees(workers: GjcTeamWorker[]): Promise<void>;
+	): Promise<WorxTeamWorker>;
+	rollbackCreatedWorktrees(workers: WorxTeamWorker[]): Promise<void>;
 	resolveWorkerCommand(cwd: string, env: NodeJS.ProcessEnv): string;
 	mailboxDirPath(dir: string, worker: string): string;
 	mailboxPath(dir: string, worker: string): string;
@@ -152,32 +152,32 @@ export interface GjcTeamLaunchRuntime {
 	writeJson(filePath: string, value: unknown): Promise<void>;
 	now(): string;
 	writePhase(dir: string, phase: "starting" | "running" | "failed"): Promise<void>;
-	writeTask(dir: string, task: GjcTeamTask): Promise<void>;
+	writeTask(dir: string, task: WorxTeamTask): Promise<void>;
 	appendEvent(dir: string, event: { type: string; message: string; data?: Record<string, unknown> }): Promise<unknown>;
 	appendTelemetry(
 		dir: string,
 		event: { type: string; message: string; data?: Record<string, unknown> },
 	): Promise<unknown>;
 	startTmuxSession(
-		config: GjcTeamConfig,
+		config: WorxTeamConfig,
 		dir: string,
 		dryRun: boolean,
 		env: NodeJS.ProcessEnv,
-	): Promise<GjcTeamWorker[]>;
-	killWorkerPanes(config: GjcTeamConfig): void;
+	): Promise<WorxTeamWorker[]>;
+	killWorkerPanes(config: WorxTeamConfig): void;
 	writeWorkerLifecycleForConfig(
 		dir: string,
-		config: GjcTeamConfig,
+		config: WorxTeamConfig,
 		state: "starting",
-		updates: (worker: GjcTeamWorker) => Partial<GjcTeamWorkerLifecycle>,
+		updates: (worker: WorxTeamWorker) => Partial<WorxTeamWorkerLifecycle>,
 	): Promise<unknown>;
-	readSnapshot(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<GjcTeamSnapshot>;
+	readSnapshot(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<WorxTeamSnapshot>;
 }
 
 async function initializeStateDirs(
-	runtime: GjcTeamLaunchRuntime,
+	runtime: WorxTeamLaunchRuntime,
 	dir: string,
-	workers: GjcTeamWorker[],
+	workers: WorxTeamWorker[],
 	platform: NodeJS.Platform,
 ): Promise<void> {
 	await fs.mkdir(path.join(dir, "mailbox"), { recursive: true });
@@ -193,7 +193,7 @@ async function initializeStateDirs(
 			lifecycle_state: "starting",
 			worker_status_state: "idle",
 			updated_at: runtime.now(),
-		} satisfies GjcTeamWorkerLifecycle);
+		} satisfies WorxTeamWorkerLifecycle);
 		await runtime.writeJson(path.join(runtime.workerDir(dir, worker.id), "heartbeat.json"), {
 			pid: 0,
 			last_turn_at: runtime.now(),
@@ -202,7 +202,7 @@ async function initializeStateDirs(
 		});
 		await runtime.writeJson(
 			workerMemoryGuardLedgerPath(dir, worker.id),
-			createInitialGjcTeamWorkerMemoryGuardLedger({
+			createInitialWorxTeamWorkerMemoryGuardLedger({
 				workerId: worker.id,
 				platform,
 				now: runtime.now(),
@@ -214,13 +214,13 @@ async function initializeStateDirs(
 }
 
 /** Creates persistent team state, worktrees, and tmux worker panes. */
-export async function startGjcTeamLaunch(
-	runtime: GjcTeamLaunchRuntime,
-	options: GjcTeamStartOptions,
-): Promise<GjcTeamSnapshot> {
+export async function startWorxTeamLaunch(
+	runtime: WorxTeamLaunchRuntime,
+	options: WorxTeamStartOptions,
+): Promise<WorxTeamSnapshot> {
 	const cwd = options.cwd ?? process.cwd();
 	const env = options.env ?? process.env;
-	const gjcSessionId = resolveSessionIdFromSources({ envSessionId: env.WORX_SESSION_ID })?.gjcSessionId;
+	const worxSessionId = resolveSessionIdFromSources({ envSessionId: env.WORX_SESSION_ID })?.worxSessionId;
 	if (!Number.isInteger(options.workerCount) || options.workerCount < 1 || options.workerCount > runtime.maxWorkers)
 		throw new Error(`invalid_team_worker_count:${options.workerCount}:expected_1_${runtime.maxWorkers}`);
 	const workerCliPlan = runtime.resolveWorkerCliPlan(options.workerCount, env);
@@ -235,23 +235,23 @@ export async function startGjcTeamLaunch(
 	const tmuxCommand = tmuxBinary.command;
 	const tmuxProviderGeneration =
 		tmuxBinary.isPsmux && platform === "win32" ? env[WORX_TMUX_OWNER_GENERATION_ENV]?.trim() : undefined;
-	const tmuxProvider = resolveGjcTmuxProviderContext({ binary: tmuxBinary, env, platform });
-	if (tmuxProvider.binary.command !== tmuxCommand) throw new Error("gjc_team_tmux_provider_command_mismatch");
+	const tmuxProvider = resolveWorxTmuxProviderContext({ binary: tmuxBinary, env, platform });
+	if (tmuxProvider.binary.command !== tmuxCommand) throw new Error("worx_team_tmux_provider_command_mismatch");
 	const launchSessionId =
-		env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || env.WORX_SESSION_ID?.trim() || gjcSessionId?.trim();
+		env[WORX_COORDINATOR_SESSION_ID_ENV]?.trim() || env.WORX_SESSION_ID?.trim() || worxSessionId?.trim();
 	const launchStateDir = env[WORX_TMUX_OWNER_STATE_DIR_ENV]?.trim();
 	const tmuxAuthority =
 		tmuxBinary.isPsmux && platform === "win32" && !options.dryRun
 			? launchSessionId && launchStateDir && tmuxProviderGeneration
-				? readGjcTmuxProviderAuthoritySync({
+				? readWorxTmuxProviderAuthoritySync({
 						stateDir: launchStateDir,
 						sessionId: launchSessionId,
 						generation: tmuxProviderGeneration,
 					})
 				: (() => {
-						throw new Error("gjc_team_tmux_provider_authority_unavailable");
+						throw new Error("worx_team_tmux_provider_authority_unavailable");
 					})()
-			: bindGjcTmuxProviderAuthority(tmuxProvider, {
+			: bindWorxTmuxProviderAuthority(tmuxProvider, {
 					stateDir: stateRoot,
 					sessionId: teamName,
 					generation: "native-tmux",
@@ -261,7 +261,7 @@ export async function startGjcTeamLaunch(
 		: runtime.readTmuxLeaderContext(tmuxCommand, env, tmuxAuthority);
 	const initialWorkers = runtime.buildWorkers(options.workerCount, options.agentType, stateRoot);
 	const initialTasks = runtime.buildInitialTasks(options.task, initialWorkers);
-	const workers: GjcTeamWorker[] = [];
+	const workers: WorxTeamWorker[] = [];
 	try {
 		for (const worker of initialWorkers)
 			workers.push(
@@ -293,7 +293,7 @@ export async function startGjcTeamLaunch(
 		...worker,
 		assigned_tasks: tasksByOwner.get(worker.id) ?? worker.assigned_tasks,
 	}));
-	const config: GjcTeamConfig = {
+	const config: WorxTeamConfig = {
 		team_name: teamName,
 		display_name: displayName,
 		requested_name: options.teamName ?? displayName,
@@ -303,7 +303,7 @@ export async function startGjcTeamLaunch(
 		max_workers: runtime.maxWorkers,
 		state_root: stateRoot,
 		worker_command: runtime.resolveWorkerCommand(cwd, env),
-		...(gjcSessionId ? { gjc_session_id: gjcSessionId } : {}),
+		...(worxSessionId ? { gjc_session_id: worxSessionId } : {}),
 		worker_cli_plan: workerCliPlan,
 		tmux_command: tmuxCommand,
 		platform,
@@ -376,7 +376,7 @@ export async function startGjcTeamLaunch(
 			dry_run: config.dry_run,
 		},
 	});
-	let tmuxWorkers: GjcTeamWorker[];
+	let tmuxWorkers: WorxTeamWorker[];
 	try {
 		tmuxWorkers = await runtime.startTmuxSession(config, dir, options.dryRun ?? false, env);
 	} catch (error) {

@@ -20,19 +20,19 @@ import {
 
 // ─── Env isolation ───────────────────────────────────────────────────────────
 
-let savedGjcVariant: string | undefined;
+let savedWorxVariant: string | undefined;
 let savedPiVariant: string | undefined;
 
 beforeEach(() => {
-	savedGjcVariant = Bun.env.WORX_EDIT_VARIANT;
+	savedWorxVariant = Bun.env.WORX_EDIT_VARIANT;
 	savedPiVariant = Bun.env.PI_EDIT_VARIANT;
 	delete Bun.env.WORX_EDIT_VARIANT;
 	delete Bun.env.PI_EDIT_VARIANT;
 });
 
 afterEach(() => {
-	if (savedGjcVariant === undefined) delete Bun.env.WORX_EDIT_VARIANT;
-	else Bun.env.WORX_EDIT_VARIANT = savedGjcVariant;
+	if (savedWorxVariant === undefined) delete Bun.env.WORX_EDIT_VARIANT;
+	else Bun.env.WORX_EDIT_VARIANT = savedWorxVariant;
 	if (savedPiVariant === undefined) delete Bun.env.PI_EDIT_VARIANT;
 	else Bun.env.PI_EDIT_VARIANT = savedPiVariant;
 	resetSettingsForTest();

@@ -92,7 +92,7 @@ describe("TUI overlays", () => {
 	let previousSty: string | undefined;
 	let previousZellij: string | undefined;
 	let previousTmuxPane: string | undefined;
-	let previousGjcTmuxLaunched: string | undefined;
+	let previousWorxTmuxLaunched: string | undefined;
 	let previousTerm: string | undefined;
 	let previousLegacyFullRender: string | undefined;
 	let previousImeCursor: string | undefined;
@@ -103,7 +103,7 @@ describe("TUI overlays", () => {
 		previousZellij = Bun.env.ZELLIJ;
 		previousLegacyFullRender = Bun.env.PI_TUI_LEGACY_MULTIPLEXER_FULL_RENDER;
 		previousTmuxPane = Bun.env.TMUX_PANE;
-		previousGjcTmuxLaunched = Bun.env.WORX_TMUX_LAUNCHED;
+		previousWorxTmuxLaunched = Bun.env.WORX_TMUX_LAUNCHED;
 		previousTerm = Bun.env.TERM;
 		previousImeCursor = Bun.env.WORX_TUI_IME_CURSOR;
 		delete Bun.env.TMUX;
@@ -142,10 +142,10 @@ describe("TUI overlays", () => {
 		} else {
 			Bun.env.TMUX_PANE = previousTmuxPane;
 		}
-		if (previousGjcTmuxLaunched === undefined) {
+		if (previousWorxTmuxLaunched === undefined) {
 			delete Bun.env.WORX_TMUX_LAUNCHED;
 		} else {
-			Bun.env.WORX_TMUX_LAUNCHED = previousGjcTmuxLaunched;
+			Bun.env.WORX_TMUX_LAUNCHED = previousWorxTmuxLaunched;
 		}
 		if (previousTerm === undefined) {
 			delete Bun.env.TERM;

@@ -1,17 +1,17 @@
 import { describe, expect, test } from "bun:test";
 import {
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
 	parseManifest,
 	parseSubskillFrontmatter,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
 } from "../src/extensibility/worx-plugins";
 
-function expectLoadError(fn: () => unknown, code: GjcPluginLoadErrorCode): void {
+function expectLoadError(fn: () => unknown, code: WorxPluginLoadErrorCode): void {
 	try {
 		fn();
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} load error`);

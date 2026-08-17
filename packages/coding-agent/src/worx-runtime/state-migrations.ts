@@ -1,5 +1,5 @@
 import * as fs from "node:fs/promises";
-import type { CanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import type { CanonicalWorxWorkflowSkill } from "../skill-state/active-state";
 import { initialPhaseForSkill } from "../skill-state/initial-phase";
 import {
 	canonicalWorkflowSkill,
@@ -34,7 +34,7 @@ export interface MigrateWorkflowStateResult {
 
 export type WorkflowStateMigration = (
 	state: Record<string, unknown>,
-	skill: CanonicalGjcWorkflowSkill,
+	skill: CanonicalWorxWorkflowSkill,
 ) => Record<string, unknown>;
 
 const RECEIPT_STRING_FIELDS = [
@@ -50,7 +50,7 @@ function cloneRecord(record: Record<string, unknown>): Record<string, unknown> {
 	return { ...record };
 }
 
-function canonicalSkillOrThrow(skill: string): CanonicalGjcWorkflowSkill {
+function canonicalSkillOrThrow(skill: string): CanonicalWorxWorkflowSkill {
 	const canonical = canonicalWorkflowSkill(skill);
 	if (!canonical) throw new Error(`Unsupported GJC workflow skill: ${skill}`);
 	return canonical;
@@ -60,19 +60,19 @@ function safeString(value: unknown): string {
 	return typeof value === "string" ? value : "";
 }
 
-function legacyPhaseForSkill(skill: CanonicalGjcWorkflowSkill, phase: string): string {
+function legacyPhaseForSkill(skill: CanonicalWorxWorkflowSkill, phase: string): string {
 	if (phase === "planning") return initialPhaseForSkill(skill);
 	return phase;
 }
 
-function normalizePhase(skill: CanonicalGjcWorkflowSkill, value: unknown): string {
+function normalizePhase(skill: CanonicalWorxWorkflowSkill, value: unknown): string {
 	const manifest = getSkillManifest(skill);
 	const manifestStates = new Set(manifest.states.map(state => state.id));
 	const phase = legacyPhaseForSkill(skill, safeString(value).trim());
 	return manifestStates.has(phase) ? phase : manifest.initialState;
 }
 
-function receiptWithRequiredFields(raw: unknown, skill: CanonicalGjcWorkflowSkill): Record<string, unknown> {
+function receiptWithRequiredFields(raw: unknown, skill: CanonicalWorxWorkflowSkill): Record<string, unknown> {
 	const receipt =
 		raw && typeof raw === "object" && !Array.isArray(raw) ? cloneRecord(raw as Record<string, unknown>) : {};
 	receipt.version = WORKFLOW_STATE_RECEIPT_VERSION;
@@ -90,7 +90,7 @@ function receiptWithRequiredFields(raw: unknown, skill: CanonicalGjcWorkflowSkil
 function recordsEqual(left: Record<string, unknown>, right: Record<string, unknown>): boolean {
 	return JSON.stringify(left) === JSON.stringify(right);
 }
-function migrateV1ToV2(state: Record<string, unknown>, skill: CanonicalGjcWorkflowSkill): Record<string, unknown> {
+function migrateV1ToV2(state: Record<string, unknown>, skill: CanonicalWorxWorkflowSkill): Record<string, unknown> {
 	const migrated = cloneRecord(state);
 	migrated.version = WORKFLOW_STATE_VERSION;
 	migrated.skill = skill;

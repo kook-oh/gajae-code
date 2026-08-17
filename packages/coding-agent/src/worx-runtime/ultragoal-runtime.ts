@@ -46,10 +46,10 @@ export {
 	terminalCriticGateOverridden,
 } from "./ultragoal-receipt-freshness";
 
-import { gjcRoot, sessionUltragoalDir } from "./session-layout";
+import { sessionUltragoalDir, worxRoot } from "./session-layout";
 import {
-	resolveGjcSessionForRead,
-	resolveGjcSessionForWrite,
+	resolveWorxSessionForRead,
+	resolveWorxSessionForWrite,
 	SessionResolutionError,
 	writeSessionActivityMarker,
 } from "./session-resolution";
@@ -77,7 +77,7 @@ export {
 	validateRecoveryAdmission,
 	validateRecoveryPath,
 } from "./ultragoal-owner-loss-recovery";
-export type UltragoalGjcGoalMode = "aggregate" | "per-story";
+export type UltragoalWorxGoalMode = "aggregate" | "per-story";
 export type UltragoalGoalStatus =
 	| "pending"
 	| "active"
@@ -121,9 +121,9 @@ export interface UltragoalGoal {
 export interface UltragoalPlan {
 	version: 1;
 	brief: string;
-	gjcGoalMode: UltragoalGjcGoalMode;
-	gjcObjective: string;
-	gjcObjectiveAliases?: string[];
+	worxGoalMode: UltragoalWorxGoalMode;
+	worxObjective: string;
+	worxObjectiveAliases?: string[];
 	goals: UltragoalGoal[];
 	/** Authoritative repository identity for multi-repo fail-closed spawn (#2901). */
 	repositoryBinding?: RepositoryBinding;
@@ -141,8 +141,8 @@ export interface UltragoalCompletionVerification {
 	goalId: string;
 	receiptKind: UltragoalReceiptKind;
 	goalStatusBeforeCheckpoint: UltragoalGoalStatus;
-	gjcGoalMode: UltragoalGjcGoalMode;
-	gjcObjective: string;
+	worxGoalMode: UltragoalWorxGoalMode;
+	worxObjective: string;
 	qualityGateHash: string;
 	planGeneration: string;
 	basis: {
@@ -240,7 +240,7 @@ export interface UltragoalStatusSummary {
 	exists: boolean;
 	status: "missing" | "pending" | "active" | "complete" | "blocked" | "failed";
 	paths: UltragoalPaths;
-	gjcObjective?: string;
+	worxObjective?: string;
 	currentGoal?: UltragoalGoal;
 	counts: Record<UltragoalGoalStatus, number>;
 	goals: UltragoalGoal[];
@@ -265,7 +265,7 @@ export interface JsonObject {
 }
 
 export function currentUltragoalSessionId(cwd: string): string {
-	return resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
+	return resolveWorxSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId;
 }
 
 const TERMINAL_OR_SKIPPED_STATUSES = new Set<UltragoalGoalStatus>(["complete", "superseded"]);
@@ -324,7 +324,7 @@ export function hashStructuredValue(value: unknown): string {
 
 export function getUltragoalPaths(cwd: string, sessionId?: string | null): UltragoalPaths {
 	const explicitSessionId = sessionId?.trim() || process.env.WORX_SESSION_ID?.trim();
-	const dir = explicitSessionId ? sessionUltragoalDir(cwd, explicitSessionId) : path.join(gjcRoot(cwd), "ultragoal");
+	const dir = explicitSessionId ? sessionUltragoalDir(cwd, explicitSessionId) : path.join(worxRoot(cwd), "ultragoal");
 	return {
 		dir,
 		briefPath: path.join(dir, "brief.md"),
@@ -345,7 +345,7 @@ export async function appendLedger(
 	sessionId?: string | null,
 ): Promise<UltragoalLedgerEvent> {
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveWorxSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	const entry: UltragoalLedgerEvent = {
 		eventId: typeof event.eventId === "string" ? event.eventId : crypto.randomUUID(),
@@ -363,7 +363,7 @@ export async function appendLedger(
 export async function readUltragoalLedger(cwd: string, sessionId?: string | null): Promise<UltragoalLedgerEvent[]> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		(await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	try {
 		const raw = await Bun.file(getUltragoalPaths(cwd, resolvedSessionId).ledgerPath).text();
 		return raw
@@ -413,7 +413,7 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
  * default. Mirrors the `gjc.deepInterview.ambiguityThreshold` user+project precedence.
  */
 export async function resolveUltragoalNudgeBudget(cwd: string): Promise<{ budget: number; source: string }> {
-	const projectPath = path.join(gjcRoot(cwd), "settings.json");
+	const projectPath = path.join(worxRoot(cwd), "settings.json");
 	const project = await readSettingsNudgeBudget(projectPath);
 	if (project !== null) return { budget: project, source: projectPath };
 	const userPath = path.join(getConfigRootDir(), "settings.json");
@@ -480,7 +480,7 @@ export async function recordUltragoalNudgeIfBudgetRemaining(input: {
 		};
 	}
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveWorxSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	return withWorkflowStateLock(
 		paths.ledgerPath,
@@ -527,7 +527,7 @@ export async function recordUltragoalNudgeIfBudgetRemaining(input: {
 
 export async function writePlan(cwd: string, plan: UltragoalPlan, sessionId?: string | null): Promise<void> {
 	const resolvedSessionId =
-		sessionId?.trim() || resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId;
+		sessionId?.trim() || resolveWorxSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	await writeArtifact(paths.briefPath, `${plan.brief.trim()}\n`, {
 		cwd,
@@ -548,7 +548,7 @@ function chooseReceiptKind(
 	goal: UltragoalGoal,
 	status: UltragoalGoalStatus,
 ): UltragoalReceiptKind {
-	if (plan.gjcGoalMode === "per-story") return "per-goal";
+	if (plan.worxGoalMode === "per-story") return "per-goal";
 	if (status !== "complete") return "per-goal";
 	// A non-final validation-batch member must always carry a per-goal
 	// deferred receipt; only the batch's final goal may close the batch and
@@ -650,8 +650,8 @@ function buildCompletionReceipt(input: {
 		goalId: input.goal.id,
 		receiptKind: input.receiptKind,
 		goalStatusBeforeCheckpoint: input.beforeStatus,
-		gjcGoalMode: input.plan.gjcGoalMode,
-		gjcObjective: input.plan.gjcObjective,
+		worxGoalMode: input.plan.worxGoalMode,
+		worxObjective: input.plan.worxObjective,
 		qualityGateHash: hashStructuredValue(input.qualityGateJson),
 		planGeneration: generation.planGeneration,
 		basis: generation.basis,
@@ -694,11 +694,11 @@ function withValidationBatchHash(
 function parseValidationBatchInput(
 	value: unknown,
 	goalIds: ReadonlySet<string>,
-	gjcGoalMode: UltragoalGjcGoalMode,
+	worxGoalMode: UltragoalWorxGoalMode,
 ): UltragoalValidationBatchMetadata[] {
 	if (!Array.isArray(value)) throw new Error("validation batch JSON must be an array");
 	if (value.length === 0) return [];
-	if (gjcGoalMode !== "aggregate") throw new Error("validation batches require aggregate ultragoal mode");
+	if (worxGoalMode !== "aggregate") throw new Error("validation batches require aggregate ultragoal mode");
 	const goalOrder = new Map([...goalIds].map((id, index) => [id, index]));
 	const assigned = new Set<string>();
 	const batches: UltragoalValidationBatchMetadata[] = [];
@@ -943,8 +943,8 @@ function normalizePlan(raw: unknown): UltragoalPlan {
 	const brief = nonEmptyString(record.brief) ?? "";
 	const createdAt = nonEmptyString(record.createdAt) ?? new Date().toISOString();
 	const updatedAt = nonEmptyString(record.updatedAt) ?? createdAt;
-	const gjcGoalMode = record.gjcGoalMode === "per-story" ? "per-story" : "aggregate";
-	const gjcObjective = nonEmptyString(record.gjcObjective) ?? DEFAULT_ULTRAGOAL_OBJECTIVE;
+	const worxGoalMode = record.worxGoalMode === "per-story" ? "per-story" : "aggregate";
+	const worxObjective = nonEmptyString(record.worxObjective) ?? DEFAULT_ULTRAGOAL_OBJECTIVE;
 	const rawGoals = Array.isArray(record.goals) ? record.goals : [];
 	const goals: UltragoalGoal[] = rawGoals.map((item, index) => {
 		const goalRecord = typeof item === "object" && item !== null ? (item as JsonObject) : {};
@@ -975,8 +975,8 @@ function normalizePlan(raw: unknown): UltragoalPlan {
 			validationBatch,
 		};
 	});
-	const aliases = Array.isArray(record.gjcObjectiveAliases)
-		? record.gjcObjectiveAliases.filter(
+	const aliases = Array.isArray(record.worxObjectiveAliases)
+		? record.worxObjectiveAliases.filter(
 				(value): value is string => typeof value === "string" && value.trim().length > 0,
 			)
 		: undefined;
@@ -987,9 +987,9 @@ function normalizePlan(raw: unknown): UltragoalPlan {
 	return {
 		version: 1,
 		brief,
-		gjcGoalMode,
-		gjcObjective,
-		gjcObjectiveAliases: aliases,
+		worxGoalMode,
+		worxObjective,
+		worxObjectiveAliases: aliases,
 		goals,
 		createdAt,
 		updatedAt,
@@ -1003,7 +1003,7 @@ function normalizePlan(raw: unknown): UltragoalPlan {
 export async function readUltragoalPlan(cwd: string, sessionId?: string | null): Promise<UltragoalPlan | null> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		(await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	try {
 		return normalizePlan(await Bun.file(getUltragoalPaths(cwd, resolvedSessionId).goalsPath).json());
 	} catch (error) {
@@ -1027,7 +1027,7 @@ function emptyCounts(): Record<UltragoalGoalStatus, number> {
 export async function getUltragoalStatus(cwd: string, sessionId?: string | null): Promise<UltragoalStatusSummary> {
 	const resolvedSessionId =
 		sessionId?.trim() ||
-		(await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		(await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	const paths = getUltragoalPaths(cwd, resolvedSessionId);
 	const plan = await readUltragoalPlan(cwd, resolvedSessionId);
 	const counts = emptyCounts();
@@ -1058,7 +1058,7 @@ export async function getUltragoalStatus(cwd: string, sessionId?: string | null)
 		exists: true,
 		status,
 		paths,
-		gjcObjective: plan.gjcObjective,
+		worxObjective: plan.worxObjective,
 		currentGoal,
 		counts,
 		goals: plan.goals,
@@ -1135,7 +1135,7 @@ function parseGoalsFromBrief(brief: string): ParsedGoal[] {
 export async function createUltragoalPlan(input: {
 	cwd: string;
 	brief: string;
-	gjcGoalMode?: UltragoalGjcGoalMode;
+	worxGoalMode?: UltragoalWorxGoalMode;
 	sessionId?: string | null;
 	validationBatches?: UltragoalValidationBatchInput[];
 	validationBatchJson?: string;
@@ -1161,7 +1161,7 @@ export async function createUltragoalPlan(input: {
 	const validationBatches =
 		validationBatchInput === undefined
 			? []
-			: parseValidationBatchInput(validationBatchInput, goalIds, input.gjcGoalMode ?? "aggregate");
+			: parseValidationBatchInput(validationBatchInput, goalIds, input.worxGoalMode ?? "aggregate");
 	const validationBatchByGoalId = new Map<string, UltragoalValidationBatchMetadata>();
 	for (const batch of validationBatches)
 		for (const memberId of batch.memberIds) validationBatchByGoalId.set(memberId, batch);
@@ -1174,8 +1174,8 @@ export async function createUltragoalPlan(input: {
 	const plan: UltragoalPlan = {
 		version: 1,
 		brief,
-		gjcGoalMode: input.gjcGoalMode ?? "aggregate",
-		gjcObjective: DEFAULT_ULTRAGOAL_OBJECTIVE,
+		worxGoalMode: input.worxGoalMode ?? "aggregate",
+		worxObjective: DEFAULT_ULTRAGOAL_OBJECTIVE,
 		goals,
 		repositoryBinding,
 		createdAt: now,
@@ -1214,7 +1214,7 @@ export function getUltragoalRunCompletionState(
 		nextGoal,
 		allComplete: requiredGoals.length > 0 && incompleteGoals.length === 0,
 		hasBlockers: incompleteGoals.some(goal => goal.status === "blocked" || goal.status === "review_blocked"),
-		needsFinalAggregateReceipt: plan.gjcGoalMode === "aggregate" && incompleteGoals.length === 0,
+		needsFinalAggregateReceipt: plan.worxGoalMode === "aggregate" && incompleteGoals.length === 0,
 	};
 }
 
@@ -4071,9 +4071,9 @@ export async function recordUltragoalCriticVerdict(input: {
 	if (input.terminus === "pause" && !classificationEventId) {
 		throw new Error("record-critic-verdict --classification-event-id is required for pause verdicts");
 	}
-	const resolvedSessionId = resolveGjcSessionForWrite(input.cwd, {
+	const resolvedSessionId = resolveWorxSessionForWrite(input.cwd, {
 		envSessionId: process.env.WORX_SESSION_ID,
-	}).gjcSessionId;
+	}).worxSessionId;
 	const paths = getUltragoalPaths(input.cwd, resolvedSessionId);
 	return withWorkflowStateLock(
 		paths.ledgerPath,
@@ -4152,9 +4152,9 @@ export async function recordUltragoalCriticGateOverride(input: {
 }): Promise<UltragoalLedgerEvent> {
 	const evidence = input.evidence.trim();
 	if (!evidence) throw new Error("record-critic-gate-override --evidence is required");
-	const resolvedSessionId = resolveGjcSessionForWrite(input.cwd, {
+	const resolvedSessionId = resolveWorxSessionForWrite(input.cwd, {
 		envSessionId: process.env.WORX_SESSION_ID,
-	}).gjcSessionId;
+	}).worxSessionId;
 	const paths = getUltragoalPaths(input.cwd, resolvedSessionId);
 	return withWorkflowStateLock(
 		paths.ledgerPath,
@@ -4462,9 +4462,9 @@ async function recordReviewFindingGoals(cwd: string, findings: readonly Ultragoa
 	if (!plan) {
 		plan = {
 			version: 1,
-			gjcObjective: DEFAULT_ULTRAGOAL_OBJECTIVE,
+			worxObjective: DEFAULT_ULTRAGOAL_OBJECTIVE,
 			brief: "Ultragoal review-start findings",
-			gjcGoalMode: "aggregate",
+			worxGoalMode: "aggregate",
 			createdAt: now,
 			updatedAt: now,
 			goals: [],
@@ -4818,7 +4818,7 @@ function renderCompleteHandoff(
 			ok: true,
 			all_complete: result.allComplete,
 			next_action: nextAction.kind,
-			gjc_objective: result.plan.gjcObjective,
+			worx_objective: result.plan.worxObjective,
 			goals_path: goalsPath,
 		};
 		if (nextAction.kind === "execute-goal" && nextAction.goal) {
@@ -4861,7 +4861,7 @@ function renderCompleteHandoff(
 		return [
 			`ultragoal next-action=execute-goal goal-id=${nextAction.goal.id}`,
 			`objective=${nextAction.goal.objective}`,
-			`gjc-objective=${result.plan.gjcObjective}`,
+			`gjc-objective=${result.plan.worxObjective}`,
 			"checkpoint requires=architectReview:CLEAR+APPROVE,executorQa:passed",
 			"",
 		].join("\n");
@@ -4916,7 +4916,7 @@ function renderCheckpointContinuation(
 		} else if (result.nextGoal) {
 			lines.push(`Next ultragoal goal: ${result.nextGoal.id} — ${result.nextGoal.title}`);
 			lines.push(`Objective: ${result.nextGoal.objective}`);
-			lines.push(`GJC objective: ${result.plan.gjcObjective}`);
+			lines.push(`GJC objective: ${result.plan.worxObjective}`);
 			lines.push(
 				result.startedNext
 					? "The next ultragoal goal is active; continue the current aggregate GJC goal and checkpoint this story when verified."
@@ -5097,7 +5097,7 @@ async function dispatchUltragoalCommand(args: string[], cwd: string): Promise<Ul
 				const plan = await createUltragoalPlan({
 					cwd,
 					brief: await readBrief(cwd, args),
-					gjcGoalMode: mode,
+					worxGoalMode: mode,
 					validationBatchJson: flagValue(args, "--validation-batch-json"),
 				});
 				return {
@@ -5339,7 +5339,7 @@ async function reconcileUltragoalState(cwd: string): Promise<void> {
 			brief_path: summary.paths.briefPath,
 			goals_path: summary.paths.goalsPath,
 		};
-		if (summary.gjcObjective) payload.gjc_objective = summary.gjcObjective;
+		if (summary.worxObjective) payload.worx_objective = summary.worxObjective;
 		if (summary.nudgeBudget !== undefined) payload.nudge_budget = summary.nudgeBudget;
 		if (summary.nudgeCount !== undefined) payload.nudge_count = summary.nudgeCount;
 		if (summary.nudgeRemaining !== undefined) payload.nudge_remaining = summary.nudgeRemaining;

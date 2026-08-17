@@ -82,7 +82,7 @@ test("shipped MCP stdio advertises confirm and forwards confirmed destructive co
 				id: 2,
 				method: "tools/call",
 				params: {
-					name: "gjc_session_control",
+					name: "worx_session_control",
 					arguments: { sessionId, operation: "context.clear", input: {}, confirm: true },
 				},
 			})}\n`,
@@ -100,7 +100,7 @@ test("shipped MCP stdio advertises confirm and forwards confirmed destructive co
 		const toolList = responses.find(response => response.id === 1)?.result as {
 			tools?: Array<Record<string, unknown>>;
 		};
-		const control = toolList.tools?.find(tool => tool.name === "gjc_session_control");
+		const control = toolList.tools?.find(tool => tool.name === "worx_session_control");
 		expect(control).toMatchObject({
 			inputSchema: {
 				additionalProperties: false,

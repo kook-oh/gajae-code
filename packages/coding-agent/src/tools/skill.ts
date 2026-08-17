@@ -24,7 +24,7 @@ import { buildSkillPromptMessage } from "../extensibility/skills";
 import { resolveSubskillActivationForSkillInvocation } from "../extensibility/worx-plugins";
 import skillDescription from "../prompts/tools/skill.md" with { type: "text" };
 import { SKILL_PROMPT_MESSAGE_TYPE } from "../session/messages";
-import { isCanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import { isCanonicalWorxWorkflowSkill } from "../skill-state/active-state";
 import { runNativeStateCommand } from "../worx-runtime/state-runtime";
 import type { ToolSession } from ".";
 import { ToolError } from "./tool-errors";
@@ -135,7 +135,7 @@ export class SkillTool implements AgentTool<typeof skillSchema, SkillToolDetails
 			// Phase guard + atomic native handoff only apply to canonical workflow
 			// skills. Runtime project/user skills do not have a native mode-state,
 			// so there is no `gjc state <skill>` command to run for them.
-			if (activeSkill && isCanonicalGjcWorkflowSkill(activeSkill)) {
+			if (activeSkill && isCanonicalWorxWorkflowSkill(activeSkill)) {
 				const phase = (this.#session.getActiveSkillPhase?.() ?? "running").trim().toLowerCase();
 				if (!TERMINAL_PHASES.has(phase)) {
 					throw new ToolError(

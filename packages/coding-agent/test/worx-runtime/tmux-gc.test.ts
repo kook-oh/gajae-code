@@ -122,7 +122,7 @@ describe("tmux GC safety", () => {
 		expect(orphan).toMatchObject({
 			status: "unclassified",
 			removable: false,
-			reason: "metadata_less_gjc_owned_idle_orphan_missing_terminal_marker",
+			reason: "metadata_less_worx_owned_idle_orphan_missing_terminal_marker",
 		});
 		expect(unrelated).toMatchObject({ status: "unclassified", removable: false, reason: "untagged_tmux_session" });
 		expect(await tmuxSessionsGcAdapter.prune(orphan!, ctx())).toEqual({
@@ -190,7 +190,7 @@ describe("tmux GC safety", () => {
 			});
 			expect(await tmuxSessionsGcAdapter.prune(record!, ctx())).toEqual({
 				removed: false,
-				error: "gjc_tmux_cleanup_target_changed",
+				error: "worx_tmux_cleanup_target_changed",
 			});
 			expect(calls).not.toContainEqual(["tmux-test", "kill-session", "-t", "=gajae_code_done"]);
 		} finally {
@@ -432,7 +432,7 @@ describe("tmux GC safety", () => {
 			});
 			expect(await tmuxSessionsGcAdapter.prune(record!, ctx())).toMatchObject({
 				removed: false,
-				error: "gjc_tmux_session_live:gajae_code_final_race",
+				error: "worx_tmux_session_live:gajae_code_final_race",
 			});
 			expect(calls).not.toContainEqual(["tmux-test", "kill-session", "-t", "=gajae_code_final_race"]);
 		} finally {
@@ -501,7 +501,7 @@ describe("tmux GC safety", () => {
 			});
 			expect(await tmuxSessionsGcAdapter.prune(record!, ctx())).toMatchObject({
 				removed: false,
-				error: "gjc_tmux_session_live:gajae_code_final_pane_race",
+				error: "worx_tmux_session_live:gajae_code_final_pane_race",
 			});
 			expect(calls).not.toContainEqual(["tmux-test", "kill-session", "-t", "=gajae_code_final_pane_race"]);
 		} finally {

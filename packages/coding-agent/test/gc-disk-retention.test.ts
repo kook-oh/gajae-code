@@ -18,7 +18,7 @@ import {
 	type GcStore,
 	type GcStoreAdapter,
 	resolveGcDiskPolicy,
-	runGjcGcCommand,
+	runWorxGcCommand,
 } from "../src/worx-runtime/gc-runtime";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -182,7 +182,7 @@ function policy(overrides: Partial<GcDiskPolicy> = {}): GcDiskPolicy {
 }
 
 async function runDisk(fixture: TestRoot, argv: string[], overrides: Partial<GcDiskPolicy> = {}): Promise<GcReport> {
-	const result = await runGjcGcCommand(argv, fixture.root, fixture.env, [], policy(overrides));
+	const result = await runWorxGcCommand(argv, fixture.root, fixture.env, [], policy(overrides));
 	expect(result.stderr).toBe("");
 	return JSON.parse(result.stdout) as GcReport;
 }
@@ -247,7 +247,7 @@ describe("gjc gc --disk (report only)", () => {
 		const fixture = await makeTestRoot();
 		try {
 			await writeSession(fixture, "repo-a", "stale-session", { ageDays: 90 });
-			const result = await runGjcGcCommand(["--disk"], fixture.root, fixture.env, [], policy());
+			const result = await runWorxGcCommand(["--disk"], fixture.root, fixture.env, [], policy());
 			expect(result.status).toBe(0);
 			expect(result.stdout).toContain("gjc gc --disk — report only");
 			expect(result.stdout).toContain("Session transcripts");
@@ -399,7 +399,7 @@ describe("gjc gc --disk --prune (blob mark and sweep)", () => {
 			await fsp.mkdir(artifacts, { recursive: true });
 			for (let index = 0; index < 6000; index++) await Bun.write(path.join(artifacts, `entry-${index}`), "x");
 
-			const run = runGjcGcCommand(["--disk", "--prune", "--json"], fixture.root, fixture.env, [], policy());
+			const run = runWorxGcCommand(["--disk", "--prune", "--json"], fixture.root, fixture.env, [], policy());
 			await Bun.sleep(10);
 			await writeSession(fixture, "repo-b", "late-session", { ageDays: 0, blobRefs: [blob] });
 
@@ -428,7 +428,13 @@ describe("gjc gc --disk --prune (blob mark and sweep)", () => {
 					await Bun.sleep(0);
 				}
 			})();
-			const report = await runGjcGcCommand(["--disk", "--prune", "--json"], fixture.root, fixture.env, [], policy());
+			const report = await runWorxGcCommand(
+				["--disk", "--prune", "--json"],
+				fixture.root,
+				fixture.env,
+				[],
+				policy(),
+			);
 			appending = false;
 			await appender;
 
@@ -690,7 +696,13 @@ describe("gjc gc --disk --prune (blob mark and sweep)", () => {
 					await Bun.sleep(0);
 				}
 			})();
-			const report = await runGjcGcCommand(["--disk", "--prune", "--json"], fixture.root, fixture.env, [], policy());
+			const report = await runWorxGcCommand(
+				["--disk", "--prune", "--json"],
+				fixture.root,
+				fixture.env,
+				[],
+				policy(),
+			);
 			appending = false;
 			await appender;
 
@@ -771,7 +783,7 @@ describe("gjc gc --disk --prune (blob sweep on incomplete evidence)", () => {
 			await writeSession(fixture, "repo-a", "live-session", { ageDays: 0, blobRefs: [hash] });
 			await fsp.chmod(projectDir, 0o000);
 
-			const result = await runGjcGcCommand(["--disk", "--prune"], fixture.root, fixture.env, [], policy());
+			const result = await runWorxGcCommand(["--disk", "--prune"], fixture.root, fixture.env, [], policy());
 			await fsp.chmod(projectDir, 0o700);
 
 			expect(result.stdout).toContain(
@@ -922,7 +934,13 @@ describe("gjc gc --disk --prune (half-completed retirement)", () => {
 			await fsp.chmod(locked, 0o500);
 			await writeSession(fixture, "repo-a", "newest", { ageDays: 0 });
 
-			const result = await runGjcGcCommand(["--disk", "--prune", "--json"], fixture.root, fixture.env, [], policy());
+			const result = await runWorxGcCommand(
+				["--disk", "--prune", "--json"],
+				fixture.root,
+				fixture.env,
+				[],
+				policy(),
+			);
 			await fsp.chmod(locked, 0o700).catch(() => {});
 			const disk = requireDisk(JSON.parse(result.stdout) as GcReport);
 			const record = disk.surfaces.sessions.records.find(entry => entry.id === "old-session");
@@ -1603,7 +1621,7 @@ describe("gjc gc --disk (session tool artifacts)", () => {
 			// used to reclaim these bytes.
 			expect(reasonById(disk, "sessions").get("worked-session")).toBe("keep:newer_than_max_age(30d)");
 
-			const text = await runGjcGcCommand(["--disk"], fixture.root, fixture.env, [], policy());
+			const text = await runWorxGcCommand(["--disk"], fixture.root, fixture.env, [], policy());
 			expect(text.stdout).toContain("Session tool artifacts");
 			expect(text.stdout).toContain("family *.bash.log count=2 (300 B)");
 			expect(text.stdout).toContain("family .artifact-id-* count=1 (0 B)");
@@ -1828,7 +1846,7 @@ describe("liveness axis is unchanged without --disk", () => {
 			await writeBlob(fixture, "orphan", 30);
 
 			const before = await snapshotTree(fixture.root);
-			const result = await runGjcGcCommand(["--json"], fixture.root, fixture.env, []);
+			const result = await runWorxGcCommand(["--json"], fixture.root, fixture.env, []);
 			const report = JSON.parse(result.stdout) as GcReport;
 
 			expect(report.disk).toBeUndefined();
@@ -1836,7 +1854,7 @@ describe("liveness axis is unchanged without --disk", () => {
 			expect(await snapshotTree(fixture.root)).toEqual(before);
 
 			// Even an explicit prune leaves every byte in place without --disk.
-			const pruned = await runGjcGcCommand(["--prune", "--json"], fixture.root, fixture.env, []);
+			const pruned = await runWorxGcCommand(["--prune", "--json"], fixture.root, fixture.env, []);
 			expect((JSON.parse(pruned.stdout) as GcReport).disk).toBeUndefined();
 			expect(await snapshotTree(fixture.root)).toEqual(before);
 		} finally {
@@ -1858,12 +1876,12 @@ describe("liveness axis is unchanged without --disk", () => {
 			};
 			const failing = fakeAdapter("file_locks", [record], async () => ({ removed: false, error: "EACCES" }));
 
-			const withoutDisk = await runGjcGcCommand(["--prune", "--json"], fixture.root, fixture.env, [failing]);
+			const withoutDisk = await runWorxGcCommand(["--prune", "--json"], fixture.root, fixture.env, [failing]);
 			expect(withoutDisk.status).toBe(1);
 			expect((JSON.parse(withoutDisk.stdout) as GcReport).counts.failed).toBe(1);
 
 			// The disk axis must not mask or change that outcome.
-			const withDisk = await runGjcGcCommand(
+			const withDisk = await runWorxGcCommand(
 				["--prune", "--disk", "--json"],
 				fixture.root,
 				fixture.env,
@@ -1883,11 +1901,11 @@ describe("liveness axis is unchanged without --disk", () => {
 			const stale = await writeSession(fixture, "repo-a", "stale-session", { ageDays: 900 });
 			await writeSession(fixture, "repo-a", "recent-session", { ageDays: 1 });
 
-			const result = await runGjcGcCommand(["--disk", "--json"], fixture.root, fixture.env, [], policy());
+			const result = await runWorxGcCommand(["--disk", "--json"], fixture.root, fixture.env, [], policy());
 			expect(result.status).toBe(0);
 			expect(await Bun.file(stale).exists()).toBe(true);
 
-			const explicitDryRun = await runGjcGcCommand(
+			const explicitDryRun = await runWorxGcCommand(
 				["--disk", "--prune", "--dry-run", "--json"],
 				fixture.root,
 				fixture.env,

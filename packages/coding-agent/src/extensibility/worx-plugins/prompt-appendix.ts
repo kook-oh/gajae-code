@@ -2,8 +2,8 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { resolveWithinRoot } from "./paths";
-import type { GjcPluginRegistryEntry, GjcSubskillParentAgent, NormalizedAppendixSurface } from "./types";
-import { GjcPluginLoadError } from "./types";
+import type { NormalizedAppendixSurface, WorxPluginRegistryEntry, WorxSubskillParentAgent } from "./types";
+import { WorxPluginLoadError } from "./types";
 
 /**
  * Renders plugin system/agent appendices as lower-authority, delimited blocks
@@ -35,12 +35,12 @@ export function sanitizePromptBody(text: string): string {
 function assertAppendixDigest(bytes: Buffer, surface: NormalizedAppendixSurface, label: string): void {
 	const actual = createHash("sha256").update(bytes).digest("hex");
 	if (actual.toLowerCase() !== surface.contentHash.toLowerCase()) {
-		throw new GjcPluginLoadError("runtime_mismatch", `Appendix hash drift at ${label}`);
+		throw new WorxPluginLoadError("runtime_mismatch", `Appendix hash drift at ${label}`);
 	}
 }
 
 async function readAppendixBody(
-	entry: GjcPluginRegistryEntry,
+	entry: WorxPluginRegistryEntry,
 	surface: NormalizedAppendixSurface,
 	options?: RenderPluginAppendixOptions,
 ): Promise<string> {
@@ -61,13 +61,13 @@ async function readAppendixBody(
 	try {
 		[rootReal, fileReal] = await Promise.all([fs.realpath(entry.pluginRoot), fs.realpath(lexical)]);
 	} catch (error) {
-		throw new GjcPluginLoadError("runtime_mismatch", `Missing or unreadable appendix at ${surface.relativePath}`, {
+		throw new WorxPluginLoadError("runtime_mismatch", `Missing or unreadable appendix at ${surface.relativePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	const relative = path.relative(rootReal, fileReal);
 	if (relative.startsWith("..") || path.isAbsolute(relative)) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"runtime_mismatch",
 			`Appendix escapes the installed plugin root: ${surface.relativePath}`,
 		);
@@ -76,7 +76,7 @@ async function readAppendixBody(
 	try {
 		bytes = await fs.readFile(fileReal);
 	} catch (error) {
-		throw new GjcPluginLoadError("runtime_mismatch", `Missing or unreadable appendix at ${surface.relativePath}`, {
+		throw new WorxPluginLoadError("runtime_mismatch", `Missing or unreadable appendix at ${surface.relativePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
@@ -86,14 +86,14 @@ async function readAppendixBody(
 
 export interface RenderPluginAppendixOptions {
 	/** Test/coordination seam invoked immediately before each file-backed appendix read. */
-	beforeRead?: (entry: GjcPluginRegistryEntry, surface: NormalizedAppendixSurface) => Promise<void>;
+	beforeRead?: (entry: WorxPluginRegistryEntry, surface: NormalizedAppendixSurface) => Promise<void>;
 }
 
 export interface RenderedPluginAppendices {
 	/** Combined system-appendix block text (empty if none). */
 	system: string;
 	/** Per-agent appendix block text. */
-	byAgent: Map<GjcSubskillParentAgent, string>;
+	byAgent: Map<WorxSubskillParentAgent, string>;
 	/** Stable digest of all rendered appendix content + identities (for cache/refresh). */
 	digest: string;
 }
@@ -105,11 +105,11 @@ export interface RenderedPluginAppendices {
  * truncated into the prompt as authoritative text).
  */
 export async function renderPluginAppendices(
-	entries: readonly GjcPluginRegistryEntry[],
+	entries: readonly WorxPluginRegistryEntry[],
 	options?: RenderPluginAppendixOptions,
 ): Promise<RenderedPluginAppendices> {
 	const systemBlocks: string[] = [];
-	const byAgent = new Map<GjcSubskillParentAgent, string[]>();
+	const byAgent = new Map<WorxSubskillParentAgent, string[]>();
 	const digestParts: string[] = [];
 	let totalBytes = 0;
 	let count = 0;

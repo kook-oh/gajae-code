@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getEmbeddedDefaultGjcSkills } from "../defaults/worx-defaults";
+import { getEmbeddedDefaultWorxSkills } from "../defaults/worx-defaults";
 import { buildSkillPromptMessage } from "../extensibility/skills";
 import { SKILL_FRONTMATTER_SCAN_BYTES, SKILL_FRONTMATTER_SCAN_TOTAL_BYTES, scanSkillDescriptorsFromDir } from "./index";
 
@@ -75,7 +75,7 @@ describe("skill descriptors", () => {
 		}
 	});
 	test("bundled skill prompt injection is byte-identical through the lazy catalog", async () => {
-		const embedded = getEmbeddedDefaultGjcSkills().find(skill => skill.name === "ralplan");
+		const embedded = getEmbeddedDefaultWorxSkills().find(skill => skill.name === "ralplan");
 		if (!embedded) throw new Error("ralplan bundled skill missing");
 		const legacyContent = embedded.content;
 		const legacy = await buildSkillPromptMessage(

@@ -19,13 +19,13 @@ import {
 	type OrchestratorDeps,
 } from "../src/sdk/bus/lifecycle-orchestrator";
 import {
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxProfileCommands,
-	resolveGjcTmuxCommand,
+	buildWorxTmuxExactOptionTarget,
+	buildWorxTmuxProfileCommands,
+	resolveWorxTmuxCommand,
 } from "../src/worx-runtime/tmux-common";
-import { forceCloseGjcTmuxSession, statusGjcTmuxSession } from "../src/worx-runtime/tmux-sessions";
+import { forceCloseWorxTmuxSession, statusWorxTmuxSession } from "../src/worx-runtime/tmux-sessions";
 
-const tmux = resolveGjcTmuxCommand(process.env);
+const tmux = resolveWorxTmuxCommand(process.env);
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-g005-"));
 const ledgerPath = path.join(tmpRoot, "idempotency.json");
 const auditPath = path.join(tmpRoot, "audit.jsonl");
@@ -80,13 +80,13 @@ const deps: OrchestratorDeps = {
 	},
 	// REAL spawn: create a GJC-tagged tmux session carrying the authoritative id.
 	spawnCreate: async (_frame, ids) => {
-		const name = `gjc_g005_${ids.intendedSessionId}`;
+		const name = `worx_g005_${ids.intendedSessionId}`;
 		created.push(name);
 		if (sh(["new-session", "-d", "-s", name, "sleep 600"]) !== 0) {
 			throw new Error(`tmux spawn failed for ${name}`);
 		}
-		const target = buildGjcTmuxExactOptionTarget(name);
-		for (const cmd of buildGjcTmuxProfileCommands(target, process.env, {
+		const target = buildWorxTmuxExactOptionTarget(name);
+		for (const cmd of buildWorxTmuxProfileCommands(target, process.env, {
 			sessionId: ids.intendedSessionId,
 		})) {
 			if (sh(cmd.args) !== 0) throw new Error(`tag failed for ${name}`);
@@ -100,7 +100,7 @@ const deps: OrchestratorDeps = {
 	},
 	// REAL close: hard-close the GJC-managed tmux session, id-matched.
 	closeSession: async target => {
-		forceCloseGjcTmuxSession(target.tmuxSession ?? "", process.env, target.sessionId);
+		forceCloseWorxTmuxSession(target.tmuxSession ?? "", process.env, target.sessionId);
 		return { processGone: !exists(target.tmuxSession ?? "") };
 	},
 	resumeSession: async () => ({ ambiguous: [] }),
@@ -123,7 +123,7 @@ async function main(): Promise<void> {
 	assert.equal(createOut.status, "ok", "create must succeed");
 	const session = createOut.status === "ok" ? createOut.entry.tmuxSession! : "";
 	assert.ok(exists(session), "real tmux session must exist after create");
-	const status = statusGjcTmuxSession(session);
+	const status = statusWorxTmuxSession(session);
 	assert.equal(status.profile, "1", "spawned session must be GJC-managed");
 	assert.equal(status.sessionId, createFrame.intendedSessionId, "authoritative session id propagated to tmux tag");
 	console.log(`[g005] CREATE -> live tmux session ${session} (id=${status.sessionId})`);

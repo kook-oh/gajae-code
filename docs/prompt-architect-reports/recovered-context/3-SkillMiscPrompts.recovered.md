@@ -75,7 +75,7 @@
 - `ALLOWED_HANDOFF|HANDOFF_TARGETS|handoffTargets|allowedTargets|KNOWN_MODES` in `['packages/coding-agent/src/worx-runtime/state-runtime.ts', 'packages/coding-agent/src/worx-runtime/workflow-command-ref.ts']`
 - `deliberate` in `['packages/coding-agent/src/worx-runtime/deep-interview-runtime.ts']`
 - `--quick|--standard|--deep\b|research-setup` in `['packages/coding-agent/src/worx-runtime/deep-interview-runtime.ts', 'packages/coding-agent/src/defaults/worx/skills']`
-- `CANONICAL_WORX_WORKFLOW_SKILLS\s*=|CanonicalGjcWorkflowSkill\s*=` in `['packages/coding-agent/src']`
+- `CANONICAL_WORX_WORKFLOW_SKILLS\s*=|CanonicalWorxWorkflowSkill\s*=` in `['packages/coding-agent/src']`
 - `classify-blocker|record-review-blockers|start-pipeline-overlap|sparkshell` in `['packages/coding-agent/src/worx-runtime', 'packages/coding-agent/src/commands']`
 - `benchmark-system|benchmark-task|benchmark-retry` in `['packages/typescript-edit-benchmark/src']`
 - `benchmarkSystemPrompt|benchmarkTaskPrompt|benchmarkRetryPrompt|guided_context|task_prompt|retry_context|multiFile|instructions` in `['packages/typescript-edit-benchmark/src/runner.ts']`

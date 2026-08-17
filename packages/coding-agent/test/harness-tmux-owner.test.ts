@@ -95,7 +95,7 @@ async function createScopedHarnessSeam(): Promise<{
 	  if-shell)
 	    if [ "\${WORX_HARNESS_TEST_KILL_FAIL:-}" = "1" ]; then exit 1; fi
 	    [ -f "$state" ] && kill "$(cat "$state")" 2>/dev/null || true
-	    printf '%s\n' '__gjc_harness_cleanup_ok__'
+	    printf '%s\n' '__worx_harness_cleanup_ok__'
 	    exit 0 ;;
 	  kill-session)
 	    if [ "\${WORX_HARNESS_TEST_KILL_FAIL:-}" = "1" ]; then exit 1; fi

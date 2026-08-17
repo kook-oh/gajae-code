@@ -511,7 +511,9 @@ describe("Settings", () => {
 					valid: false,
 					issues: [{ path: "config.yml", kind: "invalid" }],
 				});
-				expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+				expect(() => settings.getNotificationSettingsSnapshot()).toThrow(
+					"worx_notify_daemon_invalid_configuration",
+				);
 				await expect(
 					settings.commitAtomicBatch([{ path: "theme.dark", op: "set", value: "red-claw" }]),
 				).rejects.toThrow("Repair config.yml");
@@ -721,7 +723,7 @@ describe("Settings", () => {
 			expect(settings.canWriteDurableConfig()).toBe(false);
 			expect(settings.get("theme.dark")).toBe("blue-crab");
 			expect(settings.getSchemaReport()).toMatchObject({ valid: false });
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(() => settings.set("theme.light", "blue-crab")).toThrow("Repair config.yml");
 		} finally {
 			settings.getStorage()?.close();
@@ -735,7 +737,7 @@ describe("Settings", () => {
 			await Bun.write(getConfigPath(), "notifications: [");
 			await settings.flush();
 
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(settings.get("theme.dark")).toBe("blue-crab");
 
 			await Bun.write(getConfigPath(), "");
@@ -761,7 +763,7 @@ describe("Settings", () => {
 			await expect(settings.flush()).rejects.toThrow();
 			expect(settings.canWriteDurableConfig()).toBe(false);
 			expect(settings.getSchemaReport()).toMatchObject({ valid: false });
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(() => settings.set("notifications.redact", true)).toThrow("Repair config.yml");
 		} finally {
 			settings.getStorage()?.close();
@@ -800,8 +802,8 @@ describe("Settings", () => {
 			const cloned = await source.cloneForCwd(clonedCwd);
 			expect(cloned.canWriteDurableConfig()).toBe(false);
 			expect(cloned.getSchemaReport()).toEqual(source.getSchemaReport());
-			expect(() => source.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
-			expect(() => cloned.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => source.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
+			expect(() => cloned.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(() => cloned.set("notifications.redact", true)).toThrow("Repair config.yml");
 			expect(await Bun.file(getConfigPath()).text()).toBe(malformed);
 		} finally {

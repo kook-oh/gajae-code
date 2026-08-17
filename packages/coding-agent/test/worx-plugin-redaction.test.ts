@@ -4,10 +4,10 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	type GjcPluginRegistryEntry,
-	type GjcPluginRegistrySource,
 	redactSourceLocator,
 	toBundleSummary,
+	type WorxPluginRegistryEntry,
+	type WorxPluginRegistrySource,
 } from "../src/extensibility/worx-plugins";
 
 const originalAgentDir = getAgentDir();
@@ -23,7 +23,7 @@ afterEach(async () => {
 	await fs.rm(agentDir, { recursive: true, force: true });
 });
 
-function registryEntry(source: GjcPluginRegistrySource): GjcPluginRegistryEntry {
+function registryEntry(source: WorxPluginRegistrySource): WorxPluginRegistryEntry {
 	return {
 		name: "redaction-fixture",
 		version: "1.0.0",
@@ -67,7 +67,7 @@ describe("GJC bundle redaction", () => {
 		];
 
 		for (const { uri, expected } of hostileLocators) {
-			const source: GjcPluginRegistrySource = {
+			const source: WorxPluginRegistrySource = {
 				kind: "git",
 				uri,
 				ref: "refs/heads/x?token=abc",

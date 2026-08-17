@@ -3,7 +3,7 @@
  *
  * This is the impure companion to the pure `session-layout.ts`. Only CLI /
  * runtime entrypoints call these resolvers; low-level readers and writers
- * receive an explicit `gjcSessionId` (or a path produced by the pure helper) so
+ * receive an explicit `worxSessionId` (or a path produced by the pure helper) so
  * no module silently picks a session.
  *
  * Resolution order:
@@ -18,12 +18,12 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
-	type GjcSessionContext,
-	type GjcSessionSource,
-	gjcRoot,
 	sessionIdFromDirName,
 	sessionRoot,
 	WORX_SESSION_ACTIVITY_FILE,
+	type WorxSessionContext,
+	type WorxSessionSource,
+	worxRoot,
 } from "./session-layout";
 
 /** Window within which two activity timestamps are treated as an ambiguous tie. */
@@ -56,8 +56,8 @@ function assertSafeResolvedSessionId(sessionId: string): void {
 }
 
 interface ResolvedFromSources {
-	gjcSessionId: string;
-	source: GjcSessionSource;
+	worxSessionId: string;
+	source: WorxSessionSource;
 }
 
 /**
@@ -75,23 +75,23 @@ export function resolveSessionIdFromSources(sources: SessionIdSources): Resolved
 			);
 		}
 		assertSafeResolvedSessionId(trimmed);
-		return { gjcSessionId: trimmed, source: "flag" };
+		return { worxSessionId: trimmed, source: "flag" };
 	}
 	if (typeof payloadSessionId === "string" && payloadSessionId.trim() !== "") {
 		const trimmed = payloadSessionId.trim();
 		assertSafeResolvedSessionId(trimmed);
-		return { gjcSessionId: trimmed, source: "payload" };
+		return { worxSessionId: trimmed, source: "payload" };
 	}
 	if (typeof envSessionId === "string" && envSessionId.trim() !== "") {
 		const trimmed = envSessionId.trim();
 		assertSafeResolvedSessionId(trimmed);
-		return { gjcSessionId: trimmed, source: "env" };
+		return { worxSessionId: trimmed, source: "env" };
 	}
 	return undefined;
 }
 
 /** Resolve session context for a WRITE command. Errors when no explicit id is present. */
-export function resolveGjcSessionForWrite(cwd: string, sources: SessionIdSources): GjcSessionContext {
+export function resolveWorxSessionForWrite(cwd: string, sources: SessionIdSources): WorxSessionContext {
 	const resolved = resolveSessionIdFromSources(sources);
 	if (!resolved) {
 		throw new SessionResolutionError(
@@ -100,8 +100,8 @@ export function resolveGjcSessionForWrite(cwd: string, sources: SessionIdSources
 		);
 	}
 	return {
-		gjcSessionId: resolved.gjcSessionId,
-		sessionRoot: sessionRoot(cwd, resolved.gjcSessionId),
+		worxSessionId: resolved.worxSessionId,
+		sessionRoot: sessionRoot(cwd, resolved.worxSessionId),
 		source: resolved.source,
 	};
 }
@@ -110,21 +110,21 @@ export function resolveGjcSessionForWrite(cwd: string, sources: SessionIdSources
  * Resolve session context for a READ/STATUS/CLEAR command. Falls back to the
  * latest active session by activity marker when no explicit id is present.
  */
-export async function resolveGjcSessionForRead(cwd: string, sources: SessionIdSources): Promise<GjcSessionContext> {
+export async function resolveWorxSessionForRead(cwd: string, sources: SessionIdSources): Promise<WorxSessionContext> {
 	const resolved = resolveSessionIdFromSources(sources);
 	if (resolved) {
 		return {
-			gjcSessionId: resolved.gjcSessionId,
-			sessionRoot: sessionRoot(cwd, resolved.gjcSessionId),
+			worxSessionId: resolved.worxSessionId,
+			sessionRoot: sessionRoot(cwd, resolved.worxSessionId),
 			source: resolved.source,
 		};
 	}
 	const latest = await detectLatestSession(cwd);
-	return { gjcSessionId: latest.gjcSessionId, sessionRoot: latest.sessionRoot, source: "latest" };
+	return { worxSessionId: latest.worxSessionId, sessionRoot: latest.sessionRoot, source: "latest" };
 }
 
 interface SessionCandidate {
-	gjcSessionId: string;
+	worxSessionId: string;
 	sessionRoot: string;
 	activityMs: number;
 }
@@ -134,7 +134,7 @@ interface SessionCandidate {
  * its activity marker. Never uses raw directory mtime. Throws on zero candidates
  * or an ambiguous tie.
  */
-export async function detectLatestSession(cwd: string): Promise<GjcSessionContext> {
+export async function detectLatestSession(cwd: string): Promise<WorxSessionContext> {
 	const candidates = await collectActiveSessionCandidates(cwd);
 	if (candidates.length === 0) {
 		throw new SessionResolutionError(
@@ -147,17 +147,17 @@ export async function detectLatestSession(cwd: string): Promise<GjcSessionContex
 	if (second && first.activityMs - second.activityMs <= LATEST_SESSION_TIE_WINDOW_MS) {
 		const tied = candidates
 			.filter(c => first.activityMs - c.activityMs <= LATEST_SESSION_TIE_WINDOW_MS)
-			.map(c => c.gjcSessionId);
+			.map(c => c.worxSessionId);
 		throw new SessionResolutionError(
 			`ambiguous latest session among [${tied.join(", ")}]: pass --session-id or set WORX_SESSION_ID`,
 			"ambiguous",
 		);
 	}
-	return { gjcSessionId: first.gjcSessionId, sessionRoot: first.sessionRoot, source: "latest" };
+	return { worxSessionId: first.worxSessionId, sessionRoot: first.sessionRoot, source: "latest" };
 }
 
 async function collectActiveSessionCandidates(cwd: string): Promise<SessionCandidate[]> {
-	const root = gjcRoot(cwd);
+	const root = worxRoot(cwd);
 	let entries: import("node:fs").Dirent[];
 	try {
 		entries = await fs.readdir(root, { withFileTypes: true });
@@ -167,15 +167,15 @@ async function collectActiveSessionCandidates(cwd: string): Promise<SessionCandi
 	const candidates: SessionCandidate[] = [];
 	for (const entry of entries) {
 		if (!entry.isDirectory()) continue;
-		const gjcSessionId = sessionIdFromDirName(entry.name);
-		if (!gjcSessionId) continue;
-		assertSafeResolvedSessionId(gjcSessionId);
+		const worxSessionId = sessionIdFromDirName(entry.name);
+		if (!worxSessionId) continue;
+		assertSafeResolvedSessionId(worxSessionId);
 		const dir = path.join(root, entry.name);
 		const activityMs = await readActivityMs(path.join(dir, WORX_SESSION_ACTIVITY_FILE));
 		// Sessions with no readable activity marker are considered inactive and
 		// are not selected for auto-detect.
 		if (activityMs === undefined) continue;
-		candidates.push({ gjcSessionId, sessionRoot: dir, activityMs });
+		candidates.push({ worxSessionId, sessionRoot: dir, activityMs });
 	}
 	return candidates;
 }
@@ -217,13 +217,13 @@ export interface ActivityMarkerInfo {
  */
 export async function writeSessionActivityMarker(
 	cwd: string,
-	gjcSessionId: string,
+	worxSessionId: string,
 	info: ActivityMarkerInfo,
 ): Promise<void> {
-	const markerPath = path.join(sessionRoot(cwd, gjcSessionId), WORX_SESSION_ACTIVITY_FILE);
+	const markerPath = path.join(sessionRoot(cwd, worxSessionId), WORX_SESSION_ACTIVITY_FILE);
 	await fs.mkdir(path.dirname(markerPath), { recursive: true });
 	const payload = {
-		session_id: gjcSessionId,
+		session_id: worxSessionId,
 		updated_at: new Date().toISOString(),
 		writer: info.writer,
 		...(info.path ? { path: info.path } : {}),

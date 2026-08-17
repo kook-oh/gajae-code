@@ -16,7 +16,7 @@ import {
 	restoreMaterializedModelProfileForDeletion,
 } from "../../config/model-profile-activation";
 import { formatModelProfileDisplayLabel, recommendModelProfileForProvider } from "../../config/model-profiles";
-import { type GjcModelAssignmentTargetId, WORX_MODEL_ASSIGNMENT_TARGETS } from "../../config/model-registry";
+import { WORX_MODEL_ASSIGNMENT_TARGETS, type WorxModelAssignmentTargetId } from "../../config/model-registry";
 import { formatModelSelectorValue } from "../../config/model-resolver";
 import { selectorHead } from "../../config/model-selector-value";
 import type { ModelProfileConfig } from "../../config/models-config-schema";
@@ -1750,8 +1750,8 @@ export class SelectorController {
 						availableThemes,
 						availableModelProfiles: [...this.ctx.session.modelRegistry.getModelProfiles().keys()],
 						cwd: getProjectDir(),
-						gjcRuntimeSnapshot: this.ctx.session.gjcRuntimeSnapshot,
-						gjcActivationGeneration: this.ctx.session.gjcActivationGeneration,
+						worxRuntimeSnapshot: this.ctx.session.worxRuntimeSnapshot,
+						worxActivationGeneration: this.ctx.session.worxActivationGeneration,
 					},
 					{
 						onChange: (id, value) => this.handleSettingChange(id, value),
@@ -2286,7 +2286,7 @@ export class SelectorController {
 							done();
 							this.ctx.ui.requestRender();
 						} else if (selection.roles !== undefined) {
-							const targetRoles: readonly GjcModelAssignmentTargetId[] = selection.roles;
+							const targetRoles: readonly WorxModelAssignmentTargetId[] = selection.roles;
 							const includesDefault = targetRoles.includes("default");
 							const includesRoleAgent = targetRoles.some(targetRole => targetRole !== "default");
 							if (includesRoleAgent) {
@@ -2307,7 +2307,7 @@ export class SelectorController {
 							}
 							const value =
 								selectedSelector ?? formatModelSelectorValue(`${model.provider}/${model.id}`, thinkingLevel);
-							const assignments = new Map<GjcModelAssignmentTargetId, string>();
+							const assignments = new Map<WorxModelAssignmentTargetId, string>();
 							for (const targetRole of targetRoles) assignments.set(targetRole, value);
 							const defaultSelector =
 								selectedSelector && thinkingLevel && selectedSelector.endsWith(`:${thinkingLevel}`)
@@ -2435,7 +2435,7 @@ export class SelectorController {
 							}
 							const value =
 								selectedSelector ?? formatModelSelectorValue(`${model.provider}/${model.id}`, thinkingLevel);
-							const assignments = new Map<GjcModelAssignmentTargetId, string>([[role, value]]);
+							const assignments = new Map<WorxModelAssignmentTargetId, string>([[role, value]]);
 							const materializedProfile = materializeActiveModelProfileAssignments({
 								session: this.ctx.session,
 								settings: this.ctx.settings,

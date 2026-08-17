@@ -46,7 +46,7 @@ function idlePhaseUpdates(updates: SessionNotification[]): number {
 	return updates.filter(
 		update =>
 			update.update.sessionUpdate === "session_info_update" &&
-			(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+			(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 	).length;
 }
 
@@ -226,7 +226,7 @@ async function createFixture(
 			updates.some(
 				update =>
 					update.update.sessionUpdate === "session_info_update" &&
-					(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+					(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 			),
 		"bootstrap update",
 	);
@@ -267,7 +267,7 @@ for (const reason of ["end_turn", "max_tokens", "max_turn_requests", "refusal", 
 			const idleUpdatesBefore = fixture.updates.filter(
 				update =>
 					update.update.sessionUpdate === "session_info_update" &&
-					(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+					(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 			).length;
 			const pending = prompt(fixture, reason);
 			await bounded(fixture.promptDelivered, "prompt delivery");
@@ -284,7 +284,7 @@ for (const reason of ["end_turn", "max_tokens", "max_turn_requests", "refusal", 
 				fixture.updates.filter(
 					update =>
 						update.update.sessionUpdate === "session_info_update" &&
-						(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+						(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 				),
 			).toHaveLength(idleUpdatesBefore + 1);
 		} finally {
@@ -325,7 +325,7 @@ test("ACP prompt settles exactly once when terminal arrives before acknowledgeme
 		const idleUpdatesBefore = fixture.updates.filter(
 			update =>
 				update.update.sessionUpdate === "session_info_update" &&
-				(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+				(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 		).length;
 		let settleCount = 0;
 		const pending = prompt(fixture, "fast terminal").then(result => {
@@ -341,7 +341,7 @@ test("ACP prompt settles exactly once when terminal arrives before acknowledgeme
 			fixture.updates.filter(
 				update =>
 					update.update.sessionUpdate === "session_info_update" &&
-					(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+					(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 			),
 		).toHaveLength(idleUpdatesBefore + 1);
 	} finally {
@@ -488,7 +488,7 @@ for (const terminalType of ["agent_end", "agent_failed"] as const) {
 					.filter(
 						update =>
 							update.update.sessionUpdate === "session_info_update" &&
-							(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+							(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 					),
 			).toHaveLength(1);
 			expect(fixture.updates).toHaveLength(updatesBefore + 1);
@@ -545,7 +545,7 @@ test("ACP releases the running phase and accepts a new prompt after a settlement
 		});
 		const lastUpdate = fixture.updates.at(-1);
 		expect(lastUpdate?.update.sessionUpdate).toBe("session_info_update");
-		expect((lastUpdate?.update as { _meta?: { gjcRunning?: boolean } })._meta?.gjcRunning).toBe(false);
+		expect((lastUpdate?.update as { _meta?: { worxRunning?: boolean } })._meta?.worxRunning).toBe(false);
 		// The wedged session refused every later turn with `conflict`, which surfaced in
 		// the client as a permanent "a foreground turn is already active".
 		const next = prompt(fixture, "prompt after rejection");
@@ -570,7 +570,7 @@ test("ACP settles a cancelled prompt when the aborted turn never publishes a ter
 				.filter(
 					update =>
 						update.update.sessionUpdate === "session_info_update" &&
-						(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
+						(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
 				),
 		).toHaveLength(1);
 		const next = prompt(fixture, "prompt after cancel");

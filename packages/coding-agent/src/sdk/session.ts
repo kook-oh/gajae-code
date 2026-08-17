@@ -58,7 +58,7 @@ import { CursorExecHandlers } from "../cursor";
 import type { BashRestrictionProfile } from "../tools/bash-allowed-prefixes";
 import "../discovery";
 import { resolveConfigValue } from "../config/resolve-config-value";
-import { getEmbeddedDefaultGjcSkills } from "../defaults/worx-defaults";
+import { getEmbeddedDefaultWorxSkills } from "../defaults/worx-defaults";
 import { BUNDLED_GROK_BUILD_EXTENSION_ID, getBundledGrokBuildExtensionFactory } from "../defaults/worx-grok-cli";
 import { initializeWithSettings } from "../discovery";
 import { TtsrManager } from "../export/ttsr";
@@ -87,15 +87,15 @@ import { resolveCurrentPhaseForParent } from "../extensibility/worx-plugins/inje
 import { currentActivationFingerprint } from "../extensibility/worx-plugins/lifecycle";
 import {
 	buildPluginMcpConfigs,
-	getGjcPluginToolDeclarations,
+	getWorxPluginToolDeclarations,
 	loadAlwaysOnPluginTools,
 	renderAlwaysOnSystemAppendices,
 } from "../extensibility/worx-plugins/runtime-adapters";
 import {
-	GjcRuntimeFindingAccumulator,
-	type GjcRuntimeSnapshotProvider,
-	GjcRuntimeSnapshotStore,
-	gjcActivationGenerationFor,
+	WorxRuntimeFindingAccumulator,
+	type WorxRuntimeSnapshotProvider,
+	WorxRuntimeSnapshotStore,
+	worxActivationGenerationFor,
 } from "../extensibility/worx-plugins/runtime-quarantine";
 import { loadActiveSubskillTools } from "../extensibility/worx-plugins/tools";
 import type { HindsightSessionState } from "../hindsight/state";
@@ -352,7 +352,7 @@ export interface CreateAgentSessionOptions {
 	/** Custom tools to register (in addition to built-in tools). Accepts both CustomTool and ToolDefinition. */
 	customTools?: (CustomTool | ToolDefinition)[];
 	/** Explicit parent/phase used to load active GJC sub-skill tools for this session. */
-	gjcSubskillToolContext?: { parent: string; phase: string; sessionId?: string; cwd?: string };
+	worxSubskillToolContext?: { parent: string; phase: string; sessionId?: string; cwd?: string };
 	/** Inline extensions (merged with discovery). */
 	extensions?: ExtensionFactory[];
 	/** Additional extension paths to load (merged with discovery). */
@@ -512,7 +512,7 @@ export interface CreateAgentSessionResult {
 	 * Read-only view of GJC bundle runtime evidence for the activation generation
 	 * this session published. Undefined when no GJC bundles participated.
 	 */
-	gjcRuntimeSnapshot?: GjcRuntimeSnapshotProvider;
+	worxRuntimeSnapshot?: WorxRuntimeSnapshotProvider;
 }
 
 export interface DeferredMcpConfigStartupResult {
@@ -950,9 +950,9 @@ function buildMCPPromptCommands(manager: MCPManager): LoadedCustomCommand[] {
  * ```
  */
 
-function withEmbeddedDefaultGjcSkills(skills: Skill[]): Skill[] {
+function withEmbeddedDefaultWorxSkills(skills: Skill[]): Skill[] {
 	const byName = new Map(skills.map(skill => [skill.name, skill]));
-	for (const defaultSkill of getEmbeddedDefaultGjcSkills()) {
+	for (const defaultSkill of getEmbeddedDefaultWorxSkills()) {
 		if (!byName.has(defaultSkill.name)) {
 			byName.set(defaultSkill.name, defaultSkill);
 		}
@@ -1527,7 +1527,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			// ordinary filesystem-discovered skills. Keep them available even for
 			// explicit SDK skill lists so startup and command routing survive
 			// accidental `.worx` deletion or overzealous caller filtering.
-			skills = withEmbeddedDefaultGjcSkills(options.skills);
+			skills = withEmbeddedDefaultWorxSkills(options.skills);
 			skillWarnings = [];
 		} else if (settings.get("skills.enabled")) {
 			const skillsResult = await logger.time("loadSkills", loadSkills, {
@@ -1535,13 +1535,13 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 				cwd,
 				disabledExtensions: settings.get("disabledExtensions"),
 			});
-			skills = withEmbeddedDefaultGjcSkills(skillsResult.skills);
+			skills = withEmbeddedDefaultWorxSkills(skillsResult.skills);
 			skillWarnings = skillsResult.warnings;
 		} else {
 			// GJC's four public workflow skills are bundled into the binary so the
 			// default workflow surface survives accidental .worx deletion. Arbitrary
 			// filesystem skill discovery remains gated by skills.enabled above.
-			skills = getEmbeddedDefaultGjcSkills();
+			skills = getEmbeddedDefaultWorxSkills();
 			skillWarnings = [];
 		}
 
@@ -1861,15 +1861,15 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// Registry load performs v1-to-v2 metadata migration without importing
 		// plugin implementations. Keep this declaration phase before any subskill
 		// tool activation so an entry cannot be live on both paths.
-		const gjcToolDeclarations = await getGjcPluginToolDeclarations(cwd);
+		const worxToolDeclarations = await getWorxPluginToolDeclarations(cwd);
 
-		const gjcSubskillToolContext = options.gjcSubskillToolContext;
-		if (gjcSubskillToolContext?.parent.trim() && gjcSubskillToolContext.phase.trim()) {
+		const worxSubskillToolContext = options.worxSubskillToolContext;
+		if (worxSubskillToolContext?.parent.trim() && worxSubskillToolContext.phase.trim()) {
 			const pluginTools = await loadActiveSubskillTools({
-				cwd: gjcSubskillToolContext.cwd ?? cwd,
-				sessionId: gjcSubskillToolContext.sessionId ?? logicalSessionId,
-				parent: gjcSubskillToolContext.parent,
-				phase: gjcSubskillToolContext.phase,
+				cwd: worxSubskillToolContext.cwd ?? cwd,
+				sessionId: worxSubskillToolContext.sessionId ?? logicalSessionId,
+				parent: worxSubskillToolContext.parent,
+				phase: worxSubskillToolContext.phase,
 				reservedToolNames: getReservedSubskillToolNames(),
 			});
 			if (pluginTools.length > 0) {
@@ -1898,19 +1898,19 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// GJC bundle runtime evidence for this activation. Producers below return
 		// findings into this caller-owned accumulator and never publish; exactly one
 		// complete snapshot is published once every producer has run.
-		const gjcRuntimeStore = new GjcRuntimeSnapshotStore();
-		let gjcProducersComplete = true;
-		let gjcActivationGeneration = 0;
+		const worxRuntimeStore = new WorxRuntimeSnapshotStore();
+		let worxProducersComplete = true;
+		let worxActivationGeneration = 0;
 		try {
-			gjcActivationGeneration = gjcActivationGenerationFor(await currentActivationFingerprint({ cwd }));
+			worxActivationGeneration = worxActivationGenerationFor(await currentActivationFingerprint({ cwd }));
 		} catch (error) {
 			// Without a readable activation generation no snapshot can be proven
 			// current, so publish nothing rather than a snapshot consumers cannot
 			// validate against.
-			gjcProducersComplete = false;
+			worxProducersComplete = false;
 			logger.warn("Failed to derive GJC bundle activation generation", { error: safeErrorForLog(error) });
 		}
-		const gjcFindings = new GjcRuntimeFindingAccumulator(gjcActivationGeneration);
+		const worxFindings = new WorxRuntimeFindingAccumulator(worxActivationGeneration);
 
 		// Always-on GJC plugin bundle tools (validated registry surfaces). This is
 		// additive and a no-op when no plugins are installed for the cwd. Surfaces
@@ -1919,15 +1919,15 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			const pluginToolResult = await loadAlwaysOnPluginTools({
 				cwd,
 				reservedToolNames: [...getReservedSubskillToolNames(), ...customTools.map(tool => tool.name)],
-				declarations: gjcToolDeclarations,
+				declarations: worxToolDeclarations,
 			});
 			if (pluginToolResult.tools.length > 0) customTools.push(...pluginToolResult.tools);
 			for (const q of pluginToolResult.quarantine) {
-				gjcFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
+				worxFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
 				logger.warn("Quarantined GJC plugin surface", { plugin: q.plugin, surface: q.surfaceId, code: q.code });
 			}
 		} catch (error) {
-			gjcProducersComplete = false;
+			worxProducersComplete = false;
 			logger.warn("Failed to load always-on GJC plugin tools", { error: safeErrorForLog(error) });
 		}
 
@@ -1964,7 +1964,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			try {
 				const { configs, quarantine } = await buildPluginMcpConfigs({ cwd });
 				for (const q of quarantine) {
-					gjcFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
+					worxFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
 					logger.warn("Quarantined GJC plugin MCP", { plugin: q.plugin, surface: q.surfaceId, code: q.code });
 				}
 				if (Object.keys(configs).length > 0) {
@@ -1982,7 +1982,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 							// A server that failed to connect leaves this generation
 							// incomplete: its surfaces produced no evidence, so publishing
 							// would present a partial pass as a clear one.
-							gjcProducersComplete = false;
+							worxProducersComplete = false;
 							logger.warn("GJC plugin MCP connect failed", {
 								path: `mcp:${server}`,
 								error: safeErrorForLog(err),
@@ -2021,7 +2021,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 				}
 			} catch (error) {
 				if (safeIsInstanceOf(error, McpManagerCleanupError)) throw error;
-				gjcProducersComplete = false;
+				worxProducersComplete = false;
 				const cleanupDiagnostic = safeReadCleanupDiagnostic(error);
 				logger.warn("Failed to wire GJC plugin MCP servers", {
 					error: safeErrorForLog(error),
@@ -2069,11 +2069,11 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 				inlineExtensions.push(createPluginHooksExtension(pluginHookResult.hooks));
 			}
 			for (const q of pluginHookResult.quarantine) {
-				gjcFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
+				worxFindings.add({ identity: q.identity, surfaceId: q.surfaceId, code: q.code, message: q.message });
 				logger.warn("Quarantined GJC plugin hook", { plugin: q.plugin, surface: q.surfaceId, code: q.code });
 			}
 		} catch (error) {
-			gjcProducersComplete = false;
+			worxProducersComplete = false;
 			logger.warn("Failed to load constrained GJC plugin hooks", { error: safeErrorForLog(error) });
 		}
 
@@ -2091,7 +2091,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// keeps auto-spawned children (team workers, harness owners) silent while
 		// explicit SDK session opt-in (WORX_NOTIFICATIONS=1) still wins.
 		const spawnProvenance = process.env[SPAWN_PROVENANCE_ENV];
-		const spawnedByGjc = typeof spawnProvenance === "string" && spawnProvenance.trim().length > 0;
+		const spawnedByWorx = typeof spawnProvenance === "string" && spawnProvenance.trim().length > 0;
 		delete process.env[SPAWN_PROVENANCE_ENV];
 		const notificationHostEligible = isGenericNotificationHostEligible({
 			env: process.env,
@@ -2100,12 +2100,12 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			parentTaskPrefix: options.parentTaskPrefix,
 			currentAgentType: options.currentAgentType,
 			sessionScope: notificationCfg?.sessionScope,
-			spawnedByGjc,
+			spawnedByWorx,
 		});
 		const notificationSessionController = new NotificationSessionController({
 			eligible: notificationHostEligible,
 			getConfig: () => getNotificationConfig(settings),
-			spawnedByGjc,
+			spawnedByWorx,
 		});
 		const notificationsExtensionEligible = Boolean(
 			lifecycleStartupCapability ||
@@ -2115,7 +2115,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 					taskDepth,
 					parentTaskPrefix: options.parentTaskPrefix,
 					currentAgentType: options.currentAgentType,
-					spawnedByGjc,
+					spawnedByWorx,
 				}),
 		);
 		const sdkHostEligible =
@@ -2138,7 +2138,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 						createNotificationsExtension(api, {
 							settings,
 							controller: notificationSessionController,
-							spawnedByGjc,
+							spawnedByWorx,
 							sdkHostModeSupported: options.sdkHostModeSupported,
 							ensureProviderDaemon: options.ensureNotificationProviderDaemon,
 							runBtwTurn: async (question, signal) => {
@@ -2460,7 +2460,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			// throw in between cannot leave stale evidence readable. The reserved
 			// epoch additionally fences overlapping rebuilds, so a slower earlier
 			// pass cannot publish over a newer one.
-			const gjcPassEpoch = gjcRuntimeStore.beginPass();
+			const worxPassEpoch = worxRuntimeStore.beginPass();
 			toolContextStore.setToolNames(toolNames);
 			const promptTools = (() => {
 				const previousPromptMetadataModel = promptMetadataModel;
@@ -2497,7 +2497,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			try {
 				pluginSystemAppendices = await renderAlwaysOnSystemAppendices({ cwd });
 			} catch (error) {
-				gjcProducersComplete = false;
+				worxProducersComplete = false;
 				logger.warn("Failed to render GJC plugin system appendices", { error: safeErrorForLog(error) });
 			}
 
@@ -2507,7 +2507,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			// The previous generation was already retired at callback entry, so a
 			// partial pass simply never republishes and consumers keep reading
 			// `unavailable` rather than a stale generation.
-			if (gjcProducersComplete) gjcRuntimeStore.publish(gjcFindings.snapshot(), gjcPassEpoch);
+			if (worxProducersComplete) worxRuntimeStore.publish(worxFindings.snapshot(), worxPassEpoch);
 			const defaultPrompt = await buildSystemPromptInternal({
 				cwd,
 				skills,
@@ -3295,8 +3295,8 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 		// Expose the published evidence on the session itself so UI surfaces that
 		// only hold a session (Settings) can consume it without threading the
 		// creation result through every controller.
-		session.gjcRuntimeSnapshot = gjcRuntimeStore;
-		session.gjcActivationGeneration = gjcActivationGeneration;
+		session.worxRuntimeSnapshot = worxRuntimeStore;
+		session.worxActivationGeneration = worxActivationGeneration;
 		return {
 			session,
 			extensionsResult,
@@ -3307,7 +3307,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 			modelFallbackMessage,
 			lspServers,
 			eventBus,
-			gjcRuntimeSnapshot: gjcRuntimeStore,
+			worxRuntimeSnapshot: worxRuntimeStore,
 		};
 	} catch (error) {
 		// Release the subscription if the throw happened after install but before the

@@ -27,7 +27,7 @@ import { runNativeStateCommand } from "@bworx-io/worx-code/worx-runtime/state-ru
 
 const TEST_SESSION_ID = "test-session";
 const tempRoots: string[] = [];
-let previousGjcSessionId: string | undefined;
+let previousWorxSessionId: string | undefined;
 
 const ralplanStatePath = (root: string) => modeStatePath(root, TEST_SESSION_ID, "ralplan");
 const ralplanRunDir = (root: string, runId: string) =>
@@ -37,15 +37,15 @@ const ralplanPlanPath = (root: string, runId: string, ...parts: string[]) =>
 const CONFIG_ROOT_SETTINGS_PROBE = path.join(import.meta.dir, "..", "fixtures", "config-root-settings-probe.ts");
 
 beforeAll(() => {
-	previousGjcSessionId = process.env.WORX_SESSION_ID;
+	previousWorxSessionId = process.env.WORX_SESSION_ID;
 	process.env.WORX_SESSION_ID = TEST_SESSION_ID;
 });
 
 afterAll(() => {
-	if (previousGjcSessionId === undefined) {
+	if (previousWorxSessionId === undefined) {
 		delete process.env.WORX_SESSION_ID;
 	} else {
-		process.env.WORX_SESSION_ID = previousGjcSessionId;
+		process.env.WORX_SESSION_ID = previousWorxSessionId;
 	}
 });
 

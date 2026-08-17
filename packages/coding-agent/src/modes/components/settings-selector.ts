@@ -22,7 +22,7 @@ import type {
 	StatusLineSeparatorStyle,
 } from "../../config/settings-schema";
 import { SETTING_TABS, TAB_METADATA } from "../../config/settings-schema";
-import type { GjcRuntimeSnapshotProvider } from "../../extensibility/worx-plugins/runtime-quarantine";
+import type { WorxRuntimeSnapshotProvider } from "../../extensibility/worx-plugins/runtime-quarantine";
 import { getCurrentThemeName, getSelectListTheme, getSettingsListTheme, theme } from "../../modes/theme/theme";
 import { matchesAppInterrupt } from "../../modes/utils/keybinding-matchers";
 import { getTabBarTheme } from "../shared";
@@ -38,7 +38,7 @@ import { getSettingsForTab, type SettingDef } from "./settings-defs";
 import { getPreset } from "./status-line/presets";
 import { ALL_SEGMENT_IDS } from "./status-line/segments";
 import type { StatusLineSegmentOptions } from "./tool-status-header";
-import { GjcBundleSettingsComponent } from "./worx-bundle-settings";
+import { WorxBundleSettingsComponent } from "./worx-bundle-settings";
 
 /**
  * A submenu component for selecting from a list of options.
@@ -684,9 +684,9 @@ export interface SettingsRuntimeContext {
 	 * generation. Omitted when no session published one, in which case the GJC
 	 * Bundles tab honestly reports runtime status as unavailable.
 	 */
-	gjcRuntimeSnapshot?: GjcRuntimeSnapshotProvider;
+	worxRuntimeSnapshot?: WorxRuntimeSnapshotProvider;
 	/** Activation generation the published snapshot must match to be merged. */
-	gjcActivationGeneration?: number;
+	worxActivationGeneration?: number;
 }
 
 /** Status line settings subset for preview */
@@ -759,7 +759,7 @@ export class SettingsSelectorComponent extends Container {
 	#tabBar: TabBar;
 	#currentList: SettingsList | null = null;
 	#pluginComponent: PluginSettingsComponent | null = null;
-	#gjcBundleComponent: GjcBundleSettingsComponent | null = null;
+	#worxBundleComponent: WorxBundleSettingsComponent | null = null;
 	#notificationsEditor: NotificationsSettingsEditorComponent | null = null;
 	#statusPreviewContainer: Container | null = null;
 	#statusPreviewText: Text | null = null;
@@ -815,10 +815,10 @@ export class SettingsSelectorComponent extends Container {
 			this.removeChild(this.#pluginComponent);
 			this.#pluginComponent = null;
 		}
-		if (this.#gjcBundleComponent) {
-			this.removeChild(this.#gjcBundleComponent);
-			this.#gjcBundleComponent.dispose();
-			this.#gjcBundleComponent = null;
+		if (this.#worxBundleComponent) {
+			this.removeChild(this.#worxBundleComponent);
+			this.#worxBundleComponent.dispose();
+			this.#worxBundleComponent = null;
 		}
 		if (this.#statusPreviewContainer) {
 			this.removeChild(this.#statusPreviewContainer);
@@ -833,7 +833,7 @@ export class SettingsSelectorComponent extends Container {
 		if (tabId === "plugins") {
 			this.#showPluginsTab();
 		} else if (tabId === "gjc-bundles") {
-			this.#showGjcBundlesTab();
+			this.#showWorxBundlesTab();
 		} else if (tabId === "notifications") {
 			this.#showNotificationsTab();
 		} else {
@@ -1352,8 +1352,8 @@ export class SettingsSelectorComponent extends Container {
 		});
 		this.addChild(this.#pluginComponent);
 	}
-	#showGjcBundlesTab(): void {
-		this.#gjcBundleComponent = new GjcBundleSettingsComponent(
+	#showWorxBundlesTab(): void {
+		this.#worxBundleComponent = new WorxBundleSettingsComponent(
 			this.context.cwd,
 			{
 				onClose: () => this.callbacks.onCancel(),
@@ -1361,15 +1361,15 @@ export class SettingsSelectorComponent extends Container {
 				onRenderRequested: () => this.callbacks.onRenderRequested?.(),
 			},
 			{
-				runtimeSnapshotProvider: this.context.gjcRuntimeSnapshot,
-				activationGeneration: this.context.gjcActivationGeneration,
+				runtimeSnapshotProvider: this.context.worxRuntimeSnapshot,
+				activationGeneration: this.context.worxActivationGeneration,
 			},
 		);
-		this.addChild(this.#gjcBundleComponent);
+		this.addChild(this.#worxBundleComponent);
 	}
 
 	getFocusComponent(): Component {
-		return (this.#currentList || this.#pluginComponent || this.#gjcBundleComponent || this.#notificationsEditor)!;
+		return (this.#currentList || this.#pluginComponent || this.#worxBundleComponent || this.#notificationsEditor)!;
 	}
 
 	override dispose(): void {
@@ -1380,8 +1380,8 @@ export class SettingsSelectorComponent extends Container {
 		this.#activeProviderOrderEditor = null;
 		this.#notificationsEditor?.dispose();
 		this.#notificationsEditor = null;
-		this.#gjcBundleComponent?.dispose();
-		this.#gjcBundleComponent = null;
+		this.#worxBundleComponent?.dispose();
+		this.#worxBundleComponent = null;
 		super.dispose();
 	}
 
@@ -1403,16 +1403,16 @@ export class SettingsSelectorComponent extends Container {
 			this.#notificationsEditor.handleInput(data);
 			return;
 		}
-		if (this.#gjcBundleComponent && this.#currentTabId === "gjc-bundles") {
+		if (this.#worxBundleComponent && this.#currentTabId === "gjc-bundles") {
 			if (tabNavigation) {
-				if (this.#gjcBundleComponent.navigationLocked) {
-					this.#gjcBundleComponent.handleInput(data);
+				if (this.#worxBundleComponent.navigationLocked) {
+					this.#worxBundleComponent.handleInput(data);
 					return;
 				}
 				this.#tabBar.handleInput(data);
 				return;
 			}
-			this.#gjcBundleComponent.handleInput(data);
+			this.#worxBundleComponent.handleInput(data);
 			return;
 		}
 
@@ -1433,8 +1433,8 @@ export class SettingsSelectorComponent extends Container {
 			this.#pluginComponent.handleInput(data);
 			return;
 		}
-		if (this.#gjcBundleComponent) {
-			this.#gjcBundleComponent.handleInput(data);
+		if (this.#worxBundleComponent) {
+			this.#worxBundleComponent.handleInput(data);
 			return;
 		}
 

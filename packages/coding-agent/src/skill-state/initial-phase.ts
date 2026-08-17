@@ -1,4 +1,4 @@
-import type { CanonicalGjcWorkflowSkill } from "./active-state";
+import type { CanonicalWorxWorkflowSkill } from "./active-state";
 
 /**
  * Canonical initial phase for each GJC workflow skill. Used by both
@@ -10,7 +10,7 @@ import type { CanonicalGjcWorkflowSkill } from "./active-state";
  * `worx-runtime/state-runtime.ts` and `hooks/skill-state.ts` (which pulls in
  * session-manager and ultragoal verification code).
  */
-export function initialPhaseForSkill(skill: CanonicalGjcWorkflowSkill | string): string {
+export function initialPhaseForSkill(skill: CanonicalWorxWorkflowSkill | string): string {
 	if (skill === "deep-interview") return "interviewing";
 	if (skill === "ultragoal") return "goal-planning";
 	if (skill === "ralplan") return "planner";

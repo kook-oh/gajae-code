@@ -336,10 +336,10 @@ async function assertMcpRow(operation: Operation, secret: boolean): Promise<void
 		});
 		const tool =
 			operation.kind === "global"
-				? "gjc_session_global"
+				? "worx_session_global"
 				: operation.kind === "query"
-					? "gjc_session_query"
-					: "gjc_session_control";
+					? "worx_session_query"
+					: "worx_session_control";
 		const args =
 			operation.kind === "global"
 				? { operation: operation.sdkId, input, idempotencyKey: `parity-${operation.id}` }

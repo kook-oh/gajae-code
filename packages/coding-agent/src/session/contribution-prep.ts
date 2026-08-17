@@ -4,7 +4,7 @@ import * as path from "node:path";
 import type { AgentMessage } from "@bworx-io/worx-agent-core";
 import type { AssistantMessage, ToolResultMessage, UserMessage } from "@bworx-io/worx-ai/core";
 import { $ } from "bun";
-import { resolveGjcCommand } from "../task/worx-command";
+import { resolveWorxCommand } from "../task/worx-command";
 import { shortenPath } from "../tools/render-utils";
 
 export const CONTRIBUTION_PREP_SCHEMA_VERSION = 1;
@@ -307,7 +307,7 @@ export async function prepareContributionPrep(
 				}
 				Bun.spawn(args, { cwd, stdout: "inherit", stderr: "inherit", stdin: "inherit" });
 			});
-		const command = resolveGjcCommand();
+		const command = resolveWorxCommand();
 		await spawn(
 			[command.cmd, ...command.args, "--no-skills", "--", `@${workerPromptPath}`],
 			context.cwd,

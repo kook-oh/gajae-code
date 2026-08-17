@@ -13,13 +13,13 @@ describe("getPackageDir", () => {
 	});
 
 	it("prefers WORX_PACKAGE_DIR over legacy PI_PACKAGE_DIR", () => {
-		const gjcPackageDir = path.join(os.tmpdir(), "gjc-package-dir");
+		const worxPackageDir = path.join(os.tmpdir(), "gjc-package-dir");
 		const legacyPackageDir = path.join(os.tmpdir(), "legacy-pi-package-dir");
 
-		process.env.WORX_PACKAGE_DIR = gjcPackageDir;
+		process.env.WORX_PACKAGE_DIR = worxPackageDir;
 		process.env.PI_PACKAGE_DIR = legacyPackageDir;
 
-		expect(getPackageDir()).toBe(gjcPackageDir);
+		expect(getPackageDir()).toBe(worxPackageDir);
 	});
 
 	it("keeps PI_PACKAGE_DIR as a legacy fallback", () => {

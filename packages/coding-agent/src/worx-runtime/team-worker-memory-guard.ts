@@ -2,52 +2,52 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { appendJsonl, type StateWriterOptions } from "./state-writer";
 
-export type GjcTeamWorkerMemoryGuardState = "idle" | "advisory" | "retrying" | "checkpointed" | "replaced" | "blocked";
+export type WorxTeamWorkerMemoryGuardState = "idle" | "advisory" | "retrying" | "checkpointed" | "replaced" | "blocked";
 
-export type GjcTeamWorkerMemoryGuardCheckpointKind =
+export type WorxTeamWorkerMemoryGuardCheckpointKind =
 	| "clean"
 	| "eligible"
 	| "protected_only"
 	| "conflicted"
 	| "git_error";
 
-export type GjcTeamWorkerMemoryGuardPidProbe =
+export type WorxTeamWorkerMemoryGuardPidProbe =
 	| { kind: "live"; start_time: string }
 	| { kind: "absent" }
 	| { kind: "unverifiable"; reason: string };
 
-export interface GjcTeamWorkerMemoryGuardCheckpoint {
-	kind: GjcTeamWorkerMemoryGuardCheckpointKind;
+export interface WorxTeamWorkerMemoryGuardCheckpoint {
+	kind: WorxTeamWorkerMemoryGuardCheckpointKind;
 	files: string[];
 	head?: string | null;
 	commit?: string | null;
 	recorded_at: string;
 }
 
-export interface GjcTeamWorkerMemoryGuardReplacement {
+export interface WorxTeamWorkerMemoryGuardReplacement {
 	old_pane_id?: string;
 	new_pane_id?: string;
 	recorded_at: string;
 }
 
-export interface GjcTeamWorkerMemoryGuardLedger {
+export interface WorxTeamWorkerMemoryGuardLedger {
 	schema_version: 1;
 	worker_id: string;
 	platform: string;
-	state: GjcTeamWorkerMemoryGuardState;
+	state: WorxTeamWorkerMemoryGuardState;
 	automatic_action_allowed: boolean;
 	retry_count: number;
 	retry_limit: number;
 	current_task_id?: string;
 	last_incident_id?: string;
 	last_reason?: string;
-	last_pid_probe?: GjcTeamWorkerMemoryGuardPidProbe;
-	last_checkpoint?: GjcTeamWorkerMemoryGuardCheckpoint;
-	last_replacement?: GjcTeamWorkerMemoryGuardReplacement;
+	last_pid_probe?: WorxTeamWorkerMemoryGuardPidProbe;
+	last_checkpoint?: WorxTeamWorkerMemoryGuardCheckpoint;
+	last_replacement?: WorxTeamWorkerMemoryGuardReplacement;
 	updated_at: string;
 }
 
-export interface GjcTeamWorkerMemoryGuardSelectionCandidate {
+export interface WorxTeamWorkerMemoryGuardSelectionCandidate {
 	worker_id: string;
 	platform: string;
 	excess_bytes: number;
@@ -57,7 +57,7 @@ export interface GjcTeamWorkerMemoryGuardSelectionCandidate {
 	current_task_id?: string;
 }
 
-export interface GjcTeamWorkerMemoryGuardSelection {
+export interface WorxTeamWorkerMemoryGuardSelection {
 	worker_id: string;
 	excess_bytes: number;
 	retry_count: number;
@@ -106,11 +106,11 @@ function isRetryCount(value: unknown): value is number {
 	return Number.isInteger(value) && (value as number) >= 0;
 }
 
-function isWorkerMemoryGuardState(value: unknown): value is GjcTeamWorkerMemoryGuardState {
+function isWorkerMemoryGuardState(value: unknown): value is WorxTeamWorkerMemoryGuardState {
 	return ["idle", "advisory", "retrying", "checkpointed", "replaced", "blocked"].includes(String(value));
 }
 
-function isCheckpointKind(value: unknown): value is GjcTeamWorkerMemoryGuardCheckpointKind {
+function isCheckpointKind(value: unknown): value is WorxTeamWorkerMemoryGuardCheckpointKind {
 	return ["clean", "eligible", "protected_only", "conflicted", "git_error"].includes(String(value));
 }
 
@@ -118,9 +118,9 @@ export function workerMemoryGuardLedgerPath(dir: string, workerId: string): stri
 	return path.join(dir, "workers", workerId, "memory-guard.json");
 }
 
-export function normalizeGjcTeamWorkerMemoryGuardPidProbe(
+export function normalizeWorxTeamWorkerMemoryGuardPidProbe(
 	value: unknown,
-): GjcTeamWorkerMemoryGuardPidProbe | undefined {
+): WorxTeamWorkerMemoryGuardPidProbe | undefined {
 	if (value === undefined) return undefined;
 	if (!isRecord(value)) throw new Error("invalid_worker_memory_guard_pid_probe");
 	const kind = typeof value.kind === "string" ? value.kind : "";
@@ -141,9 +141,9 @@ export function normalizeGjcTeamWorkerMemoryGuardPidProbe(
 	throw new Error("invalid_worker_memory_guard_pid_probe");
 }
 
-export function isCanonicalGjcTeamWorkerMemoryGuardCheckpoint(
+export function isCanonicalWorxTeamWorkerMemoryGuardCheckpoint(
 	value: unknown,
-): value is GjcTeamWorkerMemoryGuardCheckpoint {
+): value is WorxTeamWorkerMemoryGuardCheckpoint {
 	return (
 		isRecord(value) &&
 		hasExactKeys(value, checkpointKeys) &&
@@ -156,9 +156,9 @@ export function isCanonicalGjcTeamWorkerMemoryGuardCheckpoint(
 	);
 }
 
-export function isCanonicalGjcTeamWorkerMemoryGuardReplacement(
+export function isCanonicalWorxTeamWorkerMemoryGuardReplacement(
 	value: unknown,
-): value is GjcTeamWorkerMemoryGuardReplacement {
+): value is WorxTeamWorkerMemoryGuardReplacement {
 	return (
 		isRecord(value) &&
 		hasExactKeys(value, replacementKeys) &&
@@ -168,15 +168,17 @@ export function isCanonicalGjcTeamWorkerMemoryGuardReplacement(
 	);
 }
 
-export function isCanonicalGjcTeamWorkerMemoryGuardPidProbe(value: unknown): value is GjcTeamWorkerMemoryGuardPidProbe {
+export function isCanonicalWorxTeamWorkerMemoryGuardPidProbe(
+	value: unknown,
+): value is WorxTeamWorkerMemoryGuardPidProbe {
 	try {
-		return normalizeGjcTeamWorkerMemoryGuardPidProbe(value) !== undefined;
+		return normalizeWorxTeamWorkerMemoryGuardPidProbe(value) !== undefined;
 	} catch {
 		return false;
 	}
 }
 
-export function isCanonicalGjcTeamWorkerMemoryGuardLedger(value: unknown): value is GjcTeamWorkerMemoryGuardLedger {
+export function isCanonicalWorxTeamWorkerMemoryGuardLedger(value: unknown): value is WorxTeamWorkerMemoryGuardLedger {
 	return (
 		isRecord(value) &&
 		hasExactKeys(value, ledgerKeys) &&
@@ -190,20 +192,20 @@ export function isCanonicalGjcTeamWorkerMemoryGuardLedger(value: unknown): value
 		(value.current_task_id === undefined || isNonEmptyString(value.current_task_id)) &&
 		(value.last_incident_id === undefined || isNonEmptyString(value.last_incident_id)) &&
 		(value.last_reason === undefined || isNonEmptyString(value.last_reason)) &&
-		(value.last_pid_probe === undefined || isCanonicalGjcTeamWorkerMemoryGuardPidProbe(value.last_pid_probe)) &&
-		(value.last_checkpoint === undefined || isCanonicalGjcTeamWorkerMemoryGuardCheckpoint(value.last_checkpoint)) &&
+		(value.last_pid_probe === undefined || isCanonicalWorxTeamWorkerMemoryGuardPidProbe(value.last_pid_probe)) &&
+		(value.last_checkpoint === undefined || isCanonicalWorxTeamWorkerMemoryGuardCheckpoint(value.last_checkpoint)) &&
 		(value.last_replacement === undefined ||
-			isCanonicalGjcTeamWorkerMemoryGuardReplacement(value.last_replacement)) &&
+			isCanonicalWorxTeamWorkerMemoryGuardReplacement(value.last_replacement)) &&
 		isTimestamp(value.updated_at)
 	);
 }
 
-export function createInitialGjcTeamWorkerMemoryGuardLedger(input: {
+export function createInitialWorxTeamWorkerMemoryGuardLedger(input: {
 	workerId: string;
 	platform: string;
 	now: string;
 	retryLimit?: number;
-}): GjcTeamWorkerMemoryGuardLedger {
+}): WorxTeamWorkerMemoryGuardLedger {
 	const retryLimit = Number.isInteger(input.retryLimit) && (input.retryLimit ?? 0) > 0 ? input.retryLimit! : 2;
 	return {
 		schema_version: 1,
@@ -222,9 +224,9 @@ function workerIndex(workerId: string): number {
 	return match ? Number.parseInt(match[1]!, 10) : Number.MAX_SAFE_INTEGER;
 }
 
-export function selectGjcTeamWorkerMemoryGuardCandidate(
-	candidates: readonly GjcTeamWorkerMemoryGuardSelectionCandidate[],
-): GjcTeamWorkerMemoryGuardSelection | undefined {
+export function selectWorxTeamWorkerMemoryGuardCandidate(
+	candidates: readonly WorxTeamWorkerMemoryGuardSelectionCandidate[],
+): WorxTeamWorkerMemoryGuardSelection | undefined {
 	const eligible = candidates
 		.filter(candidate => candidate.platform === "linux")
 		.filter(candidate => Number.isFinite(candidate.excess_bytes) && candidate.excess_bytes > 0)

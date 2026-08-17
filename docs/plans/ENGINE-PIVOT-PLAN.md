@@ -189,7 +189,7 @@ P0-FREEZE ─┬─ 포크/ORCA SHA · 패키지 버전(2 플랫폼) · 파생 s
 
 | # | 표면 | 내용 | 확인된 소비자 |
 |---|---|---|---|
-| S1 | **Coordinator MCP** | `mcp-serve coordinator` · `gjc_delegate_plan/execute/team` · `start_session→send_prompt→read_turn/await_turn→submit_question_answer` · durable `turn_id` + `idempotency_key` 계약 | AX 플랫폼 워크플로 Activity (분석·구현·PR 스텝) |
+| S1 | **Coordinator MCP** | `mcp-serve coordinator` · `worx_delegate_plan/execute/team` · `start_session→send_prompt→read_turn/await_turn→submit_question_answer` · durable `turn_id` + `idempotency_key` 계약 | AX 플랫폼 워크플로 Activity (분석·구현·PR 스텝) |
 | S2 | **ACP 표면** (worx-acp 경로) | IDE 채팅 세션 | worx-ide (ORCA Class A: `src/main/worx-acp/**`, `src/renderer/src/worx-acp/**`) |
 | S3 | **헤드리스 CLI 표면** | `-p/--print` · `--session-dir` · `--append-system-prompt` · `--tools` · `--continue` · `--mode rpc` — 전부 엔진 `src/cli/args.ts` 실재 확인 [V `:333,:265,:228,:299,:193,:180`] | ems-review(review-system) `web/gjc/runner.py` — print + RPC 두 모드로 subprocess 구동 |
 
@@ -222,8 +222,8 @@ P1 exit(설치 가능한 포크) 후: review-system 의 바이너리 경로 설�
 | `tools/bash-allowed-prefixes.ts:272` | `words[0] !== "gjc"` | bash 툴 자기호출 프리픽스 정책 | 동일 교체 |
 | `config/settings.ts:1656` | `agentName !== "gjc"` | 에이전트명 분기 | 동일 교체 |
 | `sdk/transport/auth-preface.ts:69` | `gjc-sdk-transport/` | **SDK 와이어 핸드셰이크 식별자** | 클린 브레이크 — 클라이언트가 전부 in-tree 라 동기 교체 가능. P1 에서 out-of-tree SDK 클라이언트 부재를 확인 후 실행 |
-| MCP 툴명 `gjc_coordinator_*` / `gjc_delegate_*` | 툴 이름 자체 | S1(Coordinator MCP) 표면의 이름 | **P1 포크 시점에 `worx_*` 로 리네임.** AX 플랫폼 Phase 2 가 코드로 소비하기 전이 유일하게 무비용인 시점. ems-review(S3 CLI)·worx-ide(S2 ACP)는 툴명 무영향 |
-| `hooks/skill-state.ts:175` · `session/agent-session.ts:13990` | `gjc:` 토큰 · `gjc_skill_*` stop reason | 내부 상태 토큰 | 내부 일관 교체 (기존 세션 파일 마이그레이션 불요 — 신규 세션부터) |
+| MCP 툴명 `worx_coordinator_*` / `worx_delegate_*` | 툴 이름 자체 | S1(Coordinator MCP) 표면의 이름 | **P1 포크 시점에 `worx_*` 로 리네임.** AX 플랫폼 Phase 2 가 코드로 소비하기 전이 유일하게 무비용인 시점. ems-review(S3 CLI)·worx-ide(S2 ACP)는 툴명 무영향 |
+| `hooks/skill-state.ts:175` · `session/agent-session.ts:13990` | `gjc:` 토큰 · `worx_skill_*` stop reason | 내부 상태 토큰 | 내부 일관 교체 (기존 세션 파일 마이그레이션 불요 — 신규 세션부터) |
 
 - [ ] P1 체크리스트 추가: **행동 식별자 전수 스윕** — `=== "gjc"` / `!== "gjc"` / `startsWith("gjc` / 접두 토큰 패턴을 소스 전수 grep 으로 재확인하고, 위 표 밖의 발견을 리네임 맵에 편입.
 - S1 보존 의무(§9.1)의 정확한 해석: 보존 대상은 **의미론**(멱등 원장·turn 계약·스키마)이며, 이름은 P1 리네임 맵을 따른다. S1 재검증 스모크는 리네임 후 명칭 기준으로 수행한다.

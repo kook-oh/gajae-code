@@ -9,8 +9,8 @@ export function isTruthyPythonFlag(value: string | undefined): boolean {
 }
 
 /** Resolve paired GJC/legacy PI flags using OR semantics. */
-export function resolvePythonFlag(env: PythonEnv, gjcName: string, piName: string): boolean {
-	return isTruthyPythonFlag(env[gjcName]) || isTruthyPythonFlag(env[piName]);
+export function resolvePythonFlag(env: PythonEnv, worxName: string, piName: string): boolean {
+	return isTruthyPythonFlag(env[worxName]) || isTruthyPythonFlag(env[piName]);
 }
 
 export function resolvePythonSkipCheck(env: PythonEnv): boolean {

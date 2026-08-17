@@ -20,16 +20,16 @@ import {
 	recordSkillActivation,
 } from "./skill-state";
 
-export type GjcNativeHookEventName = "UserPromptSubmit" | "Stop";
+export type WorxNativeHookEventName = "UserPromptSubmit" | "Stop";
 
-export interface GjcNativeHookDispatchResult {
-	hookEventName: GjcNativeHookEventName | null;
+export interface WorxNativeHookDispatchResult {
+	hookEventName: WorxNativeHookEventName | null;
 	outputJson: Record<string, unknown> | null;
 }
 
 type HookPayload = Record<string, unknown>;
 
-interface GjcNativeHookDispatchOptions {
+interface WorxNativeHookDispatchOptions {
 	cwd?: string;
 	stateDir?: string;
 	effectiveSkillConfig?: EffectiveSkillConfigInput;
@@ -77,12 +77,12 @@ function configCacheKey(input: {
 	});
 }
 
-export function clearGjcNativeSkillHookCachesForTesting(): void {
+export function clearWorxNativeSkillHookCachesForTesting(): void {
 	effectiveSkillConfigCache.clear();
 	effectiveSkillConfigResolutionCount = 0;
 }
 
-export function getGjcNativeSkillHookCacheStatsForTesting(): { effectiveSkillConfigResolutions: number } {
+export function getWorxNativeSkillHookCacheStatsForTesting(): { effectiveSkillConfigResolutions: number } {
 	return { effectiveSkillConfigResolutions: effectiveSkillConfigResolutionCount };
 }
 
@@ -210,7 +210,7 @@ async function resolveEffectiveSkillConfig(
 	}
 }
 
-export async function resolveGjcNativeSkillConfigForTesting(input: {
+export async function resolveWorxNativeSkillConfigForTesting(input: {
 	cwd: string;
 	configPaths?: string[];
 	sessionId?: string;
@@ -228,7 +228,7 @@ function safeString(value: unknown): string {
 	return typeof value === "string" ? value : "";
 }
 
-function readHookEventName(payload: HookPayload): GjcNativeHookEventName | null {
+function readHookEventName(payload: HookPayload): WorxNativeHookEventName | null {
 	const raw = safeString(payload.hook_event_name ?? payload.hookEventName ?? payload.event ?? payload.name).trim();
 	return raw === "UserPromptSubmit" || raw === "Stop" ? raw : null;
 }
@@ -287,10 +287,10 @@ function readSessionFile(payload: HookPayload): string | undefined {
 	);
 }
 
-export async function dispatchGjcNativeSkillHook(
+export async function dispatchWorxNativeSkillHook(
 	payload: HookPayload,
-	options: GjcNativeHookDispatchOptions = {},
-): Promise<GjcNativeHookDispatchResult> {
+	options: WorxNativeHookDispatchOptions = {},
+): Promise<WorxNativeHookDispatchResult> {
 	const hookEventName = readHookEventName(payload);
 	const cwd = (options.cwd ?? safeString(payload.cwd).trim()) || process.cwd();
 	if (hookEventName === "UserPromptSubmit") {
@@ -394,8 +394,8 @@ export async function dispatchGjcNativeSkillHook(
 	return { hookEventName, outputJson: null };
 }
 
-export async function runGjcNativeSkillHookInProcess(payload: HookPayload): Promise<string> {
-	const result = await dispatchGjcNativeSkillHook(payload);
+export async function runWorxNativeSkillHookInProcess(payload: HookPayload): Promise<string> {
+	const result = await dispatchWorxNativeSkillHook(payload);
 	if (result.outputJson) {
 		return `${JSON.stringify(result.outputJson)}\n`;
 	}
@@ -420,8 +420,8 @@ async function readStdinJson(): Promise<{ payload: HookPayload; parseError: Erro
 }
 
 async function logHookError(cwd: string, type: string, error: unknown): Promise<void> {
-	const gjcSessionId = process.env.WORX_SESSION_ID?.trim();
-	if (!gjcSessionId) {
+	const worxSessionId = process.env.WORX_SESSION_ID?.trim();
+	if (!worxSessionId) {
 		console.error(
 			JSON.stringify({
 				timestamp: new Date().toISOString(),
@@ -431,7 +431,7 @@ async function logHookError(cwd: string, type: string, error: unknown): Promise<
 		);
 		return;
 	}
-	const logsDir = sessionLogsDir(cwd, gjcSessionId);
+	const logsDir = sessionLogsDir(cwd, worxSessionId);
 	await mkdir(logsDir, { recursive: true }).catch(() => {});
 	await appendFile(
 		path.join(logsDir, `native-hook-${new Date().toISOString().split("T")[0]}.jsonl`),
@@ -439,7 +439,7 @@ async function logHookError(cwd: string, type: string, error: unknown): Promise<
 	).catch(() => {});
 }
 
-export async function runGjcNativeSkillHookCli(): Promise<void> {
+export async function runWorxNativeSkillHookCli(): Promise<void> {
 	const { payload, parseError } = await readStdinJson();
 	if (parseError) {
 		await logHookError(process.cwd(), "native_hook_stdin_parse_error", parseError);
@@ -457,7 +457,7 @@ export async function runGjcNativeSkillHookCli(): Promise<void> {
 	}
 
 	try {
-		const result = await dispatchGjcNativeSkillHook(payload);
+		const result = await dispatchWorxNativeSkillHook(payload);
 		if (result.outputJson) {
 			process.stdout.write(`${JSON.stringify(result.outputJson)}\n`);
 		} else if (result.hookEventName === "Stop") {
@@ -472,7 +472,7 @@ export async function runGjcNativeSkillHookCli(): Promise<void> {
 				`${JSON.stringify({
 					decision: "block",
 					reason: "GJC native Stop hook failed before normal continuation handling.",
-					stopReason: "gjc_native_stop_dispatch_failure",
+					stopReason: "worx_native_stop_dispatch_failure",
 					systemMessage: `GJC native Stop hook failed before normal continuation handling. Failure: ${detail}`,
 				})}\n`,
 			);

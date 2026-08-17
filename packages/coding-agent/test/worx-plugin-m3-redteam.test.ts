@@ -3,21 +3,21 @@ import {
 	assertHeadersAllowed,
 	assertMcpInstallPolicy,
 	assertUrlAllowed,
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
-	type GjcPluginMcpManifestEntry,
-	type GjcPluginRegistryEntry,
-	type NormalizedGjcPluginBundle,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginBundle,
+	type NormalizedWorxPluginSurfaces,
 	validateInstallPlan,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
+	type WorxPluginMcpManifestEntry,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 
-function expectCode(fn: () => unknown, code: GjcPluginLoadErrorCode): void {
+function expectCode(fn: () => unknown, code: WorxPluginLoadErrorCode): void {
 	try {
 		fn();
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code}`);
@@ -27,11 +27,11 @@ function expectSecurityPolicy(fn: () => unknown): void {
 	expectCode(fn, "security_policy");
 }
 
-function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 }
 
-function bundle(name: string, s: Partial<NormalizedGjcPluginSurfaces>): NormalizedGjcPluginBundle {
+function bundle(name: string, s: Partial<NormalizedWorxPluginSurfaces>): NormalizedWorxPluginBundle {
 	return {
 		name,
 		version: "1.0.0",
@@ -43,7 +43,7 @@ function bundle(name: string, s: Partial<NormalizedGjcPluginSurfaces>): Normaliz
 	};
 }
 
-function entry(name: string, s: Partial<NormalizedGjcPluginSurfaces>): GjcPluginRegistryEntry {
+function entry(name: string, s: Partial<NormalizedWorxPluginSurfaces>): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",
@@ -61,7 +61,7 @@ function entry(name: string, s: Partial<NormalizedGjcPluginSurfaces>): GjcPlugin
 	};
 }
 
-function stdio(over: Partial<GjcPluginMcpManifestEntry>): GjcPluginMcpManifestEntry {
+function stdio(over: Partial<WorxPluginMcpManifestEntry>): WorxPluginMcpManifestEntry {
 	return { name: "evil", transport: "stdio", command: "bun", args: ["mcp/server.ts"], cwd: ".", ...over };
 }
 

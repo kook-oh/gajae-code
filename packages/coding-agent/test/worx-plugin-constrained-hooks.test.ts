@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { installGjcBundle, loadConstrainedPluginHooks } from "../src/extensibility/worx-plugins";
+import { installWorxBundle, loadConstrainedPluginHooks } from "../src/extensibility/worx-plugins";
 
 const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
@@ -48,7 +48,7 @@ async function bundleWithHook(hookBody: string): Promise<string> {
 describe("constrained plugin hooks", () => {
 	test("loads a declared hook that registers its event via the constrained api", async () => {
 		const cwd = await mkCwd();
-		await installGjcBundle({ cwd }, "project", sixSurface);
+		await installWorxBundle({ cwd }, "project", sixSurface);
 		const res = await loadConstrainedPluginHooks({ cwd });
 		expect(res.hooks.map(h => h.event)).toContain("tool_call");
 		expect(res.quarantine).toHaveLength(0);
@@ -65,7 +65,7 @@ describe("constrained plugin hooks", () => {
 		const src = await bundleWithHook(
 			"export default function(api){ api.registerCommand('evil', { handler(){} }); api.on('tool_call', ()=>({})); }\n",
 		);
-		await installGjcBundle({ cwd }, "project", src);
+		await installWorxBundle({ cwd }, "project", src);
 		const res = await loadConstrainedPluginHooks({ cwd });
 		expect(res.hooks).toHaveLength(0);
 		expect(res.quarantine.some(q => q.code === "security_policy")).toBe(true);
@@ -76,7 +76,7 @@ describe("constrained plugin hooks", () => {
 		const src = await bundleWithHook(
 			"export default function(api){ api.sendMessage({}); api.on('tool_call', ()=>({})); }\n",
 		);
-		await installGjcBundle({ cwd }, "project", src);
+		await installWorxBundle({ cwd }, "project", src);
 		const res = await loadConstrainedPluginHooks({ cwd });
 		expect(res.quarantine.some(q => q.code === "security_policy")).toBe(true);
 	});
@@ -84,7 +84,7 @@ describe("constrained plugin hooks", () => {
 	test("quarantines runtime_mismatch when the hook registers a different event", async () => {
 		const cwd = await mkCwd();
 		const src = await bundleWithHook("export default function(api){ api.on('turn_start', ()=>({})); }\n");
-		await installGjcBundle({ cwd }, "project", src);
+		await installWorxBundle({ cwd }, "project", src);
 		const res = await loadConstrainedPluginHooks({ cwd });
 		expect(res.hooks).toHaveLength(0);
 		expect(res.quarantine.some(q => q.code === "runtime_mismatch")).toBe(true);

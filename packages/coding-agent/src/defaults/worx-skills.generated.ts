@@ -4,12 +4,12 @@
  * Keep this module metadata-only: skill bodies are loaded through literal
  * dynamic imports only when a caller asks for their content.
  */
-export type BundledGjcSkillName = "deep-interview" | "ralplan" | "team" | "ultragoal";
+export type BundledWorxSkillName = "deep-interview" | "ralplan" | "team" | "ultragoal";
 
-export interface BundledGjcSkillCatalogEntry {
+export interface BundledWorxSkillCatalogEntry {
 	readonly kind: "skill" | "skill-fragment";
-	readonly name?: BundledGjcSkillName;
-	readonly parentSkillName?: BundledGjcSkillName;
+	readonly name?: BundledWorxSkillName;
+	readonly parentSkillName?: BundledWorxSkillName;
 	readonly relativePath: string;
 	readonly description?: string;
 	readonly loadContent: () => Promise<string>;
@@ -41,7 +41,7 @@ const validationBatchContracts = () =>
 		module => module.default,
 	);
 
-export const BUNDLED_WORX_SKILL_CATALOG: readonly BundledGjcSkillCatalogEntry[] = [
+export const BUNDLED_WORX_SKILL_CATALOG: readonly BundledWorxSkillCatalogEntry[] = [
 	{
 		kind: "skill",
 		name: "deep-interview",

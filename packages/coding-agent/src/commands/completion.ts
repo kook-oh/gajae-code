@@ -4,10 +4,10 @@
 import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { commands, RootHelpCommand } from "../cli";
 import {
-	buildGjcFigSpec,
+	buildWorxFigSpec,
 	defaultInshellisenseSpecDir,
-	type InstallGjcInshellisenseSpecResult,
-	installGjcInshellisenseSpec,
+	type InstallWorxInshellisenseSpecResult,
+	installWorxInshellisenseSpec,
 	renderFigSpecModule,
 } from "../cli/completion-cli";
 
@@ -19,7 +19,7 @@ function normalizeTarget(target: CompletionTarget): "inshellisense" {
 	return target === "fig" ? "inshellisense" : target;
 }
 
-function formatInstallResult(result: InstallGjcInshellisenseSpecResult, customDir: boolean): string {
+function formatInstallResult(result: InstallWorxInshellisenseSpecResult, customDir: boolean): string {
 	const lines = [
 		"Installed GJC inshellisense completion spec:",
 		`  spec:  ${result.specPath}`,
@@ -67,14 +67,14 @@ export default class Completion extends Command {
 			return;
 		}
 
-		const spec = await buildGjcFigSpec(commands, RootHelpCommand);
+		const spec = await buildWorxFigSpec(commands, RootHelpCommand);
 		if (!flags.install) {
 			process.stdout.write(flags.json ? `${JSON.stringify(spec, null, 2)}\n` : renderFigSpecModule(spec));
 			return;
 		}
 
 		const directory = flags.dir ?? defaultInshellisenseSpecDir();
-		const result = await installGjcInshellisenseSpec(spec, { dir: directory, force: flags.force });
+		const result = await installWorxInshellisenseSpec(spec, { dir: directory, force: flags.force });
 		if (flags.json) {
 			process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 			return;

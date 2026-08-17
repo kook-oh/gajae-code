@@ -4,10 +4,10 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { gzipSync } from "node:zlib";
 import {
-	applyGjcBundleUpdate,
+	applyWorxBundleUpdate,
 	bundleIdentity,
-	installGjcBundle,
-	previewGjcBundleUpdate,
+	installWorxBundle,
+	previewWorxBundleUpdate,
 	readRegistry,
 } from "../src/extensibility/worx-plugins";
 
@@ -143,7 +143,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		await fs.rm(escapeTarget, { force: true });
 		const tarball = await writeTarball([{ name: "../escape.txt", data: "owned" }]);
 
-		await expect(installGjcBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
 			code: "security_policy",
 		});
 		expect(await exists(escapeTarget)).toBe(false);
@@ -154,7 +154,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		const cwd = await mkProjectCwd();
 		const tarball = await writeTarball([{ name: "/etc/evil", data: "owned" }], { gzip: true });
 
-		await expect(installGjcBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
 			code: "security_policy",
 		});
 		expect(await readRegistry("project", cwd)).toMatchObject({ plugins: [] });
@@ -164,7 +164,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		const cwd = await mkProjectCwd();
 		const tarball = await writeTarball([{ name: "bundle-link", typeflag: "2", linkname: "../../escape" }]);
 
-		await expect(installGjcBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
 			code: "security_policy",
 		});
 		expect(await readRegistry("project", cwd)).toMatchObject({ plugins: [] });
@@ -177,7 +177,7 @@ describe("GJC plugin installer M2 red-team", () => {
 			{ name: "also-not-a-plugin/nested/file.txt", data: "still no manifest" },
 		]);
 
-		await expect(installGjcBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", tarball)).rejects.toMatchObject({
 			code: "missing_file",
 		});
 		expect(await readRegistry("project", cwd)).toMatchObject({ plugins: [] });
@@ -187,7 +187,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		const cwd = await mkProjectCwd();
 		const tarball = await validBundleTarball({ prefix: "nested-plugin/", gzip: true });
 
-		const result = await installGjcBundle({ cwd }, "project", tarball);
+		const result = await installWorxBundle({ cwd }, "project", tarball);
 
 		expect(result).toMatchObject({ ok: true, value: { status: "installed" } });
 		const registry = await readRegistry("project", cwd);
@@ -206,7 +206,7 @@ describe("GJC plugin installer M2 red-team", () => {
 			JSON.stringify({ kind: "gajae-code-plugin", name: "forbidden-bundle", version: "1.0.0", commands: [] }),
 		);
 
-		await expect(installGjcBundle({ cwd }, "project", bad)).rejects.toMatchObject({
+		await expect(installWorxBundle({ cwd }, "project", bad)).rejects.toMatchObject({
 			code: "forbidden_surface",
 		});
 		expect(await listEntries(path.join(cwd, ".worx", "worx-plugins"))).toEqual([]);
@@ -219,24 +219,24 @@ describe("GJC plugin installer M2 red-team", () => {
 		const original = await makeBundleCopy("m2-reinstall-bundle");
 		const identity = bundleIdentity("project", "m2-reinstall-bundle");
 
-		expect(await installGjcBundle(ctx, "project", original)).toMatchObject({
+		expect(await installWorxBundle(ctx, "project", original)).toMatchObject({
 			ok: true,
 			value: { status: "installed" },
 		});
-		expect(await installGjcBundle(ctx, "project", original)).toMatchObject({
+		expect(await installWorxBundle(ctx, "project", original)).toMatchObject({
 			ok: false,
 			error: { code: "already_installed_use_upgrade" },
 		});
 		await fs.appendFile(path.join(original, "prompts", "system-appendix.md"), "\nChanged content.\n");
-		expect(await installGjcBundle(ctx, "project", original)).toMatchObject({
+		expect(await installWorxBundle(ctx, "project", original)).toMatchObject({
 			ok: false,
 			error: { code: "already_installed_use_upgrade" },
 		});
-		const preview = await previewGjcBundleUpdate(ctx, identity);
+		const preview = await previewWorxBundleUpdate(ctx, identity);
 		expect(preview.ok).toBe(true);
 		if (!preview.ok) throw new Error(preview.error.code);
 		expect(preview.value.changed).toBe(true);
-		expect(await applyGjcBundleUpdate(ctx, preview.value.token)).toMatchObject({
+		expect(await applyWorxBundleUpdate(ctx, preview.value.token)).toMatchObject({
 			ok: true,
 			value: { status: "updated" },
 		});
@@ -252,8 +252,8 @@ describe("GJC plugin installer M2 red-team", () => {
 		const bundle = await makeBundleCopy("m2-concurrent-bundle");
 
 		const results = await Promise.all([
-			installGjcBundle({ cwd }, "project", bundle),
-			installGjcBundle({ cwd }, "project", bundle),
+			installWorxBundle({ cwd }, "project", bundle),
+			installWorxBundle({ cwd }, "project", bundle),
 		]);
 		expect(results.filter(result => result.ok)).toHaveLength(1);
 		expect(results.find(result => !result.ok)).toMatchObject({

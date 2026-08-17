@@ -226,7 +226,7 @@ describe("tmux GC red-team adversarial safety", () => {
 			status: "unclassified",
 			stale: false,
 			removable: false,
-			reason: "metadata_less_gjc_owned_idle_orphan_missing_terminal_marker",
+			reason: "metadata_less_worx_owned_idle_orphan_missing_terminal_marker",
 		});
 		expect(await tmuxSessionsGcAdapter.prune(record!, ctx())).toEqual({
 			removed: false,

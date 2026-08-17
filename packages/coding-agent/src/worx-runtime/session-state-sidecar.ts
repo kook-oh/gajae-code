@@ -32,7 +32,7 @@ export type RuntimeInputReadyMarker = Readonly<{
 	launch_id: string;
 	state: "ready_for_input";
 	event: "interactive_input_ready";
-	source: "gjc_interactive_runtime";
+	source: "worx_interactive_runtime";
 	ready_for_input: true;
 	created_at: string;
 }>;
@@ -139,7 +139,7 @@ function isRuntimeInputReadyMarker(value: unknown): value is RuntimeInputReadyMa
 		typeof marker.launch_id === "string" &&
 		marker.state === "ready_for_input" &&
 		marker.event === "interactive_input_ready" &&
-		marker.source === "gjc_interactive_runtime" &&
+		marker.source === "worx_interactive_runtime" &&
 		marker.ready_for_input === true &&
 		typeof marker.created_at === "string" &&
 		marker.created_at.length > 0 &&
@@ -192,7 +192,7 @@ export async function persistCoordinatorRuntimeInputReady(): Promise<RuntimeInpu
 		launch_id: expected.launchId,
 		state: "ready_for_input",
 		event: "interactive_input_ready",
-		source: "gjc_interactive_runtime",
+		source: "worx_interactive_runtime",
 		ready_for_input: true,
 		created_at: new Date().toISOString(),
 	});

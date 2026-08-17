@@ -9,7 +9,7 @@ import {
 	persistMcpDelegateHostContext,
 	readMcpDelegateHostContext,
 } from "../src/hooks/mcp-delegate-host-context";
-import { dispatchGjcNativeSkillHook } from "../src/hooks/native-skill-hook";
+import { dispatchWorxNativeSkillHook } from "../src/hooks/native-skill-hook";
 import { readVisibleSkillActiveState } from "../src/hooks/skill-state";
 import { activeSnapshotPath } from "../src/worx-runtime/session-layout";
 
@@ -137,7 +137,7 @@ describe("MCP delegate-flow host context", () => {
 	it("persists host context without activating a workflow skill", async () => {
 		const root = await tempRoot();
 		const sessionId = "session-host-context";
-		const result = await dispatchGjcNativeSkillHook({
+		const result = await dispatchWorxNativeSkillHook({
 			hookEventName: "UserPromptSubmit",
 			userPrompt: "resume $gjc-mcp-delegate-flow now",
 			cwd: root,
@@ -259,7 +259,7 @@ describe("MCP delegate-flow host context", () => {
 		const sessionId = "persist-failure";
 		await fs.mkdir(mcpDelegateHostContextPath(root, sessionId), { recursive: true });
 
-		const failedPersistResult = await dispatchGjcNativeSkillHook({
+		const failedPersistResult = await dispatchWorxNativeSkillHook({
 			hookEventName: "UserPromptSubmit",
 			userPrompt: "$gjc-mcp-delegate-flow",
 			cwd: root,
@@ -273,7 +273,7 @@ describe("MCP delegate-flow host context", () => {
 			),
 		).not.toContain("GJC MCP delegate-flow host context persisted at");
 		await expect(
-			dispatchGjcNativeSkillHook(
+			dispatchWorxNativeSkillHook(
 				{
 					hookEventName: "UserPromptSubmit",
 					userPrompt: "$ultragoal continue objective",
@@ -291,7 +291,7 @@ describe("MCP delegate-flow host context", () => {
 	it("leaves ultragoal workflow activation unchanged", async () => {
 		const root = await tempRoot();
 		const sessionId = "session-ultragoal";
-		await dispatchGjcNativeSkillHook(
+		await dispatchWorxNativeSkillHook(
 			{
 				hookEventName: "UserPromptSubmit",
 				userPrompt: "$ultragoal continue this objective",

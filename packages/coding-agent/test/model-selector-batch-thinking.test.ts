@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { ThinkingLevel } from "@bworx-io/worx-agent-core";
 import { Effort, type Model } from "@bworx-io/worx-ai";
-import { type GjcModelAssignmentTargetId, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import { ModelRegistry, type WorxModelAssignmentTargetId } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import { getThemeByName, setThemeInstance } from "@bworx-io/worx-code/modes/theme/theme";
@@ -23,19 +23,19 @@ function normalizeRenderedText(text: string): string {
 
 interface SelectionCapture {
 	model: Model;
-	role: GjcModelAssignmentTargetId | null;
+	role: WorxModelAssignmentTargetId | null;
 	thinkingLevel?: ThinkingLevel;
 	selector?: string;
-	roles?: readonly GjcModelAssignmentTargetId[];
+	roles?: readonly WorxModelAssignmentTargetId[];
 }
 
 type TestModelSelectorSelection = {
 	kind: "assignment";
 	model: Model;
-	role: GjcModelAssignmentTargetId | null;
+	role: WorxModelAssignmentTargetId | null;
 	thinkingLevel?: ThinkingLevel;
 	selector?: string;
-	roles?: readonly GjcModelAssignmentTargetId[];
+	roles?: readonly WorxModelAssignmentTargetId[];
 };
 
 function createSelector(

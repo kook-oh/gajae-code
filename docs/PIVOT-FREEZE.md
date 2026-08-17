@@ -164,10 +164,10 @@ The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:16
 [V] MCP public-name count was measured from the two declaration sources:
 
 ```sh
-{ git grep -h -o -E 'gjc_[a-z0-9_]+' -- packages/coding-agent/src/coordinator/contract.ts; git grep -h -o -E 'gjc_[a-z0-9_]+' -- packages/coding-agent/src/sdk/mcp/server.ts; } | sort -u | wc -l
+{ git grep -h -o -E 'worx_[a-z0-9_]+' -- packages/coding-agent/src/coordinator/contract.ts; git grep -h -o -E 'worx_[a-z0-9_]+' -- packages/coding-agent/src/sdk/mcp/server.ts; } | sort -u | wc -l
 ```
 
-Output: `27` unique `gjc_`-prefixed MCP tool names (23 coordinator, 4 SDK).
+Output: `27` unique `worx_`-prefixed MCP tool names (23 coordinator, 4 SDK).
 [V] `git grep -h -o -E 'WORX_[A-Z_]+' -- 'packages/*/src/**' | sort -u | wc -l`
 outputs `276` unique identifiers across package source. This supersedes the
 plan's preliminary count of 282 and the narrower coding-agent-only count of

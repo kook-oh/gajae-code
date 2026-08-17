@@ -2,11 +2,11 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { computeTaskTokenMetrics, readTaskTokenLogs } from "../task/token-log";
 import type { TaskTokenLog } from "../task/types";
-import type { GjcSessionContext } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
+import type { WorxSessionContext } from "../worx-runtime/session-layout";
+import { resolveWorxSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
 
 const LIVE_RUNNER_SCHEMA_VERSION = 1;
-const BINARY_ID = "gjc";
+const BINARY_ID = "worx";
 
 function deterministicLog(
 	input: number,
@@ -142,9 +142,9 @@ type ResolvedFixtureLogs =
 async function resolveFixtureLogs(fixtureId: string): Promise<ResolvedFixtureLogs> {
 	const deterministic = DETERMINISTIC_FIXTURES[fixtureId] ?? DEFAULT_REDUCTION_FIXTURE_LOGS[fixtureId];
 	if (deterministic) return { kind: "logs", logs: deterministic };
-	let session: GjcSessionContext;
+	let session: WorxSessionContext;
 	try {
-		session = await resolveGjcSessionForRead(process.cwd(), {
+		session = await resolveWorxSessionForRead(process.cwd(), {
 			flagValue: fixtureId,
 			envSessionId: process.env.WORX_SESSION_ID,
 		});
@@ -152,7 +152,7 @@ async function resolveFixtureLogs(fixtureId: string): Promise<ResolvedFixtureLog
 		if (error instanceof SessionResolutionError) return { kind: "unknown" };
 		throw error;
 	}
-	// resolveGjcSessionForRead accepts any explicit flagValue as a session id
+	// resolveWorxSessionForRead accepts any explicit flagValue as a session id
 	// without checking the dir exists, so a typo would otherwise yield a
 	// schema-valid all-zero report. Require the session root to exist; a real
 	// session with no turns yet still reads as a legitimate empty log set.

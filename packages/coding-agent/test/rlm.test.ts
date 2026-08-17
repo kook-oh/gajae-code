@@ -16,7 +16,7 @@ import { loadRlmDataContext } from "@bworx-io/worx-code/rlm/data-context";
 import {
 	buildRlmGoalObjective,
 	createRlmPreset,
-	ensureRlmGjcSessionId,
+	ensureRlmWorxSessionId,
 	runRlmCommand,
 } from "@bworx-io/worx-code/rlm/index";
 import { RlmNotebookWriter } from "@bworx-io/worx-code/rlm/notebook";
@@ -125,9 +125,9 @@ describe("rlm gjc session resolution (regression: standalone `gjc rlm`)", () => 
 		expect(() => resolveRlmArtifactPaths(tmp, "sess1")).toThrow(/session id is required to write state/);
 	});
 
-	test("ensureRlmGjcSessionId generates and pins a session id when none is set", () => {
+	test("ensureRlmWorxSessionId generates and pins a session id when none is set", () => {
 		delete process.env.WORX_SESSION_ID;
-		const resolved = ensureRlmGjcSessionId();
+		const resolved = ensureRlmWorxSessionId();
 		expect(resolved.startsWith("rlm-")).toBe(true);
 		expect(isValidRlmSessionId(resolved)).toBe(true);
 		expect(String(process.env.WORX_SESSION_ID)).toBe(resolved);
@@ -136,16 +136,16 @@ describe("rlm gjc session resolution (regression: standalone `gjc rlm`)", () => 
 		expect(paths.dir).toBe(rlmArtifactRoot(tmp, resolved, "sess1"));
 	});
 
-	test("ensureRlmGjcSessionId treats a blank session id as unset", () => {
+	test("ensureRlmWorxSessionId treats a blank session id as unset", () => {
 		process.env.WORX_SESSION_ID = "   ";
-		const resolved = ensureRlmGjcSessionId();
+		const resolved = ensureRlmWorxSessionId();
 		expect(resolved.startsWith("rlm-")).toBe(true);
 		expect(process.env.WORX_SESSION_ID).toBe(resolved);
 	});
 
-	test("ensureRlmGjcSessionId preserves an existing session id", () => {
+	test("ensureRlmWorxSessionId preserves an existing session id", () => {
 		process.env.WORX_SESSION_ID = "parent-session";
-		const resolved = ensureRlmGjcSessionId();
+		const resolved = ensureRlmWorxSessionId();
 		expect(resolved).toBe("parent-session");
 		expect(process.env.WORX_SESSION_ID).toBe("parent-session");
 		expect(resolveRlmArtifactPaths(tmp, "sess1").dir).toBe(rlmArtifactRoot(tmp, "parent-session", "sess1"));

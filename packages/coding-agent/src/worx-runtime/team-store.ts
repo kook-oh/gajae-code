@@ -11,9 +11,9 @@ import {
 	withWorkflowStateLock,
 	writeJsonAtomic,
 } from "./state-writer";
-import type { GjcTeamConfig, GjcTeamMailboxMessage } from "./team-runtime";
+import type { WorxTeamConfig, WorxTeamMailboxMessage } from "./team-runtime";
 
-export type GjcTeamNotificationDeliveryState =
+export type WorxTeamNotificationDeliveryState =
 	| "pending"
 	| "sent"
 	| "queued"
@@ -21,17 +21,17 @@ export type GjcTeamNotificationDeliveryState =
 	| "failed"
 	| "delivered"
 	| "acknowledged";
-export type GjcTeamPaneAttemptResult = "sent" | "queued" | "deferred" | "failed";
-export type GjcTeamMailboxDeliveryTransportKind = "sdk" | "pane";
-export interface GjcTeamNotification {
+export type WorxTeamPaneAttemptResult = "sent" | "queued" | "deferred" | "failed";
+export type WorxTeamMailboxDeliveryTransportKind = "sdk" | "pane";
+export interface WorxTeamNotification {
 	id: string;
 	kind: "mailbox_message" | "worker_lifecycle" | "invalid_attempt";
 	team_name: string;
 	recipient: string;
 	source: { type: "message" | "task" | "worker" | "event"; id: string };
 	idempotency_key?: string;
-	delivery_state: GjcTeamNotificationDeliveryState;
-	pane_attempt_result?: GjcTeamPaneAttemptResult;
+	delivery_state: WorxTeamNotificationDeliveryState;
+	pane_attempt_result?: WorxTeamPaneAttemptResult;
 	pane_attempt_reason?: string;
 	pane_attempt_at?: string;
 	created_at: string;
@@ -39,67 +39,67 @@ export interface GjcTeamNotification {
 	replay_count: number;
 }
 
-export interface GjcTeamNotificationSummary {
+export interface WorxTeamNotificationSummary {
 	total: number;
 	replay_eligible: number;
-	by_state: Record<GjcTeamNotificationDeliveryState, number>;
+	by_state: Record<WorxTeamNotificationDeliveryState, number>;
 }
-export interface GjcTeamMailboxDeliveryInput {
+export interface WorxTeamMailboxDeliveryInput {
 	team_name: string;
 	state_dir: string;
-	config: GjcTeamConfig;
-	notification: GjcTeamNotification;
-	message: GjcTeamMailboxMessage;
+	config: WorxTeamConfig;
+	notification: WorxTeamNotification;
+	message: WorxTeamMailboxMessage;
 	cwd: string;
 	env: NodeJS.ProcessEnv;
 }
-export type GjcTeamMailboxDeliveryResult =
+export type WorxTeamMailboxDeliveryResult =
 	| {
 			transport: "sdk";
-			state: GjcTeamNotificationDeliveryState;
+			state: WorxTeamNotificationDeliveryState;
 			reason?: string;
 	  }
-	| { transport: "pane"; state: GjcTeamPaneAttemptResult; reason?: string };
-export interface GjcTeamMailboxDeliveryTransport {
-	deliverMailboxMessage(input: GjcTeamMailboxDeliveryInput): Promise<GjcTeamMailboxDeliveryResult | null>;
+	| { transport: "pane"; state: WorxTeamPaneAttemptResult; reason?: string };
+export interface WorxTeamMailboxDeliveryTransport {
+	deliverMailboxMessage(input: WorxTeamMailboxDeliveryInput): Promise<WorxTeamMailboxDeliveryResult | null>;
 }
 
-export type GjcTeamTaskStatus = "pending" | "blocked" | "in_progress" | "completed" | "failed";
-export interface GjcTeamTaskClaim {
+export type WorxTeamTaskStatus = "pending" | "blocked" | "in_progress" | "completed" | "failed";
+export interface WorxTeamTaskClaim {
 	owner: string;
 	token: string;
 	leased_until: string;
 }
-export type GjcTeamTaskCompletionEvidenceKind = "command" | "inspection" | "artifact";
-export type GjcTeamTaskCompletionEvidenceStatus = "passed" | "failed" | "not_run" | "verified" | "rejected";
-export interface GjcTeamTaskCompletionEvidenceItem {
-	kind: GjcTeamTaskCompletionEvidenceKind;
-	status: GjcTeamTaskCompletionEvidenceStatus;
+export type WorxTeamTaskCompletionEvidenceKind = "command" | "inspection" | "artifact";
+export type WorxTeamTaskCompletionEvidenceStatus = "passed" | "failed" | "not_run" | "verified" | "rejected";
+export interface WorxTeamTaskCompletionEvidenceItem {
+	kind: WorxTeamTaskCompletionEvidenceKind;
+	status: WorxTeamTaskCompletionEvidenceStatus;
 	summary: string;
 	command?: string;
 	artifact?: string;
 	location?: string;
 	output?: string;
 }
-export interface GjcTeamTaskCompletionEvidence {
+export interface WorxTeamTaskCompletionEvidence {
 	summary: string;
-	items: GjcTeamTaskCompletionEvidenceItem[];
+	items: WorxTeamTaskCompletionEvidenceItem[];
 	files?: string[];
 	notes?: string;
 	recorded_by: string;
 	recorded_at: string;
 }
-export interface GjcTeamTask {
+export interface WorxTeamTask {
 	id: string;
 	subject: string;
 	description: string;
 	title: string;
 	objective: string;
-	status: GjcTeamTaskStatus;
+	status: WorxTeamTaskStatus;
 	assignee?: string;
 	owner?: string;
 	result?: string;
-	completion_evidence?: GjcTeamTaskCompletionEvidence;
+	completion_evidence?: WorxTeamTaskCompletionEvidence;
 	error?: string;
 	blocked_by?: string[];
 	depends_on?: string[];
@@ -107,35 +107,35 @@ export interface GjcTeamTask {
 	required_role?: string;
 	allowed_roles?: string[];
 	version: number;
-	claim?: GjcTeamTaskClaim;
+	claim?: WorxTeamTaskClaim;
 	created_at: string;
 	updated_at: string;
 	completed_at?: string;
 }
-export type GjcTeamTaskMetadataInput = Partial<
-	Pick<GjcTeamTask, "owner" | "lane" | "required_role" | "allowed_roles" | "depends_on" | "blocked_by">
+export type WorxTeamTaskMetadataInput = Partial<
+	Pick<WorxTeamTask, "owner" | "lane" | "required_role" | "allowed_roles" | "depends_on" | "blocked_by">
 >;
-export interface GjcTeamTaskWorker {
+export interface WorxTeamTaskWorker {
 	id: string;
 	role: string;
 	agent_type: string;
 }
-export interface GjcTeamApiClaimResult {
+export interface WorxTeamApiClaimResult {
 	ok: boolean;
-	task?: GjcTeamTask;
+	task?: WorxTeamTask;
 	worker_id?: string;
 	claim_token?: string;
 	reason?: string;
 }
-export type GjcTeamWorkerClaimSelection =
+export type WorxTeamWorkerClaimSelection =
 	| { kind: "none" }
-	| { kind: "exact"; task: GjcTeamTask; claim: GjcTeamTaskClaim }
-	| { kind: "ambiguous"; tasks: GjcTeamTask[] };
+	| { kind: "exact"; task: WorxTeamTask; claim: WorxTeamTaskClaim }
+	| { kind: "ambiguous"; tasks: WorxTeamTask[] };
 
 export function selectCurrentClaimedTaskForWorker(
-	tasks: readonly GjcTeamTask[],
+	tasks: readonly WorxTeamTask[],
 	workerId: string,
-): GjcTeamWorkerClaimSelection {
+): WorxTeamWorkerClaimSelection {
 	const claimed = tasks.filter(
 		task =>
 			task.status === "in_progress" &&
@@ -150,10 +150,10 @@ export function selectCurrentClaimedTaskForWorker(
 	}
 	return { kind: "ambiguous", tasks: claimed };
 }
-export function findGjcTeamClaimedTaskForWorker(
-	tasks: readonly GjcTeamTask[],
+export function findWorxTeamClaimedTaskForWorker(
+	tasks: readonly WorxTeamTask[],
 	workerId: string,
-): GjcTeamTask | undefined {
+): WorxTeamTask | undefined {
 	const active = selectCurrentClaimedTaskForWorker(tasks, workerId);
 	if (active.kind === "exact") return active.task;
 	if (active.kind === "ambiguous") return undefined;
@@ -205,12 +205,12 @@ const isFiniteTimestamp = (value: unknown): value is string =>
 	typeof value === "string" && Number.isFinite(Date.parse(value));
 
 /** The sole strict schema gate for persisted task and claim authority records. */
-export function isCanonicalPersistedGjcTeamTaskClaim(value: unknown): value is GjcTeamTaskClaim {
+export function isCanonicalPersistedWorxTeamTaskClaim(value: unknown): value is WorxTeamTaskClaim {
 	if (!isRecord(value) || Array.isArray(value) || !hasExactKeys(value, canonicalClaimKeys)) return false;
 	return isSafePersistedId(value.owner) && isNonEmptyString(value.token) && isFiniteTimestamp(value.leased_until);
 }
 
-function isCanonicalCompletionEvidence(value: unknown): value is GjcTeamTaskCompletionEvidence {
+function isCanonicalCompletionEvidence(value: unknown): value is WorxTeamTaskCompletionEvidence {
 	if (!isRecord(value) || Array.isArray(value) || !hasExactKeys(value, canonicalEvidenceKeys)) return false;
 	if (
 		!isNonEmptyString(value.summary) ||
@@ -245,7 +245,7 @@ function isCanonicalCompletionEvidence(value: unknown): value is GjcTeamTaskComp
 	return value.notes === undefined || typeof value.notes === "string";
 }
 
-export function isCanonicalPersistedGjcTeamTask(value: unknown, fileId?: string): value is GjcTeamTask {
+export function isCanonicalPersistedWorxTeamTask(value: unknown, fileId?: string): value is WorxTeamTask {
 	if (!isRecord(value) || Array.isArray(value) || !hasExactKeys(value, canonicalTaskKeys)) return false;
 	if (!isSafePersistedId(value.id) || (fileId !== undefined && value.id !== fileId)) return false;
 	if (!["pending", "blocked", "in_progress", "completed", "failed"].includes(String(value.status))) return false;
@@ -277,7 +277,7 @@ export function isCanonicalPersistedGjcTeamTask(value: unknown, fileId?: string)
 	if (value.completion_evidence !== undefined && !isCanonicalCompletionEvidence(value.completion_evidence))
 		return false;
 	if (value.claim !== undefined) {
-		if (!isCanonicalPersistedGjcTeamTaskClaim(value.claim)) return false;
+		if (!isCanonicalPersistedWorxTeamTaskClaim(value.claim)) return false;
 		if (value.status !== "in_progress" || value.owner !== value.claim.owner || value.assignee !== value.claim.owner)
 			return false;
 	}
@@ -332,7 +332,7 @@ async function writeJson(filePath: string, value: unknown): Promise<void> {
 const teamMutationFenceTails = new Map<string, Promise<void>>();
 const activeTeamMutationFences = new AsyncLocalStorage<ReadonlySet<string>>();
 
-export async function withGjcTeamMutationFence<T>(dir: string, fn: () => Promise<T>): Promise<T> {
+export async function withWorxTeamMutationFence<T>(dir: string, fn: () => Promise<T>): Promise<T> {
 	const lockPath = path.join(dir, "operations", "team-mutation.json");
 	const active = activeTeamMutationFences.getStore();
 	if (active?.has(lockPath)) return await fn();
@@ -360,8 +360,8 @@ function optionalStringArray(value: unknown): string[] | undefined {
 	const values = [...new Set(value.map(optionalString).filter((value): value is string => Boolean(value)))].sort();
 	return values.length ? values : undefined;
 }
-export function taskMetadataFromInput(input: Record<string, unknown>, includeOwner = false): GjcTeamTaskMetadataInput {
-	const result: GjcTeamTaskMetadataInput = {};
+export function taskMetadataFromInput(input: Record<string, unknown>, includeOwner = false): WorxTeamTaskMetadataInput {
+	const result: WorxTeamTaskMetadataInput = {};
 	const owner = optionalString(input.owner);
 	if (includeOwner && owner) result.owner = owner;
 	for (const [key, value] of [
@@ -374,10 +374,10 @@ export function taskMetadataFromInput(input: Record<string, unknown>, includeOwn
 		if (value) Object.assign(result, { [key]: value });
 	return result;
 }
-export function normalizeGjcTeamTask(raw: GjcTeamTask): GjcTeamTask {
+export function normalizeWorxTeamTask(raw: WorxTeamTask): WorxTeamTask {
 	return {
 		...raw,
-		status: raw.status === ("complete" as GjcTeamTaskStatus) ? "completed" : raw.status,
+		status: raw.status === ("complete" as WorxTeamTaskStatus) ? "completed" : raw.status,
 		subject: raw.subject ?? raw.title,
 		description: raw.description ?? raw.objective,
 		title: raw.title ?? raw.subject,
@@ -400,30 +400,30 @@ function optional(id: string, field: string, value: unknown, max = 8000): string
 	if (typeof value !== "string" || value.trim().length > max) throw evidenceError(id, field);
 	return value.trim() || undefined;
 }
-function verified(item: GjcTeamTaskCompletionEvidenceItem) {
+function verified(item: WorxTeamTaskCompletionEvidenceItem) {
 	return (
 		(item.kind === "command" && item.status === "passed") || (item.kind !== "command" && item.status === "verified")
 	);
 }
-export function normalizeGjcTeamTaskCompletionEvidence(
+export function normalizeWorxTeamTaskCompletionEvidence(
 	id: string,
 	owner: string,
 	input: unknown,
 	recordedAt = now(),
-): GjcTeamTaskCompletionEvidence {
+): WorxTeamTaskCompletionEvidence {
 	if (!isRecord(input) || Array.isArray(input)) throw new Error(`completion_evidence_required:${id}`);
 	if (!Array.isArray(input.items) || !input.items.length) throw evidenceError(id, "items");
 	const items = input.items.map(value => {
 		if (!isRecord(value) || Array.isArray(value)) throw evidenceError(id, "items");
 		const kind = required(id, "items.kind", value.kind);
 		if (kind !== "command" && kind !== "inspection" && kind !== "artifact") throw evidenceError(id, "items.kind");
-		const status = required(id, "items.status", value.status) as GjcTeamTaskCompletionEvidenceStatus;
+		const status = required(id, "items.status", value.status) as WorxTeamTaskCompletionEvidenceStatus;
 		if (
 			(kind === "command" && !["passed", "failed", "not_run"].includes(status)) ||
 			(kind !== "command" && !["verified", "rejected"].includes(status))
 		)
 			throw evidenceError(id, "items.status");
-		const item: GjcTeamTaskCompletionEvidenceItem = {
+		const item: WorxTeamTaskCompletionEvidenceItem = {
 			kind,
 			status,
 			summary: required(id, "items.summary", value.summary),
@@ -460,7 +460,7 @@ export function normalizeGjcTeamTaskCompletionEvidence(
 		].sort();
 		if (!files.length) files = undefined;
 	}
-	const evidence: GjcTeamTaskCompletionEvidence = {
+	const evidence: WorxTeamTaskCompletionEvidence = {
 		summary: required(id, "summary", input.summary),
 		items,
 		recorded_by: owner,
@@ -471,7 +471,7 @@ export function normalizeGjcTeamTaskCompletionEvidence(
 	if (notes) evidence.notes = notes;
 	return evidence;
 }
-export function getGjcTeamTaskCompletionEvidenceFailure(task: GjcTeamTask): string | null {
+export function getWorxTeamTaskCompletionEvidenceFailure(task: WorxTeamTask): string | null {
 	if (task.status !== "completed") return `task_not_completed:${task.id}`;
 	const evidence = task.completion_evidence;
 	if (!isRecord(evidence) || Array.isArray(evidence)) return `completion_evidence_required:${task.id}`;
@@ -480,15 +480,15 @@ export function getGjcTeamTaskCompletionEvidenceFailure(task: GjcTeamTask): stri
 	if (typeof evidence.recorded_at !== "string" || !evidence.recorded_at.trim())
 		return `invalid_completion_evidence:${task.id}:recorded_at`;
 	try {
-		normalizeGjcTeamTaskCompletionEvidence(task.id, evidence.recorded_by.trim(), evidence, evidence.recorded_at);
+		normalizeWorxTeamTaskCompletionEvidence(task.id, evidence.recorded_by.trim(), evidence, evidence.recorded_at);
 		return null;
 	} catch (error) {
 		return error instanceof Error ? error.message : `invalid_completion_evidence:${task.id}:unknown`;
 	}
 }
-export const isGjcTeamTaskCompletionVerified = (task: GjcTeamTask) =>
-	getGjcTeamTaskCompletionEvidenceFailure(task) === null;
-function taskRecord(value: unknown): value is GjcTeamTask {
+export const isWorxTeamTaskCompletionVerified = (task: WorxTeamTask) =>
+	getWorxTeamTaskCompletionEvidenceFailure(task) === null;
+function taskRecord(value: unknown): value is WorxTeamTask {
 	return (
 		isRecord(value) &&
 		typeof value.id === "string" &&
@@ -498,7 +498,7 @@ function taskRecord(value: unknown): value is GjcTeamTask {
 		(typeof value.description === "string" || typeof value.objective === "string")
 	);
 }
-export async function readGjcTeamTasksFromDir(dir: string): Promise<GjcTeamTask[]> {
+export async function readWorxTeamTasksFromDir(dir: string): Promise<WorxTeamTask[]> {
 	try {
 		const entries = await fs.readdir(path.join(dir, "tasks"), {
 			withFileTypes: true,
@@ -510,18 +510,18 @@ export async function readGjcTeamTasksFromDir(dir: string): Promise<GjcTeamTask[
 		);
 		return records
 			.filter(taskRecord)
-			.map(normalizeGjcTeamTask)
+			.map(normalizeWorxTeamTask)
 			.sort((a, b) => a.id.localeCompare(b.id));
 	} catch (error) {
 		if (isEnoent(error)) return [];
 		throw error;
 	}
 }
-async function writeGjcTeamTaskToDir(dir: string, task: GjcTeamTask): Promise<void> {
-	await writeJson(taskPath(dir, task.id), normalizeGjcTeamTask(task));
+async function writeWorxTeamTaskToDir(dir: string, task: WorxTeamTask): Promise<void> {
+	await writeJson(taskPath(dir, task.id), normalizeWorxTeamTask(task));
 }
 
-function eligibility(task: GjcTeamTask, worker: GjcTeamTaskWorker, tasks: GjcTeamTask[]): string | null {
+function eligibility(task: WorxTeamTask, worker: WorxTeamTaskWorker, tasks: WorxTeamTask[]): string | null {
 	if (task.status !== "pending") return `task_not_pending:${task.id}`;
 	if (task.owner && task.owner !== worker.id) return `task_owner_mismatch:${task.id}:${task.owner}`;
 	if (task.assignee && task.assignee !== worker.id) return `task_assignee_mismatch:${task.id}:${task.assignee}`;
@@ -532,11 +532,11 @@ function eligibility(task: GjcTeamTask, worker: GjcTeamTaskWorker, tasks: GjcTea
 		return `task_role_mismatch:${task.id}:${task.allowed_roles.join(",")}`;
 	if (task.blocked_by?.length) return `task_blocked:${task.id}:${task.blocked_by.join(",")}`;
 	for (const dependency of task.depends_on ?? [])
-		if (!tasks.find(candidate => candidate.id === dependency && isGjcTeamTaskCompletionVerified(candidate)))
+		if (!tasks.find(candidate => candidate.id === dependency && isWorxTeamTaskCompletionVerified(candidate)))
 			return `task_dependency_incomplete:${task.id}:${dependency}`;
 	return null;
 }
-function claimRecord(value: unknown): GjcTeamTaskClaim | undefined {
+function claimRecord(value: unknown): WorxTeamTaskClaim | undefined {
 	if (
 		!isRecord(value) ||
 		typeof value.owner !== "string" ||
@@ -560,47 +560,47 @@ const teamTaskMutationCapability = Symbol("team-task-mutation-capability");
 
 /**
  * This is intentionally structural only: callers can invoke methods supplied by
- * `withGjcTeamTaskMutation`, but cannot create an active capability. Each method
+ * `withWorxTeamTaskMutation`, but cannot create an active capability. Each method
  * closes over a private brand and is revoked when that callback settles.
  */
-export interface GjcTeamTaskMutationCapability {
-	create(subject: string, description: string, options: GjcTeamTaskMetadataInput): Promise<GjcTeamTask>;
+export interface WorxTeamTaskMutationCapability {
+	create(subject: string, description: string, options: WorxTeamTaskMetadataInput): Promise<WorxTeamTask>;
 	update(
 		id: string,
 		updates: Partial<
 			Pick<
-				GjcTeamTask,
+				WorxTeamTask,
 				"subject" | "description" | "blocked_by" | "depends_on" | "lane" | "required_role" | "allowed_roles"
 			>
 		>,
-	): Promise<GjcTeamTask>;
-	claim(worker: GjcTeamTaskWorker, id?: string): Promise<GjcTeamApiClaimResult>;
+	): Promise<WorxTeamTask>;
+	claim(worker: WorxTeamTaskWorker, id?: string): Promise<WorxTeamApiClaimResult>;
 	transition(
 		id: string,
-		status: GjcTeamTaskStatus,
+		status: WorxTeamTaskStatus,
 		token?: string,
 		workerId?: string,
 		evidenceInput?: unknown,
-	): Promise<GjcTeamTask>;
-	release(id: string, token: string, workerId: string): Promise<GjcTeamTask>;
-	writeRecovered(task: GjcTeamTask): Promise<void>;
+	): Promise<WorxTeamTask>;
+	release(id: string, token: string, workerId: string): Promise<WorxTeamTask>;
+	writeRecovered(task: WorxTeamTask): Promise<void>;
 }
 
-export async function withGjcTeamTaskMutation<T>(
-	store: GjcTeamTaskStore,
-	fn: (capability: GjcTeamTaskMutationCapability) => Promise<T>,
+export async function withWorxTeamTaskMutation<T>(
+	store: WorxTeamTaskStore,
+	fn: (capability: WorxTeamTaskMutationCapability) => Promise<T>,
 ): Promise<T> {
-	return withGjcTeamMutationFence(store.dir, () => store.withMutationCapability(teamTaskMutationCapability, fn));
+	return withWorxTeamMutationFence(store.dir, () => store.withMutationCapability(teamTaskMutationCapability, fn));
 }
 
-export class GjcTeamTaskStore {
+export class WorxTeamTaskStore {
 	constructor(
 		readonly dir: string,
 		readonly appendEvent: EventAppender,
 	) {}
 	async withMutationCapability<T>(
 		capabilityBrand: typeof teamTaskMutationCapability,
-		fn: (capability: GjcTeamTaskMutationCapability) => Promise<T>,
+		fn: (capability: WorxTeamTaskMutationCapability) => Promise<T>,
 	): Promise<T> {
 		if (capabilityBrand !== teamTaskMutationCapability) throw new Error("team_mutation_capability_required");
 		const brand = Symbol("active-team-task-mutation");
@@ -617,14 +617,14 @@ export class GjcTeamTaskStore {
 			void pending.catch(() => undefined);
 			return pending;
 		};
-		const capability = Object.freeze<GjcTeamTaskMutationCapability>({
+		const capability = Object.freeze<WorxTeamTaskMutationCapability>({
 			create: (subject, description, options) => track(() => this.#createUnlocked(subject, description, options)),
 			update: (id, updates) => track(() => this.#updateUnlocked(id, updates)),
 			claim: (worker, id) => track(() => this.#claimUnlocked(worker, id)),
 			transition: (id, status, token, workerId, evidenceInput) =>
 				track(() => this.#transitionUnlocked(id, status, token, workerId, evidenceInput)),
 			release: (id, token, workerId) => track(() => this.#releaseUnlocked(id, token, workerId)),
-			writeRecovered: task => track(() => writeGjcTeamTaskToDir(this.dir, task)),
+			writeRecovered: task => track(() => writeWorxTeamTaskToDir(this.dir, task)),
 		});
 		let callbackResult: T | undefined;
 		let callbackError: unknown;
@@ -651,18 +651,18 @@ export class GjcTeamTaskStore {
 		return callbackResult as T;
 	}
 	async list() {
-		return readGjcTeamTasksFromDir(this.dir);
+		return readWorxTeamTasksFromDir(this.dir);
 	}
 	async read(id: string) {
 		const task = (await this.list()).find(candidate => candidate.id === id);
 		if (!task) throw new Error(`task_not_found:${id}`);
 		return task;
 	}
-	async create(subject: string, description: string, options: GjcTeamTaskMetadataInput) {
-		return withGjcTeamMutationFence(this.dir, () => this.#createUnlocked(subject, description, options));
+	async create(subject: string, description: string, options: WorxTeamTaskMetadataInput) {
+		return withWorxTeamMutationFence(this.dir, () => this.#createUnlocked(subject, description, options));
 	}
-	async #createUnlocked(subject: string, description: string, options: GjcTeamTaskMetadataInput) {
-		const task: GjcTeamTask = {
+	async #createUnlocked(subject: string, description: string, options: WorxTeamTaskMetadataInput) {
+		const task: WorxTeamTask = {
 			id: `task-${(await this.list()).length + 1}`,
 			subject,
 			description,
@@ -674,7 +674,7 @@ export class GjcTeamTaskStore {
 			created_at: now(),
 			updated_at: now(),
 		};
-		await writeGjcTeamTaskToDir(this.dir, task);
+		await writeWorxTeamTaskToDir(this.dir, task);
 		await this.appendEvent({
 			type: "task_created",
 			task_id: task.id,
@@ -686,24 +686,24 @@ export class GjcTeamTaskStore {
 		id: string,
 		updates: Partial<
 			Pick<
-				GjcTeamTask,
+				WorxTeamTask,
 				"subject" | "description" | "blocked_by" | "depends_on" | "lane" | "required_role" | "allowed_roles"
 			>
 		>,
 	) {
-		return withGjcTeamMutationFence(this.dir, () => this.#updateUnlocked(id, updates));
+		return withWorxTeamMutationFence(this.dir, () => this.#updateUnlocked(id, updates));
 	}
 	async #updateUnlocked(
 		id: string,
 		updates: Partial<
 			Pick<
-				GjcTeamTask,
+				WorxTeamTask,
 				"subject" | "description" | "blocked_by" | "depends_on" | "lane" | "required_role" | "allowed_roles"
 			>
 		>,
 	) {
 		const task = await this.read(id);
-		const updated = normalizeGjcTeamTask({
+		const updated = normalizeWorxTeamTask({
 			...task,
 			...updates,
 			title: updates.subject ?? task.title,
@@ -711,7 +711,7 @@ export class GjcTeamTaskStore {
 			version: task.version + 1,
 			updated_at: now(),
 		});
-		await writeGjcTeamTaskToDir(this.dir, updated);
+		await writeWorxTeamTaskToDir(this.dir, updated);
 		await this.appendEvent({
 			type: "task_updated",
 			task_id: id,
@@ -719,10 +719,10 @@ export class GjcTeamTaskStore {
 		});
 		return updated;
 	}
-	async claim(worker: GjcTeamTaskWorker, id?: string): Promise<GjcTeamApiClaimResult> {
-		return withGjcTeamMutationFence(this.dir, () => this.#claimUnlocked(worker, id));
+	async claim(worker: WorxTeamTaskWorker, id?: string): Promise<WorxTeamApiClaimResult> {
+		return withWorxTeamMutationFence(this.dir, () => this.#claimUnlocked(worker, id));
 	}
-	async #claimUnlocked(worker: GjcTeamTaskWorker, id?: string): Promise<GjcTeamApiClaimResult> {
+	async #claimUnlocked(worker: WorxTeamTaskWorker, id?: string): Promise<WorxTeamApiClaimResult> {
 		const tasks = await this.list();
 		const task = id
 			? tasks.find(candidate => candidate.id === id)
@@ -736,7 +736,7 @@ export class GjcTeamTaskStore {
 		if (reason) return { ok: false, reason };
 		const existing = task.claim ?? claimRecord(await readJson<unknown>(claimPath(this.dir, task.id)));
 		if (existing && !expired(existing.leased_until)) return { ok: false, reason: `task_already_claimed:${task.id}` };
-		const claim: GjcTeamTaskClaim = {
+		const claim: WorxTeamTaskClaim = {
 			owner: worker.id,
 			token: randomUUID(),
 			leased_until: new Date(Date.now() + 30 * 60_000).toISOString(),
@@ -757,7 +757,7 @@ export class GjcTeamTaskStore {
 		if (currentReason || current.status !== "pending") {
 			await deleteIfOwned(claimPath(this.dir, task.id), {
 				...writerOptions(claimPath(this.dir, task.id), "prune", "rollback"),
-				predicate: current => (current as GjcTeamTaskClaim).token === claim.token,
+				predicate: current => (current as WorxTeamTaskClaim).token === claim.token,
 			});
 			return {
 				ok: false,
@@ -774,11 +774,11 @@ export class GjcTeamTaskStore {
 			updated_at: now(),
 		};
 		try {
-			await writeGjcTeamTaskToDir(this.dir, updated);
+			await writeWorxTeamTaskToDir(this.dir, updated);
 		} catch (error) {
 			await deleteIfOwned(claimPath(this.dir, task.id), {
 				...writerOptions(claimPath(this.dir, task.id), "prune", "rollback"),
-				predicate: current => (current as GjcTeamTaskClaim).token === claim.token,
+				predicate: current => (current as WorxTeamTaskClaim).token === claim.token,
 			});
 			throw error;
 		}
@@ -795,14 +795,20 @@ export class GjcTeamTaskStore {
 			claim_token: claim.token,
 		};
 	}
-	async transition(id: string, status: GjcTeamTaskStatus, token?: string, workerId?: string, evidenceInput?: unknown) {
-		return withGjcTeamMutationFence(this.dir, () =>
+	async transition(
+		id: string,
+		status: WorxTeamTaskStatus,
+		token?: string,
+		workerId?: string,
+		evidenceInput?: unknown,
+	) {
+		return withWorxTeamMutationFence(this.dir, () =>
 			this.#transitionUnlocked(id, status, token, workerId, evidenceInput),
 		);
 	}
 	async #transitionUnlocked(
 		id: string,
-		status: GjcTeamTaskStatus,
+		status: WorxTeamTaskStatus,
 		token?: string,
 		workerId?: string,
 		evidenceInput?: unknown,
@@ -817,9 +823,9 @@ export class GjcTeamTaskStore {
 		const transitionedAt = now();
 		const evidence =
 			status === "completed"
-				? normalizeGjcTeamTaskCompletionEvidence(id, task.claim.owner, evidenceInput, transitionedAt)
+				? normalizeWorxTeamTaskCompletionEvidence(id, task.claim.owner, evidenceInput, transitionedAt)
 				: undefined;
-		const updated: GjcTeamTask = {
+		const updated: WorxTeamTask = {
 			...task,
 			status,
 			claim: terminal ? undefined : task.claim,
@@ -828,7 +834,7 @@ export class GjcTeamTaskStore {
 			...(terminal ? { completed_at: transitionedAt } : {}),
 			...(evidence ? { completion_evidence: evidence } : {}),
 		};
-		await writeGjcTeamTaskToDir(this.dir, updated);
+		await writeWorxTeamTaskToDir(this.dir, updated);
 		if (terminal)
 			await removeFileAudited(claimPath(this.dir, id), writerOptions(claimPath(this.dir, id), "prune", "terminal"));
 		const data: Record<string, unknown> = { status };
@@ -848,13 +854,13 @@ export class GjcTeamTaskStore {
 		return updated;
 	}
 	async release(id: string, token: string, workerId: string) {
-		return withGjcTeamMutationFence(this.dir, () => this.#releaseUnlocked(id, token, workerId));
+		return withWorxTeamMutationFence(this.dir, () => this.#releaseUnlocked(id, token, workerId));
 	}
 	async #releaseUnlocked(id: string, token: string, workerId: string) {
 		const task = await this.read(id);
 		if (!task.claim || task.claim.token !== token || task.claim.owner !== workerId)
 			throw new Error(`claim_token_mismatch:${id}`);
-		const updated: GjcTeamTask = {
+		const updated: WorxTeamTask = {
 			...task,
 			status: "pending",
 			assignee: undefined,
@@ -862,10 +868,10 @@ export class GjcTeamTaskStore {
 			version: task.version + 1,
 			updated_at: now(),
 		};
-		await writeGjcTeamTaskToDir(this.dir, updated);
+		await writeWorxTeamTaskToDir(this.dir, updated);
 		await deleteIfOwned(claimPath(this.dir, id), {
 			...writerOptions(claimPath(this.dir, id), "prune", "release"),
-			predicate: current => (current as GjcTeamTaskClaim).token === token,
+			predicate: current => (current as WorxTeamTaskClaim).token === token,
 		});
 		await this.appendEvent({
 			type: "task_claim_released",

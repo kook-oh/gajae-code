@@ -17,9 +17,9 @@ import {
 } from "@bworx-io/worx-code/worx-runtime/session-layout";
 import {
 	detectLatestSession,
-	resolveGjcSessionForRead,
-	resolveGjcSessionForWrite,
 	resolveSessionIdFromSources,
+	resolveWorxSessionForRead,
+	resolveWorxSessionForWrite,
 	SessionResolutionError,
 	writeSessionActivityMarker,
 } from "@bworx-io/worx-code/worx-runtime/session-resolution";
@@ -79,14 +79,14 @@ describe("session-layout (pure)", () => {
 describe("session-resolution (boundary)", () => {
 	it("resolves precedence flag > payload > env", () => {
 		expect(resolveSessionIdFromSources({ flagValue: "f", payloadSessionId: "p", envSessionId: "e" })).toEqual({
-			gjcSessionId: "f",
+			worxSessionId: "f",
 			source: "flag",
 		});
 		expect(resolveSessionIdFromSources({ payloadSessionId: "p", envSessionId: "e" })).toEqual({
-			gjcSessionId: "p",
+			worxSessionId: "p",
 			source: "payload",
 		});
-		expect(resolveSessionIdFromSources({ envSessionId: "e" })).toEqual({ gjcSessionId: "e", source: "env" });
+		expect(resolveSessionIdFromSources({ envSessionId: "e" })).toEqual({ worxSessionId: "e", source: "env" });
 		expect(resolveSessionIdFromSources({})).toBeUndefined();
 	});
 
@@ -96,19 +96,19 @@ describe("session-resolution (boundary)", () => {
 
 	it("ignores blank payload/env (falls through)", () => {
 		expect(resolveSessionIdFromSources({ payloadSessionId: "  ", envSessionId: "e" })).toEqual({
-			gjcSessionId: "e",
+			worxSessionId: "e",
 			source: "env",
 		});
 	});
 
 	it("write resolution refuses a missing id", () => {
-		expect(() => resolveGjcSessionForWrite("/proj", {})).toThrow(SessionResolutionError);
-		expect(resolveGjcSessionForWrite("/proj", { envSessionId: "e" }).source).toBe("env");
+		expect(() => resolveWorxSessionForWrite("/proj", {})).toThrow(SessionResolutionError);
+		expect(resolveWorxSessionForWrite("/proj", { envSessionId: "e" }).source).toBe("env");
 	});
 
 	it("read resolution errors when zero session dirs exist", async () => {
 		const cwd = await tempDir();
-		await expect(resolveGjcSessionForRead(cwd, {})).rejects.toThrow(/no active GJC session/);
+		await expect(resolveWorxSessionForRead(cwd, {})).rejects.toThrow(/no active GJC session/);
 	});
 
 	it("auto-detects the latest session by activity marker, not raw dir mtime", async () => {
@@ -117,7 +117,7 @@ describe("session-resolution (boundary)", () => {
 		await new Promise(r => setTimeout(r, 1100));
 		await writeSessionActivityMarker(cwd, "new", { writer: "test" });
 		const ctx = await detectLatestSession(cwd);
-		expect(ctx.gjcSessionId).toBe("new");
+		expect(ctx.worxSessionId).toBe("new");
 		expect(ctx.source).toBe("latest");
 	});
 
@@ -133,6 +133,6 @@ describe("session-resolution (boundary)", () => {
 		await fs.mkdir(sessionStateDir(cwd, "no-marker"), { recursive: true });
 		await writeSessionActivityMarker(cwd, "marked", { writer: "test" });
 		const ctx = await detectLatestSession(cwd);
-		expect(ctx.gjcSessionId).toBe("marked");
+		expect(ctx.worxSessionId).toBe("marked");
 	});
 });

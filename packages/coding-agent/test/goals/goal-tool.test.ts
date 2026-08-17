@@ -268,7 +268,7 @@ describe("GoalTool", () => {
 			const harness = createRuntimeHarness({
 				enabled: true,
 				mode: "active",
-				goal: createGoal({ objective: plan.gjcObjective }),
+				goal: createGoal({ objective: plan.worxObjective }),
 			});
 			const tool = new GoalTool(
 				createToolSession({

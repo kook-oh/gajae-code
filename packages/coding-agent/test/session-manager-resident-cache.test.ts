@@ -50,7 +50,7 @@ describe("SessionManager resident image materialized-entry cache", () => {
 			expect(first).toContain(image);
 			expect(second).toContain(image);
 			expect(first).not.toContain("blob:sha256:");
-			expect(first).not.toContain("__gjcResidentBlob");
+			expect(first).not.toContain("__worxResidentBlob");
 			expect(afterFirst.materializedEntriesCachePopulateCount).toBe(
 				before.materializedEntriesCachePopulateCount + 1,
 			);

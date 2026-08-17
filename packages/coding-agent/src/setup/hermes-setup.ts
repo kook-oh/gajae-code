@@ -30,7 +30,7 @@ export interface HermesSetupFlags {
 	mutation?: string[];
 	artifactByteCap?: string;
 	serverKey?: string;
-	gjcCommand?: string;
+	worxCommand?: string;
 	target?: string;
 	profileDir?: string;
 }
@@ -41,7 +41,7 @@ export interface CoordinatorSetupSpec {
 	serverKey: string;
 	serverName: typeof COORDINATOR_MCP_SERVER_NAME;
 	protocolVersion: typeof COORDINATOR_MCP_PROTOCOL_VERSION;
-	gjcCommand: string;
+	worxCommand: string;
 	args: ["mcp-serve", "coordinator"];
 	roots: string[];
 	namespace: {
@@ -181,7 +181,7 @@ function resolveHermesWorktree(flags: HermesSetupFlags): CoordinatorSetupSpec["w
 	return flags.noWorktree ? { enabled: false } : { enabled: true, ...(name ? { name } : {}) };
 }
 
-function resolveHermesSessionCommand(gjcCommand: string, flags: HermesSetupFlags): string {
+function resolveHermesSessionCommand(worxCommand: string, flags: HermesSetupFlags): string {
 	const explicit = optionalTrim(flags.sessionCommand);
 	if (explicit) {
 		if (flags.noWorktree || flags.worktreeName) {
@@ -193,8 +193,8 @@ function resolveHermesSessionCommand(gjcCommand: string, flags: HermesSetupFlags
 		return explicit;
 	}
 	const worktree = resolveHermesWorktree(flags);
-	if (!worktree.enabled) return gjcCommand;
-	return worktree.name ? `${gjcCommand} --worktree ${worktree.name}` : `${gjcCommand} --worktree`;
+	if (!worktree.enabled) return worxCommand;
+	return worktree.name ? `${worxCommand} --worktree ${worktree.name}` : `${worxCommand} --worktree`;
 }
 
 function normalizeInstallTarget(flags: HermesSetupFlags): CoordinatorSetupSpec["installTarget"] {
@@ -209,15 +209,15 @@ function normalizeInstallTarget(flags: HermesSetupFlags): CoordinatorSetupSpec["
 
 export function buildHermesSetupSpec(flags: HermesSetupFlags): CoordinatorSetupSpec {
 	const roots = normalizeRoots(flags.root);
-	const gjcCommand = optionalTrim(flags.gjcCommand) ?? DEFAULT_WORX_COMMAND;
-	const sessionCommand = resolveHermesSessionCommand(gjcCommand, flags);
+	const worxCommand = optionalTrim(flags.worxCommand) ?? DEFAULT_WORX_COMMAND;
+	const sessionCommand = resolveHermesSessionCommand(worxCommand, flags);
 	return {
 		schemaVersion: 1,
 		coordinator: "hermes",
 		serverKey: optionalTrim(flags.serverKey) ?? DEFAULT_SERVER_KEY,
 		serverName: COORDINATOR_MCP_SERVER_NAME,
 		protocolVersion: COORDINATOR_MCP_PROTOCOL_VERSION,
-		gjcCommand,
+		worxCommand,
 		args: ["mcp-serve", "coordinator"],
 		roots,
 		namespace: {
@@ -254,7 +254,7 @@ function signaturePayload(spec: CoordinatorSetupSpec): Record<string, unknown> {
 	return {
 		args: spec.args,
 		artifactByteCap: spec.artifactByteCap,
-		command: spec.gjcCommand,
+		command: spec.worxCommand,
 		contractDocVersion: spec.contractDocVersion,
 		coordinator: spec.coordinator,
 		mutationClasses: spec.mutationPolicy.classes,
@@ -290,7 +290,7 @@ export function renderHermesServerBlock(spec: CoordinatorSetupSpec): Record<stri
 	if (spec.artifactByteCap !== undefined) env.WORX_COORDINATOR_MCP_ARTIFACT_BYTE_CAP = String(spec.artifactByteCap);
 	if (spec.sessionCommand) env.WORX_COORDINATOR_MCP_SESSION_COMMAND = spec.sessionCommand;
 	return {
-		command: spec.gjcCommand,
+		command: spec.worxCommand,
 		args: spec.args,
 		env,
 		timeout: DEFAULT_TIMEOUT,

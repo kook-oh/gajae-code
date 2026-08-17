@@ -233,9 +233,9 @@ function planSnapshotForReceipt(input: {
 	return {
 		version: input.plan.version,
 		brief: input.plan.brief,
-		gjcGoalMode: input.plan.gjcGoalMode,
-		gjcObjective: input.plan.gjcObjective,
-		gjcObjectiveAliases: input.plan.gjcObjectiveAliases,
+		worxGoalMode: input.plan.worxGoalMode,
+		worxObjective: input.plan.worxObjective,
+		worxObjectiveAliases: input.plan.worxObjectiveAliases,
 		createdAt: input.plan.createdAt,
 		goals,
 	};

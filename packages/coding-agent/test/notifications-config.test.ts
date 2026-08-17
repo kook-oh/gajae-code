@@ -559,14 +559,14 @@ describe("notifications config", () => {
 			const provider = pathName.split(".")[1];
 			if (provider !== "telegram" && provider !== "discord" && provider !== "slack") {
 				expect(() => Settings.isolated({ [pathName]: value }).getNotificationSettingsSnapshot()).toThrow(
-					"gjc_notify_daemon_invalid_configuration",
+					"worx_notify_daemon_invalid_configuration",
 				);
 				expect(() =>
 					createLightweightDaemonSettings({
 						agentDir: "/tmp/gjc-notification-malformed-parity",
 						rawConfig,
 					}).getNotificationSettingsSnapshot(),
-				).toThrow("gjc_notify_daemon_invalid_configuration");
+				).toThrow("worx_notify_daemon_invalid_configuration");
 				continue;
 			}
 			const full = Settings.isolated({ [pathName]: value }).getNotificationSettingsSnapshot();
@@ -613,10 +613,12 @@ describe("notifications config", () => {
 			fs.writeFileSync(path.join(agentDir, "config.yml"), `${JSON.stringify(rawConfig)}\n`);
 			const settings = await Settings.loadForScope({ cwd: root, agentDir });
 			try {
-				expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+				expect(() => settings.getNotificationSettingsSnapshot()).toThrow(
+					"worx_notify_daemon_invalid_configuration",
+				);
 				expect(() =>
 					createLightweightDaemonSettings({ agentDir, rawConfig }).getNotificationSettingsSnapshot(),
-				).toThrow("gjc_notify_daemon_invalid_configuration");
+				).toThrow("worx_notify_daemon_invalid_configuration");
 				if (index === 0) {
 					let daemonConstructed = false;
 					class UnexpectedDaemon {
@@ -632,7 +634,7 @@ describe("notifications config", () => {
 							loadInstallationHostId: async () => "test-host",
 							DaemonImpl: UnexpectedDaemon,
 						}),
-					).rejects.toThrow("gjc_notify_daemon_invalid_configuration");
+					).rejects.toThrow("worx_notify_daemon_invalid_configuration");
 					expect(daemonConstructed).toBe(false);
 				}
 			} finally {
@@ -674,9 +676,9 @@ describe("notifications config", () => {
 			agentDir: path.relative(process.cwd(), agentDir),
 		});
 		try {
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			await settings.flush();
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 		} finally {
 			settings.getStorage()?.close();
 		}
@@ -693,13 +695,13 @@ describe("notifications config", () => {
 
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.set("theme.dark", "red-claw");
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.set("notifications.enabled", true);
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.unset("notifications.redact");
 			expect(settings.getNotificationSettingsSnapshot()).toMatchObject({ enabled: true, redact: false });
@@ -722,7 +724,7 @@ describe("notifications config", () => {
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
 			settings.set("notifications.enabled", true);
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			await settings.flush();
 			expect(YAML.parse(fs.readFileSync(configPath, "utf8"))).toMatchObject({
 				notifications: { enabled: true, daemon: { idleTimeoutMs: "60000" } },
@@ -734,7 +736,7 @@ describe("notifications config", () => {
 		const partiallyRepaired = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
 			expect(() => partiallyRepaired.getNotificationSettingsSnapshot()).toThrow(
-				"gjc_notify_daemon_invalid_configuration",
+				"worx_notify_daemon_invalid_configuration",
 			);
 			partiallyRepaired.set("notifications.daemon.idleTimeoutMs", 60_000);
 			expect(partiallyRepaired.getNotificationSettingsSnapshot()).toMatchObject({
@@ -768,7 +770,7 @@ describe("notifications config", () => {
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
 			await settings.commitAtomicBatch([{ path: "notifications.enabled", op: "set", value: true }]);
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			await settings.flush();
 			expect(YAML.parse(fs.readFileSync(configPath, "utf8"))).toMatchObject({
 				notifications: { enabled: true, daemon: { idleTimeoutMs: "60000" } },
@@ -780,7 +782,7 @@ describe("notifications config", () => {
 		const partiallyRepaired = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
 			expect(() => partiallyRepaired.getNotificationSettingsSnapshot()).toThrow(
-				"gjc_notify_daemon_invalid_configuration",
+				"worx_notify_daemon_invalid_configuration",
 			);
 			await partiallyRepaired.commitAtomicBatch([
 				{ path: "notifications.daemon.idleTimeoutMs", op: "set", value: 60_000 },
@@ -845,10 +847,10 @@ describe("notifications config", () => {
 
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.set("theme.dark", "red-claw");
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.set("notifications.enabled", true);
 			expect(settings.getNotificationSettingsSnapshot().enabled).toBe(true);
@@ -870,13 +872,13 @@ describe("notifications config", () => {
 
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			const receipt = await settings.commitAtomicBatch([{ path: "notifications.enabled", op: "set", value: true }]);
 			expect(settings.getNotificationSettingsSnapshot().enabled).toBe(true);
 
 			expect(await receipt.restore()).toMatchObject({ status: "restored" });
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 		} finally {
 			await settings.flush();
 			settings.getStorage()?.close();
@@ -908,20 +910,20 @@ describe("notifications config", () => {
 	});
 	test("in-memory atomic repairs restore their prior notification validation state", async () => {
 		const settings = Settings.isolated({ "notifications.enabled": "invalid" });
-		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 		const receipt = await settings.commitAtomicBatch([{ path: "notifications.enabled", op: "set", value: true }]);
 		expect(settings.getNotificationSettingsSnapshot().enabled).toBe(true);
 
 		expect(await receipt.restore()).toMatchObject({ status: "restored" });
-		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 	});
 	test("newer notification mutations reparse instead of restoring a stale receipt state", async () => {
 		const settings = Settings.isolated();
 		const receipt = await settings.commitAtomicBatch([
 			{ path: "notifications.enabled", op: "set", value: "invalid" },
 		]);
-		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+		expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 		settings.set("notifications.redact", true);
 		expect(await receipt.restore()).toMatchObject({ status: "restored" });
@@ -950,13 +952,13 @@ describe("notifications config", () => {
 			const receipt = await settings.commitAtomicBatchWithCurrent(() => [
 				{ path: "notifications.enabled", op: "set", value: true },
 			]);
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 
 			settings.unset("notifications.redact");
 			expect(settings.getNotificationSettingsSnapshot()).toMatchObject({ enabled: true, redact: false });
 
 			expect(await receipt.restore()).toMatchObject({ status: "restored" });
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 		} finally {
 			await settings.flush();
 			settings.getStorage()?.close();
@@ -1018,9 +1020,9 @@ describe("notifications config", () => {
 			continueBuilder.resolve();
 
 			const receipt = await pendingReceipt;
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(await receipt.restore()).toMatchObject({ status: "restored" });
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 		} finally {
 			await settings.flush();
 			settings.getStorage()?.close();
@@ -1047,7 +1049,7 @@ describe("notifications config", () => {
 
 		const reloaded = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
-			expect(() => reloaded.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => reloaded.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			expect(fs.readFileSync(configPath, "utf8")).toBe("true\n");
 		} finally {
 			await reloaded.flush();
@@ -1109,7 +1111,9 @@ describe("notifications config", () => {
 		const initialized = await Settings.init({ cwd: root, agentDir });
 		try {
 			expect(initialized.get("theme.dark")).toBe("red-claw");
-			expect(() => initialized.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => initialized.getNotificationSettingsSnapshot()).toThrow(
+				"worx_notify_daemon_invalid_configuration",
+			);
 		} finally {
 			resetSettingsForTest();
 		}
@@ -1117,7 +1121,7 @@ describe("notifications config", () => {
 		const settings = await Settings.loadForScope({ cwd: root, agentDir });
 		try {
 			expect(settings.get("theme.dark")).toBe("red-claw");
-			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("gjc_notify_daemon_invalid_configuration");
+			expect(() => settings.getNotificationSettingsSnapshot()).toThrow("worx_notify_daemon_invalid_configuration");
 			await expect(loadLightweightDaemonSettings(agentDir)).rejects.toThrow();
 		} finally {
 			settings.getStorage()?.close();
@@ -1394,7 +1398,7 @@ describe("notifications config", () => {
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: {},
 				sessionDisabled: false,
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(false);
 		expect(
@@ -1402,7 +1406,7 @@ describe("notifications config", () => {
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: { WORX_NOTIFICATIONS: "1" },
 				sessionDisabled: false,
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(true);
 	});
@@ -1469,20 +1473,20 @@ describe("notifications config", () => {
 		expect(isGenericNotificationHostEligible({ env: { WORX_NOTIFICATIONS: "0" } })).toBe(false);
 		expect(isGenericNotificationHostEligible({ env: {}, hostModeSupported: false })).toBe(false);
 		expect(
-			isGenericNotificationHostEligible({ env: {}, sessionScope: primary.sessionScope, spawnedByGjc: true }),
+			isGenericNotificationHostEligible({ env: {}, sessionScope: primary.sessionScope, spawnedByWorx: true }),
 		).toBe(false);
 		expect(
 			isGenericNotificationHostEligible({
 				env: { WORX_NOTIFICATIONS: "1" },
 				sessionScope: primary.sessionScope,
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(true);
 		expect(
 			isGenericNotificationHostEligible({
 				env: { WORX_NOTIFICATIONS_TOKEN: "explicit-token" },
 				sessionScope: primary.sessionScope,
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(true);
 		expect(isGenericNotificationHostEligible({ env: {} })).toBe(true);
@@ -1501,14 +1505,14 @@ describe("notifications config", () => {
 
 	test("sessionScope=primary suppresses GJC-spawned children but preserves everything else", () => {
 		// Default scope "all": a spawned child still registers (fully behavior-preserving).
-		expect(shouldRegisterGenericNotificationsExtension({ cfg: GLOBAL_CFG, env: {}, spawnedByGjc: true })).toBe(true);
+		expect(shouldRegisterGenericNotificationsExtension({ cfg: GLOBAL_CFG, env: {}, spawnedByWorx: true })).toBe(true);
 		// scope "primary": a spawned child is suppressed.
 		expect(
-			shouldRegisterGenericNotificationsExtension({ cfg: PRIMARY_GLOBAL_CFG, env: {}, spawnedByGjc: true }),
+			shouldRegisterGenericNotificationsExtension({ cfg: PRIMARY_GLOBAL_CFG, env: {}, spawnedByWorx: true }),
 		).toBe(false);
 		// scope "primary": a user-opened session (no marker) is unaffected.
 		expect(
-			shouldRegisterGenericNotificationsExtension({ cfg: PRIMARY_GLOBAL_CFG, env: {}, spawnedByGjc: false }),
+			shouldRegisterGenericNotificationsExtension({ cfg: PRIMARY_GLOBAL_CFG, env: {}, spawnedByWorx: false }),
 		).toBe(true);
 		expect(shouldRegisterGenericNotificationsExtension({ cfg: PRIMARY_GLOBAL_CFG, env: {} })).toBe(true);
 	});
@@ -1520,14 +1524,14 @@ describe("notifications config", () => {
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: { WORX_NOTIFICATIONS: "1" },
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(true);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: { WORX_NOTIFICATIONS_TOKEN: "legacy-token" },
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(true);
 		// Hard opt-out and /notify off equivalents still outrank the marker.
@@ -1535,14 +1539,14 @@ describe("notifications config", () => {
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: { WORX_NOTIFICATIONS: "0" },
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(false);
 		expect(
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: { WORX_NOTIFY: "off" },
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 			}),
 		).toBe(false);
 		// A spawned child that is also a subagent stays suppressed regardless.
@@ -1550,13 +1554,13 @@ describe("notifications config", () => {
 			shouldRegisterGenericNotificationsExtension({
 				cfg: PRIMARY_GLOBAL_CFG,
 				env: {},
-				spawnedByGjc: true,
+				spawnedByWorx: true,
 				taskDepth: 1,
 			}),
 		).toBe(false);
 		// Without any configured adapter, a marker under primary is still off (no
 		// spurious enable, and global auto-on is never reached).
-		expect(shouldRegisterGenericNotificationsExtension({ cfg: BASE_CFG, env: {}, spawnedByGjc: true })).toBe(false);
+		expect(shouldRegisterGenericNotificationsExtension({ cfg: BASE_CFG, env: {}, spawnedByWorx: true })).toBe(false);
 	});
 	test("settings-enabled subagent sessions do not register the notifications extension", async () => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-sdk-subagent-"));

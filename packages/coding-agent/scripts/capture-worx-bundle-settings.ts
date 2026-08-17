@@ -1,22 +1,25 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { GjcLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
-import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
+import type { WorxLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
+import type { WorxRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import type {
-	GjcBundleIdentity,
-	GjcBundleSummary,
-	GjcLifecycleResult,
-	GjcToggleResult,
-	GjcUpdateApplyResult,
-	GjcUpdatePreview,
+	WorxBundleIdentity,
+	WorxBundleSummary,
+	WorxLifecycleResult,
+	WorxToggleResult,
+	WorxUpdateApplyResult,
+	WorxUpdatePreview,
 } from "../src/extensibility/worx-plugins/types";
-import { type GjcBundleLifecyclePort, GjcBundleSettingsComponent } from "../src/modes/components/worx-bundle-settings";
+import {
+	type WorxBundleLifecyclePort,
+	WorxBundleSettingsComponent,
+} from "../src/modes/components/worx-bundle-settings";
 import { setTheme } from "../src/modes/theme/theme";
 import {
-	type GjcBundleSettingsFixture,
 	WORX_BUNDLE_SETTINGS_ENTRIES,
 	WORX_BUNDLE_SETTINGS_STATES,
 	WORX_BUNDLE_SETTINGS_VIEWPORTS,
+	type WorxBundleSettingsFixture,
 } from "../test/fixtures/worx-bundles-settings-cases";
 
 export const WORX_BUNDLE_SETTINGS_CAPTURE_FILES = [
@@ -104,7 +107,7 @@ function asciiText(text: string): string {
 		.replaceAll("−", "-");
 }
 
-function cloneSummary(summary: GjcBundleSummary): GjcBundleSummary {
+function cloneSummary(summary: WorxBundleSummary): WorxBundleSummary {
 	return {
 		...summary,
 		identity: { ...summary.identity },
@@ -113,17 +116,17 @@ function cloneSummary(summary: GjcBundleSummary): GjcBundleSummary {
 	};
 }
 
-class FixtureLifecyclePort implements GjcBundleLifecyclePort {
-	constructor(private readonly fixture: GjcBundleSettingsFixture) {}
+class FixtureLifecyclePort implements WorxBundleLifecyclePort {
+	constructor(private readonly fixture: WorxBundleSettingsFixture) {}
 
-	async listGjcBundles(_ctx: GjcLifecycleContext): Promise<GjcBundleSummary[]> {
+	async listWorxBundles(_ctx: WorxLifecycleContext): Promise<WorxBundleSummary[]> {
 		return this.fixture.bundles.map(cloneSummary);
 	}
 
-	async getGjcBundle(
-		_ctx: GjcLifecycleContext,
-		identity: GjcBundleIdentity,
-	): Promise<GjcLifecycleResult<GjcBundleSummary>> {
+	async getWorxBundle(
+		_ctx: WorxLifecycleContext,
+		identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxBundleSummary>> {
 		const summary = this.fixture.bundles.find(
 			bundle =>
 				bundle.identity.kind === identity.kind &&
@@ -135,41 +138,41 @@ class FixtureLifecyclePort implements GjcBundleLifecyclePort {
 			: { ok: false, error: { code: "not_installed", message: "Bundle is not installed." } };
 	}
 
-	async previewGjcBundleUpdate(
-		_ctx: GjcLifecycleContext,
-		_identity: GjcBundleIdentity,
-	): Promise<GjcLifecycleResult<GjcUpdatePreview>> {
+	async previewWorxBundleUpdate(
+		_ctx: WorxLifecycleContext,
+		_identity: WorxBundleIdentity,
+	): Promise<WorxLifecycleResult<WorxUpdatePreview>> {
 		return this.fixture.updatePreview
 			? { ok: true, value: this.fixture.updatePreview }
 			: { ok: false, error: { code: "source_unsupported", message: "Update is unavailable." } };
 	}
 
-	async applyGjcBundleUpdate(
-		_ctx: GjcLifecycleContext,
-		_token: GjcUpdatePreview["token"],
-	): Promise<GjcLifecycleResult<GjcUpdateApplyResult>> {
+	async applyWorxBundleUpdate(
+		_ctx: WorxLifecycleContext,
+		_token: WorxUpdatePreview["token"],
+	): Promise<WorxLifecycleResult<WorxUpdateApplyResult>> {
 		return { ok: false, error: { code: "stale_candidate", message: "Capture fixtures do not apply updates." } };
 	}
 
-	async setGjcBundleEnabled(
-		_ctx: GjcLifecycleContext,
-		_identity: GjcBundleIdentity,
+	async setWorxBundleEnabled(
+		_ctx: WorxLifecycleContext,
+		_identity: WorxBundleIdentity,
 		_enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>> {
+	): Promise<WorxLifecycleResult<WorxToggleResult>> {
 		return { ok: false, error: { code: "invalid_target", message: "Capture fixtures do not mutate bundles." } };
 	}
 
-	async setGjcBundleSurfaceEnabled(
-		_ctx: GjcLifecycleContext,
-		_identity: GjcBundleIdentity,
+	async setWorxBundleSurfaceEnabled(
+		_ctx: WorxLifecycleContext,
+		_identity: WorxBundleIdentity,
 		_surfaceId: string,
 		_enabled: boolean,
-	): Promise<GjcLifecycleResult<GjcToggleResult>> {
+	): Promise<WorxLifecycleResult<WorxToggleResult>> {
 		return { ok: false, error: { code: "invalid_target", message: "Capture fixtures do not mutate surfaces." } };
 	}
 }
 
-function fixtureFor(stateId: string): GjcBundleSettingsFixture {
+function fixtureFor(stateId: string): WorxBundleSettingsFixture {
 	const state = WORX_BUNDLE_SETTINGS_STATES.find(candidate => candidate.id === stateId);
 	if (!state) throw new Error(`Unknown GJC Bundle settings state: ${stateId}`);
 	return state.fixture;
@@ -186,14 +189,14 @@ async function settle(): Promise<void> {
 	for (let index = 0; index < 8; index += 1) await Promise.resolve();
 }
 
-export async function renderGjcBundleSettingsEntry(
+export async function renderWorxBundleSettingsEntry(
 	entry: FixtureEntry,
 ): Promise<{ terminalText: string; terminalAnsiText: string; viewport: { id: string; cols: number; rows: number } }> {
 	const fixture = fixtureFor(entry.stateId);
 	const viewport = viewportFor(entry.viewportId);
-	const runtime: GjcRuntimeSnapshotProvider = { current: () => fixture.runtime };
+	const runtime: WorxRuntimeSnapshotProvider = { current: () => fixture.runtime };
 	await setTheme("red-claw");
-	const component = new GjcBundleSettingsComponent(
+	const component = new WorxBundleSettingsComponent(
 		"/fixture/project",
 		{ onClose: () => {} },
 		{
@@ -210,7 +213,7 @@ export async function renderGjcBundleSettingsEntry(
 	return { terminalText, terminalAnsiText, viewport };
 }
 
-export function gjcBundleSettingsCapturePlan(
+export function worxBundleSettingsCapturePlan(
 	entries: readonly FixtureEntry[] = WORX_BUNDLE_SETTINGS_ENTRIES,
 ): CapturePlanItem[] {
 	return entries.flatMap(entry =>
@@ -223,7 +226,7 @@ function assertSafeContent(label: string, content: string): void {
 }
 
 async function artifactContents(entry: FixtureEntry): Promise<Record<CaptureFileName, string>> {
-	const rendered = await renderGjcBundleSettingsEntry(entry);
+	const rendered = await renderWorxBundleSettingsEntry(entry);
 	const terminalHtml = ansiToHtml(rendered.terminalAnsiText);
 	const metadata: CaptureMetadata = {
 		entryId: entry.entryId,
@@ -260,7 +263,7 @@ async function writeEntry(entry: FixtureEntry, outputRoot: string): Promise<void
 	);
 }
 
-export async function verifyGjcBundleSettingsCapture(outputRoot: string): Promise<void> {
+export async function verifyWorxBundleSettingsCapture(outputRoot: string): Promise<void> {
 	for (const entry of WORX_BUNDLE_SETTINGS_ENTRIES) {
 		const directory = path.join(outputRoot, entry.entryId);
 		const names = (await fs.readdir(directory)).sort();
@@ -295,7 +298,7 @@ async function main(): Promise<void> {
 	const { mode, outputRoot } = parseArgs(process.argv.slice(2));
 	const resolvedOutputRoot = path.resolve(outputRoot);
 	if (mode === "verify") {
-		await verifyGjcBundleSettingsCapture(resolvedOutputRoot);
+		await verifyWorxBundleSettingsCapture(resolvedOutputRoot);
 		process.stdout.write(
 			`Verified ${WORX_BUNDLE_SETTINGS_ENTRIES.length} deterministic GJC Bundle settings entries.\n`,
 		);

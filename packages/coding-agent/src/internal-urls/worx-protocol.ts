@@ -27,7 +27,7 @@ function loadDocsIndex(): Promise<DocsIndex> {
  *
  * Resolves documentation file names to their content, or lists available docs.
  */
-export class GjcProtocolHandler implements ProtocolHandler {
+export class WorxProtocolHandler implements ProtocolHandler {
 	readonly scheme = "gjc";
 	readonly immutable = true;
 

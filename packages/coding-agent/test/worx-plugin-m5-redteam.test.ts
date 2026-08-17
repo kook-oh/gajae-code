@@ -6,9 +6,9 @@ import * as path from "node:path";
 import {
 	buildAgentSubskillAdvertisement,
 	buildSubskillAdvertisement,
-	type GjcPluginRegistryEntry,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginSurfaces,
 	renderPluginAppendices,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 
 const tempDirs: string[] = [];
@@ -17,11 +17,11 @@ afterEach(async () => {
 	for (const d of tempDirs.splice(0)) await fs.rm(d, { recursive: true, force: true });
 });
 
-function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 }
 
-function entry(name: string, over: Partial<GjcPluginRegistryEntry> = {}): GjcPluginRegistryEntry {
+function entry(name: string, over: Partial<WorxPluginRegistryEntry> = {}): WorxPluginRegistryEntry {
 	const pluginRoot = over.pluginRoot ?? path.join(os.tmpdir(), name.replace(/[^a-z0-9._-]/gi, "-"));
 	return {
 		name,
@@ -41,7 +41,7 @@ function entry(name: string, over: Partial<GjcPluginRegistryEntry> = {}): GjcPlu
 	};
 }
 
-function subskill(over: Partial<NormalizedGjcPluginSurfaces["subskills"][number]> = {}) {
+function subskill(over: Partial<NormalizedWorxPluginSurfaces["subskills"][number]> = {}) {
 	const activationArg = over.activationArg ?? "arg";
 	return {
 		extensionId: `subskill:ralplan:planner:${activationArg}`,

@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test, vi } from "bun:test";
 import { ThinkingLevel } from "@bworx-io/worx-agent-core";
 import { Effort, getBundledModel, type Model } from "@bworx-io/worx-ai";
-import type { GjcModelAssignmentTargetId, ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
+import type { ModelRegistry, WorxModelAssignmentTargetId } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { ModelSelectorComponent } from "@bworx-io/worx-code/modes/components/model-selector";
 import {
@@ -26,19 +26,19 @@ function normalizeRenderedText(text: string): string {
 
 interface SelectionCapture {
 	model: Model;
-	role: GjcModelAssignmentTargetId | null;
+	role: WorxModelAssignmentTargetId | null;
 	thinkingLevel?: ThinkingLevel;
 	selector?: string;
-	roles?: readonly GjcModelAssignmentTargetId[];
+	roles?: readonly WorxModelAssignmentTargetId[];
 }
 
 type TestModelSelectorSelection = {
 	kind: "assignment";
 	model: Model;
-	role: GjcModelAssignmentTargetId | null;
+	role: WorxModelAssignmentTargetId | null;
 	thinkingLevel?: ThinkingLevel;
 	selector?: string;
-	roles?: readonly GjcModelAssignmentTargetId[];
+	roles?: readonly WorxModelAssignmentTargetId[];
 };
 
 interface CreateSelectorOptions {

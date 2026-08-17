@@ -108,10 +108,10 @@ const GH_PR_CHECKOUT_FIELDS = [
 ];
 
 const PR_CHECKOUT_BRANCH_CONFIG = {
-	headRef: "gjcPrHeadRef",
-	url: "gjcPrUrl",
-	isCrossRepository: "gjcPrIsCrossRepository",
-	maintainerCanModify: "gjcPrMaintainerCanModify",
+	headRef: "worxPrHeadRef",
+	url: "worxPrUrl",
+	isCrossRepository: "worxPrIsCrossRepository",
+	maintainerCanModify: "worxPrMaintainerCanModify",
 } as const;
 
 const LEGACY_PR_CHECKOUT_BRANCH_CONFIG = {

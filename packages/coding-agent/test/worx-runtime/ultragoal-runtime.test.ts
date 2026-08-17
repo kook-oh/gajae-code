@@ -730,7 +730,7 @@ async function mutateLiveQualityGate(
 
 async function expectRejectedCompleteGate(
 	root: string,
-	_created: { gjcObjective: string },
+	_created: { worxObjective: string },
 	qualityGateJson: string,
 ): Promise<string> {
 	const beforeGoals = await Bun.file(path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "goals.json")).text();
@@ -1218,8 +1218,8 @@ describe("native GJC ultragoal runtime", () => {
 		const goalsRaw = await Bun.file(path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "goals.json")).text();
 		const ledgerRaw = await Bun.file(path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "ledger.jsonl")).text();
 
-		expect(plan.gjcGoalMode).toBe("aggregate");
-		expect(plan.gjcObjective).toContain(".worx/ultragoal/goals.json");
+		expect(plan.worxGoalMode).toBe("aggregate");
+		expect(plan.worxObjective).toContain(".worx/ultragoal/goals.json");
 		expect(plan.goals).toHaveLength(1);
 		expect(plan.goals[0]).toMatchObject({ id: "G001", status: "pending" });
 		expect(goalsRaw).toContain("Fix native ultragoal status");
@@ -3133,7 +3133,7 @@ describe("native GJC ultragoal runtime", () => {
 			next_action: "execute-goal",
 			goal_id: "G001",
 			goal_status: "active",
-			gjc_objective: created.gjcObjective,
+			worx_objective: created.worxObjective,
 			goals_path: path.join(sessionUltragoalDir(root, TEST_SESSION_ID), "goals.json"),
 		});
 		expect(receipt).not.toHaveProperty("plan");
@@ -3773,7 +3773,7 @@ describe("native GJC ultragoal runtime", () => {
 
 	it("accepts per-story durable active goals for per-story plans", async () => {
 		const root = await tempDir();
-		const created = await createUltragoalPlan({ cwd: root, brief: "Ship the fix", gjcGoalMode: "per-story" });
+		const created = await createUltragoalPlan({ cwd: root, brief: "Ship the fix", worxGoalMode: "per-story" });
 		await startNextUltragoalGoal({ cwd: root });
 		const storyObjective = created.goals[0]?.objective;
 		if (!storyObjective) throw new Error("missing story objective");

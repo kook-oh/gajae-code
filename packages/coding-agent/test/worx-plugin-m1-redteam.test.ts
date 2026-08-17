@@ -3,12 +3,12 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	compileGjcPluginBundle,
-	GjcPluginLoadError,
-	type GjcPluginLoadErrorCode,
-	type GjcPluginRegistryEntry,
+	compileWorxPluginBundle,
 	parseManifest,
 	readRegistry,
+	WorxPluginLoadError,
+	type WorxPluginLoadErrorCode,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 import { updateRegistry } from "../src/extensibility/worx-plugins/registry";
 
@@ -20,45 +20,45 @@ afterEach(async () => {
 	}
 });
 
-function expectLoadError(fn: () => unknown, code: GjcPluginLoadErrorCode): void {
+function expectLoadError(fn: () => unknown, code: WorxPluginLoadErrorCode): void {
 	try {
 		fn();
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} load error`);
 }
 
-async function expectCompileError(root: string, code: GjcPluginLoadErrorCode): Promise<void> {
+async function expectCompileError(root: string, code: WorxPluginLoadErrorCode): Promise<void> {
 	try {
-		await compileGjcPluginBundle(root);
+		await compileWorxPluginBundle(root);
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} compile error`);
 }
 
-async function expectCompileErrorOneOf(root: string, codes: GjcPluginLoadErrorCode[]): Promise<void> {
+async function expectCompileErrorOneOf(root: string, codes: WorxPluginLoadErrorCode[]): Promise<void> {
 	try {
-		await compileGjcPluginBundle(root);
+		await compileWorxPluginBundle(root);
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect(codes).toContain((error as GjcPluginLoadError).code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect(codes).toContain((error as WorxPluginLoadError).code);
 		return;
 	}
 	throw new Error(`Expected one of ${codes.join(", ")} compile errors`);
 }
 
-async function expectReadRegistryError(cwd: string, code: GjcPluginLoadErrorCode): Promise<void> {
+async function expectReadRegistryError(cwd: string, code: WorxPluginLoadErrorCode): Promise<void> {
 	try {
 		await readRegistry("project", cwd);
 	} catch (error) {
-		expect(error).toBeInstanceOf(GjcPluginLoadError);
-		expect((error as GjcPluginLoadError).code).toBe(code);
+		expect(error).toBeInstanceOf(WorxPluginLoadError);
+		expect((error as WorxPluginLoadError).code).toBe(code);
 		return;
 	}
 	throw new Error(`Expected ${code} registry error`);
@@ -80,7 +80,7 @@ function baseManifest(overrides: Record<string, unknown> = {}): Record<string, u
 	};
 }
 
-function registryEntry(name: string, cwd: string): GjcPluginRegistryEntry {
+function registryEntry(name: string, cwd: string): WorxPluginRegistryEntry {
 	const pluginRoot = path.join(cwd, "plugins", name);
 	return {
 		name,
@@ -108,7 +108,7 @@ function registryEntry(name: string, cwd: string): GjcPluginRegistryEntry {
 
 describe("GJC plugin Milestone 1 red-team QA", () => {
 	test("rejects manifest injection, forbidden top-level surfaces, MCP aliases, and malformed surface shapes", () => {
-		const cases: Array<[string, Record<string, unknown>, GjcPluginLoadErrorCode]> = [
+		const cases: Array<[string, Record<string, unknown>, WorxPluginLoadErrorCode]> = [
 			["unknown surface key", { rootkit: [] }, "unsupported_surface"],
 			["forbidden agents", { agents: [{ name: "evil" }] }, "forbidden_surface"],
 			["forbidden skills", { skills: [{ name: "evil" }] }, "forbidden_surface"],
@@ -153,7 +153,7 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 		const prev = process.env.WORX_TEST_IMPORT_SENTINEL;
 		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
-			await compileGjcPluginBundle(dir);
+			await compileWorxPluginBundle(dir);
 		} finally {
 			if (prev === undefined) delete process.env.WORX_TEST_IMPORT_SENTINEL;
 			else process.env.WORX_TEST_IMPORT_SENTINEL = prev;

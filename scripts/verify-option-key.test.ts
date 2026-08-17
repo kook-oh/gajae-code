@@ -78,7 +78,7 @@ function writeBunStub(binDir: string): void {
 	);
 }
 
-function writeGjcStub(binDir: string): void {
+function writeWorxStub(binDir: string): void {
 	makeExecutable(
 		path.join(binDir, "gjc"),
 		'#!/bin/sh\ncase "$1" in\n  --version) echo "gjc/0.12.16"; exit 0;;\n  --smoke-test) exit 0;;\nesac\nexit 0\n',
@@ -178,7 +178,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -198,7 +198,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -216,7 +216,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -237,7 +237,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -256,7 +256,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -283,7 +283,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -308,7 +308,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -335,7 +335,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -360,7 +360,7 @@ describe("verify-option-key.sh", () => {
 			const inputFix = writeInputFixture(root);
 			writeDefaultsStub(binDir, { iterm: itermFix, input: inputFix });
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -375,7 +375,7 @@ describe("verify-option-key.sh", () => {
 			const { root, binDir } = makeSandbox();
 			// Do NOT write a defaults stub — only bun and gjc
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "iTerm.app" });
 
@@ -395,7 +395,7 @@ describe("verify-option-key.sh", () => {
 				input: inputFix,
 			});
 			writeBunStub(binDir);
-			writeGjcStub(binDir);
+			writeWorxStub(binDir);
 
 			const result = await runScript(binDir, { TERM_PROGRAM: "Apple_Terminal" });
 

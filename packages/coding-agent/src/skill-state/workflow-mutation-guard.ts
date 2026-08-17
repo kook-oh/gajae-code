@@ -8,12 +8,12 @@ import { LocalProtocolHandler, resolveLocalUrlToPath } from "../internal-urls/lo
 import { resolveToCwd } from "../tools/path-utils";
 import { ToolError } from "../tools/tool-errors";
 import { modeStatePath as sessionModeStatePath, WORX_SESSION_PREFIX } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForRead } from "../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead } from "../worx-runtime/session-resolution";
 import { ModeStateSchema } from "../worx-runtime/state-schema";
 import { getSkillManifest } from "../worx-runtime/workflow-manifest";
 import { listActiveSkills, readVisibleSkillActiveState, type SkillActiveEntry } from "./active-state";
 import {
-	type CanonicalGjcWorkflowSkill,
+	type CanonicalWorxWorkflowSkill,
 	sanctionedWorkflowStateCommand,
 	workflowModeStateFileName,
 } from "./workflow-state-contract";
@@ -28,7 +28,7 @@ export const ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE =
 	"Ultragoal goal-planning phase boundary: finish goal planning and record goals through `gjc ultragoal` before editing code. Product-code mutation tools and patch execution are blocked until goal planning completes and execution begins.";
 
 /** Resolve the phase-boundary block message for the active planning skill. */
-function planningPhaseBlockMessage(skill: CanonicalGjcWorkflowSkill): string {
+function planningPhaseBlockMessage(skill: CanonicalWorxWorkflowSkill): string {
 	if (skill === "ralplan") return RALPLAN_MUTATION_BLOCK_MESSAGE;
 	if (skill === "ultragoal") return ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE;
 	return DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE;
@@ -147,7 +147,7 @@ async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promis
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		return (await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	} catch {
 		return null;
 	}
@@ -1038,7 +1038,7 @@ function resolveRawPath(cwd: string, rawPath: string): { absolutePath?: string; 
 	}
 }
 
-function relativeGjcSegments(cwd: string, rawPath: string): string[] | null {
+function relativeWorxSegments(cwd: string, rawPath: string): string[] | null {
 	const { absolutePath, unknown } = resolveRawPath(cwd, rawPath);
 	if (unknown || !absolutePath) return null;
 	const relative = path.relative(path.resolve(cwd), path.resolve(absolutePath));
@@ -1046,8 +1046,8 @@ function relativeGjcSegments(cwd: string, rawPath: string): string[] | null {
 	return normalizePosix(relative).split("/").filter(Boolean);
 }
 
-function blockedWorkflowStateSkill(cwd: string, rawPath: string): CanonicalGjcWorkflowSkill | null {
-	const segments = relativeGjcSegments(cwd, rawPath);
+function blockedWorkflowStateSkill(cwd: string, rawPath: string): CanonicalWorxWorkflowSkill | null {
+	const segments = relativeWorxSegments(cwd, rawPath);
 	if (segments?.[0] !== ".worx") return null;
 	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	if (generatedRoot === "specs" || generatedRoot === "plans") return null;
@@ -1060,7 +1060,7 @@ function blockedWorkflowStateSkill(cwd: string, rawPath: string): CanonicalGjcWo
 	return null;
 }
 
-function firstBlockedWorkflowStateSkill(cwd: string, targets: ExtractedTargets): CanonicalGjcWorkflowSkill | null {
+function firstBlockedWorkflowStateSkill(cwd: string, targets: ExtractedTargets): CanonicalWorxWorkflowSkill | null {
 	for (const rawPath of targets.paths) {
 		const skill = blockedWorkflowStateSkill(cwd, rawPath);
 		if (skill) return skill;
@@ -1069,18 +1069,18 @@ function firstBlockedWorkflowStateSkill(cwd: string, targets: ExtractedTargets):
 }
 
 function isAllowlistedPath(cwd: string, rawPath: string): boolean {
-	const segments = relativeGjcSegments(cwd, rawPath);
+	const segments = relativeWorxSegments(cwd, rawPath);
 	if (segments?.[0] !== ".worx") return false;
 	const generatedRoot = segments[1]?.startsWith(WORX_SESSION_PREFIX) ? segments[2] : segments[1];
 	return generatedRoot === "specs" || generatedRoot === "plans";
 }
-function isBlockedGjcPath(cwd: string, rawPath: string): boolean {
-	const segments = relativeGjcSegments(cwd, rawPath);
+function isBlockedWorxPath(cwd: string, rawPath: string): boolean {
+	const segments = relativeWorxSegments(cwd, rawPath);
 	return segments?.[0] === ".worx";
 }
 
-function hasBlockedGjcTarget(cwd: string, targets: ExtractedTargets): boolean {
-	return targets.paths.some(rawPath => isBlockedGjcPath(cwd, rawPath));
+function hasBlockedWorxTarget(cwd: string, targets: ExtractedTargets): boolean {
+	return targets.paths.some(rawPath => isBlockedWorxPath(cwd, rawPath));
 }
 
 function allTargetsAllowlisted(cwd: string, targets: ExtractedTargets): boolean {
@@ -1178,7 +1178,7 @@ export async function assertWorkflowMutationRawPathsAllowed(input: {
 	const targets: ExtractedTargets = { paths: input.rawPaths, unknown: input.rawPaths.length === 0 };
 	// Always-on `.worx/**` runtime-owned block, ahead of forceOverride.
 	// A deferred ast_edit apply must not reach `.worx/**` either.
-	if (hasBlockedGjcTarget(input.cwd, targets)) {
+	if (hasBlockedWorxTarget(input.cwd, targets)) {
 		const stateSkill = firstBlockedWorkflowStateSkill(input.cwd, targets);
 		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "worx <workflow-command>";
 		throw new ToolError(`${WORKFLOW_STATE_MUTATION_BLOCK_MESSAGE}\nUse: ${command}`);
@@ -1198,7 +1198,7 @@ export async function getWorkflowMutationDecision(
 ): Promise<WorkflowMutationDecision> {
 	if (!BLOCKED_TOOL_NAMES.has(input.tool.name)) return { blocked: false, targets: [] };
 	const targets = extractTargets(input.tool, input.args);
-	if (input.tool.name !== "bash" && input.enforceWorkflowState !== false && hasBlockedGjcTarget(input.cwd, targets)) {
+	if (input.tool.name !== "bash" && input.enforceWorkflowState !== false && hasBlockedWorxTarget(input.cwd, targets)) {
 		const stateSkill = firstBlockedWorkflowStateSkill(input.cwd, targets);
 		const command = stateSkill ? sanctionedWorkflowStateCommand(stateSkill) : "worx <workflow-command>";
 		return {

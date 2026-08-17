@@ -296,7 +296,7 @@ describe("SkillDiscoveryTool", () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-root-cwd-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-root-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
+		const originalWorxConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
 		const originalCodingAgentDir = process.env.WORX_CODING_AGENT_DIR;
 		const originalPiCodingAgentDir = process.env.PI_CODING_AGENT_DIR;
@@ -354,8 +354,8 @@ describe("SkillDiscoveryTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
-			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
+			if (originalWorxConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalWorxConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
 			if (originalCodingAgentDir === undefined) delete process.env.WORX_CODING_AGENT_DIR;
@@ -373,7 +373,7 @@ describe("SkillDiscoveryTool", () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-canonical-cwd-"));
 		const home = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-user-canonical-home-"));
 		const originalHome = process.env.HOME;
-		const originalGjcConfigDir = process.env.WORX_CONFIG_DIR;
+		const originalWorxConfigDir = process.env.WORX_CONFIG_DIR;
 		const originalPiConfigDir = process.env.PI_CONFIG_DIR;
 		try {
 			process.env.HOME = home;
@@ -410,8 +410,8 @@ describe("SkillDiscoveryTool", () => {
 		} finally {
 			if (originalHome === undefined) delete process.env.HOME;
 			else process.env.HOME = originalHome;
-			if (originalGjcConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
-			else process.env.WORX_CONFIG_DIR = originalGjcConfigDir;
+			if (originalWorxConfigDir === undefined) delete process.env.WORX_CONFIG_DIR;
+			else process.env.WORX_CONFIG_DIR = originalWorxConfigDir;
 			if (originalPiConfigDir === undefined) delete process.env.PI_CONFIG_DIR;
 			else process.env.PI_CONFIG_DIR = originalPiConfigDir;
 			await fs.rm(cwd, { recursive: true, force: true });

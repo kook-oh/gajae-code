@@ -268,7 +268,7 @@ function validateReadOnlyCommand(words: readonly string[]): BashAllowedPrefixesC
 	return { allowed: true };
 }
 
-function validateMatchedGjcCommand(words: readonly string[]): BashAllowedPrefixesCheck {
+function validateMatchedWorxCommand(words: readonly string[]): BashAllowedPrefixesCheck {
 	if (words[0] !== "worx") return { allowed: true };
 
 	if (words[1] === "ralplan") {
@@ -342,5 +342,5 @@ export function checkBashAllowedPrefixes(
 	if (options.profile === "read-only") {
 		return validateReadOnlyCommand(parsed.words);
 	}
-	return validateMatchedGjcCommand(parsed.words);
+	return validateMatchedWorxCommand(parsed.words);
 }

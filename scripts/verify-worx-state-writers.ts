@@ -47,7 +47,7 @@ const WORX_REFERENCE_PATTERNS: readonly RegExp[] = [
 	/\bstateDirFor\b/u,
 	/\bmodeStateFile\b/u,
 	/\bworkflowStateStoragePath\b/u,
-	/\bresolveGjcTeamStateRoot\b/u,
+	/\bresolveWorxTeamStateRoot\b/u,
 	/\bdeepInterviewStatePath\b/u,
 	/\bspecsDir\b/u,
 	/\brunDir\b/u,
@@ -91,7 +91,7 @@ function matchedApi(line: string): string | null {
 	return null;
 }
 
-function locallyReferencesGjc(lines: readonly string[], index: number): boolean {
+function locallyReferencesWorx(lines: readonly string[], index: number): boolean {
 	const start = Math.max(0, index - 3);
 	const end = Math.min(lines.length - 1, index + 3);
 	for (let i = start; i <= end; i++) {
@@ -118,21 +118,21 @@ function nearbyAssignmentTargetsThisLine(lines: readonly string[], index: number
 	return false;
 }
 
-function sameLineReferencesGjc(line: string): boolean {
+function sameLineReferencesWorx(line: string): boolean {
 	return WORX_REFERENCE_PATTERNS.some(re => re.test(line));
 }
 
 
-function isGuardedOutsideProjectGjcFallback(lines: readonly string[], index: number): boolean {
+function isGuardedOutsideProjectWorxFallback(lines: readonly string[], index: number): boolean {
 	const start = Math.max(0, index - 8);
 	const context = lines.slice(start, index + 1).join("\n");
-	return /isUnderProjectGjc\([\s\S]*?\}\s*else\s*\{[\s\S]*$/u.test(context);
+	return /isUnderProjectWorx\([\s\S]*?\}\s*else\s*\{[\s\S]*$/u.test(context);
 }
 
-function isGuardedOutsideProjectGjcTernaryFallback(lines: readonly string[], index: number): boolean {
+function isGuardedOutsideProjectWorxTernaryFallback(lines: readonly string[], index: number): boolean {
 	const start = Math.max(0, index - 6);
 	const context = lines.slice(start, index + 1).join("\n");
-	return /isUnderProjectGjc\([\s\S]*?\?[\s\S]*?:\s*[^\n]*$/u.test(context);
+	return /isUnderProjectWorx\([\s\S]*?\?[\s\S]*?:\s*[^\n]*$/u.test(context);
 }
 
 
@@ -150,8 +150,8 @@ function collectFindings(): Finding[] {
 			if (!api) continue;
 			const knownAllowed = KNOWN_ALLOWED_SITES.has(`${relative}:${i + 1}:${api}`);
 			const allowed = relative === ALLOWED_WRITER_RELATIVE || knownAllowed;
-			if (!allowed && !sameLineReferencesGjc(line) && !nearbyAssignmentTargetsThisLine(lines, i)) continue;
-			if (!allowed && (isGuardedOutsideProjectGjcFallback(lines, i) || isGuardedOutsideProjectGjcTernaryFallback(lines, i))) continue;
+			if (!allowed && !sameLineReferencesWorx(line) && !nearbyAssignmentTargetsThisLine(lines, i)) continue;
+			if (!allowed && (isGuardedOutsideProjectWorxFallback(lines, i) || isGuardedOutsideProjectWorxTernaryFallback(lines, i))) continue;
 			findings.push({ file: relative, line: i + 1, api, text: line.slice(0, 160), allowed, knownAllowed });
 		}
 	}

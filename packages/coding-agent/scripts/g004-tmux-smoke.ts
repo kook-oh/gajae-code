@@ -1,4 +1,4 @@
-// G004 real-tmux smoke: exercises forceCloseGjcTmuxSession refusal boundaries
+// G004 real-tmux smoke: exercises forceCloseWorxTmuxSession refusal boundaries
 // against live tmux sessions. Generation-bound successful TERM/verdict/cleanup is
 // covered by the issue evidence harness; this smoke proves incomplete and non-GJC
 // live owners are never hard-killed.
@@ -9,15 +9,15 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 
 import {
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxExactSessionTarget,
-	buildGjcTmuxProfileCommands,
-	resolveGjcTmuxCommand,
+	buildWorxTmuxExactOptionTarget,
+	buildWorxTmuxExactSessionTarget,
+	buildWorxTmuxProfileCommands,
+	resolveWorxTmuxCommand,
 } from "../src/worx-runtime/tmux-common";
 import {
-	forceCloseGjcTmuxSession,
-	removeGjcTmuxSession,
-	statusGjcTmuxSession,
+	forceCloseWorxTmuxSession,
+	removeWorxTmuxSession,
+	statusWorxTmuxSession,
 } from "../src/worx-runtime/tmux-sessions";
 
 const runId = randomUUID().slice(0, 8);
@@ -33,7 +33,7 @@ const tmuxBootstrapEnv: NodeJS.ProcessEnv = {
 	TMUX_PANE: "",
 	TMUX_TMPDIR: privateTmpdir,
 };
-const tmuxBinary = resolveGjcTmuxCommand(tmuxBootstrapEnv);
+const tmuxBinary = resolveWorxTmuxCommand(tmuxBootstrapEnv);
 const privateEnv: NodeJS.ProcessEnv = {
 	...tmuxBootstrapEnv,
 	WORX_TMUX_COMMAND: wrapper,
@@ -62,20 +62,20 @@ function makeRawSession(name: string): void {
 	if (r.code !== 0) throw new Error(`failed to create private tmux session ${name}: ${bounded(r.err)}`);
 }
 
-function tagAsGjc(name: string, sessionId?: string): void {
-	const target = buildGjcTmuxExactOptionTarget(name, { env: privateEnv });
-	for (const cmd of buildGjcTmuxProfileCommands(target, privateEnv, { sessionId })) {
+function tagAsWorx(name: string, sessionId?: string): void {
+	const target = buildWorxTmuxExactOptionTarget(name, { env: privateEnv });
+	for (const cmd of buildWorxTmuxProfileCommands(target, privateEnv, { sessionId })) {
 		const r = sh(cmd.args);
 		if (r.code !== 0) throw new Error(`failed to tag ${name} (${cmd.description}): ${bounded(r.err)}`);
 	}
 }
 
 function exists(name: string): boolean {
-	return sh(["has-session", "-t", buildGjcTmuxExactSessionTarget(name, { env: privateEnv })]).code === 0;
+	return sh(["has-session", "-t", buildWorxTmuxExactSessionTarget(name, { env: privateEnv })]).code === 0;
 }
 
 function isPrivateSessionAbsent(name: string): boolean {
-	const result = sh(["has-session", "-t", buildGjcTmuxExactSessionTarget(name, { env: privateEnv })]);
+	const result = sh(["has-session", "-t", buildWorxTmuxExactSessionTarget(name, { env: privateEnv })]);
 	return result.code !== 0 && /(?:no server running|can't find session|no sessions)/i.test(result.err);
 }
 
@@ -84,7 +84,7 @@ function privateServerPid(session: string): number | null {
 		"display-message",
 		"-p",
 		"-t",
-		buildGjcTmuxExactOptionTarget(session, { env: privateEnv }),
+		buildWorxTmuxExactOptionTarget(session, { env: privateEnv }),
 		"#{pid}",
 	]);
 	const pid = Number.parseInt(result.out, 10);
@@ -153,7 +153,7 @@ async function makeFirstPrivateSession(name: string): Promise<void> {
 async function cleanupOwnedResources(names: string[]): Promise<void> {
 	const failures: string[] = [];
 	for (const name of names) {
-		const result = sh(["kill-session", "-t", buildGjcTmuxExactSessionTarget(name, { env: privateEnv })]);
+		const result = sh(["kill-session", "-t", buildWorxTmuxExactSessionTarget(name, { env: privateEnv })]);
 		if (result.code !== 0 && !isPrivateSessionAbsent(name)) failures.push(`session ${name}: ${bounded(result.err)}`);
 	}
 	const server = sh(["kill-server"]);
@@ -198,9 +198,9 @@ async function cleanupOwnedResources(names: string[]): Promise<void> {
 	if (failures.length > 0) throw new Error(`g004 cleanup incomplete: ${failures.join("; ")}`);
 }
 
-const live = `gjc_g004live_${suffix}`;
+const live = `worx_g004live_${suffix}`;
 const raw = `g004raw_${suffix}`;
-const mism = `gjc_g004mism_${suffix}`;
+const mism = `worx_g004mism_${suffix}`;
 const cleanup = [live, raw, mism];
 
 try {
@@ -209,25 +209,25 @@ try {
 
 	// 1. Incompletely tagged LIVE session: remove refuses and force-close fails closed.
 	await makeFirstPrivateSession(live);
-	tagAsGjc(live, "sess-g004");
-	const status = statusGjcTmuxSession(live, privateEnv);
+	tagAsWorx(live, "sess-g004");
+	const status = statusWorxTmuxSession(live, privateEnv);
 	assert.equal(status.profile, "1", "session must be recognized as GJC-managed");
 	assert.ok(status.panePids.length > 0, "session must have a live pane (sleep)");
 	process.stdout.write(`[g004] incomplete GJC session up: ${live} panePids=${status.panePids.length}\n`);
 
 	let removeRefused = false;
 	try {
-		removeGjcTmuxSession(live, privateEnv);
+		removeWorxTmuxSession(live, privateEnv);
 	} catch (e) {
-		removeRefused = /gjc_tmux_session_live/.test(String(e));
+		removeRefused = /worx_tmux_session_live/.test(String(e));
 	}
-	assert.ok(removeRefused, "removeGjcTmuxSession must REFUSE a live pane");
+	assert.ok(removeRefused, "removeWorxTmuxSession must REFUSE a live pane");
 
 	let ownerUnverifiable = false;
 	try {
-		await forceCloseGjcTmuxSession(live, privateEnv, "sess-g004");
+		await forceCloseWorxTmuxSession(live, privateEnv, "sess-g004");
 	} catch (e) {
-		ownerUnverifiable = /gjc_tmux_owner_unverifiable/.test(String(e));
+		ownerUnverifiable = /worx_tmux_owner_unverifiable/.test(String(e));
 	}
 	assert.ok(ownerUnverifiable, "force-close must refuse incomplete owner provenance");
 	assert.ok(exists(live), "incompletely tagged session must be left untouched");
@@ -237,9 +237,9 @@ try {
 	makeRawSession(raw);
 	let notManaged = false;
 	try {
-		await forceCloseGjcTmuxSession(raw, privateEnv);
+		await forceCloseWorxTmuxSession(raw, privateEnv);
 	} catch (e) {
-		notManaged = /gjc_tmux_session_(not_managed|not_found|untagged)/.test(String(e));
+		notManaged = /worx_tmux_session_(not_managed|not_found|untagged)/.test(String(e));
 	}
 	assert.ok(notManaged, "force-close must refuse a non-GJC tmux session");
 	assert.ok(exists(raw), "non-GJC session must be left untouched");
@@ -247,12 +247,12 @@ try {
 
 	// 3. GJC session with a MISMATCHED expected session id: must refuse.
 	makeRawSession(mism);
-	tagAsGjc(mism, "sess-real");
+	tagAsWorx(mism, "sess-real");
 	let idMismatch = false;
 	try {
-		await forceCloseGjcTmuxSession(mism, privateEnv, "sess-WRONG");
+		await forceCloseWorxTmuxSession(mism, privateEnv, "sess-WRONG");
 	} catch (e) {
-		idMismatch = /gjc_tmux_session_id_mismatch/.test(String(e));
+		idMismatch = /worx_tmux_session_id_mismatch/.test(String(e));
 	}
 	assert.ok(idMismatch, "force-close must refuse on session-id mismatch");
 	assert.ok(exists(mism), "mismatched session must be left untouched");
@@ -261,4 +261,4 @@ try {
 	await cleanupOwnedResources(cleanup);
 }
 
-process.stdout.write("[g004] PASS: forceCloseGjcTmuxSession refusal boundaries verified against live tmux\n");
+process.stdout.write("[g004] PASS: forceCloseWorxTmuxSession refusal boundaries verified against live tmux\n");

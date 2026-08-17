@@ -2,8 +2,8 @@ import * as path from "node:path";
 import { describe, expect, test } from "bun:test";
 import { COORDINATOR_MCP_SERVER_NAME, COORDINATOR_MCP_TOOL_NAMES } from "../packages/coding-agent/src/coordinator/contract";
 import {
-	resolveGjcTeamWorkerCli,
-	translateGjcWorkerLaunchArgsForCli,
+	resolveWorxTeamWorkerCli,
+	translateWorxWorkerLaunchArgsForCli,
 } from "../packages/coding-agent/src/worx-runtime/team-runtime";
 import { detectSkillKeywords } from "../packages/coding-agent/src/hooks/skill-state";
 import { buildHermesSetupSpec } from "../packages/coding-agent/src/setup/hermes-setup";
@@ -102,7 +102,7 @@ async function findForbiddenBehaviorIdentifiers(): Promise<string[]> {
 	return violations;
 }
 
-async function findLegacyGjcEnvironmentVariables(relativeRoots: readonly string[]): Promise<string[]> {
+async function findLegacyWorxEnvironmentVariables(relativeRoots: readonly string[]): Promise<string[]> {
 	const violations: string[] = [];
 	const glob = new Bun.Glob("**/*");
 	const legacyEnvironmentVariable = new RegExp(`\\b${["GJC", "_"].join("")}[A-Z_0-9]+\\b`, "u");
@@ -140,13 +140,13 @@ describe("WORX behavior identity", () => {
 
 		const hermesSetup = buildHermesSetupSpec({ root: [REPO_ROOT] });
 		expect(hermesSetup.serverKey).toBe("worx_coordinator");
-		expect(hermesSetup.gjcCommand).toBe("worx");
+		expect(hermesSetup.worxCommand).toBe("worx");
 		expect(hermesSetup.sessionCommand).toBe("worx --worktree");
 	});
 
 	test("launches WORX workers and validates WORX self-calls", () => {
-		expect(resolveGjcTeamWorkerCli({})).toBe("worx");
-		expect(translateGjcWorkerLaunchArgsForCli("worx", ["--worktree"])).toEqual(["--worktree"]);
+		expect(resolveWorxTeamWorkerCli({})).toBe("worx");
+		expect(translateWorxWorkerLaunchArgsForCli("worx", ["--worktree"])).toEqual(["--worktree"]);
 
 		const prefixes = ["worx ralplan --write", "worx state"] as const;
 		expect(checkBashAllowedPrefixes("worx state ralplan read --json", prefixes).allowed).toBe(true);
@@ -168,6 +168,6 @@ describe("WORX behavior identity", () => {
 	});
 
 	test("contains no legacy GJC environment variables outside plans and generated artifacts", async () => {
-		expect(await findLegacyGjcEnvironmentVariables(["packages", "scripts", ".github", "docs"])).toEqual([]);
+		expect(await findLegacyWorxEnvironmentVariables(["packages", "scripts", ".github", "docs"])).toEqual([]);
 	});
 });

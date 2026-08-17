@@ -10,11 +10,11 @@ import { AuthStorage, SqliteAuthCredentialStore } from "@bworx-io/worx-ai/core";
 import { $which, APP_NAME, getAgentDbPath, getPythonEnvDir } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
-import { installDefaultGjcDefinitions } from "../defaults/worx-defaults";
+import { installDefaultWorxDefinitions } from "../defaults/worx-defaults";
 import {
 	getDefaultCodexHooksPath,
-	mergeGjcManagedCodexHooksConfig,
-	readGjcManagedCodexHooksStatus,
+	mergeWorxManagedCodexHooksConfig,
+	readWorxManagedCodexHooksStatus,
 } from "../hooks/codex-native-hooks-config";
 import { theme } from "../modes/theme/theme";
 import { formatCredentialAutoImportResult, runExternalCredentialAutoImport } from "../setup/credential-auto-import";
@@ -73,7 +73,7 @@ export interface SetupCommandArgs {
 		mutation?: string[];
 		artifactByteCap?: string;
 		serverKey?: string;
-		gjcCommand?: string;
+		worxCommand?: string;
 		target?: string;
 		profileDir?: string;
 		yes?: boolean;
@@ -172,7 +172,7 @@ export function parseSetupArgs(args: string[]): SetupCommandArgs | undefined {
 		} else if (arg === "--server-key") {
 			flags.serverKey = args[++i];
 		} else if (arg === "--gjc-command") {
-			flags.gjcCommand = args[++i];
+			flags.worxCommand = args[++i];
 		} else if (arg === "--target") {
 			flags.target = args[++i];
 		} else if (arg === "--profile-dir") {
@@ -387,7 +387,7 @@ async function handleHooksSetup(flags: { json?: boolean; check?: boolean }): Pro
 	const existingContent = await Bun.file(hooksPath)
 		.text()
 		.catch(() => null);
-	const status = readGjcManagedCodexHooksStatus(existingContent, hooksPath);
+	const status = readWorxManagedCodexHooksStatus(existingContent, hooksPath);
 
 	if (flags.check) {
 		if (flags.json) {
@@ -406,9 +406,9 @@ async function handleHooksSetup(flags: { json?: boolean; check?: boolean }): Pro
 		return;
 	}
 
-	const merged = mergeGjcManagedCodexHooksConfig(existingContent);
+	const merged = mergeWorxManagedCodexHooksConfig(existingContent);
 	await Bun.write(hooksPath, merged.content);
-	const installed = readGjcManagedCodexHooksStatus(merged.content, hooksPath);
+	const installed = readWorxManagedCodexHooksStatus(merged.content, hooksPath);
 
 	if (flags.json) {
 		process.stdout.write(`${JSON.stringify({ ...installed, changed: merged.changed }, null, 2)}\n`);
@@ -422,7 +422,7 @@ async function handleHooksSetup(flags: { json?: boolean; check?: boolean }): Pro
 	);
 }
 async function handleDefaultsSetup(flags: { json?: boolean; check?: boolean; force?: boolean }): Promise<void> {
-	const result = await installDefaultGjcDefinitions({ check: flags.check, force: flags.force });
+	const result = await installDefaultWorxDefinitions({ check: flags.check, force: flags.force });
 	const hasCheckFailure = result.missing > 0 || result.different > 0;
 	const inspectGuidance = `Inspect bundled skills with: ${APP_NAME} skills list; read one with: ${APP_NAME} skills read ralplan`;
 

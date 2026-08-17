@@ -60,7 +60,7 @@ import {
 	WORX_TMUX_OWNER_SERVER_KEY_ENV,
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "../worx-runtime/session-state-sidecar";
-import { resolveGjcTmuxBinary, resolveGjcTmuxCommand, sanitizeTmuxToken } from "../worx-runtime/tmux-common";
+import { resolveWorxTmuxBinary, resolveWorxTmuxCommand, sanitizeTmuxToken } from "../worx-runtime/tmux-common";
 import {
 	captureOwnerGenerationBaselineSync,
 	classifyCgroup,
@@ -954,12 +954,12 @@ export default class Harness extends Command {
 				nativeSessionId,
 				"-F",
 				predicate,
-				`kill-session -t '${nativeSessionId}' ; display-message -p __gjc_harness_cleanup_ok__`,
-				"display-message -p __gjc_harness_cleanup_refused__",
+				`kill-session -t '${nativeSessionId}' ; display-message -p __worx_harness_cleanup_ok__`,
+				"display-message -p __worx_harness_cleanup_refused__",
 			],
 			{ stdout: "pipe", stderr: "pipe" },
 		);
-		if (killed.exitCode !== 0 || killed.stdout.toString().trim() !== "__gjc_harness_cleanup_ok__")
+		if (killed.exitCode !== 0 || killed.stdout.toString().trim() !== "__worx_harness_cleanup_ok__")
 			throw new Error("tmux-owner-cleanup_uncertain");
 	}
 
@@ -974,11 +974,11 @@ export default class Harness extends Command {
 		reason: string | null;
 		cleanup?: () => Promise<void>;
 	}> {
-		const tmuxCommand = resolveGjcTmuxCommand();
+		const tmuxCommand = resolveWorxTmuxCommand();
 		const sessionName = deterministicHarnessTmuxSessionName(sessionId);
 		if (Bun.which(tmuxCommand) === null)
 			return { started: false, sessionName, socketKey: null, reason: "tmux-unavailable" };
-		if (resolveGjcTmuxBinary({ env: process.env }).isPsmux)
+		if (resolveWorxTmuxBinary({ env: process.env }).isPsmux)
 			return {
 				started: false,
 				sessionName,

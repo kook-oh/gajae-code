@@ -1,19 +1,19 @@
-import type { GjcTeamConfig, GjcTeamMailboxMessage } from "./team-runtime";
+import type { WorxTeamConfig, WorxTeamMailboxMessage } from "./team-runtime";
 import type {
-	GjcTeamMailboxDeliveryInput,
-	GjcTeamMailboxDeliveryResult,
-	GjcTeamMailboxDeliveryTransport,
-	GjcTeamNotification,
-	GjcTeamNotificationDeliveryState,
-	GjcTeamNotificationSummary,
-	GjcTeamPaneAttemptResult,
+	WorxTeamMailboxDeliveryInput,
+	WorxTeamMailboxDeliveryResult,
+	WorxTeamMailboxDeliveryTransport,
+	WorxTeamNotification,
+	WorxTeamNotificationDeliveryState,
+	WorxTeamNotificationSummary,
+	WorxTeamPaneAttemptResult,
 } from "./team-store";
 
 /** Runtime-owned filesystem and participant operations used by notification delivery. */
 export interface TeamNotificationRuntime {
 	findTeamDir(teamName: string, cwd: string, env: NodeJS.ProcessEnv): Promise<string>;
-	readConfig(dir: string): Promise<GjcTeamConfig>;
-	assertKnownParticipant(config: GjcTeamConfig, participant: string): void;
+	readConfig(dir: string): Promise<WorxTeamConfig>;
+	assertKnownParticipant(config: WorxTeamConfig, participant: string): void;
 	messageId(input: {
 		teamName: string;
 		fromWorker: string;
@@ -34,17 +34,17 @@ export interface TeamNotificationRuntime {
 			data?: Record<string, unknown>;
 		},
 	): Promise<void>;
-	readMailbox(dir: string, worker: string): Promise<{ messages: GjcTeamMailboxMessage[] }>;
-	writeMailboxMessage(dir: string, worker: string, message: GjcTeamMailboxMessage): Promise<GjcTeamMailboxMessage>;
-	listNotifications(dir: string): Promise<GjcTeamNotification[]>;
-	readNotification(dir: string, id: string): Promise<GjcTeamNotification>;
-	writeNotification(dir: string, notification: GjcTeamNotification): Promise<GjcTeamNotification>;
+	readMailbox(dir: string, worker: string): Promise<{ messages: WorxTeamMailboxMessage[] }>;
+	writeMailboxMessage(dir: string, worker: string, message: WorxTeamMailboxMessage): Promise<WorxTeamMailboxMessage>;
+	listNotifications(dir: string): Promise<WorxTeamNotification[]>;
+	readNotification(dir: string, id: string): Promise<WorxTeamNotification>;
+	writeNotification(dir: string, notification: WorxTeamNotification): Promise<WorxTeamNotification>;
 }
 
 export async function deliverTeamMailboxMessage(
-	transport: GjcTeamMailboxDeliveryTransport | undefined,
-	input: GjcTeamMailboxDeliveryInput,
-): Promise<GjcTeamMailboxDeliveryResult | null> {
+	transport: WorxTeamMailboxDeliveryTransport | undefined,
+	input: WorxTeamMailboxDeliveryInput,
+): Promise<WorxTeamMailboxDeliveryResult | null> {
 	if (!transport) return null;
 	try {
 		return await transport.deliverMailboxMessage(input);
@@ -53,7 +53,7 @@ export async function deliverTeamMailboxMessage(
 	}
 }
 
-export function emptyTeamNotificationSummary(): GjcTeamNotificationSummary {
+export function emptyTeamNotificationSummary(): WorxTeamNotificationSummary {
 	return {
 		total: 0,
 		replay_eligible: 0,
@@ -69,11 +69,11 @@ export function emptyTeamNotificationSummary(): GjcTeamNotificationSummary {
 	};
 }
 
-export function isReplayEligibleTeamNotification(state: GjcTeamNotificationDeliveryState): boolean {
+export function isReplayEligibleTeamNotification(state: WorxTeamNotificationDeliveryState): boolean {
 	return state === "pending" || state === "queued" || state === "deferred" || state === "failed";
 }
 
-export function summarizeTeamNotifications(notifications: GjcTeamNotification[]): GjcTeamNotificationSummary {
+export function summarizeTeamNotifications(notifications: WorxTeamNotification[]): WorxTeamNotificationSummary {
 	const summary = emptyTeamNotificationSummary();
 	for (const notification of notifications) {
 		summary.total += 1;
@@ -87,9 +87,9 @@ export async function createTeamMessageNotification(
 	runtime: TeamNotificationRuntime,
 	dir: string,
 	teamName: string,
-	message: GjcTeamMailboxMessage,
-	state: GjcTeamNotificationDeliveryState = "pending",
-): Promise<GjcTeamNotification> {
+	message: WorxTeamMailboxMessage,
+	state: WorxTeamNotificationDeliveryState = "pending",
+): Promise<WorxTeamNotification> {
 	return runtime.writeNotification(dir, {
 		id: runtime.messageNotificationId(teamName, message.to_worker, message.message_id),
 		kind: "mailbox_message",
@@ -107,8 +107,8 @@ export async function createTeamMessageNotification(
 export async function reconcileTeamNotifications(
 	runtime: TeamNotificationRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-): Promise<GjcTeamNotificationSummary> {
+	config: WorxTeamConfig,
+): Promise<WorxTeamNotificationSummary> {
 	for (const recipient of ["leader-fixed", ...config.workers.map(worker => worker.id)]) {
 		for (const message of (await runtime.readMailbox(dir, recipient)).messages) {
 			await createTeamMessageNotification(
@@ -126,12 +126,12 @@ export async function reconcileTeamNotifications(
 async function attemptConfiguredMailboxTransport(
 	runtime: TeamNotificationRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-	notification: GjcTeamNotification,
+	config: WorxTeamConfig,
+	notification: WorxTeamNotification,
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-	transport?: GjcTeamMailboxDeliveryTransport,
-): Promise<GjcTeamNotification | null> {
+	transport?: WorxTeamMailboxDeliveryTransport,
+): Promise<WorxTeamNotification | null> {
 	if (notification.kind !== "mailbox_message" || notification.source.type !== "message") return null;
 	const message = (await runtime.readMailbox(dir, notification.recipient)).messages.find(
 		candidate => candidate.message_id === notification.source.id,
@@ -160,19 +160,19 @@ async function attemptConfiguredMailboxTransport(
 async function attemptPaneNotification(
 	runtime: TeamNotificationRuntime,
 	dir: string,
-	config: GjcTeamConfig,
-	notification: GjcTeamNotification,
+	config: WorxTeamConfig,
+	notification: WorxTeamNotification,
 	env: NodeJS.ProcessEnv,
 	cwd: string,
-	transport?: GjcTeamMailboxDeliveryTransport,
-): Promise<GjcTeamNotification> {
+	transport?: WorxTeamMailboxDeliveryTransport,
+): Promise<WorxTeamNotification> {
 	const transported = await attemptConfiguredMailboxTransport(runtime, dir, config, notification, cwd, env, transport);
 	if (transported) return transported;
 	const paneId =
 		notification.recipient === "leader-fixed"
 			? config.leader.pane_id
 			: config.workers.find(worker => worker.id === notification.recipient)?.pane_id;
-	let result: GjcTeamPaneAttemptResult = "deferred";
+	let result: WorxTeamPaneAttemptResult = "deferred";
 	let reason = "pane_missing";
 	if (paneId) {
 		if (config.tmux_session === "dry-run" || env.WORX_TEAM_FAKE_PANE_ATTEMPT === "sent") {
@@ -198,10 +198,10 @@ export async function replayTeamNotifications(
 	teamName: string,
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-	transport?: GjcTeamMailboxDeliveryTransport,
+	transport?: WorxTeamMailboxDeliveryTransport,
 ): Promise<{
-	notifications: GjcTeamNotification[];
-	summary: GjcTeamNotificationSummary;
+	notifications: WorxTeamNotification[];
+	summary: WorxTeamNotificationSummary;
 }> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
 	const config = await runtime.readConfig(dir);
@@ -236,14 +236,14 @@ export async function sendTeamMessage(
 	cwd: string,
 	env: NodeJS.ProcessEnv,
 	idempotencyKey?: string,
-	transport?: GjcTeamMailboxDeliveryTransport,
-): Promise<GjcTeamMailboxMessage> {
+	transport?: WorxTeamMailboxDeliveryTransport,
+): Promise<WorxTeamMailboxMessage> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
 	const config = await runtime.readConfig(dir);
 	runtime.assertKnownParticipant(config, fromWorker);
 	runtime.assertKnownParticipant(config, toWorker);
 	const createdKey = idempotencyKey ?? runtime.randomId();
-	const message: GjcTeamMailboxMessage = {
+	const message: WorxTeamMailboxMessage = {
 		message_id: runtime.messageId({
 			teamName: config.team_name,
 			fromWorker,
@@ -279,7 +279,7 @@ export async function listTeamMailbox(
 	worker: string,
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-): Promise<GjcTeamMailboxMessage[]> {
+): Promise<WorxTeamMailboxMessage[]> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
 	const config = await runtime.readConfig(dir);
 	runtime.assertKnownParticipant(config, worker);
@@ -294,7 +294,7 @@ export async function markTeamMailboxMessage(
 	field: "delivered_at" | "notified_at",
 	cwd: string,
 	env: NodeJS.ProcessEnv,
-): Promise<GjcTeamMailboxMessage> {
+): Promise<WorxTeamMailboxMessage> {
 	const dir = await runtime.findTeamDir(teamName, cwd, env);
 	const config = await runtime.readConfig(dir);
 	runtime.assertKnownParticipant(config, worker);
@@ -310,7 +310,7 @@ export async function markTeamMailboxMessage(
 	const existing =
 		(await runtime.listNotifications(dir)).find(notification => notification.id === id) ??
 		(await createTeamMessageNotification(runtime, dir, config.team_name, written));
-	const state: GjcTeamNotificationDeliveryState = field === "delivered_at" ? "acknowledged" : "delivered";
+	const state: WorxTeamNotificationDeliveryState = field === "delivered_at" ? "acknowledged" : "delivered";
 	await runtime.writeNotification(dir, {
 		...existing,
 		delivery_state: state,

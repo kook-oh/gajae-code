@@ -8,7 +8,7 @@
 
 import * as path from "node:path";
 
-export interface GjcRuntimeSpawnInfo {
+export interface WorxRuntimeSpawnInfo {
 	execPath: string;
 	mode: "source" | "compiled";
 	/** Prefix prepended before the gjc subcommand args; `[Bun.main]` in source mode, otherwise `[]`. */
@@ -29,7 +29,7 @@ const COMPILED_RELOAD_WARNING =
  * respawn loads edited source. A compiled single-file binary self-spawns its
  * own subcommand directly and cannot pick up workspace source edits.
  */
-export function resolveGjcRuntimeSpawnInfo(execPath: string = process.execPath): GjcRuntimeSpawnInfo {
+export function resolveWorxRuntimeSpawnInfo(execPath: string = process.execPath): WorxRuntimeSpawnInfo {
 	const base = path.basename(execPath).toLowerCase();
 	const fromSource = base === "bun" || base === "node" || base.startsWith("bun") || base.startsWith("node");
 	const sourceEntry = fromSource ? path.resolve(import.meta.dir, "../../bin/worx.js") : undefined;

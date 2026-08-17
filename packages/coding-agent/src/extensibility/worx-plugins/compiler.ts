@@ -6,19 +6,19 @@ import { readSchemaDeclaration, schemaHash } from "./metadata";
 import { resolveWithinRoot } from "./paths";
 import { parseManifest, parseSubskillFrontmatter } from "./schema";
 import {
-	type GjcPluginAppendixManifestEntry,
-	GjcPluginLoadError,
-	type GjcPluginMcpManifestEntry,
 	type NormalizedAgentAppendixSurface,
 	type NormalizedAppendixSurface,
-	type NormalizedGjcPluginBundle,
-	type NormalizedGjcPluginSurfaces,
 	type NormalizedHookSurface,
 	type NormalizedMcpSurface,
 	type NormalizedSubskillSurface,
 	type NormalizedSubskillToolSurface,
 	type NormalizedToolSurface,
+	type NormalizedWorxPluginBundle,
+	type NormalizedWorxPluginSurfaces,
 	WORX_PLUGIN_MANIFEST_FILENAME,
+	type WorxPluginAppendixManifestEntry,
+	WorxPluginLoadError,
+	type WorxPluginMcpManifestEntry,
 } from "./types";
 import { validateBinding } from "./validation";
 
@@ -48,14 +48,14 @@ async function readManifestJson(filePath: string): Promise<unknown> {
 	try {
 		text = await fs.readFile(filePath, "utf8");
 	} catch (error) {
-		throw new GjcPluginLoadError("missing_file", `Missing GJC plugin manifest at ${filePath}`, {
+		throw new WorxPluginLoadError("missing_file", `Missing GJC plugin manifest at ${filePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	try {
 		return JSON.parse(text) as unknown;
 	} catch (error) {
-		throw new GjcPluginLoadError("invalid_manifest", `Invalid GJC plugin manifest JSON at ${filePath}`, {
+		throw new WorxPluginLoadError("invalid_manifest", `Invalid GJC plugin manifest JSON at ${filePath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
@@ -71,13 +71,13 @@ async function resolveDeclaredFile(pluginRoot: string, rel: string): Promise<str
 	try {
 		real = await fs.realpath(resolved);
 	} catch (error) {
-		throw new GjcPluginLoadError("missing_file", `Missing GJC plugin file at ${resolved}`, {
+		throw new WorxPluginLoadError("missing_file", `Missing GJC plugin file at ${resolved}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	const realRoot = await fs.realpath(pluginRoot);
 	if (!pathIsWithin(realRoot, real)) {
-		throw new GjcPluginLoadError("security_policy", `GJC plugin file escapes root via symlink: ${rel}`);
+		throw new WorxPluginLoadError("security_policy", `GJC plugin file escapes root via symlink: ${rel}`);
 	}
 	return resolved;
 }
@@ -91,18 +91,18 @@ async function hashFile(
 	try {
 		buf = await fs.readFile(absPath);
 	} catch (error) {
-		throw new GjcPluginLoadError("missing_file", `Missing GJC plugin file at ${absPath}`, {
+		throw new WorxPluginLoadError("missing_file", `Missing GJC plugin file at ${absPath}`, {
 			cause: error instanceof Error ? error : undefined,
 		});
 	}
 	const digest = sha256(buf);
 	if (declaredSha !== undefined && declaredSha.toLowerCase() !== digest) {
-		throw new GjcPluginLoadError("hash_mismatch", `GJC plugin file hash mismatch for ${rel}`);
+		throw new WorxPluginLoadError("hash_mismatch", `GJC plugin file hash mismatch for ${rel}`);
 	}
 	return { sha256: digest, bytes: buf.byteLength };
 }
 
-function mcpConfigHash(entry: GjcPluginMcpManifestEntry): string {
+function mcpConfigHash(entry: WorxPluginMcpManifestEntry): string {
 	const canonical = JSON.stringify({
 		name: entry.name,
 		transport: entry.transport,
@@ -117,14 +117,14 @@ function mcpConfigHash(entry: GjcPluginMcpManifestEntry): string {
 
 async function compileAppendix(
 	pluginRoot: string,
-	entry: GjcPluginAppendixManifestEntry,
+	entry: WorxPluginAppendixManifestEntry,
 	field: string,
 	files: Map<string, { sha256: string; bytes: number }>,
 ): Promise<{ contentHash: string; bytes: number; relativePath?: string; content?: string }> {
 	const hasPath = entry.path !== undefined;
 	const hasContent = entry.content !== undefined;
 	if (hasPath === hasContent) {
-		throw new GjcPluginLoadError(
+		throw new WorxPluginLoadError(
 			"invalid_appendix",
 			`Invalid GJC plugin ${field}: exactly one of "path" or "content" is required`,
 		);
@@ -132,11 +132,11 @@ async function compileAppendix(
 	if (hasContent) {
 		const content = entry.content ?? "";
 		if (content.trim().length === 0) {
-			throw new GjcPluginLoadError("invalid_appendix", `Invalid GJC plugin ${field}: inline content is empty`);
+			throw new WorxPluginLoadError("invalid_appendix", `Invalid GJC plugin ${field}: inline content is empty`);
 		}
 		const digest = sha256(content);
 		if (entry.sha256 !== undefined && entry.sha256.toLowerCase() !== digest) {
-			throw new GjcPluginLoadError("hash_mismatch", `GJC plugin ${field} content hash mismatch`);
+			throw new WorxPluginLoadError("hash_mismatch", `GJC plugin ${field} content hash mismatch`);
 		}
 		return { contentHash: digest, bytes: Buffer.byteLength(content), content };
 	}
@@ -144,7 +144,7 @@ async function compileAppendix(
 	const abs = await resolveDeclaredFile(pluginRoot, rel);
 	const { sha256: digest, bytes } = await hashFile(abs, rel, entry.sha256);
 	if (bytes === 0) {
-		throw new GjcPluginLoadError("invalid_appendix", `Invalid GJC plugin ${field}: file is empty`);
+		throw new WorxPluginLoadError("invalid_appendix", `Invalid GJC plugin ${field}: file is empty`);
 	}
 	files.set(rel, { sha256: digest, bytes });
 	return { contentHash: digest, bytes, relativePath: rel };
@@ -155,7 +155,7 @@ async function compileAppendix(
  * declared files (as bytes for hashing/existence). It NEVER imports or executes
  * plugin tool/hook code.
  */
-export async function compileGjcPluginBundle(root: string): Promise<NormalizedGjcPluginBundle> {
+export async function compileWorxPluginBundle(root: string): Promise<NormalizedWorxPluginBundle> {
 	const pluginRoot = path.resolve(root);
 	const manifestPath = path.join(pluginRoot, WORX_PLUGIN_MANIFEST_FILENAME);
 	const manifest = parseManifest(await readManifestJson(manifestPath), manifestPath);
@@ -179,7 +179,7 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		try {
 			content = await fs.readFile(abs, "utf8");
 		} catch (error) {
-			throw new GjcPluginLoadError("missing_file", `Missing GJC sub-skill file at ${abs}`, {
+			throw new WorxPluginLoadError("missing_file", `Missing GJC sub-skill file at ${abs}`, {
 				cause: error instanceof Error ? error : undefined,
 			});
 		}
@@ -187,7 +187,7 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		try {
 			parsed = parseFrontmatter(content, { source: abs, level: "fatal" });
 		} catch (error) {
-			throw new GjcPluginLoadError("invalid_frontmatter", `Invalid GJC sub-skill frontmatter at ${abs}`, {
+			throw new WorxPluginLoadError("invalid_frontmatter", `Invalid GJC sub-skill frontmatter at ${abs}`, {
 				cause: error instanceof Error ? error : undefined,
 			});
 		}
@@ -274,23 +274,26 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		// and a before/after phase so the constrained runner (M3/M4) can bind them.
 		if (hook.event === "tool_call") {
 			if (!hook.target) {
-				throw new GjcPluginLoadError("invalid_hook", `GJC plugin hook "${hook.name}": tool_call requires a target`);
+				throw new WorxPluginLoadError(
+					"invalid_hook",
+					`GJC plugin hook "${hook.name}": tool_call requires a target`,
+				);
 			}
 			if (!hook.phase) {
-				throw new GjcPluginLoadError(
+				throw new WorxPluginLoadError(
 					"invalid_hook",
 					`GJC plugin hook "${hook.name}": tool_call requires a "before"/"after" phase`,
 				);
 			}
 		}
 		if (hook.phase && hook.event !== "tool_call" && hook.event !== "tool_result") {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_hook",
 				`GJC plugin hook "${hook.name}": phase is only supported for tool_call/tool_result events`,
 			);
 		}
 		if (hook.event === "tool_result" && hook.phase !== "after") {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_hook",
 				`GJC plugin hook "${hook.name}": tool_result requires the after phase`,
 			);
@@ -312,10 +315,10 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		// Minimal compile-time MCP contract: transport-specific endpoint must exist.
 		if (entry.transport === "stdio") {
 			if (!entry.command) {
-				throw new GjcPluginLoadError("invalid_mcp", `GJC plugin MCP "${entry.name}": stdio requires a command`);
+				throw new WorxPluginLoadError("invalid_mcp", `GJC plugin MCP "${entry.name}": stdio requires a command`);
 			}
 		} else if (!entry.url) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"invalid_mcp",
 				`GJC plugin MCP "${entry.name}": ${entry.transport} requires a url`,
 			);
@@ -368,7 +371,7 @@ export async function compileGjcPluginBundle(root: string): Promise<NormalizedGj
 		});
 	}
 
-	const surfaces: NormalizedGjcPluginSurfaces = {
+	const surfaces: NormalizedWorxPluginSurfaces = {
 		subskills,
 		tools,
 		hooks,

@@ -64,7 +64,7 @@ async function mcpGlobal(
 		stderr: "pipe",
 	});
 	child.stdin.write(
-		`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "gjc_session_global", arguments: { operation, input, idempotencyKey } } })}\n`,
+		`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "worx_session_global", arguments: { operation, input, idempotencyKey } } })}\n`,
 	);
 	await child.stdin.end();
 	const [exitCode, stdout, stderr] = await Promise.all([

@@ -11,7 +11,7 @@ import { migrateAndPersistLegacyState } from "@bworx-io/worx-code/worx-runtime/s
 import { runNativeStateCommand } from "@bworx-io/worx-code/worx-runtime/state-runtime";
 import { RequiredOnWriteEnvelopeSchema } from "@bworx-io/worx-code/worx-runtime/state-schema";
 import { writeWorkflowEnvelopeAtomic } from "@bworx-io/worx-code/worx-runtime/state-writer";
-import { type GjcTeamSnapshot, persistGjcTeamModeStateSummary } from "@bworx-io/worx-code/worx-runtime/team-runtime";
+import { persistWorxTeamModeStateSummary, type WorxTeamSnapshot } from "@bworx-io/worx-code/worx-runtime/team-runtime";
 
 const TEST_SESSION_ID = "test-session";
 
@@ -256,7 +256,7 @@ describe("workflow state writer drift guard", () => {
 
 	it("persists required-on-write envelope for team summary without starting tmux", async () => {
 		const root = await tempDir();
-		const snapshot: GjcTeamSnapshot = {
+		const snapshot: WorxTeamSnapshot = {
 			team_name: "drift-team",
 			display_name: "Drift Team",
 			phase: "running",
@@ -275,7 +275,7 @@ describe("workflow state writer drift guard", () => {
 			},
 			updated_at: new Date().toISOString(),
 		};
-		await persistGjcTeamModeStateSummary(snapshot, root);
+		await persistWorxTeamModeStateSummary(snapshot, root);
 		await expectPersistedEnvelope(modeStatePath(root, TEST_SESSION_ID, "team"));
 	});
 

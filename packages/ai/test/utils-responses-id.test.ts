@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { normalizeResponsesToolCallId, resolveCacheRetention } from "../src/utils";
 
-const originalGjcCacheRetention = Bun.env.WORX_CACHE_RETENTION;
+const originalWorxCacheRetention = Bun.env.WORX_CACHE_RETENTION;
 const originalPiCacheRetention = Bun.env.PI_CACHE_RETENTION;
 
 afterEach(() => {
-	if (originalGjcCacheRetention === undefined) {
+	if (originalWorxCacheRetention === undefined) {
 		delete Bun.env.WORX_CACHE_RETENTION;
 	} else {
-		Bun.env.WORX_CACHE_RETENTION = originalGjcCacheRetention;
+		Bun.env.WORX_CACHE_RETENTION = originalWorxCacheRetention;
 	}
 	if (originalPiCacheRetention === undefined) {
 		delete Bun.env.PI_CACHE_RETENTION;

@@ -36,10 +36,10 @@ import {
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
 } from "../../worx-runtime/session-state-sidecar";
 import {
-	buildGjcTmuxProfileCommands,
-	buildGjcTmuxSessionSlug,
-	resolveGjcTmuxBinary,
-	resolveGjcTmuxCommand,
+	buildWorxTmuxProfileCommands,
+	buildWorxTmuxSessionSlug,
+	resolveWorxTmuxBinary,
+	resolveWorxTmuxCommand,
 } from "../../worx-runtime/tmux-common";
 import {
 	captureOwnerGenerationBaseline,
@@ -53,10 +53,10 @@ import {
 	type TmuxServerProof,
 } from "../../worx-runtime/tmux-owner-isolation";
 import {
-	findGjcTmuxSessionByName,
-	forceCloseGjcTmuxSession,
-	type GjcTmuxSessionStatus,
-	listGjcTmuxSessions,
+	findWorxTmuxSessionByName,
+	forceCloseWorxTmuxSession,
+	listWorxTmuxSessions,
+	type WorxTmuxSessionStatus,
 } from "../../worx-runtime/tmux-sessions";
 import { processIncarnation } from "../broker/process-incarnation";
 import type {
@@ -174,7 +174,7 @@ function hasNonDirectoryLedgerParent(idempotencyFile: string): boolean {
 function ledgerReadError(error: unknown): Error {
 	const errorCode = (error as NodeJS.ErrnoException | undefined)?.code;
 	const code = typeof errorCode === "string" ? errorCode : "invalid";
-	return new Error(`gjc_lifecycle_ledger_read_failed:${code.slice(0, 32)}`);
+	return new Error(`worx_lifecycle_ledger_read_failed:${code.slice(0, 32)}`);
 }
 
 function isLedgerDoc(value: unknown): value is LedgerDoc {
@@ -395,7 +395,7 @@ export function createRateLimiter(maxPerWindow: number, windowMs: number): (chat
 }
 
 function tmuxSessionNameFor(sessionId: string): string {
-	return `gjc_lc_${sessionId}`;
+	return `worx_lc_${sessionId}`;
 }
 
 /** Build the `gjc` argv for a create target (existing path / worktree / dir).
@@ -488,7 +488,7 @@ function lifecycleOwnerIsolationProbe(tmux: string, env: NodeJS.ProcessEnv): Own
 }
 
 function lifecycleRuntimeStateFile(cwd: string, sessionId: string, tmuxSession: string): string {
-	return tmuxRuntimeSessionPath(cwd, sessionId, buildGjcTmuxSessionSlug(tmuxSession));
+	return tmuxRuntimeSessionPath(cwd, sessionId, buildWorxTmuxSessionSlug(tmuxSession));
 }
 
 async function preflightLifecycleTmuxOwner(input: {
@@ -501,25 +501,25 @@ async function preflightLifecycleTmuxOwner(input: {
 	try {
 		server = await probe.probeServer("default");
 	} catch {
-		throw new Error("gjc_lifecycle_owner_server_unverifiable");
+		throw new Error("worx_lifecycle_owner_server_unverifiable");
 	}
-	if (server.state === "unsafe") throw new Error("gjc_lifecycle_owner_server_unsafe");
-	if (server.state === "unverifiable") throw new Error("gjc_lifecycle_owner_server_unverifiable");
+	if (server.state === "unsafe") throw new Error("worx_lifecycle_owner_server_unsafe");
+	if (server.state === "unverifiable") throw new Error("worx_lifecycle_owner_server_unverifiable");
 	if (
 		server.state === "safe" &&
 		(!server.pid || !server.startTime || (process.platform === "linux" && server.cgroup?.classification !== "safe"))
 	)
-		throw new Error("gjc_lifecycle_owner_server_unverifiable");
+		throw new Error("worx_lifecycle_owner_server_unverifiable");
 	if (server.state === "absent") {
 		try {
 			if (
 				classifyCgroup({ platform: process.platform, cgroupText: await probe.readCallerCgroup() })
 					.classification === "unverifiable"
 			)
-				throw new Error("gjc_lifecycle_owner_server_unverifiable");
+				throw new Error("worx_lifecycle_owner_server_unverifiable");
 		} catch (error) {
-			if (error instanceof Error && error.message === "gjc_lifecycle_owner_server_unverifiable") throw error;
-			throw new Error("gjc_lifecycle_owner_server_unverifiable");
+			if (error instanceof Error && error.message === "worx_lifecycle_owner_server_unverifiable") throw error;
+			throw new Error("worx_lifecycle_owner_server_unverifiable");
 		}
 	}
 }
@@ -569,7 +569,7 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 	const probe = input.ownerIsolationProbe ?? lifecycleOwnerIsolationProbe(input.tmux, input.env);
 	await preflightLifecycleTmuxOwner(input);
 	if (!(await isLifecycleGenerationUnchanged(input.stateDir, input.sessionId, input.previousBaseline)))
-		throw new Error("gjc_lifecycle_owner_generation_changed");
+		throw new Error("worx_lifecycle_owner_generation_changed");
 	const plan = await planTmuxOwnerIsolation(
 		{
 			schema_version: 1,
@@ -585,7 +585,7 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 		},
 		probe,
 	);
-	if (!plan.ok) throw new Error(`gjc_lifecycle_owner_${plan.code}`);
+	if (!plan.ok) throw new Error(`worx_lifecycle_owner_${plan.code}`);
 	const preSpawnProof =
 		plan.execution.mode === "direct" && plan.server_state === "safe"
 			? await probe.probeServer(plan.execution.server_key)
@@ -597,10 +597,10 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 			!preSpawnProof.startTime ||
 			(process.platform === "linux" && preSpawnProof.cgroup?.classification !== "safe"))
 	)
-		throw new Error("gjc_lifecycle_owner_server_unverifiable");
+		throw new Error("worx_lifecycle_owner_server_unverifiable");
 	input.prepareSpawn?.();
 	if (!(await isLifecycleGenerationUnchanged(input.stateDir, input.sessionId, input.previousBaseline)))
-		throw new Error("gjc_lifecycle_owner_generation_changed");
+		throw new Error("worx_lifecycle_owner_generation_changed");
 	const created = Bun.spawnSync(plan.execution.argv, {
 		stdout: "pipe",
 		stderr: "pipe",
@@ -634,10 +634,10 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 	input.onAttemptCreated?.(attempt);
 	if (created.exitCode !== 0) {
 		if (!attempt.nativeSessionId || attempt.serverPid === undefined || attempt.serverStartTime === undefined)
-			throw new Error("gjc_lifecycle_spawn_failed_cleanup_uncertain");
-		throw new Error("gjc_lifecycle_spawn_failed");
+			throw new Error("worx_lifecycle_spawn_failed_cleanup_uncertain");
+		throw new Error("worx_lifecycle_spawn_failed");
 	}
-	if (!attempt.nativeSessionId) throw new Error("gjc_lifecycle_spawn_failed_cleanup_uncertain");
+	if (!attempt.nativeSessionId) throw new Error("worx_lifecycle_spawn_failed_cleanup_uncertain");
 	const proof = await probe.probeServer(plan.execution.server_key);
 	if (
 		proof.state !== "safe" ||
@@ -648,7 +648,7 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 		(preSpawnProof && (proof.pid !== preSpawnProof.pid || proof.startTime !== preSpawnProof.startTime)) ||
 		(scopedReceipt && (proof.pid !== scopedReceipt.server_pid || proof.startTime !== scopedReceipt.server_start_time))
 	)
-		throw new Error("gjc_lifecycle_owner_server_unverifiable");
+		throw new Error("worx_lifecycle_owner_server_unverifiable");
 	attempt.serverPid = proof.pid;
 	attempt.serverStartTime = proof.startTime;
 	if (
@@ -663,10 +663,10 @@ async function executeLifecycleTmuxOwnerPlan(input: {
 			ownerIsolationProbe: input.ownerIsolationProbe,
 		}))
 	)
-		throw new Error("gjc_lifecycle_owner_server_unverifiable");
+		throw new Error("worx_lifecycle_owner_server_unverifiable");
 
 	if (!(await isLifecycleGenerationUnchanged(input.stateDir, input.sessionId, input.previousBaseline)))
-		throw new Error("gjc_lifecycle_owner_generation_changed");
+		throw new Error("worx_lifecycle_owner_generation_changed");
 	return attempt;
 }
 
@@ -697,7 +697,7 @@ function hasExactNativeSessionBinding(input: {
 }
 
 function cleanupUncertain(): Error {
-	return new Error("gjc_lifecycle_cleanup_uncertain");
+	return new Error("worx_lifecycle_cleanup_uncertain");
 }
 
 async function reproveLifecycleAttempt(input: {
@@ -769,12 +769,12 @@ async function cleanupLifecycleAttempt(input: {
 			input.nativeSessionId,
 			"-F",
 			lifecycleMetadataPredicate(input.expectedServerPid, input.nativeSessionId, input.attemptSession),
-			`kill-session -t '${input.nativeSessionId}' ; display-message -p __gjc_lifecycle_cleanup_ok__`,
-			"display-message -p __gjc_lifecycle_cleanup_refused__",
+			`kill-session -t '${input.nativeSessionId}' ; display-message -p __worx_lifecycle_cleanup_ok__`,
+			"display-message -p __worx_lifecycle_cleanup_refused__",
 		],
 		{ stdout: "pipe", stderr: "pipe", env: input.env },
 	);
-	if (guarded.exitCode !== 0 || guarded.stdout.toString().trim() !== "__gjc_lifecycle_cleanup_ok__")
+	if (guarded.exitCode !== 0 || guarded.stdout.toString().trim() !== "__worx_lifecycle_cleanup_ok__")
 		throw cleanupUncertain();
 }
 
@@ -792,7 +792,7 @@ async function assertLifecycleTmuxServerSafe(input: {
 		!proof.startTime ||
 		(process.platform === "linux" && proof.cgroup?.classification !== "safe")
 	)
-		throw new Error(`gjc_lifecycle_owner_${proof.state === "unsafe" ? "server_unsafe" : "server_unverifiable"}`);
+		throw new Error(`worx_lifecycle_owner_${proof.state === "unsafe" ? "server_unsafe" : "server_unverifiable"}`);
 }
 
 async function completeLifecycleSpawnTransaction(input: {
@@ -825,7 +825,7 @@ async function completeLifecycleSpawnTransaction(input: {
 			ownerExecution.serverPid === undefined ||
 			ownerExecution.serverStartTime === undefined
 		)
-			throw new Error("gjc_lifecycle_owner_server_unverifiable");
+			throw new Error("worx_lifecycle_owner_server_unverifiable");
 		await applyRequiredLifecycleTmuxMetadata(
 			input.tmux,
 			`${ownerExecution.nativeSessionId}:`,
@@ -855,9 +855,9 @@ async function completeLifecycleSpawnTransaction(input: {
 				ownerIsolationProbe: input.ownerIsolationProbe,
 			}))
 		)
-			throw new Error("gjc_lifecycle_owner_server_unverifiable");
+			throw new Error("worx_lifecycle_owner_server_unverifiable");
 		if (!(await isLifecycleGenerationUnchanged(input.stateDir, input.sessionId, previousBaseline)))
-			throw new Error("gjc_lifecycle_owner_generation_changed");
+			throw new Error("worx_lifecycle_owner_generation_changed");
 		resolveManagedOwnerPredecessorSync(input.stateDir, input.sessionId, previousBaseline);
 		await replaceOwnerGeneration(input.stateDir, input.sessionId, input.generation, previousBaseline);
 	} catch (error) {
@@ -879,7 +879,7 @@ async function completeLifecycleSpawnTransaction(input: {
 			}
 		}
 		if (cleanupFailure !== undefined)
-			throw new AggregateError([error, cleanupFailure], "gjc_lifecycle_cleanup_uncertain");
+			throw new AggregateError([error, cleanupFailure], "worx_lifecycle_cleanup_uncertain");
 		throw error;
 	}
 }
@@ -1011,7 +1011,7 @@ function directTmuxGuardedMutation(input: {
 			"-F",
 			lifecycleMetadataPredicate(input.serverPid, input.nativeSessionId, input.sessionName),
 			`${input.commands} ; display-message -p ${input.success}`,
-			"display-message -p __gjc_lifecycle_metadata_refused__",
+			"display-message -p __worx_lifecycle_metadata_refused__",
 		],
 		{ stdout: "pipe", stderr: "pipe", env: input.env, cwd: input.cwd },
 	);
@@ -1032,7 +1032,7 @@ function cleanupDirectLifecycleAttempt(input: {
 		!directTmuxGuardedMutation({
 			...input,
 			commands: `kill-session -t '${input.nativeSessionId}'`,
-			success: "__gjc_lifecycle_cleanup_ok__",
+			success: "__worx_lifecycle_cleanup_ok__",
 		})
 	)
 		throw cleanupUncertain();
@@ -1079,20 +1079,20 @@ async function completeNonLinuxLifecycleSpawn(input: {
 			{ stdout: "pipe", stderr: "pipe", env: input.env, cwd: input.cwd },
 		);
 		const receipt = directTmuxReceipt(created.stdout.toString(), input.sessionName);
-		if (!receipt) throw new Error("gjc_lifecycle_tmux_launch_failed");
+		if (!receipt) throw new Error("worx_lifecycle_tmux_launch_failed");
 		const binding = directTmuxBinding(input.tmux, input.env, input.cwd, receipt.nativeSessionId, receipt.sessionName);
 		const serverIncarnation = binding.state === "bound" && input.readProcessIncarnation(binding.serverPid);
 		const paneIncarnation =
 			binding.state === "bound" && !binding.paneDead && input.readProcessIncarnation(binding.panePid);
-		if (binding.state !== "bound" || !serverIncarnation) throw new Error("gjc_lifecycle_tmux_launch_failed");
+		if (binding.state !== "bound" || !serverIncarnation) throw new Error("worx_lifecycle_tmux_launch_failed");
 		attempt = { ...receipt, serverPid: binding.serverPid, serverIncarnation };
 		if (!binding.paneDead && paneIncarnation) {
 			attempt.panePid = binding.panePid;
 			attempt.paneIncarnation = paneIncarnation;
 		}
 		if (created.exitCode !== 0 || !directTmuxIdentityIsCurrent({ ...input, ...attempt }))
-			throw new Error("gjc_lifecycle_tmux_launch_failed");
-		const commands = buildGjcTmuxProfileCommands(attempt.nativeSessionId, input.env, {
+			throw new Error("worx_lifecycle_tmux_launch_failed");
+		const commands = buildWorxTmuxProfileCommands(attempt.nativeSessionId, input.env, {
 			sessionId: input.sessionId,
 			sessionStateFile: input.sessionStateFile,
 			project: input.cwd,
@@ -1100,10 +1100,10 @@ async function completeNonLinuxLifecycleSpawn(input: {
 			.map(command => command.args.map(tmuxCommandArgument).join(" "))
 			.join(" ; ");
 		if (
-			!directTmuxGuardedMutation({ ...input, ...attempt, commands, success: "__gjc_lifecycle_metadata_ok__" }) ||
+			!directTmuxGuardedMutation({ ...input, ...attempt, commands, success: "__worx_lifecycle_metadata_ok__" }) ||
 			!directTmuxIdentityIsCurrent({ ...input, ...attempt })
 		)
-			throw new Error("gjc_lifecycle_metadata_write_failed");
+			throw new Error("worx_lifecycle_metadata_write_failed");
 		await Bun.sleep(directLifecycleStabilizationMs);
 		if (
 			attempt.panePid === undefined ||
@@ -1115,7 +1115,7 @@ async function completeNonLinuxLifecycleSpawn(input: {
 				paneIncarnation: attempt.paneIncarnation,
 			})
 		)
-			throw new Error("gjc_lifecycle_tmux_launch_liveness_failed");
+			throw new Error("worx_lifecycle_tmux_launch_liveness_failed");
 	} catch (error) {
 		primaryError = error;
 	}
@@ -1129,7 +1129,7 @@ async function completeNonLinuxLifecycleSpawn(input: {
 		}
 	} else cleanupFailure = cleanupUncertain();
 	if (cleanupFailure !== undefined)
-		throw new AggregateError([primaryError, cleanupFailure], "gjc_lifecycle_cleanup_uncertain");
+		throw new AggregateError([primaryError, cleanupFailure], "worx_lifecycle_cleanup_uncertain");
 	throw primaryError;
 }
 /** Real daemon-safe tmux launcher: canonical owner-isolation plan + GJC tags. */
@@ -1145,8 +1145,8 @@ export function daemonSpawnCreate(
 		frame: SessionCreateFrame,
 		ids: { lifecycleRequestId: string; intendedSessionId: string; startupPromptRef?: string },
 	): Promise<CreateEffectResult> => {
-		const tmuxBinary = resolveGjcTmuxBinary({ env, platform: opts.platform });
-		if (tmuxBinary.isPsmux) throw new Error("gjc_lifecycle_psmux_unsupported");
+		const tmuxBinary = resolveWorxTmuxBinary({ env, platform: opts.platform });
+		if (tmuxBinary.isPsmux) throw new Error("worx_lifecycle_psmux_unsupported");
 		const tmux = tmuxBinary.command;
 		const name = tmuxSessionNameFor(ids.intendedSessionId);
 		const { cwd, args } = buildCreateArgv(frame, ids);
@@ -1259,8 +1259,8 @@ async function applyRequiredLifecycleTmuxMetadata(
 		!metadata.ownerGeneration.trim() ||
 		!metadata.ownerServerKey.trim()
 	)
-		throw new Error("gjc_lifecycle_metadata_required_missing");
-	const commands = buildGjcTmuxProfileCommands(target, env, metadata)
+		throw new Error("worx_lifecycle_metadata_required_missing");
+	const commands = buildWorxTmuxProfileCommands(target, env, metadata)
 		.map(command => command.args.map(tmuxCommandArgument).join(" "))
 		.join(" ; ");
 	const result = Bun.spawnSync(
@@ -1273,13 +1273,13 @@ async function applyRequiredLifecycleTmuxMetadata(
 			attempt.nativeSessionId,
 			"-F",
 			lifecycleMetadataPredicate(attempt.serverPid, attempt.nativeSessionId, attempt.attemptSession),
-			`${commands} ; display-message -p __gjc_lifecycle_metadata_ok__`,
-			"display-message -p __gjc_lifecycle_metadata_refused__",
+			`${commands} ; display-message -p __worx_lifecycle_metadata_ok__`,
+			"display-message -p __worx_lifecycle_metadata_refused__",
 		],
 		{ stdout: "pipe", stderr: "pipe", env },
 	);
-	if (result.exitCode !== 0 || result.stdout.toString().trim() !== "__gjc_lifecycle_metadata_ok__")
-		throw new Error("gjc_lifecycle_metadata_write_failed");
+	if (result.exitCode !== 0 || result.stdout.toString().trim() !== "__worx_lifecycle_metadata_ok__")
+		throw new Error("worx_lifecycle_metadata_write_failed");
 }
 
 /** Real force-close effect (GJC-managed only, id-matched). */
@@ -1292,13 +1292,13 @@ export function daemonCloseSession(
 			expectedSessionId?: string,
 			sessionStateFile?: string,
 		) => Promise<void>;
-		findSession?: (name: string, env: NodeJS.ProcessEnv) => GjcTmuxSessionStatus | undefined;
+		findSession?: (name: string, env: NodeJS.ProcessEnv) => WorxTmuxSessionStatus | undefined;
 	} = {},
 ) {
 	return async (target: { sessionId: string; tmuxSession?: string; sessionStateFile?: string }) => {
 		const name = target.tmuxSession ?? tmuxSessionNameFor(target.sessionId);
-		await (deps.forceClose ?? forceCloseGjcTmuxSession)(name, env, target.sessionId, target.sessionStateFile);
-		return { processGone: (deps.findSession ?? findGjcTmuxSessionByName)(name, env) === undefined };
+		await (deps.forceClose ?? forceCloseWorxTmuxSession)(name, env, target.sessionId, target.sessionStateFile);
+		return { processGone: (deps.findSession ?? findWorxTmuxSessionByName)(name, env) === undefined };
 	};
 }
 
@@ -1311,7 +1311,7 @@ export function daemonResumeSession(
 		agentDir?: string;
 		/** Explicit managed root for isolated tests. */
 		sessionsRoot?: string;
-		listSessions?: (env: NodeJS.ProcessEnv) => GjcTmuxSessionStatus[];
+		listSessions?: (env: NodeJS.ProcessEnv) => WorxTmuxSessionStatus[];
 		ownerIsolationProbe?: OwnerIsolationProbe;
 		platform?: NodeJS.Platform;
 		processIncarnation?: (pid: number) => string | undefined;
@@ -1321,9 +1321,9 @@ export function daemonResumeSession(
 		sessionIdOrPrefix: string;
 		path?: string;
 	}): Promise<ResumeEffectResult | { ambiguous: ResumeCandidate[] } | { notFound: true }> => {
-		const tmuxBinary = resolveGjcTmuxBinary({ env, platform: opts.platform });
-		if (tmuxBinary.isPsmux) throw new Error("gjc_lifecycle_psmux_unsupported");
-		const live = (opts.listSessions?.(env) ?? listGjcTmuxSessions(env)).filter(
+		const tmuxBinary = resolveWorxTmuxBinary({ env, platform: opts.platform });
+		if (tmuxBinary.isPsmux) throw new Error("worx_lifecycle_psmux_unsupported");
+		const live = (opts.listSessions?.(env) ?? listWorxTmuxSessions(env)).filter(
 			s => s.sessionId === target.sessionIdOrPrefix || s.sessionId?.startsWith(target.sessionIdOrPrefix),
 		);
 		if (live.length > 1) {
@@ -1334,7 +1334,7 @@ export function daemonResumeSession(
 		if (live.length === 1) {
 			const s = live[0]!;
 			await assertLifecycleTmuxServerSafe({
-				tmux: resolveGjcTmuxCommand(env),
+				tmux: resolveWorxTmuxCommand(env),
 				env,
 				ownerIsolationProbe: opts.ownerIsolationProbe,
 			});
@@ -1360,7 +1360,7 @@ export function daemonResumeSession(
 			allWorkspaces: target.path === undefined,
 			limit: 1000,
 		});
-		if (recent.kind === "error") throw new Error(`gjc_lifecycle_saved_sessions_unavailable: ${recent.message}`);
+		if (recent.kind === "error") throw new Error(`worx_lifecycle_saved_sessions_unavailable: ${recent.message}`);
 		const saved = recent.entries;
 		const prefixed = saved.filter(
 			s => s.sessionId === target.sessionIdOrPrefix || s.sessionId.startsWith(target.sessionIdOrPrefix),
@@ -1377,7 +1377,7 @@ export function daemonResumeSession(
 		const resolvedResumeCwd = resumeCwd ? path.resolve(resumeCwd) : undefined;
 		const resumeCwdStat = resolvedResumeCwd ? fs.statSync(resolvedResumeCwd, { throwIfNoEntry: false }) : undefined;
 		if (typeof resolvedResumeCwd !== "string" || !resumeCwdStat?.isDirectory()) {
-			throw new Error(`gjc_lifecycle_resume_cwd_unavailable: ${resolvedResumeCwd ?? "(missing)"}`);
+			throw new Error(`worx_lifecycle_resume_cwd_unavailable: ${resolvedResumeCwd ?? "(missing)"}`);
 		}
 		const tmux = tmuxBinary.command;
 		const name = tmuxSessionNameFor(resumeId);
@@ -1707,7 +1707,7 @@ export function buildOrchestratorDeps(input: {
 		now: () => Date.now(),
 		store: fileLedgerStore(path.join(input.agentNotificationsDir, "telegram-lifecycle-idempotency.json")),
 		audit: fileAudit(path.join(input.agentNotificationsDir, "telegram-lifecycle-audit.jsonl")),
-		isPsmuxProvider: () => resolveGjcTmuxBinary({ env }).isPsmux,
+		isPsmuxProvider: () => resolveWorxTmuxBinary({ env }).isPsmux,
 		allowCreate: createRateLimiter(3, 10 * 60 * 1000),
 		writeStartupPrompt: async (_requestId, prompt, _persistRef) => {
 			if (prompt === undefined) return undefined;

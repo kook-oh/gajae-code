@@ -1,5 +1,5 @@
 /**
- * RLM session artifact layout under <cwd>/.worx/_session-{gjcSessionId}/rlm/<rlmSessionId>/.
+ * RLM session artifact layout under <cwd>/.worx/_session-{worxSessionId}/rlm/<rlmSessionId>/.
  *
  * The GJC session id (process boundary) scopes the directory; the RLM session id
  * names the individual research run within it. The two ids are kept distinct.
@@ -8,7 +8,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { readNotebookDocument } from "../edit/notebook";
 import { rlmArtifactRoot } from "../worx-runtime/session-layout";
-import { resolveGjcSessionForWrite } from "../worx-runtime/session-resolution";
+import { resolveWorxSessionForWrite } from "../worx-runtime/session-resolution";
 import type { RlmArtifactPaths } from "./types";
 
 export const RLM_DIR_SEGMENT = "rlm";
@@ -32,7 +32,7 @@ export function resolveRlmArtifactPaths(cwd: string, sessionId: string): RlmArti
 	}
 	const dir = rlmArtifactRoot(
 		cwd,
-		resolveGjcSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).gjcSessionId,
+		resolveWorxSessionForWrite(cwd, { envSessionId: process.env.WORX_SESSION_ID }).worxSessionId,
 		sessionId,
 	);
 	return {

@@ -1,6 +1,6 @@
-import { loadEffectiveGjcPluginRegistry } from "./registry";
+import { loadEffectiveWorxPluginRegistry } from "./registry";
 import { type SessionQuarantine, validateSessionBundles, verifyEntryHashes } from "./session-validation";
-import type { GjcPluginRegistryEntry, GjcPluginScope } from "./types";
+import type { WorxPluginRegistryEntry, WorxPluginScope } from "./types";
 
 /**
  * Observability for GJC plugin bundle surfaces, consumable by the extension
@@ -15,8 +15,8 @@ export interface PluginSurfaceRow {
 	extensionId: string;
 	kind: "tool" | "hook" | "mcp" | "system-appendix" | "agent-appendix" | "subskill";
 	plugin: string;
-	scope: GjcPluginScope;
-	sourceKind: GjcPluginRegistryEntry["source"]["kind"];
+	scope: WorxPluginScope;
+	sourceKind: WorxPluginRegistryEntry["source"]["kind"];
 	status: PluginSurfaceStatus;
 	hash: string;
 	quarantineCode?: string;
@@ -28,7 +28,7 @@ export interface PluginObservabilitySummary {
 }
 
 function statusFor(
-	entry: GjcPluginRegistryEntry,
+	entry: WorxPluginRegistryEntry,
 	extensionId: string,
 	quarantinedIds: Map<string, string>,
 ): { status: PluginSurfaceStatus; quarantineCode?: string } {
@@ -40,7 +40,7 @@ function statusFor(
 	return { status: "enabled" };
 }
 
-function rowsForEntry(entry: GjcPluginRegistryEntry, quarantinedIds: Map<string, string>): PluginSurfaceRow[] {
+function rowsForEntry(entry: WorxPluginRegistryEntry, quarantinedIds: Map<string, string>): PluginSurfaceRow[] {
 	const base = (extensionId: string, hash: string): Omit<PluginSurfaceRow, "kind"> => ({
 		extensionId,
 		plugin: entry.name,
@@ -66,8 +66,8 @@ function rowsForEntry(entry: GjcPluginRegistryEntry, quarantinedIds: Map<string,
  * Build the observability summary for the effective registry at `cwd`, including
  * hash-drift and session-collision quarantine status.
  */
-export async function summarizeGjcPluginObservability(cwd: string): Promise<PluginObservabilitySummary> {
-	const effective = await loadEffectiveGjcPluginRegistry(cwd);
+export async function summarizeWorxPluginObservability(cwd: string): Promise<PluginObservabilitySummary> {
+	const effective = await loadEffectiveWorxPluginRegistry(cwd);
 	const preQuarantine: SessionQuarantine[] = [];
 	for (const entry of effective) {
 		if (!entry.enabled) continue;

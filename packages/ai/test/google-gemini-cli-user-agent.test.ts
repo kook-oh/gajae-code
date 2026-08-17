@@ -3,14 +3,14 @@ import { getGeminiCliUserAgent } from "../src/providers/google-gemini-cli";
 import { DEFAULT_GEMINI_CLI_VERSION } from "../src/providers/google-gemini-headers";
 
 describe("Google Gemini CLI user agent", () => {
-	const originalGjcVersion = process.env.WORX_AI_GEMINI_CLI_VERSION;
+	const originalWorxVersion = process.env.WORX_AI_GEMINI_CLI_VERSION;
 	const originalPiVersion = process.env.PI_AI_GEMINI_CLI_VERSION;
 
 	afterEach(() => {
-		if (originalGjcVersion === undefined) {
+		if (originalWorxVersion === undefined) {
 			delete process.env.WORX_AI_GEMINI_CLI_VERSION;
 		} else {
-			process.env.WORX_AI_GEMINI_CLI_VERSION = originalGjcVersion;
+			process.env.WORX_AI_GEMINI_CLI_VERSION = originalWorxVersion;
 		}
 		if (originalPiVersion === undefined) {
 			delete process.env.PI_AI_GEMINI_CLI_VERSION;

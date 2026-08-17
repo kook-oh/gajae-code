@@ -1,5 +1,5 @@
 import { identityEquals, identityKey } from "./lifecycle-reconciliation";
-import type { GjcBundleIdentity, GjcRuntimeFinding, GjcRuntimeSnapshot, GjcRuntimeSnapshotState } from "./types";
+import type { WorxBundleIdentity, WorxRuntimeFinding, WorxRuntimeSnapshot, WorxRuntimeSnapshotState } from "./types";
 
 /**
  * Deterministic numeric activation generation for an activation fingerprint.
@@ -9,7 +9,7 @@ import type { GjcBundleIdentity, GjcRuntimeFinding, GjcRuntimeSnapshot, GjcRunti
  * Derived from the fingerprint's leading hex so it stays inside the safe
  * integer range.
  */
-export function gjcActivationGenerationFor(activationFingerprint: string): number {
+export function worxActivationGenerationFor(activationFingerprint: string): number {
 	const parsed = Number.parseInt(activationFingerprint.slice(0, 13), 16);
 	return Number.isSafeInteger(parsed) ? parsed : 0;
 }
@@ -22,23 +22,23 @@ export function gjcActivationGenerationFor(activationFingerprint: string): numbe
  * complete generation snapshot, and consumers merge it only when the identity
  * and generation match.
  */
-export class GjcRuntimeFindingAccumulator {
-	private readonly findings: GjcRuntimeFinding[] = [];
+export class WorxRuntimeFindingAccumulator {
+	private readonly findings: WorxRuntimeFinding[] = [];
 
 	constructor(readonly generation: number) {}
 
-	add(finding: GjcRuntimeFinding): void {
+	add(finding: WorxRuntimeFinding): void {
 		this.findings.push(finding);
 	}
 
-	addAll(findings: readonly GjcRuntimeFinding[]): void {
+	addAll(findings: readonly WorxRuntimeFinding[]): void {
 		for (const finding of findings) this.add(finding);
 	}
 
 	/** Sorted, de-duplicated snapshot for the generation this accumulator owns. */
-	snapshot(): GjcRuntimeSnapshot {
+	snapshot(): WorxRuntimeSnapshot {
 		const seen = new Set<string>();
-		const unique: GjcRuntimeFinding[] = [];
+		const unique: WorxRuntimeFinding[] = [];
 		for (const finding of this.findings) {
 			const key = [identityKey(finding.identity), finding.surfaceId, finding.code, finding.message].join("\u0000");
 			if (seen.has(key)) continue;
@@ -55,8 +55,8 @@ export class GjcRuntimeFindingAccumulator {
 }
 
 /** Read-only view of the most recently published complete generation. */
-export interface GjcRuntimeSnapshotProvider {
-	current(): GjcRuntimeSnapshotState;
+export interface WorxRuntimeSnapshotProvider {
+	current(): WorxRuntimeSnapshotState;
 }
 
 /**
@@ -70,8 +70,8 @@ export interface GjcRuntimeSnapshotProvider {
  * failed older pass can never overwrite a newer one, and an incomplete pass
  * simply never publishes, leaving consumers at `unavailable`.
  */
-export class GjcRuntimeSnapshotStore implements GjcRuntimeSnapshotProvider {
-	private state: GjcRuntimeSnapshotState = { status: "unavailable" };
+export class WorxRuntimeSnapshotStore implements WorxRuntimeSnapshotProvider {
+	private state: WorxRuntimeSnapshotState = { status: "unavailable" };
 	private epoch = 0;
 
 	/**
@@ -85,7 +85,7 @@ export class GjcRuntimeSnapshotStore implements GjcRuntimeSnapshotProvider {
 	}
 
 	/** Publish only if `epoch` is still the newest reserved pass. */
-	publish(snapshot: GjcRuntimeSnapshot, epoch?: number): void {
+	publish(snapshot: WorxRuntimeSnapshot, epoch?: number): void {
 		if (epoch !== undefined && epoch !== this.epoch) return;
 		this.state = { status: "current", snapshot };
 	}
@@ -94,7 +94,7 @@ export class GjcRuntimeSnapshotStore implements GjcRuntimeSnapshotProvider {
 		this.state = { status: "unavailable" };
 	}
 
-	current(): GjcRuntimeSnapshotState {
+	current(): WorxRuntimeSnapshotState {
 		return this.state;
 	}
 }
@@ -106,10 +106,10 @@ export class GjcRuntimeSnapshotStore implements GjcRuntimeSnapshotProvider {
  * silently empty "clear" result.
  */
 export function findingsForBundle(
-	provider: GjcRuntimeSnapshotProvider | undefined,
-	identity: GjcBundleIdentity,
+	provider: WorxRuntimeSnapshotProvider | undefined,
+	identity: WorxBundleIdentity,
 	expectedGeneration: number,
-): { status: "unavailable" } | { status: "current"; findings: GjcRuntimeFinding[] } {
+): { status: "unavailable" } | { status: "current"; findings: WorxRuntimeFinding[] } {
 	if (!provider) return { status: "unavailable" };
 	const state = provider.current();
 	if (state.status !== "current") return { status: "unavailable" };

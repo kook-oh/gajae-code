@@ -1,7 +1,7 @@
-import { loadEffectiveGjcPluginRegistry } from "./registry";
+import { loadEffectiveWorxPluginRegistry } from "./registry";
 import { resolveValidatedActiveSubskill } from "./subskill-authority";
 import type { LoadedSubskillActivation } from "./types";
-import { GjcPluginLoadError } from "./types";
+import { WorxPluginLoadError } from "./types";
 
 export interface SubskillActivationResult {
 	cleanedArgs: string;
@@ -17,7 +17,7 @@ export async function resolveSubskillActivationForSkillInvocation(input: {
 	skillName: string;
 	args: string;
 }): Promise<SubskillActivationResult> {
-	const registry = await loadEffectiveGjcPluginRegistry(input.cwd);
+	const registry = await loadEffectiveWorxPluginRegistry(input.cwd);
 	const candidates: LoadedSubskillActivation[] = [];
 	for (const entry of registry) {
 		if (!entry.enabled || entry.migration?.status === "failed") continue;
@@ -42,7 +42,7 @@ export async function resolveSubskillActivationForSkillInvocation(input: {
 	const activationsByArg = new Map<string, LoadedSubskillActivation>();
 	for (const candidate of candidateActivations) {
 		if (activationsByArg.has(candidate.activationArg))
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"duplicate_arg",
 				`Duplicate GJC plugin activation argument: --${candidate.activationArg}`,
 			);

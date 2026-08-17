@@ -303,8 +303,8 @@ describe("ultragoal ask guard", () => {
 			goalId: plan.goals[0].id,
 			receiptKind: "final-aggregate",
 			goalStatusBeforeCheckpoint: "active",
-			gjcGoalMode: plan.gjcGoalMode,
-			gjcObjective: plan.gjcObjective,
+			worxGoalMode: plan.worxGoalMode,
+			worxObjective: plan.worxObjective,
 			qualityGateHash: hashStructuredValue(qualityGateJson),
 			planGeneration: generation.planGeneration,
 			basis: generation.basis,
@@ -334,7 +334,7 @@ describe("ultragoal ask guard", () => {
 				JSON.stringify({
 					version: 1,
 					brief: "Stale run",
-					gjcGoalMode: "aggregate",
+					worxGoalMode: "aggregate",
 					goals: [{ id: "G001", title: "Leftover", objective: "Leftover", status: "pending" }],
 				}),
 			);

@@ -10,27 +10,27 @@ import {
 	detectPsmux,
 	PSMUX_BINARY_NAMES,
 	probePsmux,
-	resolveGjcTmuxBinary,
-	resolveGjcTmuxExecutableIdentity,
+	resolveWorxTmuxBinary,
+	resolveWorxTmuxExecutableIdentity,
 	WORX_PSMUX_COMMAND_ENV,
 	WORX_PSMUX_DETECTION_ENV,
 	WORX_PSMUX_FORCE_DETECT_ENV,
 } from "@bworx-io/worx-code/worx-runtime/psmux-detect";
 import {
-	assertGjcTmuxMutationAuthoritySync,
-	bindGjcTmuxProviderAuthority,
+	assertWorxTmuxMutationAuthoritySync,
+	bindWorxTmuxProviderAuthority,
 	buildTmuxProviderCommand,
-	hasGjcTmuxProviderAuthoritySync,
-	persistGjcTmuxProviderAuthoritySync,
-	readGjcTmuxProviderAuthoritySync,
-	resolveGjcTmuxCommand,
-	resolveGjcTmuxProviderContext,
+	hasWorxTmuxProviderAuthoritySync,
+	persistWorxTmuxProviderAuthoritySync,
+	readWorxTmuxProviderAuthoritySync,
+	resolveWorxTmuxCommand,
+	resolveWorxTmuxProviderContext,
 } from "@bworx-io/worx-code/worx-runtime/tmux-common";
 import { lifecyclePaths } from "@bworx-io/worx-code/worx-runtime/tmux-owner-isolation";
 import { prepareManagedDirectoryRoot } from "../../src/session/internal/managed-session-storage";
 import {
 	__setTmuxProviderAuthorityPlatformForTests,
-	assertGjcTmuxStagedMutationAuthoritySync,
+	assertWorxTmuxStagedMutationAuthoritySync,
 } from "../../src/worx-runtime/tmux-provider-context";
 
 setDefaultTimeout(10_000);
@@ -101,7 +101,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 					: null,
 			);
 			__setExecutableIdentityResolverForTests(() => "volume:42");
-			const context = resolveGjcTmuxProviderContext({
+			const context = resolveWorxTmuxProviderContext({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(psmuxVersionOutput()),
@@ -123,11 +123,11 @@ describe("PSMUX_BINARY_NAMES", () => {
 		});
 		it("rejects an explicitly classified psmux command on non-Windows platforms", () => {
 			expect(() =>
-				resolveGjcTmuxProviderContext({
+				resolveWorxTmuxProviderContext({
 					platform: "linux",
 					binary: { command: "/usr/bin/psmux", isPsmux: true, viaExplicitOverride: true },
 				}),
-			).toThrow("gjc_tmux_provider_ambiguous: selected psmux command requires Windows");
+			).toThrow("worx_tmux_provider_ambiguous: selected psmux command requires Windows");
 		});
 
 		it("uses the canonical psmux provider despite distinct compatibility aliases", () => {
@@ -138,7 +138,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 			);
 			__setExecutableIdentityResolverForTests(executable => executable);
 
-			const context = resolveGjcTmuxProviderContext({
+			const context = resolveWorxTmuxProviderContext({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(psmuxVersionOutput()),
@@ -152,19 +152,19 @@ describe("PSMUX_BINARY_NAMES", () => {
 			try {
 				__setBinaryResolverForTests(candidate => (candidate === "psmux" ? "C:\\psmux\\psmux.exe" : null));
 				__setExecutableIdentityResolverForTests(() => "volume:42");
-				const authority = bindGjcTmuxProviderAuthority(
-					resolveGjcTmuxProviderContext({
+				const authority = bindWorxTmuxProviderAuthority(
+					resolveWorxTmuxProviderContext({
 						platform: "win32",
 						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
 				);
-				persistGjcTmuxProviderAuthoritySync(authority);
+				persistWorxTmuxProviderAuthoritySync(authority);
 				publishGeneration(root, authority.sessionId, authority.generation);
-				assertGjcTmuxMutationAuthoritySync(authority);
+				assertWorxTmuxMutationAuthoritySync(authority);
 				expect(
-					hasGjcTmuxProviderAuthoritySync({
+					hasWorxTmuxProviderAuthoritySync({
 						stateDir: root,
 						sessionId: authority.sessionId,
 						generation: authority.generation,
@@ -179,8 +179,8 @@ describe("PSMUX_BINARY_NAMES", () => {
 						published_at: "2026-07-28T00:00:00+00:00",
 					})}\n`,
 				);
-				expect(() => assertGjcTmuxMutationAuthoritySync(authority)).toThrow(
-					"gjc_tmux_provider_authority_generation_mismatch",
+				expect(() => assertWorxTmuxMutationAuthoritySync(authority)).toThrow(
+					"worx_tmux_provider_authority_generation_mismatch",
 				);
 				publishGeneration(root, authority.sessionId, authority.generation);
 				const sidecar = path.join(
@@ -188,16 +188,16 @@ describe("PSMUX_BINARY_NAMES", () => {
 					"provider-authority-generation-a.json",
 				);
 				fs.writeFileSync(sidecar, "{");
-				expect(() => assertGjcTmuxMutationAuthoritySync(authority)).toThrow(
-					"gjc_tmux_provider_authority_invalid_record",
+				expect(() => assertWorxTmuxMutationAuthoritySync(authority)).toThrow(
+					"worx_tmux_provider_authority_invalid_record",
 				);
 				expect(() =>
-					hasGjcTmuxProviderAuthoritySync({
+					hasWorxTmuxProviderAuthoritySync({
 						stateDir: root,
 						sessionId: authority.sessionId,
 						generation: authority.generation,
 					}),
-				).toThrow("gjc_tmux_provider_authority_invalid_record");
+				).toThrow("worx_tmux_provider_authority_invalid_record");
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
 			}
@@ -206,30 +206,30 @@ describe("PSMUX_BINARY_NAMES", () => {
 			const root = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-psmux-off-windows-"));
 			try {
 				__setBinaryResolverForTests(candidate => candidate);
-				const authority = bindGjcTmuxProviderAuthority(
-					resolveGjcTmuxProviderContext({
+				const authority = bindWorxTmuxProviderAuthority(
+					resolveWorxTmuxProviderContext({
 						platform: "win32",
 						binary: { command: "C:\\psmux\\psmux.exe", isPsmux: true, viaExplicitOverride: true },
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
 				);
-				persistGjcTmuxProviderAuthoritySync(authority);
+				persistWorxTmuxProviderAuthoritySync(authority);
 				publishGeneration(root, authority.sessionId, authority.generation);
 				__setTmuxProviderAuthorityPlatformForTests("linux");
 				expect(
-					hasGjcTmuxProviderAuthoritySync({
+					hasWorxTmuxProviderAuthoritySync({
 						stateDir: authority.stateDir,
 						sessionId: authority.sessionId,
 						generation: authority.generation,
 					}),
 				).toBe(false);
 				expect(() =>
-					readGjcTmuxProviderAuthoritySync({
+					readWorxTmuxProviderAuthoritySync({
 						stateDir: authority.stateDir,
 						sessionId: authority.sessionId,
 						generation: authority.generation,
 					}),
-				).toThrow("gjc_tmux_provider_authority_windows_required");
+				).toThrow("worx_tmux_provider_authority_windows_required");
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
 			}
@@ -239,7 +239,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 			try {
 				publishGeneration(root, "team", "generation-a");
 				expect(
-					hasGjcTmuxProviderAuthoritySync({
+					hasWorxTmuxProviderAuthoritySync({
 						stateDir: root,
 						sessionId: "team",
 						generation: "generation-a",
@@ -254,30 +254,30 @@ describe("PSMUX_BINARY_NAMES", () => {
 			try {
 				__setBinaryResolverForTests(candidate => (candidate === "psmux" ? "C:\\psmux\\psmux.exe" : null));
 				__setExecutableIdentityResolverForTests(() => "volume:42");
-				const context = resolveGjcTmuxProviderContext({
+				const context = resolveWorxTmuxProviderContext({
 					platform: "win32",
 					env: { WORX_TMUX_COMMAND: "psmux" },
 					runner: buildRunner(psmuxVersionOutput()),
 				});
-				const first = bindGjcTmuxProviderAuthority(context, {
+				const first = bindWorxTmuxProviderAuthority(context, {
 					stateDir: root,
 					sessionId: "team",
 					generation: "generation-a",
 				});
-				const second = bindGjcTmuxProviderAuthority(context, {
+				const second = bindWorxTmuxProviderAuthority(context, {
 					stateDir: root,
 					sessionId: "team",
 					generation: "generation-b",
 				});
-				persistGjcTmuxProviderAuthoritySync(first);
-				persistGjcTmuxProviderAuthoritySync(second);
-				assertGjcTmuxStagedMutationAuthoritySync(second);
-				expect(() => persistGjcTmuxProviderAuthoritySync(first)).toThrow();
+				persistWorxTmuxProviderAuthoritySync(first);
+				persistWorxTmuxProviderAuthoritySync(second);
+				assertWorxTmuxStagedMutationAuthoritySync(second);
+				expect(() => persistWorxTmuxProviderAuthoritySync(first)).toThrow();
 				publishGeneration(root, second.sessionId, second.generation);
-				expect(() => assertGjcTmuxMutationAuthoritySync(first)).toThrow(
-					"gjc_tmux_provider_authority_generation_mismatch",
+				expect(() => assertWorxTmuxMutationAuthoritySync(first)).toThrow(
+					"worx_tmux_provider_authority_generation_mismatch",
 				);
-				assertGjcTmuxMutationAuthoritySync(second);
+				assertWorxTmuxMutationAuthoritySync(second);
 				const sidecar = path.join(
 					lifecyclePaths(root, "team", "generation-b").root,
 					"provider-authority-generation-b.json",
@@ -294,22 +294,22 @@ describe("PSMUX_BINARY_NAMES", () => {
 			try {
 				__setBinaryResolverForTests(candidate => (candidate === "psmux" ? "C:\\psmux\\psmux.exe" : null));
 				__setExecutableIdentityResolverForTests(() => "volume:42");
-				const context = resolveGjcTmuxProviderContext({
+				const context = resolveWorxTmuxProviderContext({
 					platform: "win32",
 					env: { WORX_TMUX_COMMAND: "psmux" },
 					runner: buildRunner(psmuxVersionOutput()),
 				});
-				const first = bindGjcTmuxProviderAuthority(context, {
+				const first = bindWorxTmuxProviderAuthority(context, {
 					stateDir: root,
 					sessionId: "team",
 					generation: "generation-a",
 				});
-				const successor = bindGjcTmuxProviderAuthority(context, {
+				const successor = bindWorxTmuxProviderAuthority(context, {
 					stateDir: root,
 					sessionId: "team",
 					generation: "generation-b",
 				});
-				persistGjcTmuxProviderAuthoritySync(first);
+				persistWorxTmuxProviderAuthoritySync(first);
 				const lifecycleRoot = lifecyclePaths(root, "team", "generation-a").root;
 				const lockPath = path.join(
 					lifecycleRoot,
@@ -329,7 +329,7 @@ describe("PSMUX_BINARY_NAMES", () => {
 					}),
 				);
 
-				expect(() => persistGjcTmuxProviderAuthoritySync(successor)).toThrow("migration_busy");
+				expect(() => persistWorxTmuxProviderAuthoritySync(successor)).toThrow("migration_busy");
 				const sidecar = path.join(lifecycleRoot, "provider-authority-generation-a.json");
 				expect(
 					(JSON.parse(fs.readFileSync(sidecar, "utf8")) as { owner_generation: string }).owner_generation,
@@ -344,19 +344,19 @@ describe("PSMUX_BINARY_NAMES", () => {
 				let executableIdentity = "volume:42:file:100";
 				__setBinaryResolverForTests(candidate => (candidate === "psmux" ? "C:\\psmux\\psmux.exe" : null));
 				__setExecutableIdentityResolverForTests(() => executableIdentity);
-				const authority = bindGjcTmuxProviderAuthority(
-					resolveGjcTmuxProviderContext({
+				const authority = bindWorxTmuxProviderAuthority(
+					resolveWorxTmuxProviderContext({
 						platform: "win32",
 						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
 				);
-				persistGjcTmuxProviderAuthoritySync(authority);
+				persistWorxTmuxProviderAuthoritySync(authority);
 				publishGeneration(root, authority.sessionId, authority.generation);
 				executableIdentity = "volume:42:file:101";
-				expect(() => assertGjcTmuxMutationAuthoritySync(authority)).toThrow(
-					"gjc_tmux_provider_authority_executable_changed",
+				expect(() => assertWorxTmuxMutationAuthoritySync(authority)).toThrow(
+					"worx_tmux_provider_authority_executable_changed",
 				);
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
@@ -367,15 +367,15 @@ describe("PSMUX_BINARY_NAMES", () => {
 			try {
 				__setBinaryResolverForTests(candidate => (candidate === "psmux" ? "C:\\psmux\\psmux.exe" : null));
 				__setExecutableIdentityResolverForTests(() => "volume:42:file:100");
-				const authority = bindGjcTmuxProviderAuthority(
-					resolveGjcTmuxProviderContext({
+				const authority = bindWorxTmuxProviderAuthority(
+					resolveWorxTmuxProviderContext({
 						platform: "win32",
 						env: { WORX_TMUX_COMMAND: "psmux" },
 						runner: buildRunner(psmuxVersionOutput()),
 					}),
 					{ stateDir: root, sessionId: "team", generation: "generation-a" },
 				);
-				persistGjcTmuxProviderAuthoritySync(authority);
+				persistWorxTmuxProviderAuthoritySync(authority);
 				publishGeneration(root, authority.sessionId, authority.generation);
 				const sidecar = path.join(
 					lifecyclePaths(root, "team", "generation-a").root,
@@ -384,7 +384,9 @@ describe("PSMUX_BINARY_NAMES", () => {
 				const swapped = JSON.parse(fs.readFileSync(sidecar, "utf8")) as Record<string, unknown>;
 				swapped.owner_generation = "generation-b";
 				fs.writeFileSync(sidecar, JSON.stringify(swapped));
-				expect(() => assertGjcTmuxMutationAuthoritySync(authority)).toThrow("gjc_tmux_provider_authority_mismatch");
+				expect(() => assertWorxTmuxMutationAuthoritySync(authority)).toThrow(
+					"worx_tmux_provider_authority_mismatch",
+				);
 			} finally {
 				fs.rmSync(root, { recursive: true, force: true });
 			}
@@ -398,9 +400,9 @@ describe("executable identity", () => {
 		try {
 			fs.writeFileSync(executable, "first");
 			__setExecutableIdentityResolverForTests(null);
-			const first = resolveGjcTmuxExecutableIdentity(executable);
+			const first = resolveWorxTmuxExecutableIdentity(executable);
 			fs.writeFileSync(executable, "replacement");
-			const second = resolveGjcTmuxExecutableIdentity(executable);
+			const second = resolveWorxTmuxExecutableIdentity(executable);
 			expect(first).not.toBeNull();
 			expect(second).not.toBeNull();
 			expect(second).not.toBe(first);
@@ -494,9 +496,9 @@ describe("detectPsmux", () => {
 	});
 });
 
-describe("resolveGjcTmuxBinary", () => {
+describe("resolveWorxTmuxBinary", () => {
 	it("returns the explicit WORX_TMUX_COMMAND override when set", () => {
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "linux",
 			env: { WORX_TMUX_COMMAND: "/custom/tmux" },
 			runner: failingRunner(),
@@ -507,7 +509,7 @@ describe("resolveGjcTmuxBinary", () => {
 	});
 
 	it("falls back to WORX_TEAM_TMUX_COMMAND when WORX_TMUX_COMMAND is unset", () => {
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "linux",
 			env: { WORX_TEAM_TMUX_COMMAND: "team-tmux" },
 			runner: failingRunner(),
@@ -518,7 +520,7 @@ describe("resolveGjcTmuxBinary", () => {
 
 	it("returns tmux as the POSIX default when no override and no binary on PATH", () => {
 		__setBinaryResolverForTests(() => null);
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "linux",
 			env: {},
 			runner: failingRunner(),
@@ -529,7 +531,7 @@ describe("resolveGjcTmuxBinary", () => {
 	});
 
 	it("flags the resolved command as psmux when the probe matches", () => {
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "linux",
 			env: {},
 			runner: buildRunner(psmuxVersionOutput()),
@@ -549,7 +551,7 @@ describe("resolveGjcTmuxBinary", () => {
 			return "volume:42";
 		});
 
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "win32",
 			env: {},
 			runner: buildRunner(tmuxVersionOutput()),
@@ -567,7 +569,7 @@ describe("resolveGjcTmuxBinary", () => {
 		});
 
 		expect(
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(tmuxVersionOutput()),
@@ -580,12 +582,12 @@ describe("resolveGjcTmuxBinary", () => {
 		__setExecutableIdentityResolverForTests(() => null);
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
-		).toThrow("gjc_tmux_provider_ambiguous: Windows psmux executable identity is unavailable");
+		).toThrow("worx_tmux_provider_ambiguous: Windows psmux executable identity is unavailable");
 	});
 
 	it("falls back to pmux when psmux is unavailable", () => {
@@ -596,7 +598,7 @@ describe("resolveGjcTmuxBinary", () => {
 		});
 
 		expect(
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(tmuxVersionOutput()),
@@ -608,7 +610,7 @@ describe("resolveGjcTmuxBinary", () => {
 		__setBinaryResolverForTests(candidate => (candidate === "tmux" ? "C:\\tools\\tmux.exe" : null));
 
 		expect(
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(psmuxVersionOutput()),
@@ -620,19 +622,19 @@ describe("resolveGjcTmuxBinary", () => {
 		__setExecutableIdentityResolverForTests(() => null);
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(psmuxVersionOutput()),
 			}),
-		).toThrow("gjc_tmux_provider_ambiguous: Windows tmux executable identity is unavailable");
+		).toThrow("worx_tmux_provider_ambiguous: Windows tmux executable identity is unavailable");
 	});
 
 	it("keeps a genuine tmux-only Windows installation on native-tmux semantics", () => {
 		__setBinaryResolverForTests(candidate => (candidate === "tmux" ? "C:\\tools\\tmux.exe" : null));
 
 		expect(
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: {},
 				runner: buildRunner(tmuxVersionOutput()),
@@ -650,7 +652,7 @@ describe("resolveGjcTmuxBinary", () => {
 			path.endsWith("tmux.exe") || path.endsWith("psmux.exe") ? "win-file-id:2086" : null,
 		);
 
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "win32",
 			env: { WORX_TMUX_COMMAND: "tmux" },
 			runner: buildRunner(tmuxVersionOutput()),
@@ -664,19 +666,19 @@ describe("resolveGjcTmuxBinary", () => {
 		__setExecutableIdentityResolverForTests(() => null);
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
 			}),
-		).toThrow("gjc_tmux_provider_ambiguous");
+		).toThrow("worx_tmux_provider_ambiguous");
 	});
 
 	it("keeps a distinct Windows tmux.exe on native-tmux semantics", () => {
 		__setBinaryResolverForTests(candidate => `C:\\tools\\${candidate}.exe`);
 		__setExecutableIdentityResolverForTests(path => path.toLowerCase());
 
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "win32",
 			env: { WORX_TMUX_COMMAND: "tmux" },
 			runner: buildRunner(tmuxVersionOutput()),
@@ -693,7 +695,7 @@ describe("resolveGjcTmuxBinary", () => {
 		});
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
@@ -706,7 +708,7 @@ describe("resolveGjcTmuxBinary", () => {
 		__setExecutableIdentityResolverForTests(path => path.toLowerCase());
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: { WORX_TMUX_COMMAND: "tmux", WORX_PSMUX_COMMAND: "C:\\other\\psmux-wrapper.exe" },
 				runner: buildRunner(tmuxVersionOutput()),
@@ -721,7 +723,7 @@ describe("resolveGjcTmuxBinary", () => {
 		});
 
 		expect(() =>
-			resolveGjcTmuxBinary({
+			resolveWorxTmuxBinary({
 				platform: "win32",
 				env: { WORX_TMUX_COMMAND: "tmux" },
 				runner: buildRunner(tmuxVersionOutput()),
@@ -737,7 +739,7 @@ describe("resolveGjcTmuxBinary", () => {
 		});
 		__setExecutableIdentityResolverForTests(() => "same-wrapper");
 
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "win32",
 			env: { WORX_TMUX_COMMAND: "wrapper-tmux", WORX_PSMUX_COMMAND: "wrapper-psmux" },
 			runner: buildRunner(tmuxVersionOutput()),
@@ -746,7 +748,7 @@ describe("resolveGjcTmuxBinary", () => {
 		expect(resolved).toEqual({ command: "wrapper-tmux", isPsmux: true, viaExplicitOverride: true });
 	});
 	it("treats an explicit Windows psmux path as psmux without relying on the version banner", () => {
-		const resolved = resolveGjcTmuxBinary({
+		const resolved = resolveWorxTmuxBinary({
 			platform: "win32",
 			env: { WORX_TEAM_TMUX_COMMAND: "C:\\tools\\psmux.exe" },
 			runner: buildRunner(tmuxVersionOutput()),
@@ -779,7 +781,7 @@ describe("probePsmux", () => {
 	});
 });
 
-describe("resolveGjcTmuxCommand (shared session/team resolver)", () => {
+describe("resolveWorxTmuxCommand (shared session/team resolver)", () => {
 	it("returns psmux on native Windows when psmux resolves and tmux.exe alias does not", () => {
 		// Reproduces the case the review flagged: a Windows host with psmux
 		// installed but no tmux.exe alias on PATH. The shared resolver must
@@ -790,31 +792,31 @@ describe("resolveGjcTmuxCommand (shared session/team resolver)", () => {
 				? `C:\\Users\\runner\\AppData\\Local\\Microsoft\\WinGet\\Links\\${candidate}.exe`
 				: null,
 		);
-		const command = resolveGjcTmuxCommand({}, "win32");
+		const command = resolveWorxTmuxCommand({}, "win32");
 		expect(command).toBe("psmux");
 	});
 
 	it("returns pmux on native Windows when only pmux resolves", () => {
 		__setBinaryResolverForTests(candidate => (candidate === "pmux" ? `/usr/bin/${candidate}` : null));
-		const command = resolveGjcTmuxCommand({}, "win32");
+		const command = resolveWorxTmuxCommand({}, "win32");
 		expect(command).toBe("pmux");
 	});
 
 	it("returns tmux.exe on native Windows when only the tmux alias resolves", () => {
 		__setBinaryResolverForTests(candidate => (candidate === "tmux" ? `/usr/bin/${candidate}` : null));
-		const command = resolveGjcTmuxCommand({}, "win32");
+		const command = resolveWorxTmuxCommand({}, "win32");
 		expect(command).toBe("tmux");
 	});
 
 	it("honors WORX_TMUX_COMMAND override on every platform", () => {
 		__setBinaryResolverForTests(() => null);
-		const command = resolveGjcTmuxCommand({ WORX_TMUX_COMMAND: "psmux" }, "win32");
+		const command = resolveWorxTmuxCommand({ WORX_TMUX_COMMAND: "psmux" }, "win32");
 		expect(command).toBe("psmux");
 	});
 
 	it("falls back to literal tmux on POSIX when no binary resolves", () => {
 		__setBinaryResolverForTests(() => null);
-		const command = resolveGjcTmuxCommand({}, "linux");
+		const command = resolveWorxTmuxCommand({}, "linux");
 		expect(command).toBe("tmux");
 	});
 });

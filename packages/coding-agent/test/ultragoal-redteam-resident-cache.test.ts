@@ -185,7 +185,7 @@ function expectReadable(manager: SessionManager, text: string): void {
 
 function expectNoResidentLeak(value: string): void {
 	expect(value).not.toContain("blob:sha256:");
-	expect(value).not.toContain("__gjcResidentBlob");
+	expect(value).not.toContain("__worxResidentBlob");
 	expect(value).not.toContain("Session resident text blob missing");
 	expect(value).not.toContain("original content unavailable");
 }

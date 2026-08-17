@@ -470,7 +470,7 @@ async function collectSessionIndexHealth(repair: boolean, agentDir: string): Pro
 	}
 }
 
-export async function runGjcGcCommand(
+export async function runWorxGcCommand(
 	argv: string[],
 	cwd: string = process.cwd(),
 	env: NodeJS.ProcessEnv = process.env,
@@ -1906,13 +1906,13 @@ async function removeGcDiskEntry(
 
 async function runGcDiskBackups(input: {
 	surface: GcDiskSurfaceReport;
-	gjcRoot: string;
+	worxRoot: string;
 	policy: GcDiskPolicy;
 	now: number;
 	prune: boolean;
 	errors: GcDiskError[];
 }): Promise<void> {
-	const { surface, gjcRoot, policy, now, prune, errors } = input;
+	const { surface, worxRoot, policy, now, prune, errors } = input;
 	const maxAgeMs = policy.backups_max_age_days * GC_DISK_DAY_MS;
 	const candidates: Array<{ id: string; path: string }> = [];
 
@@ -1928,12 +1928,12 @@ async function runGcDiskBackups(input: {
 
 	// `~/.worx/*.bak` — sibling roots left by update/restore (agent.bak, natives-*.bak).
 	try {
-		for (const entry of await fsp.readdir(gjcRoot, { withFileTypes: true })) {
+		for (const entry of await fsp.readdir(worxRoot, { withFileTypes: true })) {
 			if (!entry.name.endsWith(".bak") || entry.isSymbolicLink()) continue;
-			candidates.push({ id: entry.name, path: path.join(gjcRoot, entry.name) });
+			candidates.push({ id: entry.name, path: path.join(worxRoot, entry.name) });
 		}
 	} catch (error) {
-		if (!isEnoent(error)) errors.push({ surface: "backups", scope: gjcRoot, message: gcDiskErrorText(error) });
+		if (!isEnoent(error)) errors.push({ surface: "backups", scope: worxRoot, message: gcDiskErrorText(error) });
 	}
 
 	for (const candidate of candidates) {
@@ -2002,14 +2002,14 @@ export async function collectGcDiskReport(input: {
 }): Promise<GcDiskReport> {
 	const { agentDir, env, policy, prune } = input;
 	const now = input.now ?? Date.now();
-	const gjcRoot = path.dirname(path.resolve(agentDir));
+	const worxRoot = path.dirname(path.resolve(agentDir));
 	const errors: GcDiskError[] = [];
 	const surfaces: Record<GcDiskSurface, GcDiskSurfaceReport> = {
 		sessions: emptyGcDiskSurface("sessions", getSessionsDir(agentDir)),
 		blobs: emptyGcDiskSurface("blobs", getBlobsDir(agentDir)),
 		artifacts: emptyGcDiskSurface("artifacts", getSessionsDir(agentDir)),
-		natives: emptyGcDiskSurface("natives", path.join(gjcRoot, "natives")),
-		backups: emptyGcDiskSurface("backups", path.join(gjcRoot, "backups")),
+		natives: emptyGcDiskSurface("natives", path.join(worxRoot, "natives")),
+		backups: emptyGcDiskSurface("backups", path.join(worxRoot, "backups")),
 	};
 
 	const scan = await discoverGcDiskTranscripts(surfaces.sessions.root, errors);
@@ -2049,7 +2049,7 @@ export async function collectGcDiskReport(input: {
 		errors,
 		runningVersion: input.runningVersion ?? VERSION,
 	});
-	await runGcDiskBackups({ surface: surfaces.backups, gjcRoot, policy, now, prune, errors });
+	await runGcDiskBackups({ surface: surfaces.backups, worxRoot, policy, now, prune, errors });
 
 	const totals = { scanned_bytes: 0, reclaimable_bytes: 0, reclaimed_bytes: 0, kept_bytes: 0, failed: 0 };
 	for (const name of GC_DISK_SURFACES) {

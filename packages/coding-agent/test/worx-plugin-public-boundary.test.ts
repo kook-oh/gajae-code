@@ -11,9 +11,9 @@ import * as barrel from "../src/extensibility/worx-plugins";
 
 /** Symbols that would let a caller mutate bundle state outside the lifecycle. */
 const FORBIDDEN_EXPORTS = [
-	"runGjcBundleTransaction",
+	"runWorxBundleTransaction",
 	"candidateRegistryEntry",
-	"resolveGjcBundleCandidate",
+	"resolveWorxBundleCandidate",
 	"writeRegistry",
 	"writeRegistryUnlocked",
 	"updateRegistry",
@@ -22,22 +22,22 @@ const FORBIDDEN_EXPORTS = [
 
 /** The lifecycle API callers are expected to use instead. */
 const REQUIRED_EXPORTS = [
-	"installGjcBundle",
-	"previewGjcBundleUpdate",
-	"applyGjcBundleUpdate",
-	"listGjcBundles",
-	"getGjcBundle",
-	"setGjcBundleEnabled",
-	"setGjcBundleSurfaceEnabled",
+	"installWorxBundle",
+	"previewWorxBundleUpdate",
+	"applyWorxBundleUpdate",
+	"listWorxBundles",
+	"getWorxBundle",
+	"setWorxBundleEnabled",
+	"setWorxBundleSurfaceEnabled",
 ];
 
 const srcRoot = path.join(import.meta.dir, "..", "src");
-const gjcPluginsRoot = path.join(srcRoot, "extensibility", "worx-plugins");
+const worxPluginsRoot = path.join(srcRoot, "extensibility", "worx-plugins");
 /** Only these modules may reference the writers: the owner and the primitives. */
 const WRITER_OWNERS = new Set([
-	path.join(gjcPluginsRoot, "lifecycle.ts"),
-	path.join(gjcPluginsRoot, "installer.ts"),
-	path.join(gjcPluginsRoot, "registry.ts"),
+	path.join(worxPluginsRoot, "lifecycle.ts"),
+	path.join(worxPluginsRoot, "installer.ts"),
+	path.join(worxPluginsRoot, "registry.ts"),
 ]);
 
 async function typescriptFilesIn(root: string): Promise<string[]> {
@@ -72,8 +72,8 @@ describe("GJC plugin public boundary", () => {
 			for (const name of ["writeRegistry", "writeRegistryUnlocked", "updateRegistry", "withRegistryLock"]) {
 				if (new RegExp(`\\b${name}\\b`).test(text)) offenders.push(`${path.relative(srcRoot, file)}:${name}`);
 			}
-			if (/\brunGjcBundleTransaction\b/.test(text)) {
-				offenders.push(`${path.relative(srcRoot, file)}:runGjcBundleTransaction`);
+			if (/\brunWorxBundleTransaction\b/.test(text)) {
+				offenders.push(`${path.relative(srcRoot, file)}:runWorxBundleTransaction`);
 			}
 		}
 		expect(offenders).toEqual([]);

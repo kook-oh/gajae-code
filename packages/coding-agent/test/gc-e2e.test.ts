@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { harnessLeasesGcAdapter } from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
-import { runGjcGcCommand } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
+import { runWorxGcCommand } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
 import { SessionIndex } from "../src/sdk/broker/session-index";
 
 const tempDirs: string[] = [];
@@ -63,7 +63,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const leaseFile = await seedDeadLease(base, registryDir, deadPid);
 		const env = { ...process.env, WORX_CODING_AGENT_DIR: base, WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir };
 
-		const result = await runGjcGcCommand(["--json"], base, env, [harnessLeasesGcAdapter]);
+		const result = await runWorxGcCommand(["--json"], base, env, [harnessLeasesGcAdapter]);
 		const report = JSON.parse(result.stdout);
 		expect(report.dry_run).toBe(true);
 		const rec = report.stores.harness_leases.find((r: { id: string }) => r.id === "h-e2e");
@@ -81,7 +81,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		const leaseFile = await seedDeadLease(base, registryDir, deadPid);
 		const env = { ...process.env, WORX_CODING_AGENT_DIR: base, WORX_HARNESS_ROOT_REGISTRY_DIR: registryDir };
 
-		const result = await runGjcGcCommand(["--prune", "--json"], base, env, [harnessLeasesGcAdapter]);
+		const result = await runWorxGcCommand(["--prune", "--json"], base, env, [harnessLeasesGcAdapter]);
 		const report = JSON.parse(result.stdout);
 		expect(report.dry_run).toBe(false);
 		const rec = report.stores.harness_leases.find((r: { id: string }) => r.id === "h-e2e");
@@ -97,7 +97,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 			WORX_CODING_AGENT_DIR: base,
 			WORX_HARNESS_ROOT_REGISTRY_DIR: path.join(base, "reg-empty"),
 		};
-		const result = await runGjcGcCommand([], base, env, [harnessLeasesGcAdapter]);
+		const result = await runWorxGcCommand([], base, env, [harnessLeasesGcAdapter]);
 		expect(result.stdout).toContain("dry run");
 		expect(result.stdout).toContain("Harness owner leases");
 		expect(result.status).toBe(0);
@@ -119,7 +119,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		await fs.appendFile(log, "broken\n");
 
 		const repairEnv = { ...process.env, WORX_CODING_AGENT_DIR: agentDir };
-		const repaired = await runGjcGcCommand(["--repair-session-index", "--json"], base, repairEnv, [
+		const repaired = await runWorxGcCommand(["--repair-session-index", "--json"], base, repairEnv, [
 			harnessLeasesGcAdapter,
 		]);
 		const repairReport = JSON.parse(repaired.stdout);
@@ -128,7 +128,7 @@ describe("gjc gc end-to-end (harness lease adapter)", () => {
 		expect(await fs.exists(repairReport.session_index.quarantine_path)).toBe(true);
 		expect(repaired.status).toBe(0);
 
-		const retry = await runGjcGcCommand(["--repair-session-index", "--json"], base, repairEnv, [
+		const retry = await runWorxGcCommand(["--repair-session-index", "--json"], base, repairEnv, [
 			harnessLeasesGcAdapter,
 		]);
 		expect(JSON.parse(retry.stdout).session_index).toMatchObject({ status: "healthy", valid_prefix_seq: 1 });

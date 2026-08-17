@@ -1730,7 +1730,7 @@ export async function runSubprocess(options: ExecutorOptions): Promise<SingleRes
 					spawns: spawnsEnv,
 					taskDepth: childDepth,
 					currentAgentType: agent.name,
-					gjcSubskillToolContext: {
+					worxSubskillToolContext: {
 						cwd,
 						sessionId: options.parentSessionId,
 						parent: agent.name,

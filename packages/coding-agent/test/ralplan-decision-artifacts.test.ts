@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { getDefaultGjcDefinitions } from "@bworx-io/worx-code/defaults/worx-defaults";
+import { getDefaultWorxDefinitions } from "@bworx-io/worx-code/defaults/worx-defaults";
 import { getBundledAgent } from "@bworx-io/worx-code/task/agents";
 
 const rolePromptSectionContracts = [
@@ -151,7 +151,7 @@ describe("ralplan decision artifacts", () => {
 			}
 		}
 
-		const ralplan = getDefaultGjcDefinitions().find(
+		const ralplan = getDefaultWorxDefinitions().find(
 			definition => definition.kind === "skill" && definition.name === "ralplan",
 		);
 		expect(ralplan).toBeDefined();
@@ -198,7 +198,7 @@ describe("ralplan decision artifacts", () => {
 			expect(architect.systemPrompt).not.toMatch(pattern);
 		}
 
-		const ralplan = getDefaultGjcDefinitions().find(
+		const ralplan = getDefaultWorxDefinitions().find(
 			definition => definition.kind === "skill" && definition.name === "ralplan",
 		);
 		expect(ralplan).toBeDefined();

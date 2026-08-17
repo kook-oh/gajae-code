@@ -29,8 +29,8 @@ import {
 	RepositoryBindingError,
 } from "./repository-binding";
 import { isRestrictedRoleAgentBash, WORX_RALPLAN_ARTIFACT_ENV } from "./restricted-role-agent-bash";
-import { gjcRoot, modeStatePath, sessionIdFromDirName, sessionPlansDir } from "./session-layout";
-import { resolveGjcSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
+import { modeStatePath, sessionIdFromDirName, sessionPlansDir, worxRoot } from "./session-layout";
+import { resolveWorxSessionForWrite, writeSessionActivityMarker } from "./session-resolution";
 import { migrateWorkflowState } from "./state-migrations";
 import { runNativeStateCommand } from "./state-runtime";
 import {
@@ -40,7 +40,7 @@ import {
 	writeArtifact,
 	writeWorkflowEnvelopeAtomic,
 } from "./state-writer";
-import { probeGjcTeamAvailability } from "./team-runtime";
+import { probeWorxTeamAvailability } from "./team-runtime";
 import { assertSafePathComponent, CommandError, flagValue, hasFlag } from "./workflow-cli-common";
 import { getSkillManifest } from "./workflow-manifest";
 /**
@@ -411,7 +411,7 @@ async function readSettingsMaxIterations(settingsPath: string): Promise<number |
  * user settings, else default 5.
  */
 export async function resolveRalplanMaxIterations(cwd: string): Promise<{ maxIterations: number; source: string }> {
-	const projectPath = path.join(gjcRoot(cwd), "settings.json");
+	const projectPath = path.join(worxRoot(cwd), "settings.json");
 	const project = await readSettingsMaxIterations(projectPath);
 	if (project !== null) return { maxIterations: project, source: projectPath };
 	const userPath = path.join(getConfigRootDir(), "settings.json");
@@ -487,7 +487,7 @@ export async function resolveRalplanAutoHandoff(
 	cwd: string,
 	options: RalplanAutoHandoffOptions = {},
 ): Promise<RalplanAutoHandoffResolution> {
-	const projectPath = path.join(gjcRoot(cwd), "settings.json");
+	const projectPath = path.join(worxRoot(cwd), "settings.json");
 	const project = await readSettingsAutoHandoff(projectPath);
 	if (project.kind === "invalid") {
 		throw new RalplanCommandError(2, `invalid ralplan settings at ${projectPath}: ${project.reason}`);
@@ -518,7 +518,7 @@ function resolveRalplanAutoHandoffTarget(
 	if (configuredTarget !== "team")
 		return { configuredTarget, effectiveTarget: configuredTarget, degradationReason: null, source };
 
-	const availability = (options.teamAvailabilityProbe ?? probeGjcTeamAvailability)();
+	const availability = (options.teamAvailabilityProbe ?? probeWorxTeamAvailability)();
 	return availability.available
 		? { configuredTarget, effectiveTarget: "team", degradationReason: null, source }
 		: {
@@ -592,7 +592,7 @@ async function readSettingsMaxReviewPassesPerLane(settingsPath: string): Promise
 export async function resolveRalplanMaxReviewPassesPerLane(
 	cwd: string,
 ): Promise<{ maxReviewPassesPerLane: number; source: string }> {
-	const projectPath = path.join(gjcRoot(cwd), "settings.json");
+	const projectPath = path.join(worxRoot(cwd), "settings.json");
 	const project = await readSettingsMaxReviewPassesPerLane(projectPath);
 	if (project.kind === "invalid") {
 		throw new RalplanCommandError(2, `invalid ralplan settings at ${projectPath}: ${project.reason}`);
@@ -1368,7 +1368,7 @@ async function persistRalplanFinalAdmission(
 async function findExistingRalplanRunOwners(cwd: string, runId: string): Promise<string[]> {
 	let entries: Dirent<string>[];
 	try {
-		entries = await fs.readdir(gjcRoot(cwd), { withFileTypes: true });
+		entries = await fs.readdir(worxRoot(cwd), { withFileTypes: true });
 	} catch (error) {
 		const err = error as NodeJS.ErrnoException;
 		if (err.code === "ENOENT" || err.code === "ENOTDIR") return [];
@@ -1403,14 +1403,14 @@ async function findExistingRalplanRunOwners(cwd: string, runId: string): Promise
 
 async function resolveArtifactSessionId(args: readonly string[], cwd: string, explicitRunId: string | undefined) {
 	const flagSessionId = flagValue(args, "--session-id");
-	const currentSession = resolveGjcSessionForWrite(cwd, {
+	const currentSession = resolveWorxSessionForWrite(cwd, {
 		flagValue: flagSessionId,
 		envSessionId: process.env.WORX_SESSION_ID,
 	});
-	if (!explicitRunId) return currentSession.gjcSessionId;
+	if (!explicitRunId) return currentSession.worxSessionId;
 
 	const owners = await findExistingRalplanRunOwners(cwd, explicitRunId);
-	if (owners.length === 0) return currentSession.gjcSessionId;
+	if (owners.length === 0) return currentSession.worxSessionId;
 	if (owners.length > 1) {
 		throw new RalplanCommandError(
 			2,
@@ -1419,10 +1419,10 @@ async function resolveArtifactSessionId(args: readonly string[], cwd: string, ex
 	}
 
 	const ownerSessionId = owners[0]!;
-	if (flagSessionId !== undefined && currentSession.gjcSessionId !== ownerSessionId) {
+	if (flagSessionId !== undefined && currentSession.worxSessionId !== ownerSessionId) {
 		throw new RalplanCommandError(
 			2,
-			`ralplan run ${explicitRunId} is owned by session ${ownerSessionId}, not ${currentSession.gjcSessionId}`,
+			`ralplan run ${explicitRunId} is owned by session ${ownerSessionId}, not ${currentSession.worxSessionId}`,
 		);
 	}
 	return ownerSessionId;
@@ -2232,11 +2232,11 @@ function resolveConsensusArgs(args: readonly string[], cwd: string): ConsensusHa
 			`unknown --critic kind: ${criticKind}. Expected one of: ${[...KNOWN_CRITIC_KINDS].join(", ")}.`,
 		);
 	}
-	const session = resolveGjcSessionForWrite(cwd, {
+	const session = resolveWorxSessionForWrite(cwd, {
 		flagValue: flagValue(args, "--session-id"),
 		envSessionId: process.env.WORX_SESSION_ID,
 	});
-	const sessionId = session.gjcSessionId;
+	const sessionId = session.worxSessionId;
 	assertSafePathComponent(sessionId, "session-id");
 	const task = extractPositionalTask(args);
 	return {

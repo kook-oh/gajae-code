@@ -100,7 +100,7 @@ const LOCKED_EXCLUSIONS: Readonly<Record<string, string>> = {
 	"agent_session:refreshSshTool": "internal accessor/plumbing, not a user-facing control seam",
 	"agent_session:refreshBaseSystemPrompt": "internal accessor/plumbing, not a user-facing control seam",
 	"agent_session:refreshMCPTools": "internal accessor/plumbing, not a user-facing control seam",
-	"agent_session:refreshGjcSubskillTools": "internal accessor/plumbing, not a user-facing control seam",
+	"agent_session:refreshWorxSubskillTools": "internal accessor/plumbing, not a user-facing control seam",
 	"agent_session:buildDisplaySessionContext": "internal accessor/plumbing, not a user-facing control seam",
 	"agent_session:buildPreparedDisplaySessionContext": "internal accessor/plumbing, not a user-facing control seam",
 	"agent_session:convertMessagesToLlm": "internal accessor/plumbing, not a user-facing control seam",

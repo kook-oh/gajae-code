@@ -135,16 +135,16 @@ export const MODEL_ROLES: Record<ModelRole, ModelRoleInfo> = {
 export const MODEL_ROLE_IDS: ModelRole[] = ["default"];
 export const MODEL_PROFILE_NAME_PATTERN = /^[a-z0-9][a-z0-9._-]*$/;
 export const MODEL_PROFILE_NAME_PATTERN_DESCRIPTION = "lowercase letters, numbers, dots, underscores, or hyphens";
-export type GjcModelAssignmentTargetId = (typeof WORX_MODEL_ASSIGNMENT_TARGET_IDS)[number];
+export type WorxModelAssignmentTargetId = (typeof WORX_MODEL_ASSIGNMENT_TARGET_IDS)[number];
 
-export interface GjcModelAssignmentTargetInfo extends ModelRoleInfo {
-	id: GjcModelAssignmentTargetId;
+export interface WorxModelAssignmentTargetInfo extends ModelRoleInfo {
+	id: WorxModelAssignmentTargetId;
 	settingsPath: "modelRoles" | "task.agentModelOverrides";
 }
 
 export { WORX_MODEL_ASSIGNMENT_TARGET_IDS };
 
-export const WORX_MODEL_ASSIGNMENT_TARGETS: Record<GjcModelAssignmentTargetId, GjcModelAssignmentTargetInfo> = {
+export const WORX_MODEL_ASSIGNMENT_TARGETS: Record<WorxModelAssignmentTargetId, WorxModelAssignmentTargetInfo> = {
 	default: { id: "default", tag: "DEFAULT", name: "Default", color: "success", settingsPath: "modelRoles" },
 	executor: {
 		id: "executor",

@@ -5,16 +5,16 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
 import {
-	compileGjcPluginBundle,
-	GjcPluginLoadError,
-	getGjcPluginMigrationStatuses,
+	compileWorxPluginBundle,
+	getWorxPluginMigrationStatuses,
 	loadAlwaysOnPluginTools,
 	PluginImplementationHashMismatchError,
 	readRegistry,
-	serveGjcPluginSchemas,
+	serveWorxPluginSchemas,
+	WorxPluginLoadError,
 } from "../src/extensibility/worx-plugins";
 import { writeRegistry } from "../src/extensibility/worx-plugins/registry";
-import type { GjcPluginRegistryEntry } from "../src/extensibility/worx-plugins/types";
+import type { WorxPluginRegistryEntry } from "../src/extensibility/worx-plugins/types";
 
 const fixture = path.join(import.meta.dir, "fixtures", "worx-plugins", "valid-six-surface-bundle");
 const originalAgentDir = getAgentDir();
@@ -32,7 +32,7 @@ async function makeCwd(): Promise<string> {
 }
 
 async function writeLegacyEntry(cwd: string, root: string): Promise<void> {
-	const bundle = await compileGjcPluginBundle(root);
+	const bundle = await compileWorxPluginBundle(root);
 	const surfaces = structuredClone(bundle.surfaces);
 	for (const tool of surfaces.tools) {
 		delete tool.schema;
@@ -41,7 +41,7 @@ async function writeLegacyEntry(cwd: string, root: string): Promise<void> {
 		delete tool.metadataVersion;
 	}
 	for (const hook of surfaces.hooks) delete hook.implementationHash;
-	const entry: GjcPluginRegistryEntry = {
+	const entry: WorxPluginRegistryEntry = {
 		name: bundle.name,
 		version: bundle.version,
 		scope: "project",
@@ -108,7 +108,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		tools[0]!.schema = { type: "not-a-json-schema-type" };
 		const manifestText = JSON.stringify(manifest);
 		await fs.writeFile(manifestPath, manifestText);
-		const bundle = await compileGjcPluginBundle(fixture);
+		const bundle = await compileWorxPluginBundle(fixture);
 		for (const tool of bundle.surfaces.tools) {
 			delete tool.schema;
 			delete tool.schemaHash;
@@ -117,7 +117,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		}
 		for (const hook of bundle.surfaces.hooks) delete hook.implementationHash;
 		const implementation = await fs.readFile(path.join(root, "tools/domain-note.ts"), "utf8");
-		const entry: GjcPluginRegistryEntry = {
+		const entry: WorxPluginRegistryEntry = {
 			name: "valid-six-surface-bundle",
 			version: "1.0.0",
 			scope: "project",
@@ -147,7 +147,7 @@ describe("GJC plugin registry v2 cutover", () => {
 			surfaceId: expect.stringContaining("tool:"),
 			code: "migration_required",
 		});
-		const status = (await getGjcPluginMigrationStatuses(cwd))[0];
+		const status = (await getWorxPluginMigrationStatuses(cwd))[0];
 		expect(status).toMatchObject({
 			plugin: "valid-six-surface-bundle",
 			status: "failed",
@@ -163,7 +163,7 @@ describe("GJC plugin registry v2 cutover", () => {
 		const sentinel = path.join(cwd, "imported");
 		process.env.WORX_TEST_IMPORT_SENTINEL = sentinel;
 		try {
-			const schemas = await serveGjcPluginSchemas(cwd);
+			const schemas = await serveWorxPluginSchemas(cwd);
 			expect(schemas["tool:domain_note"]).toMatchObject({ $schema: "https://json-schema.org/draft/2020-12/schema" });
 			expect(
 				await fs
@@ -205,6 +205,6 @@ describe("GJC plugin registry v2 cutover", () => {
 		}
 		await expect(
 			Promise.reject(new PluginImplementationHashMismatchError("tool.ts", "a", "b")),
-		).rejects.toBeInstanceOf(GjcPluginLoadError);
+		).rejects.toBeInstanceOf(WorxPluginLoadError);
 	});
 });

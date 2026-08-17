@@ -77,7 +77,7 @@ export interface NotificationSessionControllerOptions {
 	/** Kept as a reference so test and embedding hosts can supply their own environment. */
 	env?: NodeJS.ProcessEnv;
 	/** This process was launched by a marked GJC child spawn site. */
-	spawnedByGjc?: boolean;
+	spawnedByWorx?: boolean;
 }
 
 /**
@@ -93,7 +93,7 @@ export class NotificationSessionController {
 	readonly #eligible: boolean;
 	readonly #getConfig: () => NotificationConfig;
 	readonly #env: NodeJS.ProcessEnv;
-	readonly #spawnedByGjc: boolean;
+	readonly #spawnedByWorx: boolean;
 	readonly #disabledSessions = new Set<string>();
 	/** Explicit per-session opt-in overrides only the generic WORX_NOTIFICATIONS=0 auto-admission suppression. */
 	readonly #manualOptInSessions = new Set<string>();
@@ -109,7 +109,7 @@ export class NotificationSessionController {
 		this.#eligible = options.eligible;
 		this.#getConfig = options.getConfig;
 		this.#env = options.env ?? process.env;
-		this.#spawnedByGjc = options.spawnedByGjc ?? false;
+		this.#spawnedByWorx = options.spawnedByWorx ?? false;
 	}
 
 	/** Attach the concrete generic endpoint implementation used by this host. */
@@ -488,7 +488,7 @@ export class NotificationSessionController {
 			cfg,
 			env: eligibilityEnv,
 			sessionDisabled: !locallyEnabled,
-			spawnedByGjc: this.#spawnedByGjc,
+			spawnedByWorx: this.#spawnedByWorx,
 		});
 		const telegramMarkerBlocksOnlyProvider =
 			Boolean(getCurrentTelegramActivationMarker(cfg)) &&

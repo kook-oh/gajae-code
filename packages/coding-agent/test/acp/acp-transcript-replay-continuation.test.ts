@@ -34,7 +34,7 @@ function updateMeta(notification: SessionNotification): Record<string, unknown> 
 
 function skipBoundaries(notifications: SessionNotification[]): unknown[] {
 	return notifications
-		.map(notification => updateMeta(notification)?.gjcTranscriptReplaySkipped)
+		.map(notification => updateMeta(notification)?.worxTranscriptReplaySkipped)
 		.filter(value => value !== undefined);
 }
 
@@ -289,7 +289,7 @@ describe("ACP transcript replay continuation recovery", () => {
 		await waitFor(
 			() =>
 				updates.some(update => update.update.sessionUpdate === "available_commands_update") &&
-				updates.some(update => updateMeta(update)?.gjcPhase === "idle"),
+				updates.some(update => updateMeta(update)?.worxPhase === "idle"),
 			"the new session bootstrap",
 		);
 		updates.length = 0;

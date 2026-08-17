@@ -55,7 +55,7 @@ class Bot implements BotApi {
 			case "getChat":
 				return { ok: true, result: { type: "private" } };
 			case "getMe":
-				return { ok: true, result: { username: "gjc_bot" } };
+				return { ok: true, result: { username: "worx_bot" } };
 			case "createForumTopic":
 				return { ok: true, result: { message_thread_id: THREAD_ID } };
 			case "sendMessage":

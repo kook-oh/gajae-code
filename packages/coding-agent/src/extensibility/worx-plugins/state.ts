@@ -1,10 +1,10 @@
-import { resolveGjcSessionForRead, SessionResolutionError } from "../../worx-runtime/session-resolution";
+import { resolveWorxSessionForRead, SessionResolutionError } from "../../worx-runtime/session-resolution";
 
 async function resolveBoundarySessionId(cwd: string, sessionId?: string): Promise<string | undefined> {
 	const normalizedSessionId = sessionId?.trim();
 	if (normalizedSessionId) return normalizedSessionId;
 	try {
-		return (await resolveGjcSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).gjcSessionId;
+		return (await resolveWorxSessionForRead(cwd, { envSessionId: process.env.WORX_SESSION_ID })).worxSessionId;
 	} catch (error) {
 		if (error instanceof SessionResolutionError && error.code === "no_session") return undefined;
 		throw error;

@@ -246,16 +246,16 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcModelFallbackSwitched: true,
-						gjcModelFallbackEventId: event.eventId,
-						gjcModelFallbackFrom: event.from,
-						gjcModelFallbackTo: event.to,
-						gjcModelFallbackReason: event.reason,
-						gjcModelFallbackRole: event.role,
-						gjcModelFallbackScope: event.scope,
-						gjcModelFallbackActiveIndex: event.activeIndex,
-						gjcModelFallbackChainLength: event.chainLength,
-						gjcModelFallbackAttemptsUsed: event.attemptsUsed,
+						worxModelFallbackSwitched: true,
+						worxModelFallbackEventId: event.eventId,
+						worxModelFallbackFrom: event.from,
+						worxModelFallbackTo: event.to,
+						worxModelFallbackReason: event.reason,
+						worxModelFallbackRole: event.role,
+						worxModelFallbackScope: event.scope,
+						worxModelFallbackActiveIndex: event.activeIndex,
+						worxModelFallbackChainLength: event.chainLength,
+						worxModelFallbackAttemptsUsed: event.attemptsUsed,
 					},
 				}),
 			];
@@ -271,12 +271,12 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcPhase: "compacting",
-						gjcCompactionState: "start",
-						gjcCompactionTrigger: event.reason,
-						gjcCompactionAction: event.action,
+						worxPhase: "compacting",
+						worxCompactionState: "start",
+						worxCompactionTrigger: event.reason,
+						worxCompactionAction: event.action,
 						running: true,
-						gjcRunning: true,
+						worxRunning: true,
 					},
 				}),
 			];
@@ -284,22 +284,22 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 			const phase = options.compactionEndPhase ?? "responding";
 			const running = phase !== "idle";
 			const meta: Record<string, unknown> = {
-				gjcPhase: phase,
-				gjcCompactionState: "end",
-				gjcCompactionAction: event.action,
-				gjcCompactionAborted: event.aborted,
-				gjcCompactionWillRetry: event.willRetry,
+				worxPhase: phase,
+				worxCompactionState: "end",
+				worxCompactionAction: event.action,
+				worxCompactionAborted: event.aborted,
+				worxCompactionWillRetry: event.willRetry,
 				running,
-				gjcRunning: running,
+				worxRunning: running,
 			};
 			if (event.skipped !== undefined) {
-				meta.gjcCompactionSkipped = event.skipped;
+				meta.worxCompactionSkipped = event.skipped;
 			}
 			if (event.errorMessage !== undefined) {
-				meta.gjcCompactionErrorMessage = event.errorMessage;
+				meta.worxCompactionErrorMessage = event.errorMessage;
 			}
 			if (event.continuationSkipReason !== undefined) {
-				meta.gjcCompactionContinuationSkipReason = event.continuationSkipReason;
+				meta.worxCompactionContinuationSkipReason = event.continuationSkipReason;
 			}
 			return [toSessionNotification(sessionId, { sessionUpdate: "session_info_update", _meta: meta })];
 		}
@@ -308,15 +308,15 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcPhase: "retrying",
-						gjcRetryState: "waiting",
-						gjcRetryAttempt: event.attempt,
-						gjcRetryMaxAttempts: event.maxAttempts,
-						gjcRetryDelayMs: event.delayMs,
-						gjcRetryErrorMessage: event.errorMessage,
-						gjcRetryUnbounded: event.unbounded ?? false,
+						worxPhase: "retrying",
+						worxRetryState: "waiting",
+						worxRetryAttempt: event.attempt,
+						worxRetryMaxAttempts: event.maxAttempts,
+						worxRetryDelayMs: event.delayMs,
+						worxRetryErrorMessage: event.errorMessage,
+						worxRetryUnbounded: event.unbounded ?? false,
 						running: true,
-						gjcRunning: true,
+						worxRunning: true,
 					},
 				}),
 			];
@@ -325,12 +325,12 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcPhase: event.success ? "responding" : "retry_failed",
-						gjcRetryState: event.success ? "succeeded" : "failed",
-						gjcRetryAttempt: event.attempt,
-						...(event.finalError ? { gjcRetryFinalError: event.finalError } : {}),
+						worxPhase: event.success ? "responding" : "retry_failed",
+						worxRetryState: event.success ? "succeeded" : "failed",
+						worxRetryAttempt: event.attempt,
+						...(event.finalError ? { worxRetryFinalError: event.finalError } : {}),
 						running: true,
-						gjcRunning: true,
+						worxRunning: true,
 					},
 				}),
 			];
@@ -339,8 +339,8 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcTtsrTriggered: true,
-						gjcTtsrRuleCount: event.rules.length,
+						worxTtsrTriggered: true,
+						worxTtsrRuleCount: event.rules.length,
 					},
 				}),
 			];
@@ -361,7 +361,7 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 			return [
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
-					_meta: { gjcThinkingLevel: event.thinkingLevel ?? "off" },
+					_meta: { worxThinkingLevel: event.thinkingLevel ?? "off" },
 				}),
 			];
 		case "goal_updated":
@@ -369,15 +369,15 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						gjcGoalActive: event.goal !== null,
+						worxGoalActive: event.goal !== null,
 						...(event.goal
 							? {
-									gjcGoalId: event.goal.id,
-									gjcGoalStatus: event.goal.status,
-									gjcGoalObjective: event.goal.objective,
+									worxGoalId: event.goal.id,
+									worxGoalStatus: event.goal.status,
+									worxGoalObjective: event.goal.objective,
 								}
 							: {}),
-						...(event.state ? { gjcGoalModeState: event.state } : {}),
+						...(event.state ? { worxGoalModeState: event.state } : {}),
 					},
 				}),
 			];

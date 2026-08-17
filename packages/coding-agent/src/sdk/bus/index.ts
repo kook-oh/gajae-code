@@ -3571,7 +3571,7 @@ export function createNotificationsExtension(
 		}) => Promise<EnsureDaemonResult>;
 		ensureProviderDaemon?: (provider: "discord" | "slack", settings: Settings) => Promise<unknown>;
 		/** Suppress auto-delivery for a GJC-spawned child under `sessionScope=primary`. */
-		spawnedByGjc?: boolean;
+		spawnedByWorx?: boolean;
 		controller?: NotificationSessionController;
 		/** Whether this host mode can own the root SDK endpoint. Default: true. */
 		sdkHostModeSupported?: boolean;
@@ -3591,7 +3591,7 @@ export function createNotificationsExtension(
 		new NotificationSessionController({
 			eligible: true,
 			getConfig: () => resolveSettings(options.settings).cfg,
-			spawnedByGjc: options.spawnedByGjc,
+			spawnedByWorx: options.spawnedByWorx,
 		});
 
 	// Failed terminal teardown remains fenced from normal runtime lookup while the
@@ -6019,7 +6019,7 @@ export function createNotificationsExtension(
 				cfg: resolved.cfg,
 				env: manualEligibilityEnv,
 				sessionDisabled: false,
-				spawnedByGjc: options.spawnedByGjc,
+				spawnedByWorx: options.spawnedByWorx,
 			}).enabled;
 
 			if (command === "off") {

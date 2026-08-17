@@ -4,10 +4,10 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import {
-	type GjcPluginRegistryEntry,
-	type NormalizedGjcPluginSurfaces,
+	type NormalizedWorxPluginSurfaces,
 	validateSessionBundles,
 	verifyEntryHashes,
+	type WorxPluginRegistryEntry,
 } from "../src/extensibility/worx-plugins";
 
 const tempDirs: string[] = [];
@@ -15,11 +15,11 @@ afterEach(async () => {
 	for (const d of tempDirs.splice(0)) await fs.rm(d, { recursive: true, force: true });
 });
 
-function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
+function surfaces(over: Partial<NormalizedWorxPluginSurfaces> = {}): NormalizedWorxPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
 }
 
-function entry(name: string, over: Partial<GjcPluginRegistryEntry> = {}): GjcPluginRegistryEntry {
+function entry(name: string, over: Partial<WorxPluginRegistryEntry> = {}): WorxPluginRegistryEntry {
 	return {
 		name,
 		version: "1.0.0",

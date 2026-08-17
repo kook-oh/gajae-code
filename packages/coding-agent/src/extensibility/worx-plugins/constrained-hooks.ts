@@ -4,9 +4,9 @@ import { logger } from "@bworx-io/worx-utils";
 import { bundleIdentity } from "./lifecycle-reconciliation";
 import { verifyImplementationHash } from "./metadata";
 import { resolveWithinRoot } from "./paths";
-import { loadEffectiveGjcPluginRegistry } from "./registry";
+import { loadEffectiveWorxPluginRegistry } from "./registry";
 import { type SessionQuarantine, validateSessionBundles, verifyEntryHashes } from "./session-validation";
-import { GjcPluginLoadError, type GjcPluginRegistryEntry, type GjcPluginScope } from "./types";
+import { WorxPluginLoadError, type WorxPluginRegistryEntry, type WorxPluginScope } from "./types";
 
 /**
  * Constrained plugin-hook loader.
@@ -44,13 +44,13 @@ async function resolveConstrainedHookFile(root: string, relativePath: string): P
 	const [rootReal, fileReal] = await Promise.all([fs.realpath(root), fs.realpath(lexical)]);
 	const rel = path.relative(rootReal, fileReal);
 	if (rel.startsWith("..") || path.isAbsolute(rel))
-		throw new GjcPluginLoadError("runtime_mismatch", `GJC plugin hook escapes its installed root: ${relativePath}`);
+		throw new WorxPluginLoadError("runtime_mismatch", `GJC plugin hook escapes its installed root: ${relativePath}`);
 	return fileReal;
 }
 
 export interface DeclaredHook {
 	plugin: string;
-	scope: GjcPluginScope;
+	scope: WorxPluginScope;
 	event: string;
 	target?: string;
 	phase?: "before" | "after";
@@ -59,7 +59,7 @@ export interface DeclaredHook {
 }
 
 async function collectDeclaredHooks(
-	entries: readonly GjcPluginRegistryEntry[],
+	entries: readonly WorxPluginRegistryEntry[],
 	invalidHookIds = new Set<string>(),
 ): Promise<DeclaredHook[]> {
 	const out: DeclaredHook[] = [];
@@ -88,7 +88,7 @@ async function collectDeclaredHooks(
 /** Lazy declaration for one constrained hook. Importing this descriptor is metadata-only. */
 export class ConstrainedPluginHookDescriptor {
 	readonly plugin: string;
-	readonly scope: GjcPluginScope;
+	readonly scope: WorxPluginScope;
 	readonly event: string;
 	readonly target?: string;
 	readonly phase?: "before" | "after";
@@ -109,7 +109,7 @@ export class ConstrainedPluginHookDescriptor {
 		if (this.implementationHash) await verifyImplementationHash(this.relativePath, this.implementationHash);
 		const registered: { event: string; handler: (...a: any[]) => unknown }[] = [];
 		const deny = (method: string) => () => {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"security_policy",
 				`Plugin hook "${this.plugin}" attempted denied API: ${method}`,
 			);
@@ -122,10 +122,10 @@ export class ConstrainedPluginHookDescriptor {
 		const mod = await import(this.relativePath);
 		const factory = mod.default ?? mod;
 		if (typeof factory !== "function")
-			throw new GjcPluginLoadError("invalid_hook", "Plugin hook must export a default function");
+			throw new WorxPluginLoadError("invalid_hook", "Plugin hook must export a default function");
 		await (factory as (api: unknown) => unknown)(constrainedApi);
 		if (registered.length !== 1 || registered[0]?.event !== this.event) {
-			throw new GjcPluginLoadError(
+			throw new WorxPluginLoadError(
 				"runtime_mismatch",
 				`Plugin hook registered ${JSON.stringify(registered.map(r => r.event))}, expected exactly ["${this.event}"]`,
 			);
@@ -145,7 +145,7 @@ async function loadOneHook(
 	try {
 		return { hook: await new ConstrainedPluginHookDescriptor(declared).load(), quarantine: null };
 	} catch (error) {
-		const code = error instanceof GjcPluginLoadError ? error.code : "invalid_hook";
+		const code = error instanceof WorxPluginLoadError ? error.code : "invalid_hook";
 		return {
 			hook: null,
 			quarantine: {
@@ -165,7 +165,7 @@ async function loadOneHook(
  * no plugins are installed.
  */
 export async function loadConstrainedPluginHooks(input: { cwd: string }): Promise<ConstrainedHookLoadResult> {
-	const effective = await loadEffectiveGjcPluginRegistry(input.cwd);
+	const effective = await loadEffectiveWorxPluginRegistry(input.cwd);
 	if (effective.length === 0) return { hooks: [], quarantine: [] };
 	const preQuarantine: SessionQuarantine[] = [];
 	const invalidHookIds = new Set<string>();

@@ -4,17 +4,17 @@ import { renderCliWriteReceipt } from "../worx-runtime/cli-write-receipt";
 import { renderTeamStatusMarkdown } from "../worx-runtime/state-renderer";
 import {
 	buildTeamHudSummary,
-	executeGjcTeamApiOperation,
-	type GjcTeamSnapshot,
-	listGjcTeams,
-	monitorGjcTeamSnapshot,
+	executeWorxTeamApiOperation,
+	listWorxTeams,
+	monitorWorxTeamSnapshot,
 	parseTeamLaunchArgs,
-	persistGjcTeamModeStateSummary,
-	readGjcTeamEvents,
-	readGjcTeamSnapshot,
-	shutdownGjcTeam,
-	startGjcTeam,
-	UnknownGjcTeamApiOperationError,
+	persistWorxTeamModeStateSummary,
+	readWorxTeamEvents,
+	readWorxTeamSnapshot,
+	shutdownWorxTeam,
+	startWorxTeam,
+	UnknownWorxTeamApiOperationError,
+	type WorxTeamSnapshot,
 } from "../worx-runtime/team-runtime";
 
 function writeJson(value: unknown): void {
@@ -24,9 +24,9 @@ function writeJson(value: unknown): void {
 function writeText(lines: string[]): void {
 	process.stdout.write(`${lines.join("\n")}\n`);
 }
-async function syncTeamHud(snapshot: GjcTeamSnapshot): Promise<void> {
+async function syncTeamHud(snapshot: WorxTeamSnapshot): Promise<void> {
 	try {
-		const events = await readGjcTeamEvents(snapshot.team_name);
+		const events = await readWorxTeamEvents(snapshot.team_name);
 		await syncSkillActiveState({
 			cwd: process.cwd(),
 			skill: "team",
@@ -35,7 +35,7 @@ async function syncTeamHud(snapshot: GjcTeamSnapshot): Promise<void> {
 			hud: await buildTeamHudSummary(snapshot, events.at(-1)),
 			source: "gjc-team",
 		});
-		await persistGjcTeamModeStateSummary(snapshot, process.cwd());
+		await persistWorxTeamModeStateSummary(snapshot, process.cwd());
 	} catch {
 		// HUD sync is best-effort and must not change command semantics.
 	}
@@ -47,7 +47,7 @@ function formatTaskCounts(counts: Record<string, number>): string {
 		.join(" ");
 }
 
-function snapshotWriteReceipt(snapshot: GjcTeamSnapshot): Record<string, unknown> {
+function snapshotWriteReceipt(snapshot: WorxTeamSnapshot): Record<string, unknown> {
 	return {
 		ok: true,
 		team_name: snapshot.team_name,
@@ -112,7 +112,7 @@ export default class Team extends Command {
 		const dryRun = flags["dry-run"] ?? this.argv.includes("--dry-run");
 
 		if (action === "list") {
-			const teams = await listGjcTeams();
+			const teams = await listWorxTeams();
 			if (json) {
 				writeJson({ teams });
 				return;
@@ -124,7 +124,7 @@ export default class Team extends Command {
 		if (action === "status") {
 			const teamName = rest.find(arg => !arg.startsWith("--"));
 			if (!teamName) throw new Error("missing_team_name");
-			const snapshot = await readGjcTeamSnapshot(teamName);
+			const snapshot = await readWorxTeamSnapshot(teamName);
 			if (json) {
 				writeJson(snapshot);
 				return;
@@ -140,7 +140,7 @@ export default class Team extends Command {
 		if (action === "monitor" || action === "resume") {
 			const teamName = rest.find(arg => !arg.startsWith("--"));
 			if (!teamName) throw new Error("missing_team_name");
-			const snapshot = await monitorGjcTeamSnapshot(teamName);
+			const snapshot = await monitorWorxTeamSnapshot(teamName);
 			await syncTeamHud(snapshot);
 			if (json) {
 				writeReceipt(snapshotWriteReceipt(snapshot));
@@ -157,7 +157,7 @@ export default class Team extends Command {
 		if (action === "shutdown") {
 			const teamName = rest.find(arg => !arg.startsWith("--"));
 			if (!teamName) throw new Error("missing_team_name");
-			const snapshot = await shutdownGjcTeam(teamName);
+			const snapshot = await shutdownWorxTeam(teamName);
 			await syncTeamHud(snapshot);
 			if (json) {
 				writeReceipt(snapshotWriteReceipt(snapshot));
@@ -186,9 +186,9 @@ export default class Team extends Command {
 			const input = parseInputFlag(rest);
 			let result: unknown;
 			try {
-				result = await executeGjcTeamApiOperation(operation, input);
+				result = await executeWorxTeamApiOperation(operation, input);
 			} catch (error) {
-				if (!(error instanceof UnknownGjcTeamApiOperationError)) throw error;
+				if (!(error instanceof UnknownWorxTeamApiOperationError)) throw error;
 				process.exitCode = 1;
 				if (json) {
 					writeReceipt({
@@ -205,7 +205,7 @@ export default class Team extends Command {
 			const teamName = String(input.team_name ?? input.teamName ?? "").trim();
 			if (teamName) {
 				try {
-					await syncTeamHud(await readGjcTeamSnapshot(teamName));
+					await syncTeamHud(await readWorxTeamSnapshot(teamName));
 				} catch {
 					// API operations without a resolvable snapshot leave HUD state unchanged.
 				}
@@ -216,7 +216,7 @@ export default class Team extends Command {
 
 		const startArgs = action === "start" ? rest : this.argv;
 		const options = parseTeamLaunchArgs(startArgs);
-		const snapshot = await startGjcTeam({ ...options, dryRun });
+		const snapshot = await startWorxTeam({ ...options, dryRun });
 		await syncTeamHud(snapshot);
 		if (json) {
 			writeReceipt(snapshotWriteReceipt(snapshot));

@@ -19,12 +19,12 @@ export const WORX_SESSION_PREFIX = "_session-";
 export const WORX_SESSION_ACTIVITY_FILE = ".session-activity.json";
 
 /** Source that produced a resolved GJC session id, for audit/diagnostics. */
-export type GjcSessionSource = "flag" | "payload" | "env" | "latest";
+export type WorxSessionSource = "flag" | "payload" | "env" | "latest";
 
-export interface GjcSessionContext {
-	gjcSessionId: string;
+export interface WorxSessionContext {
+	worxSessionId: string;
 	sessionRoot: string;
-	source: GjcSessionSource;
+	source: WorxSessionSource;
 }
 
 /**
@@ -43,7 +43,7 @@ export function decodeSessionSegment(segment: string): string {
 }
 
 /** Throw when a session id is missing or blank; never let blank suppress callers. */
-export function assertNonEmptyGjcSessionId(value: string | undefined, source: string): asserts value is string {
+export function assertNonEmptyWorxSessionId(value: string | undefined, source: string): asserts value is string {
 	if (typeof value !== "string" || value.trim() === "") {
 		throw new Error(`a non-empty GJC session id is required (${source})`);
 	}
@@ -64,20 +64,20 @@ export function assertSafePathComponent(value: string, label: string): void {
 }
 
 /** The shared `.worx/` root (holds shared config; never session-scoped). */
-export function gjcRoot(cwd: string): string {
+export function worxRoot(cwd: string): string {
 	return path.join(cwd, WORX_DIR);
 }
 
 /** The per-session root directory: `<cwd>/.worx/_session-{encodedId}`. */
-export function sessionRoot(cwd: string, gjcSessionId: string): string {
-	assertNonEmptyGjcSessionId(gjcSessionId, "sessionRoot");
-	return path.join(gjcRoot(cwd), `${WORX_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`);
+export function sessionRoot(cwd: string, worxSessionId: string): string {
+	assertNonEmptyWorxSessionId(worxSessionId, "sessionRoot");
+	return path.join(worxRoot(cwd), `${WORX_SESSION_PREFIX}${encodeSessionSegment(worxSessionId)}`);
 }
 
 /** Directory name (no path) for a session id, e.g. `_session-abc`. */
-export function sessionDirName(gjcSessionId: string): string {
-	assertNonEmptyGjcSessionId(gjcSessionId, "sessionDirName");
-	return `${WORX_SESSION_PREFIX}${encodeSessionSegment(gjcSessionId)}`;
+export function sessionDirName(worxSessionId: string): string {
+	assertNonEmptyWorxSessionId(worxSessionId, "sessionDirName");
+	return `${WORX_SESSION_PREFIX}${encodeSessionSegment(worxSessionId)}`;
 }
 
 /** Return the decoded session id for a `_session-*` directory name, else undefined. */
@@ -95,86 +95,86 @@ export function sessionIdFromDirName(name: string): string | undefined {
 }
 
 /** Authoritative per-session activity marker path. */
-export function sessionActivityPath(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), WORX_SESSION_ACTIVITY_FILE);
+export function sessionActivityPath(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), WORX_SESSION_ACTIVITY_FILE);
 }
 
 // ---- Top-level per-category subdir resolvers ----
 
-export function sessionStateDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "state");
+export function sessionStateDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "state");
 }
-export function sessionSpecsDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "specs");
+export function sessionSpecsDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "specs");
 }
-export function sessionPlansDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "plans");
+export function sessionPlansDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "plans");
 }
-export function sessionUltragoalDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "ultragoal");
+export function sessionUltragoalDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "ultragoal");
 }
-export function sessionAuditDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "audit");
+export function sessionAuditDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "audit");
 }
-export function sessionReportsDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "reports");
+export function sessionReportsDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "reports");
 }
-export function sessionLogsDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "logs");
+export function sessionLogsDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "logs");
 }
-export function sessionRuntimeDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "runtime");
+export function sessionRuntimeDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "runtime");
 }
-export function sessionRlmDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionRoot(cwd, gjcSessionId), "rlm");
+export function sessionRlmDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionRoot(cwd, worxSessionId), "rlm");
 }
 
 // ---- Nested resolvers under <sessionRoot>/state ----
 
-export function activeStateDir(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "active");
+export function activeStateDir(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "active");
 }
-export function activeSnapshotPath(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "skill-active-state.json");
+export function activeSnapshotPath(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "skill-active-state.json");
 }
-export function activeEntryPath(cwd: string, gjcSessionId: string, skill: string): string {
+export function activeEntryPath(cwd: string, worxSessionId: string, skill: string): string {
 	const normalized = skill.trim();
 	if (normalized === "") throw new Error("skill is required");
-	return path.join(activeStateDir(cwd, gjcSessionId), `${encodeSessionSegment(normalized)}.json`);
+	return path.join(activeStateDir(cwd, worxSessionId), `${encodeSessionSegment(normalized)}.json`);
 }
-export function modeStatePath(cwd: string, gjcSessionId: string, mode: string): string {
+export function modeStatePath(cwd: string, worxSessionId: string, mode: string): string {
 	const normalized = mode.trim();
 	assertSafePathComponent(normalized, "mode");
-	return path.join(sessionStateDir(cwd, gjcSessionId), `${normalized}-state.json`);
+	return path.join(sessionStateDir(cwd, worxSessionId), `${normalized}-state.json`);
 }
-export function auditPath(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "audit.jsonl");
+export function auditPath(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "audit.jsonl");
 }
-export function transactionJournalPath(cwd: string, gjcSessionId: string, mutationId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "transactions", `${encodeSessionSegment(mutationId)}.json`);
+export function transactionJournalPath(cwd: string, worxSessionId: string, mutationId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "transactions", `${encodeSessionSegment(mutationId)}.json`);
 }
-export function teamStateRoot(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "team");
+export function teamStateRoot(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "team");
 }
-export function workflowGatePath(cwd: string, gjcSessionId: string, gateId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "workflow-gates", `${encodeSessionSegment(gateId)}.json`);
+export function workflowGatePath(cwd: string, worxSessionId: string, gateId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "workflow-gates", `${encodeSessionSegment(gateId)}.json`);
 }
-export function harnessStateRoot(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "harness");
+export function harnessStateRoot(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "harness");
 }
-export function coordinatorMcpStateRoot(cwd: string, gjcSessionId: string): string {
-	return path.join(sessionStateDir(cwd, gjcSessionId), "coordinator-mcp");
+export function coordinatorMcpStateRoot(cwd: string, worxSessionId: string): string {
+	return path.join(sessionStateDir(cwd, worxSessionId), "coordinator-mcp");
 }
 
 // ---- Nested resolvers under other top-level categories ----
 
-export function tmuxRuntimeSessionPath(cwd: string, gjcSessionId: string, slug: string): string {
+export function tmuxRuntimeSessionPath(cwd: string, worxSessionId: string, slug: string): string {
 	const normalized = slug.trim();
 	assertSafePathComponent(normalized, "slug");
-	return path.join(sessionRuntimeDir(cwd, gjcSessionId), "tmux-sessions", `${normalized}.json`);
+	return path.join(sessionRuntimeDir(cwd, worxSessionId), "tmux-sessions", `${normalized}.json`);
 }
-export function rlmArtifactRoot(cwd: string, gjcSessionId: string, rlmSessionId: string): string {
+export function rlmArtifactRoot(cwd: string, worxSessionId: string, rlmSessionId: string): string {
 	const normalized = rlmSessionId.trim();
 	if (normalized === "") throw new Error("rlmSessionId is required");
-	return path.join(sessionRlmDir(cwd, gjcSessionId), encodeSessionSegment(normalized));
+	return path.join(sessionRlmDir(cwd, worxSessionId), encodeSessionSegment(normalized));
 }

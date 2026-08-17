@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 
-const APP_NAME = "gjc";
+const APP_NAME = "worx";
 
 export async function initXdg(): Promise<void> {
 	if (process.platform !== "linux" && process.platform !== "darwin") {

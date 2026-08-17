@@ -2,10 +2,10 @@ import * as nodeFs from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
-	type GjcBundleTransactionDecision,
-	GjcPluginSourceUnavailableError,
-	resolveGjcBundleCandidate,
-	runGjcBundleTransaction,
+	resolveWorxBundleCandidate,
+	runWorxBundleTransaction,
+	type WorxBundleTransactionDecision,
+	WorxPluginSourceUnavailableError,
 } from "./installer";
 import {
 	activationFingerprint,
@@ -27,22 +27,22 @@ import {
 	writeRegistryUnlocked,
 } from "./registry";
 import type {
-	GjcBundleIdentity,
-	GjcBundleSafeSource,
-	GjcBundleSummary,
-	GjcBundleSurfaceSummary,
-	GjcInstallResult,
-	GjcLifecycleError,
-	GjcLifecycleResult,
-	GjcPluginRegistryEntry,
-	GjcPluginRegistrySource,
-	GjcPluginScope,
-	GjcReviewedUpdateToken,
-	GjcToggleResult,
-	GjcUpdateApplyResult,
-	GjcUpdatePreview,
+	WorxBundleIdentity,
+	WorxBundleSafeSource,
+	WorxBundleSummary,
+	WorxBundleSurfaceSummary,
+	WorxInstallResult,
+	WorxLifecycleError,
+	WorxLifecycleResult,
+	WorxPluginRegistryEntry,
+	WorxPluginRegistrySource,
+	WorxPluginScope,
+	WorxReviewedUpdateToken,
+	WorxToggleResult,
+	WorxUpdateApplyResult,
+	WorxUpdatePreview,
 } from "./types";
-import { GjcPluginLoadError, WORX_PLUGIN_MANIFEST_FILENAME } from "./types";
+import { WORX_PLUGIN_MANIFEST_FILENAME, WorxPluginLoadError } from "./types";
 
 /**
  * GJC bundle lifecycle service.
@@ -53,18 +53,18 @@ import { GjcPluginLoadError, WORX_PLUGIN_MANIFEST_FILENAME } from "./types";
  * the installer transaction directly.
  */
 
-export interface GjcLifecycleContext {
+export interface WorxLifecycleContext {
 	cwd: string;
 }
 
-function fail(code: GjcLifecycleError["code"], message: string, recovery?: string): GjcLifecycleError {
+function fail(code: WorxLifecycleError["code"], message: string, recovery?: string): WorxLifecycleError {
 	return recovery ? { code, message, recovery } : { code, message };
 }
 function isEnoent(error: unknown): boolean {
 	return (error as NodeJS.ErrnoException)?.code === "ENOENT";
 }
 
-const UNSUPPORTED_UPDATE_REASON: Partial<Record<GjcPluginRegistrySource["kind"], string>> = {};
+const UNSUPPORTED_UPDATE_REASON: Partial<Record<WorxPluginRegistrySource["kind"], string>> = {};
 
 /**
  * Redact a stored locator to a display form: host + path only. No userinfo,
@@ -107,7 +107,7 @@ function localPathDisplay(value: string, fallback: string): string {
 	return segments.at(-1) ?? fallback;
 }
 
-export function redactSourceLocator(source: GjcPluginRegistrySource): string {
+export function redactSourceLocator(source: WorxPluginRegistrySource): string {
 	const unc = /^(?:\\\\|\/\/)(.+)$/.exec(source.uri);
 	if (unc) {
 		const [host, ...segments] = safePathSegments(unc[1] ?? "");
@@ -138,9 +138,9 @@ export function redactSourceLocator(source: GjcPluginRegistrySource): string {
 	}
 }
 
-function toSafeSource(source: GjcPluginRegistrySource): GjcBundleSafeSource {
+function toSafeSource(source: WorxPluginRegistrySource): WorxBundleSafeSource {
 	const unsupportedReason = UNSUPPORTED_UPDATE_REASON[source.kind];
-	const safe: GjcBundleSafeSource = {
+	const safe: WorxBundleSafeSource = {
 		kind: source.kind,
 		display: redactSourceLocator(source),
 		resolvedAt: source.resolvedAt,
@@ -154,10 +154,10 @@ function toSafeSource(source: GjcPluginRegistrySource): GjcBundleSafeSource {
 	return safe;
 }
 
-function surfaceSummaries(entry: GjcPluginRegistryEntry): GjcBundleSurfaceSummary[] {
+function surfaceSummaries(entry: WorxPluginRegistryEntry): WorxBundleSurfaceSummary[] {
 	const disabled = new Set(entry.disabledSurfaceIds);
 	const quarantined = new Map((entry.quarantine ?? []).map(q => [q.surfaceId, q.code]));
-	const rows: GjcBundleSurfaceSummary[] = [
+	const rows: WorxBundleSurfaceSummary[] = [
 		...entry.surfaces.subskills.map(s => ({ extensionId: s.extensionId, kind: "subskill" as const, name: s.name })),
 		...entry.surfaces.tools.map(t => ({ extensionId: t.extensionId, kind: "tool" as const, name: t.name })),
 		...entry.surfaces.hooks.map(h => ({ extensionId: h.extensionId, kind: "hook" as const, name: h.name })),
@@ -174,7 +174,7 @@ function surfaceSummaries(entry: GjcPluginRegistryEntry): GjcBundleSurfaceSummar
 		})),
 	].map(row => {
 		const code = quarantined.get(row.extensionId);
-		const summary: GjcBundleSurfaceSummary = {
+		const summary: WorxBundleSurfaceSummary = {
 			...row,
 			enabled: !disabled.has(row.extensionId),
 			quarantined: code !== undefined,
@@ -186,7 +186,7 @@ function surfaceSummaries(entry: GjcPluginRegistryEntry): GjcBundleSurfaceSummar
 }
 
 /** Safe, redacted DTO for one installed bundle. */
-export function toBundleSummary(entry: GjcPluginRegistryEntry): GjcBundleSummary {
+export function toBundleSummary(entry: WorxPluginRegistryEntry): WorxBundleSummary {
 	const surfaces = surfaceSummaries(entry);
 	return {
 		identity: bundleIdentity(entry.scope, entry.name),
@@ -207,7 +207,7 @@ export function toBundleSummary(entry: GjcPluginRegistryEntry): GjcBundleSummary
  * separately from the URI, so re-resolving the bare URI would silently drop the
  * reviewed branch or tag and update from the default branch instead.
  */
-function storedSourceLocator(source: GjcPluginRegistrySource): string {
+function storedSourceLocator(source: WorxPluginRegistrySource): string {
 	return source.kind === "git" && source.ref ? `${source.uri}#${source.ref}` : source.uri;
 }
 
@@ -217,28 +217,28 @@ export const storedSourceLocatorForTest = storedSourceLocator;
 /** Exposed so a test can pin parity with the installer's source predicates. */
 export const isLocalDirectorySourceForTest = isLocalDirectorySource;
 
-async function readEffective(cwd: string): Promise<GjcPluginRegistryEntry[]> {
+async function readEffective(cwd: string): Promise<WorxPluginRegistryEntry[]> {
 	const [user, project] = await Promise.all([readRegistry("user", cwd), readRegistry("project", cwd)]);
 	return sortRegistryEntries([...user.plugins, ...project.plugins]);
 }
 
 /** All installed bundles across both scopes, deterministically ordered. */
-export async function listGjcBundles(ctx: GjcLifecycleContext): Promise<GjcBundleSummary[]> {
+export async function listWorxBundles(ctx: WorxLifecycleContext): Promise<WorxBundleSummary[]> {
 	return (await readEffective(ctx.cwd)).map(toBundleSummary);
 }
 
 /** One bundle by exact (scope, name) identity. Opposite scope never matches. */
-export async function getGjcBundle(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
-): Promise<GjcLifecycleResult<GjcBundleSummary>> {
+export async function getWorxBundle(
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
+): Promise<WorxLifecycleResult<WorxBundleSummary>> {
 	const registry = await readRegistry(identity.scope, ctx.cwd);
 	const entry = registry.plugins.find(p => p.name === identity.name);
 	if (!entry) return { ok: false, error: notInstalled(identity) };
 	return { ok: true, value: toBundleSummary(entry) };
 }
 
-function safeInstalledRoot(scope: GjcPluginScope, cwd: string, pluginRoot: string): string | null {
+function safeInstalledRoot(scope: WorxPluginScope, cwd: string, pluginRoot: string): string | null {
 	const root = path.resolve(pluginRoot);
 	const scopeRoot = path.resolve(registryRootForScope(scope, cwd));
 	const relative = path.relative(scopeRoot, root);
@@ -253,7 +253,7 @@ function isStringArray(value: unknown): value is string[] {
 	return Array.isArray(value) && value.every(item => typeof item === "string");
 }
 
-function isUninstallableEntry(value: unknown, identity: GjcBundleIdentity): value is GjcPluginRegistryEntry {
+function isUninstallableEntry(value: unknown, identity: WorxBundleIdentity): value is WorxPluginRegistryEntry {
 	if (!isRecord(value)) return false;
 	if (
 		value.name !== identity.name ||
@@ -316,16 +316,16 @@ function isUninstallableEntry(value: unknown, identity: GjcBundleIdentity): valu
 
 function isMalformedRegistryError(error: unknown): boolean {
 	return (
-		(error instanceof GjcPluginLoadError && error.code === "invalid_manifest") ||
+		(error instanceof WorxPluginLoadError && error.code === "invalid_manifest") ||
 		(error instanceof TypeError &&
 			/(?:not iterable|localeCompare|reading ['"](?:scope|name|pluginRoot|plugins|map))/.test(error.message))
 	);
 }
 
 function uninstallFailure(
-	identity: GjcBundleIdentity,
+	identity: WorxBundleIdentity,
 	kind: "metadata" | "remove" | "write" | "restore",
-): GjcLifecycleError {
+): WorxLifecycleError {
 	const detail =
 		kind === "metadata"
 			? "its installed metadata is invalid"
@@ -341,10 +341,10 @@ function uninstallFailure(
 	return fail("invalid_target", `Could not uninstall GJC bundle "${identity.name}" because ${detail}`, recovery);
 }
 
-export async function uninstallGjcBundle(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
-): Promise<GjcLifecycleResult<{ identity: GjcBundleIdentity; summary: GjcBundleSummary }>> {
+export async function uninstallWorxBundle(
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
+): Promise<WorxLifecycleResult<{ identity: WorxBundleIdentity; summary: WorxBundleSummary }>> {
 	return withRegistryLock(identity.scope, ctx.cwd, async () => {
 		let registry: Awaited<ReturnType<typeof readRegistry>>;
 		try {
@@ -403,7 +403,7 @@ export async function uninstallGjcBundle(
 	});
 }
 
-function notInstalled(identity: GjcBundleIdentity): GjcLifecycleError {
+function notInstalled(identity: WorxBundleIdentity): WorxLifecycleError {
 	return fail(
 		"not_installed",
 		`GJC bundle "${identity.name}" is not installed in the ${identity.scope} scope`,
@@ -411,7 +411,7 @@ function notInstalled(identity: GjcBundleIdentity): GjcLifecycleError {
 	);
 }
 
-function alreadyInstalled(name: string, scope: GjcPluginScope): GjcLifecycleError {
+function alreadyInstalled(name: string, scope: WorxPluginScope): WorxLifecycleError {
 	return fail(
 		"already_installed_use_upgrade",
 		`GJC bundle "${name}" is already installed in the ${scope} scope`,
@@ -429,16 +429,16 @@ function alreadyInstalled(name: string, scope: GjcPluginScope): GjcLifecycleErro
  * leak class the safe DTOs exist to prevent.
  */
 async function withSourceAvailability<T>(
-	identity: GjcBundleIdentity,
-	run: () => Promise<GjcLifecycleResult<T>>,
-): Promise<GjcLifecycleResult<T>> {
+	identity: WorxBundleIdentity,
+	run: () => Promise<WorxLifecycleResult<T>>,
+): Promise<WorxLifecycleResult<T>> {
 	try {
 		return await run();
 	} catch (error) {
 		// Only source resolution failures are retryable. Candidate compilation,
 		// identity, schema, and validation failures remain typed invalid-target
 		// results instead of being mislabeled as unavailable sources.
-		if (error instanceof GjcPluginSourceUnavailableError) {
+		if (error instanceof WorxPluginSourceUnavailableError) {
 			return {
 				ok: false,
 				error: fail(
@@ -448,7 +448,7 @@ async function withSourceAvailability<T>(
 				),
 			};
 		}
-		if (error instanceof GjcPluginLoadError) {
+		if (error instanceof WorxPluginLoadError) {
 			return {
 				ok: false,
 				error: fail(
@@ -531,11 +531,11 @@ async function declaredBundleName(source: string): Promise<string | undefined> {
  * is refused identically with or without force; upgrading is a separate,
  * scope-qualified operation.
  */
-export async function installGjcBundle(
-	ctx: GjcLifecycleContext,
-	scope: GjcPluginScope,
+export async function installWorxBundle(
+	ctx: WorxLifecycleContext,
+	scope: WorxPluginScope,
 	source: string,
-): Promise<GjcLifecycleResult<GjcInstallResult>> {
+): Promise<WorxLifecycleResult<WorxInstallResult>> {
 	// A create-only refusal must not depend on the source being reachable, so
 	// identify the target before resolving anything. Only the declared manifest
 	// name can do that: it IS the canonical identity component.
@@ -552,12 +552,12 @@ export async function installGjcBundle(
 		if (existing) return { ok: false, error: alreadyInstalled(existing.name, scope) };
 	}
 
-	let result: Awaited<ReturnType<typeof runGjcBundleTransaction>>;
+	let result: Awaited<ReturnType<typeof runWorxBundleTransaction>>;
 	try {
-		result = await runGjcBundleTransaction(source, {
+		result = await runWorxBundleTransaction(source, {
 			scope,
 			cwd: ctx.cwd,
-			decide: async ({ existing, candidate }): Promise<GjcBundleTransactionDecision> => {
+			decide: async ({ existing, candidate }): Promise<WorxBundleTransactionDecision> => {
 				if (existing) {
 					return {
 						kind: "abort",
@@ -572,8 +572,8 @@ export async function installGjcBundle(
 			},
 		});
 	} catch (error) {
-		if (error instanceof GjcPluginSourceUnavailableError) {
-			throw new GjcPluginLoadError("missing_file", "GJC plugin source directory not found");
+		if (error instanceof WorxPluginSourceUnavailableError) {
+			throw new WorxPluginLoadError("missing_file", "GJC plugin source directory not found");
 		}
 		throw error;
 	}
@@ -586,10 +586,10 @@ export async function installGjcBundle(
  * The returned token binds the candidate, the exact installed baseline, and the
  * deterministic decision context; apply is a compare-and-swap on all three.
  */
-export async function previewGjcBundleUpdate(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
-): Promise<GjcLifecycleResult<GjcUpdatePreview>> {
+export async function previewWorxBundleUpdate(
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
+): Promise<WorxLifecycleResult<WorxUpdatePreview>> {
 	const registry = await readRegistry(identity.scope, ctx.cwd);
 	const entry = registry.plugins.find(p => p.name === identity.name);
 	if (!entry) return { ok: false, error: notInstalled(identity) };
@@ -610,7 +610,7 @@ export async function previewGjcBundleUpdate(
 	// `source_unavailable` result the contract promises, rather than letting an
 	// exception escape and echo the stored path.
 	return await withSourceAvailability(identity, async () =>
-		resolveGjcBundleCandidate(storedSourceLocator(entry.source), async ({ bundle }) => {
+		resolveWorxBundleCandidate(storedSourceLocator(entry.source), async ({ bundle }) => {
 			if (bundle.name !== entry.name) {
 				return {
 					ok: false as const,
@@ -626,7 +626,7 @@ export async function previewGjcBundleUpdate(
 			const candidateHash = candidateFingerprint(identity.scope, bundle);
 			const baselineHash = baselineFingerprint(entry);
 			const contextHash = decisionContextFingerprint(identity, effective);
-			const token: GjcReviewedUpdateToken = {
+			const token: WorxReviewedUpdateToken = {
 				identity,
 				candidateFingerprint: candidateHash,
 				baselineFingerprint: baselineHash,
@@ -656,10 +656,10 @@ export async function previewGjcBundleUpdate(
  * installed baseline, or the decision context returns a typed stale error with
  * zero mutation.
  */
-export async function applyGjcBundleUpdate(
-	ctx: GjcLifecycleContext,
-	token: GjcReviewedUpdateToken,
-): Promise<GjcLifecycleResult<GjcUpdateApplyResult>> {
+export async function applyWorxBundleUpdate(
+	ctx: WorxLifecycleContext,
+	token: WorxReviewedUpdateToken,
+): Promise<WorxLifecycleResult<WorxUpdateApplyResult>> {
 	const identity = token.identity;
 	const registry = await readRegistry(identity.scope, ctx.cwd);
 	const entry = registry.plugins.find(p => p.name === identity.name);
@@ -674,11 +674,11 @@ export async function applyGjcBundleUpdate(
 		};
 	}
 
-	return await withSourceAvailability<GjcUpdateApplyResult>(identity, async () => {
-		const result = await runGjcBundleTransaction(storedSourceLocator(entry.source), {
+	return await withSourceAvailability<WorxUpdateApplyResult>(identity, async () => {
+		const result = await runWorxBundleTransaction(storedSourceLocator(entry.source), {
 			scope: identity.scope,
 			cwd: ctx.cwd,
-			decide: async ({ existing, effective, bundle, candidate }): Promise<GjcBundleTransactionDecision> => {
+			decide: async ({ existing, effective, bundle, candidate }): Promise<WorxBundleTransactionDecision> => {
 				if (!existing) return { kind: "abort", error: notInstalled(identity) };
 				if (
 					bundle.name !== existing.name ||
@@ -725,7 +725,7 @@ export async function applyGjcBundleUpdate(
 				// Quarantine is recomputed against the candidate, never carried forward,
 				// so a surface the update fixes is not left permanently blocked.
 				const reconciled = reconcileEnablement(existing.disabledSurfaceIds, surfaceIdsOf(bundle.surfaces));
-				const next: GjcPluginRegistryEntry = {
+				const next: WorxPluginRegistryEntry = {
 					...candidate,
 					enabled: existing.enabled,
 					installedAt: existing.installedAt,
@@ -749,10 +749,10 @@ export async function applyGjcBundleUpdate(
 }
 
 async function mutateEntry(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
-	mutate: (entry: GjcPluginRegistryEntry) => GjcLifecycleResult<GjcPluginRegistryEntry | null>,
-): Promise<GjcLifecycleResult<GjcToggleResult>> {
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
+	mutate: (entry: WorxPluginRegistryEntry) => WorxLifecycleResult<WorxPluginRegistryEntry | null>,
+): Promise<WorxLifecycleResult<WorxToggleResult>> {
 	return await withRegistryLock(identity.scope, ctx.cwd, async () => {
 		const registry = await readRegistry(identity.scope, ctx.cwd, { migrate: false });
 		const entry = registry.plugins.find(p => p.name === identity.name);
@@ -770,11 +770,11 @@ async function mutateEntry(
  * Enable or disable a whole bundle. Deterministic quarantine blocks enabling;
  * disabling is always allowed so operators can always de-escalate.
  */
-export async function setGjcBundleEnabled(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
+export async function setWorxBundleEnabled(
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
 	enabled: boolean,
-): Promise<GjcLifecycleResult<GjcToggleResult>> {
+): Promise<WorxLifecycleResult<WorxToggleResult>> {
 	return await mutateEntry(ctx, identity, entry => {
 		if (enabled && (entry.quarantine?.length ?? 0) > 0) {
 			return {
@@ -788,12 +788,12 @@ export async function setGjcBundleEnabled(
 }
 
 /** Enable or disable one surface of a bundle by its stable extension ID. */
-export async function setGjcBundleSurfaceEnabled(
-	ctx: GjcLifecycleContext,
-	identity: GjcBundleIdentity,
+export async function setWorxBundleSurfaceEnabled(
+	ctx: WorxLifecycleContext,
+	identity: WorxBundleIdentity,
 	surfaceId: string,
 	enabled: boolean,
-): Promise<GjcLifecycleResult<GjcToggleResult>> {
+): Promise<WorxLifecycleResult<WorxToggleResult>> {
 	return await mutateEntry(ctx, identity, entry => {
 		if (!surfaceIdsOf(entry.surfaces).includes(surfaceId)) {
 			return {
@@ -819,6 +819,6 @@ export async function setGjcBundleSurfaceEnabled(
 }
 
 /** Deterministic activation generation for the current persisted state. */
-export async function currentActivationFingerprint(ctx: GjcLifecycleContext): Promise<string> {
+export async function currentActivationFingerprint(ctx: WorxLifecycleContext): Promise<string> {
 	return activationFingerprint(await readEffective(ctx.cwd));
 }
