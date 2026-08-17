@@ -1,7 +1,7 @@
 # 15 — ralplan persistActiveRunId early no-op can skip the promised active:true re-assertion
 
 - **Severity:** Medium (Stop-hook disarm edge; narrows the #647 guarantee)
-- **Scope:** `packages/coding-agent/src/gjc-runtime/ralplan-runtime.ts:235-246` (`persistActiveRunId` no-op guard)
+- **Scope:** `packages/coding-agent/src/worx-runtime/ralplan-runtime.ts:235-246` (`persistActiveRunId` no-op guard)
 - **Surface:** ralplan run-state / handoff Stop hook (PR #647 / commit e20f5ad9)
 - **Found by:** post-0.5.1 dogfood (G001), architect `0-ArchG001-Workflow`
 
@@ -49,4 +49,4 @@ re-asserted.
 
 ## Resolution
 
-**Resolved.** The active-state reassertion regression is covered by the ralplan runtime implementation and its focused regression tests. See `packages/coding-agent/src/gjc-runtime/ralplan-runtime.ts` and `packages/coding-agent/test/gjc-runtime/ralplan-runtime.test.ts`.
+**Resolved.** The active-state reassertion regression is covered by the ralplan runtime implementation and its focused regression tests. See `packages/coding-agent/src/worx-runtime/ralplan-runtime.ts` and `packages/coding-agent/test/worx-runtime/ralplan-runtime.test.ts`.

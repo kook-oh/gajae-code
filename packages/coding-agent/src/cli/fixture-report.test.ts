@@ -2,8 +2,8 @@ import { describe, expect, it } from "bun:test";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { sessionRoot } from "../gjc-runtime/session-layout";
 import type { TaskTokenLog } from "../task/types";
+import { sessionRoot } from "../worx-runtime/session-layout";
 import { buildFixtureReport, type LiveRunReportShape, runFixtureReport } from "./fixture-report";
 
 function expectParseReportCompatible(report: LiveRunReportShape, fixtureId: string): void {

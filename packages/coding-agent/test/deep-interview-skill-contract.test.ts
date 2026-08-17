@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const skillPath = join(dirname(fileURLToPath(import.meta.url)), "../src/defaults/gjc/skills/deep-interview/SKILL.md");
+const skillPath = join(dirname(fileURLToPath(import.meta.url)), "../src/defaults/worx/skills/deep-interview/SKILL.md");
 
 const skill = readFileSync(skillPath, "utf8");
 

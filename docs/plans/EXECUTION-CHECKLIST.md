@@ -65,9 +65,9 @@
 
 ## 슬라이스 6 — 내부 소문자 `gjc` 심볼·경로
 
-소비자 영향 0(전부 내부). 규모: `gjc-runtime/` 129파일, 파일명 `gjc-*` 295개, `Gjc*` 심볼 120파일.
+소비자 영향 0(전부 내부). 규모: `worx-runtime/` 129파일, 파일명 `gjc-*` 295개, `Gjc*` 심볼 120파일.
 
-- [ ] 디렉터리 `src/gjc-runtime/` → `src/worx-runtime/` (git mv + import 갱신)
+- [ ] 디렉터리 `src/worx-runtime/` → `src/worx-runtime/` (git mv + import 갱신)
 - [ ] 파일명 `gjc-*.ts` / `gjc-*.test.ts` → `worx-*` (git mv)
 - [ ] 타입·심볼 `Gjc*` → `Worx*` (LSP rename 우선, 텍스트 치환 금지)
 - [ ] `scripts/*gjc*` → `*worx*`, `sdk-skills/gjc-sdk-author` 등 경로

@@ -22,7 +22,7 @@ import type {
 	StatusLineSeparatorStyle,
 } from "../../config/settings-schema";
 import { SETTING_TABS, TAB_METADATA } from "../../config/settings-schema";
-import type { GjcRuntimeSnapshotProvider } from "../../extensibility/gjc-plugins/runtime-quarantine";
+import type { GjcRuntimeSnapshotProvider } from "../../extensibility/worx-plugins/runtime-quarantine";
 import { getCurrentThemeName, getSelectListTheme, getSettingsListTheme, theme } from "../../modes/theme/theme";
 import { matchesAppInterrupt } from "../../modes/utils/keybinding-matchers";
 import { getTabBarTheme } from "../shared";

@@ -113,7 +113,7 @@ export class PluginManager {
 					pkgJsonPath,
 					JSON.stringify(
 						{
-							name: "gjc-plugins",
+							name: "worx-plugins",
 							private: true,
 							dependencies: {},
 						},

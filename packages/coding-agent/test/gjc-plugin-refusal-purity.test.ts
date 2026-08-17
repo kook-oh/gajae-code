@@ -9,11 +9,11 @@ import {
 	bundleIdentity,
 	installGjcBundle,
 	previewGjcBundleUpdate,
-} from "../src/extensibility/gjc-plugins";
-import { compileGjcPluginBundle } from "../src/extensibility/gjc-plugins/compiler";
-import { isGjcPluginSourceShape } from "../src/extensibility/gjc-plugins/installer";
-import { isLocalDirectorySourceForTest, storedSourceLocatorForTest } from "../src/extensibility/gjc-plugins/lifecycle";
-import { GjcPluginLoadError } from "../src/extensibility/gjc-plugins/types";
+} from "../src/extensibility/worx-plugins";
+import { compileGjcPluginBundle } from "../src/extensibility/worx-plugins/compiler";
+import { isGjcPluginSourceShape } from "../src/extensibility/worx-plugins/installer";
+import { isLocalDirectorySourceForTest, storedSourceLocatorForTest } from "../src/extensibility/worx-plugins/lifecycle";
+import { GjcPluginLoadError } from "../src/extensibility/worx-plugins/types";
 
 /**
  * A refused install must be observable as a pure read. The transaction used to
@@ -22,7 +22,7 @@ import { GjcPluginLoadError } from "../src/extensibility/gjc-plugins/types";
  * the filesystem.
  */
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
 const tempDirs: string[] = [];
 const originalAgentDir = getAgentDir();
@@ -77,7 +77,7 @@ async function treeOf(root: string): Promise<string> {
 describe("GJC bundle refusal purity", () => {
 	test("a refused install does not create the scope root", async () => {
 		const cwd = await mkProjectCwd();
-		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 
 		const first = await installGjcBundle({ cwd }, "project", sixSurface);
 		expect(first.ok).toBe(true);
@@ -94,7 +94,7 @@ describe("GJC bundle refusal purity", () => {
 		// Install into project, then refuse a second project install. The user
 		// scope was never a target, so its root must not have been created.
 		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
-		const userRoot = path.join(agentDir, "gjc-plugins");
+		const userRoot = path.join(agentDir, "worx-plugins");
 		const beforeUser = await treeOf(userRoot);
 
 		const refused = await installGjcBundle({ cwd }, "project", sixSurface);
@@ -105,7 +105,7 @@ describe("GJC bundle refusal purity", () => {
 
 	test("a refused install leaves the untargeted opposite scope byte-identical", async () => {
 		const cwd = await mkProjectCwd();
-		const userRoot = path.join(agentDir, "gjc-plugins");
+		const userRoot = path.join(agentDir, "worx-plugins");
 		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
 		// A committing install legitimately locks both scopes, because the
 		// collision decision spans them; that lock creates the opposite-scope
@@ -122,7 +122,7 @@ describe("GJC bundle refusal purity", () => {
 	test("a refused install does not depend on the source being resolvable", async () => {
 		const cwd = await mkProjectCwd();
 		expect((await installGjcBundle({ cwd }, "project", sixSurface)).ok).toBe(true);
-		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 		const before = await treeOf(scopeRoot);
 
 		// A copy that declares the same name but is otherwise broken must still be
@@ -151,7 +151,7 @@ describe("GJC bundle refusal purity", () => {
 		tempDirs.push(copy);
 		await fs.cp(sixSurface, copy, { recursive: true });
 		expect((await installGjcBundle({ cwd }, "project", copy)).ok).toBe(true);
-		const scopeRoot = path.join(cwd, ".worx", "gjc-plugins");
+		const scopeRoot = path.join(cwd, ".worx", "worx-plugins");
 		const before = await treeOf(scopeRoot);
 
 		await fs.rm(copy, { recursive: true, force: true });

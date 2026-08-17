@@ -1,6 +1,7 @@
 import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
-import { renderCliWriteReceipt } from "../gjc-runtime/cli-write-receipt";
-import { renderTeamStatusMarkdown } from "../gjc-runtime/state-renderer";
+import { syncSkillActiveState } from "../skill-state/active-state";
+import { renderCliWriteReceipt } from "../worx-runtime/cli-write-receipt";
+import { renderTeamStatusMarkdown } from "../worx-runtime/state-renderer";
 import {
 	buildTeamHudSummary,
 	executeGjcTeamApiOperation,
@@ -14,8 +15,7 @@ import {
 	shutdownGjcTeam,
 	startGjcTeam,
 	UnknownGjcTeamApiOperationError,
-} from "../gjc-runtime/team-runtime";
-import { syncSkillActiveState } from "../skill-state/active-state";
+} from "../worx-runtime/team-runtime";
 
 function writeJson(value: unknown): void {
 	process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
@@ -177,7 +177,7 @@ export default class Team extends Command {
 					"read-config read-manifest read-worker-status update-worker-status read-worker-heartbeat recover-stale-claims update-worker-heartbeat read-worker-memory-guard update-worker-memory-guard apply-worker-memory-guard write-worker-inbox write-worker-identity",
 					"append-event read-events read-traces await-event write-shutdown-request read-shutdown-ack read-monitor-snapshot write-monitor-snapshot read-task-approval write-task-approval",
 					"Completion example:",
-					'transition-task-status --input \'{"team_name":"demo","task_id":"task-1","to":"completed","claim_token":"...","completion_evidence":{"summary":"done","items":[{"kind":"command","status":"passed","summary":"focused tests passed","command":"bun test packages/coding-agent/test/gjc-runtime/team-runtime.test.ts"}]}}\' --json',
+					'transition-task-status --input \'{"team_name":"demo","task_id":"task-1","to":"completed","claim_token":"...","completion_evidence":{"summary":"done","items":[{"kind":"command","status":"passed","summary":"focused tests passed","command":"bun test packages/coding-agent/test/worx-runtime/team-runtime.test.ts"}]}}\' --json',
 					'Review-only completion may use {"kind":"inspection","status":"verified","summary":"review passed","location":"agent://review"}.',
 					'Typed lane task example: create-task --input \'{"team_name":"demo","subject":"Verify delivery","description":"Run verification","owner":"worker-1","lane":"verification","required_role":"executor","depends_on":["task-1"]}\' --json',
 				]);

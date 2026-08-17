@@ -1,6 +1,6 @@
 import { dlopen, ptr } from "bun:ffi";
 import { nativeProcessBindings } from "@bworx-io/worx-utils/native-process";
-import { readLinuxProcStartTimeSync } from "../../gjc-runtime/linux-proc";
+import { readLinuxProcStartTimeSync } from "../../worx-runtime/linux-proc";
 
 const DARWIN_PROC_PIDTBSDINFO = 3;
 const DARWIN_PROC_BSDINFO_SIZE = 136;

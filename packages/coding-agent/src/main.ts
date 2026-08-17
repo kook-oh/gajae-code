@@ -38,7 +38,6 @@ import { BUNDLED_GROK_BUILD_EXTENSION_ID, getBundledGrokBuildExtensionFactory } 
 import { initializeWithSettings } from "./discovery";
 import { exportFromFile } from "./export/html";
 import type { ExtensionUIContext } from "./extensibility/extensions/types";
-import { persistCoordinatorRuntimeInputReady } from "./gjc-runtime/session-state-sidecar";
 import type { AcpStartupOptions } from "./modes/acp/startup-options";
 import type { SessionSelectionResult } from "./modes/components/session-selector";
 import type { InteractiveMode } from "./modes/interactive-mode";
@@ -57,7 +56,6 @@ import {
 } from "./sdk";
 import { processIncarnation } from "./sdk/broker/process-incarnation";
 import { SessionIndex } from "./sdk/broker/session-index";
-
 import type { AgentSession } from "./session/agent-session";
 import { SessionMigrationBusyError } from "./session/internal/session-open-errors";
 import {
@@ -81,6 +79,7 @@ import type { LspStartupServerInfo } from "./tools";
 import { getDisplayChangelogEntries, getInstalledVersionChangelogEntry, getNewEntries } from "./utils/changelog";
 import type { EventBus } from "./utils/event-bus";
 import { fetchLatestPackageVersion } from "./utils/npm-registry";
+import { persistCoordinatorRuntimeInputReady } from "./worx-runtime/session-state-sidecar";
 
 const MANAGED_OWNER_SUPERVISOR_ARG = "--internal-managed-owner-supervisor";
 const MANAGED_OWNER_CHILD_TOKEN_ENV = "WORX_MANAGED_OWNER_CHILD_TOKEN";
@@ -1981,18 +1980,18 @@ export async function runRootCommand(
 
 export async function main(args: string[]): Promise<void> {
 	if (args.length === 1 && args[0] === TMUX_OWNER_ISOLATION_ARG) {
-		const { runTmuxOwnerIsolationCliFromStdin } = await import("./gjc-runtime/tmux-owner-isolation-cli");
+		const { runTmuxOwnerIsolationCliFromStdin } = await import("./worx-runtime/tmux-owner-isolation-cli");
 		await runTmuxOwnerIsolationCliFromStdin();
 		return;
 	}
 	if (args.length === 1 && args[0] === MANAGED_OWNER_SUPERVISOR_ARG) {
-		const { runManagedOwnerSupervisor } = await import("./gjc-runtime/managed-owner-supervisor");
+		const { runManagedOwnerSupervisor } = await import("./worx-runtime/managed-owner-supervisor");
 		await runManagedOwnerSupervisor();
 		return;
 	}
 	if (process.env[MANAGED_OWNER_CHILD_TOKEN_ENV] !== undefined) {
 		const { admitManagedOwnerBeforeCli, completeManagedOwnerRecovery } = await import(
-			"./gjc-runtime/managed-owner-admission"
+			"./worx-runtime/managed-owner-admission"
 		);
 		const admission = await admitManagedOwnerBeforeCli();
 		if (admission.kind === "blocked") return;

@@ -402,7 +402,7 @@ Project executor override body.
 			path.join(repoRoot, "packages", "coding-agent", "src", "prompts", "system", "system-prompt.md"),
 		).text();
 		const ultragoal = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "ultragoal", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ultragoal", "SKILL.md"),
 		).text();
 
 		expect(systemPrompt).toContain("Delegate large implementation slices to `executor`");
@@ -412,7 +412,7 @@ Project executor override body.
 
 	it("documents validation-batch granularity, contract, and intra-goal lane parallelism in the ultragoal prompt", async () => {
 		const ultragoal = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "ultragoal", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ultragoal", "SKILL.md"),
 		).text();
 
 		// A: create-goals granularity — merge validation-coupled stories, fan out executor slices.
@@ -486,7 +486,7 @@ Project executor override body.
 
 	it("documents same-domain subagent reuse and terminal-critic resumption for token efficiency", async () => {
 		const ultragoal = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "ultragoal", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ultragoal", "SKILL.md"),
 		).text();
 
 		// Same-domain executor/architect reuse instead of fresh spawns.
@@ -544,7 +544,7 @@ Project executor override body.
 
 	it("locks ralplan automatic-admission approval and handoff paths", async () => {
 		const ralplan = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "ralplan", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ralplan", "SKILL.md"),
 		).text();
 		expect(ralplan).toContain("counts as opting into execution for that skill");
 		expect(ralplan).toContain("gjc.ralplan.autoHandoff");
@@ -567,10 +567,10 @@ Project executor override body.
 
 	it("documents leader-owned Ultragoal checkpoints for Team bridge workers", async () => {
 		const team = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "team", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "team", "SKILL.md"),
 		).text();
 		const ultragoal = await Bun.file(
-			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills", "ultragoal", "SKILL.md"),
+			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ultragoal", "SKILL.md"),
 		).text();
 
 		expect(team).toContain("current-session active GJC goal snapshot");
@@ -879,7 +879,7 @@ describe("bundled skills CLI", () => {
 		expect(stderr).toBe("");
 		const parsed = JSON.parse(stdout) as { name: string; path: string; source: string; content: string };
 		expect(parsed.name).toBe("ultragoal");
-		expect(parsed.path).toBe("embedded:gjc/skills/ultragoal/SKILL.md");
+		expect(parsed.path).toBe("embedded:worx/skills/ultragoal/SKILL.md");
 		expect(parsed.source).toBe("bundled:default");
 		expect(parsed.content).toContain("# Ultragoal");
 	});
@@ -915,7 +915,7 @@ describe("bundled skills CLI", () => {
 		expect(stderr).toBe("");
 		const parsed = JSON.parse(stdout) as { skills: Array<{ name: string; path: string }> };
 		expect(parsed.skills.map(skill => skill.name).sort()).toEqual([...DEFAULT_WORX_DEFINITION_NAMES].sort());
-		expect(parsed.skills.every(skill => skill.path.startsWith("embedded:gjc/skills/"))).toBe(true);
+		expect(parsed.skills.every(skill => skill.path.startsWith("embedded:worx/skills/"))).toBe(true);
 		expect(parsed.skills.some(skill => skill.name === "auto-research-greenfield")).toBe(false);
 		expect(parsed.skills.some(skill => skill.name === "auto-answer-uncertain")).toBe(false);
 		expect(parsed.skills.some(skill => skill.name === "ai-slop-cleaner")).toBe(false);

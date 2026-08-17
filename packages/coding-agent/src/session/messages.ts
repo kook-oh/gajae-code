@@ -27,7 +27,7 @@ export {
 	createCompactionSummaryMessage,
 } from "@bworx-io/worx-agent-core/compaction/messages";
 
-import type { LoadedSubskillActivation } from "../extensibility/gjc-plugins";
+import type { LoadedSubskillActivation } from "../extensibility/worx-plugins";
 import type { OutputMeta } from "../tools/output-meta";
 import { formatOutputNotice } from "../tools/output-meta";
 

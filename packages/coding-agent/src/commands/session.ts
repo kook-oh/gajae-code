@@ -6,7 +6,7 @@ import {
 	listGjcTmuxSessions,
 	removeGjcTmuxSession,
 	statusGjcTmuxSession,
-} from "../gjc-runtime/tmux-sessions";
+} from "../worx-runtime/tmux-sessions";
 
 function writeJson(value: unknown): void {
 	process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);

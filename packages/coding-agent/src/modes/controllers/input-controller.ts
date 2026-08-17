@@ -5,8 +5,8 @@ import { type AutocompleteProvider, matchesKey, type SlashCommand } from "@bworx
 import { $pickenv, logger, sanitizeText } from "@bworx-io/worx-utils";
 import { type AppKeybinding, KEYBINDINGS } from "../../config/keybindings";
 import { isSettingsInitialized, settings } from "../../config/settings";
-import { resolveSubskillActivationForSkillInvocation } from "../../extensibility/gjc-plugins";
 import { buildSkillPromptMessage, parseSkillInvocations } from "../../extensibility/skills";
+import { resolveSubskillActivationForSkillInvocation } from "../../extensibility/worx-plugins";
 import { expandEmoticons } from "../../modes/emoji-autocomplete";
 import { createPromptActionAutocompleteProvider } from "../../modes/prompt-action-autocomplete";
 import { theme } from "../../modes/theme/theme";

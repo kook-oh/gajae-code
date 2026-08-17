@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { GjcRuntimeSnapshotStore } from "../src/extensibility/gjc-plugins/runtime-quarantine";
+import { GjcRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
 
 /**
  * The Settings surface is only useful if the runtime evidence the session

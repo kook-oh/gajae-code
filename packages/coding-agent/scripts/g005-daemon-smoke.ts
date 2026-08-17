@@ -10,13 +10,6 @@ import assert from "node:assert";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-
-import {
-	buildGjcTmuxExactOptionTarget,
-	buildGjcTmuxProfileCommands,
-	resolveGjcTmuxCommand,
-} from "../src/gjc-runtime/tmux-common";
-import { forceCloseGjcTmuxSession, statusGjcTmuxSession } from "../src/gjc-runtime/tmux-sessions";
 import type { SessionCloseFrame, SessionCreateFrame } from "../src/sdk/bus/index";
 import {
 	type AuditEvent,
@@ -25,6 +18,12 @@ import {
 	type LedgerStore,
 	type OrchestratorDeps,
 } from "../src/sdk/bus/lifecycle-orchestrator";
+import {
+	buildGjcTmuxExactOptionTarget,
+	buildGjcTmuxProfileCommands,
+	resolveGjcTmuxCommand,
+} from "../src/worx-runtime/tmux-common";
+import { forceCloseGjcTmuxSession, statusGjcTmuxSession } from "../src/worx-runtime/tmux-sessions";
 
 const tmux = resolveGjcTmuxCommand(process.env);
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-g005-"));

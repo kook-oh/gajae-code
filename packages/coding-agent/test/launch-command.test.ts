@@ -8,7 +8,7 @@ import {
 	WORX_COORDINATOR_SESSION_ID_ENV,
 	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 	WORX_TMUX_OWNER_GENERATION_ENV,
-} from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
+} from "@bworx-io/worx-code/worx-runtime/session-state-sidecar";
 
 describe("persistCoordinatorLaunchFailure", () => {
 	it("persists the exact managed owner generation without normalizing it", async () => {

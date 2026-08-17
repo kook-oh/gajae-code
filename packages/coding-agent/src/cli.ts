@@ -431,18 +431,18 @@ export async function runCli(argv: string[]): Promise<void> {
 		return;
 	}
 	if (argv.length === 1 && argv[0] === TMUX_OWNER_ISOLATION_ARG) {
-		const { runTmuxOwnerIsolationCliFromStdin } = await import("./gjc-runtime/tmux-owner-isolation-cli");
+		const { runTmuxOwnerIsolationCliFromStdin } = await import("./worx-runtime/tmux-owner-isolation-cli");
 		await runTmuxOwnerIsolationCliFromStdin();
 		return;
 	}
 	if (argv.length === 1 && argv[0] === MANAGED_OWNER_SUPERVISOR_ARG) {
-		const { runManagedOwnerSupervisor } = await import("./gjc-runtime/managed-owner-supervisor");
+		const { runManagedOwnerSupervisor } = await import("./worx-runtime/managed-owner-supervisor");
 		await runManagedOwnerSupervisor();
 		return;
 	}
 	if (process.env[MANAGED_OWNER_CHILD_TOKEN_ENV] !== undefined) {
 		const { admitManagedOwnerBeforeCli, completeManagedOwnerRecovery } = await import(
-			"./gjc-runtime/managed-owner-admission"
+			"./worx-runtime/managed-owner-admission"
 		);
 		const admission = await admitManagedOwnerBeforeCli();
 		if (admission.kind === "blocked") return;

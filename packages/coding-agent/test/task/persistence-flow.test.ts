@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from "bun:test";
 import { AsyncJobManager } from "../../src/async";
 import type { ModelRegistry } from "../../src/config/model-registry";
 import { Settings } from "../../src/config/settings";
-import * as repositoryBindingModule from "../../src/gjc-runtime/repository-binding";
 import { InternalUrlRouter } from "../../src/internal-urls/router";
 import { TaskTool } from "../../src/task";
 import * as discoveryModule from "../../src/task/discovery";
@@ -12,6 +11,7 @@ import type { IsolationHandle, WorktreeBaseline } from "../../src/task/worktree"
 import * as worktreeModule from "../../src/task/worktree";
 import type { ToolSession } from "../../src/tools";
 import * as git from "../../src/utils/git";
+import * as repositoryBindingModule from "../../src/worx-runtime/repository-binding";
 
 const AGENT: AgentDefinition = {
 	name: "executor",

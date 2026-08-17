@@ -980,8 +980,8 @@ function isSource(file: string): boolean {
 	return /\.(?:[cm]?[jt]sx?|json|py|toml)$/.test(file);
 }
 
-const teamRuntimeTmuxPath = "packages/coding-agent/src/gjc-runtime/team-runtime.ts";
-const teamWorkersTmuxPath = "packages/coding-agent/src/gjc-runtime/team-workers.ts";
+const teamRuntimeTmuxPath = "packages/coding-agent/src/worx-runtime/team-runtime.ts";
+const teamWorkersTmuxPath = "packages/coding-agent/src/worx-runtime/team-workers.ts";
 
 const coordinatorMcpRoot = "packages/coding-agent/src/coordinator-mcp/server.ts";
 function isPublishedGjcSessionShellHelper(file: string): boolean {
@@ -3176,7 +3176,7 @@ fi
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts":
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts":
 				'Bun.spawnSync([config.tmux_command, "send-keys", "-t", paneId, "prompt"]);\n',
 		},
 		1,
@@ -3254,12 +3254,12 @@ async function monitorGjcTeam(): Promise<void> {
 }
 `;
 	await runSelfTestFixture(
-		{ "packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture },
+		{ "packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture },
 		0,
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"\tassertTeamTmuxMutationPreproof(config, operation);\n",
 				"",
 			),
@@ -3269,7 +3269,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"\tassertGjcTmuxMutationAuthoritySync(authority);\n\treturn result;",
 				"\treturn result;",
 			),
@@ -3279,7 +3279,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"async function continueStalledGjcTeamWorkers(): Promise<void>",
 				"async function relocatedContinuation(): Promise<void>",
 			),
@@ -3289,7 +3289,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"if (revalidationReason) {\n\t\treturn;\n\t}",
 				"if (revalidationReason) {}",
 			),
@@ -3299,7 +3299,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"await continueStalledGjcTeamWorkers();",
 				"",
 			),
@@ -3309,7 +3309,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"await continueStalledGjcTeamWorkers();\n\t\tawait reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);",
 				"await reconcileGjcTeamStaleClaimsUnlocked(workerOrchestrationRuntime, teamName, dir, config, env, capability);\n\t\tawait continueStalledGjcTeamWorkers();",
 			),
@@ -3319,7 +3319,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				"const dispatch =",
 				'args.push("forged");\nconst dispatch =',
 			),
@@ -3329,14 +3329,14 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": `${canonicalTeamRuntimeSendKeysFixture}\nBun.spawnSync([config.tmux_command, "send-keys", "-t", paneId, "prompt"]);\n`,
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": `${canonicalTeamRuntimeSendKeysFixture}\nBun.spawnSync([config.tmux_command, "send-keys", "-t", paneId, "prompt"]);\n`,
 		},
 		1,
 		"tmux send-keys content injection is outside sanctioned process lifecycle",
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replaceAll(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replaceAll(
 				"worker.pane_id",
 				'"%99"',
 			),
@@ -3346,7 +3346,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				'continuationPrompt,\n\t\t";",',
 				"`$" + "{continuationPrompt}" + '`,\n\t\t";",',
 			),
@@ -3356,7 +3356,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				'"send-keys",\n\t\t"-l",\n\t\t"-t",\n\t\tworker.pane_id,\n\t\tcontinuationPrompt,\n\t\t";",\n\t\t"send-keys",\n\t\t"-t",\n\t\tworker.pane_id,\n\t\t"Enter",',
 				'"send-keys", "-t", worker.pane_id, "Enter", ";", "send-keys", "-l", "-t", worker.pane_id, continuationPrompt,',
 			),
@@ -3366,7 +3366,7 @@ async function monitorGjcTeam(): Promise<void> {
 	);
 	await runSelfTestFixture(
 		{
-			"packages/coding-agent/src/gjc-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
+			"packages/coding-agent/src/worx-runtime/team-runtime.ts": canonicalTeamRuntimeSendKeysFixture.replace(
 				/\t\t: \(\(\) => \{[\s\S]*?\n\t\t\t\}\)\(\);/,
 				"\t\t: Bun.spawnSync([config.tmux_command, ...args]);",
 			),

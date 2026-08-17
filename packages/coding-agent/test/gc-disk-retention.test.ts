@@ -4,6 +4,8 @@ import * as fsp from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getDefault } from "../src/config/settings-schema";
+import { SessionIndex } from "../src/sdk/broker/session-index";
+import { listCanonicalBlobs, removeCanonicalBlob } from "../src/session/blob-store";
 import {
 	collectGcDiskReport,
 	GC_DISK_POLICY_DEFAULTS,
@@ -17,9 +19,7 @@ import {
 	type GcStoreAdapter,
 	resolveGcDiskPolicy,
 	runGjcGcCommand,
-} from "../src/gjc-runtime/gc-runtime";
-import { SessionIndex } from "../src/sdk/broker/session-index";
-import { listCanonicalBlobs, removeCanonicalBlob } from "../src/session/blob-store";
+} from "../src/worx-runtime/gc-runtime";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

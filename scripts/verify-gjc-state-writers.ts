@@ -18,14 +18,14 @@ const repoRoot = path.join(import.meta.dir, "..");
 const SCAN_ROOT = path.join(repoRoot, "packages", "coding-agent", "src");
 
 // The one module allowed to perform raw `.worx/**` filesystem mutations once routing is complete.
-const ALLOWED_WRITER_RELATIVE = path.join("packages", "coding-agent", "src", "gjc-runtime", "state-writer.ts");
+const ALLOWED_WRITER_RELATIVE = path.join("packages", "coding-agent", "src", "worx-runtime", "state-writer.ts");
 
 // Remaining intentional non-writer direct operations: empty mailbox directory creation and legacy
 // session-directory lifecycle moves/removes. These do not write state file contents.
 const KNOWN_ALLOWED_SITES = new Set<string>([
-	"packages/coding-agent/src/gjc-runtime/team-runtime.ts:1610:fs.mkdir",
-	"packages/coding-agent/src/gjc-runtime/team-runtime.ts:1612:fs.mkdir",
-	"packages/coding-agent/src/gjc-runtime/team-runtime.ts:1623:fs.mkdir",
+	"packages/coding-agent/src/worx-runtime/team-runtime.ts:1610:fs.mkdir",
+	"packages/coding-agent/src/worx-runtime/team-runtime.ts:1612:fs.mkdir",
+	"packages/coding-agent/src/worx-runtime/team-runtime.ts:1623:fs.mkdir",
 	"packages/coding-agent/src/session/session-manager.ts:399:renameSync",
 	"packages/coding-agent/src/session/session-manager.ts:402:rmSync",
 	"packages/coding-agent/src/session/session-manager.ts:406:rmSync",

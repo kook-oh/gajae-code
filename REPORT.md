@@ -78,7 +78,7 @@ The width-measurement layer crosses the N-API boundary one line at a time: `trun
 **Suggestion:** add batched natives (e.g. `truncateLinesToWidth(lines[], width)` / `visibleWidths(lines[])`) so a frame's normalization is one FFI call over the array; consolidate on one width implementation; hoist tab width to a module-level cached value invalidated on settings change.
 
 ### 10. perf(session): sidecar runtime-state writer does sync read + pretty-print JSON write per state event — P2
-`packages/coding-agent/src/gjc-runtime/session-state-sidecar.ts:139-300`
+`packages/coding-agent/src/worx-runtime/session-state-sidecar.ts:139-300`
 
 `persistCoordinatorRuntimeStateFromEvent` runs for every session event via `#emitSessionEvent` (agent-session.ts:1777-1786, 1812). For events that map to a state (agent_start/turn_start/agent_end) it calls `readPreviousPayload` which is a **synchronous** `fsSync.readFileSync` + JSON.parse (:139-145) on the event/render path, then writes `JSON.stringify(payload, null, 2)` (:272-276). turn_start fires per agent turn, so during multi-turn tool loops this sync read happens repeatedly while the TUI is animating.
 

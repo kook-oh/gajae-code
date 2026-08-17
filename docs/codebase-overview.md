@@ -9,7 +9,7 @@ Gajae-Code (`gjc`) is centered on `packages/coding-agent/`. The public workflow 
 Default workflow skills are embedded from:
 
 ```text
-packages/coding-agent/src/defaults/gjc/skills/<name>/SKILL.md
+packages/coding-agent/src/defaults/worx/skills/<name>/SKILL.md
 ```
 
 Public role subagent prompts are embedded from:

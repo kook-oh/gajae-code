@@ -14,10 +14,10 @@ import {
 	type NormalizedGjcPluginSurfaces,
 	previewGjcBundleUpdate,
 	renderPluginAppendices,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 import { buildSystemPrompt } from "../src/system-prompt";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
 const tempDirs: string[] = [];
 
@@ -71,7 +71,7 @@ describe("plugin prompt appendices", () => {
 				beforeRead: async (_entry, surface) => {
 					if (!surface.extensionId.includes("system-appendix")) return;
 					await fs.appendFile(
-						path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "prompts", "system-appendix.md"),
+						path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "prompts", "system-appendix.md"),
 						"\npost-validation replacement\n",
 					);
 				},
@@ -89,7 +89,14 @@ describe("plugin prompt appendices", () => {
 				beforeRead: async (_entry, surface) => {
 					if (!surface.extensionId.includes("agent-appendix")) return;
 					await fs.appendFile(
-						path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "prompts", "executor-appendix.md"),
+						path.join(
+							cwd,
+							".worx",
+							"worx-plugins",
+							"valid-six-surface-bundle",
+							"prompts",
+							"executor-appendix.md",
+						),
 						"\npost-validation replacement\n",
 					);
 				},
@@ -228,7 +235,7 @@ describe("M5 blocker fixes", () => {
 	});
 
 	test("parseManifest rejects unknown agent-appendix agent with invalid_parent", async () => {
-		const { GjcPluginLoadError, parseManifest } = await import("../src/extensibility/gjc-plugins");
+		const { GjcPluginLoadError, parseManifest } = await import("../src/extensibility/worx-plugins");
 		try {
 			parseManifest(
 				{

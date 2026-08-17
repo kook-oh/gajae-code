@@ -244,7 +244,7 @@ describe("InputController #invokeSkillCommand (E1-E3)", () => {
 		if (!firstCall) throw new Error("expected promptCustomMessage to be called");
 		const messageArg = firstCall[0];
 		expect(messageArg.content).toContain("Deep Interview");
-		expect(messageArg.details.path).toBe("embedded:gjc/skills/deep-interview/SKILL.md");
+		expect(messageArg.details.path).toBe("embedded:worx/skills/deep-interview/SKILL.md");
 		expect(ctx.showError).not.toHaveBeenCalled();
 	});
 

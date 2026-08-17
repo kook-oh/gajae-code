@@ -59,7 +59,7 @@ describe("Plugin command scope parsing", () => {
 
 	it("lists installed GJC plugin bundles in text and JSON output", async () => {
 		const cwd = await makeTempProject();
-		const fixture = path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle");
+		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
 
 		const install = await runPluginCommand(["install", fixture, "--project"], cwd);
 		expect(install.exitCode).toBe(0);
@@ -102,7 +102,7 @@ describe("Plugin command scope parsing", () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
-		const fixture = path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle");
+		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
 
 		const install = await runPluginCommand(["install", fixture, "--user"], cwd, agentDir);
 		expect(install.exitCode).toBe(0);
@@ -123,7 +123,7 @@ describe("Plugin command scope parsing", () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
-		const fixture = path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle");
+		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
 
 		expect((await runPluginCommand(["install", fixture, "--user"], cwd, agentDir)).exitCode).toBe(0);
 		expect((await runPluginCommand(["install", fixture, "--project"], cwd, agentDir)).exitCode).toBe(0);
@@ -143,7 +143,7 @@ describe("Plugin command scope parsing", () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
-		const fixture = path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle");
+		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
 
 		expect((await runPluginCommand(["install", fixture, "--user"], cwd, agentDir)).exitCode).toBe(0);
 		expect((await runPluginCommand(["install", fixture, "--project"], cwd, agentDir)).exitCode).toBe(0);
@@ -167,7 +167,7 @@ describe("Plugin command scope parsing", () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
-		const fixture = path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle");
+		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
 
 		expect((await runPluginCommand(["install", fixture, "--user"], cwd, agentDir)).exitCode).toBe(0);
 		expect(
@@ -192,7 +192,7 @@ describe("Plugin command scope parsing", () => {
 		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
-		const registryRoot = path.join(agentDir, "gjc-plugins");
+		const registryRoot = path.join(agentDir, "worx-plugins");
 		await fs.mkdir(registryRoot, { recursive: true });
 		await fs.writeFile(path.join(registryRoot, "registry.json"), "{");
 
@@ -214,7 +214,7 @@ describe("Plugin command scope parsing", () => {
 		// locator. Upgrading a name that is not installed would fall through to
 		// the marketplace and never exercise this surface at all.
 		const stagedSource = path.join(cwd, "staged-bundle");
-		await fs.cp(path.join(import.meta.dir, "fixtures/gjc-plugins/valid-six-surface-bundle"), stagedSource, {
+		await fs.cp(path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle"), stagedSource, {
 			recursive: true,
 		});
 		const seeded = await runPluginCommand(["install", stagedSource, "--project"], cwd);

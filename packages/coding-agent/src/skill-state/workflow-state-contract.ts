@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import { activeSnapshotPath, assertNonEmptyGjcSessionId, modeStatePath } from "../gjc-runtime/session-layout";
+import { activeSnapshotPath, assertNonEmptyGjcSessionId, modeStatePath } from "../worx-runtime/session-layout";
 import {
 	CANONICAL_WORX_WORKFLOW_SKILLS,
 	type CanonicalGjcWorkflowSkill,
@@ -14,7 +14,7 @@ export {
 } from "./workflow-state-version";
 
 export type { CanonicalGjcWorkflowSkill };
-export type WorkflowStateMutationOwner = "gjc-state-cli" | "gjc-runtime" | "gjc-hook";
+export type WorkflowStateMutationOwner = "worx-state-cli" | "worx-runtime" | "worx-hook";
 export type WorkflowStateReceiptStatus = "fresh" | "stale";
 
 export interface WorkflowStateContentChecksum {

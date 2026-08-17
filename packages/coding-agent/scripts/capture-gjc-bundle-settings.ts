@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { GjcLifecycleContext } from "../src/extensibility/gjc-plugins/lifecycle";
-import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/gjc-plugins/runtime-quarantine";
+import type { GjcLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
+import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import type {
 	GjcBundleIdentity,
 	GjcBundleSummary,
@@ -9,7 +9,7 @@ import type {
 	GjcToggleResult,
 	GjcUpdateApplyResult,
 	GjcUpdatePreview,
-} from "../src/extensibility/gjc-plugins/types";
+} from "../src/extensibility/worx-plugins/types";
 import { type GjcBundleLifecyclePort, GjcBundleSettingsComponent } from "../src/modes/components/gjc-bundle-settings";
 import { setTheme } from "../src/modes/theme/theme";
 import {

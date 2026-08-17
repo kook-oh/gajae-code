@@ -3,13 +3,13 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { postmortem } from "@bworx-io/worx-utils";
+import { WorkerIntegrationRequestScheduler } from "../src/session/agent-session";
 import {
 	persistCoordinatorRuntimeStateFromEvent,
 	persistCoordinatorRuntimeStateFromPostmortem,
 	WORX_COORDINATOR_SESSION_ID_ENV,
 	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
-} from "../src/gjc-runtime/session-state-sidecar";
-import { WorkerIntegrationRequestScheduler } from "../src/session/agent-session";
+} from "../src/worx-runtime/session-state-sidecar";
 
 const tempDirs: string[] = [];
 const ORIGINAL_STATE_FILE = process.env[WORX_COORDINATOR_SESSION_STATE_FILE_ENV];

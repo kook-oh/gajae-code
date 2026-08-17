@@ -2,8 +2,6 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { activeStateDir, modeStatePath } from "../src/gjc-runtime/session-layout";
-import { removeActiveEntry, writeActiveEntry, writeGuardedJsonAtomic } from "../src/gjc-runtime/state-writer";
 import {
 	applyHandoffToActiveState,
 	CANONICAL_WORX_WORKFLOW_SKILLS,
@@ -14,6 +12,8 @@ import {
 	readVisibleSkillActiveState,
 	syncSkillActiveState,
 } from "../src/skill-state/active-state";
+import { activeStateDir, modeStatePath } from "../src/worx-runtime/session-layout";
+import { removeActiveEntry, writeActiveEntry, writeGuardedJsonAtomic } from "../src/worx-runtime/state-writer";
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-skill-active-"));

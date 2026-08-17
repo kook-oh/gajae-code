@@ -2,8 +2,8 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { runGjcGcCommand } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
 import { harnessLeasesGcAdapter } from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
+import { runGjcGcCommand } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
 import { SessionIndex } from "../src/sdk/broker/session-index";
 
 const tempDirs: string[] = [];

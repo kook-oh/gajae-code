@@ -40,10 +40,10 @@ import {
 	toError,
 } from "@bworx-io/worx-utils";
 import type { TtsrInjectionRecord } from "../export/ttsr";
-import { assertSafePathComponent } from "../gjc-runtime/session-layout";
-import { writeTextAtomic } from "../gjc-runtime/state-writer";
 import type { ManagedLegacyLocalMigrationSource } from "../internal-urls/local-protocol";
 import * as git from "../utils/git";
+import { assertSafePathComponent } from "../worx-runtime/session-layout";
+import { writeTextAtomic } from "../worx-runtime/state-writer";
 import { ArtifactManager } from "./artifacts";
 import {
 	type BlobPutResult,
@@ -3268,7 +3268,7 @@ function writeTerminalBreadcrumb(cwd: string, sessionFile: string): void {
 	const write = isUnderProjectGjc(cwd, breadcrumbFile)
 		? writeTextAtomic(breadcrumbFile, content, {
 				cwd,
-				audit: { category: "artifact", verb: "write", owner: "gjc-runtime" },
+				audit: { category: "artifact", verb: "write", owner: "worx-runtime" },
 			})
 		: Bun.write(breadcrumbFile, content);
 	write.catch(() => {});

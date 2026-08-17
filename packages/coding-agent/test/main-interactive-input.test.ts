@@ -12,7 +12,7 @@ import {
 	WORX_COORDINATOR_SESSION_LAUNCH_ID_ENV,
 	WORX_COORDINATOR_SESSION_READINESS_FILE_ENV,
 	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
-} from "../src/gjc-runtime/session-state-sidecar";
+} from "../src/worx-runtime/session-state-sidecar";
 
 function createInput(overrides: Partial<SubmittedUserInput> = {}): SubmittedUserInput {
 	return {

@@ -3,6 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { fileLocksGcAdapter } from "@bworx-io/worx-code/config/file-lock-gc";
+import { harnessLeasesGcAdapter } from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
 import {
 	collectGcReport,
 	computeExitCode,
@@ -12,9 +13,8 @@ import {
 	type GcStoreAdapter,
 	gcPidProbe,
 	runGjcGcCommand,
-} from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
-import { teamWorkersGcAdapter } from "@bworx-io/worx-code/gjc-runtime/team-gc";
-import { harnessLeasesGcAdapter } from "@bworx-io/worx-code/harness-control-plane/gc-adapter";
+} from "@bworx-io/worx-code/worx-runtime/gc-runtime";
+import { teamWorkersGcAdapter } from "@bworx-io/worx-code/worx-runtime/team-gc";
 
 const tempDirs: string[] = [];
 const originalKill = process.kill.bind(process);

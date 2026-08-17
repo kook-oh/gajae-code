@@ -4,7 +4,6 @@ import { AsyncJobManager } from "../../src/async";
 import type { ModelRegistry } from "../../src/config/model-registry";
 import { Settings } from "../../src/config/settings";
 import type { LoadExtensionsResult } from "../../src/extensibility/extensions/types";
-import * as repositoryBindingModule from "../../src/gjc-runtime/repository-binding";
 import type { PlanModeState } from "../../src/plan-mode/state";
 import type { CreateAgentSessionOptions, CreateAgentSessionResult } from "../../src/sdk";
 import * as sdkModule from "../../src/sdk";
@@ -15,6 +14,7 @@ import type { AgentDefinition, TaskParams } from "../../src/task/types";
 import type { IsolationHandle, WorktreeBaseline } from "../../src/task/worktree";
 import * as worktreeModule from "../../src/task/worktree";
 import type { ToolSession } from "../../src/tools";
+import * as repositoryBindingModule from "../../src/worx-runtime/repository-binding";
 import "../../src/tools/yield";
 import { EventBus } from "../../src/utils/event-bus";
 

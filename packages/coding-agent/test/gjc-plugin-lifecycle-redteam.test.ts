@@ -20,11 +20,11 @@ import {
 	setGjcBundleEnabled,
 	setGjcBundleSurfaceEnabled,
 	toBundleSummary,
-} from "../src/extensibility/gjc-plugins";
-import { runGjcBundleTransaction } from "../src/extensibility/gjc-plugins/installer";
-import { writeRegistry } from "../src/extensibility/gjc-plugins/registry";
+} from "../src/extensibility/worx-plugins";
+import { runGjcBundleTransaction } from "../src/extensibility/worx-plugins/installer";
+import { writeRegistry } from "../src/extensibility/worx-plugins/registry";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
 const originalAgentDir = getAgentDir();
 const tempDirs: string[] = [];
@@ -215,7 +215,7 @@ describe("GJC bundle lifecycle adversarial invariants", () => {
 		// Barrel and package-export boundaries are what actually close this; see
 		// gjc-plugin-public-boundary.test.ts. Assert the barrel here too, so this
 		// test fails if the primitive is ever re-exported.
-		const barrel: Record<string, unknown> = await import("../src/extensibility/gjc-plugins");
+		const barrel: Record<string, unknown> = await import("../src/extensibility/worx-plugins");
 		for (const forbidden of ["runGjcBundleTransaction", "resolveGjcBundleCandidate", "candidateRegistryEntry"]) {
 			expect(Object.keys(barrel)).not.toContain(forbidden);
 		}

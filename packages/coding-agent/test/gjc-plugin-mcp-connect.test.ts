@@ -2,10 +2,10 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/gjc-plugins";
+import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/worx-plugins";
 import { MCPManager } from "../src/runtime-mcp";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const mcpBundle = path.join(fixturesRoot, "valid-mcp-bundle");
 const tempDirs: string[] = [];
 const managers: MCPManager[] = [];
@@ -28,7 +28,7 @@ describe("plugin MCP live connection", () => {
 		const manager = new MCPManager(cwd);
 		managers.push(manager);
 		const sources = {
-			domain_docs: { provider: "gjc-plugins", providerName: "GJC plugin bundle", level: "project" as const },
+			domain_docs: { provider: "worx-plugins", providerName: "GJC plugin bundle", level: "project" as const },
 		};
 		const result = await manager.connectServers(configs, sources as never);
 
@@ -55,7 +55,7 @@ describe("plugin MCP live connection", () => {
 			const manager = new MCPManager(cwd);
 			managers.push(manager);
 			const sources = {
-				domain_docs: { provider: "gjc-plugins", providerName: "GJC plugin bundle", level: "project" as const },
+				domain_docs: { provider: "worx-plugins", providerName: "GJC plugin bundle", level: "project" as const },
 			};
 			const result = await manager.connectServers(configs, sources as never);
 			expect(result.errors.size).toBe(0);

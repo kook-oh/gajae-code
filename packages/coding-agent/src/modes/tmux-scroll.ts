@@ -1,4 +1,4 @@
-import { resolveGjcTmuxCommand } from "../gjc-runtime/tmux-common";
+import { resolveGjcTmuxCommand } from "../worx-runtime/tmux-common";
 
 // tmux copy-mode pads lines to the pane width, so allow trailing spaces before
 // the line end while keeping the match scoped to the standalone `user` label.

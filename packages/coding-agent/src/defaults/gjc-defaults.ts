@@ -77,8 +77,8 @@ export interface DefaultGjcDefinitionInstallResult {
 function sourcePathForBundledEntry(entry: BundledGjcSkillCatalogEntry): string {
 	const relative = entry.kind === "skill" ? entry.relativePath : entry.relativePath.replace(/^skill-fragments\//, "");
 	return entry.kind === "skill"
-		? path.join(import.meta.dir, "gjc", relative)
-		: path.join(import.meta.dir, "gjc", "skills", relative);
+		? path.join(import.meta.dir, "worx", relative)
+		: path.join(import.meta.dir, "worx", "skills", relative);
 }
 
 export class BundledDefaultContentError extends Error {
@@ -179,8 +179,8 @@ export function getEmbeddedDefaultGjcSkills(): EmbeddedDefaultGjcSkill[] {
 			{
 				name: definition.name,
 				description,
-				filePath: `embedded:gjc/${definition.relativePath}`,
-				baseDir: `embedded:gjc/skills/${definition.name}`,
+				filePath: `embedded:worx/${definition.relativePath}`,
+				baseDir: `embedded:worx/skills/${definition.name}`,
 				source: "bundled:default",
 				loadContent: definition.loadContent,
 			},

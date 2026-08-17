@@ -164,7 +164,7 @@ function listVisibleDefinitions(): VisibleDefinition[] {
 }
 
 function listBundledWorkflowSkills(): VisibleDefinition[] {
-	return listSkillDirs("packages/coding-agent/src/defaults/gjc/skills").sort((a, b) => a.name.localeCompare(b.name) || a.path.localeCompare(b.path));
+	return listSkillDirs("packages/coding-agent/src/defaults/worx/skills").sort((a, b) => a.name.localeCompare(b.name) || a.path.localeCompare(b.path));
 }
 
 function listBundledRoleAgents(): VisibleDefinition[] {

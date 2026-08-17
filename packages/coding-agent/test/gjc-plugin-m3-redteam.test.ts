@@ -10,7 +10,7 @@ import {
 	type NormalizedGjcPluginBundle,
 	type NormalizedGjcPluginSurfaces,
 	validateInstallPlan,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 function expectCode(fn: () => unknown, code: GjcPluginLoadErrorCode): void {
 	try {

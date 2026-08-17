@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { sanitizePayload } from "../src/defaults/gjc/extensions/grok-cli-vendor/src/payload/sanitize";
+import { sanitizePayload } from "../src/defaults/worx/extensions/grok-cli-vendor/src/payload/sanitize";
 
 describe("Grok CLI payload sanitize", () => {
 	it("strips replayed reasoning and unsupported Composer effort", () => {

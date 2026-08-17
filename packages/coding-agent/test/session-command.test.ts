@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import SessionCommand from "../src/commands/session";
-import * as tmuxSessions from "../src/gjc-runtime/tmux-sessions";
+import * as tmuxSessions from "../src/worx-runtime/tmux-sessions";
 
 type SpawnSyncMock = {
 	mockImplementation: (implementation: (cmd: string[]) => unknown) => void;
@@ -125,7 +125,7 @@ async function runSessionCommand(argv: string[]): Promise<string> {
 afterEach(() => {
 	process.stdout.write = ORIGINAL_STDOUT_WRITE;
 	(Bun.spawnSync as unknown as SpawnSyncMock).mockRestore?.();
-	mock.module("../src/gjc-runtime/tmux-sessions", () => REAL_TMUX_SESSIONS);
+	mock.module("../src/worx-runtime/tmux-sessions", () => REAL_TMUX_SESSIONS);
 	mock.restore();
 	tmuxSessions.__setCreateOwnerIsolationForTests(null);
 	tmuxSessions.__setMutationServerProofForTests(null);
@@ -299,7 +299,7 @@ describe("gjc session command", () => {
 			createdAt: string;
 		}>();
 		const received = { args: null as unknown[] | null };
-		mock.module("../src/gjc-runtime/tmux-sessions", () => ({
+		mock.module("../src/worx-runtime/tmux-sessions", () => ({
 			...REAL_TMUX_SESSIONS,
 			forceCloseGjcTmuxSession: (...args: unknown[]) => {
 				received.args = args;
@@ -341,7 +341,7 @@ describe("gjc session command", () => {
 	});
 
 	it("preserves an asynchronous force-close error instead of reporting success", async () => {
-		mock.module("../src/gjc-runtime/tmux-sessions", () => ({
+		mock.module("../src/worx-runtime/tmux-sessions", () => ({
 			...REAL_TMUX_SESSIONS,
 			forceCloseGjcTmuxSession: async () => {
 				throw new Error("owner_term_verdict_timeout");
@@ -354,7 +354,7 @@ describe("gjc session command", () => {
 	});
 	it("returns exact JSON failures for owner identity and generation mismatches", async () => {
 		for (const reason of ["owner_pid_identity_mismatch", "owner_generation_mismatch"]) {
-			mock.module("../src/gjc-runtime/tmux-sessions", () => ({
+			mock.module("../src/worx-runtime/tmux-sessions", () => ({
 				...REAL_TMUX_SESSIONS,
 				forceCloseGjcTmuxSession: async () => {
 					throw new Error(reason);

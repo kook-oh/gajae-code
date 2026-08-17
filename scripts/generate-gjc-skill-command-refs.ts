@@ -3,7 +3,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { listCommandRefBlocks, renderCommandRefBlock } from "../packages/coding-agent/src/gjc-runtime/workflow-command-ref";
+import { listCommandRefBlocks, renderCommandRefBlock } from "../packages/coding-agent/src/worx-runtime/workflow-command-ref";
 
 interface CommandRefCheckResult {
 	skill: string;

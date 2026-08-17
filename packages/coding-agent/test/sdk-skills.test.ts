@@ -81,7 +81,7 @@ Loaded via symbolic link.
 		const expected = [...DEFAULT_WORX_DEFINITION_NAMES].sort();
 
 		expect(session.skills.map(skill => skill.name).sort()).toEqual(expected);
-		expect(session.skills.every(skill => skill.filePath.startsWith("embedded:gjc/skills/"))).toBe(true);
+		expect(session.skills.every(skill => skill.filePath.startsWith("embedded:worx/skills/"))).toBe(true);
 	}, 15_000);
 
 	it("should discover skills by default and expose them on session.skills", async () => {

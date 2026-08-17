@@ -22,17 +22,6 @@ import {
 } from "../../config/model-profile-contract";
 import { mergeModelProfiles } from "../../config/model-profiles";
 import { ModelsConfigFile } from "../../config/model-registry";
-import {
-	ensureLaunchWorktree,
-	ensureReusableNodeModules,
-	type GjcLaunchWorktreePlan,
-	planLaunchWorktree,
-} from "../../gjc-runtime/launch-worktree";
-import {
-	WORX_COORDINATOR_SESSION_BRANCH_ENV,
-	WORX_COORDINATOR_SESSION_ID_ENV,
-	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
-} from "../../gjc-runtime/session-state-sidecar";
 import { validateManagedArtifactTree } from "../../session/internal/managed-session-storage";
 import {
 	FileSessionStorage,
@@ -42,6 +31,17 @@ import {
 	type VerifiedSessionDeleteResult,
 	type VerifiedSessionDeleteTarget,
 } from "../../session/session-storage";
+import {
+	ensureLaunchWorktree,
+	ensureReusableNodeModules,
+	type GjcLaunchWorktreePlan,
+	planLaunchWorktree,
+} from "../../worx-runtime/launch-worktree";
+import {
+	WORX_COORDINATOR_SESSION_BRANCH_ENV,
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+} from "../../worx-runtime/session-state-sidecar";
 import type { SessionLifecycleMcpServer } from "../acp/mcp";
 import { SdkClient, SdkClientError } from "../client/client";
 import { SESSION_PREPARED_EVENT } from "../host/host";

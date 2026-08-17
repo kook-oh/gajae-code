@@ -6,8 +6,8 @@ import {
 	WORX_SESSION_ID_ENV,
 	writeCurrentSessionGoalModeState,
 	writePendingGoalModeRequest,
-} from "../gjc-runtime/goal-mode-request";
-import { runNativeUltragoalCommand } from "../gjc-runtime/ultragoal-runtime";
+} from "../worx-runtime/goal-mode-request";
+import { runNativeUltragoalCommand } from "../worx-runtime/ultragoal-runtime";
 
 export default class Ultragoal extends Command {
 	static description = "Run native GJC Ultragoal workflow commands";

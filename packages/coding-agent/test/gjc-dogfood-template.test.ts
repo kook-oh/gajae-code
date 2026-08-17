@@ -7,7 +7,7 @@ const expectedWorkflowSkills = ["deep-interview", "ralplan", "team", "ultragoal"
 describe("GJC dogfood skill template", () => {
 	it("documents local override installation without changing the default workflow surface", async () => {
 		const template = await Bun.file(path.join(repoRoot, "docs", "gjc-dogfood-skill-template.md")).text();
-		const defaultSkillsDir = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills");
+		const defaultSkillsDir = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills");
 		const defaultSkillEntries = await Array.fromAsync(new Bun.Glob("*/SKILL.md").scan(defaultSkillsDir));
 		const defaultSkillNames = defaultSkillEntries.map(entry => entry.split("/")[0]).sort();
 

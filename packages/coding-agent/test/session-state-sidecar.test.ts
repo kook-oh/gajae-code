@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { postmortem } from "@bworx-io/worx-utils";
 import { FileLockTestHooks } from "../src/config/file-lock";
-import { sessionRuntimeDir } from "../src/gjc-runtime/session-layout";
+import { sessionRuntimeDir } from "../src/worx-runtime/session-layout";
 import {
 	eventAffectsCoordinatorRuntimeState,
 	ownerTerminalContextFromEnvironment,
@@ -22,13 +22,13 @@ import {
 	WORX_TMUX_OWNER_GENERATION_ENV,
 	WORX_TMUX_OWNER_SERVER_KEY_ENV,
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
-} from "../src/gjc-runtime/session-state-sidecar";
+} from "../src/worx-runtime/session-state-sidecar";
 import {
 	createOwnerIntent,
 	lifecyclePaths,
 	observeOwnerTerminal,
 	replaceOwnerGeneration,
-} from "../src/gjc-runtime/tmux-owner-isolation";
+} from "../src/worx-runtime/tmux-owner-isolation";
 
 const tempDirs: string[] = [];
 

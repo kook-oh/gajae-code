@@ -1,5 +1,5 @@
 import { Command } from "@bworx-io/worx-utils/cli";
-import { runNativeStateCommand } from "../gjc-runtime/state-runtime";
+import { runNativeStateCommand } from "../worx-runtime/state-runtime";
 
 export default class State extends Command {
 	static description =

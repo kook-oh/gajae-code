@@ -9,10 +9,10 @@ import {
 	installGjcBundle,
 	previewGjcBundleUpdate,
 	readRegistry,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 const tempDirs: string[] = [];
-const fixtureRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins", "valid-six-surface-bundle");
+const fixtureRoot = path.join(import.meta.dir, "fixtures", "worx-plugins", "valid-six-surface-bundle");
 const fixtureFiles = [
 	"gajae-plugin.json",
 	"subskills/design/SKILL.md",
@@ -194,7 +194,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		expect(registry.plugins.map(plugin => plugin.name)).toEqual(["valid-six-surface-bundle"]);
 		expect(registry.plugins[0]?.source.kind).toBe("tarball");
 		expect(
-			await exists(path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle", "gajae-plugin.json")),
+			await exists(path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle", "gajae-plugin.json")),
 		).toBe(true);
 	});
 
@@ -209,7 +209,7 @@ describe("GJC plugin installer M2 red-team", () => {
 		await expect(installGjcBundle({ cwd }, "project", bad)).rejects.toMatchObject({
 			code: "forbidden_surface",
 		});
-		expect(await listEntries(path.join(cwd, ".worx", "gjc-plugins"))).toEqual([]);
+		expect(await listEntries(path.join(cwd, ".worx", "worx-plugins"))).toEqual([]);
 		expect(await readRegistry("project", cwd)).toMatchObject({ plugins: [] });
 	});
 
@@ -241,7 +241,7 @@ describe("GJC plugin installer M2 red-team", () => {
 			value: { status: "updated" },
 		});
 		const installedPrompt = await fs.readFile(
-			path.join(cwd, ".worx", "gjc-plugins", "m2-reinstall-bundle", "prompts", "system-appendix.md"),
+			path.join(cwd, ".worx", "worx-plugins", "m2-reinstall-bundle", "prompts", "system-appendix.md"),
 			"utf8",
 		);
 		expect(installedPrompt).toContain("Changed content.");
@@ -263,7 +263,7 @@ describe("GJC plugin installer M2 red-team", () => {
 
 		const registry = await readRegistry("project", cwd);
 		expect(registry.plugins.map(plugin => plugin.name)).toEqual(["m2-concurrent-bundle"]);
-		expect(await exists(path.join(cwd, ".worx", "gjc-plugins", "m2-concurrent-bundle", "gajae-plugin.json"))).toBe(
+		expect(await exists(path.join(cwd, ".worx", "worx-plugins", "m2-concurrent-bundle", "gajae-plugin.json"))).toBe(
 			true,
 		);
 	});

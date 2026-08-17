@@ -19,13 +19,13 @@
 import type { AgentTool, AgentToolResult } from "@bworx-io/worx-agent-core";
 import { prompt, untilAborted } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
-import { resolveSubskillActivationForSkillInvocation } from "../extensibility/gjc-plugins";
 import { findRuntimeSkillByName } from "../extensibility/runtime-skill-discovery";
 import { buildSkillPromptMessage } from "../extensibility/skills";
-import { runNativeStateCommand } from "../gjc-runtime/state-runtime";
+import { resolveSubskillActivationForSkillInvocation } from "../extensibility/worx-plugins";
 import skillDescription from "../prompts/tools/skill.md" with { type: "text" };
 import { SKILL_PROMPT_MESSAGE_TYPE } from "../session/messages";
 import { isCanonicalGjcWorkflowSkill } from "../skill-state/active-state";
+import { runNativeStateCommand } from "../worx-runtime/state-runtime";
 import type { ToolSession } from ".";
 import { ToolError } from "./tool-errors";
 

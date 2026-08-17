@@ -7,6 +7,14 @@
 import { APP_NAME, getProjectDir } from "@bworx-io/worx-utils";
 import chalk from "chalk";
 import { resolveOrDefaultProjectRegistryPath } from "../discovery/helpers";
+import { PluginManager, parseSettingValue, validateSetting } from "../extensibility/plugins";
+import {
+	getInstalledPluginsRegistryPath,
+	getMarketplacesCacheDir,
+	getMarketplacesRegistryPath,
+	getPluginsCacheDir,
+	MarketplaceManager,
+} from "../extensibility/plugins/marketplace/index.js";
 import {
 	applyGjcBundleUpdate,
 	bundleIdentity,
@@ -23,15 +31,7 @@ import {
 	previewGjcBundleUpdate,
 	runGjcPluginMigrationPreflight,
 	uninstallGjcBundle,
-} from "../extensibility/gjc-plugins";
-import { PluginManager, parseSettingValue, validateSetting } from "../extensibility/plugins";
-import {
-	getInstalledPluginsRegistryPath,
-	getMarketplacesCacheDir,
-	getMarketplacesRegistryPath,
-	getPluginsCacheDir,
-	MarketplaceManager,
-} from "../extensibility/plugins/marketplace/index.js";
+} from "../extensibility/worx-plugins";
 import { theme } from "../modes/theme/theme";
 
 // =============================================================================

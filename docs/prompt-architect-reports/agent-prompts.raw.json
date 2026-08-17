@@ -12,7 +12,7 @@
       "refs": [
         "packages/coding-agent/src/prompts/agents/architect.md:94-98",
         "packages/coding-agent/src/prompts/agents/critic.md:65-69",
-        "packages/coding-agent/src/gjc-runtime/ralplan-runtime.ts:225-262",
+        "packages/coding-agent/src/worx-runtime/ralplan-runtime.ts:225-262",
         "packages/coding-agent/src/hooks/skill-state.ts:543-545"
       ]
     },

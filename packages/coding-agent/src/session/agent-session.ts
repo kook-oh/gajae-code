@@ -263,14 +263,6 @@ import type {
 } from "../extensibility/extensions";
 import type { CompactOptions, ContextUsage, ExtensionTranscriptEntry } from "../extensibility/extensions/types";
 import { ExtensionToolWrapper } from "../extensibility/extensions/wrapper";
-import {
-	type LoadedSubskillActivation,
-	resolveSubskillActivationForSkillInvocation,
-} from "../extensibility/gjc-plugins";
-import { resolveCurrentPhaseForParent } from "../extensibility/gjc-plugins/injection";
-import type { GjcRuntimeSnapshotProvider } from "../extensibility/gjc-plugins/runtime-quarantine";
-import { readActiveSubskillsForParent, toActiveSubskillEntry } from "../extensibility/gjc-plugins/state";
-import { loadActiveSubskillTools } from "../extensibility/gjc-plugins/tools";
 import type { HookCommandContext } from "../extensibility/hooks/types";
 import type { SessionSwitchEvent } from "../extensibility/shared-events";
 import {
@@ -281,25 +273,14 @@ import {
 	type SkillWarning,
 } from "../extensibility/skills";
 import { expandSlashCommand, type FileSlashCommand } from "../extensibility/slash-commands";
-import { assertDeepInterviewIntentManifest } from "../gjc-runtime/deep-interview-state";
-import { buildGjcRuntimeSessionEnv, consumePendingGoalModeRequest } from "../gjc-runtime/goal-mode-request";
 import {
-	isMemoryGuardClaimsLease,
-	isMemoryGuardClaimsLeaseForStateDir,
-	type MemoryGuardClaimsLease,
-} from "../gjc-runtime/memory-guard-owner-claims";
-import {
-	assertNonEmptyGjcSessionId,
-	modeStatePath as sessionModeStatePath,
-	sessionStateDir,
-} from "../gjc-runtime/session-layout";
-import {
-	ownerTerminalContextFromEnvironment,
-	persistCoordinatorRuntimeStateFromEvent,
-	registerCoordinatorRuntimeStateFinalizer,
-} from "../gjc-runtime/session-state-sidecar";
-import { requestGjcWorkerIntegrationAttempt } from "../gjc-runtime/team-runtime";
-import { GjcTeamWorkerHeartbeatReporter } from "../gjc-runtime/team-worker-heartbeat";
+	type LoadedSubskillActivation,
+	resolveSubskillActivationForSkillInvocation,
+} from "../extensibility/worx-plugins";
+import { resolveCurrentPhaseForParent } from "../extensibility/worx-plugins/injection";
+import type { GjcRuntimeSnapshotProvider } from "../extensibility/worx-plugins/runtime-quarantine";
+import { readActiveSubskillsForParent, toActiveSubskillEntry } from "../extensibility/worx-plugins/state";
+import { loadActiveSubskillTools } from "../extensibility/worx-plugins/tools";
 import { GoalRuntime } from "../goals/runtime";
 import type { Goal, GoalModeState } from "../goals/state";
 import type { HindsightSessionState } from "../hindsight/state";
@@ -381,6 +362,25 @@ import { extractFileMentions, generateFileMentionMessages } from "../utils/file-
 import { buildNamedToolChoice, buildNamedToolChoiceResult } from "../utils/tool-choice";
 import { buildWorkflowIntentDiff, WORKFLOW_INTENT_DIFF_CUSTOM_TYPE } from "../workflow/workflow-intent-diff";
 import { buildWorkspaceTree, type WorkspaceTree } from "../workspace-tree";
+import { assertDeepInterviewIntentManifest } from "../worx-runtime/deep-interview-state";
+import { buildGjcRuntimeSessionEnv, consumePendingGoalModeRequest } from "../worx-runtime/goal-mode-request";
+import {
+	isMemoryGuardClaimsLease,
+	isMemoryGuardClaimsLeaseForStateDir,
+	type MemoryGuardClaimsLease,
+} from "../worx-runtime/memory-guard-owner-claims";
+import {
+	assertNonEmptyGjcSessionId,
+	modeStatePath as sessionModeStatePath,
+	sessionStateDir,
+} from "../worx-runtime/session-layout";
+import {
+	ownerTerminalContextFromEnvironment,
+	persistCoordinatorRuntimeStateFromEvent,
+	registerCoordinatorRuntimeStateFinalizer,
+} from "../worx-runtime/session-state-sidecar";
+import { requestGjcWorkerIntegrationAttempt } from "../worx-runtime/team-runtime";
+import { GjcTeamWorkerHeartbeatReporter } from "../worx-runtime/team-worker-heartbeat";
 import type { AuthStorage } from "./auth-storage";
 import {
 	DefaultModelSelectionRecoveryError,

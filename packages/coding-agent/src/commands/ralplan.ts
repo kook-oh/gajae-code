@@ -1,5 +1,5 @@
 import { Command } from "@bworx-io/worx-utils/cli";
-import { runNativeRalplanCommand } from "../gjc-runtime/ralplan-runtime";
+import { runNativeRalplanCommand } from "../worx-runtime/ralplan-runtime";
 
 export default class Ralplan extends Command {
 	static description = "Run native GJC RALPLAN consensus planning workflow";

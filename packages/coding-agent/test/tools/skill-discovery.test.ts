@@ -176,8 +176,8 @@ describe("SkillDiscoveryTool", () => {
 		const builtInSkill: Skill = {
 			name: "ralplan",
 			description: "Built-in planning workflow",
-			filePath: "embedded:gjc/skills/ralplan/SKILL.md",
-			baseDir: "embedded:gjc/skills/ralplan",
+			filePath: "embedded:worx/skills/ralplan/SKILL.md",
+			baseDir: "embedded:worx/skills/ralplan",
 			source: "embedded",
 		};
 

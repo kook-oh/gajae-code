@@ -12,19 +12,19 @@ import { slashCommandCapability } from "../src/capability/slash-command";
 import { toolCapability } from "../src/capability/tool";
 import "../src/discovery/claude-plugins";
 import { clearClaudePluginRootsCache } from "../src/discovery/helpers";
+import { buildSkillPromptMessage } from "../src/extensibility/skills";
 import {
 	discoverGjcPluginRoots,
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
-} from "../src/extensibility/gjc-plugins";
-import { parseManifest } from "../src/extensibility/gjc-plugins/schema";
-import { GjcPluginLoadError } from "../src/extensibility/gjc-plugins/types";
-import { buildSkillPromptMessage } from "../src/extensibility/skills";
-import { serializeManifestProjection } from "../src/gjc-runtime/workflow-manifest";
+} from "../src/extensibility/worx-plugins";
+import { parseManifest } from "../src/extensibility/worx-plugins/schema";
+import { GjcPluginLoadError } from "../src/extensibility/worx-plugins/types";
 import { syncSkillActiveState } from "../src/skill-state/active-state";
 import { discoverAgents } from "../src/task/discovery";
+import { serializeManifestProjection } from "../src/worx-runtime/workflow-manifest";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 let tempHome: string;
 let tempCwd: string;
 let originalHome: string | undefined;
@@ -56,10 +56,10 @@ async function installMixedRootRegistry(): Promise<void> {
 }
 
 async function installProjectSkillFixture(): Promise<void> {
-	await fs.mkdir(path.join(tempCwd, ".worx", "gjc-plugins"), { recursive: true });
+	await fs.mkdir(path.join(tempCwd, ".worx", "worx-plugins"), { recursive: true });
 	await fs.cp(
 		path.join(fixturesRoot, "valid-skill-plugin"),
-		path.join(tempCwd, ".worx", "gjc-plugins", "valid-skill-plugin"),
+		path.join(tempCwd, ".worx", "worx-plugins", "valid-skill-plugin"),
 		{ recursive: true },
 	);
 }
@@ -159,7 +159,7 @@ describe("GJC plugin roots never surface through legacy claude plugin providers"
 		expect(before).not.toContain("design");
 
 		const roots = await discoverGjcPluginRoots({ cwd: tempCwd });
-		expect(roots.some(root => root.endsWith(path.join(".worx", "gjc-plugins", "valid-skill-plugin")))).toBe(true);
+		expect(roots.some(root => root.endsWith(path.join(".worx", "worx-plugins", "valid-skill-plugin")))).toBe(true);
 		const activation = await resolveSubskillActivationForSkillInvocation({
 			cwd: tempCwd,
 			skillName: "ralplan",

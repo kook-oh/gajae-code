@@ -3,7 +3,6 @@ import { realpathSync } from "node:fs";
 import { lstat, mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import { harnessStateRoot } from "../../src/gjc-runtime/session-layout";
 import { acquireLease } from "../../src/harness-control-plane/session-lease";
 import {
 	appendEvent,
@@ -12,6 +11,7 @@ import {
 	sessionPaths,
 	writeSessionState,
 } from "../../src/harness-control-plane/storage";
+import { harnessStateRoot } from "../../src/worx-runtime/session-layout";
 import { createHarnessCliEnv, type HarnessCliEnv } from "./cli-workspace-env";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");

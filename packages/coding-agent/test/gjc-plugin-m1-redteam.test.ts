@@ -9,8 +9,8 @@ import {
 	type GjcPluginRegistryEntry,
 	parseManifest,
 	readRegistry,
-} from "../src/extensibility/gjc-plugins";
-import { updateRegistry } from "../src/extensibility/gjc-plugins/registry";
+} from "../src/extensibility/worx-plugins";
+import { updateRegistry } from "../src/extensibility/worx-plugins/registry";
 
 const tempDirs: string[] = [];
 
@@ -226,7 +226,7 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 	test("reports corrupt registry JSON as invalid_manifest", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-redteam-corrupt-registry-"));
 		tempDirs.push(cwd);
-		const registryDir = path.join(cwd, ".worx", "gjc-plugins");
+		const registryDir = path.join(cwd, ".worx", "worx-plugins");
 		await fs.mkdir(registryDir, { recursive: true });
 		await fs.writeFile(path.join(registryDir, "registry.json"), "{ corrupt json");
 		await expectReadRegistryError(cwd, "invalid_manifest");
@@ -235,7 +235,7 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 	test("parallel registry updates keep all entries sorted and leave no tmp files", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-redteam-concurrent-registry-"));
 		tempDirs.push(cwd);
-		await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
 		const names = ["zeta", "alpha", "omega", "beta", "gamma", "delta", "eta", "theta"];
 
 		await Promise.all(
@@ -244,7 +244,7 @@ describe("GJC plugin Milestone 1 red-team QA", () => {
 
 		const read = await readRegistry("project", cwd);
 		expect(read.plugins.map(plugin => plugin.name)).toEqual([...names].sort((a, b) => a.localeCompare(b)));
-		const leftovers = (await fs.readdir(path.join(cwd, ".worx", "gjc-plugins"))).filter(name =>
+		const leftovers = (await fs.readdir(path.join(cwd, ".worx", "worx-plugins"))).filter(name =>
 			name.includes(".tmp-"),
 		);
 		expect(leftovers).toEqual([]);

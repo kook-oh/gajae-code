@@ -18,7 +18,7 @@ import * as fsSync from "node:fs";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { harnessStateRoot } from "../gjc-runtime/session-layout";
+import { harnessStateRoot } from "../worx-runtime/session-layout";
 import { appendReceiptToConfiguredSpool } from "./receipt-spool";
 import type { ReceiptEnvelope } from "./receipts";
 import type { EventEnvelope, ReceiptFamily, SessionState } from "./types";

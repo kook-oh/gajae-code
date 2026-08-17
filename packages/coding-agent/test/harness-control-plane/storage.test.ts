@@ -3,7 +3,6 @@ import { createHash } from "node:crypto";
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import { harnessStateRoot } from "../../src/gjc-runtime/session-layout";
 import {
 	appendEvent,
 	assertSafeSessionId,
@@ -27,6 +26,7 @@ import {
 	type SessionHandle,
 	type SessionState,
 } from "../../src/harness-control-plane/types";
+import { harnessStateRoot } from "../../src/worx-runtime/session-layout";
 
 let root: string;
 let registryRoot: string;

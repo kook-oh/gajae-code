@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { buildSkillPromptMessage } from "../src/extensibility/skills";
 import {
 	buildAgentSubskillInjection,
 	buildSubskillInjection,
@@ -9,11 +10,10 @@ import {
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
 	wrapSubskillBlock,
-} from "../src/extensibility/gjc-plugins";
-import { buildSkillPromptMessage } from "../src/extensibility/skills";
+} from "../src/extensibility/worx-plugins";
 import { syncSkillActiveState } from "../src/skill-state/active-state";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const tempRoots: string[] = [];
 
 const ralplanSkill = {
@@ -25,8 +25,8 @@ const ralplanSkill = {
 async function tempProject(fixtureName = "valid-skill-plugin"): Promise<string> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-subskill-injection-"));
 	tempRoots.push(cwd);
-	await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
-	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".worx", "gjc-plugins", fixtureName), {
+	await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
+	await fs.cp(path.join(fixturesRoot, fixtureName), path.join(cwd, ".worx", "worx-plugins", fixtureName), {
 		recursive: true,
 	});
 	return cwd;
@@ -107,7 +107,7 @@ describe("GJC sub-skill prompt injection", () => {
 		const filePath = path.join(
 			cwd,
 			".worx",
-			"gjc-plugins",
+			"worx-plugins",
 			"combined-pack",
 			"subskills",
 			"executor-design",

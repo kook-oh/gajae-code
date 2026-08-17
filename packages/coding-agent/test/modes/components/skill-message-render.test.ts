@@ -36,7 +36,7 @@ function render(message: CustomMessage<SkillPromptDetails>, expanded: boolean, w
 
 const DETAILS: SkillPromptDetails = {
 	name: "deep-interview",
-	path: "embedded:gjc/skills/deep-interview/SKILL.md",
+	path: "embedded:worx/skills/deep-interview/SKILL.md",
 	lineCount: 858,
 };
 
@@ -51,7 +51,7 @@ describe("SkillMessageComponent rendering", () => {
 		expect(out).not.toContain("Skill:");
 		expect(out).not.toContain("Args:");
 		expect(out).not.toContain("Path:");
-		expect(out).not.toContain("embedded:gjc/skills/deep-interview/SKILL.md");
+		expect(out).not.toContain("embedded:worx/skills/deep-interview/SKILL.md");
 		expect(out).not.toContain("858 lines");
 		expect(out).not.toContain("PROMPT BODY TEXT");
 	});
@@ -110,7 +110,7 @@ describe("SkillMessageComponent rendering", () => {
 		expect(out).toContain("Arguments");
 		expect(out).toContain("fix the login bug");
 		expect(out).toContain("Path:");
-		expect(out).toContain("embedded:gjc/skills/deep-interview/SKILL.md");
+		expect(out).toContain("embedded:worx/skills/deep-interview/SKILL.md");
 		expect(out).toContain("858 lines");
 		expect(out).toContain("Prompt");
 		expect(out).toContain("PROMPT BODY TEXT");

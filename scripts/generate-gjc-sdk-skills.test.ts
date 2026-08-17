@@ -172,7 +172,7 @@ describe("generated external GJC SDK skills", () => {
 				expect(["gjc-sdk-author", "gjc-sdk-discover", "gjc-sdk-operate"]).toContain(topLevel);
 			}
 		}
-		const defaultsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "gjc", "skills");
+		const defaultsRoot = path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills");
 		const defaultSkills = (await fs.readdir(defaultsRoot, { withFileTypes: true }))
 			.filter(entry => entry.isDirectory())
 			.map(entry => entry.name)

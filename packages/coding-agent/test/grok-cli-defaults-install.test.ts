@@ -1,15 +1,15 @@
 import { describe, expect, it } from "bun:test";
 import { Effort } from "@bworx-io/worx-ai/model-thinking";
 import {
-	type GrokCliModelConfig,
-	resolveModels,
-	supportsReasoningEffort,
-} from "../src/defaults/gjc/extensions/grok-cli-vendor/src/models/catalog";
-import {
 	assertBundledGrokCliDefaults,
 	getBundledGrokBuildExtensionFactory,
 	getBundledGrokCliModelDefaults,
 } from "../src/defaults/gjc-grok-cli";
+import {
+	type GrokCliModelConfig,
+	resolveModels,
+	supportsReasoningEffort,
+} from "../src/defaults/worx/extensions/grok-cli-vendor/src/models/catalog";
 import type { ExtensionAPI, ProviderConfig } from "../src/extensibility/extensions";
 
 async function captureGrokBuildProviderConfig(): Promise<ProviderConfig> {

@@ -1,9 +1,9 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import type { GjcSessionContext } from "../gjc-runtime/session-layout";
-import { resolveGjcSessionForRead, SessionResolutionError } from "../gjc-runtime/session-resolution";
 import { computeTaskTokenMetrics, readTaskTokenLogs } from "../task/token-log";
 import type { TaskTokenLog } from "../task/types";
+import type { GjcSessionContext } from "../worx-runtime/session-layout";
+import { resolveGjcSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
 
 const LIVE_RUNNER_SCHEMA_VERSION = 1;
 const BINARY_ID = "gjc";

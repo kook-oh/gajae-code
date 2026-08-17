@@ -12,7 +12,7 @@ import { ArtifactManager } from "@bworx-io/worx-code/session/artifacts";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, logger, Snowflake, setAgentDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
-import { installGjcBundle } from "../src/extensibility/gjc-plugins";
+import { installGjcBundle } from "../src/extensibility/worx-plugins";
 import { createMCPToolName, type MCPLoadResult, MCPManager } from "../src/runtime-mcp";
 import { BUILTIN_TOOLS } from "../src/tools";
 
@@ -71,7 +71,7 @@ function createReasoningModel(): Model<"openai-responses"> {
 
 const oldSessionMtime = new Date("2000-01-01T00:00:00.000Z");
 const SLOW_SDK_TEST_TIMEOUT_MS = 15_000;
-const validSixSurfacePluginBundle = path.join(import.meta.dir, "fixtures", "gjc-plugins", "valid-six-surface-bundle");
+const validSixSurfacePluginBundle = path.join(import.meta.dir, "fixtures", "worx-plugins", "valid-six-surface-bundle");
 const originalAgentDir = getAgentDir();
 
 describe("createAgentSession MCP discovery prompt gating", () => {

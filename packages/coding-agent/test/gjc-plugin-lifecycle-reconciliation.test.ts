@@ -13,7 +13,7 @@ import {
 	reconcileEnablement,
 	surfaceIdsOf,
 	targetFingerprint,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 const surfaces: NormalizedGjcPluginSurfaces = {
 	subskills: [

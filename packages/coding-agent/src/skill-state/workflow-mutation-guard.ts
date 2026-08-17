@@ -4,13 +4,13 @@ import * as path from "node:path";
 import type { AgentTool } from "@bworx-io/worx-agent-core";
 import { logger } from "@bworx-io/worx-utils";
 import { expandApplyPatchToEntries } from "../edit/modes/apply-patch";
-import { modeStatePath as sessionModeStatePath, WORX_SESSION_PREFIX } from "../gjc-runtime/session-layout";
-import { resolveGjcSessionForRead } from "../gjc-runtime/session-resolution";
-import { ModeStateSchema } from "../gjc-runtime/state-schema";
-import { getSkillManifest } from "../gjc-runtime/workflow-manifest";
 import { LocalProtocolHandler, resolveLocalUrlToPath } from "../internal-urls/local-protocol";
 import { resolveToCwd } from "../tools/path-utils";
 import { ToolError } from "../tools/tool-errors";
+import { modeStatePath as sessionModeStatePath, WORX_SESSION_PREFIX } from "../worx-runtime/session-layout";
+import { resolveGjcSessionForRead } from "../worx-runtime/session-resolution";
+import { ModeStateSchema } from "../worx-runtime/state-schema";
+import { getSkillManifest } from "../worx-runtime/workflow-manifest";
 import { listActiveSkills, readVisibleSkillActiveState, type SkillActiveEntry } from "./active-state";
 import {
 	type CanonicalGjcWorkflowSkill,

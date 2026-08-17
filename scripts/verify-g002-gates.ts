@@ -270,8 +270,8 @@ async function verifyVisibleDefinitions(): Promise<GateResult> {
 	const otherDefinitionRoots = [".worx/skills", ".worx/agents", ".worx/commands", ".worx/rules"];
 	const otherDefinitions: string[] = [];
 	const details: string[] = [];
-	const bundledSkills = readVisibleEntries("packages/coding-agent/src/defaults/gjc/skills").filter(entry =>
-		fs.existsSync(path.join(repoRoot, "packages/coding-agent/src/defaults/gjc/skills", entry, "SKILL.md")),
+	const bundledSkills = readVisibleEntries("packages/coding-agent/src/defaults/worx/skills").filter(entry =>
+		fs.existsSync(path.join(repoRoot, "packages/coding-agent/src/defaults/worx/skills", entry, "SKILL.md")),
 	);
 	const bundledRoleAgents = readVisibleEntries("packages/coding-agent/src/prompts/agents").filter(entry =>
 		EXPECTED_ROLE_AGENTS.includes(entry as (typeof EXPECTED_ROLE_AGENTS)[number]),
@@ -288,7 +288,7 @@ async function verifyVisibleDefinitions(): Promise<GateResult> {
 	const skills = [...bundledSkills].sort();
 	const roleAgents = [...bundledRoleAgents].sort();
 	const ignoredDefinitions = getIgnoredDefinitionPaths([
-		...expectedSkills.map(name => `packages/coding-agent/src/defaults/gjc/skills/${name}/SKILL.md`),
+		...expectedSkills.map(name => `packages/coding-agent/src/defaults/worx/skills/${name}/SKILL.md`),
 		...expectedRoleAgents.map(name => `packages/coding-agent/src/prompts/agents/${name}.md`),
 	]);
 	details.push(`expected bundled workflow skills: ${expectedSkills.join(", ")}`);
@@ -331,7 +331,7 @@ function getIgnoredDefinitionPaths(paths: readonly string[]): string[] {
 async function verifyPublicDefinitionContent(): Promise<GateResult> {
 	const findings: string[] = [];
 	for (const definition of EXPECTED_DEFINITIONS) {
-		const relativePath = `packages/coding-agent/src/defaults/gjc/skills/${definition}/SKILL.md`;
+		const relativePath = `packages/coding-agent/src/defaults/worx/skills/${definition}/SKILL.md`;
 		const text = await readText(relativePath);
 		for (const pattern of FORBIDDEN_SKILL_PATTERNS) {
 			if (pattern.test(text)) findings.push(`${relativePath}: ${pattern.source}`);
@@ -372,7 +372,7 @@ async function verifyBroadWorkflowExposure(): Promise<GateResult> {
 	}
 
 	const activeSkillTexts = EXPECTED_DEFINITIONS.map(definition => {
-		const relativePath = `packages/coding-agent/src/defaults/gjc/skills/${definition}/SKILL.md`;
+		const relativePath = `packages/coding-agent/src/defaults/worx/skills/${definition}/SKILL.md`;
 		return [relativePath, fs.readFileSync(path.join(repoRoot, relativePath), "utf8")] as const;
 	});
 	for (const [relativePath, text] of activeSkillTexts) {

@@ -6,10 +6,6 @@ import { Agent } from "@bworx-io/worx-agent-core";
 import { getBundledModel } from "@bworx-io/worx-ai";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import {
-	acquireMemoryGuardClaims,
-	releaseMemoryGuardClaims,
-} from "@bworx-io/worx-code/gjc-runtime/memory-guard-owner-claims";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import type {
@@ -18,6 +14,10 @@ import type {
 } from "@bworx-io/worx-code/session/memory-guard-checkpoint-participant";
 import { memoryGuardCanonicalJson } from "@bworx-io/worx-code/session/memory-guard-checkpoint-participant";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import {
+	acquireMemoryGuardClaims,
+	releaseMemoryGuardClaims,
+} from "@bworx-io/worx-code/worx-runtime/memory-guard-owner-claims";
 import { openRecoveryFsRoot, type RecoveryFsRoot } from "@bworx-io/worx-code-natives";
 
 const tempRoots: string[] = [];

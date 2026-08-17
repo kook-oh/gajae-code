@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { removeFileLockDirForGc, withFileLock } from "@bworx-io/worx-code/config/file-lock";
 import { fileLocksGcAdapter } from "@bworx-io/worx-code/config/file-lock-gc";
-import type { GcContext, GcPidProbe, GcRecord } from "@bworx-io/worx-code/gjc-runtime/gc-runtime";
+import type { GcContext, GcPidProbe, GcRecord } from "@bworx-io/worx-code/worx-runtime/gc-runtime";
 
 const DEAD_PID = 525_252;
 const LIVE_PID = 636_363;

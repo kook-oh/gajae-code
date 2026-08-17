@@ -3,16 +3,6 @@ import * as path from "node:path";
 import { logger } from "@bworx-io/worx-utils";
 import type { SkillDiscoverySettings } from "../config/skill-settings-defaults";
 import { detectDeepInterviewPlaintextAskLeak } from "../deep-interview/plaintext-gate-guard";
-import { activeSnapshotPath, modeStatePath as sessionModeStatePath } from "../gjc-runtime/session-layout";
-import { resolveGjcSessionForRead } from "../gjc-runtime/session-resolution";
-import { ModeStateSchema, SkillActiveStateSchema } from "../gjc-runtime/state-schema";
-import {
-	readExistingStateForMutation,
-	writeGuardedJsonAtomic,
-	writeGuardedWorkflowEnvelopeAtomic,
-} from "../gjc-runtime/state-writer";
-import { isUltragoalBypassPrompt, verifyUltragoalDurableCompletionState } from "../gjc-runtime/ultragoal-guard";
-import { getSkillManifest } from "../gjc-runtime/workflow-manifest";
 import { buildSessionContext, loadEntriesFromFile, type SessionEntry } from "../session/session-manager";
 import {
 	readVisibleSkillActiveState as readCanonicalVisibleSkillActiveState,
@@ -22,6 +12,16 @@ import {
 } from "../skill-state/active-state";
 import { initialPhaseForSkill } from "../skill-state/initial-phase";
 import { readWorkflowGuardContext } from "../skill-state/workflow-mutation-guard";
+import { activeSnapshotPath, modeStatePath as sessionModeStatePath } from "../worx-runtime/session-layout";
+import { resolveGjcSessionForRead } from "../worx-runtime/session-resolution";
+import { ModeStateSchema, SkillActiveStateSchema } from "../worx-runtime/state-schema";
+import {
+	readExistingStateForMutation,
+	writeGuardedJsonAtomic,
+	writeGuardedWorkflowEnvelopeAtomic,
+} from "../worx-runtime/state-writer";
+import { isUltragoalBypassPrompt, verifyUltragoalDurableCompletionState } from "../worx-runtime/ultragoal-guard";
+import { getSkillManifest } from "../worx-runtime/workflow-manifest";
 
 // Re-export for existing callers and tests that imported it from this module.
 export { initialPhaseForSkill };
@@ -423,11 +423,11 @@ async function seedSkillActivationState(
 		receipt: {
 			cwd: input.cwd,
 			skill,
-			owner: "gjc-hook",
+			owner: "worx-hook",
 			command: source,
 			sessionId: resolvedSessionId,
 		},
-		audit: { category: "state", verb: "write", owner: "gjc-hook", skill, sessionId: resolvedSessionId },
+		audit: { category: "state", verb: "write", owner: "worx-hook", skill, sessionId: resolvedSessionId },
 	});
 	const persistedModeState =
 		(await readValidatedJsonFile<ModeState>(initializedStatePath, "mode-state", ModeStateSchema)) ?? modeState;
@@ -459,7 +459,7 @@ async function seedSkillActivationState(
 			policy: "cache",
 			sourceRevision: (sourceRevision ?? 0) + 1,
 			receipt: undefined,
-			audit: { category: "state", verb: "write", owner: "gjc-hook", sessionId: resolvedSessionId },
+			audit: { category: "state", verb: "write", owner: "worx-hook", sessionId: resolvedSessionId },
 		});
 	} catch {
 		// Corrupt derived active-state is reported by recovery diagnostics; activation remains fail-open.

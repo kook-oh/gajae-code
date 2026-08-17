@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { isEnoent } from "@bworx-io/worx-utils";
-import type { GcCollectResult, GcContext, GcError, GcRecord, GcStoreAdapter } from "../gjc-runtime/gc-runtime";
+import type { GcCollectResult, GcContext, GcError, GcRecord, GcStoreAdapter } from "../worx-runtime/gc-runtime";
 
 /**
  * GC for `local://` session roots.

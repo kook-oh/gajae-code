@@ -3,7 +3,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { serializeManifestProjection } from "../packages/coding-agent/src/gjc-runtime/workflow-manifest";
+import { serializeManifestProjection } from "../packages/coding-agent/src/worx-runtime/workflow-manifest";
 
 const repoRoot = path.join(import.meta.dir, "..");
 const GENERATED_MANIFEST = path.join(
@@ -11,7 +11,7 @@ const GENERATED_MANIFEST = path.join(
 	"packages",
 	"coding-agent",
 	"src",
-	"gjc-runtime",
+	"worx-runtime",
 	"workflow-manifest.generated.json",
 );
 

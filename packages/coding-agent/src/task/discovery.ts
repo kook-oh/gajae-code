@@ -16,7 +16,7 @@ import { isProviderEnabled } from "../capability";
 import { findAllNearestProjectConfigDirs, getConfigDirs } from "../config";
 import type { Settings } from "../config/settings";
 import { listClaudePluginRoots } from "../discovery/helpers";
-import { rootContainsGjcManifest } from "../extensibility/gjc-plugins/paths";
+import { rootContainsGjcManifest } from "../extensibility/worx-plugins/paths";
 import { loadBundledAgents, parseAgent } from "./agents";
 import type { AgentDefinition, AgentSource } from "./types";
 

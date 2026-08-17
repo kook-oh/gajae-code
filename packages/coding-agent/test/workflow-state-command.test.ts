@@ -78,7 +78,7 @@ describe("gjc state workflow command", () => {
 				expect(activeState.active_skills[0]).toMatchObject({
 					skill,
 					phase: initialPhases[skill],
-					receipt: { owner: "gjc-state-cli" },
+					receipt: { owner: "worx-state-cli" },
 				});
 			}
 		});

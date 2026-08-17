@@ -7,8 +7,8 @@ import {
 	loadEffectiveGjcPluginRegistry,
 	readRegistry,
 	sortRegistryEntries,
-} from "../src/extensibility/gjc-plugins";
-import { updateRegistry, writeRegistry } from "../src/extensibility/gjc-plugins/registry";
+} from "../src/extensibility/worx-plugins";
+import { updateRegistry, writeRegistry } from "../src/extensibility/worx-plugins/registry";
 
 const tempDirs: string[] = [];
 
@@ -47,7 +47,7 @@ describe("GJC plugin registry", () => {
 	test("write/read round trips a project registry", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-registry-"));
 		tempDirs.push(cwd);
-		await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
 
 		await writeRegistry({ version: 1, scope: "project", plugins: [entry("b", "project", "/b")] }, cwd);
 		const read = await readRegistry("project", cwd);
@@ -65,7 +65,7 @@ describe("GJC plugin registry", () => {
 	test("updateRegistry mutates under lock and stays sorted", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-registry-update-"));
 		tempDirs.push(cwd);
-		await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
 
 		await updateRegistry("project", cwd, entries => [...entries, entry("zeta", "project", "/zeta")]);
 		await updateRegistry("project", cwd, entries => [...entries, entry("alpha", "project", "/alpha")]);
@@ -92,7 +92,7 @@ describe("GJC plugin registry", () => {
 	test("loadEffectiveGjcPluginRegistry merges project entries deterministically", async () => {
 		const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-registry-eff-"));
 		tempDirs.push(cwd);
-		await fs.mkdir(path.join(cwd, ".worx", "gjc-plugins"), { recursive: true });
+		await fs.mkdir(path.join(cwd, ".worx", "worx-plugins"), { recursive: true });
 		await writeRegistry(
 			{
 				version: 1,

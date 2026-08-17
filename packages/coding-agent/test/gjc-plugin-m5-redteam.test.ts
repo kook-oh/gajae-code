@@ -9,7 +9,7 @@ import {
 	type GjcPluginRegistryEntry,
 	type NormalizedGjcPluginSurfaces,
 	renderPluginAppendices,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 const tempDirs: string[] = [];
 

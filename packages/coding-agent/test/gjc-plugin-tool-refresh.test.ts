@@ -13,7 +13,7 @@ import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { syncSkillActiveState } from "@bworx-io/worx-code/skill-state/active-state";
 import { TempDir } from "@bworx-io/worx-utils";
 import * as z from "zod/v4";
-import { resolveSubskillActivationForSkillInvocation, toActiveSubskillEntry } from "../src/extensibility/gjc-plugins";
+import { resolveSubskillActivationForSkillInvocation, toActiveSubskillEntry } from "../src/extensibility/worx-plugins";
 
 let tempDir: TempDir;
 let authStorage: AuthStorage | undefined;
@@ -31,7 +31,7 @@ function makeTool(name: string): AgentTool {
 }
 
 async function writeCustomTool(fileName: string, toolName: string): Promise<string> {
-	const toolsDir = path.join(tempDir.path(), ".worx", "gjc-plugins", "refresh-plugin", "tools");
+	const toolsDir = path.join(tempDir.path(), ".worx", "worx-plugins", "refresh-plugin", "tools");
 	await fs.mkdir(toolsDir, { recursive: true });
 	const toolPath = path.join(toolsDir, fileName);
 	await fs.writeFile(
@@ -55,7 +55,7 @@ export default factory;
 }
 
 async function activateSubskill(toolPaths: string[], phase = "planner"): Promise<void> {
-	const pluginRoot = path.join(tempDir.path(), ".worx", "gjc-plugins", "refresh-plugin");
+	const pluginRoot = path.join(tempDir.path(), ".worx", "worx-plugins", "refresh-plugin");
 	const skillPath = path.join(pluginRoot, "subskills", "design", "SKILL.md");
 	await fs.mkdir(path.dirname(skillPath), { recursive: true });
 	await fs.writeFile(

@@ -33,9 +33,8 @@ import { Settings } from "../config/settings";
 import { SETTINGS_SCHEMA, type SettingPath } from "../config/settings-schema";
 import { runExtensionCompact, runExtensionSetModel } from "../extensibility/extensions/compact-handler";
 import { getSessionSlashCommands } from "../extensibility/extensions/get-commands-handler";
-import { buildAgentSubskillInjection, renderAgentPromptAdditions } from "../extensibility/gjc-plugins";
 import { buildSkillPromptMessage, type Skill } from "../extensibility/skills";
-import { sessionRoot } from "../gjc-runtime/session-layout";
+import { buildAgentSubskillInjection, renderAgentPromptAdditions } from "../extensibility/worx-plugins";
 import type { HindsightSessionState } from "../hindsight/state";
 import type { LocalProtocolOptions } from "../internal-urls";
 import subagentSystemPromptTemplate from "../prompts/system/subagent-system-prompt.md" with { type: "text" };
@@ -50,6 +49,7 @@ import { SKILL_PROMPT_MESSAGE_TYPE } from "../session/messages";
 import { SessionManager, type SessionMemoryMode } from "../session/session-manager";
 import { FileSessionStorage } from "../session/session-storage";
 import { truncateTail } from "../session/streaming-output";
+import { sessionRoot } from "../worx-runtime/session-layout";
 // Ensure mandatory subagent result extraction is available even when a session is mocked.
 import "../tools/yield";
 import type { ContextFileEntry } from "../tools";

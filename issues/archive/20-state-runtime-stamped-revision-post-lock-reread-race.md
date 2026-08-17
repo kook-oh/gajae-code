@@ -6,8 +6,8 @@ MEDIUM (non-blocking follow-up; surfaced during the 0.6.5 release completion gat
 ## Context
 The 0.6.5 release unblock fixed a sequential active-state/HUD stale-skip by reflecting the
 freshly written `state_revision` onto the in-memory payload before the derived active-state sync
-(`packages/coding-agent/src/gjc-runtime/deep-interview-recorder.ts`,
-`packages/coding-agent/src/gjc-runtime/state-runtime.ts`). The recorder path is concurrency-sound
+(`packages/coding-agent/src/worx-runtime/deep-interview-recorder.ts`,
+`packages/coding-agent/src/worx-runtime/state-runtime.ts`). The recorder path is concurrency-sound
 because it uses optimistic `expectedRevision + 1` knowledge from the locked source write.
 
 ## Problem
@@ -35,4 +35,4 @@ weaken the monotonic source-revision contract).
 
 ## Resolution
 
-**Resolved.** The state-runtime locked revision handoff and its interleaving regression are implemented in `packages/coding-agent/src/gjc-runtime/state-runtime.ts` and `packages/coding-agent/test/gjc-runtime/state-runtime.test.ts`.
+**Resolved.** The state-runtime locked revision handoff and its interleaving regression are implemented in `packages/coding-agent/src/worx-runtime/state-runtime.ts` and `packages/coding-agent/test/worx-runtime/state-runtime.test.ts`.

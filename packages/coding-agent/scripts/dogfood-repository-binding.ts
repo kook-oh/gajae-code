@@ -16,8 +16,8 @@ import {
 	assertPathUnderRepositoryBinding,
 	parseRepositoryBinding,
 	resolveTaskRepositoryBinding,
-} from "../src/gjc-runtime/repository-binding";
-import { readUltragoalPlan, startNextUltragoalGoal } from "../src/gjc-runtime/ultragoal-runtime";
+} from "../src/worx-runtime/repository-binding";
+import { readUltragoalPlan, startNextUltragoalGoal } from "../src/worx-runtime/ultragoal-runtime";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const cli = path.join(repoRoot, "packages/coding-agent/src/cli.ts");

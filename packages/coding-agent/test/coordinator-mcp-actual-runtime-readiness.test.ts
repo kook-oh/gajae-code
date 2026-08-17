@@ -12,13 +12,13 @@ import {
 	boundedRuntimePromptAckTimeoutMs,
 	COORDINATOR_RUNTIME_PROMPT_ACK_TIMEOUT_MAX_MS,
 } from "../src/coordinator-mcp/server";
-import {
-	WORX_COORDINATOR_SESSION_ID_ENV,
-	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
-} from "../src/gjc-runtime/session-state-sidecar";
 import { AgentSession } from "../src/session/agent-session";
 import { AuthStorage } from "../src/session/auth-storage";
 import { SessionManager } from "../src/session/session-manager";
+import {
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+} from "../src/worx-runtime/session-state-sidecar";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 async function waitFor(predicate: () => boolean, label: string): Promise<void> {

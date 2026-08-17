@@ -3,7 +3,7 @@ import {
 	consumeUltragoalAskNudge,
 	isUltragoalAskBlocked,
 	type UltragoalAskBlockDiagnostic,
-} from "../gjc-runtime/ultragoal-guard";
+} from "../worx-runtime/ultragoal-guard";
 import { ToolError } from "./tool-errors";
 
 const ULTRAGOAL_ASK_GUARD = Symbol.for("gajae-code.ultragoalAskGuard");

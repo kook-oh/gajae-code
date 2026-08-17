@@ -7,9 +7,12 @@ import {
 	previewGjcBundleUpdate,
 	setGjcBundleEnabled,
 	setGjcBundleSurfaceEnabled,
-} from "../../extensibility/gjc-plugins/lifecycle";
-import { identityEquals, identityKey } from "../../extensibility/gjc-plugins/lifecycle-reconciliation";
-import { findingsForBundle, type GjcRuntimeSnapshotProvider } from "../../extensibility/gjc-plugins/runtime-quarantine";
+} from "../../extensibility/worx-plugins/lifecycle";
+import { identityEquals, identityKey } from "../../extensibility/worx-plugins/lifecycle-reconciliation";
+import {
+	findingsForBundle,
+	type GjcRuntimeSnapshotProvider,
+} from "../../extensibility/worx-plugins/runtime-quarantine";
 import type {
 	GjcBundleIdentity,
 	GjcBundleSummary,
@@ -18,7 +21,7 @@ import type {
 	GjcToggleResult,
 	GjcUpdateApplyResult,
 	GjcUpdatePreview,
-} from "../../extensibility/gjc-plugins/types";
+} from "../../extensibility/worx-plugins/types";
 import { getSelectListTheme, theme } from "../../modes/theme/theme";
 import { DynamicBorder } from "./dynamic-border";
 

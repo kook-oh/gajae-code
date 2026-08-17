@@ -4,7 +4,7 @@ import { getAgentDir, getConfigDirName } from "@bworx-io/worx-utils";
 import { YAML } from "bun";
 import type { SkillDiscoverySettings } from "../config/skill-settings-defaults";
 import { DEFAULT_DISABLED_EXTENSIONS, DEFAULT_SKILL_DISCOVERY_SETTINGS } from "../config/skill-settings-defaults";
-import { sessionLogsDir } from "../gjc-runtime/session-layout";
+import { sessionLogsDir } from "../worx-runtime/session-layout";
 import {
 	detectMcpDelegateFlowActivation,
 	type McpDelegateHostContextV1,

@@ -6,8 +6,8 @@ import {
 	activeStateDir,
 	assertNonEmptyGjcSessionId,
 	modeStatePath,
-} from "../gjc-runtime/session-layout";
-import { resolveGjcSessionForRead, SessionResolutionError } from "../gjc-runtime/session-resolution";
+} from "../worx-runtime/session-layout";
+import { resolveGjcSessionForRead, SessionResolutionError } from "../worx-runtime/session-resolution";
 import {
 	type ActiveSessionScope,
 	readActiveEntries,
@@ -15,8 +15,8 @@ import {
 	removeActiveEntry,
 	setActiveStateCacheInvalidator,
 	writeActiveEntry,
-} from "../gjc-runtime/state-writer";
-import { getSkillManifest } from "../gjc-runtime/workflow-manifest";
+} from "../worx-runtime/state-writer";
+import { getSkillManifest } from "../worx-runtime/workflow-manifest";
 import { CANONICAL_WORX_WORKFLOW_SKILLS, type CanonicalGjcWorkflowSkill } from "./canonical-skills";
 import type { WorkflowStateReceipt } from "./workflow-state-contract";
 
@@ -204,7 +204,7 @@ function normalizeWorkflowStateReceipt(raw: unknown): WorkflowStateReceipt | und
 	const skill = safeString(record.skill).trim();
 	if (!isCanonicalGjcWorkflowSkill(skill)) return undefined;
 	const owner = safeString(record.owner).trim();
-	if (owner !== "gjc-state-cli" && owner !== "gjc-runtime" && owner !== "gjc-hook") return undefined;
+	if (owner !== "worx-state-cli" && owner !== "worx-runtime" && owner !== "worx-hook") return undefined;
 	const command = sanitizeHudString(record.command, 120);
 	const statePath = sanitizeHudString(record.state_path, 240);
 	const storagePath = sanitizeHudString(record.storage_path, 240);
@@ -840,7 +840,7 @@ export async function readVisibleSkillActiveState(
 
 function activeStateWriterAudit(verb: string, sessionScope?: ActiveSessionScope | string) {
 	const sessionId = typeof sessionScope === "string" ? sessionScope : sessionScope?.sessionId;
-	return { category: "state" as const, verb, owner: "gjc-runtime" as const, ...(sessionId ? { sessionId } : {}) };
+	return { category: "state" as const, verb, owner: "worx-runtime" as const, ...(sessionId ? { sessionId } : {}) };
 }
 
 async function persistActiveEntry(

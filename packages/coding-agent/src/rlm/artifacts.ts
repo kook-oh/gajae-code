@@ -7,8 +7,8 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { readNotebookDocument } from "../edit/notebook";
-import { rlmArtifactRoot } from "../gjc-runtime/session-layout";
-import { resolveGjcSessionForWrite } from "../gjc-runtime/session-resolution";
+import { rlmArtifactRoot } from "../worx-runtime/session-layout";
+import { resolveGjcSessionForWrite } from "../worx-runtime/session-resolution";
 import type { RlmArtifactPaths } from "./types";
 
 export const RLM_DIR_SEGMENT = "rlm";

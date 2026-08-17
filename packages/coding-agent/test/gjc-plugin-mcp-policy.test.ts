@@ -7,7 +7,7 @@ import {
 	type GjcPluginMcpManifestEntry,
 	isDeniedIpv4,
 	isDeniedIpv6,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 function expectPolicyError(fn: () => unknown): void {
 	try {

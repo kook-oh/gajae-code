@@ -34,22 +34,21 @@ import {
 	renderDeepInterviewAskQuestion,
 } from "../deep-interview/render-middleware";
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
-import { appendOrMergeDeepInterviewRound, syncDeepInterviewRecorderHud } from "../gjc-runtime/deep-interview-recorder";
-import { deepInterviewStatePath } from "../gjc-runtime/deep-interview-runtime";
-import {
-	assertDeepInterviewInputWithinLimit,
-	assertDeepInterviewStructuredResponseWithinLimit,
-	MAX_USER_RESPONSE_LENGTH,
-} from "../gjc-runtime/deep-interview-state";
 import {
 	type AskGateQuestion,
 	gateAnswerToResult,
 	questionToGate,
 } from "../modes/shared/agent-wire/deep-interview-gate";
-
 import { getMarkdownTheme, type Theme, theme } from "../modes/theme/theme";
 import askDescription from "../prompts/tools/ask.md" with { type: "text" };
 import { renderStatusLine } from "../tui";
+import { appendOrMergeDeepInterviewRound, syncDeepInterviewRecorderHud } from "../worx-runtime/deep-interview-recorder";
+import { deepInterviewStatePath } from "../worx-runtime/deep-interview-runtime";
+import {
+	assertDeepInterviewInputWithinLimit,
+	assertDeepInterviewStructuredResponseWithinLimit,
+	MAX_USER_RESPONSE_LENGTH,
+} from "../worx-runtime/deep-interview-state";
 import type {
 	AskAnswerRequest,
 	AskRemoteControl,

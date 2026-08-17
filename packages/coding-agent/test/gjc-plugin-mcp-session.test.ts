@@ -7,11 +7,11 @@ import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { installGjcBundle } from "../src/extensibility/gjc-plugins";
-import { buildPluginMcpConfigs } from "../src/extensibility/gjc-plugins/runtime-adapters";
+import { installGjcBundle } from "../src/extensibility/worx-plugins";
+import { buildPluginMcpConfigs } from "../src/extensibility/worx-plugins/runtime-adapters";
 import { MCPManager } from "../src/runtime-mcp";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const mcpBundle = path.join(fixturesRoot, "valid-mcp-bundle");
 const tempDirs: string[] = [];
 const originalAgentDir = getAgentDir();
@@ -280,7 +280,7 @@ describe("always-on plugin-bundle MCP in a live session", () => {
 	}, 30_000);
 
 	test.each([
-		"gjc-plugins",
+		"worx-plugins",
 		"custom",
 	])("does not inherit caller-owned MCP tools with %s source metadata as mandatory", async provider => {
 		const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-mcp-session-forged-"));

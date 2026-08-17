@@ -4,7 +4,7 @@ import { COORDINATOR_MCP_SERVER_NAME, COORDINATOR_MCP_TOOL_NAMES } from "../pack
 import {
 	resolveGjcTeamWorkerCli,
 	translateGjcWorkerLaunchArgsForCli,
-} from "../packages/coding-agent/src/gjc-runtime/team-runtime";
+} from "../packages/coding-agent/src/worx-runtime/team-runtime";
 import { detectSkillKeywords } from "../packages/coding-agent/src/hooks/skill-state";
 import { buildHermesSetupSpec } from "../packages/coding-agent/src/setup/hermes-setup";
 import { buildHostPluginSetup } from "../packages/coding-agent/src/setup/host-plugin-setup";

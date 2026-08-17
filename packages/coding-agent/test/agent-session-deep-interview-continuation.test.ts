@@ -5,7 +5,6 @@ import type { AssistantMessage } from "@bworx-io/worx-ai";
 import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { modeStatePath } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import * as skillState from "@bworx-io/worx-code/hooks/skill-state";
 import { ensureWorkflowSkillActivationState } from "@bworx-io/worx-code/hooks/skill-state";
 import { initTheme } from "@bworx-io/worx-code/modes/theme/theme";
@@ -14,6 +13,7 @@ import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
 import type { ToolSession } from "@bworx-io/worx-code/tools";
 import { AskTool } from "@bworx-io/worx-code/tools/ask";
+import { modeStatePath } from "@bworx-io/worx-code/worx-runtime/session-layout";
 import { logger, TempDir } from "@bworx-io/worx-utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

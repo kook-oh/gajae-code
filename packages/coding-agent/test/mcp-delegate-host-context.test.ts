@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { activeSnapshotPath } from "../src/gjc-runtime/session-layout";
 import {
 	detectMcpDelegateFlowActivation,
 	listMcpDelegateHostContexts,
@@ -12,6 +11,7 @@ import {
 } from "../src/hooks/mcp-delegate-host-context";
 import { dispatchGjcNativeSkillHook } from "../src/hooks/native-skill-hook";
 import { readVisibleSkillActiveState } from "../src/hooks/skill-state";
+import { activeSnapshotPath } from "../src/worx-runtime/session-layout";
 
 const testEffectiveSkillConfig = {
 	skillsSettings: {

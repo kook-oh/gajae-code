@@ -147,14 +147,14 @@ git grep -n -E '=== "gjc"|!== "gjc"|startsWith\("gjc' -- ':!docs/**'
 
 The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:1656`;
 `packages/coding-agent/src/coordinator-mcp/server.ts:826`;
-`packages/coding-agent/src/gjc-runtime/team-runtime.ts:384,433`;
-`packages/coding-agent/src/gjc-runtime/tmux-sessions.ts:943`;
+`packages/coding-agent/src/worx-runtime/team-runtime.ts:384,433`;
+`packages/coding-agent/src/worx-runtime/tmux-sessions.ts:943`;
 `packages/coding-agent/src/hooks/skill-state.ts:175`;
 `packages/coding-agent/src/sdk/transport/auth-preface.ts:69`;
 `packages/coding-agent/src/session/agent-session.ts:13990`;
 `packages/coding-agent/src/tools/bash-allowed-prefixes.ts:272`;
 `packages/coding-agent/test/core/python-runner-artifact.test.ts:49`;
-`packages/coding-agent/test/gjc-runtime/launch-tmux.test.ts:125`;
+`packages/coding-agent/test/worx-runtime/launch-tmux.test.ts:125`;
 `packages/coding-agent/test/shell-snapshot.test.ts:49,71,92`;
 `scripts/generate-worx-plugins.ts:24`; and
 `scripts/verify-worx-plugins.ts:57,65`.

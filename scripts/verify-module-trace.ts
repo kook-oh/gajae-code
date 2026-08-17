@@ -816,7 +816,7 @@ async function assertLiteralCatalog(kind: CatalogKind): Promise<CatalogReport> {
 		for (const match of source.matchAll(/relativePath:\s*["']([^"']+)["']/g)) {
 			const relativePath = match[1];
 			if (relativePath !== undefined) {
-				expected.add(`./gjc/skills/${relativePath.replace(/^skills\//, "").replace(/^skill-fragments\//, "")}`);
+				expected.add(`./worx/skills/${relativePath.replace(/^skills\//, "").replace(/^skill-fragments\//, "")}`);
 			}
 		}
 		if (expected.size === 0 || expected.size !== actual.size || [...expected].some(specifier => !actual.has(specifier))) {

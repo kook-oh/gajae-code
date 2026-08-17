@@ -8,7 +8,7 @@ import {
 	type GjcPluginRegistrySource,
 	redactSourceLocator,
 	toBundleSummary,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 const originalAgentDir = getAgentDir();
 let agentDir: string;

@@ -1,6 +1,6 @@
 import { Command, Flags } from "@bworx-io/worx-utils/cli";
 import { isSettingsInitialized, settings } from "../config/settings";
-import { type GcDiskPolicy, runGjcGcCommand } from "../gjc-runtime/gc-runtime";
+import { type GcDiskPolicy, runGjcGcCommand } from "../worx-runtime/gc-runtime";
 
 /**
  * Resolve the `gc.*` retention knobs from settings. When settings are not

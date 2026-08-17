@@ -45,6 +45,10 @@ import {
 
 // Import review tools for side effects (registers subagent tool handlers)
 import "../tools/review";
+import { initializeLocalRoot, type LocalProtocolOptions, resolveLocalUrlToPath } from "../internal-urls";
+import { ArtifactManager } from "../session/artifacts";
+import { generateCommitMessage } from "../utils/commit-message-generator";
+import * as git from "../utils/git";
 import {
 	assertExecutionRootMatchesRepositoryBinding,
 	assertPathUnderRepositoryBinding,
@@ -53,11 +57,7 @@ import {
 	type RepositoryBinding,
 	RepositoryBindingError,
 	resolveTaskRepositoryBinding,
-} from "../gjc-runtime/repository-binding";
-import { initializeLocalRoot, type LocalProtocolOptions, resolveLocalUrlToPath } from "../internal-urls";
-import { ArtifactManager } from "../session/artifacts";
-import { generateCommitMessage } from "../utils/commit-message-generator";
-import * as git from "../utils/git";
+} from "../worx-runtime/repository-binding";
 import { discoverAgents, filterVisibleAgents, getAgent } from "./discovery";
 import { createManagedTaskPersistence, renderSubagentUserPrompt, runSubprocess } from "./executor";
 import { adviseForkContextMode } from "./fork-context-advisory";

@@ -4,7 +4,7 @@ import {
 	type GjcPluginLoadErrorCode,
 	parseManifest,
 	parseSubskillFrontmatter,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 function expectLoadError(fn: () => unknown, code: GjcPluginLoadErrorCode): void {
 	try {

@@ -13,7 +13,7 @@ import { type Skill, skillCapability } from "../capability/skill";
 import { type SlashCommand, slashCommandCapability } from "../capability/slash-command";
 import { type CustomTool, toolCapability } from "../capability/tool";
 import type { LoadContext, LoadResult } from "../capability/types";
-import { rootContainsGjcManifest } from "../extensibility/gjc-plugins";
+import { rootContainsGjcManifest } from "../extensibility/worx-plugins";
 import {
 	type ClaudePluginRoot,
 	createSourceMeta,

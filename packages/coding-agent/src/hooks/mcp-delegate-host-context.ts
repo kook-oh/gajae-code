@@ -1,7 +1,7 @@
 import type { Dirent } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { sessionStateDir } from "../gjc-runtime/session-layout";
+import { sessionStateDir } from "../worx-runtime/session-layout";
 
 export const WORX_MCP_DELEGATE_FLOW_ACTIVATION = "$gjc-mcp-delegate-flow";
 

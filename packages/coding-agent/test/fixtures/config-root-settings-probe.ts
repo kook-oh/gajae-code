@@ -2,8 +2,8 @@
  * Prints the workflow settings resolved for the current working directory.
  * `WORX_CONFIG_DIR` is read at module load, so this must be a child process.
  */
-import { resolveRalplanAutoHandoff, resolveRalplanMaxIterations } from "../../src/gjc-runtime/ralplan-runtime";
-import { resolveUltragoalNudgeBudget } from "../../src/gjc-runtime/ultragoal-runtime";
+import { resolveRalplanAutoHandoff, resolveRalplanMaxIterations } from "../../src/worx-runtime/ralplan-runtime";
+import { resolveUltragoalNudgeBudget } from "../../src/worx-runtime/ultragoal-runtime";
 
 const cwd = process.cwd();
 const autoHandoff = process.argv.includes("--ralplan-auto-handoff") ? await resolveRalplanAutoHandoff(cwd) : undefined;

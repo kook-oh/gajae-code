@@ -4,14 +4,14 @@ import type { Message, Model, SimpleStreamOptions } from "@bworx-io/worx-ai";
 import { AssistantMessageEventStream } from "@bworx-io/worx-ai/utils/event-stream";
 import { AsyncJobManager } from "@bworx-io/worx-code/async";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { __sessionStateSidecarPerfCounters } from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
-import { GjcTeamWorkerHeartbeatReporter } from "@bworx-io/worx-code/gjc-runtime/team-worker-heartbeat";
 import {
 	__agentSessionPerfCounters,
 	AgentSession,
 	type AgentSessionEvent,
 } from "@bworx-io/worx-code/session/agent-session";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import { __sessionStateSidecarPerfCounters } from "@bworx-io/worx-code/worx-runtime/session-state-sidecar";
+import { GjcTeamWorkerHeartbeatReporter } from "@bworx-io/worx-code/worx-runtime/team-worker-heartbeat";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 
 function eventDelta(event: AgentSessionEvent): string {

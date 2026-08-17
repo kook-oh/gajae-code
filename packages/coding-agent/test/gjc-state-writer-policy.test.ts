@@ -9,7 +9,7 @@ import {
 	writeActiveEntry,
 	writeGuardedJsonAtomic,
 	writeGuardedWorkflowEnvelopeAtomic,
-} from "../src/gjc-runtime/state-writer";
+} from "../src/worx-runtime/state-writer";
 
 describe("GJC state writer revision policy", () => {
 	let tempDir: string | undefined;
@@ -28,7 +28,7 @@ describe("GJC state writer revision policy", () => {
 		return {
 			cwd: root,
 			skill: "deep-interview" as const,
-			owner: "gjc-runtime" as const,
+			owner: "worx-runtime" as const,
 			command: "test",
 			sessionId,
 			nowIso: "2026-01-01T00:00:00.000Z",

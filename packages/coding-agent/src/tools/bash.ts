@@ -8,11 +8,6 @@ import { AsyncJobManager } from "../async";
 import { type BashArtifactSaveResult, type BashResult, executeBash } from "../exec/bash-executor";
 
 import type { RenderResultOptions } from "../extensibility/custom-tools/types";
-import { buildGjcRuntimeSessionEnv } from "../gjc-runtime/goal-mode-request";
-import {
-	WORX_RALPLAN_ARTIFACT_ENV,
-	WORX_RESTRICTED_ROLE_AGENT_BASH_ENV,
-} from "../gjc-runtime/restricted-role-agent-bash";
 import { InternalUrlRouter } from "../internal-urls";
 import { truncateToVisualLines } from "../modes/components/visual-truncate";
 import { highlightCode, type Theme } from "../modes/theme/theme";
@@ -30,11 +25,15 @@ import {
 	truncateHeadBytes,
 	truncateTailBytes,
 } from "../session/streaming-output";
-
 import { renderStatusLine } from "../tui";
 import { CachedOutputBlock, getOutputBlockContentWidth } from "../tui/output-block";
 import { truncateToWidth } from "../tui/utils";
 import { getSixelLineMask } from "../utils/sixel";
+import { buildGjcRuntimeSessionEnv } from "../worx-runtime/goal-mode-request";
+import {
+	WORX_RALPLAN_ARTIFACT_ENV,
+	WORX_RESTRICTED_ROLE_AGENT_BASH_ENV,
+} from "../worx-runtime/restricted-role-agent-bash";
 import type { ToolSession } from ".";
 import { checkBashAllowedPrefixes, normalizeReadOnlyBashCommand } from "./bash-allowed-prefixes";
 import { applyBashFixups } from "./bash-command-fixup";

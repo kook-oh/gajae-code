@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import { Settings } from "../src/config/settings";
-import { bundleIdentity } from "../src/extensibility/gjc-plugins/lifecycle-reconciliation";
-import { GjcRuntimeSnapshotStore } from "../src/extensibility/gjc-plugins/runtime-quarantine";
+import { bundleIdentity } from "../src/extensibility/worx-plugins/lifecycle-reconciliation";
+import { GjcRuntimeSnapshotStore } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import { SettingsSelectorComponent } from "../src/modes/components/settings-selector";
 import { getThemeByName, setThemeInstance } from "../src/modes/theme/theme";
 

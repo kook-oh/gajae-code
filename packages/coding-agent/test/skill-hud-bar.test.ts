@@ -99,7 +99,7 @@ describe("skill HUD bar renderer", () => {
 						receipt: {
 							version: 1,
 							skill: "deep-interview",
-							owner: "gjc-state-cli",
+							owner: "worx-state-cli",
 							command: "gjc state deep-interview write",
 							state_path: ".worx/state/skill-active-state.json",
 							storage_path: ".worx/state/deep-interview-state.json",

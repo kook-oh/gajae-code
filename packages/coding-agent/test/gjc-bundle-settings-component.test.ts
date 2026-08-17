@@ -4,8 +4,8 @@ import {
 	renderGjcBundleSettingsEntry,
 	WORX_BUNDLE_SETTINGS_CAPTURE_FILES,
 } from "../scripts/capture-gjc-bundle-settings";
-import type { GjcLifecycleContext } from "../src/extensibility/gjc-plugins/lifecycle";
-import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/gjc-plugins/runtime-quarantine";
+import type { GjcLifecycleContext } from "../src/extensibility/worx-plugins/lifecycle";
+import type { GjcRuntimeSnapshotProvider } from "../src/extensibility/worx-plugins/runtime-quarantine";
 import type {
 	GjcBundleIdentity,
 	GjcBundleSummary,
@@ -13,7 +13,7 @@ import type {
 	GjcToggleResult,
 	GjcUpdateApplyResult,
 	GjcUpdatePreview,
-} from "../src/extensibility/gjc-plugins/types";
+} from "../src/extensibility/worx-plugins/types";
 import { type GjcBundleLifecyclePort, GjcBundleSettingsComponent } from "../src/modes/components/gjc-bundle-settings";
 import { PluginSettingsComponent } from "../src/modes/components/plugin-settings";
 import { setTheme } from "../src/modes/theme/theme";

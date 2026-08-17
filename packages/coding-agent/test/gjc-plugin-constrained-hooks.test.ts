@@ -3,9 +3,9 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { installGjcBundle, loadConstrainedPluginHooks } from "../src/extensibility/gjc-plugins";
+import { installGjcBundle, loadConstrainedPluginHooks } from "../src/extensibility/worx-plugins";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
 const tempDirs: string[] = [];
 const originalAgentDir = getAgentDir();

@@ -6,6 +6,7 @@ import type { Stats } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { getAgentDir, getConfigRootDir, isEnoent } from "@bworx-io/worx-utils";
+import { resolveReceiptSpoolDir } from "../harness-control-plane/receipt-spool";
 import type {
 	GcCollectResult,
 	GcContext,
@@ -14,9 +15,8 @@ import type {
 	GcRecord,
 	GcStoreAdapter,
 	GcWarning,
-} from "../gjc-runtime/gc-runtime";
-import { gcPidStatusLabel } from "../gjc-runtime/gc-runtime";
-import { resolveReceiptSpoolDir } from "../harness-control-plane/receipt-spool";
+} from "../worx-runtime/gc-runtime";
+import { gcPidStatusLabel } from "../worx-runtime/gc-runtime";
 import { readFileLockInfoForGc, removeFileLockDirForGc } from "./file-lock";
 
 const MAX_WALK_DEPTH = 6;

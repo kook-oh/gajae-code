@@ -1,7 +1,7 @@
 # 16 — withWorkflowStateLock / updateJsonAtomic can lose updates for critical sections longer than staleMs
 
 - **Severity:** Medium (mutual exclusion breaks for long holders)
-- **Scope:** `packages/coding-agent/src/config/file-lock.ts:95-101,145-147` (stale-by-elapsed-time reaping), consumed by `packages/coding-agent/src/gjc-runtime/state-writer.ts:439-475`
+- **Scope:** `packages/coding-agent/src/config/file-lock.ts:95-101,145-147` (stale-by-elapsed-time reaping), consumed by `packages/coding-agent/src/worx-runtime/state-writer.ts:439-475`
 - **Surface:** cross-process workflow-state serialization (PR #652 / commit 4d5099a6)
 - **Found by:** post-0.5.1 dogfood (G002), architect `1-ArchG002-StateSession`
 

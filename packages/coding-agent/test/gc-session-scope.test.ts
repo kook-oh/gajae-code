@@ -6,7 +6,7 @@ import {
 	collectSessionScopeUsage,
 	type GcSessionScopeUsage,
 	shouldReportSessionScope,
-} from "../src/gjc-runtime/gc-session-scope";
+} from "../src/worx-runtime/gc-session-scope";
 
 const temporaryDirectories: string[] = [];
 

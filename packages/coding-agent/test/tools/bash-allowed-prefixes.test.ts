@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { classifyStateArgv } from "../../src/gjc-runtime/state-argv";
 import { checkBashAllowedPrefixes } from "../../src/tools/bash-allowed-prefixes";
+import { classifyStateArgv } from "../../src/worx-runtime/state-argv";
 
 const ROLE_AGENT_PREFIXES = ["worx ralplan --write", "worx state"] as const;
 describe("shared state argv classification", () => {

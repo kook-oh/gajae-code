@@ -29,7 +29,7 @@ describe("plugin extension discovery", () => {
 		fs.writeFileSync(
 			path.join(pluginsDir, "package.json"),
 			JSON.stringify({
-				name: "gjc-plugins",
+				name: "worx-plugins",
 				private: true,
 				dependencies: {
 					"@demo/plugin": "1.0.0",
@@ -85,7 +85,7 @@ describe("plugin extension discovery", () => {
 		fs.writeFileSync(
 			path.join(pluginsDir, "package.json"),
 			JSON.stringify({
-				name: "gjc-plugins",
+				name: "worx-plugins",
 				private: true,
 				dependencies: {
 					"legacy-pi-plugin": "1.0.0",
@@ -149,7 +149,7 @@ describe("plugin extension discovery", () => {
 		fs.writeFileSync(
 			path.join(pluginsDir, "package.json"),
 			JSON.stringify({
-				name: "gjc-plugins",
+				name: "worx-plugins",
 				private: true,
 				dependencies: {
 					"dir-entry-plugin": "1.0.0",

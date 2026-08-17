@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import { type PlanRequest, planTmuxOwnerIsolationSync } from "../../src/gjc-runtime/tmux-owner-isolation";
 import { resolveOwner } from "../../src/harness-control-plane/owner";
+import { type PlanRequest, planTmuxOwnerIsolationSync } from "../../src/worx-runtime/tmux-owner-isolation";
 import { createHarnessCliEnvWithFixtureBroker, type HarnessCliBrokerFixture } from "./cli-workspace-env";
 
 const repoRoot = path.resolve(import.meta.dir, "..", "..", "..", "..");

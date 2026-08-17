@@ -1,10 +1,10 @@
+import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
 import {
 	classifyStateArgv,
 	STATE_ACTION_NAMES,
 	type StateAction,
 	type StateArgvClassification,
-} from "../gjc-runtime/state-argv";
-import { CANONICAL_WORX_WORKFLOW_SKILLS } from "../skill-state/canonical-skills";
+} from "../worx-runtime/state-argv";
 
 export interface BashAllowedPrefixesCheck {
 	allowed: boolean;

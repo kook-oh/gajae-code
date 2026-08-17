@@ -15,7 +15,7 @@ let gitUtils: typeof import("../src/modes/components/status-line/git-utils");
 let ToolExecutionComponent: typeof import("../src/modes/components/tool-execution").ToolExecutionComponent;
 let EventController: typeof import("../src/modes/controllers/event-controller").EventController;
 let eventControllerPerfCounters: typeof import("../src/modes/controllers/event-controller").__eventControllerPerfCounters;
-let persistCoordinatorRuntimeStateFromEvent: typeof import("../src/gjc-runtime/session-state-sidecar").persistCoordinatorRuntimeStateFromEvent;
+let persistCoordinatorRuntimeStateFromEvent: typeof import("../src/worx-runtime/session-state-sidecar").persistCoordinatorRuntimeStateFromEvent;
 
 beforeAll(async () => {
 	const utils = await import("@bworx-io/worx-utils");
@@ -30,7 +30,7 @@ beforeAll(async () => {
 	({ EventController, __eventControllerPerfCounters: eventControllerPerfCounters } = await import(
 		"../src/modes/controllers/event-controller"
 	));
-	({ persistCoordinatorRuntimeStateFromEvent } = await import("../src/gjc-runtime/session-state-sidecar"));
+	({ persistCoordinatorRuntimeStateFromEvent } = await import("../src/worx-runtime/session-state-sidecar"));
 	const { initTheme } = await import("../src/modes/theme/theme");
 	await initTheme();
 });

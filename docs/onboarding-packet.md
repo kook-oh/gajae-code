@@ -12,7 +12,7 @@ Keep this invariant front-and-center when onboarding to the repo:
 
 - Default workflow skills: `deep-interview`, `ralplan`, `team`, `ultragoal`.
 - Public role agents: `executor`, `architect`, `planner`, `critic`.
-- Bundled default workflow skill sources live under `packages/coding-agent/src/defaults/gjc/skills/`.
+- Bundled default workflow skill sources live under `packages/coding-agent/src/defaults/worx/skills/`.
 - Bundled role-agent prompt sources live under `packages/coding-agent/src/prompts/agents/`.
 - Runtime state, specs, plans, goals, team state, and local overrides belong under `.worx/` for the product and `.omx/` only for this agent-run orchestration.
 
@@ -64,7 +64,7 @@ Repository rule: do not run `tsc` or `npx tsc`; use the Bun scripts above.
 
 ## Danger zones
 
-- **Default surface expansion:** `packages/coding-agent/src/defaults/gjc/skills/`, `packages/coding-agent/src/defaults/gjc-defaults.ts`, `packages/coding-agent/src/prompts/agents/`, and model-assignment tests are contract-heavy. Changes here can accidentally alter the fixed four-skills/four-agents shape.
+- **Default surface expansion:** `packages/coding-agent/src/defaults/worx/skills/`, `packages/coding-agent/src/defaults/gjc-defaults.ts`, `packages/coding-agent/src/prompts/agents/`, and model-assignment tests are contract-heavy. Changes here can accidentally alter the fixed four-skills/four-agents shape.
 - **CLI commands:** `packages/coding-agent/src/cli.ts` and `packages/coding-agent/src/commands/` define visible behavior. Adding commands or aliases is a product-surface change.
 - **Runtime/session assembly:** `packages/coding-agent/src/main.ts`, `packages/coding-agent/src/sdk/session.ts`, discovery, settings, tools, and system-prompt paths can affect every session.
 - **TUI/logging:** Avoid `console.log`, `console.warn`, or `console.error` inside `packages/coding-agent/`; use the centralized logger to avoid corrupting TUI rendering.
@@ -86,7 +86,7 @@ Repository rule: do not run `tsc` or `npx tsc`; use the Bun scripts above.
 3. For docs-only edits, run formatting/check commands that do not mutate runtime behavior.
 4. For default-surface edits, run the four required gates listed in the command table before claiming completion.
 5. For package code edits, start with the nearest package test, then escalate to `bun run check:ts` or `bun run test` as risk increases.
-6. Before changing `packages/coding-agent/src/defaults/gjc/skills/`, `packages/coding-agent/src/prompts/agents/`, `packages/coding-agent/src/commands/`, or config/settings paths, write down whether the change alters public surface area.
+6. Before changing `packages/coding-agent/src/defaults/worx/skills/`, `packages/coding-agent/src/prompts/agents/`, `packages/coding-agent/src/commands/`, or config/settings paths, write down whether the change alters public surface area.
 
 ## Context seed checklist
 

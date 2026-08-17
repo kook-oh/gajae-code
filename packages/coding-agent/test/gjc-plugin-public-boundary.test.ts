@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import * as barrel from "../src/extensibility/gjc-plugins";
+import * as barrel from "../src/extensibility/worx-plugins";
 
 /**
  * The GJC bundle lifecycle is only safe if it is the sole writer. These tests
@@ -32,7 +32,7 @@ const REQUIRED_EXPORTS = [
 ];
 
 const srcRoot = path.join(import.meta.dir, "..", "src");
-const gjcPluginsRoot = path.join(srcRoot, "extensibility", "gjc-plugins");
+const gjcPluginsRoot = path.join(srcRoot, "extensibility", "worx-plugins");
 /** Only these modules may reference the writers: the owner and the primitives. */
 const WRITER_OWNERS = new Set([
 	path.join(gjcPluginsRoot, "lifecycle.ts"),
@@ -84,10 +84,10 @@ describe("GJC plugin public boundary", () => {
 			exports: Record<string, unknown>;
 		};
 		const blocked = [
-			"./extensibility/gjc-plugins/installer",
-			"./extensibility/gjc-plugins/registry",
-			"./extensibility/gjc-plugins/loader",
-			"./extensibility/gjc-plugins/loader.js",
+			"./extensibility/worx-plugins/installer",
+			"./extensibility/worx-plugins/registry",
+			"./extensibility/worx-plugins/loader",
+			"./extensibility/worx-plugins/loader.js",
 		];
 		for (const key of blocked) expect(manifest.exports[key]).toBeNull();
 		const keys = Object.keys(manifest.exports);
@@ -95,7 +95,11 @@ describe("GJC plugin public boundary", () => {
 
 		for (const suffix of ["loader", "loader.js"]) {
 			const child = Bun.spawnSync(
-				["bun", "-e", `await import(${JSON.stringify(`@bworx-io/worx-code/extensibility/gjc-plugins/${suffix}`)})`],
+				[
+					"bun",
+					"-e",
+					`await import(${JSON.stringify(`@bworx-io/worx-code/extensibility/worx-plugins/${suffix}`)})`,
+				],
 				{ cwd: path.join(import.meta.dir, ".."), stdout: "pipe", stderr: "pipe" },
 			);
 			expect(child.exitCode).not.toBe(0);

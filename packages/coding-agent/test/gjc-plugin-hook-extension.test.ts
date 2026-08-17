@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { ConstrainedPluginHook } from "../src/extensibility/gjc-plugins";
+import type { ConstrainedPluginHook } from "../src/extensibility/worx-plugins";
 import { createPluginHooksExtension } from "../src/sdk";
 
 describe("createPluginHooksExtension", () => {

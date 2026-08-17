@@ -4,20 +4,6 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { logger } from "@bworx-io/worx-utils";
 import { DEFAULT_DISABLED_EXTENSIONS, DEFAULT_SKILL_DISCOVERY_SETTINGS } from "../src/config/skill-settings-defaults";
-import { activeSnapshotPath, modeStatePath, sessionSpecsDir, sessionStateDir } from "../src/gjc-runtime/session-layout";
-import { reconcileWorkflowSkillState } from "../src/gjc-runtime/state-runtime";
-import { RequiredOnWriteEnvelopeSchema } from "../src/gjc-runtime/state-schema";
-import {
-	detectWorkflowEnvelopeIntegrityMismatch,
-	writeGuardedJsonAtomic,
-	writeGuardedWorkflowEnvelopeAtomic,
-} from "../src/gjc-runtime/state-writer";
-import {
-	addUltragoalSubgoal,
-	checkpointUltragoalGoal,
-	createUltragoalPlan,
-	startNextUltragoalGoal,
-} from "../src/gjc-runtime/ultragoal-runtime";
 import {
 	mergeGjcManagedCodexHooksConfig,
 	readGjcManagedCodexHooksStatus,
@@ -30,6 +16,25 @@ import {
 } from "../src/hooks/skill-state";
 import { getWorkflowMutationDecision } from "../src/skill-state/workflow-mutation-guard";
 import { WORKFLOW_STATE_VERSION } from "../src/skill-state/workflow-state-contract";
+import {
+	activeSnapshotPath,
+	modeStatePath,
+	sessionSpecsDir,
+	sessionStateDir,
+} from "../src/worx-runtime/session-layout";
+import { reconcileWorkflowSkillState } from "../src/worx-runtime/state-runtime";
+import { RequiredOnWriteEnvelopeSchema } from "../src/worx-runtime/state-schema";
+import {
+	detectWorkflowEnvelopeIntegrityMismatch,
+	writeGuardedJsonAtomic,
+	writeGuardedWorkflowEnvelopeAtomic,
+} from "../src/worx-runtime/state-writer";
+import {
+	addUltragoalSubgoal,
+	checkpointUltragoalGoal,
+	createUltragoalPlan,
+	startNextUltragoalGoal,
+} from "../src/worx-runtime/ultragoal-runtime";
 
 describe("GJC native skill-state hooks", () => {
 	let tempDir: string | undefined;
@@ -356,7 +361,7 @@ describe("GJC native skill-state hooks", () => {
 				receipt: {
 					cwd: root,
 					skill: "deep-interview",
-					owner: "gjc-runtime",
+					owner: "worx-runtime",
 					command: "test-newer-source",
 					sessionId,
 					nowIso: "2026-01-01T00:00:00.000Z",
@@ -1923,7 +1928,7 @@ disabledExtensions:
 			receipt: {
 				cwd: root,
 				skill: "ultragoal",
-				owner: "gjc-runtime",
+				owner: "worx-runtime",
 				command: "test",
 				sessionId,
 				nowIso: "2026-01-01T00:00:00.000Z",
@@ -1958,7 +1963,7 @@ disabledExtensions:
 				receipt: {
 					cwd: root,
 					skill: "ultragoal",
-					owner: "gjc-runtime",
+					owner: "worx-runtime",
 					command: "test",
 					sessionId,
 					nowIso: "2026-01-01T00:01:00.000Z",

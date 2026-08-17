@@ -6,8 +6,8 @@ import {
 	installGjcBundle,
 	resolveSubskillActivationForSkillInvocation,
 	toActiveSubskillEntry,
-} from "../src/extensibility/gjc-plugins";
-import { loadActiveSubskillTools } from "../src/extensibility/gjc-plugins/tools";
+} from "../src/extensibility/worx-plugins";
+import { loadActiveSubskillTools } from "../src/extensibility/worx-plugins/tools";
 import { syncSkillActiveState } from "../src/skill-state/active-state";
 
 const tempRoots: string[] = [];
@@ -75,7 +75,7 @@ afterEach(async () => {
 describe("GJC plugin sub-skill tools", () => {
 	test("rechecks the subskill tool digest immediately before import", async () => {
 		const cwd = await makeTempRoot();
-		const fixture = path.join(import.meta.dir, "fixtures", "gjc-plugins", "valid-skill-plugin");
+		const fixture = path.join(import.meta.dir, "fixtures", "worx-plugins", "valid-skill-plugin");
 		const installed = await installGjcBundle({ cwd }, "project", fixture);
 		expect(installed.ok).toBe(true);
 		const activation = await resolveSubskillActivationForSkillInvocation({
@@ -92,7 +92,7 @@ describe("GJC plugin sub-skill tools", () => {
 			phase: "planner",
 			active_subskills: activation.activeSubskillsToPersist.map(toActiveSubskillEntry),
 		});
-		const toolPath = path.join(cwd, ".worx", "gjc-plugins", "valid-skill-plugin", "tools", "domain-note.ts");
+		const toolPath = path.join(cwd, ".worx", "worx-plugins", "valid-skill-plugin", "tools", "domain-note.ts");
 		let mutated = false;
 		const loaded = await loadActiveSubskillTools({
 			cwd,

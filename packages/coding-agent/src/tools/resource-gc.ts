@@ -18,7 +18,6 @@ function safeProbeWindowsJobMemory(): WindowsJobMemoryProbeResult {
 
 import { logger } from "@bworx-io/worx-utils";
 import type { Settings } from "../config/settings";
-import { executeGjcTeamApiOperation, listGjcTeams, readGjcWorkerHeartbeat } from "../gjc-runtime/team-runtime";
 import { computeMemoryGuardDomain } from "../runtime/memory-domain";
 import {
 	chooseMemoryGuardAction,
@@ -28,6 +27,7 @@ import {
 } from "../runtime/memory-guard";
 import type { MemoryGuardPolicy, MemoryGuardWorkerSample } from "../runtime/memory-guard-contract";
 import { resolveEffectiveMemoryLimit } from "../runtime/memory-limit";
+import { executeGjcTeamApiOperation, listGjcTeams, readGjcWorkerHeartbeat } from "../worx-runtime/team-runtime";
 import { listTabsForGc, releaseTabIfGcEligible, type TabGcSnapshot } from "./browser/tab-supervisor";
 import { cleanupStaleScreenshotFallbackDirs, hasCreatedScreenshotFallbackDir } from "./computer-gc";
 

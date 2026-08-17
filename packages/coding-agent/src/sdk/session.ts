@@ -77,24 +77,27 @@ import {
 	wrapRegisteredTools,
 } from "../extensibility/extensions";
 import { ExtensionRuntime } from "../extensibility/extensions/loader";
-import { type ConstrainedPluginHook, loadConstrainedPluginHooks } from "../extensibility/gjc-plugins/constrained-hooks";
-import { resolveCurrentPhaseForParent } from "../extensibility/gjc-plugins/injection";
-import { currentActivationFingerprint } from "../extensibility/gjc-plugins/lifecycle";
+import { loadSkills, type Skill, type SkillWarning, setActiveSkills } from "../extensibility/skills";
+import type { FileSlashCommand } from "../extensibility/slash-commands";
+import {
+	type ConstrainedPluginHook,
+	loadConstrainedPluginHooks,
+} from "../extensibility/worx-plugins/constrained-hooks";
+import { resolveCurrentPhaseForParent } from "../extensibility/worx-plugins/injection";
+import { currentActivationFingerprint } from "../extensibility/worx-plugins/lifecycle";
 import {
 	buildPluginMcpConfigs,
 	getGjcPluginToolDeclarations,
 	loadAlwaysOnPluginTools,
 	renderAlwaysOnSystemAppendices,
-} from "../extensibility/gjc-plugins/runtime-adapters";
+} from "../extensibility/worx-plugins/runtime-adapters";
 import {
 	GjcRuntimeFindingAccumulator,
 	type GjcRuntimeSnapshotProvider,
 	GjcRuntimeSnapshotStore,
 	gjcActivationGenerationFor,
-} from "../extensibility/gjc-plugins/runtime-quarantine";
-import { loadActiveSubskillTools } from "../extensibility/gjc-plugins/tools";
-import { loadSkills, type Skill, type SkillWarning, setActiveSkills } from "../extensibility/skills";
-import type { FileSlashCommand } from "../extensibility/slash-commands";
+} from "../extensibility/worx-plugins/runtime-quarantine";
+import { loadActiveSubskillTools } from "../extensibility/worx-plugins/tools";
 import type { HindsightSessionState } from "../hindsight/state";
 import { initializeLocalRoot, LocalProtocolHandler, type LocalProtocolOptions } from "../internal-urls";
 import type { LspStartupServerInfo } from "../lsp";
@@ -1971,7 +1974,7 @@ export async function createAgentSession(options: CreateAgentSessionOptions = {}
 						const sources = Object.fromEntries(
 							Object.keys(configs).map(name => [
 								name,
-								{ provider: "gjc-plugins", providerName: "GJC plugin bundle", level: "project" as const },
+								{ provider: "worx-plugins", providerName: "GJC plugin bundle", level: "project" as const },
 							]),
 						);
 						const result = await owned.connectServers(configs, sources as never);

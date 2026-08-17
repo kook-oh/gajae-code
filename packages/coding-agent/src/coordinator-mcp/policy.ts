@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import * as nodeFs from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { coordinatorMcpStateRoot, gjcRoot } from "../gjc-runtime/session-layout";
+import { coordinatorMcpStateRoot, gjcRoot } from "../worx-runtime/session-layout";
 import {
 	DEFAULT_SESSION_IDLE_TTL_MS,
 	DEFAULT_SESSION_SWEEP_INTERVAL_MS,

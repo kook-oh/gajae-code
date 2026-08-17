@@ -11,11 +11,11 @@ import { getProjectDir } from "@bworx-io/worx-utils";
 import { type Args, parseArgs } from "../cli/args";
 import { disposeKernelSessionsByOwner } from "../eval/py/executor";
 import type { CustomTool } from "../extensibility/custom-tools/types";
-import { resolveSessionIdFromSources, writeSessionActivityMarker } from "../gjc-runtime/session-resolution";
 import { type RlmPreset, runRootCommand } from "../main";
 import rlmReportCommandPrompt from "../prompts/system/rlm-report-command.md" with { type: "text" };
 import type { CreateAgentSessionOptions } from "../sdk";
 import type { AgentSession } from "../session/agent-session";
+import { resolveSessionIdFromSources, writeSessionActivityMarker } from "../worx-runtime/session-resolution";
 import {
 	ensureRlmSessionDir,
 	generateRlmSessionId,

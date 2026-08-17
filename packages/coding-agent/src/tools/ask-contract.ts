@@ -6,7 +6,7 @@
 import { INTENT_FIELD } from "@bworx-io/worx-agent-core";
 import type { RawArgumentValidationResult } from "@bworx-io/worx-ai/types";
 import * as z from "zod/v4";
-import { deepInterviewCharacterCount } from "../gjc-runtime/deep-interview-state";
+import { deepInterviewCharacterCount } from "../worx-runtime/deep-interview-state";
 
 function deepInterviewBoundedString(maximum: number) {
 	return z.string().superRefine((value, context) => {

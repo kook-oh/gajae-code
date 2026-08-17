@@ -8,9 +8,9 @@ import { type Skill as CapabilitySkill, loadCapability } from "../discovery";
 import { compareSkillOrder, scanSkillsFromDir } from "../discovery/helpers";
 import type { SkillPromptDetails } from "../session/messages";
 import { expandTilde } from "../tools/path-utils";
-import type { LoadedSubskillActivation } from "./gjc-plugins";
-import { buildSubskillInjection } from "./gjc-plugins/injection";
-import { renderSkillAdvertisement } from "./gjc-plugins/runtime-adapters";
+import type { LoadedSubskillActivation } from "./worx-plugins";
+import { buildSubskillInjection } from "./worx-plugins/injection";
+import { renderSkillAdvertisement } from "./worx-plugins/runtime-adapters";
 /** Metadata-only handle returned by bounded skill discovery. */
 export interface SkillDescriptor {
 	readonly metadata: Omit<Skill, "content" | "loadContent">;

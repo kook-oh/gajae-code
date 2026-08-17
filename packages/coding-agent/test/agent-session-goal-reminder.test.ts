@@ -5,14 +5,14 @@ import type { AssistantMessage, ToolCall } from "@bworx-io/worx-ai";
 import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import {
-	WORX_COORDINATOR_SESSION_ID_ENV,
-	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
-} from "@bworx-io/worx-code/gjc-runtime/session-state-sidecar";
 import type { GoalModeState } from "@bworx-io/worx-code/goals/state";
 import { AgentSession } from "@bworx-io/worx-code/session/agent-session";
 import { AuthStorage } from "@bworx-io/worx-code/session/auth-storage";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";
+import {
+	WORX_COORDINATOR_SESSION_ID_ENV,
+	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
+} from "@bworx-io/worx-code/worx-runtime/session-state-sidecar";
 import { logger, TempDir } from "@bworx-io/worx-utils";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

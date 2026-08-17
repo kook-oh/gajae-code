@@ -6,7 +6,6 @@ import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { Settings } from "@bworx-io/worx-code/config/settings";
 import { createEmptyNotebook, readNotebookDocument } from "@bworx-io/worx-code/edit/notebook";
 import type { CustomTool } from "@bworx-io/worx-code/extensibility/custom-tools/types";
-import { rlmArtifactRoot } from "@bworx-io/worx-code/gjc-runtime/session-layout";
 import {
 	ensureRlmSessionDir,
 	generateRlmSessionId,
@@ -37,6 +36,7 @@ import {
 	checkBashAllowedPrefixes,
 	normalizeReadOnlyBashCommand,
 } from "@bworx-io/worx-code/tools/bash-allowed-prefixes";
+import { rlmArtifactRoot } from "@bworx-io/worx-code/worx-runtime/session-layout";
 import * as z from "zod/v4";
 import { createAssistantMessage } from "./helpers/agent-session-setup";
 

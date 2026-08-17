@@ -12,35 +12,35 @@ import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
 import type { NotificationControlServer as NativeNotificationControlServer } from "@bworx-io/worx-code-natives";
 import { logger } from "@bworx-io/worx-utils";
-import { readLinuxProcStartTime } from "../../gjc-runtime/linux-proc";
+import { readLinuxProcStartTime } from "../../worx-runtime/linux-proc";
 import {
 	MANAGED_OWNER_PREDECESSOR_GENERATION_ENV,
 	MANAGED_OWNER_PREDECESSOR_INCARNATION_ENV,
 	MANAGED_OWNER_PREDECESSOR_RUN_ID_ENV,
 	MANAGED_OWNER_PREDECESSOR_TOKEN_ENV,
 	MANAGED_OWNER_TRANSCRIPT_PATH_ENV,
-} from "../../gjc-runtime/managed-owner-admission";
+} from "../../worx-runtime/managed-owner-admission";
 import {
 	MANAGED_OWNER_CHILD_TOKEN_ENV,
 	MANAGED_OWNER_COMMAND_ENV,
 	MANAGED_OWNER_INCARNATION_ENV,
 	MANAGED_OWNER_RUN_ID_ENV,
 	MANAGED_OWNER_SUPERVISOR_ARG,
-} from "../../gjc-runtime/managed-owner-supervisor";
-import { tmuxRuntimeSessionPath } from "../../gjc-runtime/session-layout";
+} from "../../worx-runtime/managed-owner-supervisor";
+import { tmuxRuntimeSessionPath } from "../../worx-runtime/session-layout";
 import {
 	WORX_COORDINATOR_SESSION_ID_ENV,
 	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 	WORX_TMUX_OWNER_GENERATION_ENV,
 	WORX_TMUX_OWNER_SERVER_KEY_ENV,
 	WORX_TMUX_OWNER_STATE_DIR_ENV,
-} from "../../gjc-runtime/session-state-sidecar";
+} from "../../worx-runtime/session-state-sidecar";
 import {
 	buildGjcTmuxProfileCommands,
 	buildGjcTmuxSessionSlug,
 	resolveGjcTmuxBinary,
 	resolveGjcTmuxCommand,
-} from "../../gjc-runtime/tmux-common";
+} from "../../worx-runtime/tmux-common";
 import {
 	captureOwnerGenerationBaseline,
 	classifyCgroup,
@@ -51,13 +51,13 @@ import {
 	replaceOwnerGeneration,
 	resolveManagedOwnerPredecessorSync,
 	type TmuxServerProof,
-} from "../../gjc-runtime/tmux-owner-isolation";
+} from "../../worx-runtime/tmux-owner-isolation";
 import {
 	findGjcTmuxSessionByName,
 	forceCloseGjcTmuxSession,
 	type GjcTmuxSessionStatus,
 	listGjcTmuxSessions,
-} from "../../gjc-runtime/tmux-sessions";
+} from "../../worx-runtime/tmux-sessions";
 import { processIncarnation } from "../broker/process-incarnation";
 import type {
 	LifecycleErrorReason,

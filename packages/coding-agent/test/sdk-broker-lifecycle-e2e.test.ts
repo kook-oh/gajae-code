@@ -7,7 +7,6 @@ import * as path from "node:path";
 import * as native from "@bworx-io/worx-code-natives";
 import { NotificationServer } from "@bworx-io/worx-code-natives";
 import { openLifecycleSessionManager, runSessionHost, watchSessionHostBrokerLiveness } from "../src/commands/sdk";
-import { planLaunchWorktree } from "../src/gjc-runtime/launch-worktree";
 import { AcpAgent } from "../src/modes/acp/acp-agent";
 import { Broker, type BrokerCleanupEvidence, type BrokerResponse } from "../src/sdk/broker/broker";
 import { brokerOwnerForTest, startFixtureBrokerWithLeaseForTest } from "../src/sdk/broker/ensure";
@@ -37,6 +36,7 @@ import { OPERATIONS } from "../src/sdk/protocol/operation-registry";
 import { listManagedSessionCandidates, resolveManagedSessionScope } from "../src/sdk/session-directory";
 import { sanitizeSdkStartupMessage } from "../src/sdk/startup-capability";
 import { SessionManager } from "../src/session/session-manager";
+import { planLaunchWorktree } from "../src/worx-runtime/launch-worktree";
 
 const cliEntrypoint = path.resolve(import.meta.dir, "../src/cli.ts");
 const spawned: Array<ReturnType<typeof Bun.spawn>> = [];

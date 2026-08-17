@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import type { Rule } from "@bworx-io/worx-code/capability/rule";
 import { TtsrManager } from "@bworx-io/worx-code/export/ttsr";
-import { eventAffectsCoordinatorRuntimeState, stateForEvent } from "../src/gjc-runtime/session-state-sidecar";
+import { eventAffectsCoordinatorRuntimeState, stateForEvent } from "../src/worx-runtime/session-state-sidecar";
 
 function makeRule(partial: Partial<Rule>): Rule {
 	return {

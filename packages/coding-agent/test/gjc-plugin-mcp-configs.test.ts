@@ -3,10 +3,10 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { getAgentDir, setAgentDir } from "@bworx-io/worx-utils";
-import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/gjc-plugins";
+import { buildPluginMcpConfigs, installGjcBundle } from "../src/extensibility/worx-plugins";
 import { isPluginMcpPublicNetworkBound } from "../src/runtime-mcp/plugin-network-boundary";
 
-const fixturesRoot = path.join(import.meta.dir, "fixtures", "gjc-plugins");
+const fixturesRoot = path.join(import.meta.dir, "fixtures", "worx-plugins");
 const sixSurface = path.join(fixturesRoot, "valid-six-surface-bundle");
 const tempDirs: string[] = [];
 const originalAgentDir = getAgentDir();
@@ -36,7 +36,7 @@ describe("plugin MCP runtime config conversion", () => {
 		expect(docs.command).toBe("bun");
 		expect(docs.args).toEqual(["mcp/domain-docs.ts"]);
 		// cwd is confined to the installed plugin root.
-		const installedRoot = path.join(cwd, ".worx", "gjc-plugins", "valid-six-surface-bundle");
+		const installedRoot = path.join(cwd, ".worx", "worx-plugins", "valid-six-surface-bundle");
 		expect(path.resolve(docs.cwd)).toBe(path.resolve(installedRoot));
 	});
 

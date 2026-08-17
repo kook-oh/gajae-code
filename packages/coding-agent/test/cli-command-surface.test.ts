@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { lifecyclePaths } from "@bworx-io/worx-code/gjc-runtime/tmux-owner-isolation";
+import { lifecyclePaths } from "@bworx-io/worx-code/worx-runtime/tmux-owner-isolation";
 import packageJson from "../package.json";
 import { interactiveBootstrapText, routeModelsAlias, routeRootArgv } from "../src/cli";
 import { parseArgs } from "../src/cli/args";

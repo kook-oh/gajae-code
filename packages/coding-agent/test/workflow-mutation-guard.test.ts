@@ -3,8 +3,6 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentTool } from "@bworx-io/worx-agent-core";
-import { activeSnapshotPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/gjc-runtime/session-layout";
-import { runNativeStateCommand } from "@bworx-io/worx-code/gjc-runtime/state-runtime";
 import {
 	assertWorkflowMutationRawPathsAllowed,
 	DEEP_INTERVIEW_MUTATION_BLOCK_MESSAGE,
@@ -14,6 +12,8 @@ import {
 	ULTRAGOAL_GOAL_PLANNING_MUTATION_BLOCK_MESSAGE,
 } from "@bworx-io/worx-code/skill-state/workflow-mutation-guard";
 import { ToolError } from "@bworx-io/worx-code/tools/tool-errors";
+import { activeSnapshotPath, modeStatePath, sessionStateDir } from "@bworx-io/worx-code/worx-runtime/session-layout";
+import { runNativeStateCommand } from "@bworx-io/worx-code/worx-runtime/state-runtime";
 import { logger } from "@bworx-io/worx-utils";
 
 const tempRoots: string[] = [];

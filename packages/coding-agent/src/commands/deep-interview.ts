@@ -1,5 +1,5 @@
 import { Command, Flags } from "@bworx-io/worx-utils/cli";
-import { runNativeDeepInterviewCommand } from "../gjc-runtime/deep-interview-runtime";
+import { runNativeDeepInterviewCommand } from "../worx-runtime/deep-interview-runtime";
 
 export default class DeepInterview extends Command {
 	static description = `Run native GJC deep-interview workflow.

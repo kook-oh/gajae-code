@@ -3,14 +3,14 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentTool } from "@bworx-io/worx-agent-core";
-import { activeEntryPath, activeStateDir, modeStatePath } from "../src/gjc-runtime/session-layout";
-import { writeActiveEntry } from "../src/gjc-runtime/state-writer";
 import {
 	invalidateVisibleSkillActiveStateCache,
 	readVisibleSkillActiveState,
 	type SkillActiveEntry,
 } from "../src/skill-state/active-state";
 import { getWorkflowMutationDecision } from "../src/skill-state/workflow-mutation-guard";
+import { activeEntryPath, activeStateDir, modeStatePath } from "../src/worx-runtime/session-layout";
+import { writeActiveEntry } from "../src/worx-runtime/state-writer";
 
 async function withTempCwd(fn: (cwd: string) => Promise<void>): Promise<void> {
 	const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-g005-redteam-"));

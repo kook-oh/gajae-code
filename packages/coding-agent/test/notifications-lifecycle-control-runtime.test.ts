@@ -3,7 +3,6 @@ import { describe, expect, it, spyOn } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { parseLaunchWorktreeMode } from "@bworx-io/worx-code/gjc-runtime/launch-worktree";
 import type { SessionCloseFrame, SessionCreateFrame } from "@bworx-io/worx-code/sdk/bus/index";
 import {
 	attachLifecycleControl,
@@ -21,6 +20,7 @@ import {
 } from "@bworx-io/worx-code/sdk/bus/lifecycle-control-runtime";
 import type { LedgerEntry, OrchestratorDeps } from "@bworx-io/worx-code/sdk/bus/lifecycle-orchestrator";
 import { startDaemonLifecycleControl } from "@bworx-io/worx-code/sdk/bus/telegram-daemon";
+import { parseLaunchWorktreeMode } from "@bworx-io/worx-code/worx-runtime/launch-worktree";
 import * as native from "@bworx-io/worx-code-natives";
 import { getConfigRootDir, logger } from "@bworx-io/worx-utils";
 import { Settings } from "../src/config/settings";

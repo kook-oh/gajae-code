@@ -15,27 +15,6 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { Args, Command, Flags } from "@bworx-io/worx-utils/cli";
 import { $credentialEnv } from "@bworx-io/worx-utils/env";
-import {
-	WORX_TMUX_OWNER_GENERATION_ENV,
-	WORX_TMUX_OWNER_SERVER_KEY_ENV,
-	WORX_TMUX_OWNER_STATE_DIR_ENV,
-} from "../gjc-runtime/session-state-sidecar";
-import { resolveGjcTmuxBinary, resolveGjcTmuxCommand, sanitizeTmuxToken } from "../gjc-runtime/tmux-common";
-import {
-	captureOwnerGenerationBaselineSync,
-	classifyCgroup,
-	isExactScopedBootstrapSuccessReceipt,
-	isOwnerGenerationBaselineCurrentSync,
-	isSafeServerProof,
-	type OwnerGenerationBaseline,
-	type OwnerIsolationProbe,
-	observeOwnerTerminal,
-	ownerProcessStartTime,
-	planTmuxOwnerIsolation,
-	replaceOwnerGenerationSync,
-	sameServerIdentity,
-	type TmuxServerProof,
-} from "../gjc-runtime/tmux-owner-isolation";
 import { classifyRecovery } from "../harness-control-plane/classifier";
 import { callEndpoint, EndpointUnreachableError } from "../harness-control-plane/control-endpoint";
 import {
@@ -76,6 +55,27 @@ import {
 	type SessionState,
 } from "../harness-control-plane/types";
 import { SPAWN_PROVENANCE_ENV } from "../sdk/bus/config";
+import {
+	WORX_TMUX_OWNER_GENERATION_ENV,
+	WORX_TMUX_OWNER_SERVER_KEY_ENV,
+	WORX_TMUX_OWNER_STATE_DIR_ENV,
+} from "../worx-runtime/session-state-sidecar";
+import { resolveGjcTmuxBinary, resolveGjcTmuxCommand, sanitizeTmuxToken } from "../worx-runtime/tmux-common";
+import {
+	captureOwnerGenerationBaselineSync,
+	classifyCgroup,
+	isExactScopedBootstrapSuccessReceipt,
+	isOwnerGenerationBaselineCurrentSync,
+	isSafeServerProof,
+	type OwnerGenerationBaseline,
+	type OwnerIsolationProbe,
+	observeOwnerTerminal,
+	ownerProcessStartTime,
+	planTmuxOwnerIsolation,
+	replaceOwnerGenerationSync,
+	sameServerIdentity,
+	type TmuxServerProof,
+} from "../worx-runtime/tmux-owner-isolation";
 
 const PRIVATE_OWNER_CONTROL_FIELDS = new Set([
 	"socket_key",

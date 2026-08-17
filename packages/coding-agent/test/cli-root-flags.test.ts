@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { assertLocalLaunchArgs, parseArgs } from "../src/cli/args";
 import { ROOT_LAUNCH_FLAGS } from "../src/cli/root-flags";
-import { parseLaunchWorktreeMode } from "../src/gjc-runtime/launch-worktree";
+import { parseLaunchWorktreeMode } from "../src/worx-runtime/launch-worktree";
 
 const FLAG_VALUES: Record<string, string> = {
 	"mcp-config": "/tmp/gjc-mcp.json",

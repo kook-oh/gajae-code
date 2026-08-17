@@ -13,8 +13,12 @@ import {
 	buildGjcTmuxExactSessionTarget,
 	buildGjcTmuxProfileCommands,
 	resolveGjcTmuxCommand,
-} from "../src/gjc-runtime/tmux-common";
-import { forceCloseGjcTmuxSession, removeGjcTmuxSession, statusGjcTmuxSession } from "../src/gjc-runtime/tmux-sessions";
+} from "../src/worx-runtime/tmux-common";
+import {
+	forceCloseGjcTmuxSession,
+	removeGjcTmuxSession,
+	statusGjcTmuxSession,
+} from "../src/worx-runtime/tmux-sessions";
 
 const runId = randomUUID().slice(0, 8);
 const suffix = `${process.pid}-${runId}`;

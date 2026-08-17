@@ -7,8 +7,6 @@ import { getBundledModel } from "@bworx-io/worx-ai";
 import { validateToolArguments } from "@bworx-io/worx-ai/utils/validation";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { Settings } from "../src/config/settings";
-import { createDeepInterviewIntentManifest } from "../src/gjc-runtime/deep-interview-state";
-import { activeEntryPath, modeStatePath, sessionStateDir } from "../src/gjc-runtime/session-layout";
 import {
 	BrokerWorkflowGateEmitter,
 	FileGateStore,
@@ -24,6 +22,8 @@ import { SKILL_PROMPT_MESSAGE_TYPE } from "../src/session/messages";
 import { SessionManager } from "../src/session/session-manager";
 import { getSkillActiveStatePaths, syncSkillActiveState } from "../src/skill-state/active-state";
 import { registerWorkflowGateEmitterListener } from "../src/tools/ask-answer-registry";
+import { createDeepInterviewIntentManifest } from "../src/worx-runtime/deep-interview-state";
+import { activeEntryPath, modeStatePath, sessionStateDir } from "../src/worx-runtime/session-layout";
 
 function attachTerminalController(emitter: WorkflowGateEmitter): void {
 	emitter.registerGateTerminalController?.({

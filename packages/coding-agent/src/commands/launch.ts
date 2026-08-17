@@ -8,15 +8,15 @@ import { APP_NAME, setProjectDir } from "@bworx-io/worx-utils";
 import { Args, Command } from "@bworx-io/worx-utils/cli";
 import { assertLocalLaunchArgs, parseArgs } from "../cli/args";
 import { ROOT_LAUNCH_FLAGS } from "../cli/root-flags";
-import { launchDefaultTmuxIfNeeded } from "../gjc-runtime/launch-tmux";
-import { type PreparedLaunchWorktree, prepareLaunchWorktree } from "../gjc-runtime/launch-worktree";
+import { runRootCommand } from "../main";
+import { prepareAcpTerminalAuthArgs } from "../modes/acp/terminal-auth";
+import { launchDefaultTmuxIfNeeded } from "../worx-runtime/launch-tmux";
+import { type PreparedLaunchWorktree, prepareLaunchWorktree } from "../worx-runtime/launch-worktree";
 import {
 	WORX_COORDINATOR_SESSION_ID_ENV,
 	WORX_COORDINATOR_SESSION_STATE_FILE_ENV,
 	WORX_TMUX_OWNER_GENERATION_ENV,
-} from "../gjc-runtime/session-state-sidecar";
-import { runRootCommand } from "../main";
-import { prepareAcpTerminalAuthArgs } from "../modes/acp/terminal-auth";
+} from "../worx-runtime/session-state-sidecar";
 
 export async function persistCoordinatorLaunchFailure(
 	error: unknown,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { appendFile, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { sessionRoot, WORX_SESSION_ACTIVITY_FILE } from "../gjc-runtime/session-layout";
+import { sessionRoot, WORX_SESSION_ACTIVITY_FILE } from "../worx-runtime/session-layout";
 import {
 	computeCacheHitRate,
 	persistTaskTokenLog,

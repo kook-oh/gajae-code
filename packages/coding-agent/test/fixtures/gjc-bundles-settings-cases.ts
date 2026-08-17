@@ -3,7 +3,7 @@ import type {
 	GjcBundleSurfaceSummary,
 	GjcRuntimeSnapshotState,
 	GjcUpdatePreview,
-} from "../../src/extensibility/gjc-plugins/types";
+} from "../../src/extensibility/worx-plugins/types";
 
 export interface GjcBundleSettingsFixture {
 	bundles: GjcBundleSummary[];

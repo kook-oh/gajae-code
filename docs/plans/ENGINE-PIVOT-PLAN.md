@@ -218,7 +218,7 @@ P1 exit(설치 가능한 포크) 후: review-system 의 바이너리 경로 설�
 | 위치 [V] | 리터럴 | 의미 | 처분 |
 |---|---|---|---|
 | `coordinator-mcp/server.ts:826` | `executable !== "gjc"` | 코디네이터 세션 커맨드 allowlist — 이 검증기가 `worx --worktree` 를 거부하는 지점 | 포크 바이너리명으로 교체. 설정도 `WORX_COORDINATOR_MCP_SESSION_COMMAND="worx --worktree"` 계열로 |
-| `gjc-runtime/team-runtime.ts:384,433` | `workerCli !== "gjc"` | team 워커 CLI 검증 | 동일 교체 |
+| `worx-runtime/team-runtime.ts:384,433` | `workerCli !== "gjc"` | team 워커 CLI 검증 | 동일 교체 |
 | `tools/bash-allowed-prefixes.ts:272` | `words[0] !== "gjc"` | bash 툴 자기호출 프리픽스 정책 | 동일 교체 |
 | `config/settings.ts:1656` | `agentName !== "gjc"` | 에이전트명 분기 | 동일 교체 |
 | `sdk/transport/auth-preface.ts:69` | `gjc-sdk-transport/` | **SDK 와이어 핸드셰이크 식별자** | 클린 브레이크 — 클라이언트가 전부 in-tree 라 동기 교체 가능. P1 에서 out-of-tree SDK 클라이언트 부재를 확인 후 실행 |

@@ -7,7 +7,7 @@ import type { CanonicalGjcWorkflowSkill } from "./active-state";
  * the callee.
  *
  * Keeping this mapping in a neutral skill-state module avoids cycles between
- * `gjc-runtime/state-runtime.ts` and `hooks/skill-state.ts` (which pulls in
+ * `worx-runtime/state-runtime.ts` and `hooks/skill-state.ts` (which pulls in
  * session-manager and ultragoal verification code).
  */
 export function initialPhaseForSkill(skill: CanonicalGjcWorkflowSkill | string): string {

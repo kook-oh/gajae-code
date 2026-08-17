@@ -6,7 +6,7 @@ import {
 	type NormalizedGjcPluginBundle,
 	type NormalizedGjcPluginSurfaces,
 	validateInstallPlan,
-} from "../src/extensibility/gjc-plugins";
+} from "../src/extensibility/worx-plugins";
 
 function surfaces(over: Partial<NormalizedGjcPluginSurfaces> = {}): NormalizedGjcPluginSurfaces {
 	return { subskills: [], tools: [], hooks: [], mcps: [], systemAppendices: [], agentAppendices: [], ...over };
