@@ -12,7 +12,7 @@
 
 | 트랙 | 내용 | 정본 위치 | 상태 |
 |---|---|---|---|
-| **T1. 엔진 피벗** | gajae-code 포크 → worx-code 자체 엔진 (gjc 이름 완전 제거, 2플랫폼 natives 자체 빌드, wrapper 폐지) | 이 레포 `docs/plans/ENGINE-PIVOT-PLAN.md` (승인본 rev.6) + `ENGINE-PIVOT-PLAN-BASE.md` (기준 문서) + `EVIDENCE-p0-4-*.md` (실측 증거) | **실행 중** — P0-FREEZE 커밋 완료, P1b 릴리스 체인 착수, P1 리네임 진행 중 |
+| **T1. 엔진 피벗** | gajae-code 포크 → worx-code 자체 엔진 (gjc 이름 완전 제거, 2플랫폼 natives 자체 빌드, wrapper 폐지) | **실행 체크리스트 `docs/plans/EXECUTION-CHECKLIST.md`** + 승인 계획 `docs/plans/ENGINE-PIVOT-PLAN.md` (rev.6) + `ENGINE-PIVOT-PLAN-BASE.md` (기준 문서) + `EVIDENCE-p0-4-*.md` (실측 증거) | **실행 중** — P0-FREEZE 커밋 완료, P1b 릴리스 체인 착수, P1 리네임 진행 중 |
 | **T2. AX 플랫폼** | Temporal 기반 워크플로 엔진 + Review Hub + 칸반 + 설계·문서(SSOT) + worx-code 에이전트 연동 | **`bworx-io/worx-ax` 레포 `docs/`** — ARCHITECTURE.md(아키텍처·결정·메뉴·워크플로·로드맵) | 계획 확정(v0.7), Phase 0 대기 |
 | **T3. IDE** | ORCA 포크 = ide.byteworx.dev = 유일한 사용자 웹 (AX 패널 2단 마운트 숙주) | `bworx-io/worx-ide` (패치·매니페스트) · 실행 계획은 T1 계획 §5(P3) | 엔진 계획에 종속 |
 | **참조** | review-system(ems-review) — EMS 상세설계 시스템, **존치**. AX가 행동 계약만 차용 | `~/Dev/review-system` (EMS 트랙 소유) | 프로덕션, frozen 관점에선 무관 |
