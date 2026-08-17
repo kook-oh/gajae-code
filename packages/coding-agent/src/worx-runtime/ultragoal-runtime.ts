@@ -410,7 +410,7 @@ async function readSettingsNudgeBudget(settingsPath: string): Promise<number | n
 /**
  * Resolve the per-story nudge budget. Project `./.worx/settings.json` overrides the
  * user settings (`$WORX_CONFIG_DIR/settings.json` or `~/.worx/settings.json`), else the
- * default. Mirrors the `worx.deepInterview.ambiguityThreshold` user+project precedence.
+ * default. Mirrors the `gjc.deepInterview.ambiguityThreshold` user+project precedence.
  */
 export async function resolveUltragoalNudgeBudget(cwd: string): Promise<{ budget: number; source: string }> {
 	const projectPath = path.join(worxRoot(cwd), "settings.json");

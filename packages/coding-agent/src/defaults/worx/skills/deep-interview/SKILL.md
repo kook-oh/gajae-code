@@ -91,7 +91,7 @@ source: "forked from upstream deep-interview skill and rebranded for GJC"
 
 ## Native Plugin Invocation Guard (Issue #3030)
 
-If this raw bundled skill is loaded by GJC's native skill loader through `/skill:deep-interview`, do not treat that path as permission to skip rendered GJC setup. The user-facing invocation is `/skill:deep-interview`; do not recommend or advertise CLI bridge commands as the deep-interview entrypoint. Regardless of invocation path, Phase 0 below remains blocking and must resolve `worx.deepInterview.ambiguityThreshold` from pre-resolved native state or settings before any announcement, state write, question, or ambiguity score.
+If this raw bundled skill is loaded by GJC's native skill loader through `/skill:deep-interview`, do not treat that path as permission to skip rendered GJC setup. The user-facing invocation is `/skill:deep-interview`; do not recommend or advertise CLI bridge commands as the deep-interview entrypoint. Regardless of invocation path, Phase 0 below remains blocking and must resolve `gjc.deepInterview.ambiguityThreshold` from pre-resolved native state or settings before any announcement, state write, question, or ambiguity score.
 
 ## Corrupt current-session state recovery
 
@@ -107,7 +107,7 @@ Complete this phase before Phase 1, before brownfield exploration, before GJC st
 2. **Only if native state lacks a resolved threshold, read threshold settings in runtime precedence order**:
    - YAML config first: read the **single** modern config path the environment selects — `$WORX_CODING_AGENT_DIR/config.yml` when `WORX_CODING_AGENT_DIR` is set, else `$WORX_CONFIG_DIR/agent/config.yml` when `WORX_CONFIG_DIR` is set, else `~/.worx/agent/config.yml`. Do not cascade through the other YAML locations when the selected one is absent or invalid.
    - Then JSON settings: project settings `./.worx/settings.json`, then user settings `[$WORX_CONFIG_DIR|~/.worx]/settings.json`.
-   - Read `worx.deepInterview.ambiguityThreshold` only from files that are known to exist; optional config/settings-file absence is expected and must not be surfaced as failed `Read` calls.
+   - Read `gjc.deepInterview.ambiguityThreshold` only from files that are known to exist; optional config/settings-file absence is expected and must not be surfaced as failed `Read` calls.
    - Do not probe arbitrary ancestor candidates such as `../../.worx/settings.json`; use the current project `.worx/settings.json` and user settings only.
 3. **Resolve threshold and source**:
    - Use the first valid configured value in the precedence order above; otherwise use the mode default when a resolution flag was passed: `--quick` = `0.6`, `--standard` = `0.5`, `--deep` = `0.35`; with no resolution flag, use the base default `0.05`.

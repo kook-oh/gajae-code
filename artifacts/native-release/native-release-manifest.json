@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "release_version": "0.13.1",
+  "signing": "none",
+  "built_at": "2026-08-17T18:06:37.564Z",
+  "builder": "kook",
+  "build_host": "oseung-gug-ui-MacBookAir-2.local",
+  "packages": [
+    {
+      "package_name": "@bworx-io/worx-code-natives",
+      "package_version": "0.13.1",
+      "platform_tag": null,
+      "tarball": "artifacts/native-release/bworx-io-worx-code-natives-0.13.1.tgz",
+      "tarball_sha256": "2352deeaa9250f892ef47f3c6724445e6d62042193d4de05cc0d8d016aa5f359",
+      "tarball_bytes": 34356,
+      "node_sha256": null,
+      "source_commit": null,
+      "rust_toolchain": null,
+      "build_profile": null
+    },
+    {
+      "package_name": "@bworx-io/worx-code-natives-darwin-arm64",
+      "package_version": "0.13.1",
+      "platform_tag": "darwin-arm64",
+      "tarball": "artifacts/native-release/bworx-io-worx-code-natives-darwin-arm64-0.13.1.tgz",
+      "tarball_sha256": "d36495758f3212284e2dce21558a26e72ad455f30f538d643865897b7601d8fe",
+      "tarball_bytes": 10368316,
+      "node_sha256": "fc3cc627df65c63d0053ddea16549289802f8a55b78246da001491d4bc62a3dd",
+      "source_commit": "2f7ade09e4b57ea87489651a99cd366a0b7bc2d9",
+      "rust_toolchain": "nightly-2026-04-29",
+      "build_profile": "ci"
+    },
+    {
+      "package_name": "@bworx-io/worx-code-natives-linux-x64",
+      "package_version": "0.13.1",
+      "platform_tag": "linux-x64",
+      "tarball": "artifacts/native-release/bworx-io-worx-code-natives-linux-x64-0.13.1.tgz",
+      "tarball_sha256": "0fef4ce2c6710c0758c660e97a4e587e4d3bac5b61b0d72f84d691dcb043c299",
+      "tarball_bytes": 531,
+      "node_sha256": null,
+      "source_commit": null,
+      "rust_toolchain": null,
+      "build_profile": null
+    }
+  ]
+}

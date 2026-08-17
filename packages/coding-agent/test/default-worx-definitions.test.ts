@@ -547,7 +547,7 @@ Project executor override body.
 			path.join(repoRoot, "packages", "coding-agent", "src", "defaults", "worx", "skills", "ralplan", "SKILL.md"),
 		).text();
 		expect(ralplan).toContain("counts as opting into execution for that skill");
-		expect(ralplan).toContain("worx.ralplan.autoHandoff");
+		expect(ralplan).toContain("gjc.ralplan.autoHandoff");
 		expect(ralplan).toContain("`off` (default), `ultragoal`, or `team`");
 		expect(ralplan).toContain("A `team` target degrades to `off`");
 		expect(ralplan).toContain("`team_unavailable:<reason>`");

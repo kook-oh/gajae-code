@@ -107,16 +107,41 @@
 
 ## 슬라이스 7 — P1b 패키징·무결성 계약 (계획 §4b)
 
-포크에 릴리스 게이트 스크립트가 **없다**(wrapper 자산이었음) — 이관이 아니라 신규 작성이다.
+포크에 릴리스 게이트 스크립트가 **없었다**(wrapper 자산이었음) — 이관이 아니라 신규 작성이었다.
+절차 정본: `docs/PUBLISHING-natives.md` · 계약 정본(코드): `scripts/native-release-contract.ts`
 
-- [ ] §4b-1 패키지 세트 확정: aggregator + 플랫폼 2종 이름·버전 정책, sentinel 파생 규칙과 결합
-- [ ] §4b-2 플랫폼 선택 계약: `optionalDependencies` 소유를 엔진 포크 매니페스트로. 미지원 플랫폼 실패 방식 정의(설치 실패 or 로드 시점 단일 명시 오류) — **침묵 실패(`--version`만 통과) 금지**
-- [ ] §4b-3 무결성 체인: `source SHA + 툴체인 + profile` → `.node sha256` → `tarball digest` → `publish 영수증`. "재현 가능" = 보관 아티팩트 해시 재계산 일치(비트 동일 재빌드 아님)
-- [ ] §4b-4 서명 결정: **명시적 비서명** (PIVOT-FREEZE §11에 기록됨) — 게시 절차에 근거 문구 반영
-- [ ] §4b-5 검증 게이트 3종 신규 작성: `verify:native`(2플랫폼 매트릭스) · `verify:provenance`(**no-CI 모델로 재작성** — 앵커 = 보관 아티팩트 해시 재계산, `ci_run_url`/`workflow_ref` 필수 필드 폐기) · `selftest:pack`
-- [ ] `dist` 프로파일 빌드 성공 + 소요 측정 (양 플랫폼, 직렬)
-- [ ] 게시: `npm.pkg.github.com`에 aggregator + 플랫폼 2종
+- [x] §4b-1 패키지 세트 확정: aggregator + 플랫폼 2종 이름·버전 정책, sentinel 파생 규칙과 결합
+      · `scripts/native-release-contract.ts` 가 세 게이트의 단일 소스다. 버전-sentinel 결합은
+      `verify:native` 가 **실제 애드온 바이트에서 `__piNativesV0_13_1` 을 찾아** 강제한다.
+- [x] §4b-2 플랫폼 선택 계약: `optionalDependencies` 를 aggregator 매니페스트가 소유 ·
+      미지원 플랫폼은 **로드 시점 단일 명시 오류**(로더가 throw). 침묵 실패 금지는 테스트로 고정
+      (`native-release-gates.test.ts`: 로더 거부 경로가 throw 인지, 지원 목록이 게시 세트와 일치하는지)
+- [x] §4b-3 무결성 체인 구현: 빌드 수신증(`.node.build.json`) → `.node sha256` → `tarball sha256` →
+      릴리스 매니페스트. **애드온 해시는 tarball 내부 멤버에서 재계산**한다(작업 트리가 아니라 게시될 바이트).
+      "재현 가능" = 해시 재계산 일치, 비트 동일 재빌드는 명시적 제외.
+- [x] §4b-4 서명 결정: 릴리스 매니페스트에 `"signing": "none"` 필수, `verify:provenance` 가 요구.
+      절차 문서에 근거 명기(§4 of `PUBLISHING-natives.md`).
+- [x] §4b-5 검증 게이트 3종 신규 작성 — `bun run verify:native` / `selftest:pack` / `verify:provenance`
+      (+ `verify:release` 아그리게이트, `stage:native` 스테이징). `verify:provenance` 는 재조준이 아니라
+      **재작성**: `ci_run_url`/`workflow_ref`/`run_id` 계열을 **깊이 무관 거부**하고 `builder`/`build_host` 를
+      요구한다 — no-CI 릴리스에서 CI provenance 를 채우는 것은 날조이기 때문.
+- [ ] `dist` 프로파일 빌드 성공 + 소요 측정 (양 플랫폼, 직렬) — 현재 산출물은 `ci` 프로파일이다
+- [ ] linux-x64 산출물 확보(리눅스 호스트에서 `stage:native --platform linux-x64`) — 없으면
+      `selftest:pack` 이 **애드온 없는 531B tarball** 을 발견하고 fail-closed 한다(설계대로 동작 확인됨)
+- [ ] 게시: `npm.pkg.github.com`에 플랫폼 2종 → aggregator 순서. **자격증명·승인 필요**
 - [ ] 수용: 게시된 패키지로 3종 게이트가 양 플랫폼에서 통과
+
+**darwin-arm64 실측 (2026-08-18, `ci` 프로파일 산출물)**
+`verify:native` 29게이트 통과 · sentinel `__piNativesV0_13_1` 확인(46,149,152 B) ·
+`.node` sha256 `fc3cc627df65c63d…` 수신증 일치 · tarball 10,368,316 B sha256 `d36495758f321228…` ·
+`verify:provenance` 가 tarball 멤버에서 애드온 해시를 재계산해 동일 값 확인.
+
+**부수 시정 — 설정 키 정합성 결함**
+`.gjc`→`.worx` 스윕(슬라이스 4)이 **중첩 설정 접근자**까지 바꿔 `parsed.gjc` → `parsed.worx` 가 됐다.
+설정 스키마는 `gjc.ralplan.*` / `gjc.deepInterview.*` 를 선언하고 번들 SKILL.md 예시도 `"gjc": {` 인데
+런타임 중첩 분기만 `worx` 를 읽고 있었다 — 즉 **사용자가 설정한 값이 조용히 무시되는 상태**였다.
+선언 스키마 기준으로 통일(`parsed.gjc`)하고 테스트·config.yml 픽스처를 맞췄다. `.gitignore` 의
+`.gjc/` 규칙 19개도 `.worx/` 로 갱신(런타임 상태 디렉터리가 무시되지 않고 있었다).
 
 ## 슬라이스 8 — P1 exit 증명
 
@@ -175,7 +200,7 @@
 | 구간 | 상태 |
 |---|---|
 | P0-FREEZE | ✅ 완료 |
-| P1b natives 빌드 | ✅ 2플랫폼 완료 / ⬜ 패키징·게이트·게시 (슬라이스 7) |
+| P1b natives 빌드 | ✅ 2플랫폼 완료 · ✅ 패키징 계약·게이트 3종 작성 / ⬜ linux 산출물·dist 프로파일·게시 (슬라이스 7) |
 | P1 리네임 | ✅ 6/6 슬라이스 완료 (잔존은 슬라이스 6 제외 목록 + 슬라이스 7 소관 릴리스 자산명) |
 | P1 exit 증명 | ⬜ 슬라이스 8 |
 | P1c 동기화 | ⬜ 슬라이스 9 |

@@ -1739,7 +1739,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
-				JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal" } } }),
+				JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
 				"utf-8",
 			);
 			await fs.mkdir(path.dirname(projectPath), { recursive: true });
@@ -1777,10 +1777,10 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		const root = await tempDir();
 		const projectPath = path.join(root, ".worx", "settings.json");
 		await fs.mkdir(path.dirname(projectPath), { recursive: true });
-		await fs.writeFile(projectPath, JSON.stringify({ worx: { ralplan: { autoHandoff: "later" } } }), "utf-8");
+		await fs.writeFile(projectPath, JSON.stringify({ gjc: { ralplan: { autoHandoff: "later" } } }), "utf-8");
 
 		await expect(resolveRalplanAutoHandoff(root)).rejects.toThrow(
-			`invalid ralplan settings at ${projectPath}: expected worx.ralplan.autoHandoff to be one of off, ultragoal, team`,
+			`invalid ralplan settings at ${projectPath}: expected gjc.ralplan.autoHandoff to be one of off, ultragoal, team`,
 		);
 	});
 	it("rejects invalid final admission settings before writing final artifacts", async () => {
@@ -1788,7 +1788,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "later" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "later" } } }),
 			"utf-8",
 		);
 
@@ -1803,7 +1803,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
 			"utf-8",
 		);
 		expect(await resolveRalplanAutoHandoff(root)).toMatchObject({
@@ -1814,7 +1814,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "team" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "team" } } }),
 			"utf-8",
 		);
 		expect(
@@ -1827,7 +1827,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "team" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "team" } } }),
 			"utf-8",
 		);
 		expect(
@@ -1846,7 +1846,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
 			"utf-8",
 		);
 		const args = ["--write", "--stage", "final", "--stage_n", "1", "--artifact", "# final", "--json"];
@@ -1872,7 +1872,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal", maxIterations: 1 } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal", maxIterations: 1 } } }),
 			"utf-8",
 		);
 
@@ -1896,7 +1896,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(root, runId, "final", 1, "# final")).status).toBe(0);
@@ -1905,7 +1905,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		expect((await writeRalplanArtifact(root, "another-run", "planner", 1, "# other")).status).toBe(0);
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "off" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "off" } } }),
 			"utf-8",
 		);
 		const retry = JSON.parse((await writeRalplanArtifact(root, runId, "final", 1, "# final")).stdout ?? "{}");
@@ -1920,7 +1920,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal", maxIterations: 1 } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal", maxIterations: 1 } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(root, "stuck-ledger", "planner", 1, "# plan")).status).toBe(0);
@@ -1946,7 +1946,7 @@ describe("ralplan automatic handoff admission (#3398)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { autoHandoff: "ultragoal" } } }),
+			JSON.stringify({ gjc: { ralplan: { autoHandoff: "ultragoal" } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(root, runId, "planner", 1, "# plan")).status).toBe(0);
@@ -2074,7 +2074,7 @@ describe("ralplan consensus iteration cap (#3165)", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxIterations: 2 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxIterations: 2 } } }),
 			"utf-8",
 		);
 
@@ -2644,7 +2644,7 @@ describe("ralplan crash-gap dedupe repair", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 			"utf-8",
 		);
 		await fs.mkdir(runDir, { recursive: true });
@@ -2667,7 +2667,7 @@ describe("ralplan crash-gap dedupe repair", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 			"utf-8",
 		);
 		await fs.mkdir(runDir, { recursive: true });
@@ -2718,18 +2718,18 @@ describe("ralplan review lane budget settings", () => {
 			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
-				JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+				JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 				"utf-8",
 			);
 			await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 			const projectPath = path.join(root, ".worx", "settings.json");
-			await fs.writeFile(projectPath, JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 3 } } }), "utf-8");
+			await fs.writeFile(projectPath, JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 3 } } }), "utf-8");
 			expect(await resolveRalplanMaxReviewPassesPerLane(root)).toEqual({
 				maxReviewPassesPerLane: 3,
 				source: projectPath,
 			});
 
-			await fs.writeFile(projectPath, JSON.stringify({ "worx.ralplan.maxReviewPassesPerLane": 4 }), "utf-8");
+			await fs.writeFile(projectPath, JSON.stringify({ "gjc.ralplan.maxReviewPassesPerLane": 4 }), "utf-8");
 			expect(await resolveRalplanMaxReviewPassesPerLane(root)).toEqual({
 				maxReviewPassesPerLane: 4,
 				source: projectPath,
@@ -2748,7 +2748,7 @@ describe("ralplan review lane budget settings", () => {
 			process.env.WORX_CONFIG_DIR = userDir;
 			await fs.writeFile(
 				path.join(userDir, "settings.json"),
-				JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+				JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 				"utf-8",
 			);
 			await fs.mkdir(path.join(root, ".worx"), { recursive: true });
@@ -2766,7 +2766,7 @@ describe("ralplan review lane budget settings", () => {
 		const root = await tempDir();
 		const projectPath = path.join(root, ".worx", "settings.json");
 		await fs.mkdir(path.dirname(projectPath), { recursive: true });
-		await fs.writeFile(projectPath, JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 99 } } }), "utf-8");
+		await fs.writeFile(projectPath, JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 99 } } }), "utf-8");
 
 		await expect(resolveRalplanMaxReviewPassesPerLane(root)).rejects.toThrow(projectPath);
 	});
@@ -2879,7 +2879,7 @@ describe("ralplan review lane budget rigor and receipts", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(root, runId, "planner", 1, "# plan")).status).toBe(0);
@@ -2907,7 +2907,7 @@ describe("ralplan review lane budget rigor and receipts", () => {
 		await fs.mkdir(path.join(textRoot, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(textRoot, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 2 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 2 } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(textRoot, textRunId, "planner", 1, "# plan")).status).toBe(0);
@@ -3089,7 +3089,7 @@ describe("ralplan HUD lane verdict carriage", () => {
 		await fs.mkdir(path.join(root, ".worx"), { recursive: true });
 		await fs.writeFile(
 			path.join(root, ".worx", "settings.json"),
-			JSON.stringify({ worx: { ralplan: { maxReviewPassesPerLane: 3 } } }),
+			JSON.stringify({ gjc: { ralplan: { maxReviewPassesPerLane: 3 } } }),
 			"utf-8",
 		);
 		expect((await writeRalplanArtifact(root, runId, "planner", 1, "# plan")).status).toBe(0);

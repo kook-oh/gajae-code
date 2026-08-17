@@ -101,7 +101,7 @@ function settingDefinitionToJsonSchema(settingPath: string, definition: SettingD
 	const description = settingDescription(definition);
 	if (description) schema.description = description;
 	if ("default" in definition && definition.default !== undefined) schema.default = definition.default;
-	if (settingPath === "worx.deepInterview.ambiguityThreshold") {
+	if (settingPath === "gjc.deepInterview.ambiguityThreshold") {
 		schema.exclusiveMinimum = 0;
 		schema.maximum = 1;
 	}

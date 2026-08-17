@@ -43,25 +43,28 @@ coverage/
 packages/ai/test/.temp-images/
 
 # Project specific
-!.gjc/
-!.gjc/agents/
-!.gjc/agents/**
-!.gjc/skills/
-!.gjc/skills/**
-.gjc/plugins/
-.gjc/context/
-.gjc/interviews/
-.gjc/plans/
-.gjc/ralplan/
-.gjc/specs/
-.gjc/ultragoal/
-.gjc/verification/
-.gjc/logs/
-.gjc/rlm/
-.gjc/state/
-.gjc/_session-*/
-.gjc/rss-checkpoints/
-.gjc/metrics.json
+# Pre-pivot runtime directory: the product no longer writes it, but a still-installed
+# gjc binary run inside this checkout would otherwise leave untracked session state.
+.gjc/
+!.worx/
+!.worx/agents/
+!.worx/agents/**
+!.worx/skills/
+!.worx/skills/**
+.worx/plugins/
+.worx/context/
+.worx/interviews/
+.worx/plans/
+.worx/ralplan/
+.worx/specs/
+.worx/ultragoal/
+.worx/verification/
+.worx/logs/
+.worx/rlm/
+.worx/state/
+.worx/_session-*/
+.worx/rss-checkpoints/
+.worx/metrics.json
 .pi_config/
 .opencode/
 .worktrees/
@@ -86,6 +89,9 @@ CPU*.md
 packages/coding-agent/binaries/
 
 .release-040-artifacts/
+
+# Native release staging (tarballs are large; the manifest is the evidence)
+artifacts/native-release/*.tgz
 
 # Python SDK build output
 python/worx-sdk/build/

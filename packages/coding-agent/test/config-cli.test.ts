@@ -81,16 +81,16 @@ describe("config CLI schema coverage", () => {
 
 		await runConfigCommand({
 			action: "set",
-			key: "worx.deepInterview.ambiguityThreshold",
+			key: "gjc.deepInterview.ambiguityThreshold",
 			value: "0.2",
 			flags: { json: true },
 		});
-		await runConfigCommand({ action: "get", key: "worx.deepInterview.ambiguityThreshold", flags: { json: true } });
+		await runConfigCommand({ action: "get", key: "gjc.deepInterview.ambiguityThreshold", flags: { json: true } });
 
 		const payload = logSpy.mock.calls.at(-1)?.[0];
 		expect(typeof payload).toBe("string");
 		expect(JSON.parse(String(payload))).toMatchObject({
-			key: "worx.deepInterview.ambiguityThreshold",
+			key: "gjc.deepInterview.ambiguityThreshold",
 			type: "number",
 			value: 0.2,
 		});

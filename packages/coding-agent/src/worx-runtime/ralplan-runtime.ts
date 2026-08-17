@@ -84,13 +84,13 @@ const KNOWN_STAGES = [
 type RalplanStage = (typeof KNOWN_STAGES)[number];
 /** Default consensus iterations (planner + revision openers) per run. Matches SKILL.md re-review cap. */
 export const RALPLAN_DEFAULT_MAX_ITERATIONS = 5;
-/** Inclusive upper bound for `worx.ralplan.maxIterations` settings overrides. */
+/** Inclusive upper bound for `gjc.ralplan.maxIterations` settings overrides. */
 export const RALPLAN_MAX_ITERATIONS_LIMIT = 20;
 /** Operator-visible stuck signal for headless/CI orchestration (#3165). */
 export const PLANNING_STUCK_MARKER = "PLANNING-STUCK";
 /** Default architect/critic review passes per consensus iteration. */
 export const RALPLAN_DEFAULT_MAX_REVIEW_PASSES_PER_LANE = 1;
-/** Inclusive upper bound for `worx.ralplan.maxReviewPassesPerLane` settings overrides. */
+/** Inclusive upper bound for `gjc.ralplan.maxReviewPassesPerLane` settings overrides. */
 export const RALPLAN_MAX_REVIEW_PASSES_PER_LANE_LIMIT = 10;
 export type RalplanAutoHandoffTarget = "off" | "ultragoal" | "team";
 
@@ -391,11 +391,11 @@ async function readSettingsMaxIterations(settingsPath: string): Promise<number |
 	try {
 		const raw = await Bun.file(settingsPath).text();
 		const parsed = JSON.parse(raw) as Record<string, unknown>;
-		const flat = parseMaxIterationsValue(parsed["worx.ralplan.maxIterations"]);
+		const flat = parseMaxIterationsValue(parsed["gjc.ralplan.maxIterations"]);
 		if (flat !== null) return flat;
-		const worx = parsed.worx;
-		if (worx && typeof worx === "object") {
-			const ralplan = (worx as Record<string, unknown>).ralplan;
+		const gjc = parsed.gjc;
+		if (gjc && typeof gjc === "object") {
+			const ralplan = (gjc as Record<string, unknown>).ralplan;
 			if (ralplan && typeof ralplan === "object") {
 				return parseMaxIterationsValue((ralplan as Record<string, unknown>).maxIterations);
 			}
@@ -440,7 +440,7 @@ function parsePresentRalplanAutoHandoff(value: unknown): RalplanAutoHandoffSetti
 	return target === undefined
 		? {
 				kind: "invalid",
-				reason: "expected worx.ralplan.autoHandoff to be one of off, ultragoal, team",
+				reason: "expected gjc.ralplan.autoHandoff to be one of off, ultragoal, team",
 			}
 		: { kind: "valid", value: target };
 }
@@ -448,12 +448,12 @@ function parsePresentRalplanAutoHandoff(value: unknown): RalplanAutoHandoffSetti
 function parseRalplanAutoHandoffSettings(parsed: unknown): RalplanAutoHandoffSetting {
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return { kind: "absent" };
 	const settings = parsed as Record<string, unknown>;
-	if (Object.hasOwn(settings, "worx.ralplan.autoHandoff")) {
-		return parsePresentRalplanAutoHandoff(settings["worx.ralplan.autoHandoff"]);
+	if (Object.hasOwn(settings, "gjc.ralplan.autoHandoff")) {
+		return parsePresentRalplanAutoHandoff(settings["gjc.ralplan.autoHandoff"]);
 	}
-	const worx = settings.worx;
-	if (!worx || typeof worx !== "object" || Array.isArray(worx)) return { kind: "absent" };
-	const ralplan = (worx as Record<string, unknown>).ralplan;
+	const gjc = settings.gjc;
+	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
+	const ralplan = (gjc as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };
 	const ralplanSettings = ralplan as Record<string, unknown>;
 	if (!Object.hasOwn(ralplanSettings, "autoHandoff")) return { kind: "absent" };
@@ -544,7 +544,7 @@ function parsePresentMaxReviewPassesPerLane(value: unknown): RalplanReviewPasses
 		? {
 				kind: "invalid",
 				reason:
-					"expected worx.ralplan.maxReviewPassesPerLane to be an integer between 1 and " +
+					"expected gjc.ralplan.maxReviewPassesPerLane to be an integer between 1 and " +
 					RALPLAN_MAX_REVIEW_PASSES_PER_LANE_LIMIT,
 			}
 		: { kind: "valid", value: parsed };
@@ -553,12 +553,12 @@ function parsePresentMaxReviewPassesPerLane(value: unknown): RalplanReviewPasses
 function parseMaxReviewPassesPerLaneSettings(parsed: unknown): RalplanReviewPassesPerLaneSetting {
 	if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return { kind: "absent" };
 	const settings = parsed as Record<string, unknown>;
-	if (Object.hasOwn(settings, "worx.ralplan.maxReviewPassesPerLane")) {
-		return parsePresentMaxReviewPassesPerLane(settings["worx.ralplan.maxReviewPassesPerLane"]);
+	if (Object.hasOwn(settings, "gjc.ralplan.maxReviewPassesPerLane")) {
+		return parsePresentMaxReviewPassesPerLane(settings["gjc.ralplan.maxReviewPassesPerLane"]);
 	}
-	const worx = settings.worx;
-	if (!worx || typeof worx !== "object" || Array.isArray(worx)) return { kind: "absent" };
-	const ralplan = (worx as Record<string, unknown>).ralplan;
+	const gjc = settings.gjc;
+	if (!gjc || typeof gjc !== "object" || Array.isArray(gjc)) return { kind: "absent" };
+	const ralplan = (gjc as Record<string, unknown>).ralplan;
 	if (!ralplan || typeof ralplan !== "object" || Array.isArray(ralplan)) return { kind: "absent" };
 	const ralplanSettings = ralplan as Record<string, unknown>;
 	if (!Object.hasOwn(ralplanSettings, "maxReviewPassesPerLane")) return { kind: "absent" };
