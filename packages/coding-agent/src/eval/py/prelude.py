@@ -36,7 +36,7 @@ if "__worx_prelude_loaded__" not in globals():
 
     def _emit_status(op: str, **data):
         """Emit structured status event for TUI rendering."""
-        _worx_display({"application/x-gjc-status": {"op": op, **data}}, raw=True)
+        _worx_display({"application/x-worx-status": {"op": op, **data}}, raw=True)
 
 
     def env(key: str | None = None, value: str | None = None):

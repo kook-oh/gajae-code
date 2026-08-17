@@ -1627,7 +1627,7 @@
           "aggregate",
           "per-story"
         ],
-        "name": "gjc-goal-mode",
+        "name": "worx-goal-mode",
         "type": "enum"
       },
       {

@@ -4,7 +4,7 @@ import { renderKernelDisplay } from "@bworx-io/worx-code/eval/py/display";
 describe("renderKernelDisplay (raw bundle shape)", () => {
 	it("renders status events without text output", async () => {
 		const { text, outputs } = await renderKernelDisplay({
-			"application/x-gjc-status": { op: "find", count: 12, pattern: "foo" },
+			"application/x-worx-status": { op: "find", count: 12, pattern: "foo" },
 		});
 		expect(text).toBe("");
 		expect(outputs).toEqual([{ type: "status", event: { op: "find", count: 12, pattern: "foo" } }]);

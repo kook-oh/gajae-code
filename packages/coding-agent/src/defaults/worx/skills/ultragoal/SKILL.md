@@ -83,7 +83,7 @@ goal({"op":"resume"})
    - `worx ultragoal create-goals --brief "<brief>"`
    - `worx ultragoal create-goals --brief-file <path>`
    - `cat <brief> | worx ultragoal create-goals --from-stdin`
-   - `worx ultragoal create-goals --gjc-goal-mode per-story --brief "<brief>"` only when one GJC goal context per story is explicitly preferred
+   - `worx ultragoal create-goals --worx-goal-mode per-story --brief "<brief>"` only when one GJC goal context per story is explicitly preferred
 3. Inspect `.worx/_session-{sessionid}/ultragoal/goals.json` and refine if needed.
 
 ### Create-goals granularity: merge validation-coupled stories

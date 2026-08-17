@@ -85,7 +85,7 @@ Before running `$team`, confirm:
 1. `tmux` installed (`tmux -V`)
 2. Current leader session is inside tmux (`$TMUX` is set)
 3. `worx` command resolves to the intended install/build
-4. If running repo-local `node bin/gjc.js ...`, run `npm run build` after `src` changes
+4. If running repo-local `node bin/worx.js ...`, run `npm run build` after `src` changes
 5. Check HUD pane count in the leader window and avoid duplicate `hud --watch` panes before split
 
 Suggested preflight:

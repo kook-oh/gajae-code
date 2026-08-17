@@ -381,7 +381,7 @@ export function getLogsDir(): string {
 	return dirs.rootSubdir("logs", "state");
 }
 
-/** Get the path to a dated log file (~/.worx/logs/gjc.YYYY-MM-DD.log). */
+/** Get the path to a dated log file (~/.worx/logs/worx.YYYY-MM-DD.log). */
 export function getLogPath(date = new Date()): string {
 	return path.join(getLogsDir(), `${APP_NAME}.${date.toISOString().slice(0, 10)}.log`);
 }
@@ -413,7 +413,7 @@ export function getPluginsPackageJson(): string {
 	return path.join(getPluginsDir(), "package.json");
 }
 
-/** Plugin lock file (~/.worx/plugins/gjc-plugins.lock.json). */
+/** Plugin lock file (~/.worx/plugins/worx-plugins.lock.json). */
 export function getPluginsLockfile(): string {
 	return path.join(getPluginsDir(), "worx-plugins.lock.json");
 }
@@ -596,7 +596,7 @@ export function getCrashLogPath(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, "worx-crash.log", "state");
 }
 
-/** Get the debug log path (~/.worx/agent/gjc-debug.log). */
+/** Get the debug log path (~/.worx/agent/worx-debug.log). */
 export function getDebugLogPath(agentDir?: string): string {
 	return dirs.agentSubdir(agentDir, `${APP_NAME}-debug.log`, "state");
 }

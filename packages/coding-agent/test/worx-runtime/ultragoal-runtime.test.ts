@@ -1281,7 +1281,7 @@ describe("native GJC ultragoal runtime", () => {
 		const result = await runNativeUltragoalCommand(
 			[
 				"create-goals",
-				"--gjc-goal-mode",
+				"--worx-goal-mode",
 				"per-story",
 				"--brief",
 				"@goal: A\na\n@goal: B\nb",

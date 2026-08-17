@@ -4571,7 +4571,7 @@ const HELP_FLAGS = new Set(["--help", "-h"]);
 const FLAGS_WITH_VALUES = new Set([
 	"--brief",
 	"--brief-file",
-	"--gjc-goal-mode",
+	"--worx-goal-mode",
 	"--goal-id",
 	"--status",
 	"--evidence",
@@ -5093,7 +5093,7 @@ async function dispatchUltragoalCommand(args: string[], cwd: string): Promise<Ul
 				return { status: 0, stdout: renderStatus(await getUltragoalStatus(cwd, sessionId), json) };
 			case "create":
 			case "create-goals": {
-				const mode = flagValue(args, "--gjc-goal-mode") === "per-story" ? "per-story" : "aggregate";
+				const mode = flagValue(args, "--worx-goal-mode") === "per-story" ? "per-story" : "aggregate";
 				const plan = await createUltragoalPlan({
 					cwd,
 					brief: await readBrief(cwd, args),

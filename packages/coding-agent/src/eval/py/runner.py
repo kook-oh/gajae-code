@@ -283,7 +283,7 @@ def cell_magic(name: str) -> Callable[[Callable[[str, str], Any]], Callable[[str
 
 
 def _emit_status(op: str, **data: Any) -> None:
-    bundle = {"application/x-gjc-status": {"op": op, **data}}
+    bundle = {"application/x-worx-status": {"op": op, **data}}
     rid = _STATE.current_id
     if rid is None:
         return
