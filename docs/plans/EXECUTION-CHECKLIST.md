@@ -45,9 +45,9 @@
 
 | 대상 | 근거 |
 |---|---|
-| `packages/*/CHANGELOG.md` 6개의 릴리스 섹션 | 과거 사실 기록. `rebrand-inventory`의 `attribution-and-license`, `verify-gjc-sdk-rename`의 `isAllowed()`가 이미 changelog를 면제한다. `## [Unreleased]`에 리네임 항목을 추가했다. |
+| `packages/*/CHANGELOG.md` 6개의 릴리스 섹션 | 과거 사실 기록. `rebrand-inventory`의 `attribution-and-license`, `verify-worx-sdk-rename`의 `isAllowed()`가 이미 changelog를 면제한다. `## [Unreleased]`에 리네임 항목을 추가했다. |
 | `legacy-pi-compat.ts`의 `PI_SCOPE_ALIASES` 내 `"gajae-code"` | **소비자 계약.** 서드파티 플러그인(plannotator·runfusion·juicesharp)이 구 스코프를 peerDependencies로 선언한다. 별칭 입력은 유지하고 canonical 타깃만 `@bworx-io/worx-*`로 옮겼다. |
-| `pi-scope-aliases.test.ts` / `worx-public-identity.test.ts` / `verify-gjc-sdk-rename.ts`의 구 스코프 리터럴 | 위 계약과 "구 이름 부재" 음성 단정을 지키려면 구 문자열이 필요하다. 레포 선례(`rebrand-inventory`의 `"@oh-my" + "-pi"`)대로 **문자열 결합**으로 표기해 게이트 0을 유지한다. |
+| `pi-scope-aliases.test.ts` / `worx-public-identity.test.ts` / `verify-worx-sdk-rename.ts`의 구 스코프 리터럴 | 위 계약과 "구 이름 부재" 음성 단정을 지키려면 구 문자열이 필요하다. 레포 선례(`rebrand-inventory`의 `"@oh-my" + "-pi"`)대로 **문자열 결합**으로 표기해 게이트 0을 유지한다. |
 | `gajae-code/<preset>` 모델 네임스페이스, upstream 이슈 URL, harness kind, pet 위젯 등 | 스코프가 아닌 **브랜드 문자열** — 슬라이스 6 이후 범위. |
 
 **부수 시정 (슬라이스 5 착수 시 이미 깨져 있던 것)**
@@ -55,7 +55,7 @@
   `ci-risk-canary-manifest.ts`를 삭제했지만 참조를 남겼다 → 고아 스크립트 `ci-virtual-integration.{ts,test.ts}` 삭제,
   `check:ts`/`ci:check:full`의 `check:node20-baseline` 참조 제거.
 - 패키지 `homepage`가 `check-public-version-sync`의 기대값과 어긋나 있었다(`…#readme` vs 리포 URL) → 리포 URL로 정렬.
-- `default-gjc-definitions.test.ts`가 여전히 `gjc skills list`를 기대 → 실제 출력(`worx …`)으로 갱신.
+- `default-worx-definitions.test.ts`가 여전히 `gjc skills list`를 기대 → 실제 출력(`worx …`)으로 갱신.
 
 **기존 실패 (A/B로 HEAD와 동일 확인 — 이번 변경과 무관)**
 - `packages/coding-agent/test/sdk-client.test.ts` 5건 (HEAD 동일)
@@ -70,7 +70,7 @@
 - [ ] 디렉터리 `src/worx-runtime/` → `src/worx-runtime/` (git mv + import 갱신)
 - [ ] 파일명 `gjc-*.ts` / `gjc-*.test.ts` → `worx-*` (git mv)
 - [ ] 타입·심볼 `Gjc*` → `Worx*` (LSP rename 우선, 텍스트 치환 금지)
-- [ ] `scripts/*gjc*` → `*worx*`, `sdk-skills/gjc-sdk-author` 등 경로
+- [ ] `scripts/*gjc*` → `*worx*`, `sdk-skills/worx-sdk-author` 등 경로
 - [ ] **제외**: `package.json`의 `gjc` 매니페스트 키, ACP `_meta.gjc`, codex-handoff `gjc_session_id`/`gjc_turn_id`
 - [ ] 수용: `check` 통과 + `worx-behavior-identity` 스윕 green + 잔존 목록이 위 제외 항목만
 

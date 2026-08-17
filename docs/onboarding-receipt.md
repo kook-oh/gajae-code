@@ -17,9 +17,9 @@
 - `packages/coding-agent/src/cli.ts`
 - `packages/coding-agent/src/main.ts`
 - `packages/coding-agent/src/sdk/session.ts`
-- `packages/coding-agent/src/defaults/gjc-defaults.ts`
+- `packages/coding-agent/src/defaults/worx-defaults.ts`
 - `packages/coding-agent/src/task/agents.ts`
-- `packages/coding-agent/test/default-gjc-definitions.test.ts`
+- `packages/coding-agent/test/default-worx-definitions.test.ts`
 - `.github/workflows/ci.yml`
 - `.github/workflows/dev-ci.yml`
 

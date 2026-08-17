@@ -11,7 +11,7 @@ import { $which, APP_NAME, isEnoent, VERSION } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
 import { distTagForChannel, isUpdateChannel, UPDATE_CHANNELS, type UpdateChannel } from "../config/update-channel";
-import { installDefaultGjcDefinitions } from "../defaults/gjc-defaults";
+import { installDefaultGjcDefinitions } from "../defaults/worx-defaults";
 import { theme } from "../modes/theme/theme";
 import {
 	DEFAULT_NPM_REGISTRY,

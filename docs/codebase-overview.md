@@ -31,7 +31,7 @@ Main `gjc` CLI and product runtime.
 - `packages/coding-agent/src/main.ts` adapts CLI options into session creation and dispatches interactive, print, and ACP modes; external machine clients use the SDK WebSocket interface.
 - `packages/coding-agent/src/sdk/session.ts` assembles settings, model registry, auth, workspace/context discovery, skills, rules, tools, system prompt, and the underlying `@bworx-io/worx-agent-core` agent.
 - `packages/coding-agent/src/tools/index.ts` is the built-in tool registry for file/code/runtime tools such as read, bash, edit, AST tools, eval, find/search, LSP, browser, task/subagent, recipe, IRC, todo, web search, and write. Memory backends are private integrations, not public coding-harness tools.
-- `packages/coding-agent/src/defaults/gjc-defaults.ts` embeds and installs the default workflow skills.
+- `packages/coding-agent/src/defaults/worx-defaults.ts` embeds and installs the default workflow skills.
 - `packages/coding-agent/src/task/agents.ts` embeds bundled task-agent prompts. The public contract is `executor`, `architect`, `planner`, and `critic`; other bundled prompts are internal/runtime utilities.
 - `packages/coding-agent/src/coordinator/contract.ts` defines the transport-neutral third-party coordinator contract used by `gjc mcp-serve coordinator`, `gjc coordinator`, and `gjc setup hermes`.
 - `packages/coding-agent/src/coordinator-mcp/server.ts` implements the outward MCP adapter for bot/coordinator integrations, including session start/register, turn state, question answering, status reports, and artifact reads.
@@ -120,7 +120,7 @@ Package-local checks are defined in each `package.json`. For workflow-definition
 bun scripts/check-visible-definitions.ts
 bun scripts/verify-g002-gates.ts
 bun scripts/rebrand-inventory.ts --strict
-bun test packages/coding-agent/test/default-gjc-definitions.test.ts
+bun test packages/coding-agent/test/default-worx-definitions.test.ts
 ```
 
 For broader TypeScript verification, use the root script:

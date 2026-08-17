@@ -366,7 +366,7 @@ describe("gjc-sdk rename scanner", () => {
 		git("add", "clean.txt");
 		git("commit", "-m", "initial");
 		await fs.chmod(path.join(scanRoot, "clean.txt"), 0o000);
-		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
+		const scanner = path.join(packageRoot, "scripts", "verify-worx-sdk-rename.ts");
 		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 		await fs.chmod(path.join(scanRoot, "clean.txt"), 0o644);
 		expect(result.exitCode, output(result)).toBe(2);
@@ -388,7 +388,7 @@ describe("gjc-sdk rename scanner", () => {
 		);
 		git("add", "clean.txt");
 		git("commit", "-m", "initial");
-		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
+		const scanner = path.join(packageRoot, "scripts", "verify-worx-sdk-rename.ts");
 		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 
 		expect(result.exitCode, output(result)).toBe(0);
@@ -414,7 +414,7 @@ describe("gjc-sdk rename scanner", () => {
 		const legacyPosixPath = legacyPath.replaceAll("\\", "/");
 		await fs.mkdir(path.join(scanRoot, path.dirname(legacyPath)), { recursive: true });
 		await Bun.write(path.join(scanRoot, legacyPath), `${["use", ["gjc", "notifications"].join("_")].join(" ")}\n`);
-		const scanner = path.join(packageRoot, "scripts", "verify-gjc-sdk-rename.ts");
+		const scanner = path.join(packageRoot, "scripts", "verify-worx-sdk-rename.ts");
 		const result = run(scanner, [], { WORX_SDK_RENAME_SCAN_ROOT: scanRoot });
 
 		expect(result.exitCode, output(result)).toBe(1);

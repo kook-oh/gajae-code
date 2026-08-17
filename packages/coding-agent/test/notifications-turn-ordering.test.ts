@@ -333,7 +333,7 @@ test("session shutdown emits session_closed before stopping the endpoint", async
 //
 // The emit site tags each turn_stream with a `finalAnswer` bit (false for the
 // pre-ask lead-in, true at settled final). The Rust wire struct `TurnStream`
-// (crates/gjc-sdk/src/protocol.rs) carries it as an optional
+// (crates/worx-sdk/src/protocol.rs) carries it as an optional
 // `final_answer` (serialized `finalAnswer`), so the bit is asserted here at the
 // WS-observable level; the `finalAnswer` -> `richMarkdown` mapping itself is
 // verified at the pure-renderer level in notifications-threaded-render.test.ts.

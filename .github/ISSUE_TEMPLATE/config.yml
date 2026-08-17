@@ -4,7 +4,7 @@ contact_links:
     url: https://github.com/Yeachan-Heo/gajae-code/blob/main/docs/models.md
     about: How to add custom providers and models via models.yml
   - name: Plugin Bundles
-    url: https://github.com/Yeachan-Heo/gajae-code/blob/main/docs/gjc-plugins.md
+    url: https://github.com/Yeachan-Heo/gajae-code/blob/main/docs/worx-plugins.md
     about: Build and distribute GJC plugin bundles
   - name: Skills Documentation
     url: https://gajae-code.com/docs/skills.html

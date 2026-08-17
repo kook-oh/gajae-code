@@ -26,7 +26,7 @@ Do not add a fifth default skill, fifth public role agent, new command, new conf
 | Session launch   | `packages/coding-agent/src/main.ts`                  | Converts CLI/runtime settings into agent-session creation and mode dispatch.                      |
 | Agent assembly   | `packages/coding-agent/src/sdk/session.ts`           | Loads settings, default skills, rules, tools, auth/model state, system prompt, and agent runtime. |
 | Built-in tools   | `packages/coding-agent/src/tools/index.ts`           | Registers file, shell, edit, search, browser, task/subagent, and related public coding-harness tools. Memory backends are private integrations, not public tools. |
-| Default skills   | `packages/coding-agent/src/defaults/gjc-defaults.ts` | Embeds and installs the four default workflow skills plus deep-interview fragments.               |
+| Default skills   | `packages/coding-agent/src/defaults/worx-defaults.ts` | Embeds and installs the four default workflow skills plus deep-interview fragments.               |
 | Role agents      | `packages/coding-agent/src/task/agents.ts`           | Embeds bundled task-agent prompts; tests enforce public role-agent expectations.                  |
 | Product overview | `README.md`                                          | Explains installation, product story, fixed workflow surface, and development entry commands.     |
 | Architecture map | `docs/codebase-overview.md`                          | Public package map and runtime-flow reference.                                                    |
@@ -58,13 +58,13 @@ Prefer targeted checks first, then broader checks when code changes justify them
 | `bun scripts/check-visible-definitions.ts`                            | Default surface gate                | Required after workflow-definition changes.                                 |
 | `bun scripts/verify-g002-gates.ts`                                    | Rebrand/default-surface gate        | Required after workflow-definition or public-surface changes.               |
 | `bun scripts/rebrand-inventory.ts --strict`                           | Rebrand inventory gate              | Required after workflow-definition or public-surface changes.               |
-| `bun test packages/coding-agent/test/default-gjc-definitions.test.ts` | Four-skills/four-agents contract    | Required after default workflow/agent surface changes.                      |
+| `bun test packages/coding-agent/test/default-worx-definitions.test.ts` | Four-skills/four-agents contract    | Required after default workflow/agent surface changes.                      |
 
 Repository rule: do not run `tsc` or `npx tsc`; use the Bun scripts above.
 
 ## Danger zones
 
-- **Default surface expansion:** `packages/coding-agent/src/defaults/worx/skills/`, `packages/coding-agent/src/defaults/gjc-defaults.ts`, `packages/coding-agent/src/prompts/agents/`, and model-assignment tests are contract-heavy. Changes here can accidentally alter the fixed four-skills/four-agents shape.
+- **Default surface expansion:** `packages/coding-agent/src/defaults/worx/skills/`, `packages/coding-agent/src/defaults/worx-defaults.ts`, `packages/coding-agent/src/prompts/agents/`, and model-assignment tests are contract-heavy. Changes here can accidentally alter the fixed four-skills/four-agents shape.
 - **CLI commands:** `packages/coding-agent/src/cli.ts` and `packages/coding-agent/src/commands/` define visible behavior. Adding commands or aliases is a product-surface change.
 - **Runtime/session assembly:** `packages/coding-agent/src/main.ts`, `packages/coding-agent/src/sdk/session.ts`, discovery, settings, tools, and system-prompt paths can affect every session.
 - **TUI/logging:** Avoid `console.log`, `console.warn`, or `console.error` inside `packages/coding-agent/`; use the centralized logger to avoid corrupting TUI rendering.

@@ -159,7 +159,7 @@ The command returns 17 matches: `packages/coding-agent/src/config/settings.ts:16
 `scripts/generate-worx-plugins.ts:24`; and
 `scripts/verify-worx-plugins.ts:57,65`.
 
-[V] `git grep -n 'gjc-sdk-transport/' -- ':!docs/**'` finds the production protocol definition at `packages/coding-agent/src/sdk/transport/auth-preface.ts:6,69`, plus its TypeScript fixture/tests and Python SDK implementation/tests: `packages/coding-agent/test/fixtures/sdk-frame-vectors/transport-shapes.json:6`, `packages/coding-agent/test/sdk-frame-vectors.test.ts:118`, `packages/coding-agent/test/sdk-serve-transport.test.ts:345,347,378,402,421,422,440`, `python/gjc-sdk/gjc_sdk/transport.py:87`, and `python/gjc-sdk/tests/test_vectors.py:52`.
+[V] `git grep -n 'gjc-sdk-transport/' -- ':!docs/**'` finds the production protocol definition at `packages/coding-agent/src/sdk/transport/auth-preface.ts:6,69`, plus its TypeScript fixture/tests and Python SDK implementation/tests: `packages/coding-agent/test/fixtures/sdk-frame-vectors/transport-shapes.json:6`, `packages/coding-agent/test/sdk-frame-vectors.test.ts:118`, `packages/coding-agent/test/sdk-serve-transport.test.ts:345,347,378,402,421,422,440`, `python/worx-sdk/worx_sdk/transport.py:87`, and `python/worx-sdk/tests/test_vectors.py:52`.
 
 [V] MCP public-name count was measured from the two declaration sources:
 

@@ -81,7 +81,7 @@ const claudeManifest = path.join(PLUGIN_DIR, ".claude-plugin", "plugin.json");
 const codexManifest = path.join(PLUGIN_DIR, ".codex-plugin", "plugin.json");
 const claudeMcp = path.join(PLUGIN_DIR, ".mcp.json");
 const codexMcp = path.join(PLUGIN_DIR, ".codex.mcp.json");
-const skill = path.join(PLUGIN_DIR, "skills", "gjc-delegation", "SKILL.md");
+const skill = path.join(PLUGIN_DIR, "skills", "worx-delegation", "SKILL.md");
 const codexMarketplace = path.join(".agents", "plugins", "marketplace.json");
 const claudeMarketplace = path.join(".claude-plugin", "marketplace.json");
 const unexpectedPluginFiles = findUnexpectedPluginFiles(files);
@@ -185,7 +185,7 @@ const tmuxMachineIngressOperations = [
 const tmuxMachineIngressOperationPattern = new RegExp(`\\b(?:${tmuxMachineIngressOperations.join("|")})\\b`, "g");
 const tmuxMachineIngressOperationTest = new RegExp(tmuxMachineIngressOperationPattern.source);
 const directMachineTmuxRoutePattern =
-	/(?:\btmux\s+watch\b|(?:scripts\/)?gjc-session\/(?:prompt|tail|watch)(?:\.sh)?\b|\bgjc-session\s+(?:prompt|tail|watch)\b|(?:\.\/)?(?:scripts\/)?gjc-session\/create\.sh(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|[^\s]+)){3}|\bgjc-session\s+create(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|[^\s]+)){3})/g;
+	/(?:\btmux\s+watch\b|(?:scripts\/)?worx-session\/(?:prompt|tail|watch)(?:\.sh)?\b|\bworx-session\s+(?:prompt|tail|watch)\b|(?:\.\/)?(?:scripts\/)?worx-session\/create\.sh(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|[^\s]+)){3}|\bworx-session\s+create(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|[^\s]+)){3})/g;
 
 // Rendered bundles are text, so normalize statically provable shell/JS values and scan the results
 // in addition to direct operation spellings.
@@ -437,11 +437,11 @@ const machineTmuxRouteRegressionFixtures = [
 	'$TMUX_BIN capture-pane -p -t owner',
 	'["capture", "pane"].join("-")',
 	'["pipe", "pane"].join("-")',
-	'./scripts/gjc-session/create.sh bot /repo --print "task"',
-	"scripts/gjc-session/create.sh bot /repo positional-prompt",
-	"gjc-session create bot /repo --file task.md",
-	"gjc-session create bot /repo resume",
-	"gjc-session create bot /repo \\\n  positional-prompt",
+	'./scripts/worx-session/create.sh bot /repo --print "task"',
+	"scripts/worx-session/create.sh bot /repo positional-prompt",
+	"worx-session create bot /repo --file task.md",
+	"worx-session create bot /repo resume",
+	"worx-session create bot /repo \\\n  positional-prompt",
 	'op=capture; op="${op}-pane"; tmux "$op" -p',
 	'op=pipe; op="${op}-pane"; cmd=(tmux "$op" -t owner sink); "${cmd[@]}"',
 	"['pipe-', 'pane'].join('')",

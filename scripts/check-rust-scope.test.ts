@@ -18,7 +18,7 @@ describe("Rust scope guard", () => {
 
 		expect(stderr).toBe("");
 		expect(exitCode).toBe(0);
-		expect(stdout).toContain("crates/gjc-sdk");
+		expect(stdout).toContain("crates/worx-sdk");
 		expect(stdout).toContain("Gajae-Code SDK Rust core");
 		expect(stdout).toContain("loopback WebSocket transport");
 		expect(stdout).toContain("planned N-API integration");

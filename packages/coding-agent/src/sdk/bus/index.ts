@@ -214,7 +214,7 @@ export function formatPromptSettlementDiagnostic(
 
 // ===========================================================================
 // Session lifecycle control protocol (TypeScript mirror of the Rust wire
-// contract in `crates/gjc-sdk/src/lifecycle.rs`).
+// contract in `crates/worx-sdk/src/lifecycle.rs`).
 //
 // These describe the frames exchanged over the daemon-owned, session-independent
 // control endpoint for remote session create / close / resume. Field names are

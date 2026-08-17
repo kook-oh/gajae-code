@@ -57,7 +57,7 @@ describe("workflow command-reference proof spike", () => {
 
 	it("reports byte-equal or gap status without mutating SKILL.md files", async () => {
 		const before = await snapshotSkillFiles();
-		const result = await runBun(["scripts/generate-gjc-skill-command-refs.ts", "--check", "--json"]);
+		const result = await runBun(["scripts/generate-worx-skill-command-refs.ts", "--check", "--json"]);
 		await expectSkillFilesUnchanged(before);
 		expect(result.exitCode).toBe(0);
 		expect(result.stderr).toBe("");

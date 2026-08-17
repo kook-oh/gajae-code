@@ -103,9 +103,9 @@ Use existing theme tokens rather than a new UI framework abstraction.
 Focused tests/probes after implementation:
 
 ```bash
-bun test packages/coding-agent/test/gjc-ui-redesign.test.ts
+bun test packages/coding-agent/test/worx-ui-redesign.test.ts
 bun test packages/coding-agent/test/theme-auto-detection.test.ts packages/coding-agent/test/status-line-overflow.test.ts packages/coding-agent/test/status-line-path.test.ts
-bun scripts/verify-gjc-ui-redesign.ts
+bun scripts/verify-worx-ui-redesign.ts
 bun --cwd=packages/coding-agent run check
 ```
 

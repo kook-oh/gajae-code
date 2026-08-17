@@ -83,7 +83,7 @@ const SETTLED_PROMPT_CORRELATION_RETENTION = 16;
  */
 const CANCEL_SETTLEMENT_GRACE_MS = 5_000;
 /**
- * Mirrors `REQUEST_FRAME_BYTES` in `crates/gjc-sdk/src/query.rs`: the SDK WebSocket
+ * Mirrors `REQUEST_FRAME_BYTES` in `crates/worx-sdk/src/query.rs`: the SDK WebSocket
  * server sets `max_message_size`/`max_frame_size` to 256 KiB and closes the socket on
  * an oversize frame, so an over-limit prompt must be refused before it is sent.
  */
@@ -1393,7 +1393,7 @@ export class AcpAgent implements Agent {
 		record.cancelRequested = false;
 		const payload = acpPromptPayload(params.prompt);
 		// The SDK transport hard-caps a single request frame at 256 KiB and answers an
-		// oversize frame by closing the socket (CloseCode::Size, crates/gjc-sdk/src/server.rs),
+		// oversize frame by closing the socket (CloseCode::Size, crates/worx-sdk/src/server.rs),
 		// which surfaces to the client as an opaque `connection_closed` mid-turn. Reject
 		// the prompt up front with a typed, actionable error instead of losing the session.
 		// Measure the frame the server actually receives, not just the payload: SdkClient

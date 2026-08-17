@@ -27,7 +27,6 @@ import { getCurrentThemeName, getSelectListTheme, getSettingsListTheme, theme } 
 import { matchesAppInterrupt } from "../../modes/utils/keybinding-matchers";
 import { getTabBarTheme } from "../shared";
 import { DynamicBorder } from "./dynamic-border";
-import { GjcBundleSettingsComponent } from "./gjc-bundle-settings";
 import {
 	type NotificationsEditorOperations,
 	NotificationsSettingsEditorComponent,
@@ -39,6 +38,7 @@ import { getSettingsForTab, type SettingDef } from "./settings-defs";
 import { getPreset } from "./status-line/presets";
 import { ALL_SEGMENT_IDS } from "./status-line/segments";
 import type { StatusLineSegmentOptions } from "./tool-status-header";
+import { GjcBundleSettingsComponent } from "./worx-bundle-settings";
 
 /**
  * A submenu component for selecting from a list of options.

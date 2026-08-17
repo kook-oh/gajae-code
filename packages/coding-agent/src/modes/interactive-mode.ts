@@ -25,7 +25,7 @@ import {
 	type KeyDisplayContext,
 } from "../config/keybindings";
 import { isSettingsInitialized, type Settings, settings } from "../config/settings";
-import { DEFAULT_WORX_DEFINITION_NAMES } from "../defaults/gjc-defaults";
+import { DEFAULT_WORX_DEFINITION_NAMES } from "../defaults/worx-defaults";
 import type {
 	ExtensionUIContext,
 	ExtensionUIDialogOptions,

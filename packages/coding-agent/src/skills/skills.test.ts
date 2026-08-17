@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { getEmbeddedDefaultGjcSkills } from "../defaults/gjc-defaults";
+import { getEmbeddedDefaultGjcSkills } from "../defaults/worx-defaults";
 import { buildSkillPromptMessage } from "../extensibility/skills";
 import { SKILL_FRONTMATTER_SCAN_BYTES, SKILL_FRONTMATTER_SCAN_TOTAL_BYTES, scanSkillDescriptorsFromDir } from "./index";
 

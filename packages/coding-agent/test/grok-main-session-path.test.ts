@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { getOAuthProviders } from "@bworx-io/worx-ai/utils/oauth";
 import { setAgentDir } from "@bworx-io/worx-utils";
 import { Settings } from "../src/config/settings";
-import { BUNDLED_GROK_BUILD_EXTENSION_ID } from "../src/defaults/gjc-grok-cli";
+import { BUNDLED_GROK_BUILD_EXTENSION_ID } from "../src/defaults/worx-grok-cli";
 import { createAgentSession } from "../src/sdk";
 import { SessionManager } from "../src/session/session-manager";
 

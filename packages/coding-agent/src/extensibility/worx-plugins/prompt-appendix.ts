@@ -135,7 +135,7 @@ export async function renderPluginAppendices(
 			const body = sanitizePromptBody(await readAppendixBody(entry, sa, options));
 			digestParts.push(`${sa.extensionId}:${sa.contentHash}`);
 			if (!body) continue;
-			const block = `<gjc-plugin-system-appendix plugin="${escapeAttr(entry.name)}" name="${escapeAttr(sa.name)}" sha256="${sa.contentHash}" authority="appendix-lower-than-system">\n${body}\n</gjc-plugin-system-appendix>`;
+			const block = `<worx-plugin-system-appendix plugin="${escapeAttr(entry.name)}" name="${escapeAttr(sa.name)}" sha256="${sa.contentHash}" authority="appendix-lower-than-system">\n${body}\n</worx-plugin-system-appendix>`;
 			if (!admit(block)) continue;
 			systemBlocks.push(block);
 		}
@@ -144,7 +144,7 @@ export async function renderPluginAppendices(
 			const body = sanitizePromptBody(await readAppendixBody(entry, aa, options));
 			digestParts.push(`${aa.extensionId}:${aa.contentHash}`);
 			if (!body) continue;
-			const block = `<gjc-plugin-agent-appendix plugin="${escapeAttr(entry.name)}" agent="${escapeAttr(aa.agent)}" name="${escapeAttr(aa.name)}" sha256="${aa.contentHash}" authority="appendix-lower-than-agent">\n${body}\n</gjc-plugin-agent-appendix>`;
+			const block = `<worx-plugin-agent-appendix plugin="${escapeAttr(entry.name)}" agent="${escapeAttr(aa.agent)}" name="${escapeAttr(aa.name)}" sha256="${aa.contentHash}" authority="appendix-lower-than-agent">\n${body}\n</worx-plugin-agent-appendix>`;
 			if (!admit(block)) continue;
 			const list = byAgent.get(aa.agent) ?? [];
 			list.push(block);

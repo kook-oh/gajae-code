@@ -10,7 +10,7 @@ import { AuthStorage, SqliteAuthCredentialStore } from "@bworx-io/worx-ai/core";
 import { $which, APP_NAME, getAgentDbPath, getPythonEnvDir } from "@bworx-io/worx-utils";
 import { $ } from "bun";
 import chalk from "chalk";
-import { installDefaultGjcDefinitions } from "../defaults/gjc-defaults";
+import { installDefaultGjcDefinitions } from "../defaults/worx-defaults";
 import {
 	getDefaultCodexHooksPath,
 	mergeGjcManagedCodexHooksConfig,

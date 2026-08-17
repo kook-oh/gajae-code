@@ -23,7 +23,7 @@ import { Agent } from "@bworx-io/worx-agent-core";
 import { getBundledModel } from "@bworx-io/worx-ai/models";
 import { ModelRegistry } from "@bworx-io/worx-code/config/model-registry";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { getEmbeddedDefaultGjcSkills } from "@bworx-io/worx-code/defaults/gjc-defaults";
+import { getEmbeddedDefaultGjcSkills } from "@bworx-io/worx-code/defaults/worx-defaults";
 import { resolveSkillSlashCommands, type Skill } from "@bworx-io/worx-code/extensibility/skills";
 import { EventController } from "@bworx-io/worx-code/modes/controllers/event-controller";
 import { InputController } from "@bworx-io/worx-code/modes/controllers/input-controller";

@@ -5,7 +5,7 @@ import {
 	DEFAULT_WORX_DEFINITION_NAMES,
 	type EmbeddedDefaultGjcSkill,
 	getEmbeddedDefaultGjcSkills,
-} from "../defaults/gjc-defaults";
+} from "../defaults/worx-defaults";
 
 export type SkillsAction = "list" | "read";
 

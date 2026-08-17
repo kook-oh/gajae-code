@@ -7,13 +7,13 @@
  */
 import { AgentProtocolHandler } from "./agent-protocol";
 import { ArtifactProtocolHandler } from "./artifact-protocol";
-import { GjcProtocolHandler } from "./gjc-protocol";
 import { IssueProtocolHandler, PrProtocolHandler } from "./issue-pr-protocol";
 import { LocalProtocolHandler } from "./local-protocol";
 import { MemoryProtocolHandler } from "./memory-protocol";
 import { parseInternalUrl } from "./parse";
 import { RuleProtocolHandler } from "./rule-protocol";
 import type { InternalResource, InternalUrl, ProtocolHandler, ResolveContext } from "./types";
+import { GjcProtocolHandler } from "./worx-protocol";
 
 export class InternalUrlRouter {
 	static #instance: InternalUrlRouter | undefined;

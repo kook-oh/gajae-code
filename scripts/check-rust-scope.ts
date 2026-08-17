@@ -44,8 +44,8 @@ const RUST_SCOPE_ALLOWLIST: readonly RustScopeEntry[] = [
 		rationale: "Native filesystem isolation backends such as clone, reflink, overlay, and ProjFS.",
 	},
 	{
-		dir: "crates/gjc-sdk",
-		packageName: "gjc-sdk",
+		dir: "crates/worx-sdk",
+		packageName: "worx-sdk",
 		rationale: "Gajae-Code SDK Rust core for loopback WebSocket transport, endpoint discovery, and planned N-API integration.",
 	},
 	{

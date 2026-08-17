@@ -27,7 +27,7 @@ utils ─┬─▶ ai ─────┬─▶ agent ─▶ coding-agent (gjc CL
 | `packages/bridge-client` | OOO bridge client (`docs/ooo-bridge-extension-contract.md`). |
 | `packages/*-benchmark` | Edit / orchestration-token benchmarks; not shipped. |
 | `crates/` | Rust: `pi-natives`, `pi-shell`/`brush-*` (vendored shell), `pi-ast`, `pi-iso`, `git-daemon`, `gjc-sdk`. Driven via `bun scripts/run-rs-task.ts`. |
-| `python/gjc-sdk` | Python SDK (`check:py-sdk`, `test:py-sdk`). |
+| `python/worx-sdk` | Python SDK (`check:py-sdk`, `test:py-sdk`). |
 
 When the user says "agent" or asks why the agent behaves a certain way, they mean the coding-agent CLI implementation, not the assistant editing the repo.
 
@@ -95,7 +95,7 @@ Required rebrand/default-surface gates after workflow-definition changes:
 - `bun scripts/check-visible-definitions.ts`
 - `bun scripts/verify-g002-gates.ts`
 - `bun scripts/rebrand-inventory.ts --strict`
-- `bun test packages/coding-agent/test/default-gjc-definitions.test.ts`
+- `bun test packages/coding-agent/test/default-worx-definitions.test.ts`
 
 ## Public workflow surface
 

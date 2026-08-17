@@ -10,7 +10,7 @@ hand; run `bun run generate-plugins` and commit the result. CI runs
 - `.mcp.json` — Claude coordinator MCP wiring (${CLAUDE_PROJECT_DIR}).
 - `.codex.mcp.json` — Codex coordinator MCP wiring (host-neutral; `gjc setup codex` rewrites concrete roots).
 - `commands/`, `skills/` — host-facing delegate command + skill docs, including
-  the advisory `gjc-sdk-session` (SDK session CLI reference) and
-  `gjc-sdk-guides` (trusted SDK guide index) skills.
+  the advisory `worx-sdk-session` (SDK session CLI reference) and
+  `worx-sdk-guides` (trusted SDK guide index) skills.
 
 Install: `codex plugin marketplace add ./plugins` (Codex) or `/plugin marketplace add ./plugins` (Claude Code), then install the `worx-code` plugin.

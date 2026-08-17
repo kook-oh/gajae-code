@@ -228,7 +228,7 @@ async function findManifestRoot(base: string): Promise<string | null> {
 }
 
 async function resolveTarball(source: string): Promise<ResolvedSource> {
-	const temp = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-tar-"));
+	const temp = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-tar-"));
 	try {
 		await extractTarball(source, temp);
 		const dir = await findManifestRoot(temp);
@@ -276,7 +276,7 @@ async function resolveGit(source: string): Promise<ResolvedSource> {
 	const hashIndex = source.indexOf("#");
 	const repo = hashIndex >= 0 ? source.slice(0, hashIndex) : source;
 	const ref = hashIndex >= 0 ? source.slice(hashIndex + 1) : undefined;
-	const temp = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-git-"));
+	const temp = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-git-"));
 	try {
 		const cloneArgs = ["clone", "--depth", "1"];
 		if (ref) cloneArgs.push("--branch", ref);

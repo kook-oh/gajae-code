@@ -2,7 +2,7 @@
 
 Extragoal composes the existing `ultragoal` workflow with an **external final review gate**: after a run's in-loop completion gate passes and before the result is merged, an independent reviewer with zero shared session context re-reviews the finished diff and issues a machine-parsable verdict. Fixes re-enter a bounded re-sign loop, so the merged code is always exactly the signed code.
 
-The bundled default workflow skill set is an explicit product decision, so — like the [GJC dogfood template](./gjc-dogfood-skill-template.md) — this stays a local skill template instead of changing the default workflow surface. Extragoal is **not** a bundled workflow skill; `gjc extragoal` does not exist.
+The bundled default workflow skill set is an explicit product decision, so — like the [GJC dogfood template](./worx-dogfood-skill-template.md) — this stays a local skill template instead of changing the default workflow surface. Extragoal is **not** a bundled workflow skill; `gjc extragoal` does not exist.
 
 The installable skill body is everything from the first frontmatter marker down; the frontmatter must be the **first line** of the installed file or the skill scan silently skips it (the scan requires a parsed `description`). Install into the user-level scan location:
 

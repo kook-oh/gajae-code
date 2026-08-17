@@ -26,7 +26,7 @@ async function fixture(): Promise<string> {
 		);
 	}
 
-	const crateNames = ["gjc-sdk", "pi-ast", "pi-iso", "pi-natives", "pi-shell"];
+	const crateNames = ["worx-sdk", "pi-ast", "pi-iso", "pi-natives", "pi-shell"];
 	await Bun.write(path.join(root, "Cargo.toml"), '[workspace]\nmembers = ["crates/*"]\n\n[workspace.package]\nversion = "1.2.3"\n');
 	await Bun.write(
 		path.join(root, "Cargo.lock"),

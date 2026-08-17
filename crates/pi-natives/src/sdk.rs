@@ -1,6 +1,6 @@
 //! N-API surface for the Gajae-Code SDK.
 //!
-//! Wraps [`gjc_sdk`] so the TypeScript extension can host a
+//! Wraps [`worx_sdk`] so the TypeScript extension can host a
 //! per-session loopback WebSocket notification server in-process. The server
 //! runs in **forward mode**: accepted client replies are handed back to
 //! TypeScript (via the [`NotificationServer::on_reply`] callback) so TS
@@ -17,7 +17,7 @@ use std::{
 	time::Duration,
 };
 
-use gjc_sdk::{
+use worx_sdk::{
 	ActionIdentity, ActionNeeded, ClientMessage, ControlServerConfig, ControlServerHandle,
 	LifecycleClientMessage, LifecycleServerMessage, ReplyAnswer, ServerConfig, ServerHandle,
 	ServerMessage, Verbosity,
@@ -90,9 +90,9 @@ pub struct AskSelectedAckOutcomeEvent {
 	pub reason:     Option<String>,
 }
 
-impl From<gjc_sdk::protocol::AskSelectedAckOutcome> for AskSelectedAckOutcomeEvent {
-	fn from(outcome: gjc_sdk::protocol::AskSelectedAckOutcome) -> Self {
-		use gjc_sdk::protocol::AskSelectedAckOutcome;
+impl From<worx_sdk::protocol::AskSelectedAckOutcome> for AskSelectedAckOutcomeEvent {
+	fn from(outcome: worx_sdk::protocol::AskSelectedAckOutcome) -> Self {
+		use worx_sdk::protocol::AskSelectedAckOutcome;
 		match outcome {
 			AskSelectedAckOutcome::Delivered { message_id } => Self {
 				status:     "delivered".to_owned(),
@@ -307,7 +307,7 @@ impl NotificationServer {
 			config.resolver_available = false;
 		}
 		let session_id = config.session_id.clone();
-		let handle = gjc_sdk::start(config)
+		let handle = worx_sdk::start(config)
 			.await
 			.map_err(|e| Error::from_reason(format!("bind failed: {e}")))?;
 
@@ -346,7 +346,7 @@ impl NotificationServer {
 		let inbound_rx = handle.take_inbound_receiver();
 		if let (Some(tsfn), Some(mut rx)) = (inbound_tsfn, inbound_rx) {
 			let task = napi::tokio::task::spawn_blocking(move || {
-				while let Some(gjc_sdk::server::InboundMessage { connection_id, message: msg }) =
+				while let Some(worx_sdk::server::InboundMessage { connection_id, message: msg }) =
 					rx.blocking_recv()
 				{
 					let event = match msg {
@@ -807,11 +807,11 @@ impl NotificationServer {
 		reply_receipt_id: String,
 		request_json: String,
 	) -> Result<AskSelectedAckOutcomeEvent> {
-		let request: gjc_sdk::protocol::AskSelectedAckRequest = serde_json::from_str(&request_json)
+		let request: worx_sdk::protocol::AskSelectedAckRequest = serde_json::from_str(&request_json)
 			.map_err(|e| {
 			Error::from_reason(format!("invalid live acknowledgement request: {e}"))
 		})?;
-		if !matches!(request, gjc_sdk::protocol::AskSelectedAckRequest::Live { .. }) {
+		if !matches!(request, worx_sdk::protocol::AskSelectedAckRequest::Live { .. }) {
 			return Err(Error::from_reason("requestAskSelectedAck requires mode=live"));
 		}
 		let handle = self.handle()?;
@@ -828,11 +828,11 @@ impl NotificationServer {
 		&self,
 		request_json: String,
 	) -> Result<AskSelectedAckOutcomeEvent> {
-		let request: gjc_sdk::protocol::AskSelectedAckRequest = serde_json::from_str(&request_json)
+		let request: worx_sdk::protocol::AskSelectedAckRequest = serde_json::from_str(&request_json)
 			.map_err(|e| {
 			Error::from_reason(format!("invalid recovery acknowledgement request: {e}"))
 		})?;
-		if !matches!(request, gjc_sdk::protocol::AskSelectedAckRequest::Recovery { .. }) {
+		if !matches!(request, worx_sdk::protocol::AskSelectedAckRequest::Recovery { .. }) {
 			return Err(Error::from_reason("requestRecoveredAskSelectedAck requires mode=recovery"));
 		}
 		let handle = self.handle()?;
@@ -853,7 +853,7 @@ impl NotificationServer {
 		let reason = serde_json::from_value(serde_json::Value::String(reason)).map_err(|e| {
 			Error::from_reason(format!("invalid acknowledgement cancellation reason: {e}"))
 		})?;
-		let cancel = gjc_sdk::protocol::AskSelectedAckCancel { request_id, commit_key, reason };
+		let cancel = worx_sdk::protocol::AskSelectedAckCancel { request_id, commit_key, reason };
 		let handle = self.handle()?;
 		Ok(handle.cancel_ask_selected_ack(cancel).into())
 	}
@@ -1092,7 +1092,7 @@ impl NotificationControlServer {
 
 fn ephemeral_turn_event(
 	connection_id: String,
-	turn: gjc_sdk::protocol::EphemeralTurn,
+	turn: worx_sdk::protocol::EphemeralTurn,
 ) -> InboundEvent {
 	InboundEvent {
 		connection_id,
@@ -1113,7 +1113,7 @@ fn ephemeral_turn_event(
 
 fn ephemeral_turn_cancel_event(
 	connection_id: String,
-	cancel: gjc_sdk::protocol::EphemeralTurnCancel,
+	cancel: worx_sdk::protocol::EphemeralTurnCancel,
 ) -> InboundEvent {
 	InboundEvent {
 		connection_id,
@@ -1170,7 +1170,7 @@ mod tests {
 	#[test]
 	fn ephemeral_turn_mapping_preserves_question_and_tuple_without_token() {
 		let event =
-			super::ephemeral_turn_event("connection-1".to_owned(), gjc_sdk::protocol::EphemeralTurn {
+			super::ephemeral_turn_event("connection-1".to_owned(), worx_sdk::protocol::EphemeralTurn {
 				session_id: "session".to_owned(),
 				token:      "secret".to_owned(),
 				request_id: "btw:123e4567-e89b-42d3-a456-426614174000".to_owned(),
@@ -1195,14 +1195,14 @@ mod tests {
 	fn ephemeral_turn_cancel_mapping_preserves_tuple_without_token_or_question() {
 		let event = super::ephemeral_turn_cancel_event(
 			"connection-2".to_owned(),
-			gjc_sdk::protocol::EphemeralTurnCancel {
+			worx_sdk::protocol::EphemeralTurnCancel {
 				session_id: "session".to_owned(),
 				token:      "secret".to_owned(),
 				request_id: "btw:123e4567-e89b-42d3-a456-426614174000".to_owned(),
 				update_id:  7,
 				message_id: 9,
 				thread_id:  "11".to_owned(),
-				reason:     gjc_sdk::protocol::EphemeralTurnCancelReason::DaemonShutdown,
+				reason:     worx_sdk::protocol::EphemeralTurnCancelReason::DaemonShutdown,
 			},
 		);
 		assert_eq!(event.connection_id, "connection-2");
@@ -1393,8 +1393,8 @@ fn parse_answer(json: Option<&str>) -> Result<Option<ReplyAnswer>> {
 	}
 }
 
-fn parse_reason(reason: Option<&str>) -> gjc_sdk::RejectReason {
-	use gjc_sdk::RejectReason;
+fn parse_reason(reason: Option<&str>) -> worx_sdk::RejectReason {
+	use worx_sdk::RejectReason;
 	match reason {
 		Some("already_answered") => RejectReason::AlreadyAnswered,
 		Some("unknown_action") => RejectReason::UnknownAction,

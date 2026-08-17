@@ -164,7 +164,7 @@ function renderAdvertItem(it: AdvertItem): string {
 }
 
 function wrapAdvert(kind: "skill" | "agent", parent: string, lines: string[]): string {
-	return `<gjc-plugin-subskill-advertisement parent="${clampField(parent)}" kind="${kind}">\n${lines.join("\n")}\n</gjc-plugin-subskill-advertisement>`;
+	return `<worx-plugin-subskill-advertisement parent="${clampField(parent)}" kind="${kind}">\n${lines.join("\n")}\n</worx-plugin-subskill-advertisement>`;
 }
 
 function renderAdvertisement(items: AdvertItem[], kind: "skill" | "agent", parent: string): string {

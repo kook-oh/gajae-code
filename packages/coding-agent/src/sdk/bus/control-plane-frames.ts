@@ -26,7 +26,7 @@
  * - `query_response` — the host's answer to the matching `query_request`, and
  *   the same endpoint-stale refusal path.
  * - `hello` — `ServerMessage::Hello` from the native session server
- *   (`crates/gjc-sdk/src/protocol.rs`), sent to every connection at accept time
+ *   (`crates/worx-sdk/src/protocol.rs`), sent to every connection at accept time
  *   and re-observed by frame handlers whenever the client reconnects and
  *   adopts a new connection id.
  *

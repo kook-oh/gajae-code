@@ -5,7 +5,7 @@
     { "id": "stats", "name": "@bworx-io/worx-stats", "dir": "packages/stats", "nativeConsumer": false, "nativeProducer": false }
   ],
   "cargo": [
-    { "id": "gjc-sdk", "name": "gjc-sdk", "manifestPath": "crates/gjc-sdk/Cargo.toml", "supported": true, "nativeAddonSource": false },
+    { "id": "gjc-sdk", "name": "gjc-sdk", "manifestPath": "crates/worx-sdk/Cargo.toml", "supported": true, "nativeAddonSource": false },
     { "id": "pi-ast", "name": "pi-ast", "manifestPath": "crates/pi-ast/Cargo.toml", "supported": true, "nativeAddonSource": false },
     { "id": "pi-iso", "name": "pi-iso", "manifestPath": "crates/pi-iso/Cargo.toml", "supported": true, "nativeAddonSource": false },
     { "id": "pi-natives", "name": "pi-natives", "manifestPath": "crates/pi-natives/Cargo.toml", "supported": true, "nativeAddonSource": true },

@@ -8,7 +8,7 @@
  * effect-injected so the decision logic is unit-testable and the same code path
  * is exercised end-to-end by a real-tmux integration smoke.
  *
- * The Rust control ingress (crates/gjc-sdk control server) has already
+ * The Rust control ingress (crates/worx-sdk control server) has already
  * authenticated frames before they reach here; this module never sees or logs
  * the raw control token.
  */

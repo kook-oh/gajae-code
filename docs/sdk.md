@@ -16,7 +16,7 @@ user-written clients that connect to that endpoint. Telegram, Discord, Slack,
 mobile apps, and local tools all use the same JSON protocol. No upstream Rust,
 N-API, or wire-protocol change is required for a new integration.
 
-> Status: the Rust core (`crates/gjc-sdk`) provides the wire protocol, action
+> Status: the Rust core (`crates/worx-sdk`) provides the wire protocol, action
 > lifecycle, loopback WebSocket server, and endpoint discovery file. The bundled
 > Telegram daemon is a reference client layered on top of this SDK; it is not the
 > upstream topology.
@@ -67,13 +67,13 @@ It relays the identical SDK v3 frames over stdio or a Unix socket. Socket
 clients send an authentication preface and the socket is mode `0600`; stdio is
 one parent-owned connection.
 
-Python clients install the `gjc_sdk` package from `python/gjc-sdk`:
+Python clients install the `worx_sdk` package from `python/worx-sdk`:
 
 ```sh
-python -m pip install ./python/gjc-sdk
+python -m pip install ./python/worx-sdk
 ```
 
-Import `SdkClient` with `from gjc_sdk import SdkClient`, then use
+Import `SdkClient` with `from worx_sdk import SdkClient`, then use
 `SdkClient.connect_ws`, `SdkClient.connect_socket`, or `SdkClient.connect_stdio`.
 The client supplies `reply.token` for replies.
 
@@ -94,7 +94,7 @@ Regenerate with `bun run generate-sdk-skills`; CI checks byte-for-byte content a
 
 ### Bundle format version
 
-`manifest.json` is the versioned root of the on-disk bundle contract. It declares `formatVersion` (currently `1`) and the exact relative file closure the bundle owns. Consumers must treat any bundle whose manifest is missing, malformed, or declares an unsupported `formatVersion` as unreadable and fail closed — never guess at an unknown layout. The skill prompts are authored as static Markdown sources under `scripts/gjc-sdk-skills/prompts/`; the generator copies them verbatim and `check:sdk-skills` proves the committed bundle matches the generated artifacts byte-for-byte, so prompt text is reviewed and diffed as content, not as generator strings.
+`manifest.json` is the versioned root of the on-disk bundle contract. It declares `formatVersion` (currently `1`) and the exact relative file closure the bundle owns. Consumers must treat any bundle whose manifest is missing, malformed, or declares an unsupported `formatVersion` as unreadable and fail closed — never guess at an unknown layout. The skill prompts are authored as static Markdown sources under `scripts/worx-sdk-skills/prompts/`; the generator copies them verbatim and `check:sdk-skills` proves the committed bundle matches the generated artifacts byte-for-byte, so prompt text is reviewed and diffed as content, not as generator strings.
 
 The compatibility contract is additive: `formatVersion` only bumps when the layout becomes incompatible, and regeneration upgrades an installed bundle in place. A legacy unversioned bundle (the original five-file layout) is unsupported and must be rejected with a regeneration hint rather than read ambiguously.
 
@@ -133,7 +133,7 @@ GJC session (upstream)                          your client (anywhere)
 - **Integrations are clients.** A client discovers endpoint files, connects to
   one or more WebSockets, renders `action_needed`, and sends `reply` messages.
 - **Zero upstream change.** New transports do not require changes to
-  `crates/gjc-sdk` or the JSON protocol.
+  `crates/worx-sdk` or the JSON protocol.
 - **tmux-agnostic.** The endpoint behaves identically with or without tmux.
 
 ## Endpoint discovery

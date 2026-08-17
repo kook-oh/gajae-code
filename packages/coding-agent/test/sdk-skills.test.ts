@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { Settings } from "@bworx-io/worx-code/config/settings";
-import { DEFAULT_WORX_DEFINITION_NAMES } from "@bworx-io/worx-code/defaults/gjc-defaults";
+import { DEFAULT_WORX_DEFINITION_NAMES } from "@bworx-io/worx-code/defaults/worx-defaults";
 import type { Skill } from "@bworx-io/worx-code/sdk";
 import { createAgentSession } from "@bworx-io/worx-code/sdk";
 import { SessionManager } from "@bworx-io/worx-code/session/session-manager";

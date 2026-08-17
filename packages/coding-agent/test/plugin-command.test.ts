@@ -22,7 +22,7 @@ async function runPluginCommand(
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
 	// Isolate the user scope: without this the child process reads the real
 	// ~/.worx/agent registry and inherits whatever the developer has installed.
-	const agentDir = agentDirOverride ?? (await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-")));
+	const agentDir = agentDirOverride ?? (await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-")));
 	if (!agentDirOverride) agentDirs.push(agentDir);
 	const proc = Bun.spawn({
 		cmd: [process.execPath, path.join(import.meta.dir, "../src/cli.ts"), "plugin", ...args],
@@ -40,7 +40,7 @@ async function runPluginCommand(
 }
 
 async function makeTempProject(): Promise<string> {
-	tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-"));
+	tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-"));
 	return tempRoot;
 }
 
@@ -99,7 +99,7 @@ describe("Plugin command scope parsing", () => {
 		expect(gjcJson).not.toMatch(/"uri"\s*:/);
 	});
 	it("uninstalls a user-scoped GJC bundle instead of invoking npm", async () => {
-		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
+		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
 		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
@@ -120,7 +120,7 @@ describe("Plugin command scope parsing", () => {
 	// An unqualified uninstall of a name present in both scopes must refuse
 	// rather than guess, and must not remove either copy.
 	it("refuses an ambiguous uninstall when the bundle is installed in both scopes", async () => {
-		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
+		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
 		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
@@ -140,7 +140,7 @@ describe("Plugin command scope parsing", () => {
 	});
 
 	it("scopes an explicit --project uninstall to the project copy", async () => {
-		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
+		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
 		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
@@ -164,7 +164,7 @@ describe("Plugin command scope parsing", () => {
 	// uninstalled must be able to install the same bundle again without hitting
 	// `already_installed_use_upgrade` residue.
 	it("reinstalls the same bundle cleanly after an uninstall", async () => {
-		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
+		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
 		const fixture = path.join(import.meta.dir, "fixtures/worx-plugins/valid-six-surface-bundle");
@@ -189,7 +189,7 @@ describe("Plugin command scope parsing", () => {
 		});
 	});
 	it("falls back to non-GJC uninstall when the GJC registry is corrupt", async () => {
-		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "gjc-plugin-command-agent-"));
+		const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "worx-plugin-command-agent-"));
 		agentDirs.push(agentDir);
 		const cwd = await makeTempProject();
 		const registryRoot = path.join(agentDir, "worx-plugins");

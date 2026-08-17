@@ -18,7 +18,7 @@ describe("ACP prompt conformance", () => {
 
 	test("an oversize prompt frame is refused before it reaches the 256 KiB transport cap", () => {
 		// The SDK WebSocket server sets max_message_size/max_frame_size to
-		// REQUEST_FRAME_BYTES (crates/gjc-sdk/src/query.rs) and answers an oversize
+		// REQUEST_FRAME_BYTES (crates/worx-sdk/src/query.rs) and answers an oversize
 		// frame by closing the socket, which reaches the client as an opaque
 		// connection_closed. The prompt must be measured against the same ceiling.
 		const limit = 256 * 1024;

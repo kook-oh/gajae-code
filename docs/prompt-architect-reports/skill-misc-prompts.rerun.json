@@ -49,7 +49,7 @@
       "file_path": "packages/coding-agent/src/defaults/worx/skills/ralplan/SKILL.md",
       "line_start": 110,
       "line_end": 110,
-      "body": "Ralplan tells the agent to follow the \"Plan skill's full documentation,\" and deep-interview frontmatter still declares `pipeline: [deep-interview, plan]`. The bundled GJC skill registry is exactly `deep-interview`, `ralplan`, `team`, and `ultragoal` (`packages/coding-agent/src/defaults/gjc-defaults.ts:15, 76-84`); there is no bundled `plan` skill to invoke or read. Replace these references with `ralplan` or remove them so agents do not search for or rely on a dead skill."
+      "body": "Ralplan tells the agent to follow the \"Plan skill's full documentation,\" and deep-interview frontmatter still declares `pipeline: [deep-interview, plan]`. The bundled GJC skill registry is exactly `deep-interview`, `ralplan`, `team`, and `ultragoal` (`packages/coding-agent/src/defaults/worx-defaults.ts:15, 76-84`); there is no bundled `plan` skill to invoke or read. Replace these references with `ralplan` or remove them so agents do not search for or rely on a dead skill."
     },
     {
       "title": "Remove nonexistent team cleanup and sparkshell commands",

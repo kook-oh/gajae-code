@@ -88,5 +88,5 @@ packages/coding-agent/binaries/
 .release-040-artifacts/
 
 # Python SDK build output
-python/gjc-sdk/build/
+python/worx-sdk/build/
 *.py[cod]

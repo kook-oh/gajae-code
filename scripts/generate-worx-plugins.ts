@@ -57,8 +57,8 @@ const DELEGATE_META: DelegateMeta[] = [
  * Inventory of `gjc sdk session` semantic verbs plus the raw hatch kinds,
  * mirrored from the SDK session CLI (`SdkSessionCliAction` / raw kinds in
  * `packages/coding-agent/src/sdk/cli/session-cli.ts`). The advisory
- * `gjc-sdk-session` skill is rendered from this inventory and
- * `scripts/verify-gjc-skill-docs.ts` checks every skill reference against it,
+ * `worx-sdk-session` skill is rendered from this inventory and
+ * `scripts/verify-worx-skill-docs.ts` checks every skill reference against it,
  * so a skill can never advertise a verb the CLI does not ship.
  */
 export const SDK_SESSION_CLI_VERBS = ["list", "inspect", "send", "status", "tail", "elevate", "raw"] as const;
@@ -136,7 +136,7 @@ function skillDoc(): string {
 		meta => `| \`${meta.tool}\` | ${meta.workflow} | /skill:${meta.skill} | ${meta.summary} |`,
 	).join("\n");
 	return `---
-name: gjc-delegation
+name: worx-delegation
 description: Delegate planning, execution, and team workflows to gajae-code via the coordinator MCP server.
 ---
 
@@ -178,7 +178,7 @@ function sdkSessionSkillDoc(): string {
 	const verbs = SDK_SESSION_CLI_VERBS.join("|");
 	const rawKinds = SDK_SESSION_RAW_KINDS.join("|");
 	return `---
-name: gjc-sdk-session
+name: worx-sdk-session
 description: Operate GJC SDK sessions from the CLI (\`gjc sdk session ${verbs}\` plus the explicit raw ${rawKinds} hatch). Advisory reference: broker-bound, credential-free output; mutating verbs run only when explicitly invoked.
 ---
 
@@ -252,7 +252,7 @@ new grant. Default SDK scope stays grant-free.
 
 function sdkGuidesSkillDoc(): string {
 	return `---
-name: gjc-sdk-guides
+name: worx-sdk-guides
 description: Index of trusted GJC SDK reference guides (broker, session CLI, embedding, app development). Advisory only: read these documents for background; there is no guide to execute and no workflow skill to run.
 ---
 
@@ -292,8 +292,8 @@ hand; run \`bun run generate-plugins\` and commit the result. CI runs
 - \`.mcp.json\` — Claude coordinator MCP wiring (\${CLAUDE_PROJECT_DIR}).
 - \`.codex.mcp.json\` — Codex coordinator MCP wiring (host-neutral; \`gjc setup codex\` rewrites concrete roots).
 - \`commands/\`, \`skills/\` — host-facing delegate command + skill docs, including
-  the advisory \`gjc-sdk-session\` (SDK session CLI reference) and
-  \`gjc-sdk-guides\` (trusted SDK guide index) skills.
+  the advisory \`worx-sdk-session\` (SDK session CLI reference) and
+  \`worx-sdk-guides\` (trusted SDK guide index) skills.
 
 Install: \`codex plugin marketplace add ./plugins\` (Codex) or \`/plugin marketplace add ./plugins\` (Claude Code), then install the \`worx-code\` plugin.
 `;
@@ -378,9 +378,9 @@ export function renderPluginFiles(): Map<string, string> {
 	for (const meta of DELEGATE_META) {
 		files.set(path.join(dir, "commands", `delegate_${meta.workflow}.md`), commandDoc(meta));
 	}
-	files.set(path.join(dir, "skills", "gjc-delegation", "SKILL.md"), skillDoc());
-	files.set(path.join(dir, "skills", "gjc-sdk-session", "SKILL.md"), sdkSessionSkillDoc());
-	files.set(path.join(dir, "skills", "gjc-sdk-guides", "SKILL.md"), sdkGuidesSkillDoc());
+	files.set(path.join(dir, "skills", "worx-delegation", "SKILL.md"), skillDoc());
+	files.set(path.join(dir, "skills", "worx-sdk-session", "SKILL.md"), sdkSessionSkillDoc());
+	files.set(path.join(dir, "skills", "worx-sdk-guides", "SKILL.md"), sdkGuidesSkillDoc());
 	files.set(path.join(dir, "README.md"), readmeDoc());
 
 	return files;
@@ -450,7 +450,7 @@ function checkFiles(files: Map<string, string>, root = pluginsDir, report = true
 
 function runSelfTest(): void {
 	const files = renderPluginFiles();
-	const root = fs.mkdtempSync(path.join(os.tmpdir(), "gjc-plugin-self-test-"));
+	const root = fs.mkdtempSync(path.join(os.tmpdir(), "worx-plugin-self-test-"));
 	try {
 		for (const [rel, content] of files) {
 			const target = path.join(root, rel);

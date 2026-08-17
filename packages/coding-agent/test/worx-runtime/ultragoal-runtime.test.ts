@@ -474,7 +474,7 @@ function batchChangeSetPaths(): Array<{ path: string; status: string }> {
 		{ path: "packages/coding-agent/src/defaults/worx/skills/ultragoal/SKILL.md", status: "unknown" },
 		{ path: "packages/coding-agent/src/defaults/worx/skills/ralplan/SKILL.md", status: "unknown" },
 		{ path: "packages/coding-agent/src/prompts/system/system-prompt.md", status: "unknown" },
-		{ path: "packages/coding-agent/test/default-gjc-definitions.test.ts", status: "unknown" },
+		{ path: "packages/coding-agent/test/default-worx-definitions.test.ts", status: "unknown" },
 		{ path: "packages/coding-agent/src/worx-runtime/workflow-manifest.generated.json", status: "unknown" },
 		{ path: "packages/coding-agent/src/worx-runtime/workflow-manifest.ts", status: "unknown" },
 	];
