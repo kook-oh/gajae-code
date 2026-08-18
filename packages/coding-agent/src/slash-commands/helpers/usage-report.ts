@@ -1,6 +1,6 @@
 import type { UsageLimit, UsageReport } from "@bworx-io/worx-ai/core";
 import type { SlashCommandRuntime } from "../types";
-import { formatDuration, renderAsciiBar } from "./format";
+import { formatDuration, formatResetAt, formatResetCountdown, renderAsciiBar } from "./format";
 
 function formatProviderName(provider: string): string {
 	return provider
@@ -56,7 +56,10 @@ function renderUsageReports(reports: UsageReport[], nowMs: number): string {
 				lines.push(`- ${limit.label}${tier}${window ? ` — ${window}` : ""}`);
 				lines.push(`  ${formatUsageReportAccount(report, limit, index)}: ${formatUsageAmount(limit)}`);
 				lines.push(`  ${renderAsciiBar(limit.amount.usedFraction)}`);
-				if (limit.window?.resetsAt) lines.push(`  resets in ${formatDuration(limit.window.resetsAt - nowMs)}`);
+				if (limit.window?.resetsAt)
+					lines.push(
+						`  resets in ${formatResetCountdown(limit.window.resetsAt - nowMs)} (${formatResetAt(limit.window.resetsAt, nowMs)})`,
+					);
 				if (limit.notes && limit.notes.length > 0) lines.push(`  ${limit.notes.join(" • ")}`);
 			}
 		}

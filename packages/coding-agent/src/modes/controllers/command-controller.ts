@@ -32,6 +32,7 @@ import type { AsyncJobSnapshotItem } from "../../session/agent-session";
 import type { AuthStorage } from "../../session/auth-storage";
 import { computeCacheMissCostSummary, formatCacheMissSummaryLines } from "../../session/cache-economics";
 import type { NewSessionOptions } from "../../session/session-manager";
+import { formatResetAt, formatResetCountdown } from "../../slash-commands/helpers/format";
 import { outputMeta } from "../../tools/output-meta";
 import { resolveToCwd, stripOuterDoubleQuotes } from "../../tools/path-utils";
 import { replaceTabs } from "../../tools/render-utils";
@@ -1606,39 +1607,6 @@ function formatUnlimitedReportLabel(report: UsageReport, index: number): string 
 	const accountId = report.metadata?.accountId as string | undefined;
 	if (accountId) return accountId;
 	return `account ${index + 1}`;
-}
-
-/**
- * Two-unit countdown for usage windows. `formatDuration` collapses everything
- * past 48h to a single rounded unit, so a weekly window reads `7d` whether 6.6
- * or 7.4 days remain — useless when the question is "how long until I get my
- * quota back". Kept local to the usage panel so job/elapsed rendering keeps the
- * coarse label.
- */
-function formatResetCountdown(ms: number): string {
-	const totalMinutes = Math.max(0, Math.floor(ms / 60_000));
-	if (totalMinutes < 1) return "<1m";
-	if (totalMinutes < 60) return `${totalMinutes}m`;
-	const totalHours = Math.floor(totalMinutes / 60);
-	if (totalHours < 48) {
-		const minutes = totalMinutes % 60;
-		return minutes > 0 ? `${totalHours}h ${minutes}m` : `${totalHours}h`;
-	}
-	const days = Math.floor(totalHours / 24);
-	const hours = totalHours % 24;
-	return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
-}
-
-/** Absolute local reset time, so a long countdown maps onto a real calendar day. */
-function formatResetAt(resetsAt: number, nowMs: number): string {
-	const date = new Date(resetsAt);
-	const withinADay = resetsAt - nowMs < 24 * 3_600_000;
-	return date.toLocaleString(undefined, {
-		month: withinADay ? undefined : "short",
-		day: withinADay ? undefined : "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-	});
 }
 
 function formatResetShort(limit: UsageLimit, nowMs: number): string | undefined {

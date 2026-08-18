@@ -13,6 +13,38 @@ export function formatDuration(ms: number): string {
 	return `${days}d`;
 }
 
+/**
+ * Two-unit countdown for quota windows. {@link formatDuration} collapses
+ * everything past 48h to a single rounded unit, so a weekly window reads `7d`
+ * whether 6.6 or 7.4 days remain — useless when the question is "how long until
+ * I get my quota back". Separate from `formatDuration` so job and elapsed
+ * rendering keep the coarse label.
+ */
+export function formatResetCountdown(ms: number): string {
+	const totalMinutes = Math.max(0, Math.floor(ms / 60_000));
+	if (totalMinutes < 1) return "<1m";
+	if (totalMinutes < 60) return `${totalMinutes}m`;
+	const totalHours = Math.floor(totalMinutes / 60);
+	if (totalHours < 48) {
+		const minutes = totalMinutes % 60;
+		return minutes > 0 ? `${totalHours}h ${minutes}m` : `${totalHours}h`;
+	}
+	const days = Math.floor(totalHours / 24);
+	const hours = totalHours % 24;
+	return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
+}
+
+/** Absolute local reset time, so a long countdown maps onto a real calendar day. */
+export function formatResetAt(resetsAt: number, nowMs: number): string {
+	const withinADay = resetsAt - nowMs < 24 * 3_600_000;
+	return new Date(resetsAt).toLocaleString(undefined, {
+		month: withinADay ? undefined : "short",
+		day: withinADay ? undefined : "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+}
+
 type ProgressBarTheme = Pick<Theme, "bold" | "fg" | "getFgAnsi">;
 
 const unstyledProgressBarTheme: ProgressBarTheme = {
