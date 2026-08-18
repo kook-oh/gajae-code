@@ -16,6 +16,7 @@
 | **T2. AX 플랫폼** | Temporal 기반 워크플로 엔진 + Review Hub + 칸반 + 설계·문서(SSOT) + worx-code 에이전트 연동 | **`bworx-io/worx-ax` 레포 `docs/`** — ARCHITECTURE.md(아키텍처·결정·메뉴·워크플로·로드맵) | **Phase 0 통과(2026-08-18)** — Go 언어 게이트 확정, 자체빌드 Temporal 이미지 + kill -9 재개 영수증. Phase 1(auth·문서코어·Review Hub) 대기 |
 | **T3. IDE** | ORCA 포크 = ide.byteworx.dev = 유일한 사용자 웹 (AX 패널 2단 마운트 숙주) | `bworx-io/worx-ide` (패치·매니페스트) · 실행 계획은 T1 계획 §5(P3) | 엔진 계획에 종속 |
 | **참조** | review-system(ems-review) — EMS 상세설계 시스템, **존치**. AX가 행동 계약만 차용 | `~/Dev/review-system` (EMS 트랙 소유) | 프로덕션, frozen 관점에선 무관 |
+| **미러(T0)** | temporal — 자체 이미지 빌드용 소스 권위 · source-identical 유지, 분기 금지 | `bworx-io/temporal` (private, 2026-08-18 미러 완료) | 미러 온리 |
 | **폐지 예정** | worx-code-wrapper — 마이그레이션 소스, frozen | `bworx-io/worx-code-wrapper` (계획 §10.5 cutover 4조건 후 아카이브) | frozen |
 
 ## 핵심 결정 요약 (상세는 각 정본)
