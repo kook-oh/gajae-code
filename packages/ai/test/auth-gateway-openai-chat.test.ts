@@ -153,6 +153,36 @@ describe("auth-gateway openai-chat: parseRequest", () => {
 		expect(parsed.options.maxOutputTokens).toBe(256);
 		expect(parsed.stream).toBe(false);
 	});
+
+	it("accepts explicit nulls for unset optional fields", () => {
+		const parsed = parseRequest({
+			model: "m",
+			messages: [
+				{ role: "system", content: null },
+				{ role: "user", content: "hi" },
+				{ role: "assistant", content: null, tool_calls: null },
+			],
+			stop: null,
+			tools: null,
+			tool_choice: null,
+			max_tokens: null,
+			max_completion_tokens: 128,
+			temperature: null,
+			top_p: null,
+			stream: null,
+			stream_options: null,
+			seed: null,
+			user: null,
+			reasoning_effort: null,
+			parallel_tool_calls: null,
+			service_tier: null,
+			metadata: null,
+		});
+		expect(parsed.stream).toBe(false);
+		expect(parsed.options.maxOutputTokens).toBe(128);
+		expect(parsed.context.messages[0]).toMatchObject({ role: "user", content: "hi" });
+		expect(parsed.context.tools).toBeUndefined();
+	});
 });
 
 describe("auth-gateway openai-chat: encodeResponse", () => {
