@@ -378,8 +378,9 @@ export async function currentTreeDigests(): Promise<Record<string, string>> {
 	for (const [family, files] of Object.entries(protectedInventory) as [Family, Inventory[Family]][]) {
 		for (const [file, symbols] of Object.entries(files)) {
 			const source = await Bun.file(path.join(root, file)).text();
+			const declarations = extractDeclarations(source, symbols);
 			for (const symbol of symbols) {
-				const target = extractDeclaration(source, symbol);
+				const target = declarations.get(symbol);
 				if (!target?.valid) throw new Error(`telegram-daemon-generation-guard: semantic manifest target is missing, ambiguous, or malformed: ${file}:${symbol}`);
 				actual[`${family}:${file}:${symbol}`] = crypto.createHash("sha256").update(target.canonical).digest("hex");
 			}
