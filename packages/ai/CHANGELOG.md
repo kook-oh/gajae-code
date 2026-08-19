@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 - Renamed the package to `@bworx-io/worx-ai` as part of the byteWORX workspace scope unification.
+- OpenAI-family streams now give xAI Grok and the Grok Build (`grok-cli-responses`) wrapper the same 300-second default idle window as Anthropic, so long Grok reasoning gaps no longer surface as `OpenAI responses stream stalled while waiting for the next event` under the 120-second OpenAI default. Env overrides still win. The observed stall was `grok-build/grok-4.6` on `openai-responses`; keying only `xai` would have left that path on 120s because `streamGrokCli` keeps `model.provider === "grok-build"`.
 
 ## [0.13.1] - 2026-08-11
 
