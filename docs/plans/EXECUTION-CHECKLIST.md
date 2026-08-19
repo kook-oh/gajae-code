@@ -92,6 +92,12 @@
 - inshellisense 완성 스펙이 `gjc` 커맨드 이름을 발행하고 있었다. XDG init·fixture-report·DAP clientID 동일.
 - Codex 관리형 훅 매처가 자기가 쓰는 명령(`worx codex-native-hook`)을 인식하지 못해 중복 삽입되고 있었다.
 - 생성 스킬의 command-ref 가 존재하지 않는 `gjc state ...` 를 에이전트에게 지시하고 있었다.
+- ACP `_meta` 상태 키가 `gjcPhase`/`gjcRunning` → `worxPhase`/`worxRunning` 으로 넘어가 있었다(제외 목록 위반).
+  타입체크·린트·`rebrand-inventory` 어디에도 안 걸렸고, 소비자는 에러 없이 값만 잃는다.
+- 서명 대상인 번들 SDK 가이드 advisory 텍스트가 리네임되어 핀된 Ed25519 서명이 깨졌다.
+  카탈로그 자기검증이 모듈 로드에서 throw → detached SDK broker 가 discovery 전에 죽어 ACP 전면 불능.
+- 위 두 부류를 CI 에서 막는 게이트: `bun run check:frozen-contracts` (`scripts/check-frozen-contracts.ts`,
+  `check:ts` 체인에 포함). 동결 토큰 존재 + 리네임된 wire 토큰 부재 + 가이드 서명 자기검증을 함께 강제한다.
 
 **의도적 잔존 (슬라이스 6 제외 목록)**
 

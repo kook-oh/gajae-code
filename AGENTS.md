@@ -96,6 +96,7 @@ Required rebrand/default-surface gates after workflow-definition changes:
 - `bun scripts/verify-g002-gates.ts`
 - `bun scripts/rebrand-inventory.ts --strict`
 - `bun test packages/coding-agent/test/default-worx-definitions.test.ts`
+- `bun run check:frozen-contracts` — signature-covered bytes and frozen consumer contracts (ACP `_meta.gjc*`, `_gjc/sdk/*` ext-methods, `package.json` `gjc` manifest key, codex-handoff ids, bundled guide signature). Any rename touching `gjc`/`worx` must run this.
 
 ## Public workflow surface
 
