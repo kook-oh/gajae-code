@@ -95,7 +95,11 @@ const BANNED_TOKENS: readonly BannedToken[] = [
 	{ token: "worx_turn_id", replacement: "gjc_turn_id" },
 ];
 
-const BANNED_SCAN_GLOB = "packages/*/{src,test}/**/*.ts";
+// Only hand-written, tracked source carries the wire contract. Generated
+// artifacts (e.g. the docs index) embed documentation prose that legitimately
+// names a banned token while explaining why it is banned, so the scan walks
+// `git ls-files` rather than the working tree.
+const BANNED_SCAN_PATH = /^packages\/[^/]+\/(?:src|test)\/.+\.ts$/;
 
 const errors: string[] = [];
 
@@ -111,9 +115,11 @@ for (const frozen of FROZEN_TOKENS) {
 	}
 }
 
-const scanner = new Bun.Glob(BANNED_SCAN_GLOB);
-for await (const relativePath of scanner.scan({ cwd: repoRoot, onlyFiles: true })) {
-	if (relativePath.includes("node_modules/")) continue;
+const listed = Bun.spawnSync(["git", "ls-files", "-z", "--", "packages"], { cwd: repoRoot });
+if (listed.exitCode !== 0) throw new Error(`git ls-files failed: ${listed.stderr.toString().trim()}`);
+const scanned = listed.stdout.toString().split("\0").filter(entry => BANNED_SCAN_PATH.test(entry));
+if (scanned.length === 0) throw new Error("frozen contract scan matched no tracked source files");
+for (const relativePath of scanned) {
 	const contents = await Bun.file(path.join(repoRoot, relativePath)).text();
 	for (const banned of BANNED_TOKENS)
 		if (contents.includes(banned.token))
