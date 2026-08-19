@@ -5,6 +5,7 @@
 - Moved every workspace dependency onto the unified `@bworx-io/worx-*` scope; the legacy publish scope still resolves through the plugin compatibility shim.
 - Fixed: the bundled SDK advisory guide manifest verifies again. A rebrand sweep had rewritten the signature-covered advisory texts, which invalidated the pinned Ed25519 signature and made catalog self-verification throw at module load — killing the detached SDK broker before discovery and breaking ACP and every SDK session.
 - Fixed: ACP `session/new`, `session/resume`, and fork now always request the full 30.5s startup readiness budget instead of only doing so when MCP servers are configured. The broker default left a ~8s semantic-ready window that a cold session host misses on a loaded machine, surfacing as `spawn_failed` or `terminal_uncertain` ("retained artifacts require reconciliation") in ACP clients such as Paseo.
+- Fixed: ACP session status is reported under the frozen `_meta.gjcPhase`/`_meta.gjcRunning` keys again. The rename sweep had rewritten them to `worx*`, silently dropping phase and running state for ACP clients (worx-ide/ORCA among them) that read the documented contract.
 
 ## [0.13.1] - 2026-08-11
 
