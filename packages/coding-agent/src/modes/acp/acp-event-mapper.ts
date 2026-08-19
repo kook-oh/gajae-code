@@ -271,12 +271,12 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						worxPhase: "compacting",
+						gjcPhase: "compacting",
 						worxCompactionState: "start",
 						worxCompactionTrigger: event.reason,
 						worxCompactionAction: event.action,
 						running: true,
-						worxRunning: true,
+						gjcRunning: true,
 					},
 				}),
 			];
@@ -284,13 +284,13 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 			const phase = options.compactionEndPhase ?? "responding";
 			const running = phase !== "idle";
 			const meta: Record<string, unknown> = {
-				worxPhase: phase,
+				gjcPhase: phase,
 				worxCompactionState: "end",
 				worxCompactionAction: event.action,
 				worxCompactionAborted: event.aborted,
 				worxCompactionWillRetry: event.willRetry,
 				running,
-				worxRunning: running,
+				gjcRunning: running,
 			};
 			if (event.skipped !== undefined) {
 				meta.worxCompactionSkipped = event.skipped;
@@ -308,7 +308,7 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						worxPhase: "retrying",
+						gjcPhase: "retrying",
 						worxRetryState: "waiting",
 						worxRetryAttempt: event.attempt,
 						worxRetryMaxAttempts: event.maxAttempts,
@@ -316,7 +316,7 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 						worxRetryErrorMessage: event.errorMessage,
 						worxRetryUnbounded: event.unbounded ?? false,
 						running: true,
-						worxRunning: true,
+						gjcRunning: true,
 					},
 				}),
 			];
@@ -325,12 +325,12 @@ export function mapAgentSessionEventToAcpSessionUpdates(
 				toSessionNotification(sessionId, {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						worxPhase: event.success ? "responding" : "retry_failed",
+						gjcPhase: event.success ? "responding" : "retry_failed",
 						worxRetryState: event.success ? "succeeded" : "failed",
 						worxRetryAttempt: event.attempt,
 						...(event.finalError ? { worxRetryFinalError: event.finalError } : {}),
 						running: true,
-						worxRunning: true,
+						gjcRunning: true,
 					},
 				}),
 			];

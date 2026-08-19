@@ -289,7 +289,7 @@ describe("ACP transcript replay continuation recovery", () => {
 		await waitFor(
 			() =>
 				updates.some(update => update.update.sessionUpdate === "available_commands_update") &&
-				updates.some(update => updateMeta(update)?.worxPhase === "idle"),
+				updates.some(update => updateMeta(update)?.gjcPhase === "idle"),
 			"the new session bootstrap",
 		);
 		updates.length = 0;

@@ -88,7 +88,7 @@ function phaseUpdates(updates: SessionNotification[], phase: string): number {
 	return updates.filter(
 		update =>
 			update.update.sessionUpdate === "session_info_update" &&
-			(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === phase,
+			(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === phase,
 	).length;
 }
 

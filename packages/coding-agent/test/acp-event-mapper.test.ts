@@ -146,7 +146,7 @@ describe("ACP event mapper", () => {
 			"session-1",
 		)[0]!.update._meta;
 		expect(retry).toMatchObject({
-			worxPhase: "retrying",
+			gjcPhase: "retrying",
 			worxRetryAttempt: 2,
 			worxRetryMaxAttempts: 4,
 			worxRetryDelayMs: 1_500,
@@ -242,12 +242,12 @@ describe("ACP event mapper", () => {
 				update: {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						worxPhase: "compacting",
+						gjcPhase: "compacting",
 						worxCompactionState: "start",
 						worxCompactionTrigger: "threshold",
 						worxCompactionAction: "context-full",
 						running: true,
-						worxRunning: true,
+						gjcRunning: true,
 					},
 				},
 			},
@@ -258,7 +258,7 @@ describe("ACP event mapper", () => {
 				update: {
 					sessionUpdate: "session_info_update",
 					_meta: {
-						worxPhase: "responding",
+						gjcPhase: "responding",
 						worxCompactionState: "end",
 						worxCompactionAction: "context-full",
 						worxCompactionAborted: false,
@@ -267,7 +267,7 @@ describe("ACP event mapper", () => {
 						worxCompactionErrorMessage: "retrying after maintenance",
 						worxCompactionContinuationSkipReason: "auto_continue_disabled_non_resumable_tail",
 						running: true,
-						worxRunning: true,
+						gjcRunning: true,
 					},
 				},
 			},
@@ -289,12 +289,12 @@ describe("ACP event mapper", () => {
 		);
 
 		expect(notification?.update._meta).toMatchObject({
-			worxPhase: "idle",
+			gjcPhase: "idle",
 			worxCompactionState: "end",
 			worxCompactionAction: "handoff",
 			worxCompactionAborted: true,
 			running: false,
-			worxRunning: false,
+			gjcRunning: false,
 		});
 		expectAcpNotifications(notification ? [notification] : []);
 	});

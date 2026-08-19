@@ -104,7 +104,7 @@ function workingUpdates(updates: SessionNotification[]): number {
 	return updates.filter(
 		update =>
 			update.update.sessionUpdate === "session_info_update" &&
-			(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "working",
+			(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "working",
 	).length;
 }
 
@@ -112,7 +112,7 @@ function idleUpdates(updates: SessionNotification[]): number {
 	return updates.filter(
 		update =>
 			update.update.sessionUpdate === "session_info_update" &&
-			(update.update as { _meta?: { worxPhase?: string } })._meta?.worxPhase === "idle",
+			(update.update as { _meta?: { gjcPhase?: string } })._meta?.gjcPhase === "idle",
 	).length;
 }
 

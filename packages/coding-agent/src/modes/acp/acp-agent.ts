@@ -2335,7 +2335,7 @@ export class AcpAgent implements Agent {
 					update: {
 						sessionUpdate: "session_info_update",
 						updatedAt: new Date().toISOString(),
-						_meta: { worxPhase: "working", running: true, worxRunning: true },
+						_meta: { gjcPhase: "working", running: true, gjcRunning: true },
 					},
 				},
 				adapter,
@@ -2423,7 +2423,7 @@ export class AcpAgent implements Agent {
 				sessionId: id,
 				update: {
 					sessionUpdate: "session_info_update",
-					_meta: { worxPhase: "idle", running: false, worxRunning: false },
+					_meta: { gjcPhase: "idle", running: false, gjcRunning: false },
 				},
 			});
 		} catch {
@@ -2501,7 +2501,7 @@ export class AcpAgent implements Agent {
 					sessionUpdate: "session_info_update",
 					...(title ? { title } : {}),
 					updatedAt,
-					_meta: { worxPhase: "idle", running: false, worxRunning: false },
+					_meta: { gjcPhase: "idle", running: false, gjcRunning: false },
 				},
 			},
 			adapter,
@@ -3033,7 +3033,7 @@ export class AcpAgent implements Agent {
 						sessionId: id,
 						update: {
 							sessionUpdate: "session_info_update",
-							_meta: { worxPhase: "idle", running: false, worxRunning: false },
+							_meta: { gjcPhase: "idle", running: false, gjcRunning: false },
 						},
 					},
 					record.adapter,

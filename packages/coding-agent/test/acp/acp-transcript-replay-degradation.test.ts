@@ -263,7 +263,7 @@ describe("ACP transcript replay degradation", () => {
 		await waitFor(
 			() =>
 				updates.some(update => update.update.sessionUpdate === "available_commands_update") &&
-				updates.some(update => updateMeta(update)?.worxPhase === "idle"),
+				updates.some(update => updateMeta(update)?.gjcPhase === "idle"),
 			"new session bootstrap",
 		);
 		updates.length = 0;
