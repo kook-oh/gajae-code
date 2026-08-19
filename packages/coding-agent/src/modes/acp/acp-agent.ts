@@ -46,7 +46,7 @@ import {
 	acpMcpLaunchFailure,
 } from "../../sdk/acp";
 import { resolveAcpFinalText } from "../../sdk/acp/final-text";
-import { ACP_MCP_LIFECYCLE_TIMEOUT_MS, type SessionLifecycleMcpServer } from "../../sdk/acp/mcp";
+import { ACP_LIFECYCLE_READINESS_TIMEOUT_MS, type SessionLifecycleMcpServer } from "../../sdk/acp/mcp";
 import { ensureBroker } from "../../sdk/broker/ensure";
 import { readSdkBrokerDiscovery, SdkClient, SdkClientError } from "../../sdk/client";
 import { SYNTHETIC_PROVIDER_ID } from "../../sdk/model-profile-namespace";
@@ -1167,7 +1167,8 @@ export class AcpAgent implements Agent {
 				cwd: params.cwd,
 				target: { path: params.cwd },
 				...(this.#startupOptions?.modelPreset ? { modelPreset: this.#startupOptions.modelPreset } : {}),
-				...(mcpServers.length > 0 ? { mcpServers, readinessTimeoutMs: ACP_MCP_LIFECYCLE_TIMEOUT_MS } : {}),
+				readinessTimeoutMs: ACP_LIFECYCLE_READINESS_TIMEOUT_MS,
+				...(mcpServers.length > 0 ? { mcpServers } : {}),
 			},
 			randomUUID(),
 			mcpServers,
@@ -1219,7 +1220,8 @@ export class AcpAgent implements Agent {
 				sourceSessionId: params.sessionId,
 				sourceSessionPath: source,
 				target: { path: params.cwd },
-				...(mcpServers.length > 0 ? { mcpServers, readinessTimeoutMs: ACP_MCP_LIFECYCLE_TIMEOUT_MS } : {}),
+				readinessTimeoutMs: ACP_LIFECYCLE_READINESS_TIMEOUT_MS,
+				...(mcpServers.length > 0 ? { mcpServers } : {}),
 			},
 			randomUUID(),
 			mcpServers,
@@ -1770,7 +1772,8 @@ export class AcpAgent implements Agent {
 				sessionId: id,
 				sessionPath: saved,
 				target: { path: cwd },
-				...(mcpServers.length > 0 ? { mcpServers, readinessTimeoutMs: ACP_MCP_LIFECYCLE_TIMEOUT_MS } : {}),
+				readinessTimeoutMs: ACP_LIFECYCLE_READINESS_TIMEOUT_MS,
+				...(mcpServers.length > 0 ? { mcpServers } : {}),
 			},
 			randomUUID(),
 			mcpServers,

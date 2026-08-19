@@ -676,7 +676,11 @@ test("production ACP preserves lifecycle, turn, replay, and connection ownership
 		message: "ACP plan mode is not available because this ACP session has no host plan-mode lifecycle.",
 	});
 	expect(controlOperations).not.toContain("mode.plan.set");
-	expect(lifecycleInputs).toEqual([expect.objectContaining({ cwd, modelPreset: "codex-medium" })]);
+	// A session without MCP servers must still request the full ACP readiness budget: the broker
+	// default leaves ~8s of semantic-ready window, which a cold host misses on a loaded machine.
+	expect(lifecycleInputs).toEqual([
+		expect.objectContaining({ cwd, modelPreset: "codex-medium", readinessTimeoutMs: 30_500 }),
+	]);
 
 	let firstSettled = false;
 	const firstPrompt = agent
