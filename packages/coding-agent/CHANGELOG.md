@@ -6,6 +6,7 @@
 - Fixed: the bundled SDK advisory guide manifest verifies again. A rebrand sweep had rewritten the signature-covered advisory texts, which invalidated the pinned Ed25519 signature and made catalog self-verification throw at module load — killing the detached SDK broker before discovery and breaking ACP and every SDK session.
 - Fixed: ACP `session/new`, `session/resume`, and fork now always request the full 30.5s startup readiness budget instead of only doing so when MCP servers are configured. The broker default left a ~8s semantic-ready window that a cold session host misses on a loaded machine, surfacing as `spawn_failed` or `terminal_uncertain` ("retained artifacts require reconciliation") in ACP clients such as Paseo.
 - Fixed: ACP session status is reported under the frozen `_meta.gjcPhase`/`_meta.gjcRunning` keys again. The rename sweep had rewritten them to `worx*`, silently dropping phase and running state for ACP clients (worx-ide/ORCA among them) that read the documented contract.
+- Fixed: the HTML transcript export reads `gjc-url-params` / `gjc-share-base-url` and persists sidebar width under `gjc-share:v1:sidebar-width` again. The rename sweep had moved those meta and storage names to `worx-*` in the template source only, so they no longer matched the shipped generated template and the compatibility fallback skipped straight past every GJC-generation export to the `pi-*` legacy names.
 
 ## [0.13.1] - 2026-08-11
 
